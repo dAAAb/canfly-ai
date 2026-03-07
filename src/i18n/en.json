@@ -353,6 +353,377 @@
           ]
         }
       ]
+    },
+    "zeabur": {
+      "title": "Deploy OpenClaw to Zeabur Cloud in 5 Minutes",
+      "subtitle": "Take your local AI global — one-click deployment with custom domain, HTTPS, and 24/7 availability",
+      "duration": "5 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "Create Zeabur Account",
+          "titleEn": "Create Zeabur Account",
+          "estimatedTime": "1 min",
+          "content": "Sign up for Zeabur using our affiliate link to get 10% off your first deployment. No credit card required to start.",
+          "expectedResult": "You'll have access to the Zeabur dashboard and can start deploying immediately.",
+          "tips": [
+            "Use code 'OpenClaw' at checkout for 10% discount",
+            "Free tier includes 3 projects with generous resource limits",
+            "GitHub integration makes deployment seamless"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? Account Troubleshooting",
+            "items": [
+              { "q": "Verification email not received", "a": "Check spam folder. If still missing, try signing up with a different email provider like Gmail." },
+              { "q": "GitHub connection failed", "a": "Make sure you allow Zeabur access to your repositories during the OAuth flow." }
+            ]
+          }
+        },
+        {
+          "title": "Fork OpenClaw Repository",
+          "titleEn": "Fork OpenClaw Repository",
+          "estimatedTime": "30 sec",
+          "content": "Create your own copy of the OpenClaw repository on GitHub so you can customize and deploy it.",
+          "expectedResult": "You'll have a fork of OpenClaw in your GitHub account ready for deployment.",
+          "tips": [
+            "Keep the repository name as 'openclaw' for easier identification",
+            "You can make it private if you prefer",
+            "The fork will sync with upstream OpenClaw updates"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? Fork Troubleshooting",
+            "items": [
+              { "q": "Don't have a GitHub account", "a": "Create one at github.com — it's free and takes 2 minutes. You'll need it for most cloud deployments." },
+              { "q": "Fork button not visible", "a": "Make sure you're logged into GitHub and viewing the official OpenClaw repository." }
+            ]
+          }
+        },
+        {
+          "title": "Deploy to Zeabur",
+          "titleEn": "Deploy to Zeabur",
+          "estimatedTime": "2 min",
+          "content": "Connect your GitHub repository to Zeabur and deploy with one click. Zeabur will automatically detect it's a Node.js app and configure everything.",
+          "expectedResult": "Your OpenClaw instance will be live with a temporary zeabur.app domain and automatic HTTPS.",
+          "tips": [
+            "Zeabur auto-detects the build configuration",
+            "Deployment typically takes 1-2 minutes",
+            "You get a free .zeabur.app subdomain immediately"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? Deployment Troubleshooting",
+            "items": [
+              { "q": "Build failed", "a": "Check the build logs in Zeabur dashboard. Most issues are missing environment variables or incorrect Node.js version." },
+              { "q": "Repository not found", "a": "Ensure you've connected your GitHub account and the repository is accessible to Zeabur." }
+            ]
+          }
+        },
+        {
+          "title": "Configure Environment Variables",
+          "titleEn": "Configure Environment Variables",
+          "estimatedTime": "1 min",
+          "content": "Set up your OpenAI API key and other configuration variables to make your cloud instance functional.",
+          "expectedResult": "OpenClaw will be able to connect to AI models and function properly in the cloud.",
+          "tips": [
+            "Store sensitive keys in Zeabur's environment variables (encrypted)",
+            "You can use OpenAI, Anthropic Claude, or other supported models",
+            "Set OLLAMA_HOST if you want to connect back to your local Ollama"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? Environment Troubleshooting",
+            "items": [
+              { "q": "Where to get OpenAI API key", "a": "Visit platform.openai.com, create an account, and generate an API key. You'll need to add billing info." },
+              { "q": "App not restarting after env changes", "a": "In Zeabur dashboard, manually restart your service after updating environment variables." }
+            ]
+          }
+        },
+        {
+          "title": "Add Custom Domain (Optional)",
+          "titleEn": "Add Custom Domain (Optional)",
+          "estimatedTime": "30 sec",
+          "content": "Connect your own domain name to make your AI assistant accessible at your preferred URL.",
+          "expectedResult": "Your OpenClaw instance will be available at your custom domain with automatic SSL.",
+          "tips": [
+            "You can use any domain you own",
+            "Zeabur provides free SSL certificates automatically",
+            "DNS changes may take up to 24 hours to propagate"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? Domain Troubleshooting",
+            "items": [
+              { "q": "Domain not working after setup", "a": "Check that your DNS CNAME record points to your zeabur.app domain. Use dig or nslookup to verify." },
+              { "q": "SSL certificate not working", "a": "Wait 5-10 minutes after DNS propagation. Zeabur automatically issues Let's Encrypt certificates." }
+            ]
+          }
+        },
+        {
+          "title": "Test Your Cloud AI",
+          "titleEn": "Test Your Cloud AI",
+          "estimatedTime": "30 sec",
+          "content": "Congratulations! Your AI assistant is now available 24/7 from anywhere in the world. Test it out and share the link.",
+          "expectedResult": "You can access your AI from any device, anywhere, and share it with others.",
+          "tips": [
+            "Bookmark your new URL for easy access",
+            "Share with team members or friends to try",
+            "Monitor usage in Zeabur dashboard to track costs"
+          ],
+          "nextStepCards": [
+            {
+              "title": "Add Voice with ElevenLabs",
+              "desc": "Give your cloud AI a voice with ElevenLabs integration. Support for multiple languages and natural voices.",
+              "cta": "Explore ElevenLabs"
+            },
+            {
+              "title": "Create AI Videos",
+              "desc": "Use HeyGen to create AI avatar videos that showcase your deployed agent.",
+              "cta": "Explore HeyGen"
+            },
+            {
+              "title": "Scale with Zeabur Pro",
+              "desc": "Upgrade to handle more users, custom resources, and advanced features. Use code 'OpenClaw' for 10% off.",
+              "cta": "View Pricing"
+            },
+            {
+              "title": "Join the Community",
+              "desc": "Share your deployment in the Canfly community and inspire others to take their AI to the cloud.",
+              "cta": "Join Community"
+            }
+          ]
+        }
+      ]
+    },
+    "elevenlabs": {
+      "title": "Add Voice to OpenClaw with ElevenLabs in 5 Minutes",
+      "subtitle": "Transform text into natural speech — give your AI agents realistic voices with ElevenLabs integration",
+      "duration": "5 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "Create ElevenLabs Account",
+          "titleEn": "Create ElevenLabs Account",
+          "estimatedTime": "1 min",
+          "content": "Sign up for ElevenLabs using our affiliate link to get started with AI voice synthesis. Free tier includes 10,000 characters per month.",
+          "expectedResult": "You'll have access to ElevenLabs dashboard with API key for integration.",
+          "tips": [
+            "Free tier: 10,000 characters/month (about 10-15 minutes of audio)",
+            "Starter plan: 30,000 characters for $5/month with our 22% affiliate program",
+            "Over 29 languages supported including English and Chinese"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? Account Troubleshooting",
+            "items": [
+              { "q": "Verification email not received", "a": "Check spam folder. ElevenLabs sometimes takes a few minutes to send confirmation emails." },
+              { "q": "Can't find API key", "a": "Go to Profile Settings → API Key. You may need to verify your email first." }
+            ]
+          }
+        },
+        {
+          "title": "Get Your API Key",
+          "titleEn": "Get Your API Key",
+          "estimatedTime": "30 sec",
+          "content": "Copy your ElevenLabs API key from the dashboard. You'll need this to connect ElevenLabs to OpenClaw.",
+          "expectedResult": "You have your ElevenLabs API key ready for integration.",
+          "tips": [
+            "Keep your API key private — never share it publicly",
+            "You can regenerate the key if it gets compromised",
+            "Free tier has rate limits, paid plans have higher limits"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? API Key Troubleshooting",
+            "items": [
+              { "q": "API key not working", "a": "Make sure you copied the entire key without extra spaces. Some browsers add spaces when copying." },
+              { "q": "Getting 401 unauthorized", "a": "Your API key may be invalid or your account needs email verification." }
+            ]
+          }
+        },
+        {
+          "title": "Configure OpenClaw Integration",
+          "titleEn": "Configure OpenClaw Integration",
+          "estimatedTime": "2 min",
+          "content": "Add the ElevenLabs skill to your OpenClaw setup and configure it with your API key.",
+          "expectedResult": "OpenClaw can now generate speech from text using ElevenLabs voices.",
+          "tips": [
+            "Test with a short sentence first to verify the integration works",
+            "You can change voices in the ElevenLabs dashboard",
+            "Monitor your character usage to avoid hitting limits"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? Integration Troubleshooting",
+            "items": [
+              { "q": "OpenClaw can't find ElevenLabs skill", "a": "Make sure you have the latest version of OpenClaw and restart the application." },
+              { "q": "Audio not playing", "a": "Check your system audio settings. Some browsers block auto-play audio by default." }
+            ]
+          }
+        },
+        {
+          "title": "Live Voice Demo",
+          "titleEn": "Live Voice Demo",
+          "estimatedTime": "1 min",
+          "content": "Test the integration with a real conversation. Ask your OpenClaw agent to speak its response using ElevenLabs voices.",
+          "expectedResult": "You hear natural AI speech generated from your OpenClaw agent's text responses.",
+          "tips": [
+            "Try different languages to test multilingual capability",
+            "Experiment with voice settings in ElevenLabs dashboard",
+            "Longer responses take more characters from your quota"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? Demo Troubleshooting",
+            "items": [
+              { "q": "Voice sounds robotic", "a": "Try a different voice model in ElevenLabs. Premium voices sound more natural than free tier voices." },
+              { "q": "Audio is choppy", "a": "Check your internet connection. Audio streaming requires stable bandwidth." }
+            ]
+          }
+        },
+        {
+          "title": "Voice Use Cases & Next Steps",
+          "titleEn": "Voice Use Cases & Next Steps",
+          "estimatedTime": "Exploration time!",
+          "content": "Congratulations! Your AI can now speak. Explore advanced voice features and practical applications.",
+          "tips": [
+            "Perfect for accessibility — visually impaired users can hear responses",
+            "Great for content creation — convert articles to podcasts",
+            "Educational use — language learning with native pronunciation"
+          ],
+          "nextStepCards": [
+            {
+              "title": "Upgrade to Starter Plan",
+              "desc": "Get 30,000 characters, premium voices, and commercial usage. Support Canfly with 22% affiliate commission.",
+              "cta": "Upgrade Now"
+            },
+            {
+              "title": "Custom Voice Cloning",
+              "desc": "Clone your own voice or create brand-specific voices with ElevenLabs Voice Lab.",
+              "cta": "Explore Voice Lab"
+            },
+            {
+              "title": "Add Video with HeyGen",
+              "desc": "Combine ElevenLabs voices with HeyGen AI avatars to create complete video content.",
+              "cta": "Learn HeyGen"
+            },
+            {
+              "title": "Deploy Voice to Cloud",
+              "desc": "Use Zeabur to deploy your voice-enabled AI agent globally with 24/7 availability.",
+              "cta": "Deploy to Cloud"
+            }
+          ]
+        }
+      ]
+    },
+    "heygen": {
+      "title": "Create AI Avatar Videos with HeyGen + OpenClaw in 5 Minutes",
+      "subtitle": "Transform your AI conversations into professional avatar videos — perfect for content creation and training",
+      "duration": "5 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "Create HeyGen Account",
+          "titleEn": "Create HeyGen Account",
+          "estimatedTime": "1 min",
+          "content": "Sign up for HeyGen using our affiliate link. Free tier includes 1 credit (1-minute video) to test the platform.",
+          "expectedResult": "You'll have access to HeyGen Studio with API access for integration.",
+          "tips": [
+            "Free tier: 1 credit (1-minute video) for testing",
+            "Creator plan: $29/month with our 20% affiliate commission",
+            "100+ avatars, 300+ voices, 40+ languages available"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? Account Troubleshooting",
+            "items": [
+              { "q": "Free credit not showing", "a": "Free credits may take a few minutes to appear. Refresh the page or contact HeyGen support." },
+              { "q": "Can't access API features", "a": "API access requires a paid plan. Free tier is for manual studio use only." }
+            ]
+          }
+        },
+        {
+          "title": "Get API Access",
+          "titleEn": "Get API Access",
+          "estimatedTime": "30 sec",
+          "content": "Generate your HeyGen API key from the developer dashboard to enable programmatic video creation.",
+          "expectedResult": "You have API credentials ready for OpenClaw integration.",
+          "tips": [
+            "API access requires Creator plan ($29/month) or higher",
+            "Keep your API key secure — it controls video generation credits",
+            "Each API call consumes credits based on video length"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? API Troubleshooting",
+            "items": [
+              { "q": "API key option not visible", "a": "Upgrade to Creator plan first. API access is not available on free tier." },
+              { "q": "API calls failing", "a": "Verify your plan has remaining credits. Check the developer console for error messages." }
+            ]
+          }
+        },
+        {
+          "title": "Configure OpenClaw + HeyGen",
+          "titleEn": "Configure OpenClaw + HeyGen",
+          "estimatedTime": "2 min",
+          "content": "Set up the HeyGen integration in OpenClaw to automatically convert AI responses into avatar videos.",
+          "expectedResult": "OpenClaw can generate avatar videos from text responses using HeyGen API.",
+          "tips": [
+            "Start with a simple avatar to test the integration",
+            "Video generation takes 30-60 seconds per minute of content",
+            "You can customize avatar, voice, and background"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? Integration Troubleshooting",
+            "items": [
+              { "q": "Video generation takes too long", "a": "Normal for first video. HeyGen processes videos in queue during peak times." },
+              { "q": "Avatar looks different than preview", "a": "Make sure you selected the correct avatar ID. Preview in HeyGen Studio first." }
+            ]
+          }
+        },
+        {
+          "title": "Create Your First AI Video",
+          "titleEn": "Create Your First AI Video",
+          "estimatedTime": "1 min",
+          "content": "Generate your first AI avatar video by asking your OpenClaw agent a question and having it respond with video.",
+          "expectedResult": "You have a professional AI avatar video generated from your conversation.",
+          "tips": [
+            "Keep initial videos short (30-60 seconds) to test",
+            "Try different avatars to find your preferred style",
+            "Videos are perfect for social media, education, and presentations"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? Video Generation Troubleshooting",
+            "items": [
+              { "q": "Video quality is poor", "a": "Check your internet connection during download. Re-generate if needed." },
+              { "q": "Audio doesn't sync with avatar lips", "a": "This can happen with very long sentences. Try shorter, more natural speech patterns." }
+            ]
+          }
+        },
+        {
+          "title": "Video Use Cases & Advanced Features",
+          "titleEn": "Video Use Cases & Advanced Features",
+          "estimatedTime": "Exploration time!",
+          "content": "Congratulations! You can now create AI avatar videos. Explore advanced features and business applications.",
+          "tips": [
+            "Perfect for educational content — explain complex topics with avatars",
+            "Social media content — create engaging posts automatically",
+            "Customer support — personalize responses with video messages"
+          ],
+          "nextStepCards": [
+            {
+              "title": "Upgrade to Creator Plan",
+              "desc": "Get 15 credits/month, API access, and commercial usage. Support Canfly with 20% affiliate commission.",
+              "cta": "Upgrade Now"
+            },
+            {
+              "title": "Custom Avatar Creation",
+              "desc": "Create personalized avatars with HeyGen's custom avatar service for brand consistency.",
+              "cta": "Create Custom Avatar"
+            },
+            {
+              "title": "Combine with ElevenLabs",
+              "desc": "Use ElevenLabs custom voices with HeyGen avatars for the ultimate personalized video experience.",
+              "cta": "Learn ElevenLabs"
+            },
+            {
+              "title": "Automate Video Workflows",
+              "desc": "Deploy your video-generating AI to Zeabur cloud and create automated content pipelines.",
+              "cta": "Deploy to Cloud"
+            }
+          ]
+        }
+      ]
     }
   }
 }

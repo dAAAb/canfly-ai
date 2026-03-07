@@ -69,7 +69,7 @@
     "followX": "Follow @dAAAb"
   },
   "footer": {
-    "copyright": "\u00a9 2026 Canfly",
+    "copyright": "© 2026 Canfly",
     "tagline": "有了小龙虾 AI，你也能飞"
   },
   "apps": {
@@ -209,9 +209,18 @@
           "troubleshooting": {
             "title": "卡住了？安装问题排解",
             "items": [
-              { "q": "Mac 无法打开 Ollama.app", "a": "到「系统设置 → 隐私与安全性」，点击「仍然打开」。这是 macOS 对未签名应用的安全机制。" },
-              { "q": "终端显示 \"command not found\"", "a": "请重新打开终端，或执行 source ~/.zshrc 重新加载环境变量。" },
-              { "q": "Windows 安装卡住", "a": "请用管理员身份运行安装程序。右键点击 → 以管理员身份运行。" }
+              {
+                "q": "Mac 无法打开 Ollama.app",
+                "a": "到「系统设置 → 隐私与安全性」，点击「仍然打开」。这是 macOS 对未签名应用的安全机制。"
+              },
+              {
+                "q": "终端显示 \"command not found\"",
+                "a": "请重新打开终端，或执行 source ~/.zshrc 重新加载环境变量。"
+              },
+              {
+                "q": "Windows 安装卡住",
+                "a": "请用管理员身份运行安装程序。右键点击 → 以管理员身份运行。"
+              }
             ]
           },
           "installTabs": {
@@ -264,8 +273,14 @@
           "troubleshooting": {
             "title": "卡住了？下载问题排解",
             "items": [
-              { "q": "下载速度很慢", "a": "模型文件较大，确保网络稳定。也可以试试较小的模型如 llama3.2。" },
-              { "q": "显示磁盘空间不足", "a": "用 ollama list 查看已安装的模型，用 ollama rm <model> 删除不需要的模型。" }
+              {
+                "q": "下载速度很慢",
+                "a": "模型文件较大，确保网络稳定。也可以试试较小的模型如 llama3.2。"
+              },
+              {
+                "q": "显示磁盘空间不足",
+                "a": "用 ollama list 查看已安装的模型，用 ollama rm <model> 删除不需要的模型。"
+              }
             ]
           },
           "modelTable": {
@@ -274,10 +289,30 @@
             "bestHeader": "最适合",
             "speedHeader": "速度",
             "models": [
-              { "name": "llama3.2", "size": "2 GB", "best": "日常聊天、问答", "speed": "快" },
-              { "name": "codellama", "size": "3.8 GB", "best": "写代码、Debug", "speed": "中" },
-              { "name": "llama3.1", "size": "4.7 GB", "best": "复杂推理、创作", "speed": "中" },
-              { "name": "mistral", "size": "4.1 GB", "best": "多语言、分析", "speed": "中" }
+              {
+                "name": "llama3.2",
+                "size": "2 GB",
+                "best": "日常聊天、问答",
+                "speed": "快"
+              },
+              {
+                "name": "codellama",
+                "size": "3.8 GB",
+                "best": "写代码、Debug",
+                "speed": "中"
+              },
+              {
+                "name": "llama3.1",
+                "size": "4.7 GB",
+                "best": "复杂推理、创作",
+                "speed": "中"
+              },
+              {
+                "name": "mistral",
+                "size": "4.1 GB",
+                "best": "多语言、分析",
+                "speed": "中"
+              }
             ]
           }
         },
@@ -295,8 +330,14 @@
           "troubleshooting": {
             "title": "卡住了？对话问题排解",
             "items": [
-              { "q": "回应速度很慢", "a": "正常！第一次载入模型需要时间。如果持续很慢，试试较小的模型 llama3.2。" },
-              { "q": "显示内存不足", "a": "关闭其他应用释放内存，或换用更小的模型。" }
+              {
+                "q": "回应速度很慢",
+                "a": "正常！第一次载入模型需要时间。如果持续很慢，试试较小的模型 llama3.2。"
+              },
+              {
+                "q": "显示内存不足",
+                "a": "关闭其他应用释放内存，或换用更小的模型。"
+              }
             ]
           }
         },
@@ -314,8 +355,14 @@
           "troubleshooting": {
             "title": "卡住了？连接问题排解",
             "items": [
-              { "q": "OpenClaw 找不到 Ollama", "a": "确认 Ollama 正在运行：在终端输入 ollama list。如果没有反应，重新启动 Ollama。" },
-              { "q": "API 地址填什么？", "a": "默认是 http://localhost:11434，除非你有特别更改过。" }
+              {
+                "q": "OpenClaw 找不到 Ollama",
+                "a": "确认 Ollama 正在运行：在终端输入 ollama list。如果没有反应，重新启动 Ollama。"
+              },
+              {
+                "q": "API 地址填什么？",
+                "a": "默认是 http://localhost:11434，除非你有特别更改过。"
+              }
             ]
           }
         },
@@ -349,6 +396,455 @@
               "title": "探索更多模型",
               "desc": "到 Ollama 模型库浏览数百种模型：文字、代码、视觉识别等。",
               "cta": "浏览模型库"
+            }
+          ]
+        }
+      ]
+    },
+    "zeabur": {
+      "title": "5 分钟将 OpenClaw 部署到 Zeabur 云端",
+      "subtitle": "让你的本地 AI 走向全球 — 一键部署、自定义域名、HTTPS 以及 24/7 可用性",
+      "duration": "5 分钟",
+      "difficulty": "入门",
+      "steps": [
+        {
+          "title": "创建 Zeabur 账号",
+          "titleEn": "Create Zeabur Account",
+          "estimatedTime": "1 分钟",
+          "content": "使用我们的联盟链接注册 Zeabur，享受首次部署 9 折优惠。免信用卡即可开始使用。",
+          "expectedResult": "你将能访问 Zeabur 控制台，并立即开始部署应用程序。",
+          "tips": [
+            "结账时使用优惠码 'OpenClaw' 享 9 折优惠",
+            "免费方案包含 3 个项目与丰富资源限制",
+            "GitHub 集成让部署变得无缝衔接"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？账号问题排解",
+            "items": [
+              {
+                "q": "没收到验证邮件",
+                "a": "检查垃圾邮件文件夹。若仍未收到，请尝试使用其他邮箱服务商，如 Gmail。"
+              },
+              {
+                "q": "GitHub 连接失败",
+                "a": "请确保在 OAuth 流程中允许 Zeabur 访问你的仓库。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "复制 OpenClaw 仓库",
+          "titleEn": "Fork OpenClaw Repository",
+          "estimatedTime": "30 秒",
+          "content": "在 GitHub 上创建你自己的 OpenClaw 副本，这样你就能自定义并部署它。",
+          "expectedResult": "你的 GitHub 账号将会有一个 OpenClaw 的复本，准备用于部署。",
+          "tips": [
+            "保持仓库名称为 'openclaw' 以便识别",
+            "你可以设定为私人仓库",
+            "复本会与上游 OpenClaw 更新同步"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？复制问题排解",
+            "items": [
+              {
+                "q": "没有 GitHub 账号",
+                "a": "到 github.com 创建账号 — 免费且只需 2 分钟。大多数云端部署都需要它。"
+              },
+              {
+                "q": "看不到复制按钮",
+                "a": "确保你已登录 GitHub 且正在查看官方 OpenClaw 仓库。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "部署到 Zeabur",
+          "titleEn": "Deploy to Zeabur",
+          "estimatedTime": "2 分钟",
+          "content": "将你的 GitHub 仓库连接到 Zeabur 并一键部署。Zeabur 会自动检测这是 Node.js 应用程序并配置所有设置。",
+          "expectedResult": "你的 OpenClaw 实例将会上线，并拥有临时的 zeabur.app 域名和自动 HTTPS。",
+          "tips": [
+            "Zeabur 自动检测构建配置",
+            "部署通常需要 1-2 分钟",
+            "你会立即得到免费的 .zeabur.app 子域名"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？部署问题排解",
+            "items": [
+              {
+                "q": "构建失败",
+                "a": "检查 Zeabur 控制台中的构建日志。大多数问题是缺少环境变量或 Node.js 版本不正确。"
+              },
+              {
+                "q": "找不到仓库",
+                "a": "确保你已连接 GitHub 账号，且 Zeabur 可以访问该仓库。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "配置环境变量",
+          "titleEn": "Configure Environment Variables",
+          "estimatedTime": "1 分钟",
+          "content": "设置你的 OpenAI API 密钥和其他配置变量，让你的云端实例能正常运作。",
+          "expectedResult": "OpenClaw 将能连接到 AI 模型，并在云端正常运作。",
+          "tips": [
+            "将敏感密钥存储在 Zeabur 的环境变量中（加密）",
+            "你可以使用 OpenAI、Anthropic Claude 或其他支持的模型",
+            "如果想连接回本地 Ollama，请设置 OLLAMA_HOST"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？环境变量问题排解",
+            "items": [
+              {
+                "q": "如何获取 OpenAI API 密钥",
+                "a": "前往 platform.openai.com，创建账号并生成 API 密钥。你需要添加账单信息。"
+              },
+              {
+                "q": "更新环境变量后应用程序没重启",
+                "a": "在 Zeabur 控制台中，更新环境变量后手动重启你的服务。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "添加自定义域名（可选）",
+          "titleEn": "Add Custom Domain (Optional)",
+          "estimatedTime": "30 秒",
+          "content": "连接你自己的域名，让你的 AI 助手能在你偏好的 URL 上访问。",
+          "expectedResult": "你的 OpenClaw 实例将在你的自定义域名上提供服务，并自动配备 SSL。",
+          "tips": [
+            "你可以使用任何你拥有的域名",
+            "Zeabur 自动提供免费 SSL 证书",
+            "DNS 变更可能需要最多 24 小时才能生效"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？域名问题排解",
+            "items": [
+              {
+                "q": "设置后域名无法运作",
+                "a": "检查你的 DNS CNAME 记录是否指向你的 zeabur.app 域名。使用 dig 或 nslookup 验证。"
+              },
+              {
+                "q": "SSL 证书无法运作",
+                "a": "DNS 传播后等待 5-10 分钟。Zeabur 自动发放 Let's Encrypt 证书。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "测试你的云端 AI",
+          "titleEn": "Test Your Cloud AI",
+          "estimatedTime": "30 秒",
+          "content": "恭喜！你的 AI 助手现在可以 24/7 从世界任何地方访问。测试一下并分享链接吧。",
+          "expectedResult": "你可以从任何设备、任何地方访问你的 AI，也可以与其他人分享。",
+          "tips": [
+            "将新 URL 加入书签以便快速访问",
+            "与团队成员或朋友分享来试用",
+            "在 Zeabur 控制台中监控使用情况以跟踪成本"
+          ],
+          "nextStepCards": [
+            {
+              "title": "用 ElevenLabs 添加语音",
+              "desc": "通过 ElevenLabs 集成为你的云端 AI 添加语音功能。支持多种语言和自然语音。",
+              "cta": "探索 ElevenLabs"
+            },
+            {
+              "title": "制作 AI 视频",
+              "desc": "使用 HeyGen 制作展示你已部署代理程序的 AI 数字人视频。",
+              "cta": "探索 HeyGen"
+            },
+            {
+              "title": "升级 Zeabur Pro",
+              "desc": "升级以处理更多用户、自定义资源和高级功能。使用优惠码 'OpenClaw' 享 9 折优惠。",
+              "cta": "查看定价"
+            },
+            {
+              "title": "加入社区",
+              "desc": "在 Canfly 社区中分享你的部署，启发其他人将 AI 带到云端。",
+              "cta": "加入社区"
+            }
+          ]
+        }
+      ]
+    },
+    "elevenlabs": {
+      "title": "5 分钟为 OpenClaw 加上语音功能",
+      "subtitle": "将文字转换成自然语音 — 通过 ElevenLabs 集成为你的 AI 代理加上真实语音",
+      "duration": "5 分钟",
+      "difficulty": "初学者",
+      "steps": [
+        {
+          "title": "创建 ElevenLabs 账号",
+          "titleEn": "Create ElevenLabs Account",
+          "estimatedTime": "1 分钟",
+          "content": "通过我们的推荐链接注册 ElevenLabs，开始使用 AI 语音合成。免费方案包含每月 10,000 字符。",
+          "expectedResult": "你将拥有 ElevenLabs 控制台的访问权限以及 API 密钥以进行集成。",
+          "tips": [
+            "免费方案：每月 10,000 字符（约 10-15 分钟音频）",
+            "入门方案：每月 30,000 字符，月费 $5，通过我们的 22% 推荐计划",
+            "支持超过 29 种语言，包含英文和中文"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？账号问题排解",
+            "items": [
+              {
+                "q": "没有收到验证邮件",
+                "a": "检查垃圾邮件箱。ElevenLabs 有时需要几分钟才会发送确认邮件。"
+              },
+              {
+                "q": "找不到 API 密钥",
+                "a": "前往个人资料设置 → API 密钥。你可能需要先验证电子邮件。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "获取你的 API 密钥",
+          "titleEn": "Get Your API Key",
+          "estimatedTime": "30 秒",
+          "content": "从控制台复制你的 ElevenLabs API 密钥。你需要这个密钥来连接 ElevenLabs 到 OpenClaw。",
+          "expectedResult": "你已准备好 ElevenLabs API 密钥进行集成。",
+          "tips": [
+            "保持你的 API 密钥私密 — 绝不要公开分享",
+            "如果密钥被泄露，你可以重新生成",
+            "免费方案有使用率限制，付费方案有更高的限制"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？API 密钥问题排解",
+            "items": [
+              {
+                "q": "API 密钥无法工作",
+                "a": "确保复制了完整的密钥，没有额外空格。某些浏览器在复制时会添加空格。"
+              },
+              {
+                "q": "得到 401 未授权错误",
+                "a": "你的 API 密钥可能无效，或你的账号需要电子邮件验证。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "配置 OpenClaw 集成",
+          "titleEn": "Configure OpenClaw Integration",
+          "estimatedTime": "2 分钟",
+          "content": "将 ElevenLabs 技能添加到你的 OpenClaw 设置中，并使用你的 API 密钥进行配置。",
+          "expectedResult": "OpenClaw 现在可以使用 ElevenLabs 语音从文字生成语音。",
+          "tips": [
+            "先测试一个简短的句子来验证集成是否正常工作",
+            "你可以在 ElevenLabs 控制台中更改语音",
+            "监控你的字符使用量以避免达到限制"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？集成问题排解",
+            "items": [
+              {
+                "q": "OpenClaw 找不到 ElevenLabs 技能",
+                "a": "确保你有最新版本的 OpenClaw 并重启应用程序。"
+              },
+              {
+                "q": "音频无法播放",
+                "a": "检查你的系统音频设置。某些浏览器默认会阻止自动播放音频。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "实时语音演示",
+          "titleEn": "Live Voice Demo",
+          "estimatedTime": "1 分钟",
+          "content": "通过真实对话测试集成。让你的 OpenClaw 代理使用 ElevenLabs 语音说出回应。",
+          "expectedResult": "你听到从 OpenClaw 代理文字回应生成的自然 AI 语音。",
+          "tips": [
+            "尝试不同语言来测试多语言功能",
+            "在 ElevenLabs 控制台中试验语音设置",
+            "较长的回应会消耗更多字符配额"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？演示问题排解",
+            "items": [
+              {
+                "q": "语音听起来很机械",
+                "a": "在 ElevenLabs 中尝试不同的语音模型。高级语音比免费方案语音听起来更自然。"
+              },
+              {
+                "q": "音频断断续续",
+                "a": "检查你的网络连接。音频流需要稳定的带宽。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "语音应用场景与下一步",
+          "titleEn": "Voice Use Cases & Next Steps",
+          "estimatedTime": "探索时间！",
+          "content": "恭喜！你的 AI 现在可以说话了。探索高级语音功能和实际应用。",
+          "tips": [
+            "非常适合无障碍设计 — 视障用户可以听到回应",
+            "非常适合内容创作 — 将文章转换为播客",
+            "教育用途 — 以母语发音进行语言学习"
+          ],
+          "nextStepCards": [
+            {
+              "title": "升级到入门方案",
+              "desc": "获得 30,000 字符、高级语音和商业用途。通过 22% 推荐佣金支持 Canfly。",
+              "cta": "立即升级"
+            },
+            {
+              "title": "自定义语音克隆",
+              "desc": "使用 ElevenLabs Voice Lab 克隆你自己的语音或创建品牌专属语音。",
+              "cta": "探索 Voice Lab"
+            },
+            {
+              "title": "使用 HeyGen 加上视频",
+              "desc": "结合 ElevenLabs 语音与 HeyGen AI 虚拟人物来创作完整的视频内容。",
+              "cta": "学习 HeyGen"
+            },
+            {
+              "title": "将语音部署到云端",
+              "desc": "使用 Zeabur 将你的语音功能 AI 代理部署到全球，提供 24/7 可用性。",
+              "cta": "部署到云端"
+            }
+          ]
+        }
+      ]
+    },
+    "heygen": {
+      "title": "5 分钟使用 HeyGen + OpenClaw 创作 AI 虚拟人物视频",
+      "subtitle": "将你的 AI 对话转换成专业虚拟人物视频 — 非常适合内容创作和培训",
+      "duration": "5 分钟",
+      "difficulty": "初学者",
+      "steps": [
+        {
+          "title": "创建 HeyGen 账号",
+          "titleEn": "Create HeyGen Account",
+          "estimatedTime": "1 分钟",
+          "content": "通过我们的推荐链接注册 HeyGen。免费方案包含 1 点数（1 分钟视频）来测试平台。",
+          "expectedResult": "你将拥有 HeyGen Studio 的访问权限以及 API 访问以进行集成。",
+          "tips": [
+            "免费方案：1 点数（1 分钟视频）供测试",
+            "创作者方案：每月 $29，通过我们的 20% 推荐佣金",
+            "提供 100+ 虚拟人物、300+ 语音、40+ 语言"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？账号问题排解",
+            "items": [
+              {
+                "q": "免费点数没有显示",
+                "a": "免费点数可能需要几分钟才会出现。刷新页面或联系 HeyGen 支持。"
+              },
+              {
+                "q": "无法访问 API 功能",
+                "a": "API 访问需要付费方案。免费方案仅供手动工作室使用。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "获得 API 访问权限",
+          "titleEn": "Get API Access",
+          "estimatedTime": "30 秒",
+          "content": "从开发者控制台生成你的 HeyGen API 密钥，以启用程序化视频创作。",
+          "expectedResult": "你已准备好 API 凭证进行 OpenClaw 集成。",
+          "tips": [
+            "API 访问需要创作者方案（每月 $29）或更高方案",
+            "保持你的 API 密钥安全 — 它控制视频生成点数",
+            "每个 API 调用会根据视频长度消耗点数"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？API 问题排解",
+            "items": [
+              {
+                "q": "看不到 API 密钥选项",
+                "a": "请先升级到创作者方案。免费方案无法使用 API 访问。"
+              },
+              {
+                "q": "API 调用失败",
+                "a": "验证你的方案有剩余点数。检查开发者控制台的错误消息。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "配置 OpenClaw + HeyGen",
+          "titleEn": "Configure OpenClaw + HeyGen",
+          "estimatedTime": "2 分钟",
+          "content": "在 OpenClaw 中设置 HeyGen 集成，自动将 AI 回应转换成虚拟人物视频。",
+          "expectedResult": "OpenClaw 可以使用 HeyGen API 从文字回应生成虚拟人物视频。",
+          "tips": [
+            "从简单的虚拟人物开始测试集成",
+            "视频生成每分钟内容需要 30-60 秒",
+            "你可以自定义虚拟人物、语音和背景"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？集成问题排解",
+            "items": [
+              {
+                "q": "视频生成时间太长",
+                "a": "第一个视频是正常的。HeyGen 在高峰时间会将视频放入队列处理。"
+              },
+              {
+                "q": "虚拟人物与预览不同",
+                "a": "确保你选择了正确的虚拟人物 ID。先在 HeyGen Studio 中预览。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "创作你的第一个 AI 视频",
+          "titleEn": "Create Your First AI Video",
+          "estimatedTime": "1 分钟",
+          "content": "通过询问你的 OpenClaw 代理问题并让它以视频回应来生成你的第一个 AI 虚拟人物视频。",
+          "expectedResult": "你拥有一个从你的对话生成的专业 AI 虚拟人物视频。",
+          "tips": [
+            "保持初始视频简短（30-60 秒）来测试",
+            "尝试不同的虚拟人物来找到你偏好的风格",
+            "视频非常适合社交媒体、教育和演示"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？视频生成问题排解",
+            "items": [
+              {
+                "q": "视频质量很差",
+                "a": "在下载期间检查你的网络连接。如有需要请重新生成。"
+              },
+              {
+                "q": "音频与虚拟人物唇形不同步",
+                "a": "这可能发生在非常长的句子。尝试较短、更自然的语音模式。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "视频应用场景与高级功能",
+          "titleEn": "Video Use Cases & Advanced Features",
+          "estimatedTime": "探索时间！",
+          "content": "恭喜！你现在可以创作 AI 虚拟人物视频了。探索高级功能和商业应用。",
+          "tips": [
+            "非常适合教育内容 — 使用虚拟人物解释复杂主题",
+            "社交媒体内容 — 自动创作引人入胜的帖子",
+            "客户支持 — 使用视频消息个性化回应"
+          ],
+          "nextStepCards": [
+            {
+              "title": "升级到创作者方案",
+              "desc": "获得每月 15 点数、API 访问和商业用途。通过 20% 推荐佣金支持 Canfly。",
+              "cta": "立即升级"
+            },
+            {
+              "title": "自定义虚拟人物创作",
+              "desc": "使用 HeyGen 的自定义虚拟人物服务创作个性化虚拟人物以保持品牌一致性。",
+              "cta": "创作自定义虚拟人物"
+            },
+            {
+              "title": "结合 ElevenLabs",
+              "desc": "使用 ElevenLabs 自定义语音搭配 HeyGen 虚拟人物，打造终极个性化视频体验。",
+              "cta": "学习 ElevenLabs"
+            },
+            {
+              "title": "自动化视频工作流程",
+              "desc": "将你的视频生成 AI 部署到 Zeabur 云端并创作自动化内容管线。",
+              "cta": "部署到云端"
             }
           ]
         }

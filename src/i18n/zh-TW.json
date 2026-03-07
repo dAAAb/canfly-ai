@@ -353,6 +353,377 @@
           ]
         }
       ]
+    },
+    "zeabur": {
+      "title": "5 分鐘將 OpenClaw 部署到 Zeabur 雲端",
+      "subtitle": "讓你的本地 AI 走向全球 — 一鍵部署、自訂網域、HTTPS 以及 24/7 可用性",
+      "duration": "5 分鐘",
+      "difficulty": "入門",
+      "steps": [
+        {
+          "title": "建立 Zeabur 帳號",
+          "titleEn": "Create Zeabur Account",
+          "estimatedTime": "1 分鐘",
+          "content": "使用我們的聯盟連結註冊 Zeabur，享受首次部署 9 折優惠。免信用卡即可開始使用。",
+          "expectedResult": "你將能存取 Zeabur 控制台，並立即開始部署應用程式。",
+          "tips": [
+            "結帳時使用優惠碼 'OpenClaw' 享 9 折優惠",
+            "免費方案包含 3 個專案與豐富資源限制",
+            "GitHub 整合讓部署變得無縫銜接"
+          ],
+          "troubleshooting": {
+            "title": "卡關了？帳號問題排解",
+            "items": [
+              { "q": "沒收到驗證信件", "a": "檢查垃圾郵件資料夾。若仍未收到，請嘗試使用其他電子郵件服務商，如 Gmail。" },
+              { "q": "GitHub 連接失敗", "a": "請確保在 OAuth 流程中允許 Zeabur 存取你的儲存庫。" }
+            ]
+          }
+        },
+        {
+          "title": "複製 OpenClaw 儲存庫",
+          "titleEn": "Fork OpenClaw Repository",
+          "estimatedTime": "30 秒",
+          "content": "在 GitHub 上建立你自己的 OpenClaw 副本，這樣你就能客製化並部署它。",
+          "expectedResult": "你的 GitHub 帳號將會有一個 OpenClaw 的複本，準備用於部署。",
+          "tips": [
+            "保持儲存庫名稱為 'openclaw' 以便識別",
+            "你可以設定為私人儲存庫",
+            "複本會與上游 OpenClaw 更新同步"
+          ],
+          "troubleshooting": {
+            "title": "卡關了？複製問題排解",
+            "items": [
+              { "q": "沒有 GitHub 帳號", "a": "到 github.com 建立帳號 — 免費且只需 2 分鐘。大多數雲端部署都需要它。" },
+              { "q": "看不到複製按鈕", "a": "確保你已登入 GitHub 且正在查看官方 OpenClaw 儲存庫。" }
+            ]
+          }
+        },
+        {
+          "title": "部署到 Zeabur",
+          "titleEn": "Deploy to Zeabur",
+          "estimatedTime": "2 分鐘",
+          "content": "將你的 GitHub 儲存庫連接到 Zeabur 並一鍵部署。Zeabur 會自動偵測這是 Node.js 應用程式並配置所有設定。",
+          "expectedResult": "你的 OpenClaw 實例將會上線，並擁有暫時的 zeabur.app 網域和自動 HTTPS。",
+          "tips": [
+            "Zeabur 自動偵測建置配置",
+            "部署通常需要 1-2 分鐘",
+            "你會立即得到免費的 .zeabur.app 子網域"
+          ],
+          "troubleshooting": {
+            "title": "卡關了？部署問題排解",
+            "items": [
+              { "q": "建置失敗", "a": "檢查 Zeabur 控制台中的建置日誌。大多數問題是缺少環境變數或 Node.js 版本不正確。" },
+              { "q": "找不到儲存庫", "a": "確保你已連接 GitHub 帳號，且 Zeabur 可以存取該儲存庫。" }
+            ]
+          }
+        },
+        {
+          "title": "配置環境變數",
+          "titleEn": "Configure Environment Variables",
+          "estimatedTime": "1 分鐘",
+          "content": "設定你的 OpenAI API 金鑰和其他配置變數，讓你的雲端實例能正常運作。",
+          "expectedResult": "OpenClaw 將能連接到 AI 模型，並在雲端正常運作。",
+          "tips": [
+            "將敏感金鑰儲存在 Zeabur 的環境變數中（加密）",
+            "你可以使用 OpenAI、Anthropic Claude 或其他支援的模型",
+            "如果想連接回本地 Ollama，請設定 OLLAMA_HOST"
+          ],
+          "troubleshooting": {
+            "title": "卡關了？環境變數問題排解",
+            "items": [
+              { "q": "如何取得 OpenAI API 金鑰", "a": "前往 platform.openai.com，建立帳號並產生 API 金鑰。你需要添加帳單資訊。" },
+              { "q": "更新環境變數後應用程式沒重啟", "a": "在 Zeabur 控制台中，更新環境變數後手動重啟你的服務。" }
+            ]
+          }
+        },
+        {
+          "title": "新增自訂網域（可選）",
+          "titleEn": "Add Custom Domain (Optional)",
+          "estimatedTime": "30 秒",
+          "content": "連接你自己的網域名稱，讓你的 AI 助手能在你偏好的 URL 上存取。",
+          "expectedResult": "你的 OpenClaw 實例將在你的自訂網域上提供服務，並自動配備 SSL。",
+          "tips": [
+            "你可以使用任何你擁有的網域",
+            "Zeabur 自動提供免費 SSL 憑證",
+            "DNS 變更可能需要最多 24 小時才能生效"
+          ],
+          "troubleshooting": {
+            "title": "卡關了？網域問題排解",
+            "items": [
+              { "q": "設定後網域無法運作", "a": "檢查你的 DNS CNAME 記錄是否指向你的 zeabur.app 網域。使用 dig 或 nslookup 驗證。" },
+              { "q": "SSL 憑證無法運作", "a": "DNS 傳播後等待 5-10 分鐘。Zeabur 自動發放 Let's Encrypt 憑證。" }
+            ]
+          }
+        },
+        {
+          "title": "測試你的雲端 AI",
+          "titleEn": "Test Your Cloud AI",
+          "estimatedTime": "30 秒",
+          "content": "恭喜！你的 AI 助手現在可以 24/7 從世界任何地方存取。測試一下並分享連結吧。",
+          "expectedResult": "你可以從任何裝置、任何地方存取你的 AI，也可以與其他人分享。",
+          "tips": [
+            "將新 URL 加入書籤以便快速存取",
+            "與團隊成員或朋友分享來試用",
+            "在 Zeabur 控制台中監控使用情況以追蹤成本"
+          ],
+          "nextStepCards": [
+            {
+              "title": "用 ElevenLabs 新增語音",
+              "desc": "透過 ElevenLabs 整合為你的雲端 AI 添加語音功能。支援多種語言和自然語音。",
+              "cta": "探索 ElevenLabs"
+            },
+            {
+              "title": "製作 AI 影片",
+              "desc": "使用 HeyGen 製作展示你已部署代理程式的 AI 數位人影片。",
+              "cta": "探索 HeyGen"
+            },
+            {
+              "title": "升級 Zeabur Pro",
+              "desc": "升級以處理更多使用者、自訂資源和進階功能。使用優惠碼 'OpenClaw' 享 9 折優惠。",
+              "cta": "查看定價"
+            },
+            {
+              "title": "加入社群",
+              "desc": "在 Canfly 社群中分享你的部署，啟發其他人將 AI 帶到雲端。",
+              "cta": "加入社群"
+            }
+          ]
+        }
+      ]
+    },
+    "elevenlabs": {
+      "title": "5 分鐘為 OpenClaw 加上語音功能",
+      "subtitle": "將文字轉換成自然語音 — 透過 ElevenLabs 整合為你的 AI 代理加上真實語音",
+      "duration": "5 分鐘",
+      "difficulty": "初學者",
+      "steps": [
+        {
+          "title": "建立 ElevenLabs 帳號",
+          "titleEn": "Create ElevenLabs Account",
+          "estimatedTime": "1 分鐘",
+          "content": "透過我們的推薦連結註冊 ElevenLabs，開始使用 AI 語音合成。免費方案包含每月 10,000 字元。",
+          "expectedResult": "你將擁有 ElevenLabs 控制台的存取權限以及 API 金鑰以進行整合。",
+          "tips": [
+            "免費方案：每月 10,000 字元（約 10-15 分鐘音訊）",
+            "入門方案：每月 30,000 字元，月費 $5，透過我們的 22% 推薦計畫",
+            "支援超過 29 種語言，包含英文和中文"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？帳號疑難排解",
+            "items": [
+              { "q": "沒有收到驗證郵件", "a": "檢查垃圾郵件匣。ElevenLabs 有時需要幾分鐘才會發送確認郵件。" },
+              { "q": "找不到 API 金鑰", "a": "前往個人資料設定 → API 金鑰。你可能需要先驗證電子郵件。" }
+            ]
+          }
+        },
+        {
+          "title": "取得你的 API 金鑰",
+          "titleEn": "Get Your API Key",
+          "estimatedTime": "30 秒",
+          "content": "從控制台複製你的 ElevenLabs API 金鑰。你需要這個金鑰來連接 ElevenLabs 到 OpenClaw。",
+          "expectedResult": "你已準備好 ElevenLabs API 金鑰進行整合。",
+          "tips": [
+            "保持你的 API 金鑰私密 — 絕不要公開分享",
+            "如果金鑰被洩露，你可以重新產生",
+            "免費方案有使用率限制，付費方案有更高的限制"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？API 金鑰疑難排解",
+            "items": [
+              { "q": "API 金鑰無法運作", "a": "確保複製了完整的金鑰，沒有額外空格。某些瀏覽器在複製時會添加空格。" },
+              { "q": "得到 401 未授權錯誤", "a": "你的 API 金鑰可能無效，或你的帳號需要電子郵件驗證。" }
+            ]
+          }
+        },
+        {
+          "title": "配置 OpenClaw 整合",
+          "titleEn": "Configure OpenClaw Integration",
+          "estimatedTime": "2 分鐘",
+          "content": "將 ElevenLabs 技能添加到你的 OpenClaw 設定中，並使用你的 API 金鑰進行配置。",
+          "expectedResult": "OpenClaw 現在可以使用 ElevenLabs 語音從文字生成語音。",
+          "tips": [
+            "先測試一個簡短的句子來驗證整合是否正常運作",
+            "你可以在 ElevenLabs 控制台中更改語音",
+            "監控你的字元使用量以避免達到限制"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？整合疑難排解",
+            "items": [
+              { "q": "OpenClaw 找不到 ElevenLabs 技能", "a": "確保你有最新版本的 OpenClaw 並重啟應用程式。" },
+              { "q": "音訊無法播放", "a": "檢查你的系統音訊設定。某些瀏覽器預設會阻擋自動播放音訊。" }
+            ]
+          }
+        },
+        {
+          "title": "即時語音示範",
+          "titleEn": "Live Voice Demo",
+          "estimatedTime": "1 分鐘",
+          "content": "透過真實對話測試整合。讓你的 OpenClaw 代理使用 ElevenLabs 語音說出回應。",
+          "expectedResult": "你聽到從 OpenClaw 代理文字回應生成的自然 AI 語音。",
+          "tips": [
+            "嘗試不同語言來測試多語言功能",
+            "在 ElevenLabs 控制台中試驗語音設定",
+            "較長的回應會消耗更多字元配額"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？示範疑難排解",
+            "items": [
+              { "q": "語音聽起來很機械", "a": "在 ElevenLabs 中嘗試不同的語音模型。高級語音比免費方案語音聽起來更自然。" },
+              { "q": "音訊斷斷續續", "a": "檢查你的網路連線。音訊串流需要穩定的頻寬。" }
+            ]
+          }
+        },
+        {
+          "title": "語音應用場景與下一步",
+          "titleEn": "Voice Use Cases & Next Steps",
+          "estimatedTime": "探索時間！",
+          "content": "恭喜！你的 AI 現在可以說話了。探索進階語音功能和實際應用。",
+          "tips": [
+            "非常適合無障礙設計 — 視障使用者可以聽到回應",
+            "非常適合內容創作 — 將文章轉換為播客",
+            "教育用途 — 以母語發音進行語言學習"
+          ],
+          "nextStepCards": [
+            {
+              "title": "升級到入門方案",
+              "desc": "取得 30,000 字元、高級語音和商業用途。透過 22% 推薦佣金支持 Canfly。",
+              "cta": "立即升級"
+            },
+            {
+              "title": "自訂語音克隆",
+              "desc": "使用 ElevenLabs Voice Lab 克隆你自己的語音或建立品牌專屬語音。",
+              "cta": "探索 Voice Lab"
+            },
+            {
+              "title": "使用 HeyGen 加上影片",
+              "desc": "結合 ElevenLabs 語音與 HeyGen AI 虛擬人物來創作完整的影片內容。",
+              "cta": "學習 HeyGen"
+            },
+            {
+              "title": "將語音部署到雲端",
+              "desc": "使用 Zeabur 將你的語音功能 AI 代理部署到全球，提供 24/7 可用性。",
+              "cta": "部署到雲端"
+            }
+          ]
+        }
+      ]
+    },
+    "heygen": {
+      "title": "5 分鐘使用 HeyGen + OpenClaw 創作 AI 虛擬人物影片",
+      "subtitle": "將你的 AI 對話轉換成專業虛擬人物影片 — 非常適合內容創作和培訓",
+      "duration": "5 分鐘",
+      "difficulty": "初學者",
+      "steps": [
+        {
+          "title": "建立 HeyGen 帳號",
+          "titleEn": "Create HeyGen Account",
+          "estimatedTime": "1 分鐘",
+          "content": "透過我們的推薦連結註冊 HeyGen。免費方案包含 1 點數（1 分鐘影片）來測試平台。",
+          "expectedResult": "你將擁有 HeyGen Studio 的存取權限以及 API 存取以進行整合。",
+          "tips": [
+            "免費方案：1 點數（1 分鐘影片）供測試",
+            "創作者方案：每月 $29，透過我們的 20% 推薦佣金",
+            "提供 100+ 虛擬人物、300+ 語音、40+ 語言"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？帳號疑難排解",
+            "items": [
+              { "q": "免費點數沒有顯示", "a": "免費點數可能需要幾分鐘才會出現。重新整理頁面或聯繫 HeyGen 支援。" },
+              { "q": "無法存取 API 功能", "a": "API 存取需要付費方案。免費方案僅供手動工作室使用。" }
+            ]
+          }
+        },
+        {
+          "title": "取得 API 存取權限",
+          "titleEn": "Get API Access",
+          "estimatedTime": "30 秒",
+          "content": "從開發者控制台生成你的 HeyGen API 金鑰，以啟用程式化影片創作。",
+          "expectedResult": "你已準備好 API 憑證進行 OpenClaw 整合。",
+          "tips": [
+            "API 存取需要創作者方案（每月 $29）或更高方案",
+            "保持你的 API 金鑰安全 — 它控制影片生成點數",
+            "每個 API 呼叫會根據影片長度消耗點數"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？API 疑難排解",
+            "items": [
+              { "q": "看不到 API 金鑰選項", "a": "請先升級到創作者方案。免費方案無法使用 API 存取。" },
+              { "q": "API 呼叫失敗", "a": "驗證你的方案有剩餘點數。檢查開發者控制台的錯誤訊息。" }
+            ]
+          }
+        },
+        {
+          "title": "配置 OpenClaw + HeyGen",
+          "titleEn": "Configure OpenClaw + HeyGen",
+          "estimatedTime": "2 分鐘",
+          "content": "在 OpenClaw 中設定 HeyGen 整合，自動將 AI 回應轉換成虛擬人物影片。",
+          "expectedResult": "OpenClaw 可以使用 HeyGen API 從文字回應生成虛擬人物影片。",
+          "tips": [
+            "從簡單的虛擬人物開始測試整合",
+            "影片生成每分鐘內容需要 30-60 秒",
+            "你可以自訂虛擬人物、語音和背景"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？整合疑難排解",
+            "items": [
+              { "q": "影片生成時間太長", "a": "第一部影片是正常的。HeyGen 在尖峰時間會將影片放入佇列處理。" },
+              { "q": "虛擬人物與預覽不同", "a": "確保你選擇了正確的虛擬人物 ID。先在 HeyGen Studio 中預覽。" }
+            ]
+          }
+        },
+        {
+          "title": "創作你的第一部 AI 影片",
+          "titleEn": "Create Your First AI Video",
+          "estimatedTime": "1 分鐘",
+          "content": "透過詢問你的 OpenClaw 代理問題並讓它以影片回應來生成你的第一部 AI 虛擬人物影片。",
+          "expectedResult": "你擁有一部從你的對話生成的專業 AI 虛擬人物影片。",
+          "tips": [
+            "保持初始影片簡短（30-60 秒）來測試",
+            "嘗試不同的虛擬人物來找到你偏好的風格",
+            "影片非常適合社群媒體、教育和簡報"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？影片生成疑難排解",
+            "items": [
+              { "q": "影片品質很差", "a": "在下載期間檢查你的網路連線。如有需要請重新生成。" },
+              { "q": "音訊與虛擬人物唇形不同步", "a": "這可能發生在非常長的句子。嘗試較短、更自然的語音模式。" }
+            ]
+          }
+        },
+        {
+          "title": "影片應用場景與進階功能",
+          "titleEn": "Video Use Cases & Advanced Features",
+          "estimatedTime": "探索時間！",
+          "content": "恭喜！你現在可以創作 AI 虛擬人物影片了。探索進階功能和商業應用。",
+          "tips": [
+            "非常適合教育內容 — 使用虛擬人物解釋複雜主題",
+            "社群媒體內容 — 自動創作引人入勝的貼文",
+            "客戶支援 — 使用影片訊息個人化回應"
+          ],
+          "nextStepCards": [
+            {
+              "title": "升級到創作者方案",
+              "desc": "取得每月 15 點數、API 存取和商業用途。透過 20% 推薦佣金支持 Canfly。",
+              "cta": "立即升級"
+            },
+            {
+              "title": "自訂虛擬人物創作",
+              "desc": "使用 HeyGen 的自訂虛擬人物服務創作個人化虛擬人物以保持品牌一致性。",
+              "cta": "創作自訂虛擬人物"
+            },
+            {
+              "title": "結合 ElevenLabs",
+              "desc": "使用 ElevenLabs 自訂語音搭配 HeyGen 虛擬人物，打造終極個人化影片體驗。",
+              "cta": "學習 ElevenLabs"
+            },
+            {
+              "title": "自動化影片工作流程",
+              "desc": "將你的影片生成 AI 部署到 Zeabur 雲端並創作自動化內容管線。",
+              "cta": "部署到雲端"
+            }
+          ]
+        }
+      ]
     }
   }
 }

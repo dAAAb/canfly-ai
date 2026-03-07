@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom'
 import { Clock, CheckCircle, Copy, ExternalLink, ChevronDown, ChevronRight, Terminal, Download, Monitor, MessageSquare, Rocket, HelpCircle, Cpu, Sparkles } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import Navbar from '../components/Navbar'
 
 // ─── Types ──────────────────────────────────────────────────────────
@@ -37,187 +38,498 @@ interface TutorialData {
   steps: StepData[]
 }
 
-// ─── Ollama Tutorial Data ───────────────────────────────────────────
+// ─── Dynamic Tutorial Data Functions ───────────────────────────────
 
-const ollamaTutorial: TutorialData = {
-  id: 'ollama',
-  title: '5 分鐘跑起你的第一個本地 AI',
-  subtitle: '免費、離線、完全隱私 — 用 Ollama 在自己電腦上跑大型語言模型',
-  duration: '5 分鐘',
-  difficulty: '入門',
-  steps: [
-    {
-      icon: Download,
-      title: '選擇安裝方式',
-      titleEn: 'Choose Install Method',
-      estimatedTime: '1 分鐘',
-      content: '選擇適合你的安裝方式。Mac 新手推薦直接下載 Ollama.app（內建聊天介面），進階使用者可以用終端機。',
-      installTabs: true,
-      expectedResult: '安裝完成後，Ollama 會在背景自動啟動服務。',
-      tips: ['需要至少 8GB RAM（建議 16GB 以上）', 'macOS 需要 11.0 以上版本', '安裝後不需要重開機'],
-      troubleshooting: {
-        title: '卡關了？安裝問題排解',
-        items: [
-          { q: 'Mac 無法開啟 Ollama.app', a: '到「系統設定 → 隱私與安全性」，點擊「仍然開啟」。這是 macOS 對未簽名應用的安全機制。' },
-          { q: '終端機顯示 "command not found"', a: '請重新開啟終端機，或執行 source ~/.zshrc 重新載入環境變數。' },
-          { q: 'Windows 安裝卡住', a: '請用系統管理員身分執行安裝程式。右鍵點擊 → 以系統管理員身分執行。' },
-        ]
-      }
-    },
-    {
-      icon: Cpu,
-      title: '下載第一個 AI 模型',
-      titleEn: 'Download Your First Model',
-      estimatedTime: '2 分鐘',
-      content: 'AI 模型就像是 AI 的「大腦」。不同模型擅長不同的事。我們先下載一個適合聊天的輕量模型。',
-      subsections: [
-        {
-          label: '什麼是模型？',
-          text: '模型是經過大量資料訓練的 AI 程式。就像不同的專家各有專長，不同的模型也擅長不同的任務。模型檔案大小從 2GB 到 40GB+ 不等。',
+function createOllamaTutorial(t: any): TutorialData {
+  return {
+    id: 'ollama',
+    title: t('tutorial.ollama.title'),
+    subtitle: t('tutorial.ollama.subtitle'),
+    duration: t('tutorial.ollama.duration'),
+    difficulty: t('tutorial.ollama.difficulty'),
+    steps: [
+      {
+        icon: Download,
+        title: t('tutorial.ollama.steps.0.title'),
+        titleEn: t('tutorial.ollama.steps.0.titleEn'),
+        estimatedTime: t('tutorial.ollama.steps.0.estimatedTime'),
+        content: t('tutorial.ollama.steps.0.content'),
+        installTabs: true,
+        expectedResult: t('tutorial.ollama.steps.0.expectedResult'),
+        tips: t('tutorial.ollama.steps.0.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.ollama.steps.0.troubleshooting.title'),
+          items: t('tutorial.ollama.steps.0.troubleshooting.items', { returnObjects: true })
         }
-      ],
-      commands: [
-        '# 推薦新手：Llama 3.2（3B 參數，輕量快速）',
-        'ollama pull llama3.2',
-        '',
-        '# 寫程式專用：CodeLlama',
-        'ollama pull codellama',
-        '',
-        '# 想要更強大？試試 Llama 3.1（8B 參數）',
-        'ollama pull llama3.1',
-      ],
-      modelTable: [
-        { name: 'llama3.2', size: '2 GB', best: '日常聊天、問答', speed: '快' },
-        { name: 'codellama', size: '3.8 GB', best: '寫程式、Debug', speed: '中' },
-        { name: 'llama3.1', size: '4.7 GB', best: '複雜推理、創作', speed: '中' },
-        { name: 'mistral', size: '4.1 GB', best: '多語言、分析', speed: '中' },
-      ],
-      expectedResult: '下載完成後會顯示 success。可以用 ollama list 確認已安裝的模型。',
-      tips: ['第一次下載需要網路，之後可以完全離線使用', '模型檔案儲存在本機，不會上傳任何資料', '硬碟空間不夠？先只裝 llama3.2 就好'],
-      troubleshooting: {
-        title: '卡關了？下載問題排解',
-        items: [
-          { q: '下載速度很慢', a: '模型檔案較大，確保網路穩定。也可以試試較小的模型如 llama3.2。' },
-          { q: '顯示磁碟空間不足', a: '用 ollama list 查看已安裝的模型，用 ollama rm <model> 刪除不需要的模型。' },
-        ]
-      }
-    },
-    {
-      icon: MessageSquare,
-      title: '測試對話',
-      titleEn: 'Test Interactive Chat',
-      estimatedTime: '1 分鐘',
-      content: '來跟你的本地 AI 聊聊天，確認一切正常運作！',
-      commands: [
-        '# 開始互動對話',
-        'ollama run llama3.2',
-        '',
-        '# 然後試著輸入：',
-        '>>> 你好！請用繁體中文自我介紹',
-        '',
-        '# 離開對話請輸入：',
-        '>>> /bye',
-      ],
-      chatExample: {
-        exchanges: [
-          { role: 'user', text: '你好！請用繁體中文自我介紹' },
-          { role: 'ai', text: '你好！我是一個在你電腦上運行的 AI 助手。我可以幫你回答問題、寫文章、寫程式碼，而且完全在本機運行，不需要網路連線，你的資料不會離開你的電腦。有什麼我可以幫忙的嗎？' },
-          { role: 'user', text: '寫一個 Python hello world' },
-          { role: 'ai', text: 'print("Hello, World!")' },
-        ]
       },
-      expectedResult: 'AI 會用文字回應你的問題。回應速度取決於你的硬體規格。',
-      tips: ['第一次執行模型時會比較慢（需要載入到記憶體），之後會快很多', '按 Ctrl+D 或輸入 /bye 可以離開對話', '試試問不同語言的問題，體驗多語言能力'],
-      troubleshooting: {
-        title: '卡關了？對話問題排解',
-        items: [
-          { q: '回應速度很慢', a: '正常！第一次載入模型需要時間。如果持續很慢，試試較小的模型 llama3.2。' },
-          { q: '顯示記憶體不足', a: '關閉其他應用程式釋放記憶體，或換用更小的模型。' },
-        ]
-      }
-    },
-    {
-      icon: Sparkles,
-      title: '連接 OpenClaw',
-      titleEn: 'Connect to OpenClaw',
-      estimatedTime: '1 分鐘',
-      content: 'OpenClaw 是一個開源的 AI 介面，可以連接你的本地 Ollama，給你更好的使用體驗。',
-      commands: [
-        '# 確認 Ollama 正在運行',
-        'curl http://localhost:11434/api/tags',
-        '',
-        '# 在 OpenClaw 設定中指定 Ollama：',
-        '# 1. 開啟 OpenClaw 設定頁面',
-        '# 2. 選擇「模型設定」',
-        '# 3. API 位址填入：http://localhost:11434',
-        '# 4. 選擇你剛才下載的模型',
-        '',
-        '# 或者用環境變數設定：',
-        'export OLLAMA_HOST="http://localhost:11434"',
-      ],
-      expectedResult: 'OpenClaw 現在可以使用你的本地 Ollama 模型了。完全免費、完全離線！',
-      tips: ['OpenClaw 會自動偵測你安裝的所有模型', '你隨時可以在 OpenClaw 中切換不同模型', '想在手機上用？之後可以部署到 Zeabur 雲端'],
-      troubleshooting: {
-        title: '卡關了？連接問題排解',
-        items: [
-          { q: 'OpenClaw 找不到 Ollama', a: '確認 Ollama 正在運行：在終端機輸入 ollama list。如果沒有反應，重新啟動 Ollama。' },
-          { q: 'API 位址填什麼？', a: '預設是 http://localhost:11434，除非你有特別更改過。' },
-        ]
-      }
-    },
-    {
-      icon: Rocket,
-      title: '下一步',
-      titleEn: 'Next Steps',
-      estimatedTime: '探索時間！',
-      content: '恭喜你！你已經在自己的電腦上跑起了 AI。接下來可以探索更多可能：',
-      nextStepCards: [
-        {
-          emoji: '☁️',
-          title: '部署到雲端',
-          desc: '用 Zeabur 一鍵部署，讓你的 AI 隨時隨地可用。使用優惠碼 OpenClaw 享 10% 折扣。',
-          link: '/learn/zeabur',
-          cta: '學習部署',
+      {
+        icon: Cpu,
+        title: t('tutorial.ollama.steps.1.title'),
+        titleEn: t('tutorial.ollama.steps.1.titleEn'),
+        estimatedTime: t('tutorial.ollama.steps.1.estimatedTime'),
+        content: t('tutorial.ollama.steps.1.content'),
+        subsections: t('tutorial.ollama.steps.1.subsections', { returnObjects: true }),
+        commands: [
+          '# ' + t('tutorial.ollama.steps.1.title') + '：Llama 3.2（3B 参数，轻量快速）',
+          'ollama pull llama3.2',
+          '',
+          '# 写程式专用：CodeLlama',
+          'ollama pull codellama',
+          '',
+          '# 想要更强大？试试 Llama 3.1（8B 参数）',
+          'ollama pull llama3.1',
+        ],
+        modelTable: t('tutorial.ollama.steps.1.modelTable.models', { returnObjects: true }),
+        expectedResult: t('tutorial.ollama.steps.1.expectedResult'),
+        tips: t('tutorial.ollama.steps.1.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.ollama.steps.1.troubleshooting.title'),
+          items: t('tutorial.ollama.steps.1.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: MessageSquare,
+        title: t('tutorial.ollama.steps.2.title'),
+        titleEn: t('tutorial.ollama.steps.2.titleEn'),
+        estimatedTime: t('tutorial.ollama.steps.2.estimatedTime'),
+        content: t('tutorial.ollama.steps.2.content'),
+        commands: [
+          '# 开始互动对话',
+          'ollama run llama3.2',
+          '',
+          '# 然后试着输入：',
+          '>>> 你好！请用中文自我介绍',
+          '',
+          '# 离开对话请输入：',
+          '>>> /bye',
+        ],
+        chatExample: {
+          exchanges: [
+            { role: 'user', text: '你好！请用中文自我介绍' },
+            { role: 'ai', text: '你好！我是一个在你电脑上运行的 AI 助手。我可以帮你回答问题、写文章、写程序代码，而且完全在本机运行，不需要网络连接，你的数据不会离开你的电脑。有什么我可以帮忙的吗？' },
+            { role: 'user', text: '写一个 Python hello world' },
+            { role: 'ai', text: 'print("Hello, World!")' },
+          ]
         },
-        {
-          emoji: '🗣️',
-          title: '加上語音功能',
-          desc: '用 ElevenLabs 讓你的 AI 開口說話，支援中文語音合成。',
-          link: '/apps/elevenlabs',
-          cta: '探索 ElevenLabs',
-        },
-        {
-          emoji: '🎬',
-          title: '生成 AI 影片',
-          desc: '用 HeyGen 製作 AI 數位人影片，適合教學和行銷內容。',
-          link: '/apps/heygen',
-          cta: '探索 HeyGen',
-        },
-        {
-          emoji: '🧠',
-          title: '探索更多模型',
-          desc: '到 Ollama 模型庫瀏覽數百種模型：文字、程式碼、視覺辨識等。',
-          link: 'https://ollama.com/library',
-          cta: '瀏覽模型庫',
-          external: true,
-        },
-      ],
-      tips: ['所有模型都是免費使用', '你的資料永遠不會離開你的電腦', '加入 Canfly 育苗場社群，和其他使用者交流'],
-    },
-  ],
+        expectedResult: t('tutorial.ollama.steps.2.expectedResult'),
+        tips: t('tutorial.ollama.steps.2.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.ollama.steps.2.troubleshooting.title'),
+          items: t('tutorial.ollama.steps.2.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Sparkles,
+        title: t('tutorial.ollama.steps.3.title'),
+        titleEn: t('tutorial.ollama.steps.3.titleEn'),
+        estimatedTime: t('tutorial.ollama.steps.3.estimatedTime'),
+        content: t('tutorial.ollama.steps.3.content'),
+        commands: [
+          '# 确认 Ollama 正在运行',
+          'curl http://localhost:11434/api/tags',
+          '',
+          '# 在 OpenClaw 设定中指定 Ollama：',
+          '# 1. 开启 OpenClaw 设定页面',
+          '# 2. 选择「模型设定」',
+          '# 3. API 位址填入：http://localhost:11434',
+          '# 4. 选择你刚才下载的模型',
+          '',
+          '# 或者用环境变数设定：',
+          'export OLLAMA_HOST="http://localhost:11434"',
+        ],
+        expectedResult: t('tutorial.ollama.steps.3.expectedResult'),
+        tips: t('tutorial.ollama.steps.3.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.ollama.steps.3.troubleshooting.title'),
+          items: t('tutorial.ollama.steps.3.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.ollama.steps.4.title'),
+        titleEn: t('tutorial.ollama.steps.4.titleEn'),
+        estimatedTime: t('tutorial.ollama.steps.4.estimatedTime'),
+        content: t('tutorial.ollama.steps.4.content'),
+        nextStepCards: t('tutorial.ollama.steps.4.nextStepCards', { returnObjects: true }),
+        tips: t('tutorial.ollama.steps.4.tips', { returnObjects: true }),
+      },
+    ],
+  }
 }
 
-const tutorials: Record<string, TutorialData> = { ollama: ollamaTutorial }
+function createZeaburTutorial(t: any): TutorialData {
+  return {
+    id: 'zeabur',
+    title: t('tutorial.zeabur.title'),
+    subtitle: t('tutorial.zeabur.subtitle'),
+    duration: t('tutorial.zeabur.duration'),
+    difficulty: t('tutorial.zeabur.difficulty'),
+    steps: [
+      {
+        icon: Download,
+        title: t('tutorial.zeabur.steps.0.title'),
+        titleEn: t('tutorial.zeabur.steps.0.titleEn'),
+        estimatedTime: t('tutorial.zeabur.steps.0.estimatedTime'),
+        content: t('tutorial.zeabur.steps.0.content'),
+        expectedResult: t('tutorial.zeabur.steps.0.expectedResult'),
+        tips: t('tutorial.zeabur.steps.0.tips', { returnObjects: true }),
+        commands: [
+          '# 1. 前往 Zeabur 官网注册',
+          'https://zeabur.com?referralCode=openclaw',
+          '',
+          '# 2. 使用 GitHub 账号登录',
+          '# 3. 验证电子邮件地址',
+          '# 4. 完成账号设定',
+        ],
+        troubleshooting: {
+          title: t('tutorial.zeabur.steps.0.troubleshooting.title'),
+          items: t('tutorial.zeabur.steps.0.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Terminal,
+        title: t('tutorial.zeabur.steps.1.title'),
+        titleEn: t('tutorial.zeabur.steps.1.titleEn'),
+        estimatedTime: t('tutorial.zeabur.steps.1.estimatedTime'),
+        content: t('tutorial.zeabur.steps.1.content'),
+        expectedResult: t('tutorial.zeabur.steps.1.expectedResult'),
+        commands: [
+          '# 1. 前往 OpenClaw GitHub 仓库',
+          'https://github.com/openclaw/openclaw',
+          '',
+          '# 2. 点击右上角的 "Fork" 按钮',
+          '# 3. 选择你的 GitHub 账号作为目标',
+          '# 4. 保持默认设定，点击 "Create fork"',
+        ],
+        tips: t('tutorial.zeabur.steps.1.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.zeabur.steps.1.troubleshooting.title'),
+          items: t('tutorial.zeabur.steps.1.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.zeabur.steps.2.title'),
+        titleEn: t('tutorial.zeabur.steps.2.titleEn'),
+        estimatedTime: t('tutorial.zeabur.steps.2.estimatedTime'),
+        content: t('tutorial.zeabur.steps.2.content'),
+        expectedResult: t('tutorial.zeabur.steps.2.expectedResult'),
+        commands: [
+          '# 1. 在 Zeabur 控制台中点击 "New Project"',
+          '# 2. 选择 "Deploy from GitHub"',
+          '# 3. 找到并选择你刚复制的 openclaw 仓库',
+          '# 4. 点击 "Deploy" 开始自动部署',
+          '',
+          '# Zeabur 会自动：',
+          '# - 检测 Node.js 环境',
+          '# - 安装依赖套件',
+          '# - 构建应用程序',
+          '# - 提供 HTTPS 域名',
+        ],
+        tips: t('tutorial.zeabur.steps.2.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.zeabur.steps.2.troubleshooting.title'),
+          items: t('tutorial.zeabur.steps.2.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Cpu,
+        title: t('tutorial.zeabur.steps.3.title'),
+        titleEn: t('tutorial.zeabur.steps.3.titleEn'),
+        estimatedTime: t('tutorial.zeabur.steps.3.estimatedTime'),
+        content: t('tutorial.zeabur.steps.3.content'),
+        commands: [
+          '# 在 Zeabur 项目设定中新增环境变数：',
+          'OPENAI_API_KEY=sk-your-openai-key-here',
+          'OLLAMA_HOST=http://localhost:11434',
+          'NODE_ENV=production',
+          '',
+          '# 可选：如果要连接其他 AI 服务',
+          'ANTHROPIC_API_KEY=your-claude-key',
+          'OPENAI_BASE_URL=https://api.openai.com/v1',
+        ],
+        expectedResult: t('tutorial.zeabur.steps.3.expectedResult'),
+        tips: t('tutorial.zeabur.steps.3.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.zeabur.steps.3.troubleshooting.title'),
+          items: t('tutorial.zeabur.steps.3.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: ExternalLink,
+        title: t('tutorial.zeabur.steps.4.title'),
+        titleEn: t('tutorial.zeabur.steps.4.titleEn'),
+        estimatedTime: t('tutorial.zeabur.steps.4.estimatedTime'),
+        content: t('tutorial.zeabur.steps.4.content'),
+        commands: [
+          '# 1. 在 Zeabur 项目中点击 "Domains"',
+          '# 2. 点击 "Add Domain"',
+          '# 3. 输入你的域名（如：ai.yoursite.com）',
+          '# 4. 更新你的 DNS 记录：',
+          '',
+          '# DNS 设定范例：',
+          '# Type: CNAME',
+          '# Name: ai',
+          '# Value: your-project.zeabur.app',
+        ],
+        expectedResult: t('tutorial.zeabur.steps.4.expectedResult'),
+        tips: t('tutorial.zeabur.steps.4.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.zeabur.steps.4.troubleshooting.title'),
+          items: t('tutorial.zeabur.steps.4.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Sparkles,
+        title: t('tutorial.zeabur.steps.5.title'),
+        titleEn: t('tutorial.zeabur.steps.5.titleEn'),
+        estimatedTime: t('tutorial.zeabur.steps.5.estimatedTime'),
+        content: t('tutorial.zeabur.steps.5.content'),
+        commands: [
+          '# 测试部署是否成功：',
+          'curl https://your-project.zeabur.app/health',
+          '',
+          '# 或在浏览器中打开你的网址',
+          '# 尝试与你的云端 AI 对话',
+        ],
+        expectedResult: t('tutorial.zeabur.steps.5.expectedResult'),
+        tips: t('tutorial.zeabur.steps.5.tips', { returnObjects: true }),
+        nextStepCards: t('tutorial.zeabur.steps.5.nextStepCards', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
+function createElevenLabsTutorial(t: any): TutorialData {
+  return {
+    id: 'elevenlabs',
+    title: t('tutorial.elevenlabs.title'),
+    subtitle: t('tutorial.elevenlabs.subtitle'),
+    duration: t('tutorial.elevenlabs.duration'),
+    difficulty: t('tutorial.elevenlabs.difficulty'),
+    steps: [
+      {
+        icon: Download,
+        title: t('tutorial.elevenlabs.steps.0.title'),
+        titleEn: t('tutorial.elevenlabs.steps.0.titleEn'),
+        estimatedTime: t('tutorial.elevenlabs.steps.0.estimatedTime'),
+        content: t('tutorial.elevenlabs.steps.0.content'),
+        commands: [
+          '# ' + t('tutorial.elevenlabs.steps.0.title'),
+          'open https://try.elevenlabs.io/clawhub',
+          '',
+          '# Sign up with our affiliate link for 22% commission support',
+          '# Free tier: 10,000 characters/month',
+          '# Starter plan: 30,000 characters for $5/month',
+        ],
+        expectedResult: t('tutorial.elevenlabs.steps.0.expectedResult'),
+        tips: t('tutorial.elevenlabs.steps.0.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.elevenlabs.steps.0.troubleshooting.title'),
+          items: t('tutorial.elevenlabs.steps.0.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Terminal,
+        title: t('tutorial.elevenlabs.steps.1.title'),
+        titleEn: t('tutorial.elevenlabs.steps.1.titleEn'),
+        estimatedTime: t('tutorial.elevenlabs.steps.1.estimatedTime'),
+        content: t('tutorial.elevenlabs.steps.1.content'),
+        commands: [
+          '# Navigate to Profile Settings → API Key',
+          '# Copy your API key (keep it private!)',
+          'export ELEVENLABS_API_KEY="your-api-key-here"',
+        ],
+        expectedResult: t('tutorial.elevenlabs.steps.1.expectedResult'),
+        tips: t('tutorial.elevenlabs.steps.1.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.elevenlabs.steps.1.troubleshooting.title'),
+          items: t('tutorial.elevenlabs.steps.1.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Sparkles,
+        title: t('tutorial.elevenlabs.steps.2.title'),
+        titleEn: t('tutorial.elevenlabs.steps.2.titleEn'),
+        estimatedTime: t('tutorial.elevenlabs.steps.2.estimatedTime'),
+        content: t('tutorial.elevenlabs.steps.2.content'),
+        commands: [
+          '# Configure OpenClaw with ElevenLabs',
+          '# 1. Open OpenClaw Settings',
+          '# 2. Add ElevenLabs skill',
+          '# 3. Enter your API key',
+          '# 4. Test with a short sentence',
+        ],
+        expectedResult: t('tutorial.elevenlabs.steps.2.expectedResult'),
+        tips: t('tutorial.elevenlabs.steps.2.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.elevenlabs.steps.2.troubleshooting.title'),
+          items: t('tutorial.elevenlabs.steps.2.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: MessageSquare,
+        title: t('tutorial.elevenlabs.steps.3.title'),
+        titleEn: t('tutorial.elevenlabs.steps.3.titleEn'),
+        estimatedTime: t('tutorial.elevenlabs.steps.3.estimatedTime'),
+        content: t('tutorial.elevenlabs.steps.3.content'),
+        commands: [
+          '# Test voice generation',
+          'curl -X POST "https://api.elevenlabs.io/v1/text-to-speech/voice-id" \\',
+          '  -H "Accept: audio/mpeg" \\',
+          '  -H "Content-Type: application/json" \\',
+          '  -H "xi-api-key: $ELEVENLABS_API_KEY" \\',
+          '  -d \'{"text": "Hello from OpenClaw!", "model_id": "eleven_monolingual_v1"}\''
+        ],
+        expectedResult: t('tutorial.elevenlabs.steps.3.expectedResult'),
+        tips: t('tutorial.elevenlabs.steps.3.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.elevenlabs.steps.3.troubleshooting.title'),
+          items: t('tutorial.elevenlabs.steps.3.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.elevenlabs.steps.4.title'),
+        titleEn: t('tutorial.elevenlabs.steps.4.titleEn'),
+        estimatedTime: t('tutorial.elevenlabs.steps.4.estimatedTime'),
+        content: t('tutorial.elevenlabs.steps.4.content'),
+        nextStepCards: t('tutorial.elevenlabs.steps.4.nextStepCards', { returnObjects: true }).map((card: any) => ({
+          ...card,
+          link: card.title.includes('ElevenLabs') ? 'https://try.elevenlabs.io/clawhub' :
+                card.title.includes('HeyGen') ? '/learn/heygen-video' :
+                card.title.includes('Cloud') ? '/learn/zeabur' : '#'
+        })),
+        tips: t('tutorial.elevenlabs.steps.4.tips', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
+function createHeyGenTutorial(t: any): TutorialData {
+  return {
+    id: 'heygen',
+    title: t('tutorial.heygen.title'),
+    subtitle: t('tutorial.heygen.subtitle'),
+    duration: t('tutorial.heygen.duration'),
+    difficulty: t('tutorial.heygen.difficulty'),
+    steps: [
+      {
+        icon: Download,
+        title: t('tutorial.heygen.steps.0.title'),
+        titleEn: t('tutorial.heygen.steps.0.titleEn'),
+        estimatedTime: t('tutorial.heygen.steps.0.estimatedTime'),
+        content: t('tutorial.heygen.steps.0.content'),
+        commands: [
+          '# ' + t('tutorial.heygen.steps.0.title'),
+          'open https://www.heygen.com/?sid=rewardful&via=clawhub',
+          '',
+          '# Sign up with our affiliate link for 20% commission support',
+          '# Free tier: 1 credit (1-minute video) for testing',
+          '# Creator plan: $29/month with 15 credits',
+        ],
+        expectedResult: t('tutorial.heygen.steps.0.expectedResult'),
+        tips: t('tutorial.heygen.steps.0.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.heygen.steps.0.troubleshooting.title'),
+          items: t('tutorial.heygen.steps.0.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Terminal,
+        title: t('tutorial.heygen.steps.1.title'),
+        titleEn: t('tutorial.heygen.steps.1.titleEn'),
+        estimatedTime: t('tutorial.heygen.steps.1.estimatedTime'),
+        content: t('tutorial.heygen.steps.1.content'),
+        commands: [
+          '# Navigate to Developer Console → API Keys',
+          '# Generate new API key (requires Creator plan)',
+          'export HEYGEN_API_KEY="your-api-key-here"',
+        ],
+        expectedResult: t('tutorial.heygen.steps.1.expectedResult'),
+        tips: t('tutorial.heygen.steps.1.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.heygen.steps.1.troubleshooting.title'),
+          items: t('tutorial.heygen.steps.1.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Sparkles,
+        title: t('tutorial.heygen.steps.2.title'),
+        titleEn: t('tutorial.heygen.steps.2.titleEn'),
+        estimatedTime: t('tutorial.heygen.steps.2.estimatedTime'),
+        content: t('tutorial.heygen.steps.2.content'),
+        commands: [
+          '# Configure OpenClaw with HeyGen',
+          '# 1. Open OpenClaw Settings',
+          '# 2. Add HeyGen skill',
+          '# 3. Enter your API key',
+          '# 4. Choose avatar and voice',
+        ],
+        expectedResult: t('tutorial.heygen.steps.2.expectedResult'),
+        tips: t('tutorial.heygen.steps.2.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.heygen.steps.2.troubleshooting.title'),
+          items: t('tutorial.heygen.steps.2.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: MessageSquare,
+        title: t('tutorial.heygen.steps.3.title'),
+        titleEn: t('tutorial.heygen.steps.3.titleEn'),
+        estimatedTime: t('tutorial.heygen.steps.3.estimatedTime'),
+        content: t('tutorial.heygen.steps.3.content'),
+        commands: [
+          '# Test video generation with HeyGen API',
+          'curl -X POST "https://api.heygen.com/v2/video/generate" \\',
+          '  -H "X-API-KEY: $HEYGEN_API_KEY" \\',
+          '  -H "Content-Type: application/json" \\',
+          '  -d \'{"video_inputs": [{"character": {"type": "avatar", "avatar_id": "default"}, "voice": {"type": "text", "input_text": "Hello from OpenClaw AI!"}}]}\''
+        ],
+        expectedResult: t('tutorial.heygen.steps.3.expectedResult'),
+        tips: t('tutorial.heygen.steps.3.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.heygen.steps.3.troubleshooting.title'),
+          items: t('tutorial.heygen.steps.3.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.heygen.steps.4.title'),
+        titleEn: t('tutorial.heygen.steps.4.titleEn'),
+        estimatedTime: t('tutorial.heygen.steps.4.estimatedTime'),
+        content: t('tutorial.heygen.steps.4.content'),
+        nextStepCards: t('tutorial.heygen.steps.4.nextStepCards', { returnObjects: true }).map((card: any) => ({
+          ...card,
+          link: card.title.includes('HeyGen') ? 'https://www.heygen.com/?sid=rewardful&via=clawhub' :
+                card.title.includes('ElevenLabs') ? '/learn/elevenlabs-integration' :
+                card.title.includes('Cloud') ? '/learn/zeabur' : '#'
+        })),
+        tips: t('tutorial.heygen.steps.4.tips', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
+function getTutorials(t: any): Record<string, TutorialData> {
+  return {
+    ollama: createOllamaTutorial(t),
+    zeabur: createZeaburTutorial(t),
+    'elevenlabs-integration': createElevenLabsTutorial(t),
+    'heygen-video': createHeyGenTutorial(t)
+  }
+}
 
 // ─── Components ─────────────────────────────────────────────────────
 
 function ProgressBar({ completed, total }: { completed: number; total: number }) {
+  const { t } = useTranslation()
   const pct = total > 0 ? (completed / total) * 100 : 0
   return (
     <div className="w-full max-w-md mx-auto">
       <div className="flex items-center justify-between text-xs text-gray-400 mb-1.5">
-        <span>完成進度</span>
-        <span>{completed}/{total} 步驟</span>
+        <span>{t('tutorial.progress')}</span>
+        <span>{t('tutorial.steps', { completed, total })}</span>
       </div>
       <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
         <div
@@ -230,6 +542,7 @@ function ProgressBar({ completed, total }: { completed: number; total: number })
 }
 
 function CopyBlock({ text, label }: { text: string; label?: string }) {
+  const { t } = useTranslation()
   const [copied, setCopied] = useState(false)
   const copyable = text
     .split('\n')
@@ -249,7 +562,7 @@ function CopyBlock({ text, label }: { text: string; label?: string }) {
         <button
           onClick={copy}
           className="absolute top-3 right-3 p-2 text-gray-500 hover:text-white transition-colors opacity-0 group-hover:opacity-100"
-          title="複製指令"
+          title={t('tutorial.copyCommand')}
         >
           {copied ? <CheckCircle className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
         </button>
@@ -277,12 +590,13 @@ function Collapsible({ title, children, defaultOpen = false }: { title: string; 
 }
 
 function InstallTabs() {
+  const { t } = useTranslation()
   const [tab, setTab] = useState<'gui' | 'terminal' | 'win'>('gui')
 
   const tabs = [
-    { key: 'gui' as const, label: '🍎 Mac 最簡單', sublabel: 'Ollama.app 圖形介面' },
-    { key: 'terminal' as const, label: '🖥 Mac / Linux', sublabel: '終端機安裝（curl）' },
-    { key: 'win' as const, label: '🪟 Windows', sublabel: '下載安裝程式' },
+    { key: 'gui' as const, label: `🍎 ${t('tutorial.ollama.steps.0.installTabs.guiLabel')}`, sublabel: t('tutorial.ollama.steps.0.installTabs.guiSublabel') },
+    { key: 'terminal' as const, label: `🖥 ${t('tutorial.ollama.steps.0.installTabs.terminalLabel')}`, sublabel: t('tutorial.ollama.steps.0.installTabs.terminalSublabel') },
+    { key: 'win' as const, label: `🪟 ${t('tutorial.ollama.steps.0.installTabs.winLabel')}`, sublabel: t('tutorial.ollama.steps.0.installTabs.winSublabel') },
   ]
 
   return (
@@ -310,10 +624,9 @@ function InstallTabs() {
             <div className="flex items-start gap-3">
               <Monitor className="w-5 h-5 text-green-400 mt-0.5 flex-shrink-0" />
               <div>
-                <h4 className="font-medium text-green-400 mb-1">Ollama.app — 最適合新手</h4>
+                <h4 className="font-medium text-green-400 mb-1">{t('tutorial.ollama.steps.0.installTabs.guiTitle')}</h4>
                 <p className="text-sm text-gray-300 mb-3">
-                  Ollama 官方 macOS 應用程式，內建圖形聊天介面。
-                  下載後拖進「應用程式」資料夾，雙擊就能開始跟 AI 聊天。不需要終端機、不需要指令。
+                  {t('tutorial.ollama.steps.0.installTabs.guiDesc')}
                 </p>
                 <a
                   href="https://ollama.com/download"
@@ -322,19 +635,18 @@ function InstallTabs() {
                   className="inline-flex items-center gap-1.5 px-4 py-2 bg-green-600 hover:bg-green-500 text-white text-sm font-medium rounded-lg transition-colors"
                 >
                   <Download className="w-4 h-4" />
-                  下載 Ollama.app
+                  {t('tutorial.ollama.steps.0.installTabs.downloadOllamaApp')}
                   <ExternalLink className="w-3 h-3 ml-1" />
                 </a>
               </div>
             </div>
           </div>
           <div className="text-sm text-gray-400">
-            <p>安裝步驟：</p>
+            <p>{t('tutorial.ollama.steps.0.installTabs.installSteps')}</p>
             <ol className="list-decimal list-inside mt-1 space-y-1 text-gray-300">
-              <li>將 Ollama.app 拖進「應用程式」資料夾</li>
-              <li>雙擊開啟，系統列會出現 Ollama 圖示</li>
-              <li>點擊圖示，選擇「Chat」開啟內建聊天介面</li>
-              <li>選一個模型，開始聊天！</li>
+              {(t('tutorial.ollama.steps.0.installTabs.guiSteps', { returnObjects: true }) as string[]).map((step, i) => (
+                <li key={i}>{step}</li>
+              ))}
             </ol>
           </div>
         </div>
@@ -343,11 +655,11 @@ function InstallTabs() {
       {tab === 'terminal' && (
         <div className="space-y-3">
           <CopyBlock
-            label="在終端機 (Terminal) 中執行："
-            text={`# 一行指令安裝 Ollama\ncurl -fsSL https://ollama.com/install.sh | sh`}
+            label={t('tutorial.ollama.steps.0.installTabs.terminalLabel2')}
+            text={`# 一行指令安装 Ollama\ncurl -fsSL https://ollama.com/install.sh | sh`}
           />
           <div className="text-sm text-gray-400">
-            <p>安裝完成後，Ollama 服務會自動啟動。確認安裝成功：</p>
+            <p>{t('tutorial.ollama.steps.0.installTabs.terminalConfirm')}</p>
           </div>
           <CopyBlock text="ollama --version" />
         </div>
@@ -359,9 +671,9 @@ function InstallTabs() {
             <div className="flex items-start gap-3">
               <Download className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
               <div>
-                <h4 className="font-medium text-blue-400 mb-1">下載 Windows 安裝程式</h4>
+                <h4 className="font-medium text-blue-400 mb-1">{t('tutorial.ollama.steps.0.installTabs.winTitle')}</h4>
                 <p className="text-sm text-gray-300 mb-3">
-                  從 Ollama 官方網站下載 Windows 版本，按照安裝精靈完成安裝即可。
+                  {t('tutorial.ollama.steps.0.installTabs.winDesc')}
                 </p>
                 <a
                   href="https://ollama.com/download"
@@ -370,19 +682,26 @@ function InstallTabs() {
                   className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors"
                 >
                   <Download className="w-4 h-4" />
-                  前往下載頁面
+                  {t('tutorial.ollama.steps.0.installTabs.goToDownload')}
                   <ExternalLink className="w-3 h-3 ml-1" />
                 </a>
               </div>
             </div>
           </div>
           <div className="text-sm text-gray-400">
-            <p>安裝步驟：</p>
+            <p>{t('tutorial.ollama.steps.0.installTabs.installSteps')}</p>
             <ol className="list-decimal list-inside mt-1 space-y-1 text-gray-300">
-              <li>執行下載的安裝程式</li>
-              <li>按照安裝精靈的指示完成安裝</li>
-              <li>開啟 Command Prompt 或 PowerShell</li>
-              <li>輸入 <code className="bg-gray-800 px-1.5 py-0.5 rounded text-xs">ollama --version</code> 確認安裝成功</li>
+              {(t('tutorial.ollama.steps.0.installTabs.winSteps', { returnObjects: true }) as string[]).map((step, i) => (
+                <li key={i}>
+                  {i === 3 ? (
+                    <>
+                      輸入 <code className="bg-gray-800 px-1.5 py-0.5 rounded text-xs">ollama --version</code> 确认安装成功
+                    </>
+                  ) : (
+                    step
+                  )}
+                </li>
+              ))}
             </ol>
           </div>
         </div>
@@ -392,6 +711,7 @@ function InstallTabs() {
 }
 
 function ChatDemo({ exchanges }: { exchanges: ChatExchange[] }) {
+  const { t } = useTranslation()
   return (
     <div className="bg-gray-900 rounded-lg p-4 mb-4 space-y-3">
       <div className="text-xs text-gray-500 font-mono mb-2">ollama run llama3.2</div>
@@ -412,15 +732,16 @@ function ChatDemo({ exchanges }: { exchanges: ChatExchange[] }) {
 }
 
 function ModelTable({ models }: { models: ModelInfo[] }) {
+  const { t } = useTranslation()
   return (
     <div className="overflow-x-auto mb-4">
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-gray-800 text-gray-400">
-            <th className="text-left py-2 pr-4 font-medium">模型名稱</th>
-            <th className="text-left py-2 pr-4 font-medium">大小</th>
-            <th className="text-left py-2 pr-4 font-medium">最適合</th>
-            <th className="text-left py-2 font-medium">速度</th>
+            <th className="text-left py-2 pr-4 font-medium">{t('tutorial.ollama.steps.1.modelTable.nameHeader')}</th>
+            <th className="text-left py-2 pr-4 font-medium">{t('tutorial.ollama.steps.1.modelTable.sizeHeader')}</th>
+            <th className="text-left py-2 pr-4 font-medium">{t('tutorial.ollama.steps.1.modelTable.bestHeader')}</th>
+            <th className="text-left py-2 font-medium">{t('tutorial.ollama.steps.1.modelTable.speedHeader')}</th>
           </tr>
         </thead>
         <tbody>
@@ -468,6 +789,8 @@ function NextStepGrid({ cards }: { cards: NextStepCard[] }) {
 
 export default function TutorialPage() {
   const { slug } = useParams()
+  const { t } = useTranslation()
+  const tutorials = getTutorials(t)
   const tutorial = tutorials[slug!] ?? null
   const [completedSteps, setCompletedSteps] = useState<number[]>([])
 
@@ -478,8 +801,8 @@ export default function TutorialPage() {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">找不到教學</h1>
-          <Link to="/apps" className="text-blue-400 hover:text-blue-300">← 回到應用程式列表</Link>
+          <h1 className="text-2xl font-bold mb-4">{t('tutorial.notFound')}</h1>
+          <Link to="/apps" className="text-blue-400 hover:text-blue-300">{t('tutorial.backToApps')}</Link>
         </div>
       </div>
     )
@@ -496,7 +819,7 @@ export default function TutorialPage() {
         <div className="max-w-3xl mx-auto px-4 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-900/30 border border-green-700/40 rounded-full text-green-400 text-xs font-medium mb-6">
             <Clock className="w-3 h-3" />
-            {tutorial.duration} · {tutorial.difficulty} · 完全免費
+            {tutorial.duration} · {tutorial.difficulty} · {t('tutorial.free')}
           </div>
 
           <h1 className="text-3xl md:text-4xl font-bold mb-3 leading-tight">{tutorial.title}</h1>
@@ -530,14 +853,14 @@ export default function TutorialPage() {
                         ? 'bg-green-600 text-white'
                         : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                     }`}
-                    title={isComplete ? '標記為未完成' : '標記為已完成'}
+                    title={isComplete ? t('tutorial.markIncomplete') : t('tutorial.markComplete')}
                   >
                     {isComplete ? <CheckCircle className="w-5 h-5" /> : <StepIcon className="w-5 h-5" />}
                   </button>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 flex-wrap">
                       <h3 className="text-xl font-semibold">
-                        {!isLast && <span className="text-gray-500 mr-1">Step {index + 1}.</span>}
+                        {!isLast && <span className="text-gray-500 mr-1">{t('tutorial.step', { n: index + 1 })}</span>}
                         {step.title}
                       </h3>
                       <span className="text-xs text-gray-500 bg-gray-800 px-2 py-0.5 rounded-full">
@@ -571,14 +894,14 @@ export default function TutorialPage() {
 
                   {step.expectedResult && (
                     <div className="bg-green-900/15 border border-green-800/30 rounded-lg p-4 mb-4">
-                      <h4 className="text-xs font-semibold text-green-400 mb-1 uppercase tracking-wider">預期結果</h4>
+                      <h4 className="text-xs font-semibold text-green-400 mb-1 uppercase tracking-wider">{t('tutorial.expectedResult')}</h4>
                       <p className="text-sm text-gray-300">{step.expectedResult}</p>
                     </div>
                   )}
 
                   {step.tips && (
                     <div className="bg-blue-900/15 border border-blue-800/30 rounded-lg p-4 mb-4">
-                      <h4 className="text-xs font-semibold text-blue-400 mb-2 uppercase tracking-wider">小提示</h4>
+                      <h4 className="text-xs font-semibold text-blue-400 mb-2 uppercase tracking-wider">{t('tutorial.tips')}</h4>
                       <ul className="text-sm text-gray-300 space-y-1">
                         {step.tips.map((tip, ti) => (
                           <li key={ti} className="flex items-start gap-2">
@@ -611,8 +934,8 @@ export default function TutorialPage() {
         {completedSteps.length === totalSteps && (
           <div className="mt-8 text-center bg-gradient-to-r from-green-900/20 to-emerald-900/20 border border-green-700/30 rounded-xl p-8">
             <div className="text-4xl mb-3">🎉</div>
-            <h3 className="text-2xl font-bold text-green-400 mb-2">恭喜完成！</h3>
-            <p className="text-gray-300">你已經成功在本機跑起了 AI。Now You Can Fly!</p>
+            <h3 className="text-2xl font-bold text-green-400 mb-2">{t('tutorial.congratsTitle')}</h3>
+            <p className="text-gray-300">{t('tutorial.congratsDesc')}</p>
           </div>
         )}
       </div>
@@ -640,7 +963,7 @@ export default function TutorialPage() {
 
         <div className="automation-script">
           <h4>AI Agent Automation Script:</h4>
-          <pre>{`# Complete Ollama Setup Automation
+          <pre>{tutorial.id === 'ollama' ? `# Complete Ollama Setup Automation
 # Step 1: Install Ollama
 curl -fsSL https://ollama.com/install.sh | sh
 
@@ -655,7 +978,31 @@ curl http://localhost:11434/api/tags
 ollama run llama3.2 "Hello, respond with OK if you are working."
 
 # Step 5: Configure OpenClaw
-export OLLAMA_HOST="http://localhost:11434"`}</pre>
+export OLLAMA_HOST="http://localhost:11434"` : `# Complete Zeabur Deployment Automation
+# Step 1: Account Setup
+# Visit: https://zeabur.com?referralCode=openclaw
+# Use code "OpenClaw" for 10% off
+
+# Step 2: Fork OpenClaw Repository
+curl -H "Authorization: token YOUR_GITHUB_TOKEN" \\
+  -X POST \\
+  https://api.github.com/repos/openclaw/openclaw/forks
+
+# Step 3: Deploy to Zeabur via GitHub
+# Connect GitHub repository to Zeabur project
+# Zeabur will auto-detect and deploy
+
+# Step 4: Configure Environment Variables
+# Set in Zeabur dashboard:
+export OPENAI_API_KEY="sk-your-openai-key"
+export NODE_ENV="production"
+export OLLAMA_HOST="http://localhost:11434"
+
+# Step 5: Verify Deployment
+curl https://your-project.zeabur.app/health
+
+# Optional: Add Custom Domain
+# Set DNS CNAME: your-domain.com -> your-project.zeabur.app`}</pre>
         </div>
       </div>
     </div>
