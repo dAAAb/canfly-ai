@@ -32,18 +32,25 @@ function detectLangFromUrl(): SupportedLang {
   return 'en'
 }
 
+const detectedLang = detectLangFromUrl()
+console.log('[i18n] detected language from URL:', detectedLang, 'path:', window.location.pathname)
+
 i18n.use(initReactI18next).init({
   resources: {
     en: { translation: en },
     'zh-tw': { translation: zhTW },
     'zh-cn': { translation: zhCN },
   },
-  lng: detectLangFromUrl(),
+  lng: detectedLang,
   fallbackLng: 'en',
   interpolation: { escapeValue: false },
   // Synchronous init — resources are bundled, no need for async loading.
-  // Without this, useTranslation() returns English on first render.
   initImmediate: false,
+  react: {
+    useSuspense: false,
+  },
 })
+
+console.log('[i18n] after init, language:', i18n.language, 'test t:', i18n.t('hero.subtitle'))
 
 export default i18n
