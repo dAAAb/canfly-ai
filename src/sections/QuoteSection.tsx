@@ -1,8 +1,10 @@
 import { useFadeIn } from '../hooks/useFadeIn'
 import { useVideoBackground } from '../hooks/useVideoBackground'
+import { useTranslation } from 'react-i18next'
 
 export default function QuoteSection() {
   const ref = useFadeIn()
+  const { t } = useTranslation()
   const videoRef = useVideoBackground(
     'https://stream.mux.com/4IMYGcL01xjs7ek5ANO17JC4VQVUTsojZlnw4fXzwSxc.m3u8'
   )
@@ -30,12 +32,12 @@ export default function QuoteSection() {
           }}
         >
           <span className="opacity-30">&ldquo;</span>
-          AI 不會取代你，
+          {t('quote.line1')}
           <br />
-          但擁有 AI 的人會。
+          {t('quote.line2')}
           <br />
           <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-            現在，你也能飛。
+            {t('quote.line3')}
           </span>
           <span className="opacity-30">&rdquo;</span>
         </blockquote>
@@ -44,7 +46,7 @@ export default function QuoteSection() {
           className="mt-12 opacity-50 stagger-child stagger-2"
           style={{ fontSize: 'clamp(14px, 1.2vw, 20px)' }}
         >
-          🦞 CanFly.ai
+          🦞 {t('quote.attribution')}
         </p>
       </div>
     </section>

@@ -1,4 +1,7 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { useLanguage } from '../hooks/useLanguage'
+import LanguageSwitcher from './LanguageSwitcher'
 
 interface NavbarProps {
   /** Show search box */
@@ -12,11 +15,14 @@ interface NavbarProps {
 }
 
 export default function Navbar({ search, children }: NavbarProps) {
+  const { t } = useTranslation()
+  const { localePath } = useLanguage()
+
   return (
     <div className="border-b border-gray-800 bg-black/80 backdrop-blur-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6 md:px-8 py-4 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+        <Link to={localePath('/')} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <span className="text-xl">🦞</span>
           <span className="font-bold text-lg tracking-tight text-white">CanFly.ai</span>
         </Link>
@@ -35,7 +41,7 @@ export default function Navbar({ search, children }: NavbarProps) {
               </svg>
               <input
                 type="text"
-                placeholder={search.placeholder || 'Search...'}
+                placeholder={search.placeholder || t('apps.searchPlaceholder')}
                 value={search.value}
                 onChange={(e) => search.onChange(e.target.value)}
                 className="pl-10 pr-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none w-56 text-sm"
@@ -43,14 +49,15 @@ export default function Navbar({ search, children }: NavbarProps) {
             </div>
           )}
           {children}
-          <Link to="/apps" className="text-sm text-gray-400 hover:text-white transition-colors">
-            Browse Apps
+          <Link to={localePath('/apps')} className="text-sm text-gray-400 hover:text-white transition-colors">
+            {t('nav.browseApps')}
           </Link>
+          <LanguageSwitcher />
           <Link
-            to="/apps/ollama"
+            to={localePath('/apps/ollama')}
             className="text-sm bg-green-600/20 border border-green-600 px-3 py-1.5 rounded-full hover:bg-green-600/30 transition-colors text-green-400"
           >
-            Start Free
+            {t('nav.startFree')}
           </Link>
         </div>
       </div>

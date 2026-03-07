@@ -1,7 +1,9 @@
 import { useFadeIn } from '../hooks/useFadeIn'
+import { useTranslation } from 'react-i18next'
 
 export default function VisionSection() {
   const ref = useFadeIn()
+  const { t } = useTranslation()
 
   return (
     <section className="relative py-36 md:py-52" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
@@ -17,7 +19,7 @@ export default function VisionSection() {
           className="text-cyan-400 font-semibold uppercase tracking-widest stagger-child stagger-1"
           style={{ fontSize: 'clamp(11px, 1vw, 14px)', textAlign: 'center', marginBottom: '2rem' }}
         >
-          The Vision
+          {t('vision.eyebrow')}
         </p>
 
         {/* Big heading */}
@@ -30,11 +32,11 @@ export default function VisionSection() {
             textAlign: 'center',
           }}
         >
-          Every person deserves
+          {t('vision.headingLine1')}
           <br />
-          an{' '}
+          {t('vision.headingLine2')}{' '}
           <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-            AI Agent.
+            {t('vision.headingHighlight')}
           </span>
         </h2>
 
@@ -42,19 +44,19 @@ export default function VisionSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-14 md:gap-20" style={{ marginTop: 'clamp(48px, 5vw, 80px)' }}>
           <div className="stagger-child stagger-3">
             <p style={{ fontSize: 'clamp(16px, 1.4vw, 22px)', lineHeight: 1.75, opacity: 0.8 }}>
-              AI Agent 市場正在爆發 — 從個人助理到企業自動化，2026 是人人都能擁有 AI 夥伴的元年。但大多數人不知道從哪裡開始。
+              {t('vision.descLeft1')}
             </p>
             <p style={{ fontSize: 'clamp(16px, 1.4vw, 22px)', lineHeight: 1.75, opacity: 0.8, marginTop: '2rem' }}>
-              硬體怎麼選？軟體怎麼裝？Agent 怎麼跑？這些問題，CanFly.ai 一次解決。
+              {t('vision.descLeft2')}
             </p>
           </div>
 
           <div className="stagger-child stagger-4">
             <p style={{ fontSize: 'clamp(16px, 1.4vw, 22px)', lineHeight: 1.75, opacity: 0.8 }}>
-              我們是 AI Agent 世界的知識嚮導。從免費體驗到硬體導購，從白手套設定到社群互助 — 帶你從零開始起飛。
+              {t('vision.descRight1')}
             </p>
             <p style={{ fontSize: 'clamp(16px, 1.4vw, 22px)', lineHeight: 1.75, opacity: 0.8, marginTop: '2rem' }}>
-              不只是工具平台，更是一個社群。每位使用者都有自己的飛行日誌，展示你的 AI Agent、分享你的配置、啟發更多人。
+              {t('vision.descRight2')}
             </p>
           </div>
         </div>
@@ -66,10 +68,10 @@ export default function VisionSection() {
               className="font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent block"
               style={{ fontSize: 'clamp(36px, 5vw, 72px)' }}
             >
-              $300B
+              {t('vision.stat1Value')}
             </span>
             <p style={{ fontSize: 'clamp(13px, 1vw, 18px)', lineHeight: 1.6, opacity: 0.6, marginTop: '0.75rem' }}>
-              2027 AI Agent 市場規模
+              {t('vision.stat1Label')}
             </p>
           </div>
           <div className="stagger-child stagger-4">
@@ -77,10 +79,10 @@ export default function VisionSection() {
               className="font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent block"
               style={{ fontSize: 'clamp(36px, 5vw, 72px)' }}
             >
-              87%
+              {t('vision.stat2Value')}
             </span>
             <p style={{ fontSize: 'clamp(13px, 1vw, 18px)', lineHeight: 1.6, opacity: 0.6, marginTop: '0.75rem' }}>
-              想用 AI 但不知如何開始
+              {t('vision.stat2Label')}
             </p>
           </div>
           <div className="stagger-child stagger-5">
@@ -88,10 +90,10 @@ export default function VisionSection() {
               className="font-bold bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent block"
               style={{ fontSize: 'clamp(36px, 5vw, 72px)' }}
             >
-              5 min
+              {t('vision.stat3Value')}
             </span>
             <p style={{ fontSize: 'clamp(13px, 1vw, 18px)', lineHeight: 1.6, opacity: 0.6, marginTop: '0.75rem' }}>
-              用 CanFly 從零到起飛
+              {t('vision.stat3Label')}
             </p>
           </div>
         </div>

@@ -1,0 +1,358 @@
+{
+  "nav": {
+    "browseApps": "Browse Apps",
+    "startFree": "Start Free"
+  },
+  "hero": {
+    "titleLine1": "Now You Can",
+    "titleLine2": "Fly.",
+    "subtitle": "With AI, you can fly.\nThe launchpad for the AI Agent era.",
+    "ctaFree": "Start Free",
+    "ctaFreeTag": "(Ollama)",
+    "ctaBrowse": "Browse All Tools",
+    "funnel": "Start free with Ollama → Deploy to Zeabur cloud → Expand AI skills",
+    "scroll": "Scroll"
+  },
+  "vision": {
+    "eyebrow": "The Vision",
+    "headingLine1": "Every person deserves",
+    "headingLine2": "an",
+    "headingHighlight": "AI Agent.",
+    "descLeft1": "The AI Agent market is exploding — from personal assistants to enterprise automation, 2026 is the year everyone can have an AI partner. But most people don't know where to start.",
+    "descLeft2": "What hardware to choose? How to install software? How to run an Agent? CanFly.ai solves all these questions at once.",
+    "descRight1": "We are the knowledge guide to the AI Agent world. From free experiences to hardware recommendations, from white-glove setup to community support — we take you from zero to takeoff.",
+    "descRight2": "Not just a tool platform, but a community. Every user has their own flight log, showcasing your AI Agent, sharing your setup, and inspiring others.",
+    "stat1Value": "$300B",
+    "stat1Label": "2027 AI Agent market size",
+    "stat2Value": "87%",
+    "stat2Label": "Want to use AI but don't know where to start",
+    "stat3Value": "5 min",
+    "stat3Label": "From zero to takeoff with CanFly"
+  },
+  "features": {
+    "eyebrow": "Features",
+    "headingLine1": "Everything you need,",
+    "headingHighlight": "all right here.",
+    "items": [
+      {
+        "title": "Free Takeoff",
+        "desc": "Experience AI Agents at zero cost — Ollama + OpenClaw, set up in five minutes. Own your first AI partner without spending a dime."
+      },
+      {
+        "title": "Knowledge Guide",
+        "desc": "Hardware reviews, software tutorials, best practices. A complete path from beginner to expert, with guidance every step of the way."
+      },
+      {
+        "title": "White-Glove Service",
+        "desc": "Don't want to set it up yourself? Our paid service handles everything. Selection, setup, deployment, maintenance — leave it to us."
+      },
+      {
+        "title": "Flight Community",
+        "desc": "Every user gets a showcase page. Your Agent, your setup, your flight log. Inspire each other and grow together."
+      },
+      {
+        "title": "Agent Card",
+        "desc": "alice.canfly.ai — your AI Agent's identity on the web. Your personal brand starts here."
+      }
+    ]
+  },
+  "quote": {
+    "line1": "AI won't replace you,",
+    "line2": "but people with AI will.",
+    "line3": "Now, you can fly.",
+    "attribution": "CanFly.ai"
+  },
+  "cta": {
+    "headingLine1": "Ready?",
+    "headingHighlight": "Preparing for takeoff.",
+    "desc": "CanFly.ai is building the friendliest onboarding platform for the AI Agent era.\nFrom free experiences to professional setups, we take you from ground to cloud.",
+    "followX": "Follow @dAAAb"
+  },
+  "footer": {
+    "copyright": "\u00a9 2026 CanFly.ai",
+    "tagline": "With AI Lobster, you can fly too"
+  },
+  "apps": {
+    "searchPlaceholder": "Search apps...",
+    "categories": "Categories",
+    "collapseSidebar": "Collapse sidebar",
+    "openSidebar": "Open sidebar",
+    "allApps": "All Apps",
+    "appCount": "{{count}} app",
+    "appCount_plural": "{{count}} apps",
+    "noAppsFound": "No apps found",
+    "noAppsHint": "Try adjusting your search or category filter",
+    "quickStart": "Quick Start",
+    "startFree": "Start Free",
+    "ollamaOpenClaw": "Ollama + OpenClaw",
+    "staffPicks": "Staff Picks",
+    "cloudDeploy": "Cloud Deploy",
+    "oneClickSetup": "One-click setup",
+    "comingSoon": "Coming Soon",
+    "useCode": "Use code: {{code}}",
+    "openclawPartner": "OpenClaw Partner",
+    "categoryNames": {
+      "all": "All Apps",
+      "free": "Free Tools",
+      "skills": "AI Skills",
+      "hosting": "Cloud Hosting",
+      "hardware": "Hardware"
+    }
+  },
+  "product": {
+    "notFound": "Product not found",
+    "backToApps": "\u2190 Back to Apps",
+    "breadcrumbApps": "Apps",
+    "openclawPartner": "OpenClaw Partner",
+    "discountWithCode": "{{discount}} with code: {{code}}",
+    "affiliateCommission": "{{commission}} affiliate commission",
+    "features": "Features",
+    "products": {
+      "ollama": {
+        "tagline": "Free local AI models",
+        "description": "Run powerful AI models locally without requiring API keys or internet connection. Perfect for privacy-conscious users and development environments.",
+        "features": [
+          "No API keys required",
+          "Privacy-focused local processing",
+          "Multiple model support (Llama, CodeLlama, Mistral)",
+          "Easy command-line interface",
+          "Works with OpenClaw agents"
+        ],
+        "ctaPrimary": "Start Free Tutorial",
+        "ctaSecondary": "View on GitHub"
+      },
+      "zeabur": {
+        "tagline": "One-click cloud deployment",
+        "description": "Deploy your OpenClaw agents to the cloud with zero configuration. Get started in minutes with our affiliate partnership.",
+        "features": [
+          "One-click deployment",
+          "Automatic HTTPS",
+          "Global CDN",
+          "24/7 monitoring",
+          "OpenClaw optimized templates"
+        ],
+        "ctaPrimary": "Deploy Now (10% off)",
+        "ctaSecondary": "View Tutorial"
+      },
+      "elevenlabs": {
+        "tagline": "AI voice synthesis",
+        "description": "Add realistic voice capabilities to your OpenClaw agents. High-quality text-to-speech with multiple voice options.",
+        "features": [
+          "Natural voices",
+          "Multi-language",
+          "Voice cloning",
+          "API",
+          "OpenClaw skill"
+        ],
+        "ctaPrimary": "Try ElevenLabs",
+        "ctaSecondary": "View Tutorial"
+      },
+      "heygen": {
+        "tagline": "AI video generation",
+        "description": "Create professional AI-generated videos with digital avatars. Perfect for content creation, marketing, and training materials.",
+        "features": [
+          "AI avatar videos",
+          "100+ languages",
+          "API integration",
+          "Custom avatar training",
+          "Works with OpenClaw"
+        ],
+        "ctaPrimary": "Try HeyGen",
+        "ctaSecondary": "View Tutorial"
+      },
+      "umbrel": {
+        "tagline": "Self-hosted home server",
+        "description": "Run your own personal cloud server at home. Host AI models, apps, and services with complete data sovereignty.",
+        "features": [
+          "Self-hosted home server",
+          "Privacy-focused",
+          "App store ecosystem",
+          "Run your own AI",
+          "No subscription"
+        ],
+        "ctaPrimary": "Visit Umbrel",
+        "ctaSecondary": "View Tutorial"
+      }
+    }
+  },
+  "tutorial": {
+    "notFound": "Tutorial not found",
+    "backToApps": "\u2190 Back to Apps",
+    "free": "Completely free",
+    "progress": "Progress",
+    "steps": "{{completed}}/{{total}} steps",
+    "step": "Step {{n}}.",
+    "markIncomplete": "Mark as incomplete",
+    "markComplete": "Mark as complete",
+    "expectedResult": "Expected Result",
+    "tips": "Tips",
+    "copyCommand": "Copy command",
+    "congratsTitle": "Congratulations!",
+    "congratsDesc": "You've successfully run AI locally. Now You Can Fly!",
+    "ollama": {
+      "title": "Run Your First Local AI in 5 Minutes",
+      "subtitle": "Free, offline, completely private — run large language models on your own computer with Ollama",
+      "duration": "5 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "Choose Install Method",
+          "titleEn": "Choose Install Method",
+          "estimatedTime": "1 min",
+          "content": "Choose the installation method that works best for you. Mac beginners should download Ollama.app (includes a built-in chat interface); advanced users can use the terminal.",
+          "expectedResult": "After installation, Ollama will automatically start running in the background.",
+          "tips": [
+            "Requires at least 8GB RAM (16GB+ recommended)",
+            "macOS 11.0 or higher required",
+            "No reboot needed after installation"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? Installation Troubleshooting",
+            "items": [
+              { "q": "Can't open Ollama.app on Mac", "a": "Go to System Settings \u2192 Privacy & Security, click \"Open Anyway\". This is macOS's security mechanism for unsigned apps." },
+              { "q": "Terminal shows \"command not found\"", "a": "Reopen your terminal, or run source ~/.zshrc to reload environment variables." },
+              { "q": "Windows installation stuck", "a": "Run the installer as Administrator. Right-click \u2192 Run as administrator." }
+            ]
+          },
+          "installTabs": {
+            "guiLabel": "Mac Easiest",
+            "guiSublabel": "Ollama.app GUI",
+            "terminalLabel": "Mac / Linux",
+            "terminalSublabel": "Terminal install (curl)",
+            "winLabel": "Windows",
+            "winSublabel": "Download installer",
+            "guiTitle": "Ollama.app \u2014 Best for Beginners",
+            "guiDesc": "Official Ollama macOS app with built-in graphical chat interface.\nDownload, drag to Applications, double-click and start chatting with AI. No terminal, no commands needed.",
+            "downloadOllamaApp": "Download Ollama.app",
+            "installSteps": "Installation steps:",
+            "guiSteps": [
+              "Drag Ollama.app to the Applications folder",
+              "Double-click to open; the Ollama icon will appear in the menu bar",
+              "Click the icon, select \"Chat\" to open the built-in chat interface",
+              "Choose a model and start chatting!"
+            ],
+            "terminalLabel2": "Run in Terminal:",
+            "terminalConfirm": "After installation, Ollama service will start automatically. Verify installation:",
+            "winTitle": "Download Windows Installer",
+            "winDesc": "Download the Windows version from the official Ollama website and follow the installation wizard.",
+            "goToDownload": "Go to download page",
+            "winSteps": [
+              "Run the downloaded installer",
+              "Follow the installation wizard instructions",
+              "Open Command Prompt or PowerShell",
+              "Type ollama --version to verify installation"
+            ]
+          }
+        },
+        {
+          "title": "Download Your First AI Model",
+          "titleEn": "Download Your First Model",
+          "estimatedTime": "2 min",
+          "content": "An AI model is like the AI's \"brain\". Different models are good at different things. Let's download a lightweight model suitable for chatting.",
+          "subsections": [
+            {
+              "label": "What is a model?",
+              "text": "A model is an AI program trained on massive amounts of data. Like different experts having different specialties, different models excel at different tasks. Model file sizes range from 2GB to 40GB+."
+            }
+          ],
+          "expectedResult": "After download completes, it will show success. You can use ollama list to check installed models.",
+          "tips": [
+            "First download requires internet; after that you can use completely offline",
+            "Model files are stored locally, no data is uploaded",
+            "Low on disk space? Just install llama3.2 for now"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? Download Troubleshooting",
+            "items": [
+              { "q": "Download speed is slow", "a": "Model files are large, ensure stable internet. You can also try a smaller model like llama3.2." },
+              { "q": "Shows disk space insufficient", "a": "Use ollama list to check installed models, use ollama rm <model> to remove unneeded models." }
+            ]
+          },
+          "modelTable": {
+            "nameHeader": "Model Name",
+            "sizeHeader": "Size",
+            "bestHeader": "Best For",
+            "speedHeader": "Speed",
+            "models": [
+              { "name": "llama3.2", "size": "2 GB", "best": "Daily chat, Q&A", "speed": "Fast" },
+              { "name": "codellama", "size": "3.8 GB", "best": "Coding, Debug", "speed": "Medium" },
+              { "name": "llama3.1", "size": "4.7 GB", "best": "Complex reasoning, creative writing", "speed": "Medium" },
+              { "name": "mistral", "size": "4.1 GB", "best": "Multi-language, analysis", "speed": "Medium" }
+            ]
+          }
+        },
+        {
+          "title": "Test Interactive Chat",
+          "titleEn": "Test Interactive Chat",
+          "estimatedTime": "1 min",
+          "content": "Let's chat with your local AI and make sure everything is working!",
+          "expectedResult": "The AI will respond to your questions with text. Response speed depends on your hardware specs.",
+          "tips": [
+            "First time running a model is slower (needs to load into memory); it gets faster after",
+            "Press Ctrl+D or type /bye to exit the chat",
+            "Try asking questions in different languages to experience multilingual capabilities"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? Chat Troubleshooting",
+            "items": [
+              { "q": "Response is very slow", "a": "Normal! Loading a model for the first time takes time. If consistently slow, try the smaller llama3.2 model." },
+              { "q": "Shows out of memory", "a": "Close other applications to free up memory, or switch to a smaller model." }
+            ]
+          }
+        },
+        {
+          "title": "Connect to OpenClaw",
+          "titleEn": "Connect to OpenClaw",
+          "estimatedTime": "1 min",
+          "content": "OpenClaw is an open-source AI interface that connects to your local Ollama, giving you a better user experience.",
+          "expectedResult": "OpenClaw can now use your local Ollama models. Completely free, completely offline!",
+          "tips": [
+            "OpenClaw automatically detects all your installed models",
+            "You can switch between different models in OpenClaw at any time",
+            "Want to use it on your phone? You can later deploy to Zeabur cloud"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? Connection Troubleshooting",
+            "items": [
+              { "q": "OpenClaw can't find Ollama", "a": "Confirm Ollama is running: type ollama list in terminal. If no response, restart Ollama." },
+              { "q": "What to put for API address?", "a": "Default is http://localhost:11434, unless you've changed it." }
+            ]
+          }
+        },
+        {
+          "title": "Next Steps",
+          "titleEn": "Next Steps",
+          "estimatedTime": "Exploration time!",
+          "content": "Congratulations! You've got AI running on your own computer. Here's what to explore next:",
+          "tips": [
+            "All models are free to use",
+            "Your data never leaves your computer",
+            "Join the CanFly community to connect with other users"
+          ],
+          "nextStepCards": [
+            {
+              "title": "Deploy to Cloud",
+              "desc": "One-click deploy with Zeabur to make your AI available anywhere. Use code OpenClaw for 10% off.",
+              "cta": "Learn to Deploy"
+            },
+            {
+              "title": "Add Voice Features",
+              "desc": "Use ElevenLabs to give your AI a voice, with Chinese text-to-speech support.",
+              "cta": "Explore ElevenLabs"
+            },
+            {
+              "title": "Generate AI Videos",
+              "desc": "Use HeyGen to create AI avatar videos, perfect for education and marketing content.",
+              "cta": "Explore HeyGen"
+            },
+            {
+              "title": "Explore More Models",
+              "desc": "Browse hundreds of models in the Ollama library: text, code, vision, and more.",
+              "cta": "Browse Model Library"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

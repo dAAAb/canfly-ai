@@ -1,24 +1,29 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import Navbar from '../components/Navbar'
 import { products, categories } from '../data/products'
+import { useLanguage } from '../hooks/useLanguage'
 
 export default function AppsPage() {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const { t } = useTranslation()
+  const { localePath } = useLanguage()
 
   const filteredProducts = products.filter(product => {
     const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory
+    const tagline = t(`product.products.${product.id}.tagline`)
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.tagline.toLowerCase().includes(searchTerm.toLowerCase())
+                         tagline.toLowerCase().includes(searchTerm.toLowerCase())
     return matchesCategory && matchesSearch
   })
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <Navbar search={{ value: searchTerm, onChange: setSearchTerm, placeholder: 'Search apps...' }} />
+      <Navbar search={{ value: searchTerm, onChange: setSearchTerm, placeholder: t('apps.searchPlaceholder') }} />
 
       <div className="flex">
         {/* Sidebar */}
@@ -28,11 +33,11 @@ export default function AppsPage() {
         >
           <div className="w-64 p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-semibold">Categories</h2>
+              <h2 className="text-lg font-semibold">{t('apps.categories')}</h2>
               <button
                 onClick={() => setSidebarOpen(false)}
                 className="p-1 text-gray-500 hover:text-white transition-colors"
-                title="Collapse sidebar"
+                title={t('apps.collapseSidebar')}
               >
                 <PanelLeftClose className="w-4 h-4" />
               </button>
@@ -49,7 +54,7 @@ export default function AppsPage() {
                       : 'text-gray-300 hover:bg-gray-800 hover:text-white'
                   }`}
                 >
-                  <span>{category.name}</span>
+                  <span>{t(`apps.categoryNames.${category.id}`)}</span>
                   <span className={`text-xs ${selectedCategory === category.id ? 'text-blue-200' : 'text-gray-600'}`}>
                     {category.count}
                   </span>
@@ -60,24 +65,24 @@ export default function AppsPage() {
             {/* Quick links */}
             <div className="mt-8 space-y-4">
               <div>
-                <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">Quick Start</h3>
+                <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">{t('apps.quickStart')}</h3>
                 <Link
-                  to="/apps/ollama"
+                  to={localePath('/apps/ollama')}
                   className="block p-3 bg-green-900/20 border border-green-800/40 rounded-lg hover:bg-green-900/30 transition-colors"
                 >
-                  <div className="text-sm font-medium text-green-400">Start Free</div>
-                  <div className="text-xs text-gray-500 mt-1">Ollama + OpenClaw</div>
+                  <div className="text-sm font-medium text-green-400">{t('apps.startFree')}</div>
+                  <div className="text-xs text-gray-500 mt-1">{t('apps.ollamaOpenClaw')}</div>
                 </Link>
               </div>
 
               <div>
-                <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">Staff Picks</h3>
+                <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">{t('apps.staffPicks')}</h3>
                 <Link
-                  to="/apps/zeabur"
+                  to={localePath('/apps/zeabur')}
                   className="block p-3 bg-blue-900/20 border border-blue-800/40 rounded-lg hover:bg-blue-900/30 transition-colors"
                 >
-                  <div className="text-sm font-medium text-blue-400">Cloud Deploy</div>
-                  <div className="text-xs text-gray-500 mt-1">One-click setup</div>
+                  <div className="text-sm font-medium text-blue-400">{t('apps.cloudDeploy')}</div>
+                  <div className="text-xs text-gray-500 mt-1">{t('apps.oneClickSetup')}</div>
                 </Link>
               </div>
             </div>
@@ -93,17 +98,17 @@ export default function AppsPage() {
                 <button
                   onClick={() => setSidebarOpen(true)}
                   className="p-2 text-gray-500 hover:text-white transition-colors rounded-lg hover:bg-gray-800"
-                  title="Open sidebar"
+                  title={t('apps.openSidebar')}
                 >
                   <PanelLeftOpen className="w-5 h-5" />
                 </button>
               )}
               <div>
                 <h1 className="text-3xl font-bold">
-                  {selectedCategory === 'all' ? 'All Apps' : categories.find(c => c.id === selectedCategory)?.name}
+                  {selectedCategory === 'all' ? t('apps.allApps') : t(`apps.categoryNames.${selectedCategory}`)}
                 </h1>
                 <p className="text-gray-500 mt-1 text-sm">
-                  {filteredProducts.length} app{filteredProducts.length !== 1 ? 's' : ''}
+                  {t('apps.appCount', { count: filteredProducts.length })}
                 </p>
               </div>
             </div>
@@ -113,7 +118,7 @@ export default function AppsPage() {
               {filteredProducts.map((product) => (
                 <Link
                   key={product.id}
-                  to={`/apps/${product.id}`}
+                  to={localePath(`/apps/${product.id}`)}
                   className="bg-gray-900/60 border border-gray-800 rounded-xl overflow-hidden hover:border-gray-600 transition-all hover:scale-[1.02] group"
                 >
                   {/* Image placeholder */}
@@ -127,19 +132,19 @@ export default function AppsPage() {
                         <h3 className="font-semibold text-white group-hover:text-blue-400 transition-colors">
                           {product.name}
                         </h3>
-                        <p className="text-sm text-gray-500 mt-0.5">{product.tagline}</p>
+                        <p className="text-sm text-gray-500 mt-0.5">{t(`product.products.${product.id}.tagline`)}</p>
                       </div>
                       <div className="text-right shrink-0 ml-4">
                         <div className="text-sm font-medium text-white">{product.price}</div>
                         {product.status === 'coming-soon' && (
-                          <div className="text-xs text-yellow-500">Coming Soon</div>
+                          <div className="text-xs text-yellow-500">{t('apps.comingSoon')}</div>
                         )}
                       </div>
                     </div>
 
                     {product.affiliateLink && (
                       <div className="text-xs text-blue-400 mt-2">
-                        {product.affiliateCode ? `Use code: ${product.affiliateCode}` : 'OpenClaw Partner'}
+                        {product.affiliateCode ? t('apps.useCode', { code: product.affiliateCode }) : t('apps.openclawPartner')}
                       </div>
                     )}
                   </div>
@@ -149,8 +154,8 @@ export default function AppsPage() {
 
             {filteredProducts.length === 0 && (
               <div className="text-center py-16">
-                <div className="text-gray-400 text-lg">No apps found</div>
-                <div className="text-gray-600 text-sm mt-2">Try adjusting your search or category filter</div>
+                <div className="text-gray-400 text-lg">{t('apps.noAppsFound')}</div>
+                <div className="text-gray-600 text-sm mt-2">{t('apps.noAppsHint')}</div>
               </div>
             )}
           </div>

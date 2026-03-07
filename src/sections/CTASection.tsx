@@ -1,5 +1,6 @@
 import { useFadeIn } from '../hooks/useFadeIn'
 import { Mail } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 function XIcon() {
   return (
@@ -11,6 +12,7 @@ function XIcon() {
 
 export default function CTASection() {
   const ref = useFadeIn()
+  const { t } = useTranslation()
 
   return (
     <section
@@ -32,10 +34,10 @@ export default function CTASection() {
             letterSpacing: '-0.03em',
           }}
         >
-          準備好了嗎？
+          {t('cta.headingLine1')}
           <br />
           <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent">
-            即將起飛。
+            {t('cta.headingHighlight')}
           </span>
         </h2>
 
@@ -51,9 +53,9 @@ export default function CTASection() {
             marginTop: 'clamp(24px, 3vw, 48px)',
           }}
         >
-          CanFly.ai 正在打造 AI Agent 時代最友善的入門平台。
-          <br />
-          從免費體驗到專業配置，我們幫你從地面到雲端。
+          {t('cta.desc').split('\n').map((line, i) => (
+            <span key={i}>{line}{i === 0 && <br />}</span>
+          ))}
         </p>
 
         {/* CTA buttons */}
@@ -94,7 +96,7 @@ export default function CTASection() {
             }}
           >
             <XIcon />
-            <span style={{ fontSize: 'clamp(15px, 1.2vw, 20px)' }}>Follow @dAAAb</span>
+            <span style={{ fontSize: 'clamp(15px, 1.2vw, 20px)' }}>{t('cta.followX')}</span>
           </a>
         </div>
       </div>

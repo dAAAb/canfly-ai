@@ -1,41 +1,23 @@
 import { useFadeIn } from '../hooks/useFadeIn'
 import { Rocket, BookOpen, Wrench, Users, Globe } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
-const features = [
-  {
-    icon: Rocket,
-    title: '免費起飛',
-    desc: '零成本體驗 AI Agent — Ollama + OpenClaw，五分鐘搞定。不用花一毛錢，就能擁有你的第一個 AI 夥伴。',
-    gradient: 'from-cyan-400 to-blue-500',
-  },
-  {
-    icon: BookOpen,
-    title: '知識導購',
-    desc: '硬體評測、軟體教學、最佳實踐。從小白到專家的完整路徑，每一步都有人帶你走。',
-    gradient: 'from-purple-400 to-pink-500',
-  },
-  {
-    icon: Wrench,
-    title: '白手套服務',
-    desc: '不想自己搞？付費服務幫你搞定一切。選購、設定、部署、維護 — 交給我們。',
-    gradient: 'from-amber-400 to-orange-500',
-  },
-  {
-    icon: Users,
-    title: '飛行社群',
-    desc: '每位用戶一個展示頁面。你的 Agent、你的配置、你的飛行日誌。互相啟發，一起成長。',
-    gradient: 'from-green-400 to-emerald-500',
-  },
-  {
-    icon: Globe,
-    title: 'Agent 名片',
-    desc: 'alice.canfly.ai — 你的 AI Agent 在網路上的身分證。個人品牌從這裡開始。',
-    gradient: 'from-blue-400 to-indigo-500',
-  },
+const featureIcons = [Rocket, BookOpen, Wrench, Users, Globe]
+const featureGradients = [
+  'from-cyan-400 to-blue-500',
+  'from-purple-400 to-pink-500',
+  'from-amber-400 to-orange-500',
+  'from-green-400 to-emerald-500',
+  'from-blue-400 to-indigo-500',
 ]
 
-function FeatureCard({ feature, index }: { feature: typeof features[0]; index: number }) {
+function FeatureCard({ index }: { index: number }) {
   const ref = useFadeIn(0.1)
+  const { t } = useTranslation()
+  const Icon = featureIcons[index]
+  const gradient = featureGradients[index]
+  const title = t(`features.items.${index}.title`)
+  const desc = t(`features.items.${index}.desc`)
 
   return (
     <div ref={ref} className="fade-section">
@@ -57,21 +39,21 @@ function FeatureCard({ feature, index }: { feature: typeof features[0]; index: n
         />
 
         <div className="relative text-center">
-          <feature.icon
+          <Icon
             className={`stagger-child stagger-${index + 1}`}
             style={{ width: 'clamp(36px, 4vw, 56px)', height: 'clamp(36px, 4vw, 56px)', marginBottom: '1.5rem', marginLeft: 'auto', marginRight: 'auto' }}
             strokeWidth={1.3}
           />
 
           <h3
-            className={`font-bold bg-gradient-to-r ${feature.gradient} bg-clip-text text-transparent`}
+            className={`font-bold bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}
             style={{ fontSize: 'clamp(24px, 2.5vw, 40px)', lineHeight: 1.2 }}
           >
-            {feature.title}
+            {title}
           </h3>
 
           <p style={{ fontSize: 'clamp(15px, 1.2vw, 20px)', lineHeight: 1.75, opacity: 0.7, marginTop: '1.25rem' }}>
-            {feature.desc}
+            {desc}
           </p>
         </div>
       </div>
@@ -81,6 +63,7 @@ function FeatureCard({ feature, index }: { feature: typeof features[0]; index: n
 
 export default function FeaturesSection() {
   const headerRef = useFadeIn()
+  const { t } = useTranslation()
 
   return (
     <section className="relative py-36 md:py-52" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
@@ -91,7 +74,7 @@ export default function FeaturesSection() {
             className="text-cyan-400 font-semibold uppercase tracking-widest stagger-child stagger-1"
             style={{ fontSize: 'clamp(11px, 1vw, 14px)', marginBottom: '2rem' }}
           >
-            Features
+            {t('features.eyebrow')}
           </p>
           <h2
             className="font-bold stagger-child stagger-2"
@@ -101,23 +84,23 @@ export default function FeaturesSection() {
               letterSpacing: '-0.02em',
             }}
           >
-            你需要的，
+            {t('features.headingLine1')}
             <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent">
-              全都在這。
+              {t('features.headingHighlight')}
             </span>
           </h2>
         </div>
 
         {/* Feature cards grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.slice(0, 3).map((f, i) => (
-            <FeatureCard key={i} feature={f} index={i} />
+          {[0, 1, 2].map((i) => (
+            <FeatureCard key={i} index={i} />
           ))}
         </div>
         <div className="flex flex-wrap justify-center gap-8" style={{ marginTop: '2rem' }}>
-          {features.slice(3).map((f, i) => (
-            <div key={i + 3} style={{ width: 'calc((100% - 4rem) / 3)' }} className="min-w-[280px]">
-              <FeatureCard feature={f} index={i + 3} />
+          {[3, 4].map((i) => (
+            <div key={i} style={{ width: 'calc((100% - 4rem) / 3)' }} className="min-w-[280px]">
+              <FeatureCard index={i} />
             </div>
           ))}
         </div>

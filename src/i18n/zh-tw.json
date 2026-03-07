@@ -1,0 +1,358 @@
+{
+  "nav": {
+    "browseApps": "瀏覽應用",
+    "startFree": "免費開始"
+  },
+  "hero": {
+    "titleLine1": "Now You Can",
+    "titleLine2": "Fly.",
+    "subtitle": "有了 AI，你也能飛。\nAI Agent 時代的起飛平台。",
+    "ctaFree": "開始免費體驗",
+    "ctaFreeTag": "(Ollama)",
+    "ctaBrowse": "瀏覽所有工具",
+    "funnel": "從 Ollama 免費開始 → Zeabur 雲端部署 → AI 技能擴展",
+    "scroll": "Scroll"
+  },
+  "vision": {
+    "eyebrow": "The Vision",
+    "headingLine1": "Every person deserves",
+    "headingLine2": "an",
+    "headingHighlight": "AI Agent.",
+    "descLeft1": "AI Agent 市場正在爆發 — 從個人助理到企業自動化，2026 是人人都能擁有 AI 夥伴的元年。但大多數人不知道從哪裡開始。",
+    "descLeft2": "硬體怎麼選？軟體怎麼裝？Agent 怎麼跑？這些問題，CanFly.ai 一次解決。",
+    "descRight1": "我們是 AI Agent 世界的知識嚮導。從免費體驗到硬體導購，從白手套設定到社群互助 — 帶你從零開始起飛。",
+    "descRight2": "不只是工具平台，更是一個社群。每位使用者都有自己的飛行日誌，展示你的 AI Agent、分享你的配置、啟發更多人。",
+    "stat1Value": "$300B",
+    "stat1Label": "2027 AI Agent 市場規模",
+    "stat2Value": "87%",
+    "stat2Label": "想用 AI 但不知如何開始",
+    "stat3Value": "5 min",
+    "stat3Label": "用 CanFly 從零到起飛"
+  },
+  "features": {
+    "eyebrow": "Features",
+    "headingLine1": "你需要的，",
+    "headingHighlight": "全都在這。",
+    "items": [
+      {
+        "title": "免費起飛",
+        "desc": "零成本體驗 AI Agent — Ollama + OpenClaw，五分鐘搞定。不用花一毛錢，就能擁有你的第一個 AI 夥伴。"
+      },
+      {
+        "title": "知識導購",
+        "desc": "硬體評測、軟體教學、最佳實踐。從小白到專家的完整路徑，每一步都有人帶你走。"
+      },
+      {
+        "title": "白手套服務",
+        "desc": "不想自己搞？付費服務幫你搞定一切。選購、設定、部署、維護 — 交給我們。"
+      },
+      {
+        "title": "飛行社群",
+        "desc": "每位用戶一個展示頁面。你的 Agent、你的配置、你的飛行日誌。互相啟發，一起成長。"
+      },
+      {
+        "title": "Agent 名片",
+        "desc": "alice.canfly.ai — 你的 AI Agent 在網路上的身分證。個人品牌從這裡開始。"
+      }
+    ]
+  },
+  "quote": {
+    "line1": "AI 不會取代你，",
+    "line2": "但擁有 AI 的人會。",
+    "line3": "現在，你也能飛。",
+    "attribution": "CanFly.ai"
+  },
+  "cta": {
+    "headingLine1": "準備好了嗎？",
+    "headingHighlight": "即將起飛。",
+    "desc": "CanFly.ai 正在打造 AI Agent 時代最友善的入門平台。\n從免費體驗到專業配置，我們幫你從地面到雲端。",
+    "followX": "Follow @dAAAb"
+  },
+  "footer": {
+    "copyright": "\u00a9 2026 CanFly.ai",
+    "tagline": "有了小龍蝦 AI，你也能飛"
+  },
+  "apps": {
+    "searchPlaceholder": "搜尋應用...",
+    "categories": "分類",
+    "collapseSidebar": "收合側欄",
+    "openSidebar": "展開側欄",
+    "allApps": "所有應用",
+    "appCount": "{{count}} 個應用",
+    "appCount_plural": "{{count}} 個應用",
+    "noAppsFound": "找不到應用程式",
+    "noAppsHint": "試試調整搜尋條件或分類篩選",
+    "quickStart": "快速開始",
+    "startFree": "免費開始",
+    "ollamaOpenClaw": "Ollama + OpenClaw",
+    "staffPicks": "精選推薦",
+    "cloudDeploy": "雲端部署",
+    "oneClickSetup": "一鍵設定",
+    "comingSoon": "即將推出",
+    "useCode": "使用優惠碼：{{code}}",
+    "openclawPartner": "OpenClaw 合作夥伴",
+    "categoryNames": {
+      "all": "所有應用",
+      "free": "免費工具",
+      "skills": "AI 技能",
+      "hosting": "雲端託管",
+      "hardware": "硬體"
+    }
+  },
+  "product": {
+    "notFound": "找不到產品",
+    "backToApps": "← 回到應用程式列表",
+    "breadcrumbApps": "應用",
+    "openclawPartner": "OpenClaw 合作夥伴",
+    "discountWithCode": "使用優惠碼 {{code}} 享 {{discount}} 折扣",
+    "affiliateCommission": "{{commission}} 聯盟佣金",
+    "features": "功能特色",
+    "products": {
+      "ollama": {
+        "tagline": "免費本地 AI 模型",
+        "description": "在本機運行強大的 AI 模型，不需要 API 金鑰或網路連線。最適合重視隱私的使用者和開發環境。",
+        "features": [
+          "不需要 API 金鑰",
+          "隱私優先的本機處理",
+          "支援多種模型（Llama、CodeLlama、Mistral）",
+          "簡單的命令列介面",
+          "與 OpenClaw agents 相容"
+        ],
+        "ctaPrimary": "開始免費教學",
+        "ctaSecondary": "在 GitHub 查看"
+      },
+      "zeabur": {
+        "tagline": "一鍵雲端部署",
+        "description": "零設定將你的 OpenClaw agents 部署到雲端。透過我們的合作夥伴關係，幾分鐘內即可上線。",
+        "features": [
+          "一鍵部署",
+          "自動 HTTPS",
+          "全球 CDN",
+          "24/7 監控",
+          "OpenClaw 最佳化範本"
+        ],
+        "ctaPrimary": "立即部署（9 折優惠）",
+        "ctaSecondary": "查看教學"
+      },
+      "elevenlabs": {
+        "tagline": "AI 語音合成",
+        "description": "為你的 OpenClaw agents 添加逼真的語音功能。高品質文字轉語音，多種聲音選擇。",
+        "features": [
+          "自然語音",
+          "多語言支援",
+          "語音複製",
+          "API 整合",
+          "OpenClaw 技能"
+        ],
+        "ctaPrimary": "試用 ElevenLabs",
+        "ctaSecondary": "查看教學"
+      },
+      "heygen": {
+        "tagline": "AI 影片生成",
+        "description": "使用數位分身製作專業的 AI 影片。最適合內容創作、行銷和教學素材。",
+        "features": [
+          "AI 數位人影片",
+          "100+ 種語言",
+          "API 整合",
+          "自訂分身訓練",
+          "與 OpenClaw 相容"
+        ],
+        "ctaPrimary": "試用 HeyGen",
+        "ctaSecondary": "查看教學"
+      },
+      "umbrel": {
+        "tagline": "自架家庭伺服器",
+        "description": "在家中運行你自己的個人雲端伺服器。託管 AI 模型、應用程式和服務，完全掌控資料主權。",
+        "features": [
+          "自架家庭伺服器",
+          "隱私優先",
+          "應用程式商店生態系",
+          "運行你自己的 AI",
+          "無需訂閱"
+        ],
+        "ctaPrimary": "前往 Umbrel",
+        "ctaSecondary": "查看教學"
+      }
+    }
+  },
+  "tutorial": {
+    "notFound": "找不到教學",
+    "backToApps": "← 回到應用程式列表",
+    "free": "完全免費",
+    "progress": "完成進度",
+    "steps": "{{completed}}/{{total}} 步驟",
+    "step": "Step {{n}}.",
+    "markIncomplete": "標記為未完成",
+    "markComplete": "標記為已完成",
+    "expectedResult": "預期結果",
+    "tips": "小提示",
+    "copyCommand": "複製指令",
+    "congratsTitle": "恭喜完成！",
+    "congratsDesc": "你已經成功在本機跑起了 AI。Now You Can Fly!",
+    "ollama": {
+      "title": "5 分鐘跑起你的第一個本地 AI",
+      "subtitle": "免費、離線、完全隱私 — 用 Ollama 在自己電腦上跑大型語言模型",
+      "duration": "5 分鐘",
+      "difficulty": "入門",
+      "steps": [
+        {
+          "title": "選擇安裝方式",
+          "titleEn": "Choose Install Method",
+          "estimatedTime": "1 分鐘",
+          "content": "選擇適合你的安裝方式。Mac 新手推薦直接下載 Ollama.app（內建聊天介面），進階使用者可以用終端機。",
+          "expectedResult": "安裝完成後，Ollama 會在背景自動啟動服務。",
+          "tips": [
+            "需要至少 8GB RAM（建議 16GB 以上）",
+            "macOS 需要 11.0 以上版本",
+            "安裝後不需要重開機"
+          ],
+          "troubleshooting": {
+            "title": "卡關了？安裝問題排解",
+            "items": [
+              { "q": "Mac 無法開啟 Ollama.app", "a": "到「系統設定 → 隱私與安全性」，點擊「仍然開啟」。這是 macOS 對未簽名應用的安全機制。" },
+              { "q": "終端機顯示 \"command not found\"", "a": "請重新開啟終端機，或執行 source ~/.zshrc 重新載入環境變數。" },
+              { "q": "Windows 安裝卡住", "a": "請用系統管理員身分執行安裝程式。右鍵點擊 → 以系統管理員身分執行。" }
+            ]
+          },
+          "installTabs": {
+            "guiLabel": "Mac 最簡單",
+            "guiSublabel": "Ollama.app 圖形介面",
+            "terminalLabel": "Mac / Linux",
+            "terminalSublabel": "終端機安裝（curl）",
+            "winLabel": "Windows",
+            "winSublabel": "下載安裝程式",
+            "guiTitle": "Ollama.app — 最適合新手",
+            "guiDesc": "Ollama 官方 macOS 應用程式，內建圖形聊天介面。\n下載後拖進「應用程式」資料夾，雙擊就能開始跟 AI 聊天。不需要終端機、不需要指令。",
+            "downloadOllamaApp": "下載 Ollama.app",
+            "installSteps": "安裝步驟：",
+            "guiSteps": [
+              "將 Ollama.app 拖進「應用程式」資料夾",
+              "雙擊開啟，系統列會出現 Ollama 圖示",
+              "點擊圖示，選擇「Chat」開啟內建聊天介面",
+              "選一個模型，開始聊天！"
+            ],
+            "terminalLabel2": "在終端機 (Terminal) 中執行：",
+            "terminalConfirm": "安裝完成後，Ollama 服務會自動啟動。確認安裝成功：",
+            "winTitle": "下載 Windows 安裝程式",
+            "winDesc": "從 Ollama 官方網站下載 Windows 版本，按照安裝精靈完成安裝即可。",
+            "goToDownload": "前往下載頁面",
+            "winSteps": [
+              "執行下載的安裝程式",
+              "按照安裝精靈的指示完成安裝",
+              "開啟 Command Prompt 或 PowerShell",
+              "輸入 ollama --version 確認安裝成功"
+            ]
+          }
+        },
+        {
+          "title": "下載第一個 AI 模型",
+          "titleEn": "Download Your First Model",
+          "estimatedTime": "2 分鐘",
+          "content": "AI 模型就像是 AI 的「大腦」。不同模型擅長不同的事。我們先下載一個適合聊天的輕量模型。",
+          "subsections": [
+            {
+              "label": "什麼是模型？",
+              "text": "模型是經過大量資料訓練的 AI 程式。就像不同的專家各有專長，不同的模型也擅長不同的任務。模型檔案大小從 2GB 到 40GB+ 不等。"
+            }
+          ],
+          "expectedResult": "下載完成後會顯示 success。可以用 ollama list 確認已安裝的模型。",
+          "tips": [
+            "第一次下載需要網路，之後可以完全離線使用",
+            "模型檔案儲存在本機，不會上傳任何資料",
+            "硬碟空間不夠？先只裝 llama3.2 就好"
+          ],
+          "troubleshooting": {
+            "title": "卡關了？下載問題排解",
+            "items": [
+              { "q": "下載速度很慢", "a": "模型檔案較大，確保網路穩定。也可以試試較小的模型如 llama3.2。" },
+              { "q": "顯示磁碟空間不足", "a": "用 ollama list 查看已安裝的模型，用 ollama rm <model> 刪除不需要的模型。" }
+            ]
+          },
+          "modelTable": {
+            "nameHeader": "模型名稱",
+            "sizeHeader": "大小",
+            "bestHeader": "最適合",
+            "speedHeader": "速度",
+            "models": [
+              { "name": "llama3.2", "size": "2 GB", "best": "日常聊天、問答", "speed": "快" },
+              { "name": "codellama", "size": "3.8 GB", "best": "寫程式、Debug", "speed": "中" },
+              { "name": "llama3.1", "size": "4.7 GB", "best": "複雜推理、創作", "speed": "中" },
+              { "name": "mistral", "size": "4.1 GB", "best": "多語言、分析", "speed": "中" }
+            ]
+          }
+        },
+        {
+          "title": "測試對話",
+          "titleEn": "Test Interactive Chat",
+          "estimatedTime": "1 分鐘",
+          "content": "來跟你的本地 AI 聊聊天，確認一切正常運作！",
+          "expectedResult": "AI 會用文字回應你的問題。回應速度取決於你的硬體規格。",
+          "tips": [
+            "第一次執行模型時會比較慢（需要載入到記憶體），之後會快很多",
+            "按 Ctrl+D 或輸入 /bye 可以離開對話",
+            "試試問不同語言的問題，體驗多語言能力"
+          ],
+          "troubleshooting": {
+            "title": "卡關了？對話問題排解",
+            "items": [
+              { "q": "回應速度很慢", "a": "正常！第一次載入模型需要時間。如果持續很慢，試試較小的模型 llama3.2。" },
+              { "q": "顯示記憶體不足", "a": "關閉其他應用程式釋放記憶體，或換用更小的模型。" }
+            ]
+          }
+        },
+        {
+          "title": "連接 OpenClaw",
+          "titleEn": "Connect to OpenClaw",
+          "estimatedTime": "1 分鐘",
+          "content": "OpenClaw 是一個開源的 AI 介面，可以連接你的本地 Ollama，給你更好的使用體驗。",
+          "expectedResult": "OpenClaw 現在可以使用你的本地 Ollama 模型了。完全免費、完全離線！",
+          "tips": [
+            "OpenClaw 會自動偵測你安裝的所有模型",
+            "你隨時可以在 OpenClaw 中切換不同模型",
+            "想在手機上用？之後可以部署到 Zeabur 雲端"
+          ],
+          "troubleshooting": {
+            "title": "卡關了？連接問題排解",
+            "items": [
+              { "q": "OpenClaw 找不到 Ollama", "a": "確認 Ollama 正在運行：在終端機輸入 ollama list。如果沒有反應，重新啟動 Ollama。" },
+              { "q": "API 位址填什麼？", "a": "預設是 http://localhost:11434，除非你有特別更改過。" }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "探索時間！",
+          "content": "恭喜你！你已經在自己的電腦上跑起了 AI。接下來可以探索更多可能：",
+          "tips": [
+            "所有模型都是免費使用",
+            "你的資料永遠不會離開你的電腦",
+            "加入 CanFly 育苗場社群，和其他使用者交流"
+          ],
+          "nextStepCards": [
+            {
+              "title": "部署到雲端",
+              "desc": "用 Zeabur 一鍵部署，讓你的 AI 隨時隨地可用。使用優惠碼 OpenClaw 享 10% 折扣。",
+              "cta": "學習部署"
+            },
+            {
+              "title": "加上語音功能",
+              "desc": "用 ElevenLabs 讓你的 AI 開口說話，支援中文語音合成。",
+              "cta": "探索 ElevenLabs"
+            },
+            {
+              "title": "生成 AI 影片",
+              "desc": "用 HeyGen 製作 AI 數位人影片，適合教學和行銷內容。",
+              "cta": "探索 HeyGen"
+            },
+            {
+              "title": "探索更多模型",
+              "desc": "到 Ollama 模型庫瀏覽數百種模型：文字、程式碼、視覺辨識等。",
+              "cta": "瀏覽模型庫"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
