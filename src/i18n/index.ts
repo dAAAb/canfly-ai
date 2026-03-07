@@ -9,8 +9,8 @@ export type SupportedLang = (typeof SUPPORTED_LANGS)[number]
 
 export const LANG_LABELS: Record<SupportedLang, string> = {
   en: 'EN',
-  'zh-tw': '繁中',
-  'zh-cn': '简中',
+  'zh-tw': '繁',
+  'zh-cn': '简',
 }
 
 /** Map URL prefix to i18next language code. */
