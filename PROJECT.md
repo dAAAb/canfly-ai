@@ -194,6 +194,24 @@ canfly.ai/software          → 💻 軟體環境
 
 ---
 
+## 🤖 AI 公司運營（Paperclip 架構）
+
+> 完整研究筆記見 [PAPERCLIP.md](./PAPERCLIP.md)
+
+CanFly.ai 不只是一個網站，是一家 **AI 自動運營的公司**。
+使用 [Paperclip](https://paperclip.ing) 編制多個 AI agent 組成自動飛輪：
+
+- **寶博** = 董事長 / Board
+- **小龍蝦** = 特助 / Chief of Staff
+- **CEO** = 策略制定、目標分解
+- **CPO** = 產品管理（下轄 Scout、Dev、Reviewer）
+- **CMO** = 行銷推廣（下轄 Social、Content Writer、SEO）
+- **Finance** = 收入追蹤
+
+預估月運營成本 ~$340（比 M1 預估收入 $628 低，第一個月有機會打平）。
+
+---
+
 ## 🧠 核心理念
 
 1. **賣服務不賣商品** — 知識的毛利 >> 硬體差價
