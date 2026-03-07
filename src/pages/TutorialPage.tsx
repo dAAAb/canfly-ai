@@ -1,10 +1,45 @@
 import { useParams, Link } from 'react-router-dom'
-import { Clock, CheckCircle, Copy, ExternalLink, ChevronDown, ChevronRight, Terminal, Download, Monitor, Code, MessageSquare, Rocket, HelpCircle, Cpu, Sparkles } from 'lucide-react'
-import { useState } from 'react'
+import { Clock, CheckCircle, Copy, ExternalLink, ChevronDown, ChevronRight, Terminal, Download, Monitor, MessageSquare, Rocket, HelpCircle, Cpu, Sparkles } from 'lucide-react'
+import { useState, type ReactNode } from 'react'
 import Navbar from '../components/Navbar'
 
-// ─── Ollama Tutorial Data ────────────────────────────────────────────
-const ollamaTutorial = {
+// ─── Types ──────────────────────────────────────────────────────────
+
+interface TroubleshootingItem { q: string; a: string }
+
+interface StepData {
+  icon: typeof Terminal
+  title: string
+  titleEn: string
+  estimatedTime: string
+  content: string
+  installTabs?: boolean
+  commands?: string[]
+  subsections?: { label: string; text: string }[]
+  modelTable?: ModelInfo[]
+  chatExample?: { exchanges: ChatExchange[] }
+  nextStepCards?: NextStepCard[]
+  expectedResult?: string
+  tips?: string[]
+  troubleshooting?: { title: string; items: TroubleshootingItem[] }
+}
+
+interface ModelInfo { name: string; size: string; best: string; speed: string }
+interface ChatExchange { role: 'user' | 'ai'; text: string }
+interface NextStepCard { emoji: string; title: string; desc: string; link: string; cta: string; external?: boolean }
+
+interface TutorialData {
+  id: string
+  title: string
+  subtitle: string
+  duration: string
+  difficulty: string
+  steps: StepData[]
+}
+
+// ─── Ollama Tutorial Data ───────────────────────────────────────────
+
+const ollamaTutorial: TutorialData = {
   id: 'ollama',
   title: '5 分鐘跑起你的第一個本地 AI',
   subtitle: '免費、離線、完全隱私 — 用 Ollama 在自己電腦上跑大型語言模型',
@@ -13,11 +48,11 @@ const ollamaTutorial = {
   steps: [
     {
       icon: Download,
-      title: '安裝 Ollama',
-      titleEn: 'Install Ollama',
+      title: '選擇安裝方式',
+      titleEn: 'Choose Install Method',
       estimatedTime: '1 分鐘',
       content: '選擇適合你的安裝方式。Mac 新手推薦直接下載 Ollama.app（內建聊天介面），進階使用者可以用終端機。',
-      installTabs: true, // special flag for multi-tab install
+      installTabs: true,
       expectedResult: '安裝完成後，Ollama 會在背景自動啟動服務。',
       tips: ['需要至少 8GB RAM（建議 16GB 以上）', 'macOS 需要 11.0 以上版本', '安裝後不需要重開機'],
       troubleshooting: {
@@ -31,10 +66,10 @@ const ollamaTutorial = {
     },
     {
       icon: Cpu,
-      title: '下載 AI 模型',
-      titleEn: 'Download a Model',
+      title: '下載第一個 AI 模型',
+      titleEn: 'Download Your First Model',
       estimatedTime: '2 分鐘',
-      content: 'AI 模型就像是 AI 的「大腦」。不同模型擅長不同的事。我們先下載一個適合聊天的模型。',
+      content: 'AI 模型就像是 AI 的「大腦」。不同模型擅長不同的事。我們先下載一個適合聊天的輕量模型。',
       subsections: [
         {
           label: '什麼是模型？',
@@ -172,60 +207,9 @@ const ollamaTutorial = {
   ],
 }
 
-// ─── Zeabur Tutorial (kept minimal, not the focus) ───────────────────
-const zeaburTutorial = {
-  id: 'zeabur',
-  title: 'Deploy OpenClaw to Zeabur',
-  subtitle: 'One-click cloud deployment in 3 minutes',
-  duration: '3 分鐘',
-  difficulty: '入門',
-  steps: [
-    {
-      icon: Monitor,
-      title: '註冊 Zeabur',
-      titleEn: 'Sign Up for Zeabur',
-      estimatedTime: '1 分鐘',
-      content: '用 GitHub 帳號免費註冊 Zeabur。',
-      commands: ['# 前往 https://zeabur.com 並用 GitHub 登入'],
-      expectedResult: '你可以看到 Zeabur 控制台。',
-    },
-    {
-      icon: Code,
-      title: '連接 Repository',
-      titleEn: 'Connect Repository',
-      estimatedTime: '1 分鐘',
-      content: '把你的 OpenClaw Repository 連接到 Zeabur。',
-      expectedResult: 'Repository 出現在你的 Zeabur 專案中。',
-    },
-    {
-      icon: Terminal,
-      title: '設定環境變數',
-      titleEn: 'Configure Environment',
-      estimatedTime: '30 秒',
-      content: '設定必要的環境變數。',
-      commands: ['OPENAI_API_KEY=your_api_key_here', 'NODE_ENV=production'],
-      expectedResult: '環境變數已儲存。',
-    },
-    {
-      icon: Rocket,
-      title: '部署！',
-      titleEn: 'Deploy',
-      estimatedTime: '30 秒',
-      content: '按下部署按鈕，看著你的應用上線。使用優惠碼 OpenClaw 享 10% 折扣。',
-      expectedResult: '你的 OpenClaw Agent 已經在雲端運行！',
-    },
-  ],
-}
+const tutorials: Record<string, TutorialData> = { ollama: ollamaTutorial }
 
-const getTutorialData = (slug: string) => {
-  const tutorials: Record<string, typeof ollamaTutorial> = {
-    ollama: ollamaTutorial,
-    zeabur: zeaburTutorial as any,
-  }
-  return tutorials[slug] || null
-}
-
-// ─── Components ──────────────────────────────────────────────────────
+// ─── Components ─────────────────────────────────────────────────────
 
 function ProgressBar({ completed, total }: { completed: number; total: number }) {
   const pct = total > 0 ? (completed / total) * 100 : 0
@@ -275,7 +259,7 @@ function CopyBlock({ text, label }: { text: string; label?: string }) {
   )
 }
 
-function Collapsible({ title, children, defaultOpen = false }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
+function Collapsible({ title, children, defaultOpen = false }: { title: string; children: ReactNode; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
     <div className="border border-gray-800 rounded-lg overflow-hidden">
@@ -293,17 +277,16 @@ function Collapsible({ title, children, defaultOpen = false }: { title: string; 
 }
 
 function InstallTabs() {
-  const [tab, setTab] = useState<'gui' | 'mac' | 'win'>('gui')
+  const [tab, setTab] = useState<'gui' | 'terminal' | 'win'>('gui')
 
   const tabs = [
     { key: 'gui' as const, label: '🍎 Mac 最簡單', sublabel: 'Ollama.app 圖形介面' },
-    { key: 'mac' as const, label: '🍎 Mac / Linux', sublabel: '終端機（進階）' },
-    { key: 'win' as const, label: '🪟 Windows', sublabel: '下載安裝' },
+    { key: 'terminal' as const, label: '🖥 Mac / Linux', sublabel: '終端機安裝（curl）' },
+    { key: 'win' as const, label: '🪟 Windows', sublabel: '下載安裝程式' },
   ]
 
   return (
     <div className="mb-4">
-      {/* Tab buttons */}
       <div className="flex gap-2 mb-4 flex-wrap">
         {tabs.map((t) => (
           <button
@@ -321,35 +304,32 @@ function InstallTabs() {
         ))}
       </div>
 
-      {/* Tab content */}
       {tab === 'gui' && (
         <div className="space-y-3">
           <div className="bg-green-900/10 border border-green-800/30 rounded-lg p-4">
             <div className="flex items-start gap-3">
               <Monitor className="w-5 h-5 text-green-400 mt-0.5 flex-shrink-0" />
               <div>
-                <h4 className="font-medium text-green-400 mb-1">Ollama.app — 最適合 Mac 新手</h4>
+                <h4 className="font-medium text-green-400 mb-1">Ollama.app — 最適合新手</h4>
                 <p className="text-sm text-gray-300 mb-3">
-                  Ollama 官方 macOS 應用程式，自 2025 年 7 月起內建聊天介面。
+                  Ollama 官方 macOS 應用程式，內建圖形聊天介面。
                   下載後拖進「應用程式」資料夾，雙擊就能開始跟 AI 聊天。不需要終端機、不需要指令。
                 </p>
-                <div className="flex flex-wrap gap-2">
-                  <a
-                    href="https://ollama.com/download"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-green-600 hover:bg-green-500 text-white text-sm font-medium rounded-lg transition-colors"
-                  >
-                    <Download className="w-4 h-4" />
-                    下載 Ollama.app
-                    <ExternalLink className="w-3 h-3 ml-1" />
-                  </a>
-                </div>
+                <a
+                  href="https://ollama.com/download"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 bg-green-600 hover:bg-green-500 text-white text-sm font-medium rounded-lg transition-colors"
+                >
+                  <Download className="w-4 h-4" />
+                  下載 Ollama.app
+                  <ExternalLink className="w-3 h-3 ml-1" />
+                </a>
               </div>
             </div>
           </div>
           <div className="text-sm text-gray-400">
-            <p>安裝後的步驟：</p>
+            <p>安裝步驟：</p>
             <ol className="list-decimal list-inside mt-1 space-y-1 text-gray-300">
               <li>將 Ollama.app 拖進「應用程式」資料夾</li>
               <li>雙擊開啟，系統列會出現 Ollama 圖示</li>
@@ -360,16 +340,16 @@ function InstallTabs() {
         </div>
       )}
 
-      {tab === 'mac' && (
+      {tab === 'terminal' && (
         <div className="space-y-3">
           <CopyBlock
             label="在終端機 (Terminal) 中執行："
             text={`# 一行指令安裝 Ollama\ncurl -fsSL https://ollama.com/install.sh | sh`}
           />
           <div className="text-sm text-gray-400">
-            <p>安裝完成後，Ollama 服務會自動啟動。你可以用以下指令確認：</p>
+            <p>安裝完成後，Ollama 服務會自動啟動。確認安裝成功：</p>
           </div>
-          <CopyBlock text={`ollama --version`} />
+          <CopyBlock text="ollama --version" />
         </div>
       )}
 
@@ -381,7 +361,7 @@ function InstallTabs() {
               <div>
                 <h4 className="font-medium text-blue-400 mb-1">下載 Windows 安裝程式</h4>
                 <p className="text-sm text-gray-300 mb-3">
-                  從 Ollama 官方網站下載 Windows 版本的安裝程式。
+                  從 Ollama 官方網站下載 Windows 版本，按照安裝精靈完成安裝即可。
                 </p>
                 <a
                   href="https://ollama.com/download"
@@ -397,7 +377,7 @@ function InstallTabs() {
             </div>
           </div>
           <div className="text-sm text-gray-400">
-            <p>安裝後的步驟：</p>
+            <p>安裝步驟：</p>
             <ol className="list-decimal list-inside mt-1 space-y-1 text-gray-300">
               <li>執行下載的安裝程式</li>
               <li>按照安裝精靈的指示完成安裝</li>
@@ -411,12 +391,12 @@ function InstallTabs() {
   )
 }
 
-function ChatDemo({ exchanges }: { exchanges: { role: string; text: string }[] }) {
+function ChatDemo({ exchanges }: { exchanges: ChatExchange[] }) {
   return (
     <div className="bg-gray-900 rounded-lg p-4 mb-4 space-y-3">
       <div className="text-xs text-gray-500 font-mono mb-2">ollama run llama3.2</div>
       {exchanges.map((ex, i) => (
-        <div key={i} className={`flex gap-3 ${ex.role === 'user' ? '' : ''}`}>
+        <div key={i} className="flex gap-3">
           <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs ${
             ex.role === 'user' ? 'bg-blue-600 text-white' : 'bg-green-600 text-white'
           }`}>
@@ -431,7 +411,7 @@ function ChatDemo({ exchanges }: { exchanges: { role: string; text: string }[] }
   )
 }
 
-function ModelTable({ models }: { models: { name: string; size: string; best: string; speed: string }[] }) {
+function ModelTable({ models }: { models: ModelInfo[] }) {
   return (
     <div className="overflow-x-auto mb-4">
       <table className="w-full text-sm">
@@ -458,27 +438,48 @@ function ModelTable({ models }: { models: { name: string; size: string; best: st
   )
 }
 
-// ─── Main Component ──────────────────────────────────────────────────
+function NextStepGrid({ cards }: { cards: NextStepCard[] }) {
+  return (
+    <div className="grid sm:grid-cols-2 gap-3 mb-4">
+      {cards.map((card, i) => {
+        const inner = (
+          <>
+            <div className="text-2xl mb-2">{card.emoji}</div>
+            <h4 className="font-medium text-white mb-1">{card.title}</h4>
+            <p className="text-xs text-gray-400 mb-3 leading-relaxed">{card.desc}</p>
+            <span className="text-xs text-green-400 font-medium inline-flex items-center gap-1">
+              {card.cta}
+              {card.external ? <ExternalLink className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
+            </span>
+          </>
+        )
+        const cls = "bg-gray-900 border border-gray-800 rounded-lg p-4 hover:border-gray-600 transition-colors block"
+        return card.external ? (
+          <a key={i} href={card.link} target="_blank" rel="noopener noreferrer" className={cls}>{inner}</a>
+        ) : (
+          <Link key={i} to={card.link} className={cls}>{inner}</Link>
+        )
+      })}
+    </div>
+  )
+}
+
+// ─── Main Component ─────────────────────────────────────────────────
 
 export default function TutorialPage() {
   const { slug } = useParams()
-  const tutorial = getTutorialData(slug!)
+  const tutorial = tutorials[slug!] ?? null
   const [completedSteps, setCompletedSteps] = useState<number[]>([])
 
-  const toggleStepComplete = (stepIndex: number) => {
-    setCompletedSteps((prev) =>
-      prev.includes(stepIndex) ? prev.filter((i) => i !== stepIndex) : [...prev, stepIndex]
-    )
-  }
+  const toggleStep = (i: number) =>
+    setCompletedSteps((prev) => prev.includes(i) ? prev.filter((s) => s !== i) : [...prev, i])
 
   if (!tutorial) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">找不到教學</h1>
-          <Link to="/apps" className="text-blue-400 hover:text-blue-300">
-            ← 回到應用程式列表
-          </Link>
+          <Link to="/apps" className="text-blue-400 hover:text-blue-300">← 回到應用程式列表</Link>
         </div>
       </div>
     )
@@ -508,8 +509,8 @@ export default function TutorialPage() {
       {/* Steps */}
       <div className="max-w-3xl mx-auto px-4 py-10">
         <div className="space-y-6">
-          {tutorial.steps.map((step: any, index: number) => {
-            const StepIcon = step.icon || Terminal
+          {tutorial.steps.map((step, index) => {
+            const StepIcon = step.icon
             const isComplete = completedSteps.includes(index)
             const isLast = index === totalSteps - 1
 
@@ -523,7 +524,7 @@ export default function TutorialPage() {
                 {/* Step header */}
                 <div className="flex items-start gap-4 mb-4">
                   <button
-                    onClick={() => toggleStepComplete(index)}
+                    onClick={() => toggleStep(index)}
                     className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
                       isComplete
                         ? 'bg-green-600 text-white'
@@ -539,15 +540,11 @@ export default function TutorialPage() {
                         {!isLast && <span className="text-gray-500 mr-1">Step {index + 1}.</span>}
                         {step.title}
                       </h3>
-                      {step.estimatedTime && (
-                        <span className="text-xs text-gray-500 bg-gray-800 px-2 py-0.5 rounded-full">
-                          ~{step.estimatedTime}
-                        </span>
-                      )}
+                      <span className="text-xs text-gray-500 bg-gray-800 px-2 py-0.5 rounded-full">
+                        ~{step.estimatedTime}
+                      </span>
                     </div>
-                    {step.titleEn && (
-                      <div className="text-xs text-gray-600 mt-0.5 font-mono">{step.titleEn}</div>
-                    )}
+                    <div className="text-xs text-gray-600 mt-0.5 font-mono">{step.titleEn}</div>
                   </div>
                 </div>
 
@@ -555,65 +552,23 @@ export default function TutorialPage() {
                 <div className="ml-14">
                   <p className="text-gray-300 mb-4 leading-relaxed">{step.content}</p>
 
-                  {/* Subsections (info boxes) */}
-                  {step.subsections?.map((sub: any, si: number) => (
+                  {step.subsections?.map((sub, si) => (
                     <div key={si} className="bg-gray-900/50 border border-gray-800 rounded-lg p-4 mb-4">
                       <h4 className="text-sm font-medium text-gray-200 mb-1">{sub.label}</h4>
                       <p className="text-sm text-gray-400">{sub.text}</p>
                     </div>
                   ))}
 
-                  {/* Install tabs (Step 1 only) */}
                   {step.installTabs && <InstallTabs />}
 
-                  {/* Model table */}
                   {step.modelTable && <ModelTable models={step.modelTable} />}
 
-                  {/* Commands */}
                   {step.commands && <CopyBlock text={step.commands.join('\n')} />}
 
-                  {/* Chat demo */}
                   {step.chatExample && <ChatDemo exchanges={step.chatExample.exchanges} />}
 
-                  {/* Next step cards */}
-                  {step.nextStepCards && (
-                    <div className="grid sm:grid-cols-2 gap-3 mb-4">
-                      {step.nextStepCards.map((card: any, ci: number) => {
-                        const inner = (
-                          <>
-                            <div className="text-2xl mb-2">{card.emoji}</div>
-                            <h4 className="font-medium text-white mb-1">{card.title}</h4>
-                            <p className="text-xs text-gray-400 mb-3 leading-relaxed">{card.desc}</p>
-                            <span className="text-xs text-green-400 font-medium inline-flex items-center gap-1">
-                              {card.cta}
-                              {card.external ? <ExternalLink className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
-                            </span>
-                          </>
-                        )
-                        return card.external ? (
-                          <a
-                            key={ci}
-                            href={card.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="bg-gray-900 border border-gray-800 rounded-lg p-4 hover:border-gray-600 transition-colors block"
-                          >
-                            {inner}
-                          </a>
-                        ) : (
-                          <Link
-                            key={ci}
-                            to={card.link}
-                            className="bg-gray-900 border border-gray-800 rounded-lg p-4 hover:border-gray-600 transition-colors block"
-                          >
-                            {inner}
-                          </Link>
-                        )
-                      })}
-                    </div>
-                  )}
+                  {step.nextStepCards && <NextStepGrid cards={step.nextStepCards} />}
 
-                  {/* Expected result */}
                   {step.expectedResult && (
                     <div className="bg-green-900/15 border border-green-800/30 rounded-lg p-4 mb-4">
                       <h4 className="text-xs font-semibold text-green-400 mb-1 uppercase tracking-wider">預期結果</h4>
@@ -621,12 +576,11 @@ export default function TutorialPage() {
                     </div>
                   )}
 
-                  {/* Tips */}
                   {step.tips && (
                     <div className="bg-blue-900/15 border border-blue-800/30 rounded-lg p-4 mb-4">
                       <h4 className="text-xs font-semibold text-blue-400 mb-2 uppercase tracking-wider">小提示</h4>
                       <ul className="text-sm text-gray-300 space-y-1">
-                        {step.tips.map((tip: string, ti: number) => (
+                        {step.tips.map((tip, ti) => (
                           <li key={ti} className="flex items-start gap-2">
                             <span className="text-blue-400 mt-0.5">·</span>
                             <span>{tip}</span>
@@ -636,11 +590,10 @@ export default function TutorialPage() {
                     </div>
                   )}
 
-                  {/* Troubleshooting collapsible */}
                   {step.troubleshooting && (
                     <Collapsible title={step.troubleshooting.title}>
                       <div className="space-y-3">
-                        {step.troubleshooting.items.map((item: any, ti: number) => (
+                        {step.troubleshooting.items.map((item, ti) => (
                           <div key={ti}>
                             <h5 className="text-sm font-medium text-yellow-300 mb-1">Q: {item.q}</h5>
                             <p className="text-sm text-gray-400">A: {item.a}</p>
@@ -655,7 +608,6 @@ export default function TutorialPage() {
           })}
         </div>
 
-        {/* Completion message */}
         {completedSteps.length === totalSteps && (
           <div className="mt-8 text-center bg-gradient-to-r from-green-900/20 to-emerald-900/20 border border-green-700/30 rounded-xl p-8">
             <div className="text-4xl mb-3">🎉</div>
@@ -665,7 +617,7 @@ export default function TutorialPage() {
         )}
       </div>
 
-      {/* Hidden tutorial data for AI agents */}
+      {/* Structured data for AI agents */}
       <div className="ai-only" style={{ display: 'none' }}>
         <script type="application/ld+json">
           {JSON.stringify({
@@ -675,7 +627,7 @@ export default function TutorialPage() {
             "description": tutorial.subtitle,
             "totalTime": "PT5M",
             "inLanguage": "zh-TW",
-            "step": tutorial.steps.map((step: any, index: number) => ({
+            "step": tutorial.steps.map((step, index) => ({
               "@type": "HowToStep",
               "position": index + 1,
               "name": step.title,
