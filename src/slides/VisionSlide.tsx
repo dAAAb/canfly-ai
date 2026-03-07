@@ -12,7 +12,7 @@ export default function VisionSlide() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <span className="font-bold tracking-tight" style={{ fontSize: 'clamp(16px, 1.5vw, 28px)' }}>
-            🦞 CanFly.ai
+            🦞 Canfly
           </span>
           <span style={{ fontSize: 'clamp(12px, 1.05vw, 20px)', opacity: 0.8 }}>
             The Vision
@@ -56,7 +56,7 @@ export default function VisionSlide() {
               但現實是：大多數人不知道從哪裡開始。硬體怎麼選？軟體怎麼裝？Agent 怎麼跑？
             </p>
             <p className="mt-[4%]" style={{ fontSize: 'clamp(13px, 1.1vw, 20px)', opacity: 0.9, lineHeight: 1.7 }}>
-              CanFly.ai 解決的就是這個問題。我們是 AI Agent 世界的知識嚮導 — 從零開始，帶你起飛。免費體驗、硬體導購、白手套設定，一站搞定。
+              Canfly 解決的就是這個問題。我們是 AI Agent 世界的知識嚮導 — 從零開始，帶你起飛。免費體驗、硬體導購、白手套設定，一站搞定。
             </p>
             <p className="mt-[4%]" style={{ fontSize: 'clamp(13px, 1.1vw, 20px)', opacity: 0.9, lineHeight: 1.7 }}>
               不只是工具，是一個社群。每位使用者都有自己的飛行日誌頁面，展示你的 AI Agent、分享你的配置、啟發更多人起飛。

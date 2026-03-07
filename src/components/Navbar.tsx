@@ -24,7 +24,7 @@ export default function Navbar({ search, children }: NavbarProps) {
         {/* Logo */}
         <Link to={localePath('/')} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <span className="text-xl">🦞</span>
-          <span className="font-bold text-lg tracking-tight text-white">CanFly.ai</span>
+          <span className="font-bold text-lg tracking-tight text-white">Canfly</span>
         </Link>
 
         {/* Right side */}

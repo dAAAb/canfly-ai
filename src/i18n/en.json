@@ -19,7 +19,7 @@
     "headingLine2": "an",
     "headingHighlight": "AI Agent.",
     "descLeft1": "The AI Agent market is exploding — from personal assistants to enterprise automation, 2026 is the year everyone can have an AI partner. But most people don't know where to start.",
-    "descLeft2": "What hardware to choose? How to install software? How to run an Agent? CanFly.ai solves all these questions at once.",
+    "descLeft2": "What hardware to choose? How to install software? How to run an Agent? Canfly solves all these questions at once.",
     "descRight1": "We are the knowledge guide to the AI Agent world. From free experiences to hardware recommendations, from white-glove setup to community support — we take you from zero to takeoff.",
     "descRight2": "Not just a tool platform, but a community. Every user has their own flight log, showcasing your AI Agent, sharing your setup, and inspiring others.",
     "stat1Value": "$300B",
@@ -27,7 +27,7 @@
     "stat2Value": "87%",
     "stat2Label": "Want to use AI but don't know where to start",
     "stat3Value": "5 min",
-    "stat3Label": "From zero to takeoff with CanFly"
+    "stat3Label": "From zero to takeoff with Canfly"
   },
   "features": {
     "eyebrow": "Features",
@@ -60,16 +60,16 @@
     "line1": "AI won't replace you,",
     "line2": "but people with AI will.",
     "line3": "Now, you can fly.",
-    "attribution": "CanFly.ai"
+    "attribution": "Canfly"
   },
   "cta": {
     "headingLine1": "Ready?",
     "headingHighlight": "Preparing for takeoff.",
-    "desc": "CanFly.ai is building the friendliest onboarding platform for the AI Agent era.\nFrom free experiences to professional setups, we take you from ground to cloud.",
+    "desc": "Canfly is building the friendliest onboarding platform for the AI Agent era.\nFrom free experiences to professional setups, we take you from ground to cloud.",
     "followX": "Follow @dAAAb"
   },
   "footer": {
-    "copyright": "\u00a9 2026 CanFly.ai",
+    "copyright": "\u00a9 2026 Canfly.ai",
     "tagline": "With AI Lobster, you can fly too"
   },
   "apps": {
@@ -327,7 +327,7 @@
           "tips": [
             "All models are free to use",
             "Your data never leaves your computer",
-            "Join the CanFly community to connect with other users"
+            "Join the Canfly community to connect with other users"
           ],
           "nextStepCards": [
             {

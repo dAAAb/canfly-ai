@@ -19,7 +19,7 @@
     "headingLine2": "an",
     "headingHighlight": "AI Agent.",
     "descLeft1": "AI Agent 市場正在爆發 — 從個人助理到企業自動化，2026 是人人都能擁有 AI 夥伴的元年。但大多數人不知道從哪裡開始。",
-    "descLeft2": "硬體怎麼選？軟體怎麼裝？Agent 怎麼跑？這些問題，CanFly.ai 一次解決。",
+    "descLeft2": "硬體怎麼選？軟體怎麼裝？Agent 怎麼跑？這些問題，Canfly 一次解決。",
     "descRight1": "我們是 AI Agent 世界的知識嚮導。從免費體驗到硬體導購，從白手套設定到社群互助 — 帶你從零開始起飛。",
     "descRight2": "不只是工具平台，更是一個社群。每位使用者都有自己的飛行日誌，展示你的 AI Agent、分享你的配置、啟發更多人。",
     "stat1Value": "$300B",
@@ -27,7 +27,7 @@
     "stat2Value": "87%",
     "stat2Label": "想用 AI 但不知如何開始",
     "stat3Value": "5 min",
-    "stat3Label": "用 CanFly 從零到起飛"
+    "stat3Label": "用 Canfly 從零到起飛"
   },
   "features": {
     "eyebrow": "Features",
@@ -60,16 +60,16 @@
     "line1": "AI 不會取代你，",
     "line2": "但擁有 AI 的人會。",
     "line3": "現在，你也能飛。",
-    "attribution": "CanFly.ai"
+    "attribution": "Canfly"
   },
   "cta": {
     "headingLine1": "準備好了嗎？",
     "headingHighlight": "即將起飛。",
-    "desc": "CanFly.ai 正在打造 AI Agent 時代最友善的入門平台。\n從免費體驗到專業配置，我們幫你從地面到雲端。",
+    "desc": "Canfly 正在打造 AI Agent 時代最友善的入門平台。\n從免費體驗到專業配置，我們幫你從地面到雲端。",
     "followX": "Follow @dAAAb"
   },
   "footer": {
-    "copyright": "\u00a9 2026 CanFly.ai",
+    "copyright": "\u00a9 2026 Canfly.ai",
     "tagline": "有了小龍蝦 AI，你也能飛"
   },
   "apps": {
@@ -327,7 +327,7 @@
           "tips": [
             "所有模型都是免費使用",
             "你的資料永遠不會離開你的電腦",
-            "加入 CanFly 育苗場社群，和其他使用者交流"
+            "加入 Canfly 育苗場社群，和其他使用者交流"
           ],
           "nextStepCards": [
             {

@@ -44,7 +44,7 @@ export default function FeaturesSlide() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <span className="font-bold tracking-tight" style={{ fontSize: 'clamp(16px, 1.5vw, 28px)' }}>
-            🦞 CanFly.ai
+            🦞 Canfly
           </span>
           <span style={{ fontSize: 'clamp(12px, 1.05vw, 20px)', opacity: 0.8 }}>
             Features

@@ -22,7 +22,7 @@ export default function OutroSlide() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <span className="font-bold tracking-tight" style={{ fontSize: 'clamp(16px, 1.5vw, 28px)' }}>
-            🦞 CanFly.ai
+            🦞 Canfly
           </span>
           <span style={{ fontSize: 'clamp(12px, 1.05vw, 20px)', opacity: 0.8 }}>
             Stay Tuned
@@ -46,7 +46,7 @@ export default function OutroSlide() {
             className="mt-[3%]"
             style={{ fontSize: 'clamp(14px, 1.3vw, 24px)', opacity: 0.9, maxWidth: '45%', lineHeight: 1.7 }}
           >
-            CanFly.ai 正在打造 AI Agent 時代最友善的入門平台。
+            Canfly 正在打造 AI Agent 時代最友善的入門平台。
             從免費體驗到專業配置，我們幫你從地面到雲端。
           </p>
 

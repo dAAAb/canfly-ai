@@ -202,7 +202,7 @@ const ollamaTutorial: TutorialData = {
           external: true,
         },
       ],
-      tips: ['所有模型都是免費使用', '你的資料永遠不會離開你的電腦', '加入 CanFly 育苗場社群，和其他使用者交流'],
+      tips: ['所有模型都是免費使用', '你的資料永遠不會離開你的電腦', '加入 Canfly 育苗場社群，和其他使用者交流'],
     },
   ],
 }
