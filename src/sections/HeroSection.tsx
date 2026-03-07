@@ -25,7 +25,7 @@ export default function HeroSection() {
       </nav>
 
       {/* Content */}
-      <div className="relative z-10 text-center max-w-5xl" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
+      <div className="relative z-10 text-center max-w-5xl mx-auto" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
         <h1
           className="font-black tracking-tight"
           style={{

@@ -56,10 +56,10 @@ function FeatureCard({ feature, index }: { feature: typeof features[0]; index: n
           }}
         />
 
-        <div className="relative">
+        <div className="relative text-center">
           <feature.icon
             className={`stagger-child stagger-${index + 1}`}
-            style={{ width: 'clamp(36px, 4vw, 56px)', height: 'clamp(36px, 4vw, 56px)', marginBottom: '1.5rem' }}
+            style={{ width: 'clamp(36px, 4vw, 56px)', height: 'clamp(36px, 4vw, 56px)', marginBottom: '1.5rem', marginLeft: 'auto', marginRight: 'auto' }}
             strokeWidth={1.3}
           />
 
@@ -114,9 +114,11 @@ export default function FeaturesSection() {
             <FeatureCard key={i} feature={f} index={i} />
           ))}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8" style={{ marginTop: '2rem' }}>
+        <div className="flex flex-wrap justify-center gap-8" style={{ marginTop: '2rem' }}>
           {features.slice(3).map((f, i) => (
-            <FeatureCard key={i + 3} feature={f} index={i + 3} />
+            <div key={i + 3} style={{ width: 'calc((100% - 4rem) / 3)' }} className="min-w-[280px]">
+              <FeatureCard feature={f} index={i + 3} />
+            </div>
           ))}
         </div>
       </div>
