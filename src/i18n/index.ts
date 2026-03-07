@@ -43,6 +43,10 @@ i18n.use(initReactI18next).init({
   },
   lng: detectedLang,
   fallbackLng: 'en',
+  // 'currentOnly' prevents zh-tw → zh → en fallback chain.
+  // Without this, i18next tries to load 'zh' (parent), fails, falls back to 'en'.
+  load: 'currentOnly',
+  supportedLngs: ['en', 'zh-tw', 'zh-cn'],
   interpolation: { escapeValue: false },
   // Only load exact language code (zh-tw), don't try to resolve zh-TW → zh → en
   load: 'currentOnly',
