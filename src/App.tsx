@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import HomePage from './pages/HomePage'
 import AppsPage from './pages/AppsPage'
 import ProductPage from './pages/ProductPage'
@@ -20,6 +20,11 @@ function LangSync({ children }: { children: React.ReactNode }) {
       i18n.changeLanguage(resolved)
     }
   }, [resolved]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Update HTML lang attribute when language changes
+  useEffect(() => {
+    document.documentElement.lang = resolved
+  }, [resolved])
 
   return <>{children}</>
 }
