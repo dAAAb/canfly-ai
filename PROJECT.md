@@ -107,16 +107,24 @@
 
 ```
 canfly.ai/                  → 首頁：品牌故事 + 免費入門 CTA
-canfly.ai/start             → 🆓 免費起步（Ollama + OpenClaw 教學）
+canfly.ai/start             → 🆓 免費起步（Ollama + OpenClaw + Virtual Buddy 教學）
+canfly.ai/deploy            → 🚀 部署（Zeabur）← 階梯佣金
+canfly.ai/skills            → 🧩 Skills 頁面
+├── canfly.ai/skills/elevenlabs  → ElevenLabs × OpenClaw ← 22% 佣金
+├── canfly.ai/skills/heygen      → HeyGen × OpenClaw ← 20% 佣金
+└── ...更多 skill 組合
 canfly.ai/voice             → 🎙️ AI 語音（ElevenLabs）← 22% 佣金
 canfly.ai/video             → 🎬 AI 影片（HeyGen）← 20% 佣金
 canfly.ai/search            → 🔍 AI 搜尋（Perplexity）← $15/人
-canfly.ai/deploy            → 🚀 部署（Zeabur）← 階梯佣金
 canfly.ai/models            → 🧠 AI 模型（OpenAI/Claude/Gemini）← 服務費
-canfly.ai/hardware          → 🖥️ 硬體（Umbrel/Hup/SwitchBot）← 服務費
-canfly.ai/community         → 👥 社群入口
+canfly.ai/hardware          → 🖥️ 硬體目錄
+├── Umbrel（coming soon）
+├── SwitchBot AI Hub（coming soon）
+└── 更多硬體
+canfly.ai/software          → 💻 軟體環境
+└── Pinata（coming soon）
 
-{username}.canfly.ai        → 用戶個人頁（Phase 2）
+{username}.canfly.ai        → 用戶個人頁（Phase 1！一開始就要）
 ├── 🦞 我的 Agent 身分（Moltbook 連動）
 ├── ⭐ 我用的產品 + 評價
 ├── 📊 我的 Agent 能力值
@@ -141,38 +149,48 @@ canfly.ai/community         → 👥 社群入口
 
 ---
 
-## 📋 Phase 規劃
+## 📋 Phase 規劃（2026-03-07 寶博確認）
 
-### Phase 1：MVP Landing + 3-5 產品頁（優先）
+### Phase 1：MVP（首批上線）
 - [ ] 設計正式首頁（品牌、CTA）
-- [ ] 免費入門教學頁（Ollama + OpenClaw）
-- [ ] 3-5 個核心產品深度 review 頁面
-- [ ] 每個產品配寶博 avatar 30 秒 HeyGen 影片
+- [ ] **用戶個人頁**（一開始就要！`{username}.canfly.ai`）
+- [ ] **Ollama 免費入門教學**（含 Virtual Buddy 裝 Ollama 的教學）
+- [ ] **Zeabur 付費部署教學**（有 affiliate，推薦碼 OpenClaw）
+- [ ] **Skills 頁面**：ElevenLabs × OpenClaw、HeyGen × OpenClaw
+- [ ] 從 blog.juchunko.com 整合已有的心得/教學內容
 - [ ] Affiliate links 全部埋好
 - [ ] 基本 SEO（og:image, sitemap, meta）
+- [ ] 每個產品配寶博 avatar HeyGen 影片
 
-### Phase 2：服務 + 金流
-- [ ] Stripe Atlas 開公司（如確定要）
-- [ ] Stripe Checkout 服務費收款頁面
+### Phase 1.5：Coming Soon 產品頁
+- [ ] **Pinata**（軟體環境）— 先放 coming soon + logo + 產品照片
+- [ ] **Umbrel**（硬體）— 先放 coming soon + logo + 產品照片
+- [ ] **SwitchBot AI Hub**（硬體）— 先放 coming soon + logo + 產品照片
+
+### Phase 2：服務 + 金流 + Amazon
+- [ ] Stripe 收款（用現有的，不急開 Atlas）
 - [ ] 白手套服務流程設計
+- [ ] Amazon Associates 整合（StoreID: `juchunko-20`，等 Creator API approve）
 - [ ] 申請 Perplexity affiliate
 
-### Phase 3：社群 + 用戶個人頁
-- [ ] {username}.canfly.ai wildcard subdomain
-- [ ] 用戶註冊 + 個人頁模板
-- [ ] Moltbook 連動
+### Phase 3：擴展
+- [ ] 建立自動學習新產品/工具的機制
+- [ ] 更多 Skill 組合頁面
 - [ ] 社群互動功能（follow / 推薦 / 評價）
+- [ ] Moltbook 連動
 
 ---
 
 ## 🔑 重要憑證
 
-| 項目 | 位置 |
-|------|------|
-| Cloudflare API Key | `~/.config/canfly/cf-api-key`（需建立） |
+| 項目 | 值 / 位置 |
+|------|-----------|
+| Cloudflare API Key | `~/.config/canfly/cf-api-key` |
 | ElevenLabs Affiliate | `https://try.elevenlabs.io/clawhub` |
 | HeyGen Affiliate | `https://www.heygen.com/?sid=rewardful&via=clawhub` |
 | Zeabur Referral Code | `OpenClaw` |
+| Amazon Associates StoreID | `juchunko-20` |
+| Amazon Creator API | ⏳ 等待 approve（寶博已申請） |
 
 ---
 
@@ -193,6 +211,26 @@ canfly.ai/community         → 👥 社群入口
 | 2026-03-07 | 選 canfly.ai 而非 HatchinClaw | 更好記、品牌延展性強、自帶 slogan |
 | 2026-03-07 | 商業模式以服務費為主 | 稅務乾淨、風險低、毛利高 |
 | 2026-03-07 | 先 affiliate 再代購 | 摩擦力最小，先跑起來 |
+| 2026-03-07 | 金流用現有的 Stripe | 不急開 Atlas，先跑 |
+| 2026-03-07 | 用戶個人頁 Phase 1 就做 | 社群是護城河，一開始就要 |
+| 2026-03-07 | 首批上線：Ollama 免費 + Zeabur 付費 | 一免一付，漏斗完整 |
+| 2026-03-07 | Pinata/Umbrel/SwitchBot 先 coming soon | 產品照片 + logo，之後再上完整頁面 |
+| 2026-03-07 | 新增 Skills 頁面概念 | ElevenLabs × OpenClaw、HeyGen × OpenClaw |
+| 2026-03-07 | blog.juchunko.com 內容需要整合機制 | 未來要能自動學習新工具 |
+| 2026-03-07 | Amazon Associates: juchunko-20 | 等 Creator API approve |
+
+## 📚 內容來源
+
+### 已有教學（blog.juchunko.com）
+需要盤點 blog.juchunko.com 上所有跟 OpenClaw 相關的教學文章，整合到 canfly.ai。
+未來需要建立機制讓我自己學習新產品/工具並自動產出 review 內容。
+
+### 待產出
+- [ ] Virtual Buddy 裝 Ollama 教學
+- [ ] Zeabur 部署 OpenClaw 教學
+- [ ] ElevenLabs × OpenClaw skill 教學
+- [ ] HeyGen × OpenClaw skill 教學
+- [ ] 各 coming soon 產品的產品照片 + logo 收集
 
 ---
 
