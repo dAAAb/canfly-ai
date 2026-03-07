@@ -2,61 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import Navbar from '../components/Navbar'
-
-const products = [
-  {
-    id: 'ollama',
-    name: 'Ollama',
-    tagline: 'Free local AI models',
-    category: 'free',
-    price: 'Free',
-    status: 'available',
-    description: 'Run AI models locally without API keys',
-  },
-  {
-    id: 'zeabur',
-    name: 'Zeabur',
-    tagline: 'One-click cloud deployment',
-    category: 'hosting',
-    price: '$5/month',
-    status: 'available',
-    affiliate: 'OpenClaw',
-  },
-  {
-    id: 'elevenlabs',
-    name: 'ElevenLabs',
-    tagline: 'AI voice synthesis',
-    category: 'skills',
-    price: '$5/month',
-    status: 'coming-soon',
-    affiliate: 'https://try.elevenlabs.io/clawhub',
-  },
-  {
-    id: 'heygen',
-    name: 'HeyGen',
-    tagline: 'AI video generation',
-    category: 'skills',
-    price: '$29/month',
-    status: 'coming-soon',
-    affiliate: 'https://www.heygen.com/?sid=rewardful&via=clawhub',
-  },
-  {
-    id: 'umbrel',
-    name: 'Umbrel',
-    tagline: 'Self-hosted home server',
-    category: 'hardware',
-    price: '$299',
-    status: 'coming-soon',
-  },
-]
-
-const categories = [
-  { id: 'all', name: 'All Apps', count: products.length },
-  { id: 'free', name: 'Free Tools', count: products.filter(p => p.category === 'free').length },
-  { id: 'skills', name: 'AI Skills', count: products.filter(p => p.category === 'skills').length },
-  { id: 'hosting', name: 'Cloud Hosting', count: products.filter(p => p.category === 'hosting').length },
-  { id: 'hardware', name: 'Hardware', count: products.filter(p => p.category === 'hardware').length },
-]
+import { products, categories } from '../data/products'
 
 export default function AppsPage() {
   const [selectedCategory, setSelectedCategory] = useState('all')
@@ -191,9 +137,9 @@ export default function AppsPage() {
                       </div>
                     </div>
 
-                    {product.affiliate && (
+                    {product.affiliateLink && (
                       <div className="text-xs text-blue-400 mt-2">
-                        Works with OpenClaw
+                        {product.affiliateCode ? `Use code: ${product.affiliateCode}` : 'OpenClaw Partner'}
                       </div>
                     )}
                   </div>

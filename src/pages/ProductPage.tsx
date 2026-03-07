@@ -1,96 +1,18 @@
 import { useParams, Link } from 'react-router-dom'
 import { useState } from 'react'
-import { ExternalLink, CheckCircle, Play, Star } from 'lucide-react'
+import { ExternalLink, CheckCircle, Play } from 'lucide-react'
 import Navbar from '../components/Navbar'
+import { productsBySlug } from '../data/products'
 
-// Product data - should match AppsPage.tsx
-const products = {
-  ollama: {
-    name: 'Ollama',
-    tagline: 'Free local AI models',
-    description: 'Run powerful AI models locally without requiring API keys or internet connection. Perfect for privacy-conscious users and development environments.',
-    price: 'Free',
-    category: 'free',
-    status: 'available',
-    features: [
-      'No API keys required',
-      'Privacy-focused local processing',
-      'Multiple model support (Llama, CodeLlama, Mistral)',
-      'Easy command-line interface',
-      'Works with OpenClaw agents'
-    ],
-    screenshots: [
-      '/images/ollama-terminal.jpg',
-      '/images/ollama-models.jpg',
-      '/images/ollama-openclaw.jpg'
-    ],
-    tutorial: '/learn/ollama-setup',
-    cta: {
-      primary: 'Start Free Tutorial',
-      secondary: 'View on GitHub'
-    }
-  },
-  zeabur: {
-    name: 'Zeabur',
-    tagline: 'One-click cloud deployment',
-    description: 'Deploy your OpenClaw agents to the cloud with zero configuration. Get started in minutes with our affiliate partnership.',
-    price: '$5/month',
-    category: 'hosting',
-    status: 'available',
-    affiliate: 'OpenClaw',
-    affiliateDiscount: '10% off',
-    features: [
-      'One-click deployment',
-      'Automatic HTTPS',
-      'Global CDN',
-      '24/7 monitoring',
-      'OpenClaw optimized templates'
-    ],
-    screenshots: [
-      '/images/zeabur-dashboard.jpg',
-      '/images/zeabur-deploy.jpg',
-      '/images/zeabur-logs.jpg'
-    ],
-    tutorial: '/learn/zeabur-deployment',
-    cta: {
-      primary: 'Deploy Now (10% off)',
-      secondary: 'View Tutorial'
-    }
-  },
-  elevenlabs: {
-    name: 'ElevenLabs',
-    tagline: 'AI voice synthesis',
-    description: 'Add realistic voice capabilities to your OpenClaw agents. High-quality text-to-speech with multiple voice options.',
-    price: '$5/month',
-    category: 'skills',
-    status: 'coming-soon',
-    affiliate: 'https://try.elevenlabs.io/clawhub',
-    commission: '22% recurring',
-    features: [
-      'Natural-sounding voices',
-      'Multi-language support',
-      'Voice cloning capabilities',
-      'API integration',
-      'OpenClaw skill available'
-    ],
-    screenshots: [
-      '/images/elevenlabs-interface.jpg',
-      '/images/elevenlabs-voices.jpg',
-      '/images/elevenlabs-openclaw.jpg'
-    ],
-    tutorial: '/learn/elevenlabs-integration',
-    cta: {
-      primary: 'Coming Soon',
-      secondary: 'Get Notified'
-    }
-  }
+function isExternal(url: string) {
+  return url.startsWith('http')
 }
 
 export default function ProductPage() {
   const { slug } = useParams()
   const [activeScreenshot, setActiveScreenshot] = useState(0)
 
-  const product = products[slug as keyof typeof products]
+  const product = productsBySlug[slug as string]
 
   if (!product) {
     return (
@@ -98,20 +20,25 @@ export default function ProductPage() {
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Product not found</h1>
           <Link to="/apps" className="text-blue-400 hover:text-blue-300">
-            ← Back to Apps
+            &larr; Back to Apps
           </Link>
         </div>
       </div>
     )
   }
 
-  const isComingSoon = product.status === 'coming-soon'
-
   return (
     <div className="min-h-screen bg-black text-white">
       <Navbar />
 
       <div className="max-w-6xl mx-auto px-6 md:px-8 py-10">
+        {/* Breadcrumb */}
+        <nav className="flex items-center gap-2 text-sm text-gray-400 mb-8">
+          <Link to="/apps" className="hover:text-white transition-colors">Apps</Link>
+          <span>&gt;</span>
+          <span className="text-white">{product.name}</span>
+        </nav>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Left column - Screenshots */}
           <div>
@@ -129,7 +56,7 @@ export default function ProductPage() {
 
             {/* Screenshot thumbnails */}
             <div className="flex gap-2">
-              {product.screenshots.map((screenshot, index) => (
+              {product.screenshots.map((_screenshot, index) => (
                 <button
                   key={index}
                   onClick={() => setActiveScreenshot(index)}
@@ -150,7 +77,7 @@ export default function ProductPage() {
             <div className="mb-6">
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-4xl font-bold">{product.name}</h1>
-                {product.affiliate && (
+                {product.affiliateLink && (
                   <span className="px-2 py-1 bg-blue-600 text-xs rounded-full">
                     OpenClaw Partner
                   </span>
@@ -165,31 +92,52 @@ export default function ProductPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="text-2xl font-bold text-green-400">{product.price}</div>
-                  {product.affiliateDiscount && (
-                    <div className="text-sm text-blue-400">{product.affiliateDiscount} with code: {product.affiliate}</div>
+                  {product.affiliateDiscount && product.affiliateCode && (
+                    <div className="text-sm text-blue-400">{product.affiliateDiscount} with code: {product.affiliateCode}</div>
                   )}
                   {product.commission && (
                     <div className="text-xs text-gray-500">{product.commission} affiliate commission</div>
                   )}
                 </div>
                 <div className="flex gap-2">
-                  <button
-                    className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                      isComingSoon
-                        ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
-                        : 'bg-blue-600 hover:bg-blue-700 text-white'
-                    }`}
-                    disabled={isComingSoon}
-                  >
-                    {product.cta.primary}
-                  </button>
-                  <Link
-                    to={product.tutorial}
-                    className="px-4 py-3 border border-gray-600 rounded-lg hover:border-gray-500 transition-colors flex items-center gap-2"
-                  >
-                    <Play className="w-4 h-4" />
-                    {product.cta.secondary}
-                  </Link>
+                  {isExternal(product.cta.primaryLink) ? (
+                    <a
+                      href={product.cta.primaryLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors inline-flex items-center gap-2"
+                    >
+                      {product.cta.primary}
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  ) : (
+                    <Link
+                      to={product.cta.primaryLink}
+                      className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+                    >
+                      {product.cta.primary}
+                    </Link>
+                  )}
+                  {isExternal(product.cta.secondaryLink) ? (
+                    <a
+                      href={product.cta.secondaryLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-3 border border-gray-600 rounded-lg hover:border-gray-500 transition-colors inline-flex items-center gap-2"
+                    >
+                      <Play className="w-4 h-4" />
+                      {product.cta.secondary}
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  ) : (
+                    <Link
+                      to={product.cta.secondaryLink}
+                      className="px-4 py-3 border border-gray-600 rounded-lg hover:border-gray-500 transition-colors flex items-center gap-2"
+                    >
+                      <Play className="w-4 h-4" />
+                      {product.cta.secondary}
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>
