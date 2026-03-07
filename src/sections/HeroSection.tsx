@@ -54,14 +54,14 @@ export default function HeroSection() {
           <br />
           AI Agent 時代的起飛平台。
         </p>
+      </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex flex-col items-center opacity-40 animate-bounce">
-          <span className="text-xs tracking-widest uppercase mb-2">Scroll</span>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M12 5v14M5 12l7 7 7-7" />
-          </svg>
-        </div>
+      {/* Scroll indicator */}
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center opacity-40 animate-bounce">
+        <span className="text-xs tracking-widest uppercase mb-2">Scroll</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M12 5v14M5 12l7 7 7-7" />
+        </svg>
       </div>
     </section>
   )
