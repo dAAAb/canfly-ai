@@ -1,67 +1,64 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import en from './en.json'
-import zhTW from './zh-tw.json'
-import zhCN from './zh-cn.json'
+import zhTW from './zh-TW.json'
+import zhCN from './zh-CN.json'
 
-export const SUPPORTED_LANGS = ['en', 'zh-tw', 'zh-cn'] as const
+export const SUPPORTED_LANGS = ['en', 'zh-TW', 'zh-CN'] as const
 export type SupportedLang = (typeof SUPPORTED_LANGS)[number]
 
 export const LANG_LABELS: Record<SupportedLang, string> = {
   en: 'EN',
-  'zh-tw': '繁',
-  'zh-cn': '简',
+  'zh-TW': '繁',
+  'zh-CN': '简',
+}
+
+// URL prefix uses lowercase (zh-tw), i18next uses canonical (zh-TW)
+const URL_TO_LANG: Record<string, SupportedLang> = {
+  'zh-tw': 'zh-TW',
+  'zh-cn': 'zh-CN',
+}
+
+const LANG_TO_URL: Record<SupportedLang, string> = {
+  en: '',
+  'zh-TW': '/zh-tw',
+  'zh-CN': '/zh-cn',
 }
 
 /** Map URL prefix to i18next language code. */
 export function langFromPrefix(prefix: string | undefined): SupportedLang {
-  if (prefix === 'zh-tw' || prefix === 'zh-cn') return prefix
+  if (prefix) return URL_TO_LANG[prefix] || 'en'
   return 'en'
 }
 
 /** Get URL prefix for a language. English returns empty string. */
 export function prefixForLang(lang: SupportedLang): string {
-  return lang === 'en' ? '' : `/${lang}`
+  return LANG_TO_URL[lang] || ''
 }
 
 /** Detect initial language from current URL path */
 function detectLangFromUrl(): SupportedLang {
   const path = window.location.pathname
-  if (path.startsWith('/zh-tw')) return 'zh-tw'
-  if (path.startsWith('/zh-cn')) return 'zh-cn'
+  if (path.startsWith('/zh-tw')) return 'zh-TW'
+  if (path.startsWith('/zh-cn')) return 'zh-CN'
   return 'en'
 }
 
 const detectedLang = detectLangFromUrl()
-console.log('[i18n] detected language from URL:', detectedLang, 'path:', window.location.pathname)
 
 i18n.use(initReactI18next).init({
   resources: {
     en: { translation: en },
-    'zh-tw': { translation: zhTW },
-    'zh-cn': { translation: zhCN },
+    'zh-TW': { translation: zhTW },
+    'zh-CN': { translation: zhCN },
   },
   lng: detectedLang,
   fallbackLng: 'en',
-  // 'currentOnly' prevents zh-tw → zh → en fallback chain.
-  // Without this, i18next tries to load 'zh' (parent), fails, falls back to 'en'.
   load: 'currentOnly',
-  supportedLngs: ['en', 'zh-tw', 'zh-cn'],
+  supportedLngs: ['en', 'zh-TW', 'zh-CN'],
   interpolation: { escapeValue: false },
-  // Only load exact language code (zh-tw), don't try to resolve zh-TW → zh → en
-  load: 'currentOnly',
-  supportedLngs: ['en', 'zh-tw', 'zh-cn'],
-  // Synchronous init — resources are bundled, no need for async loading.
   initImmediate: false,
-  react: {
-    useSuspense: false,
-  },
+  react: { useSuspense: false },
 })
-
-console.log('[i18n] after init, language:', i18n.language)
-console.log('[i18n] t(hero.subtitle):', i18n.t('hero.subtitle'))
-console.log('[i18n] getResource zh-tw:', JSON.stringify(i18n.getResource('zh-tw', 'translation', 'hero.subtitle')))
-console.log('[i18n] getResource zh-tw hero:', JSON.stringify(i18n.getResource('zh-tw', 'translation', 'hero'))?.substring(0, 100))
-console.log('[i18n] store languages:', i18n.store?.data ? Object.keys(i18n.store.data) : 'no store')
 
 export default i18n
