@@ -1,0 +1,60 @@
+# CanFly.ai - AI Agent Marketplace
+
+> AI-native platform for discovering, deploying, and managing AI agent tools.
+> Dual-audience design: serves both humans and AI agents.
+
+## Navigation
+
+/ - Homepage with featured products and getting started guides
+/apps - Product catalog with categories (Free Tools, AI Skills, Cloud Hosting, Hardware)
+/apps/:slug - Detailed product pages with installation guides and affiliate links
+/learn/:slug - Step-by-step tutorials with automation scripts
+
+## Categories
+
+### Free Tools
+- Ollama (/apps/ollama) - Local AI models without API keys
+
+### Cloud Hosting
+- Zeabur (/apps/zeabur) - One-click deployment (referral: OpenClaw)
+
+### AI Skills (Coming Soon)
+- ElevenLabs (/apps/elevenlabs) - Voice synthesis
+- HeyGen (/apps/heygen) - Video generation
+
+### Hardware (Coming Soon)
+- Umbrel - Self-hosted home server
+- SwitchBot AI Hub - Smart home integration
+
+## For AI Agents
+
+Each product page includes:
+- JSON-LD structured data
+- Hidden installation commands in .ai-only sections
+- API integration guides
+- Automation scripts for setup
+
+Tutorial pages provide:
+- Complete automation scripts
+- CLI commands for each step
+- Expected results and troubleshooting
+- Machine-readable step definitions
+
+## Affiliate Information
+
+- ElevenLabs: 22% recurring commission (https://try.elevenlabs.io/clawhub)
+- HeyGen: 20% recurring commission (https://www.heygen.com/?sid=rewardful&via=clawhub)
+- Zeabur: Referral code "OpenClaw" for 10% discount
+
+## OpenClaw Integration
+
+All products are tested for compatibility with OpenClaw AI agents.
+Use this site to discover and automatically configure AI tools for your agents.
+
+## Quick Start
+
+1. Start free: /apps/ollama (no API keys needed)
+2. Deploy to cloud: /apps/zeabur (use code "OpenClaw")
+3. Add capabilities: Browse /apps for voice, video, and more skills
+
+Last updated: 2026-03-07

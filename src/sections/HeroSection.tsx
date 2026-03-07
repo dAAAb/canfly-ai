@@ -1,4 +1,6 @@
 import { useVideoBackground } from '../hooks/useVideoBackground'
+import { Link } from 'react-router-dom'
+import { ArrowRight, PlayCircle } from 'lucide-react'
 
 export default function HeroSection() {
   const videoRef = useVideoBackground(
@@ -21,7 +23,17 @@ export default function HeroSection() {
       {/* Nav */}
       <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between py-10" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
         <span className="font-bold text-xl tracking-tight">🦞 CanFly.ai</span>
-        <span className="text-sm opacity-60">Coming Soon</span>
+        <div className="flex items-center gap-6">
+          <Link to="/apps" className="text-sm text-gray-300 hover:text-white transition-colors">
+            Browse Apps
+          </Link>
+          <Link
+            to="/apps/ollama"
+            className="text-sm bg-green-600/20 border border-green-600 px-3 py-1 rounded-full hover:bg-green-600/30 transition-colors"
+          >
+            Start Free
+          </Link>
+        </div>
       </nav>
 
       {/* Content */}
@@ -54,6 +66,30 @@ export default function HeroSection() {
           <br />
           AI Agent 時代的起飛平台。
         </p>
+
+        {/* CTA Buttons */}
+        <div className="mt-12 flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <Link
+            to="/apps/ollama"
+            className="group flex items-center gap-3 bg-green-600 hover:bg-green-700 px-8 py-4 rounded-xl text-lg font-semibold transition-all hover:scale-105"
+          >
+            <PlayCircle className="w-6 h-6" />
+            開始免費體驗
+            <span className="text-sm opacity-80">(Ollama)</span>
+          </Link>
+
+          <Link
+            to="/apps"
+            className="group flex items-center gap-3 bg-white/10 border border-white/20 backdrop-blur-sm px-8 py-4 rounded-xl text-lg font-semibold transition-all hover:scale-105 hover:bg-white/15"
+          >
+            瀏覽所有工具
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </div>
+
+        <div className="mt-8 text-sm text-gray-300">
+          <p>從 Ollama 免費開始 → Zeabur 雲端部署 → AI 技能擴展</p>
+        </div>
       </div>
 
       {/* Scroll indicator */}
