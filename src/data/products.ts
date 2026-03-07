@@ -164,7 +164,7 @@ export const products: Product[] = [
     ],
     tutorial: '/learn/umbrel-setup',
     cta: {
-      primary: 'Get Umbrel',
+      primary: 'Visit Umbrel',
       primaryLink: 'https://umbrel.com',
       secondary: 'View Tutorial',
       secondaryLink: '/learn/umbrel-setup',
