@@ -41,6 +41,9 @@ i18n.use(initReactI18next).init({
   lng: detectLangFromUrl(),
   fallbackLng: 'en',
   interpolation: { escapeValue: false },
+  // Synchronous init — resources are bundled, no need for async loading.
+  // Without this, useTranslation() returns English on first render.
+  initImmediate: false,
 })
 
 export default i18n
