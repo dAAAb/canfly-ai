@@ -19,13 +19,13 @@ export default function HeroSection() {
       <div className="absolute inset-0 bg-black/50" />
 
       {/* Nav */}
-      <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-[8%] py-10">
+      <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between py-10" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
         <span className="font-bold text-xl tracking-tight">🦞 CanFly.ai</span>
         <span className="text-sm opacity-60">Coming Soon</span>
       </nav>
 
       {/* Content */}
-      <div className="relative z-10 text-center px-[8%] max-w-5xl">
+      <div className="relative z-10 text-center max-w-5xl" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
         <h1
           className="font-black tracking-tight"
           style={{

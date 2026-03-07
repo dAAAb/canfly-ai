@@ -13,7 +13,7 @@ export default function CTASection() {
   const ref = useFadeIn()
 
   return (
-    <section className="relative py-40 md:py-56 px-[8%]">
+    <section className="relative py-40 md:py-56" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
       <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-950 to-black" />
 
       <div ref={ref} className="fade-section relative z-10 max-w-4xl mx-auto text-center">

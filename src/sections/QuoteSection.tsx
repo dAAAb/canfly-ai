@@ -20,7 +20,7 @@ export default function QuoteSection() {
       />
       <div className="absolute inset-0 bg-black/60" />
 
-      <div ref={ref} className="fade-section relative z-10 text-center px-[10%] py-40 max-w-5xl mx-auto">
+      <div ref={ref} className="fade-section relative z-10 text-center py-40 max-w-5xl mx-auto" style={{ paddingLeft: '10%', paddingRight: '10%' }}>
         <blockquote
           className="font-bold stagger-child stagger-1"
           style={{

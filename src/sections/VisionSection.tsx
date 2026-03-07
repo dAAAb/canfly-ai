@@ -4,7 +4,7 @@ export default function VisionSection() {
   const ref = useFadeIn()
 
   return (
-    <section className="relative py-36 md:py-52 px-[8%]">
+    <section className="relative py-36 md:py-52" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
       {/* Subtle gradient background */}
       <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-950 to-black" />
 

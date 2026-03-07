@@ -87,7 +87,7 @@ export default function FeaturesSection() {
   const headerRef = useFadeIn()
 
   return (
-    <section className="relative py-36 md:py-52 px-[8%]">
+    <section className="relative py-36 md:py-52" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
       <div className="max-w-5xl mx-auto">
         {/* Section header */}
         <div ref={headerRef} className="fade-section text-center mb-24">
