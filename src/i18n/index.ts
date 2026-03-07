@@ -51,6 +51,10 @@ i18n.use(initReactI18next).init({
   },
 })
 
-console.log('[i18n] after init, language:', i18n.language, 'test t:', i18n.t('hero.subtitle'))
+console.log('[i18n] after init, language:', i18n.language)
+console.log('[i18n] t(hero.subtitle):', i18n.t('hero.subtitle'))
+console.log('[i18n] getResource zh-tw:', JSON.stringify(i18n.getResource('zh-tw', 'translation', 'hero.subtitle')))
+console.log('[i18n] getResource zh-tw hero:', JSON.stringify(i18n.getResource('zh-tw', 'translation', 'hero'))?.substring(0, 100))
+console.log('[i18n] store languages:', i18n.store?.data ? Object.keys(i18n.store.data) : 'no store')
 
 export default i18n
