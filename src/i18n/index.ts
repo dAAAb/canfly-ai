@@ -44,6 +44,9 @@ i18n.use(initReactI18next).init({
   lng: detectedLang,
   fallbackLng: 'en',
   interpolation: { escapeValue: false },
+  // Only load exact language code (zh-tw), don't try to resolve zh-TW → zh → en
+  load: 'currentOnly',
+  supportedLngs: ['en', 'zh-tw', 'zh-cn'],
   // Synchronous init — resources are bundled, no need for async loading.
   initImmediate: false,
   react: {
