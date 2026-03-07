@@ -1,0 +1,12 @@
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "Setup Ollama with OpenClaw",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "name": "Install Ollama"
+    }
+  ]
+}

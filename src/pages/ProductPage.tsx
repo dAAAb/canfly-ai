@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom'
 import { useState } from 'react'
-import { ChevronLeft, ExternalLink, CheckCircle, Play, Star } from 'lucide-react'
+import { ExternalLink, CheckCircle, Play, Star } from 'lucide-react'
+import Navbar from '../components/Navbar'
 
 // Product data - should match AppsPage.tsx
 const products = {
@@ -108,17 +109,9 @@ export default function ProductPage() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Header */}
-      <div className="border-b border-gray-800 bg-black/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <Link to="/apps" className="flex items-center gap-2 text-gray-400 hover:text-white w-fit">
-            <ChevronLeft className="w-5 h-5" />
-            <span className="text-sm">Back to Apps</span>
-          </Link>
-        </div>
-      </div>
+      <Navbar />
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-6 md:px-8 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Left column - Screenshots */}
           <div>

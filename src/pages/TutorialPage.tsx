@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom'
-import { ChevronLeft, Clock, CheckCircle, Play, Copy, ExternalLink } from 'lucide-react'
+import { Clock, CheckCircle, Play, Copy, ExternalLink } from 'lucide-react'
 import { useState } from 'react'
+import Navbar from '../components/Navbar'
 
 // Tutorial data - this would normally come from CMS or API
 const getTutorialData = (slug: string) => {
@@ -171,15 +172,7 @@ export default function TutorialPage() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Dark header */}
-      <div className="bg-gray-950 border-b border-gray-800">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <Link to={`/apps/${tutorial.id}`} className="flex items-center gap-2 text-gray-400 hover:text-white">
-            <ChevronLeft className="w-5 h-5" />
-            <span className="text-sm">Back to {tutorial.title.split(' ')[1]}</span>
-          </Link>
-        </div>
-      </div>
+      <Navbar />
 
       {/* Hero section */}
       <div className="bg-gradient-to-br from-gray-950 via-black to-gray-950 py-16">

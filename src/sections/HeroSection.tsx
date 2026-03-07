@@ -22,7 +22,10 @@ export default function HeroSection() {
 
       {/* Nav */}
       <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between py-10" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
-        <span className="font-bold text-xl tracking-tight">🦞 CanFly.ai</span>
+        <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+          <span className="text-xl">🦞</span>
+          <span className="font-bold text-xl tracking-tight">CanFly.ai</span>
+        </Link>
         <div className="flex items-center gap-6">
           <Link to="/apps" className="text-sm text-gray-300 hover:text-white transition-colors">
             Browse Apps
