@@ -16,14 +16,14 @@ const ollamaTutorial = {
       title: '安裝 Ollama',
       titleEn: 'Install Ollama',
       estimatedTime: '1 分鐘',
-      content: '選擇適合你的安裝方式。Mac 新手推薦用 Virtual Buddy 圖形介面，進階使用者可以用終端機。',
+      content: '選擇適合你的安裝方式。Mac 新手推薦直接下載 Ollama.app（內建聊天介面），進階使用者可以用終端機。',
       installTabs: true, // special flag for multi-tab install
       expectedResult: '安裝完成後，Ollama 會在背景自動啟動服務。',
       tips: ['需要至少 8GB RAM（建議 16GB 以上）', 'macOS 需要 11.0 以上版本', '安裝後不需要重開機'],
       troubleshooting: {
-        title: '安裝遇到問題？',
+        title: '卡關了？安裝問題排解',
         items: [
-          { q: 'Mac 無法開啟 Virtual Buddy', a: '到「系統設定 → 隱私與安全性」，點擊「仍然開啟」。' },
+          { q: 'Mac 無法開啟 Ollama.app', a: '到「系統設定 → 隱私與安全性」，點擊「仍然開啟」。這是 macOS 對未簽名應用的安全機制。' },
           { q: '終端機顯示 "command not found"', a: '請重新開啟終端機，或執行 source ~/.zshrc 重新載入環境變數。' },
           { q: 'Windows 安裝卡住', a: '請用系統管理員身分執行安裝程式。右鍵點擊 → 以系統管理員身分執行。' },
         ]
@@ -60,7 +60,7 @@ const ollamaTutorial = {
       expectedResult: '下載完成後會顯示 success。可以用 ollama list 確認已安裝的模型。',
       tips: ['第一次下載需要網路，之後可以完全離線使用', '模型檔案儲存在本機，不會上傳任何資料', '硬碟空間不夠？先只裝 llama3.2 就好'],
       troubleshooting: {
-        title: '下載遇到問題？',
+        title: '卡關了？下載問題排解',
         items: [
           { q: '下載速度很慢', a: '模型檔案較大，確保網路穩定。也可以試試較小的模型如 llama3.2。' },
           { q: '顯示磁碟空間不足', a: '用 ollama list 查看已安裝的模型，用 ollama rm <model> 刪除不需要的模型。' },
@@ -94,7 +94,7 @@ const ollamaTutorial = {
       expectedResult: 'AI 會用文字回應你的問題。回應速度取決於你的硬體規格。',
       tips: ['第一次執行模型時會比較慢（需要載入到記憶體），之後會快很多', '按 Ctrl+D 或輸入 /bye 可以離開對話', '試試問不同語言的問題，體驗多語言能力'],
       troubleshooting: {
-        title: '對話遇到問題？',
+        title: '卡關了？對話問題排解',
         items: [
           { q: '回應速度很慢', a: '正常！第一次載入模型需要時間。如果持續很慢，試試較小的模型 llama3.2。' },
           { q: '顯示記憶體不足', a: '關閉其他應用程式釋放記憶體，或換用更小的模型。' },
@@ -123,7 +123,7 @@ const ollamaTutorial = {
       expectedResult: 'OpenClaw 現在可以使用你的本地 Ollama 模型了。完全免費、完全離線！',
       tips: ['OpenClaw 會自動偵測你安裝的所有模型', '你隨時可以在 OpenClaw 中切換不同模型', '想在手機上用？之後可以部署到 Zeabur 雲端'],
       troubleshooting: {
-        title: '連接遇到問題？',
+        title: '卡關了？連接問題排解',
         items: [
           { q: 'OpenClaw 找不到 Ollama', a: '確認 Ollama 正在運行：在終端機輸入 ollama list。如果沒有反應，重新啟動 Ollama。' },
           { q: 'API 位址填什麼？', a: '預設是 http://localhost:11434，除非你有特別更改過。' },
@@ -296,7 +296,7 @@ function InstallTabs() {
   const [tab, setTab] = useState<'gui' | 'mac' | 'win'>('gui')
 
   const tabs = [
-    { key: 'gui' as const, label: '🍎 Mac 最簡單', sublabel: 'Virtual Buddy 圖形介面' },
+    { key: 'gui' as const, label: '🍎 Mac 最簡單', sublabel: 'Ollama.app 圖形介面' },
     { key: 'mac' as const, label: '🍎 Mac / Linux', sublabel: '終端機（進階）' },
     { key: 'win' as const, label: '🪟 Windows', sublabel: '下載安裝' },
   ]
@@ -328,36 +328,33 @@ function InstallTabs() {
             <div className="flex items-start gap-3">
               <Monitor className="w-5 h-5 text-green-400 mt-0.5 flex-shrink-0" />
               <div>
-                <h4 className="font-medium text-green-400 mb-1">Virtual Buddy — 最適合 Mac 新手</h4>
+                <h4 className="font-medium text-green-400 mb-1">Ollama.app — 最適合 Mac 新手</h4>
                 <p className="text-sm text-gray-300 mb-3">
-                  Virtual Buddy 是一個免費的 macOS 應用程式，提供漂亮的圖形介面來使用 Ollama。
-                  不需要打開終端機，不需要輸入指令。
+                  Ollama 官方 macOS 應用程式，自 2025 年 7 月起內建聊天介面。
+                  下載後拖進「應用程式」資料夾，雙擊就能開始跟 AI 聊天。不需要終端機、不需要指令。
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <a
-                    href="https://virtualbuddy.chat"
+                    href="https://ollama.com/download"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 px-4 py-2 bg-green-600 hover:bg-green-500 text-white text-sm font-medium rounded-lg transition-colors"
                   >
                     <Download className="w-4 h-4" />
-                    下載 Virtual Buddy
+                    下載 Ollama.app
                     <ExternalLink className="w-3 h-3 ml-1" />
                   </a>
                 </div>
-                <p className="text-xs text-gray-500 mt-2">
-                  或在 App Store 搜尋「Virtual Buddy Ollama」
-                </p>
               </div>
             </div>
           </div>
           <div className="text-sm text-gray-400">
             <p>安裝後的步驟：</p>
             <ol className="list-decimal list-inside mt-1 space-y-1 text-gray-300">
-              <li>開啟 Virtual Buddy</li>
-              <li>它會自動安裝 Ollama（如果還沒安裝的話）</li>
-              <li>在介面中選擇你想要的模型，點擊下載</li>
-              <li>開始聊天！</li>
+              <li>將 Ollama.app 拖進「應用程式」資料夾</li>
+              <li>雙擊開啟，系統列會出現 Ollama 圖示</li>
+              <li>點擊圖示，選擇「Chat」開啟內建聊天介面</li>
+              <li>選一個模型，開始聊天！</li>
             </ol>
           </div>
         </div>
