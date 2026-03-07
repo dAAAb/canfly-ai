@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, ReactElement } from 'react'
+import { useState, useEffect, useCallback, useRef, ReactElement } from 'react'
 import { ChevronLeft, ChevronRight, Maximize, Minimize } from 'lucide-react'
 
 interface PresentationProps {
@@ -10,6 +10,8 @@ export default function Presentation({ slides }: PresentationProps) {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [showControls, setShowControls] = useState(true)
   const [transitioning, setTransitioning] = useState(false)
+  const scrollAccum = useRef(0)
+  const scrollTimeout = useRef<ReturnType<typeof setTimeout>>()
   const total = slides.length
 
   const goTo = useCallback(
@@ -17,7 +19,7 @@ export default function Presentation({ slides }: PresentationProps) {
       if (index < 0 || index >= total || transitioning) return
       setTransitioning(true)
       setCurrent(index)
-      setTimeout(() => setTransitioning(false), 500)
+      setTimeout(() => setTransitioning(false), 600)
     },
     [total, transitioning]
   )
@@ -66,6 +68,34 @@ export default function Presentation({ slides }: PresentationProps) {
     return () => window.removeEventListener('keydown', handler)
   }, [next, prev, toggleFullscreen])
 
+  // Scroll (wheel) navigation — accumulate delta then trigger
+  useEffect(() => {
+    const THRESHOLD = 80
+
+    const handler = (e: WheelEvent) => {
+      e.preventDefault()
+
+      scrollAccum.current += e.deltaY
+
+      // Reset accumulator after idle
+      clearTimeout(scrollTimeout.current)
+      scrollTimeout.current = setTimeout(() => {
+        scrollAccum.current = 0
+      }, 200)
+
+      if (scrollAccum.current > THRESHOLD) {
+        scrollAccum.current = 0
+        next()
+      } else if (scrollAccum.current < -THRESHOLD) {
+        scrollAccum.current = 0
+        prev()
+      }
+    }
+
+    window.addEventListener('wheel', handler, { passive: false })
+    return () => window.removeEventListener('wheel', handler)
+  }, [next, prev])
+
   // Auto-hide controls
   useEffect(() => {
     let timeout: ReturnType<typeof setTimeout>
@@ -82,18 +112,35 @@ export default function Presentation({ slides }: PresentationProps) {
     }
   }, [])
 
-  // Touch swipe
+  // Touch swipe (horizontal + vertical)
   useEffect(() => {
     let startX = 0
-    const onStart = (e: TouchEvent) => { startX = e.touches[0].clientX }
+    let startY = 0
+    const onStart = (e: TouchEvent) => {
+      startX = e.touches[0].clientX
+      startY = e.touches[0].clientY
+    }
     const onEnd = (e: TouchEvent) => {
-      const diff = startX - e.changedTouches[0].clientX
-      if (Math.abs(diff) > 50) {
-        diff > 0 ? next() : prev()
+      const dx = startX - e.changedTouches[0].clientX
+      const dy = startY - e.changedTouches[0].clientY
+      // Use whichever axis has more movement
+      const absDx = Math.abs(dx)
+      const absDy = Math.abs(dy)
+      const threshold = 50
+
+      if (absDx > threshold || absDy > threshold) {
+        // Determine primary direction
+        if (absDy >= absDx) {
+          // Vertical swipe: swipe up = next, swipe down = prev
+          dy > 0 ? next() : prev()
+        } else {
+          // Horizontal swipe: swipe left = next, swipe right = prev
+          dx > 0 ? next() : prev()
+        }
       }
     }
-    window.addEventListener('touchstart', onStart)
-    window.addEventListener('touchend', onEnd)
+    window.addEventListener('touchstart', onStart, { passive: true })
+    window.addEventListener('touchend', onEnd, { passive: true })
     return () => {
       window.removeEventListener('touchstart', onStart)
       window.removeEventListener('touchend', onEnd)
@@ -128,13 +175,13 @@ export default function Presentation({ slides }: PresentationProps) {
       >
         {/* Keyboard hint */}
         <div
-          className="absolute top-0 right-0 -translate-y-full pr-[5.2%] pb-3"
-          style={{ fontSize: 'clamp(9px, 0.85vw, 13px)', opacity: 0.4 }}
+          className="absolute top-0 right-0 -translate-y-full pr-[8%] pb-3"
+          style={{ fontSize: 'clamp(9px, 0.85vw, 13px)', opacity: 0.35 }}
         >
-          ← → Navigate · F Fullscreen
+          ← → ↑ ↓ Scroll · F Fullscreen
         </div>
 
-        <div className="flex items-center justify-between px-[5.2%] pb-[2.5%] pt-[1.5%]">
+        <div className="flex items-center justify-between px-[8%] pb-[3%] pt-[1.5%]">
           {/* Slide counter */}
           <span
             className="tabular-nums"

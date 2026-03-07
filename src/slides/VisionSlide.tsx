@@ -8,11 +8,11 @@ export default function VisionSlide() {
         overlay={0.55}
       />
 
-      <div className="relative z-10 flex flex-col h-full px-[5.2%] pt-[4%] pb-[3%]">
+      <div className="relative z-10 flex flex-col h-full px-[8%] pt-[6%] pb-[5%]">
         {/* Header */}
         <div className="flex items-center justify-between">
           <span className="font-bold tracking-tight" style={{ fontSize: 'clamp(16px, 1.5vw, 28px)' }}>
-            ✈️ CanFly.ai
+            🦞 CanFly.ai
           </span>
           <span style={{ fontSize: 'clamp(12px, 1.05vw, 20px)', opacity: 0.8 }}>
             The Vision
@@ -21,8 +21,8 @@ export default function VisionSlide() {
 
         {/* Title */}
         <h2
-          className="mt-[4%] font-bold"
-          style={{ fontSize: 'clamp(24px, 4.5vw, 72px)', letterSpacing: '-0.02em', lineHeight: 1.05 }}
+          className="mt-[5%] font-bold"
+          style={{ fontSize: 'clamp(24px, 4.5vw, 72px)', letterSpacing: '-0.02em', lineHeight: 1.1 }}
         >
           Every Person
           <br />
@@ -31,10 +31,10 @@ export default function VisionSlide() {
         </h2>
 
         {/* Three columns */}
-        <div className="flex gap-[4%] mt-[3.5%] flex-1 min-h-0">
+        <div className="flex gap-[5%] mt-[4%] flex-1 min-h-0">
           {/* Column 1 - Stats */}
           <div className="flex-[0_0_22%] flex flex-col justify-between">
-            <p style={{ fontSize: 'clamp(12px, 1.05vw, 18px)', opacity: 0.8, lineHeight: 1.5 }}>
+            <p style={{ fontSize: 'clamp(12px, 1.05vw, 18px)', opacity: 0.8, lineHeight: 1.65 }}>
               AI Agent 市場正在爆發。從個人助理到企業自動化，2026 年是人人都能擁有 AI 夥伴的元年。
             </p>
             <div className="mt-auto">
@@ -52,13 +52,13 @@ export default function VisionSlide() {
 
           {/* Column 2 - Description */}
           <div className="flex-[0_0_38%]">
-            <p style={{ fontSize: 'clamp(13px, 1.1vw, 20px)', opacity: 0.9, lineHeight: 1.6 }}>
+            <p style={{ fontSize: 'clamp(13px, 1.1vw, 20px)', opacity: 0.9, lineHeight: 1.7 }}>
               但現實是：大多數人不知道從哪裡開始。硬體怎麼選？軟體怎麼裝？Agent 怎麼跑？
             </p>
-            <p className="mt-[3%]" style={{ fontSize: 'clamp(13px, 1.1vw, 20px)', opacity: 0.9, lineHeight: 1.6 }}>
+            <p className="mt-[4%]" style={{ fontSize: 'clamp(13px, 1.1vw, 20px)', opacity: 0.9, lineHeight: 1.7 }}>
               CanFly.ai 解決的就是這個問題。我們是 AI Agent 世界的知識嚮導 — 從零開始，帶你起飛。免費體驗、硬體導購、白手套設定，一站搞定。
             </p>
-            <p className="mt-[3%]" style={{ fontSize: 'clamp(13px, 1.1vw, 20px)', opacity: 0.9, lineHeight: 1.6 }}>
+            <p className="mt-[4%]" style={{ fontSize: 'clamp(13px, 1.1vw, 20px)', opacity: 0.9, lineHeight: 1.7 }}>
               不只是工具，是一個社群。每位使用者都有自己的飛行日誌頁面，展示你的 AI Agent、分享你的配置、啟發更多人起飛。
             </p>
           </div>
@@ -71,7 +71,7 @@ export default function VisionSlide() {
             >
               87%
             </span>
-            <p className="mt-1" style={{ fontSize: 'clamp(12px, 1vw, 18px)', opacity: 0.8, lineHeight: 1.5 }}>
+            <p className="mt-2" style={{ fontSize: 'clamp(12px, 1vw, 18px)', opacity: 0.8, lineHeight: 1.65 }}>
               的人想用 AI 但不知道如何開始
             </p>
             {/* Mini graph */}
@@ -91,7 +91,7 @@ export default function VisionSlide() {
         </div>
 
         {/* Footer */}
-        <div className="text-right" style={{ fontSize: 'clamp(12px, 1.05vw, 20px)', opacity: 0.6 }}>
+        <div className="text-right mt-[2%]" style={{ fontSize: 'clamp(12px, 1.05vw, 20px)', opacity: 0.5 }}>
           The Vision
         </div>
       </div>

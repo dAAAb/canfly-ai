@@ -40,11 +40,11 @@ export default function FeaturesSlide() {
         overlay={0.6}
       />
 
-      <div className="relative z-10 flex flex-col h-full px-[5.2%] pt-[4%] pb-[3%]">
+      <div className="relative z-10 flex flex-col h-full px-[8%] pt-[6%] pb-[5%]">
         {/* Header */}
         <div className="flex items-center justify-between">
           <span className="font-bold tracking-tight" style={{ fontSize: 'clamp(16px, 1.5vw, 28px)' }}>
-            ✈️ CanFly.ai
+            🦞 CanFly.ai
           </span>
           <span style={{ fontSize: 'clamp(12px, 1.05vw, 20px)', opacity: 0.8 }}>
             Features
@@ -52,13 +52,13 @@ export default function FeaturesSlide() {
         </div>
 
         {/* Title */}
-        <div className="text-center mt-[2.5%]">
-          <p style={{ fontSize: 'clamp(13px, 1.2vw, 22px)', opacity: 0.9 }}>
+        <div className="text-center mt-[3%]">
+          <p style={{ fontSize: 'clamp(13px, 1.2vw, 22px)', opacity: 0.9, lineHeight: 1.5 }}>
             AI Agent 時代的一站式平台
           </p>
           <h2
-            className="font-bold mt-1"
-            style={{ fontSize: 'clamp(24px, 4vw, 64px)', letterSpacing: '-0.02em' }}
+            className="font-bold mt-2"
+            style={{ fontSize: 'clamp(24px, 4vw, 64px)', letterSpacing: '-0.02em', lineHeight: 1.15 }}
           >
             <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent">
               五大核心功能
@@ -67,17 +67,17 @@ export default function FeaturesSlide() {
         </div>
 
         {/* Card grid */}
-        <div className="flex-1 flex flex-col mt-[2.5%] min-h-0" style={{ gap: 'clamp(10px, 1.5vw, 25px)' }}>
+        <div className="flex-1 flex flex-col mt-[3%] min-h-0" style={{ gap: 'clamp(12px, 1.8vw, 28px)' }}>
           {/* Top row - 3 cards */}
-          <div className="flex flex-1 min-h-0" style={{ gap: 'clamp(10px, 1.5vw, 27px)' }}>
+          <div className="flex flex-1 min-h-0" style={{ gap: 'clamp(12px, 1.8vw, 28px)' }}>
             {features.slice(0, 3).map((f, i) => (
               <GlassCard key={i} className="flex-1">
-                <div className="flex flex-col justify-end h-full" style={{ padding: 'clamp(16px, 2.5vw, 48px)' }}>
-                  <f.icon style={{ width: iconSize, height: iconSize }} strokeWidth={1.5} className="mb-3 opacity-90" />
-                  <h3 className="font-bold" style={{ fontSize: 'clamp(16px, 2vw, 36px)' }}>
+                <div className="flex flex-col justify-end h-full" style={{ padding: 'clamp(20px, 3vw, 48px)' }}>
+                  <f.icon style={{ width: iconSize, height: iconSize }} strokeWidth={1.5} className="mb-4 opacity-90" />
+                  <h3 className="font-bold" style={{ fontSize: 'clamp(16px, 2vw, 36px)', lineHeight: 1.2 }}>
                     {f.title}
                   </h3>
-                  <p className="mt-1" style={{ fontSize: 'clamp(11px, 1.05vw, 20px)', opacity: 0.8, lineHeight: 1.4 }}>
+                  <p className="mt-2" style={{ fontSize: 'clamp(11px, 1.05vw, 20px)', opacity: 0.8, lineHeight: 1.55 }}>
                     {f.desc}
                   </p>
                 </div>
@@ -86,15 +86,15 @@ export default function FeaturesSlide() {
           </div>
 
           {/* Bottom row - 2 cards */}
-          <div className="flex flex-1 min-h-0" style={{ gap: 'clamp(10px, 1.5vw, 25px)' }}>
+          <div className="flex flex-1 min-h-0" style={{ gap: 'clamp(12px, 1.8vw, 28px)' }}>
             {features.slice(3).map((f, i) => (
               <GlassCard key={i} className="flex-1">
-                <div className="flex flex-col justify-end h-full" style={{ padding: 'clamp(16px, 2.5vw, 48px)' }}>
-                  <f.icon style={{ width: iconSize, height: iconSize }} strokeWidth={1.5} className="mb-3 opacity-90" />
-                  <h3 className="font-bold" style={{ fontSize: 'clamp(16px, 2vw, 36px)' }}>
+                <div className="flex flex-col justify-end h-full" style={{ padding: 'clamp(20px, 3vw, 48px)' }}>
+                  <f.icon style={{ width: iconSize, height: iconSize }} strokeWidth={1.5} className="mb-4 opacity-90" />
+                  <h3 className="font-bold" style={{ fontSize: 'clamp(16px, 2vw, 36px)', lineHeight: 1.2 }}>
                     {f.title}
                   </h3>
-                  <p className="mt-1" style={{ fontSize: 'clamp(11px, 1.05vw, 20px)', opacity: 0.8, lineHeight: 1.4 }}>
+                  <p className="mt-2" style={{ fontSize: 'clamp(11px, 1.05vw, 20px)', opacity: 0.8, lineHeight: 1.55 }}>
                     {f.desc}
                   </p>
                 </div>
