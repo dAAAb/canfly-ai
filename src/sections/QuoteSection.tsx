@@ -20,7 +20,7 @@ export default function QuoteSection() {
       />
       <div className="absolute inset-0 bg-black/60" />
 
-      <div ref={ref} className="fade-section relative z-10 text-center px-[8%] py-32 max-w-5xl">
+      <div ref={ref} className="fade-section relative z-10 text-center px-[10%] py-40 max-w-5xl mx-auto">
         <blockquote
           className="font-bold stagger-child stagger-1"
           style={{
@@ -41,7 +41,7 @@ export default function QuoteSection() {
         </blockquote>
 
         <p
-          className="mt-10 opacity-50 stagger-child stagger-2"
+          className="mt-12 opacity-50 stagger-child stagger-2"
           style={{ fontSize: 'clamp(14px, 1.2vw, 20px)' }}
         >
           🦞 CanFly.ai

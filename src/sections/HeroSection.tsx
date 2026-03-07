@@ -19,13 +19,13 @@ export default function HeroSection() {
       <div className="absolute inset-0 bg-black/50" />
 
       {/* Nav */}
-      <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-[6%] py-8">
+      <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-[8%] py-10">
         <span className="font-bold text-xl tracking-tight">🦞 CanFly.ai</span>
         <span className="text-sm opacity-60">Coming Soon</span>
       </nav>
 
       {/* Content */}
-      <div className="relative z-10 text-center px-6 max-w-5xl">
+      <div className="relative z-10 text-center px-[8%] max-w-5xl">
         <h1
           className="font-black tracking-tight"
           style={{
@@ -42,10 +42,10 @@ export default function HeroSection() {
         </h1>
 
         <p
-          className="mt-8 mx-auto opacity-80"
+          className="mt-10 mx-auto opacity-80"
           style={{
             fontSize: 'clamp(18px, 2.5vw, 32px)',
-            lineHeight: 1.4,
+            lineHeight: 1.5,
             maxWidth: '600px',
           }}
         >
@@ -55,7 +55,7 @@ export default function HeroSection() {
         </p>
 
         {/* Scroll indicator */}
-        <div className="mt-16 flex flex-col items-center opacity-40 animate-bounce">
+        <div className="mt-20 flex flex-col items-center opacity-40 animate-bounce">
           <span className="text-xs tracking-widest uppercase mb-2">Scroll</span>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M12 5v14M5 12l7 7 7-7" />
