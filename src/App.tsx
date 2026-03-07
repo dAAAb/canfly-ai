@@ -1,21 +1,20 @@
-import Presentation from './components/Presentation'
-import CoverSlide from './slides/CoverSlide'
-import VisionSlide from './slides/VisionSlide'
-import FeaturesSlide from './slides/FeaturesSlide'
-import QuoteSlide from './slides/QuoteSlide'
-import OutroSlide from './slides/OutroSlide'
+import HeroSection from './sections/HeroSection'
+import VisionSection from './sections/VisionSection'
+import FeaturesSection from './sections/FeaturesSection'
+import QuoteSection from './sections/QuoteSection'
+import CTASection from './sections/CTASection'
+import Footer from './sections/Footer'
 
 function App() {
   return (
-    <Presentation
-      slides={[
-        <CoverSlide />,
-        <VisionSlide />,
-        <FeaturesSlide />,
-        <QuoteSlide />,
-        <OutroSlide />,
-      ]}
-    />
+    <div className="bg-black text-white">
+      <HeroSection />
+      <VisionSection />
+      <FeaturesSection />
+      <QuoteSection />
+      <CTASection />
+      <Footer />
+    </div>
   )
 }
 
