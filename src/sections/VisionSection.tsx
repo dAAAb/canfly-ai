@@ -5,25 +5,29 @@ export default function VisionSection() {
 
   return (
     <section className="relative py-36 md:py-52" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
-      {/* Subtle gradient background */}
       <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-950 to-black" />
 
-      <div ref={ref} className="fade-section relative z-10 max-w-5xl mx-auto">
+      <div
+        ref={ref}
+        className="fade-section relative z-10"
+        style={{ maxWidth: '1024px', marginLeft: 'auto', marginRight: 'auto' }}
+      >
         {/* Eyebrow */}
         <p
-          className="text-cyan-400 font-semibold uppercase tracking-widest mb-8 stagger-child stagger-1 text-center"
-          style={{ fontSize: 'clamp(11px, 1vw, 14px)' }}
+          className="text-cyan-400 font-semibold uppercase tracking-widest stagger-child stagger-1"
+          style={{ fontSize: 'clamp(11px, 1vw, 14px)', textAlign: 'center', marginBottom: '2rem' }}
         >
           The Vision
         </p>
 
         {/* Big heading */}
         <h2
-          className="font-bold stagger-child stagger-2 text-center"
+          className="font-bold stagger-child stagger-2"
           style={{
             fontSize: 'clamp(32px, 5vw, 80px)',
             lineHeight: 1.08,
             letterSpacing: '-0.02em',
+            textAlign: 'center',
           }}
         >
           Every person deserves
@@ -35,40 +39,28 @@ export default function VisionSection() {
         </h2>
 
         {/* Description */}
-        <div className="mt-20 grid grid-cols-1 md:grid-cols-2 gap-14 md:gap-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-14 md:gap-20" style={{ marginTop: 'clamp(48px, 5vw, 80px)' }}>
           <div className="stagger-child stagger-3">
-            <p
-              className="opacity-80"
-              style={{ fontSize: 'clamp(16px, 1.4vw, 22px)', lineHeight: 1.75 }}
-            >
+            <p style={{ fontSize: 'clamp(16px, 1.4vw, 22px)', lineHeight: 1.75, opacity: 0.8 }}>
               AI Agent 市場正在爆發 — 從個人助理到企業自動化，2026 是人人都能擁有 AI 夥伴的元年。但大多數人不知道從哪裡開始。
             </p>
-            <p
-              className="opacity-80 mt-8"
-              style={{ fontSize: 'clamp(16px, 1.4vw, 22px)', lineHeight: 1.75 }}
-            >
+            <p style={{ fontSize: 'clamp(16px, 1.4vw, 22px)', lineHeight: 1.75, opacity: 0.8, marginTop: '2rem' }}>
               硬體怎麼選？軟體怎麼裝？Agent 怎麼跑？這些問題，CanFly.ai 一次解決。
             </p>
           </div>
 
           <div className="stagger-child stagger-4">
-            <p
-              className="opacity-80"
-              style={{ fontSize: 'clamp(16px, 1.4vw, 22px)', lineHeight: 1.75 }}
-            >
+            <p style={{ fontSize: 'clamp(16px, 1.4vw, 22px)', lineHeight: 1.75, opacity: 0.8 }}>
               我們是 AI Agent 世界的知識嚮導。從免費體驗到硬體導購，從白手套設定到社群互助 — 帶你從零開始起飛。
             </p>
-            <p
-              className="opacity-80 mt-8"
-              style={{ fontSize: 'clamp(16px, 1.4vw, 22px)', lineHeight: 1.75 }}
-            >
+            <p style={{ fontSize: 'clamp(16px, 1.4vw, 22px)', lineHeight: 1.75, opacity: 0.8, marginTop: '2rem' }}>
               不只是工具平台，更是一個社群。每位使用者都有自己的飛行日誌，展示你的 AI Agent、分享你的配置、啟發更多人。
             </p>
           </div>
         </div>
 
         {/* Stats row */}
-        <div className="mt-28 grid grid-cols-2 md:grid-cols-3 gap-12 text-center">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-12" style={{ marginTop: 'clamp(64px, 7vw, 112px)', textAlign: 'center' }}>
           <div className="stagger-child stagger-3">
             <span
               className="font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent block"
@@ -76,7 +68,7 @@ export default function VisionSection() {
             >
               $300B
             </span>
-            <p className="mt-3 opacity-60" style={{ fontSize: 'clamp(13px, 1vw, 18px)', lineHeight: 1.6 }}>
+            <p style={{ fontSize: 'clamp(13px, 1vw, 18px)', lineHeight: 1.6, opacity: 0.6, marginTop: '0.75rem' }}>
               2027 AI Agent 市場規模
             </p>
           </div>
@@ -87,7 +79,7 @@ export default function VisionSection() {
             >
               87%
             </span>
-            <p className="mt-3 opacity-60" style={{ fontSize: 'clamp(13px, 1vw, 18px)', lineHeight: 1.6 }}>
+            <p style={{ fontSize: 'clamp(13px, 1vw, 18px)', lineHeight: 1.6, opacity: 0.6, marginTop: '0.75rem' }}>
               想用 AI 但不知如何開始
             </p>
           </div>
@@ -98,7 +90,7 @@ export default function VisionSection() {
             >
               5 min
             </span>
-            <p className="mt-3 opacity-60" style={{ fontSize: 'clamp(13px, 1vw, 18px)', lineHeight: 1.6 }}>
+            <p style={{ fontSize: 'clamp(13px, 1vw, 18px)', lineHeight: 1.6, opacity: 0.6, marginTop: '0.75rem' }}>
               用 CanFly 從零到起飛
             </p>
           </div>

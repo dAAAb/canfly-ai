@@ -49,7 +49,6 @@ function FeatureCard({ feature, index }: { feature: typeof features[0]; index: n
           padding: 'clamp(28px, 4vw, 56px)',
         }}
       >
-        {/* Specular highlight */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -59,8 +58,8 @@ function FeatureCard({ feature, index }: { feature: typeof features[0]; index: n
 
         <div className="relative">
           <feature.icon
-            className={`mb-8 stagger-child stagger-${index + 1}`}
-            style={{ width: 'clamp(36px, 4vw, 56px)', height: 'clamp(36px, 4vw, 56px)' }}
+            className={`stagger-child stagger-${index + 1}`}
+            style={{ width: 'clamp(36px, 4vw, 56px)', height: 'clamp(36px, 4vw, 56px)', marginBottom: '1.5rem' }}
             strokeWidth={1.3}
           />
 
@@ -71,10 +70,7 @@ function FeatureCard({ feature, index }: { feature: typeof features[0]; index: n
             {feature.title}
           </h3>
 
-          <p
-            className="mt-5 opacity-70"
-            style={{ fontSize: 'clamp(15px, 1.2vw, 20px)', lineHeight: 1.75 }}
-          >
+          <p style={{ fontSize: 'clamp(15px, 1.2vw, 20px)', lineHeight: 1.75, opacity: 0.7, marginTop: '1.25rem' }}>
             {feature.desc}
           </p>
         </div>
@@ -88,12 +84,12 @@ export default function FeaturesSection() {
 
   return (
     <section className="relative py-36 md:py-52" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
-      <div className="max-w-5xl mx-auto">
+      <div style={{ maxWidth: '1024px', marginLeft: 'auto', marginRight: 'auto' }}>
         {/* Section header */}
-        <div ref={headerRef} className="fade-section text-center mb-24">
+        <div ref={headerRef} className="fade-section" style={{ textAlign: 'center', marginBottom: 'clamp(48px, 6vw, 96px)' }}>
           <p
-            className="text-cyan-400 font-semibold uppercase tracking-widest mb-8 stagger-child stagger-1"
-            style={{ fontSize: 'clamp(11px, 1vw, 14px)' }}
+            className="text-cyan-400 font-semibold uppercase tracking-widest stagger-child stagger-1"
+            style={{ fontSize: 'clamp(11px, 1vw, 14px)', marginBottom: '2rem' }}
           >
             Features
           </p>
@@ -118,7 +114,7 @@ export default function FeaturesSection() {
             <FeatureCard key={i} feature={f} index={i} />
           ))}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8" style={{ marginTop: '2rem' }}>
           {features.slice(3).map((f, i) => (
             <FeatureCard key={i + 3} feature={f} index={i + 3} />
           ))}

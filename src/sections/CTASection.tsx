@@ -13,10 +13,17 @@ export default function CTASection() {
   const ref = useFadeIn()
 
   return (
-    <section className="relative py-40 md:py-56" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
+    <section
+      className="relative"
+      style={{ paddingLeft: '8%', paddingRight: '8%', paddingTop: '12vh', paddingBottom: '14vh' }}
+    >
       <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-950 to-black" />
 
-      <div ref={ref} className="fade-section relative z-10 max-w-4xl mx-auto text-center">
+      <div
+        ref={ref}
+        className="fade-section relative z-10"
+        style={{ maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto', textAlign: 'center' }}
+      >
         <h2
           className="font-bold stagger-child stagger-1"
           style={{
@@ -33,11 +40,15 @@ export default function CTASection() {
         </h2>
 
         <p
-          className="mt-10 mx-auto opacity-70 stagger-child stagger-2"
+          className="stagger-child stagger-2"
           style={{
             fontSize: 'clamp(16px, 1.5vw, 24px)',
             lineHeight: 1.7,
+            opacity: 0.7,
             maxWidth: '560px',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            marginTop: 'clamp(24px, 3vw, 48px)',
           }}
         >
           CanFly.ai 正在打造 AI Agent 時代最友善的入門平台。
@@ -46,10 +57,19 @@ export default function CTASection() {
         </p>
 
         {/* CTA buttons */}
-        <div className="mt-16 flex flex-col sm:flex-row items-center justify-center gap-6 stagger-child stagger-3">
+        <div
+          className="stagger-child stagger-3"
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            gap: 'clamp(16px, 2vw, 24px)',
+            marginTop: 'clamp(32px, 4vw, 64px)',
+          }}
+        >
           <a
             href="mailto:hello@canfly.ai"
-            className="group inline-flex items-center gap-4 rounded-2xl no-underline text-white transition-all hover:scale-105"
+            className="inline-flex items-center gap-4 rounded-2xl no-underline text-white transition-all hover:scale-105"
             style={{
               background: 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04))',
               border: '1px solid rgba(255,255,255,0.15)',
@@ -65,7 +85,7 @@ export default function CTASection() {
             href="https://x.com/dAAAb"
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex items-center gap-4 rounded-2xl no-underline text-white transition-all hover:scale-105"
+            className="inline-flex items-center gap-4 rounded-2xl no-underline text-white transition-all hover:scale-105"
             style={{
               background: 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04))',
               border: '1px solid rgba(255,255,255,0.15)',
