@@ -46,7 +46,6 @@ export default function HeroSection() {
           style={{
             fontSize: 'clamp(18px, 2.5vw, 32px)',
             lineHeight: 1.5,
-            maxWidth: '600px',
             textAlign: 'center',
           }}
         >
@@ -56,7 +55,7 @@ export default function HeroSection() {
         </p>
 
         {/* Scroll indicator */}
-        <div className="mt-24 flex flex-col items-center opacity-40 animate-bounce">
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center opacity-40 animate-bounce">
           <span className="text-xs tracking-widest uppercase mb-2">Scroll</span>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M12 5v14M5 12l7 7 7-7" />
