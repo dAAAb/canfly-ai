@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useMemo, useEffect, lazy, Suspense } from 'react'
+import { useEffect, lazy, Suspense } from 'react'
 import Footer from './sections/Footer'
 import ErrorBoundary from './components/ErrorBoundary'
 import { langFromPrefix } from './i18n'
@@ -19,17 +19,18 @@ const BlogPostPage = lazy(() => import('./pages/BlogPostPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 /** Wrapper that syncs i18next language from URL :lang param.
- *  Uses useMemo (not useEffect) so language is set before children render. */
+ *  Sets language during render (before children) so translations are correct. */
 function LangSync({ children }: { children: React.ReactNode }) {
   const { lang } = useParams<{ lang?: string }>()
   const { i18n } = useTranslation()
   const resolved = langFromPrefix(lang)
 
-  useMemo(() => {
-    if (i18n.language !== resolved) {
-      i18n.changeLanguage(resolved)
-    }
-  }, [resolved]) // eslint-disable-line react-hooks/exhaustive-deps
+  // Sync i18n language during render — not in useMemo (which React 19 may skip)
+  // or useEffect (which runs after children render). This is a valid pattern
+  // for syncing external stores during render.
+  if (i18n.language !== resolved) {
+    i18n.changeLanguage(resolved)
+  }
 
   // Update HTML lang attribute when language changes
   useEffect(() => {

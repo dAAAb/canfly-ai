@@ -1,6 +1,6 @@
 import { useParams, useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { langFromPrefix, prefixForLang, type SupportedLang } from '../i18n'
 
 /** Syncs i18next language from the URL :lang param and provides helpers. */
@@ -9,10 +9,16 @@ export function useLanguage() {
   const { i18n } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()
+  const switchingRef = useRef(false)
 
   const currentLang = langFromPrefix(lang)
 
   useEffect(() => {
+    // Skip sync-back when switchLang is actively navigating
+    if (switchingRef.current) {
+      switchingRef.current = false
+      return
+    }
     if (i18n.language !== currentLang) {
       i18n.changeLanguage(currentLang)
     }
@@ -27,8 +33,7 @@ export function useLanguage() {
 
   /** Switch to a different language, preserving current page path. */
   function switchLang(newLang: SupportedLang) {
-    // Change i18n language first so useTranslation() re-renders with new translations
-    i18n.changeLanguage(newLang)
+    switchingRef.current = true
 
     const prefix = prefixForLang(currentLang)
     let path = location.pathname
@@ -36,7 +41,12 @@ export function useLanguage() {
       path = path.slice(prefix.length) || '/'
     }
     const newPrefix = prefixForLang(newLang)
+
+    // Navigate first to ensure URL updates, then sync i18n.
+    // Both are batched by React 19, so LangSync + useEffect will see
+    // the new URL and language in the same render.
     navigate(`${newPrefix}${path === '/' ? '' : path}` || '/')
+    i18n.changeLanguage(newLang)
   }
 
   return { currentLang, localePath, switchLang }
