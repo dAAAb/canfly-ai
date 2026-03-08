@@ -117,6 +117,13 @@
       "hosting": "Cloud Hosting",
       "hardware": "Hardware",
       "vm": "Virtual Machines"
+    },
+    "categoryInfoTooltip": "About this category",
+    "categoryInfo": {
+      "vm": "A virtual machine (VM) is like a computer inside your computer — a safe, isolated environment to experiment with AI tools without any risk to your main system. Perfect for beginners who want to try before committing.",
+      "hardware": "Recommended Mac and PC hardware for running local AI models. Apple Silicon (M-series) chips offer the best performance-per-dollar for AI workloads.",
+      "skills": "Premium AI capabilities — voice synthesis, video generation, and intelligent search — that integrate with your local AI setup to unlock professional-grade workflows.",
+      "hosting": "Deploy your AI stack to the cloud for 24/7 availability, team access, and scaling beyond what your local hardware can handle."
     }
   },
   "product": {

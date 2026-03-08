@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { PanelLeftClose, PanelLeftOpen, Shield, Target, Rocket, LayoutGrid, List, ArrowRight } from 'lucide-react'
+import { PanelLeftClose, PanelLeftOpen, HelpCircle, LayoutGrid, List, ArrowRight, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import Navbar from '../components/Navbar'
 import { products, categories } from '../data/products'
@@ -35,6 +35,7 @@ export default function AppsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [showCategoryInfo, setShowCategoryInfo] = useState(false)
   const { t } = useTranslation()
   const { localePath } = useLanguage()
 
@@ -59,6 +60,10 @@ export default function AppsPage() {
     ? products.filter(p => featuredIds.includes(p.id))
     : []
 
+  const categoryInfoKey = `apps.categoryInfo.${selectedCategory}`
+  const categoryInfo = t(categoryInfoKey, { defaultValue: '' })
+  const hasCategoryInfo = categoryInfo !== '' && categoryInfo !== categoryInfoKey
+
   return (
     <div className="min-h-screen bg-black text-white">
       <Navbar search={{ value: searchTerm, onChange: setSearchTerm, placeholder: t('apps.searchPlaceholder') }} />
@@ -68,7 +73,7 @@ export default function AppsPage() {
         {categories.map((category) => (
           <button
             key={category.id}
-            onClick={() => setSelectedCategory(category.id)}
+            onClick={() => { setSelectedCategory(category.id); setShowCategoryInfo(false) }}
             className={`px-3 py-1.5 rounded-full text-sm whitespace-nowrap transition-all ${
               selectedCategory === category.id
                 ? 'bg-blue-600 text-white'
@@ -102,7 +107,7 @@ export default function AppsPage() {
               {categories.map((category) => (
                 <button
                   key={category.id}
-                  onClick={() => setSelectedCategory(category.id)}
+                  onClick={() => { setSelectedCategory(category.id); setShowCategoryInfo(false) }}
                   className={`w-full text-left px-3 py-2.5 rounded-lg transition-all flex justify-between items-center text-sm ${
                     selectedCategory === category.id
                       ? 'bg-blue-600 text-white shadow-[0_0_12px_rgba(37,99,235,0.3)]'
@@ -158,13 +163,38 @@ export default function AppsPage() {
                   <PanelLeftOpen className="w-5 h-5" />
                 </button>
               )}
-              <div className="flex-1">
-                <h1 className="text-3xl font-bold">
-                  {selectedCategory === 'all' ? t('apps.allApps') : t(`apps.categoryNames.${selectedCategory}`)}
-                </h1>
+              <div className="flex-1 relative">
+                <div className="flex items-center gap-2">
+                  <h1 className="text-3xl font-bold">
+                    {selectedCategory === 'all' ? t('apps.allApps') : t(`apps.categoryNames.${selectedCategory}`)}
+                  </h1>
+                  {hasCategoryInfo && (
+                    <button
+                      onClick={() => setShowCategoryInfo(!showCategoryInfo)}
+                      className="p-1 text-gray-500 hover:text-blue-400 transition-colors rounded-full hover:bg-gray-800/50"
+                      title={t('apps.categoryInfoTooltip', { defaultValue: 'About this category' })}
+                    >
+                      <HelpCircle className="w-5 h-5" />
+                    </button>
+                  )}
+                </div>
                 <p className="text-gray-500 mt-1 text-sm">
                   {t('apps.appCount', { count: filteredProducts.length })}
                 </p>
+                {/* Category info popup */}
+                {showCategoryInfo && hasCategoryInfo && (
+                  <div className="absolute top-full left-0 mt-2 z-20 w-full max-w-md bg-gray-900 border border-gray-700 rounded-xl p-5 shadow-xl shadow-black/40">
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="text-sm text-gray-300 leading-relaxed">{categoryInfo}</p>
+                      <button
+                        onClick={() => setShowCategoryInfo(false)}
+                        className="shrink-0 p-1 text-gray-500 hover:text-white transition-colors rounded"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* View mode toggle */}
@@ -208,61 +238,6 @@ export default function AppsPage() {
                     <ArrowRight className="w-5 h-5 text-gray-500 group-hover:text-white transition-colors shrink-0" />
                   </Link>
                 ))}
-              </div>
-            )}
-
-            {/* VM Explainer — shows when VM category selected or on 'all' */}
-            {(selectedCategory === 'vm' || selectedCategory === 'all') && (
-              <div className={`mb-8 ${selectedCategory === 'all' ? 'order-last mt-4' : ''}`}>
-                {selectedCategory === 'vm' && (
-                  <div className="bg-gradient-to-br from-indigo-950/40 to-purple-950/30 border border-indigo-800/30 rounded-2xl p-8 mb-8">
-                    <h2 className="text-2xl font-bold mb-2">{t('vm.whyTitle')}</h2>
-                    <p className="text-gray-400 mb-6 max-w-2xl">{t('vm.whyDesc')}</p>
-
-                    <div className="grid md:grid-cols-3 gap-4 mb-8">
-                      <div className="bg-black/30 rounded-xl p-5 border border-gray-800/50">
-                        <Shield className="w-6 h-6 text-indigo-400 mb-3" />
-                        <h3 className="font-semibold text-white mb-1">{t('vm.benefit1Title')}</h3>
-                        <p className="text-sm text-gray-400">{t('vm.benefit1Desc')}</p>
-                      </div>
-                      <div className="bg-black/30 rounded-xl p-5 border border-gray-800/50">
-                        <Target className="w-6 h-6 text-green-400 mb-3" />
-                        <h3 className="font-semibold text-white mb-1">{t('vm.benefit2Title')}</h3>
-                        <p className="text-sm text-gray-400">{t('vm.benefit2Desc')}</p>
-                      </div>
-                      <div className="bg-black/30 rounded-xl p-5 border border-gray-800/50">
-                        <Rocket className="w-6 h-6 text-orange-400 mb-3" />
-                        <h3 className="font-semibold text-white mb-1">{t('vm.benefit3Title')}</h3>
-                        <p className="text-sm text-gray-400">{t('vm.benefit3Desc')}</p>
-                      </div>
-                    </div>
-
-                    <h3 className="text-lg font-semibold mb-4">{t('vm.pathTitle')}</h3>
-                    <div className="grid md:grid-cols-3 gap-3">
-                      <Link
-                        to={localePath('/learn/virtual-machine')}
-                        className="bg-green-900/20 border border-green-800/40 rounded-lg p-4 hover:bg-green-900/30 transition-colors block"
-                      >
-                        <div className="text-sm font-medium text-green-400 mb-1">{t('vm.pathBeginner')}</div>
-                        <p className="text-xs text-gray-400">{t('vm.pathBeginnerDesc')}</p>
-                      </Link>
-                      <Link
-                        to={localePath('/apps/utm')}
-                        className="bg-blue-900/20 border border-blue-800/40 rounded-lg p-4 hover:bg-blue-900/30 transition-colors block"
-                      >
-                        <div className="text-sm font-medium text-blue-400 mb-1">{t('vm.pathIntermediate')}</div>
-                        <p className="text-xs text-gray-400">{t('vm.pathIntermediateDesc')}</p>
-                      </Link>
-                      <Link
-                        to={localePath('/learn/ollama')}
-                        className="bg-gray-800/50 border border-gray-700/40 rounded-lg p-4 hover:bg-gray-800/70 transition-colors block"
-                      >
-                        <div className="text-sm font-medium text-gray-300 mb-1">{t('vm.pathDirect')}</div>
-                        <p className="text-xs text-gray-400">{t('vm.pathDirectDesc')}</p>
-                      </Link>
-                    </div>
-                  </div>
-                )}
               </div>
             )}
 
