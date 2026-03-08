@@ -9,6 +9,8 @@ import { useHead } from '../hooks/useHead'
 
 interface TroubleshootingItem { q: string; a: string }
 
+interface ScreenshotData { src: string; alt: string; caption?: string }
+
 interface StepData {
   icon: typeof Terminal
   title: string
@@ -24,6 +26,7 @@ interface StepData {
   expectedResult?: string
   tips?: string[]
   troubleshooting?: { title: string; items: TroubleshootingItem[] }
+  screenshots?: ScreenshotData[]
 }
 
 interface ModelInfo { name: string; size: string; best: string; speed: string }
@@ -56,6 +59,14 @@ function createOllamaTutorial(t: any): TutorialData {
         estimatedTime: t('tutorial.ollama.steps.0.estimatedTime'),
         content: t('tutorial.ollama.steps.0.content'),
         installTabs: true,
+        screenshots: [
+          { src: '/images/tutorial/ollama-mac-installer.png', alt: t('tutorial.ollama.screenshots.macInstaller', 'Ollama.app installer on macOS'), caption: t('tutorial.ollama.screenshots.macInstallerCaption', 'Drag Ollama to Applications') },
+          { src: '/images/tutorial/ollama-linux-install.png', alt: t('tutorial.ollama.screenshots.linuxInstall', 'Ollama install on Linux terminal'), caption: t('tutorial.ollama.screenshots.linuxInstallCaption', 'curl install on Ubuntu') },
+          { src: '/images/tutorial/ollama-win-installer.png', alt: t('tutorial.ollama.screenshots.winInstaller', 'Ollama installer on Windows'), caption: t('tutorial.ollama.screenshots.winInstallerCaption', 'Windows installer wizard') },
+        ].filter(s => {
+          // Only show screenshots that exist (check at render time via onError fallback)
+          return true
+        }),
         expectedResult: t('tutorial.ollama.steps.0.expectedResult'),
         tips: t('tutorial.ollama.steps.0.tips', { returnObjects: true }),
         troubleshooting: {
@@ -69,6 +80,9 @@ function createOllamaTutorial(t: any): TutorialData {
         titleEn: t('tutorial.ollama.steps.1.titleEn'),
         estimatedTime: t('tutorial.ollama.steps.1.estimatedTime'),
         content: t('tutorial.ollama.steps.1.content'),
+        screenshots: [
+          { src: '/images/tutorial/ollama-pull-model.png', alt: t('tutorial.ollama.screenshots.pullModel', 'ollama pull downloading a model'), caption: t('tutorial.ollama.screenshots.pullModelCaption', 'Downloading Llama 3.2 model') },
+        ],
         subsections: t('tutorial.ollama.steps.1.subsections', { returnObjects: true }),
         commands: [
           '# ' + t('tutorial.ollama.steps.1.title') + '：Llama 3.2（3B 参数，轻量快速）',
@@ -94,6 +108,9 @@ function createOllamaTutorial(t: any): TutorialData {
         titleEn: t('tutorial.ollama.steps.2.titleEn'),
         estimatedTime: t('tutorial.ollama.steps.2.estimatedTime'),
         content: t('tutorial.ollama.steps.2.content'),
+        screenshots: [
+          { src: '/images/tutorial/ollama-chat-session.png', alt: t('tutorial.ollama.screenshots.chatSession', 'Ollama chat session in terminal'), caption: t('tutorial.ollama.screenshots.chatSessionCaption', 'Interactive chat with Llama 3.2') },
+        ],
         commands: [
           '# 开始互动对话',
           'ollama run llama3.2',
@@ -125,6 +142,9 @@ function createOllamaTutorial(t: any): TutorialData {
         titleEn: t('tutorial.ollama.steps.3.titleEn'),
         estimatedTime: t('tutorial.ollama.steps.3.estimatedTime'),
         content: t('tutorial.ollama.steps.3.content'),
+        screenshots: [
+          { src: '/images/tutorial/openclaw-ollama-config.png', alt: t('tutorial.ollama.screenshots.openclawConfig', 'OpenClaw settings connected to Ollama'), caption: t('tutorial.ollama.screenshots.openclawConfigCaption', 'OpenClaw model configuration') },
+        ],
         commands: [
           '# 确认 Ollama 正在运行',
           'curl http://localhost:11434/api/tags',
@@ -786,6 +806,35 @@ function NextStepGrid({ cards }: { cards: NextStepCard[] }) {
   )
 }
 
+function ScreenshotGallery({ screenshots }: { screenshots: ScreenshotData[] }) {
+  const [loaded, setLoaded] = useState<Record<number, boolean>>({})
+  const visibleCount = Object.values(loaded).filter(Boolean).length
+
+  if (visibleCount === 0 && Object.keys(loaded).length === screenshots.length) return null
+
+  return (
+    <div className="grid gap-3 mb-4" style={{ gridTemplateColumns: visibleCount <= 1 ? '1fr' : 'repeat(auto-fit, minmax(280px, 1fr))' }}>
+      {screenshots.map((ss, i) => (
+        <figure
+          key={i}
+          className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden"
+          style={{ display: loaded[i] === false ? 'none' : undefined }}
+        >
+          <img
+            src={ss.src}
+            alt={ss.alt}
+            className="w-full"
+            loading="lazy"
+            onLoad={() => setLoaded(prev => ({ ...prev, [i]: true }))}
+            onError={() => setLoaded(prev => ({ ...prev, [i]: false }))}
+          />
+          {ss.caption && <figcaption className="text-xs text-gray-500 px-3 py-2">{ss.caption}</figcaption>}
+        </figure>
+      ))}
+    </div>
+  )
+}
+
 // ─── Main Component ─────────────────────────────────────────────────
 
 export default function TutorialPage() {
@@ -881,6 +930,10 @@ export default function TutorialPage() {
                 {/* Content */}
                 <div className="ml-14">
                   <p className="text-gray-300 mb-4 leading-relaxed">{step.content}</p>
+
+                  {step.screenshots && step.screenshots.length > 0 && (
+                    <ScreenshotGallery screenshots={step.screenshots} />
+                  )}
 
                   {step.subsections?.map((sub, si) => (
                     <div key={si} className="bg-gray-900/50 border border-gray-800 rounded-lg p-4 mb-4">

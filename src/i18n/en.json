@@ -487,24 +487,34 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "🎙️",
               "title": "Add Voice with ElevenLabs",
               "desc": "Give your cloud AI a voice with ElevenLabs integration. Support for multiple languages and natural voices.",
-              "cta": "Explore ElevenLabs"
+              "cta": "Explore ElevenLabs",
+              "link": "/learn/elevenlabs-integration"
             },
             {
+              "emoji": "🎬",
               "title": "Create AI Videos",
               "desc": "Use HeyGen to create AI avatar videos that showcase your deployed agent.",
-              "cta": "Explore HeyGen"
+              "cta": "Explore HeyGen",
+              "link": "/learn/heygen-video"
             },
             {
-              "title": "Scale with Zeabur Pro",
-              "desc": "Upgrade to handle more users, custom resources, and advanced features. Use code 'OpenClaw' for 10% off.",
-              "cta": "View Pricing"
+              "emoji": "🌐",
+              "title": "Browser Setup on Zeabur",
+              "desc": "Advanced: Configure Headless Chrome for your cloud AI agent. Troubleshooting guide for browser integration.",
+              "cta": "Read Guide",
+              "link": "https://blog.juchunko.com/zh/openclaw-browser-zeabur-setup",
+              "external": true
             },
             {
+              "emoji": "🦞",
               "title": "Join the Community",
               "desc": "Share your deployment in the Canfly community and inspire others to take their AI to the cloud.",
-              "cta": "Join Community"
+              "cta": "Join Community",
+              "link": "https://blog.juchunko.com",
+              "external": true
             }
           ]
         }
@@ -604,24 +614,34 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "⭐",
               "title": "Upgrade to Starter Plan",
               "desc": "Get 30,000 characters, premium voices, and commercial usage. Support Canfly with 22% affiliate commission.",
-              "cta": "Upgrade Now"
+              "cta": "Upgrade Now",
+              "link": "https://try.elevenlabs.io/clawhub",
+              "external": true
             },
             {
+              "emoji": "🎤",
               "title": "Custom Voice Cloning",
               "desc": "Clone your own voice or create brand-specific voices with ElevenLabs Voice Lab.",
-              "cta": "Explore Voice Lab"
+              "cta": "Explore Voice Lab",
+              "link": "https://try.elevenlabs.io/clawhub",
+              "external": true
             },
             {
+              "emoji": "🎬",
               "title": "Add Video with HeyGen",
               "desc": "Combine ElevenLabs voices with HeyGen AI avatars to create complete video content.",
-              "cta": "Learn HeyGen"
+              "cta": "Learn HeyGen",
+              "link": "/learn/heygen-video"
             },
             {
+              "emoji": "☁️",
               "title": "Deploy Voice to Cloud",
               "desc": "Use Zeabur to deploy your voice-enabled AI agent globally with 24/7 availability.",
-              "cta": "Deploy to Cloud"
+              "cta": "Deploy to Cloud",
+              "link": "/learn/zeabur"
             }
           ]
         }
@@ -721,24 +741,34 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "⭐",
               "title": "Upgrade to Creator Plan",
               "desc": "Get 15 credits/month, API access, and commercial usage. Support Canfly with 20% affiliate commission.",
-              "cta": "Upgrade Now"
+              "cta": "Upgrade Now",
+              "link": "https://www.heygen.com/?sid=rewardful&via=clawhub",
+              "external": true
             },
             {
+              "emoji": "👤",
               "title": "Custom Avatar Creation",
               "desc": "Create personalized avatars with HeyGen's custom avatar service for brand consistency.",
-              "cta": "Create Custom Avatar"
+              "cta": "Create Custom Avatar",
+              "link": "https://www.heygen.com/?sid=rewardful&via=clawhub",
+              "external": true
             },
             {
+              "emoji": "🎙️",
               "title": "Combine with ElevenLabs",
               "desc": "Use ElevenLabs custom voices with HeyGen avatars for the ultimate personalized video experience.",
-              "cta": "Learn ElevenLabs"
+              "cta": "Learn ElevenLabs",
+              "link": "/learn/elevenlabs-integration"
             },
             {
+              "emoji": "☁️",
               "title": "Automate Video Workflows",
               "desc": "Deploy your video-generating AI to Zeabur cloud and create automated content pipelines.",
-              "cta": "Deploy to Cloud"
+              "cta": "Deploy to Cloud",
+              "link": "/learn/zeabur"
             },
             {
               "title": "HeyGen + ZapCap + Whisper Guide",

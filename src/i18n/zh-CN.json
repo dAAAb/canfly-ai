@@ -570,24 +570,34 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "🎙️",
               "title": "用 ElevenLabs 添加语音",
               "desc": "通过 ElevenLabs 集成为你的云端 AI 添加语音功能。支持多种语言和自然语音。",
-              "cta": "探索 ElevenLabs"
+              "cta": "探索 ElevenLabs",
+              "link": "/learn/elevenlabs-integration"
             },
             {
+              "emoji": "🎬",
               "title": "制作 AI 视频",
               "desc": "使用 HeyGen 制作展示你已部署代理程序的 AI 数字人视频。",
-              "cta": "探索 HeyGen"
+              "cta": "探索 HeyGen",
+              "link": "/learn/heygen-video"
             },
             {
-              "title": "升级 Zeabur Pro",
-              "desc": "升级以处理更多用户、自定义资源和高级功能。使用优惠码 'OpenClaw' 享 9 折优惠。",
-              "cta": "查看定价"
+              "emoji": "🌐",
+              "title": "Zeabur 浏览器设置指南",
+              "desc": "进阶：为你的云端 AI agent 配置 Headless Chrome。浏览器集成的故障排除指南。",
+              "cta": "阅读指南",
+              "link": "https://blog.juchunko.com/zh/openclaw-browser-zeabur-setup",
+              "external": true
             },
             {
+              "emoji": "🦞",
               "title": "加入社区",
               "desc": "在 Canfly 社区中分享你的部署，启发其他人将 AI 带到云端。",
-              "cta": "加入社区"
+              "cta": "加入社区",
+              "link": "https://blog.juchunko.com",
+              "external": true
             }
           ]
         }
@@ -711,24 +721,34 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "⭐",
               "title": "升级到入门方案",
               "desc": "获得 30,000 字符、高级语音和商业用途。通过 22% 推荐佣金支持 Canfly。",
-              "cta": "立即升级"
+              "cta": "立即升级",
+              "link": "https://try.elevenlabs.io/clawhub",
+              "external": true
             },
             {
+              "emoji": "🎤",
               "title": "自定义语音克隆",
               "desc": "使用 ElevenLabs Voice Lab 克隆你自己的语音或创建品牌专属语音。",
-              "cta": "探索 Voice Lab"
+              "cta": "探索 Voice Lab",
+              "link": "https://try.elevenlabs.io/clawhub",
+              "external": true
             },
             {
+              "emoji": "🎬",
               "title": "使用 HeyGen 加上视频",
               "desc": "结合 ElevenLabs 语音与 HeyGen AI 虚拟人物来创作完整的视频内容。",
-              "cta": "学习 HeyGen"
+              "cta": "学习 HeyGen",
+              "link": "/learn/heygen-video"
             },
             {
+              "emoji": "☁️",
               "title": "将语音部署到云端",
               "desc": "使用 Zeabur 将你的语音功能 AI 代理部署到全球，提供 24/7 可用性。",
-              "cta": "部署到云端"
+              "cta": "部署到云端",
+              "link": "/learn/zeabur"
             }
           ]
         }
@@ -852,24 +872,34 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "⭐",
               "title": "升级到创作者方案",
               "desc": "获得每月 15 点数、API 访问和商业用途。通过 20% 推荐佣金支持 Canfly。",
-              "cta": "立即升级"
+              "cta": "立即升级",
+              "link": "https://www.heygen.com/?sid=rewardful&via=clawhub",
+              "external": true
             },
             {
+              "emoji": "👤",
               "title": "自定义虚拟人物创作",
               "desc": "使用 HeyGen 的自定义虚拟人物服务创作个性化虚拟人物以保持品牌一致性。",
-              "cta": "创作自定义虚拟人物"
+              "cta": "创作自定义虚拟人物",
+              "link": "https://www.heygen.com/?sid=rewardful&via=clawhub",
+              "external": true
             },
             {
+              "emoji": "🎙️",
               "title": "结合 ElevenLabs",
               "desc": "使用 ElevenLabs 自定义语音搭配 HeyGen 虚拟人物，打造终极个性化视频体验。",
-              "cta": "学习 ElevenLabs"
+              "cta": "学习 ElevenLabs",
+              "link": "/learn/elevenlabs-integration"
             },
             {
+              "emoji": "☁️",
               "title": "自动化视频工作流程",
               "desc": "将你的视频生成 AI 部署到 Zeabur 云端并创作自动化内容管线。",
-              "cta": "部署到云端"
+              "cta": "部署到云端",
+              "link": "/learn/zeabur"
             },
             {
               "title": "HeyGen + ZapCap + Whisper 完整指南",

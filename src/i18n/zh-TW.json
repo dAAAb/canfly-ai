@@ -487,24 +487,34 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "🎙️",
               "title": "用 ElevenLabs 新增語音",
               "desc": "透過 ElevenLabs 整合為你的雲端 AI 添加語音功能。支援多種語言和自然語音。",
-              "cta": "探索 ElevenLabs"
+              "cta": "探索 ElevenLabs",
+              "link": "/learn/elevenlabs-integration"
             },
             {
+              "emoji": "🎬",
               "title": "製作 AI 影片",
               "desc": "使用 HeyGen 製作展示你已部署代理程式的 AI 數位人影片。",
-              "cta": "探索 HeyGen"
+              "cta": "探索 HeyGen",
+              "link": "/learn/heygen-video"
             },
             {
-              "title": "升級 Zeabur Pro",
-              "desc": "升級以處理更多使用者、自訂資源和進階功能。使用優惠碼 'OpenClaw' 享 9 折優惠。",
-              "cta": "查看定價"
+              "emoji": "🌐",
+              "title": "Zeabur 瀏覽器設定指南",
+              "desc": "進階：為你的雲端 AI agent 設定 Headless Chrome。瀏覽器整合的疑難排解指南。",
+              "cta": "閱讀指南",
+              "link": "https://blog.juchunko.com/zh/openclaw-browser-zeabur-setup",
+              "external": true
             },
             {
+              "emoji": "🦞",
               "title": "加入社群",
               "desc": "在 Canfly 社群中分享你的部署，啟發其他人將 AI 帶到雲端。",
-              "cta": "加入社群"
+              "cta": "加入社群",
+              "link": "https://blog.juchunko.com",
+              "external": true
             }
           ]
         }
@@ -604,24 +614,34 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "⭐",
               "title": "升級到入門方案",
               "desc": "取得 30,000 字元、高級語音和商業用途。透過 22% 推薦佣金支持 Canfly。",
-              "cta": "立即升級"
+              "cta": "立即升級",
+              "link": "https://try.elevenlabs.io/clawhub",
+              "external": true
             },
             {
+              "emoji": "🎤",
               "title": "自訂語音克隆",
               "desc": "使用 ElevenLabs Voice Lab 克隆你自己的語音或建立品牌專屬語音。",
-              "cta": "探索 Voice Lab"
+              "cta": "探索 Voice Lab",
+              "link": "https://try.elevenlabs.io/clawhub",
+              "external": true
             },
             {
+              "emoji": "🎬",
               "title": "使用 HeyGen 加上影片",
               "desc": "結合 ElevenLabs 語音與 HeyGen AI 虛擬人物來創作完整的影片內容。",
-              "cta": "學習 HeyGen"
+              "cta": "學習 HeyGen",
+              "link": "/learn/heygen-video"
             },
             {
+              "emoji": "☁️",
               "title": "將語音部署到雲端",
               "desc": "使用 Zeabur 將你的語音功能 AI 代理部署到全球，提供 24/7 可用性。",
-              "cta": "部署到雲端"
+              "cta": "部署到雲端",
+              "link": "/learn/zeabur"
             }
           ]
         }
@@ -721,24 +741,34 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "⭐",
               "title": "升級到創作者方案",
               "desc": "取得每月 15 點數、API 存取和商業用途。透過 20% 推薦佣金支持 Canfly。",
-              "cta": "立即升級"
+              "cta": "立即升級",
+              "link": "https://www.heygen.com/?sid=rewardful&via=clawhub",
+              "external": true
             },
             {
+              "emoji": "👤",
               "title": "自訂虛擬人物創作",
               "desc": "使用 HeyGen 的自訂虛擬人物服務創作個人化虛擬人物以保持品牌一致性。",
-              "cta": "創作自訂虛擬人物"
+              "cta": "創作自訂虛擬人物",
+              "link": "https://www.heygen.com/?sid=rewardful&via=clawhub",
+              "external": true
             },
             {
+              "emoji": "🎙️",
               "title": "結合 ElevenLabs",
               "desc": "使用 ElevenLabs 自訂語音搭配 HeyGen 虛擬人物，打造終極個人化影片體驗。",
-              "cta": "學習 ElevenLabs"
+              "cta": "學習 ElevenLabs",
+              "link": "/learn/elevenlabs-integration"
             },
             {
+              "emoji": "☁️",
               "title": "自動化影片工作流程",
               "desc": "將你的影片生成 AI 部署到 Zeabur 雲端並創作自動化內容管線。",
-              "cta": "部署到雲端"
+              "cta": "部署到雲端",
+              "link": "/learn/zeabur"
             },
             {
               "title": "HeyGen + ZapCap + Whisper 完整指南",
