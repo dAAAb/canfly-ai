@@ -82,6 +82,27 @@ CEO 收到草案後：
 
 ---
 
+## 🔍 自治巡檢機制（CEO 每 15 分鐘 heartbeat）
+
+CEO 不只是等人派工，每次 heartbeat 必須主動巡檢：
+
+### 巡檢清單
+1. **網站健康**：curl 主要頁面，檢查 404、壞連結
+2. **翻譯完整性**：比對 en/zh-TW/zh-CN key 數量
+3. **Git 品質**：review 最近 commits
+4. **Agent 狀態**：有沒有 idle/error 的 agent
+5. **用戶體驗**：模擬用戶走一遍主要流程
+
+### 發現問題 → 自建 Issue
+CEO 可以直接用 Paperclip API 建 issue（見 AGENTS.md），不需要等寶博或小龍蝦。
+
+### Bug vs Feature
+- **Bug**（壞了的東西）→ CEO 自己建票，高優先級，直接分派
+- **Feature improvement**（可以更好的）→ CEO 記錄到下一輪 Sprint 草案
+- **翻譯缺漏**→ 建 Bug ticket，指派 Content Writer
+
+---
+
 ## 🚫 禁止事項
 
 - ❌ 完成 tickets 後只報告「全部做完了 ✅」而不提下一步
