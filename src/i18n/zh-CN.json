@@ -2692,6 +2692,175 @@
           "a": "HDMI 假负载让你的电脑以为有接显示器。如果无显示器运行 AI 服务器（headless），需要它来启用 GPU 加速和远程桌面。Amazon 上 $8-16 就能买到。"
         }
       ]
+    },
+    "always-on-mac": {
+      "title": "让你的 Mac 永远在线 — AI Agent 设置指南",
+      "subtitle": "让 Mac Mini 或 MacBook 24/7 全天候运行，支持 OpenClaw 和 AI 代理。学习电源设置、HDMI 假负载安装及 TCP keepalive 配置。",
+      "duration": "10 分钟",
+      "difficulty": "初级",
+      "steps": [
+        {
+          "title": "为什么 AI Agent 需要永远在线",
+          "titleEn": "Why Always-On Matters for AI Agents",
+          "estimatedTime": "2 分钟",
+          "content": "OpenClaw 等 AI 代理需要持续连接才能运作。当你的 Mac 进入睡眠状态，TCP 连接会断开 — 代理会停止响应消息、丢失上下文、错过事件。\n\n解决方法取决于你的硬件：\n\n**MacBook 用户：** 调整电源设置，保持屏幕开启。可以把屏幕亮度调到最低来省电。\n\n**Mac Mini 用户：** 你会遇到额外的挑战。当外接显示器关闭（或拔掉）时，macOS 会认为没有显示器。这会导致 VM 无法截图、GPU 加速失效、远程桌面无法使用。解决方案？HDMI 假负载 — 一个小设备，让 macOS 以为永远有显示器连接。",
+          "tips": [
+            "MacBook：保持屏幕开启，将亮度调到最低",
+            "Mac Mini：先插上 HDMI 假负载，再设置电源",
+            "两者都要：保持接上电源"
+          ],
+          "troubleshooting": {
+            "title": "常见问题",
+            "items": [
+              {
+                "q": "这样会损坏我的 Mac 吗？",
+                "a": "不会。防止睡眠是安全的。Mac 本来就设计为可以长时间运行。"
+              },
+              {
+                "q": "这样会增加电费吗？",
+                "a": "几乎不会。Mac Mini 待机功耗约 5-7W，一年大约 $5-10 美元电费。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "配置电源管理",
+          "titleEn": "Configure Power Settings",
+          "estimatedTime": "3 分钟",
+          "content": "打开终端，运行以下命令来防止 Mac 进入睡眠。MacBook 和 Mac Mini 都适用。\n\n适用于接上电源的情况（推荐用于常驻设置）：",
+          "commands": [
+            "sudo pmset -c sleep 0 disksleep 0 networkoversleep 1",
+            "nohup caffeinate -s > /dev/null 2>&1 &",
+            "pmset -g | grep tcpkeepalive"
+          ],
+          "expectedResult": "运行后，你的 Mac 在接上电源时不会进入睡眠。caffeinate 会在后台运行防止系统休眠。TCP keepalive 应显示值为 1。",
+          "tips": [
+            "-c 标志只针对接上电源的设置 — 使用电池时仍会正常休眠",
+            "caffeinate -s 在接上电源时防止系统休眠",
+            "TCP keepalive 在低功耗状态下维持网络连接",
+            "验证所有设置：运行 pmset -g custom"
+          ],
+          "troubleshooting": {
+            "title": "故障排除",
+            "items": [
+              {
+                "q": "pmset 显示权限不足",
+                "a": "确认在 pmset 命令前加上 sudo。需要输入 Mac 密码。"
+              },
+              {
+                "q": "改完设置 Mac 还是会休眠",
+                "a": "检查 caffeinate 是否在运行：pgrep caffeinate。如果没有，重新运行 caffeinate 命令。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Mac Mini：安装 HDMI 假负载",
+          "titleEn": "Mac Mini: Set Up HDMI Dummy Plug",
+          "estimatedTime": "2 分钟",
+          "content": "**此步骤仅适用于 Mac Mini 用户。** MacBook 用户可跳到步骤 4。\n\n当 Mac Mini 没有接显示器时，macOS 会关闭 GPU 加速渲染。这意味着：\n- VM 无法截图\n- 远程桌面显示空白/低分辨率画面\n- 需要截图的 AI 代理无法运作\n\n**解法：EVanlak 8K HDMI Dummy Plug**\n\n这个超迷你的假负载（世界最小！）插到 Mac Mini 的 HDMI 接口。macOS 会立即认为有显示器连接，恢复完整 GPU 加速。\n\n**安装步骤：**\n1. 关闭 Mac Mini（建议但非必要）\n2. 将 EVanlak HDMI 假负载插入任意 HDMI 接口\n3. 开机 — macOS 会立即检测到显示器\n4. 验证：系统设置 > 显示器 应该会显示假负载显示器",
+          "commands": [
+            "system_profiler SPDisplaysDataType | head -20"
+          ],
+          "expectedResult": "你应该会看到一个显示器被列出（即使没有实体显示器连接）。这确认假负载正常运作，macOS 已启用完整 GPU 加速。",
+          "tips": [
+            "EVanlak 支持 8K@30Hz / 4K@120Hz — 对无显示器运作绰绰有余",
+            "你仍然可以用屏幕共享或 VNC 远程访问 Mac Mini",
+            "如果使用多显示器，假负载会占用一个 HDMI 接口 — 请事先规划",
+            "Amazon 购买：EVanlak 8K HDMI Dummy Plug（ASIN: B0CL21JLB1）"
+          ],
+          "troubleshooting": {
+            "title": "故障排除",
+            "items": [
+              {
+                "q": "显示器设置没有显示假负载",
+                "a": "试试不同的 HDMI 接口。如果 Mac Mini 有 USB-C/Thunderbolt，HDMI 假负载必须插在 HDMI 接口。"
+              },
+              {
+                "q": "远程桌面仍然显示低分辨率",
+                "a": "插入后，到系统设置 > 显示器，设置你想要的分辨率（例如 4K）。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "配置 macOS 系统设置",
+          "titleEn": "Configure macOS System Settings",
+          "estimatedTime": "2 分钟",
+          "content": "除了终端命令，还需要配置以下 macOS 系统设置：\n\n**锁定屏幕：**\n- 闲置时关闭显示器：永不（MacBook 的电池和电源适配器模式都要设）\n\n**屏幕保护程序：**\n- 启动屏幕保护程序：永不\n\n**省电模式（系统设置 > 电池 > 选项）：**\n- 网络访问时唤醒：始终\n- 使用电池时优化视频流：关闭\n\n**MacBook 专属：**\n- 可以将亮度调到最低来省电\n- **不要合上屏幕** — 这会强制进入硬件休眠，pmset 设置无法阻止\n- 如果必须合上屏幕，使用外接显示器 + 电源适配器的合盖模式",
+          "commands": [
+            "pmset -g custom"
+          ],
+          "expectedResult": "输出应显示：sleep 0、disksleep 0、networkoversleep 1、tcpkeepalive 1。这确认你的 Mac 已完全配置为常驻模式。",
+          "tips": [
+            "MacBook 用户：保持屏幕开启并调暗亮度，不要合上",
+            "在系统设置 > 通用 > 共享中启用远程管理",
+            "考虑启用屏幕共享以便远程 GUI 访问",
+            "设置 SSH 终端访问：系统设置 > 通用 > 共享 > 远程登录"
+          ],
+          "troubleshooting": {
+            "title": "故障排除",
+            "items": [
+              {
+                "q": "合上 MacBook 屏幕后还是会休眠",
+                "a": "合上屏幕会触发硬件休眠 — 没有软件设置可以阻止。保持屏幕开启或使用外接显示器 + 电源适配器的合盖模式。"
+              },
+              {
+                "q": "如何还原所有设置？",
+                "a": "运行：sudo pmset -c sleep 1 disksleep 10 networkoversleep 0 && pkill caffeinate"
+              }
+            ]
+          }
+        },
+        {
+          "title": "验证与下一步",
+          "titleEn": "Verify & Next Steps",
+          "estimatedTime": "1 分钟",
+          "content": "你的 Mac 现在已配置为 24/7 全天候运行。以下是验证方法：\n\n1. 让 Mac 运行 30 分钟以上 — 不应进入休眠\n2. 检查代理是否连接：OpenClaw 网关应维持 TCP 连接\n3. Mac Mini 用户：确认假负载显示器仍被检测到\n\n你现在可以全天候运行 AI 代理了！",
+          "nextStepCards": [
+            {
+              "emoji": "llama",
+              "title": "运行本地 AI",
+              "desc": "在常驻 Mac 上设置 Ollama",
+              "link": "/learn/ollama",
+              "cta": "开始教程"
+            },
+            {
+              "emoji": "plug",
+              "title": "HDMI 假负载",
+              "desc": "为 Mac Mini 获取 EVanlak 8K 假负载",
+              "link": "/apps/hdmi-dummy-plug",
+              "cta": "查看产品"
+            },
+            {
+              "emoji": "desktop",
+              "title": "Mac Mini M4",
+              "desc": "终极迷你 AI 工作站",
+              "link": "/apps/mac-mini-m4",
+              "cta": "查看产品"
+            }
+          ],
+          "tips": [
+            "设置定时任务定期检查代理健康状态",
+            "考虑使用 UPS（不间断电源）防止停电",
+            "使用 macOS 内置的屏幕共享远程访问"
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "HDMI 假负载会耗电吗？",
+          "a": "几乎不会 — 从 HDMI 接口汲取不到 0.1W。它是被动设备。"
+        },
+        {
+          "q": "Mac Mini 可以完全不接显示器吗？",
+          "a": "可以！插入 HDMI 假负载后，macOS 会认为有显示器连接。使用屏幕共享或 VNC 进行远程访问。"
+        },
+        {
+          "q": "常驻运行会缩短 Mac 寿命吗？",
+          "a": "现代 Mac 设计为可持续运行。Apple 自家的数据中心 24/7 运行 Mac 硬件。SSD 寿命很长，Apple Silicon 极为省电。"
+        }
+      ]
     }
   },
   "hardwareCompare": {

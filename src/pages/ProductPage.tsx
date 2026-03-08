@@ -66,7 +66,7 @@ export default function ProductPage() {
     title: `${product.name} — Canfly`,
     description: t(`product.products.${pid}.description`, { defaultValue: product.description }),
     canonical: `https://canfly.ai${localePath(`/apps/${slug}`)}`,
-    ogImage: product.icon ? `https://canfly.ai${product.icon}` : undefined,
+    ogImage: product.heroImage ? `https://canfly.ai${product.heroImage}` : product.icon ? `https://canfly.ai${product.icon}` : undefined,
     ogType: 'website',
   } : {})
 
@@ -109,6 +109,12 @@ export default function ProductPage() {
                   src={product.screenshots[activeScreenshot]}
                   alt={`${product.name} screenshot`}
                   className="w-full h-full object-cover object-top"
+                />
+              ) : product.heroImage ? (
+                <img
+                  src={product.heroImage}
+                  alt={product.name}
+                  className="w-full h-full object-contain p-4"
                 />
               ) : (
                 <div className="text-center">

@@ -893,6 +893,85 @@ function createHardwareTutorial(t: any): TutorialData {
   }
 }
 
+function createAlwaysOnMacTutorial(t: any): TutorialData {
+  return {
+    id: 'always-on-mac',
+    title: t('tutorial.always-on-mac.title'),
+    subtitle: t('tutorial.always-on-mac.subtitle'),
+    duration: t('tutorial.always-on-mac.duration'),
+    difficulty: t('tutorial.always-on-mac.difficulty'),
+    faq: t('tutorial.always-on-mac.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Monitor,
+        title: t('tutorial.always-on-mac.steps.0.title'),
+        titleEn: t('tutorial.always-on-mac.steps.0.titleEn'),
+        estimatedTime: t('tutorial.always-on-mac.steps.0.estimatedTime'),
+        content: t('tutorial.always-on-mac.steps.0.content'),
+        tips: t('tutorial.always-on-mac.steps.0.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.always-on-mac.steps.0.troubleshooting.title'),
+          items: t('tutorial.always-on-mac.steps.0.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Terminal,
+        title: t('tutorial.always-on-mac.steps.1.title'),
+        titleEn: t('tutorial.always-on-mac.steps.1.titleEn'),
+        estimatedTime: t('tutorial.always-on-mac.steps.1.estimatedTime'),
+        content: t('tutorial.always-on-mac.steps.1.content'),
+        commands: t('tutorial.always-on-mac.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.always-on-mac.steps.1.expectedResult'),
+        tips: t('tutorial.always-on-mac.steps.1.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.always-on-mac.steps.1.troubleshooting.title'),
+          items: t('tutorial.always-on-mac.steps.1.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Zap,
+        title: t('tutorial.always-on-mac.steps.2.title'),
+        titleEn: t('tutorial.always-on-mac.steps.2.titleEn'),
+        estimatedTime: t('tutorial.always-on-mac.steps.2.estimatedTime'),
+        content: t('tutorial.always-on-mac.steps.2.content'),
+        commands: t('tutorial.always-on-mac.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.always-on-mac.steps.2.expectedResult'),
+        tips: t('tutorial.always-on-mac.steps.2.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.always-on-mac.steps.2.troubleshooting.title'),
+          items: t('tutorial.always-on-mac.steps.2.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: HardDrive,
+        title: t('tutorial.always-on-mac.steps.3.title'),
+        titleEn: t('tutorial.always-on-mac.steps.3.titleEn'),
+        estimatedTime: t('tutorial.always-on-mac.steps.3.estimatedTime'),
+        content: t('tutorial.always-on-mac.steps.3.content'),
+        commands: t('tutorial.always-on-mac.steps.3.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.always-on-mac.steps.3.expectedResult'),
+        tips: t('tutorial.always-on-mac.steps.3.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.always-on-mac.steps.3.troubleshooting.title'),
+          items: t('tutorial.always-on-mac.steps.3.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.always-on-mac.steps.4.title'),
+        titleEn: t('tutorial.always-on-mac.steps.4.titleEn'),
+        estimatedTime: t('tutorial.always-on-mac.steps.4.estimatedTime'),
+        content: t('tutorial.always-on-mac.steps.4.content'),
+        nextStepCards: (t('tutorial.always-on-mac.steps.4.nextStepCards', { returnObjects: true }) || []).map((card: NextStepCard) => ({
+          ...card,
+          link: card.link || '#',
+        })),
+        tips: t('tutorial.always-on-mac.steps.4.tips', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
 function getTutorials(t: any): Record<string, TutorialData> {
   return {
     ollama: createOllamaTutorial(t),
@@ -905,6 +984,7 @@ function getTutorials(t: any): Record<string, TutorialData> {
     'api-keys': createApiKeysTutorial(t),
     'multi-agent': createMultiAgentTutorial(t),
     hardware: createHardwareTutorial(t),
+    'always-on-mac': createAlwaysOnMacTutorial(t),
   }
 }
 

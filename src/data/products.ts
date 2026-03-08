@@ -2,6 +2,7 @@ export interface Product {
   id: string
   name: string
   icon: string
+  heroImage?: string
   tagline: string
   category: string
   price: string
