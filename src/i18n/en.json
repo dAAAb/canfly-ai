@@ -2536,5 +2536,41 @@
         }
       }
     }
+  },
+  "community": {
+    "eyebrow": "Community",
+    "title": "See What Others Are Building",
+    "subtitle": "Real setups from the CanFly community. Get inspired and start your own AI Agent journey.",
+    "entries": {
+      "local-llm": {
+        "title": "Local LLM Powerhouse",
+        "desc": "Running Llama 3 locally on a MacBook Pro with Ollama. Fast inference, complete privacy, zero monthly cost."
+      },
+      "cloud-deploy": {
+        "title": "Cloud AI in One Click",
+        "desc": "Deployed an AI chatbot to Zeabur with OpenClaw. Live in under 5 minutes, auto-scaling included."
+      },
+      "voice-assistant": {
+        "title": "Custom Voice Assistant",
+        "desc": "Built a bilingual voice assistant combining Ollama for reasoning and ElevenLabs for natural speech."
+      },
+      "video-creator": {
+        "title": "AI Video Studio",
+        "desc": "Creating multilingual product videos with HeyGen avatars and ElevenLabs voiceovers. No camera needed."
+      },
+      "home-server": {
+        "title": "24/7 Home AI Server",
+        "desc": "Running Ollama on Umbrel with a Raspberry Pi 5. Always-on private AI for the whole household."
+      },
+      "coding-agent": {
+        "title": "AI Coding Companion",
+        "desc": "Using Ollama with Continue.dev in VS Code for local AI-powered code completion and chat."
+      }
+    },
+    "cta": {
+      "title": "Ready to Build Your Own?",
+      "desc": "Start with our free tutorials and join the community of AI builders.",
+      "button": "Get Started"
+    }
   }
 }

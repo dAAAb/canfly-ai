@@ -505,6 +505,24 @@
             }
           ]
         }
+      ],
+      "faq": [
+        {
+          "q": "如何在电脑上安装 Ollama？",
+          "a": "Ollama 支持 macOS、Windows 和 Linux。在 Mac 上，从 ollama.com 下载后拖拽到应用程序文件夹。在 Linux 上，运行 `curl -fsSL https://ollama.com/install.sh | sh`。在 Windows 上，下载并运行安装程序。整个过程不到 2 分钟。"
+        },
+        {
+          "q": "Ollama 是免费的吗？",
+          "a": "是的，Ollama 是 100% 免费且开源的。它在你的电脑上本地运行 AI 模型，不需要 API 费用、不需要订阅、也没有使用限制。"
+        },
+        {
+          "q": "运行本地 AI 的 Ollama 系统要求是什么？",
+          "a": "小型模型（3B 参数）至少需要 8GB 内存。建议 16GB 以上内存以获得更好的性能。现代 CPU 就足够了——GPU 是可选的，但可以显著加速推理速度。"
+        },
+        {
+          "q": "如何将 Ollama 连接到 OpenClaw？",
+          "a": "安装 Ollama 并拉取模型后，OpenClaw 会自动检测 http://localhost:11434 上的 Ollama。只需启动两个应用程序，它们就会无缝连接。"
+        }
       ]
     },
     "zeabur": {
@@ -738,6 +756,16 @@
             "# 尝试与你的云端 AI 对话"
           ]
         }
+      ],
+      "faq": [
+        {
+          "q": "如何将 OpenClaw 部署到云端？",
+          "a": "在 GitHub 上 Fork OpenClaw 仓库，创建 Zeabur 账号，连接你的 GitHub，然后一键部署。使用优惠码「OpenClaw」可享 9 折优惠。"
+        },
+        {
+          "q": "云端 AI 托管费用是多少？",
+          "a": "Zeabur 提供免费方案供测试使用。生产环境托管每月约 $5 美元起。使用推荐码「OpenClaw」可享 9 折优惠。"
+        }
       ]
     },
     "elevenlabs": {
@@ -916,6 +944,16 @@
               "link": "/learn/zeabur"
             }
           ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "如何在应用程序中添加 AI 语音？",
+          "a": "注册 ElevenLabs 账号，获取 API 密钥，然后通过 REST API 或 SDK 集成。ElevenLabs 支持 29 种以上语言，提供自然流畅的语音。"
+        },
+        {
+          "q": "ElevenLabs 是免费的吗？",
+          "a": "ElevenLabs 提供免费方案，每月有限定字数。付费方案每月 $5 美元起，提供更多使用量和语音克隆功能。"
         }
       ]
     },
@@ -1144,6 +1182,16 @@
             }
           ]
         }
+      ],
+      "faq": [
+        {
+          "q": "为什么要在虚拟机中运行 AI？",
+          "a": "虚拟机提供隔离性、安全性和可重现性。你可以运行 GPU 加速的 AI 工作负载而不影响主机系统，并且轻松创建快照或分享你的环境。"
+        },
+        {
+          "q": "哪些虚拟机软件支持 AI 工作负载？",
+          "a": "本地 AI 可使用 UTM（Mac）、VirtualBox（跨平台）或 VMware。云端虚拟机方面，AWS EC2、Google Cloud 和 Azure 都提供针对 AI 优化的 GPU 实例。"
+        }
       ]
     },
     "heygen": {
@@ -1329,6 +1377,16 @@
               "external": true
             }
           ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "如何制作 AI 生成的视频？",
+          "a": "注册 HeyGen 账号，选择 AI 虚拟人物，输入你的脚本，几分钟内就能生成专业视频。不需要摄像头或剪辑技巧。"
+        },
+        {
+          "q": "AI 视频生成可以用在哪些地方？",
+          "a": "AI 视频非常适合产品演示、培训材料、社交媒体内容、客户服务视频，以及大规模多语言营销。"
         }
       ]
     },
@@ -1523,6 +1581,16 @@
             }
           ]
         }
+      ],
+      "faq": [
+        {
+          "q": "Perplexity AI 是什么？和 ChatGPT 有什么不同？",
+          "a": "Perplexity 是一个 AI 驱动的搜索引擎，提供附有引用来源的实时答案。与 ChatGPT 不同的是，它会显示数据来源，并且保持实时更新。"
+        },
+        {
+          "q": "Perplexity AI 免费吗？",
+          "a": "是的，Perplexity 提供免费方案，每日有充裕的使用额度。Perplexity Pro（每月 $20 美元）提供无限搜索、文件上传和更强大的模型。"
+        }
       ]
     },
     "brave": {
@@ -1713,6 +1781,16 @@
               "link": "/learn/elevenlabs-integration"
             }
           ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "如何在 Brave 浏览器中使用 AI 搜索？",
+          "a": "Brave 的 AI 搜索（Leo）内置在浏览器中。只要打开 Brave，在地址栏输入问题，Leo 就会提供具有隐私保护的 AI 搜索结果。"
+        },
+        {
+          "q": "Brave 的 AI 搜索是否保护隐私？",
+          "a": "是的，Brave 不会追踪你的搜索记录或建立用户档案。AI 查询处理过程不会存储个人数据，是最注重隐私的 AI 搜索选项。"
         }
       ]
     },
@@ -1940,6 +2018,16 @@
             "学习期间先用便宜的模型（GPT-4o-mini、Claude Haiku）",
             "两家供应商都有很宽裕的免费额度 — 尽情实验！"
           ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "如何获取 AI 服务的 API 密钥？",
+          "a": "每个 AI 供应商（OpenAI、Anthropic 等）都有开发者控制台，可以创建 API 密钥。注册账号后，前往 API 设置页面，生成新的密钥并妥善保管。"
+        },
+        {
+          "q": "如何安全地存储 AI API 密钥？",
+          "a": "使用环境变量或 .env 文件——绝对不要将密钥硬编码在源代码中。生产环境请使用密钥管理工具，如 AWS Secrets Manager 或 HashiCorp Vault。"
         }
       ]
     },
@@ -2207,6 +2295,16 @@
             "加入 CanFly 社区分享你的多 Agent 配置"
           ]
         }
+      ],
+      "faq": [
+        {
+          "q": "什么是多智能体 AI 协作？",
+          "a": "多智能体协作是协调多个 AI 智能体共同处理复杂任务。每个智能体专精于不同能力，通过彼此沟通来解决单一智能体无法独立完成的问题。"
+        },
+        {
+          "q": "如何设置多个 AI 智能体？",
+          "a": "从一个主要智能体（例如 Ollama）开始，然后添加专门负责网页搜索、代码生成或数据分析的智能体。使用协作框架来管理智能体之间的通信。"
+        }
       ]
     }
   },
@@ -2437,6 +2535,42 @@
           "a": "如果因任何原因我们无法完成你的安装，你将获得全额退款，不问任何问题。"
         }
       }
+    }
+  },
+  "community": {
+    "eyebrow": "社区展示",
+    "title": "看看大家都在做什么",
+    "subtitle": "来自 CanFly 社区的真实设置。获取灵感，开始你自己的 AI Agent 旅程。",
+    "entries": {
+      "local-llm": {
+        "title": "本地 LLM 工作站",
+        "desc": "在 MacBook Pro 上用 Ollama 运行 Llama 3。快速推理、完全隐私、零月费。"
+      },
+      "cloud-deploy": {
+        "title": "一键云端 AI",
+        "desc": "通过 OpenClaw 部署 AI 聊天机器人到 Zeabur。不到 5 分钟上线，自动扩展。"
+      },
+      "voice-assistant": {
+        "title": "自定义语音助手",
+        "desc": "结合 Ollama 推理能力和 ElevenLabs 自然语音，打造双语语音助手。"
+      },
+      "video-creator": {
+        "title": "AI 视频工作室",
+        "desc": "使用 HeyGen 虚拟人物和 ElevenLabs 配音制作多语言产品视频。不需要摄像头。"
+      },
+      "home-server": {
+        "title": "24/7 家用 AI 服务器",
+        "desc": "在 Raspberry Pi 5 上用 Umbrel 运行 Ollama。全天候私人 AI，全家都能用。"
+      },
+      "coding-agent": {
+        "title": "AI 代码助手",
+        "desc": "在 VS Code 中使用 Ollama 搭配 Continue.dev，实现本地 AI 代码补全和对话。"
+      }
+    },
+    "cta": {
+      "title": "准备好打造你自己的了吗？",
+      "desc": "从我们的免费教程开始，加入 AI 创作者社区。",
+      "button": "开始使用"
     }
   }
 }

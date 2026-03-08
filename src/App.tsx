@@ -13,6 +13,7 @@ const HardwareComparePage = lazy(() => import('./pages/HardwareComparePage'))
 const CheckoutPage = lazy(() => import('./pages/CheckoutPage'))
 const GetStartedPage = lazy(() => import('./pages/GetStartedPage'))
 const PricingPage = lazy(() => import('./pages/PricingPage'))
+const CommunityPage = lazy(() => import('./pages/CommunityPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 /** Wrapper that syncs i18next language from URL :lang param.
@@ -52,6 +53,7 @@ function App() {
               <Route path="/get-started" element={<GetStartedPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/pricing" element={<PricingPage />} />
+              <Route path="/community" element={<CommunityPage />} />
 
               {/* Language-prefixed routes */}
               <Route path="/:lang" element={<LangSync><HomePage /></LangSync>} />
@@ -62,6 +64,7 @@ function App() {
               <Route path="/:lang/get-started" element={<LangSync><GetStartedPage /></LangSync>} />
               <Route path="/:lang/checkout" element={<LangSync><CheckoutPage /></LangSync>} />
               <Route path="/:lang/pricing" element={<LangSync><PricingPage /></LangSync>} />
+              <Route path="/:lang/community" element={<LangSync><CommunityPage /></LangSync>} />
 
               {/* 404 catch-all */}
               <Route path="*" element={<NotFoundPage />} />
