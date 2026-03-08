@@ -132,7 +132,6 @@
     "breadcrumbApps": "应用",
     "openclawPartner": "OpenClaw 合作伙伴",
     "discountWithCode": "使用优惠码 {{code}} 享 {{discount}} 折扣",
-    "affiliateCommission": "{{commission}} 联盟佣金",
     "features": "功能特色",
     "products": {
       "ollama": {
@@ -171,7 +170,7 @@
           "API 集成",
           "OpenClaw 技能"
         ],
-        "ctaPrimary": "试用 ElevenLabs",
+        "ctaPrimary": "免费开始使用",
         "ctaSecondary": "查看教程"
       },
       "heygen": {
@@ -184,7 +183,7 @@
           "自定义分身训练",
           "与 OpenClaw 兼容"
         ],
-        "ctaPrimary": "试用 HeyGen",
+        "ctaPrimary": "免费试用",
         "ctaSecondary": "查看教程"
       },
       "umbrel": {
@@ -274,15 +273,15 @@
         ]
       },
       "hdmi-dummy-plug": {
-        "tagline": "无显示器 AI 服务器必备",
-        "description": "运行无显示器 AI 服务器？HDMI 假负载让电脑以为连接了显示器，启用完整 GPU 加速和远程桌面。任何常驻 AI 设置的必备配件。",
+        "tagline": "世界最小 HDMI 假负载",
+        "description": "EVanlak 8K HDMI Dummy Plug — 超迷你，世界最小的 HDMI 假负载。让你的 Mac Mini 或无显示器主机以为连接了显示器，启用完整 GPU 加速和远程桌面。支持 8K@30Hz、4K@120Hz、1080p@144Hz。即插即用，免驱动。",
         "features": [
-          "4K@60Hz 显示模拟",
+          "超迷你 — 世界最小",
+          "8K@30Hz / 4K@120Hz / 1080p@144Hz",
           "启用 GPU 加速",
           "远程桌面必备",
           "适用所有电脑",
-          "即插即用",
-          "不到 $10"
+          "即插即用，免驱动"
         ]
       },
       "elgato-stream-deck": {

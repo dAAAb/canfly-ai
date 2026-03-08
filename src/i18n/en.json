@@ -132,7 +132,6 @@
     "breadcrumbApps": "Apps",
     "openclawPartner": "OpenClaw Partner",
     "discountWithCode": "{{discount}} with code: {{code}}",
-    "affiliateCommission": "{{commission}} affiliate commission",
     "features": "Features",
     "products": {
       "ollama": {
@@ -171,7 +170,7 @@
           "API",
           "OpenClaw skill"
         ],
-        "ctaPrimary": "Try ElevenLabs",
+        "ctaPrimary": "Get Started Free",
         "ctaSecondary": "View Tutorial"
       },
       "heygen": {
@@ -184,7 +183,7 @@
           "Custom avatar training",
           "Works with OpenClaw"
         ],
-        "ctaPrimary": "Try HeyGen",
+        "ctaPrimary": "Start Free Trial",
         "ctaSecondary": "View Tutorial"
       },
       "umbrel": {
@@ -274,15 +273,15 @@
         ]
       },
       "hdmi-dummy-plug": {
-        "tagline": "Essential for headless AI servers",
-        "description": "Running a headless AI server? An HDMI dummy plug enables full GPU acceleration and remote desktop. A must-have for any always-on AI setup.",
+        "tagline": "World's tiniest HDMI dummy plug",
+        "description": "The EVanlak 8K HDMI Dummy Plug is the world's smallest — super tiny, plug and play. Tricks your Mac Mini or headless PC into thinking a monitor is connected. Supports 8K@30Hz, 4K@120Hz, 1080p@144Hz. Essential for always-on AI server setups.",
         "features": [
-          "4K@60Hz display emulation",
+          "Super Tiny — world's smallest",
+          "8K@30Hz / 4K@120Hz / 1080p@144Hz",
           "Enables GPU acceleration",
           "Essential for remote desktop",
           "Works with all computers",
-          "Plug and play",
-          "Under $10"
+          "Plug and play — no drivers"
         ]
       },
       "elgato-stream-deck": {
@@ -2691,6 +2690,175 @@
         {
           "q": "What's an HDMI dummy plug and do I need one?",
           "a": "An HDMI dummy plug tricks your computer into thinking a monitor is connected. You need one if running your AI server headless (no monitor) to enable GPU acceleration and remote desktop. They cost $8-16 on Amazon."
+        }
+      ]
+    },
+    "always-on-mac": {
+      "title": "Make Your Mac Always-On — AI Agent Setup Guide",
+      "subtitle": "Keep your Mac Mini or MacBook running 24/7 for OpenClaw and AI agents. Learn power settings, HDMI dummy plug setup, and TCP keepalive configuration.",
+      "duration": "10 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "Why Always-On Matters for AI Agents",
+          "titleEn": "Why Always-On Matters for AI Agents",
+          "estimatedTime": "2 min",
+          "content": "AI agents like OpenClaw need a persistent connection to work. When your Mac sleeps, it disconnects TCP connections — meaning your agents stop responding to messages, lose context, and miss events.\n\nThe fix depends on your hardware:\n\n**MacBook users:** Adjust power settings and keep the lid open. You can dim the screen to save energy.\n\n**Mac Mini users:** You face an extra challenge. When your external monitor turns off (or is disconnected), macOS thinks there is no display. This breaks VM screen capture, GPU acceleration, and remote desktop. The solution? An HDMI Dummy Plug — a tiny device that tricks macOS into thinking a monitor is always connected.",
+          "tips": [
+            "MacBook: keep the lid open, dim the screen to minimum",
+            "Mac Mini: plug in an HDMI Dummy Plug before configuring power settings",
+            "Both: keep your Mac connected to power at all times"
+          ],
+          "troubleshooting": {
+            "title": "Common Questions",
+            "items": [
+              {
+                "q": "Will this damage my Mac?",
+                "a": "No. Preventing sleep is safe. Macs are designed for extended operation."
+              },
+              {
+                "q": "Will this increase my electricity bill?",
+                "a": "Barely. A Mac Mini uses ~5-7W at idle. That is about $5-10/year in electricity."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Configure Power Settings",
+          "titleEn": "Configure Power Settings",
+          "estimatedTime": "3 min",
+          "content": "Open Terminal and run these commands to prevent your Mac from sleeping. This works on both MacBook and Mac Mini.\n\nFor AC power (recommended for always-on setups):",
+          "commands": [
+            "sudo pmset -c sleep 0 disksleep 0 networkoversleep 1",
+            "nohup caffeinate -s > /dev/null 2>&1 &",
+            "pmset -g | grep tcpkeepalive"
+          ],
+          "expectedResult": "After running these commands, your Mac will stay awake on AC power. The caffeinate process runs in the background to prevent system sleep. TCP keepalive should show value 1.",
+          "tips": [
+            "The -c flag targets AC power settings only — your Mac still sleeps normally on battery",
+            "caffeinate -s prevents system sleep while on AC power",
+            "TCP keepalive maintains network connections during low-power states",
+            "To verify all settings: run pmset -g custom"
+          ],
+          "troubleshooting": {
+            "title": "Troubleshooting",
+            "items": [
+              {
+                "q": "Permission denied on pmset",
+                "a": "Make sure to use sudo before the pmset command. You will need to enter your Mac password."
+              },
+              {
+                "q": "Mac still sleeps after settings change",
+                "a": "Check if caffeinate is running: pgrep caffeinate. If not, re-run the caffeinate command."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Mac Mini: Set Up HDMI Dummy Plug",
+          "titleEn": "Mac Mini: Set Up HDMI Dummy Plug",
+          "estimatedTime": "2 min",
+          "content": "**This step is for Mac Mini users only.** MacBook users can skip to Step 4.\n\nWhen a Mac Mini has no display connected, macOS disables GPU-accelerated rendering. This means:\n- VMs cannot capture the screen\n- Remote desktop shows a blank/low-res image\n- AI agents that need screenshots will not work\n\n**The fix: EVanlak 8K HDMI Dummy Plug**\n\nThis super tiny plug (world's smallest!) goes into your Mac Mini's HDMI port. macOS instantly thinks a monitor is connected, restoring full GPU acceleration.\n\n**Setup:**\n1. Power off your Mac Mini (optional but recommended)\n2. Plug the EVanlak HDMI Dummy Plug into any HDMI port\n3. Power on — macOS will detect a display immediately\n4. Verify: System Settings > Displays should show the dummy display",
+          "commands": [
+            "system_profiler SPDisplaysDataType | head -20"
+          ],
+          "expectedResult": "You should see a display listed (even though no physical monitor is connected). This confirms the dummy plug is working and macOS has full GPU acceleration enabled.",
+          "tips": [
+            "The EVanlak plug supports 8K@30Hz / 4K@120Hz — more than enough for headless operation",
+            "You can still use Screen Sharing or VNC to access your Mac Mini remotely",
+            "If you use multiple displays, the dummy plug takes one HDMI port — plan accordingly",
+            "Buy on Amazon: EVanlak 8K HDMI Dummy Plug (ASIN: B0CL21JLB1)"
+          ],
+          "troubleshooting": {
+            "title": "Troubleshooting",
+            "items": [
+              {
+                "q": "Displays does not show the dummy plug",
+                "a": "Try a different HDMI port. If your Mac Mini has USB-C/Thunderbolt, the HDMI dummy plug must go in the HDMI port specifically."
+              },
+              {
+                "q": "Remote desktop still shows low resolution",
+                "a": "After plugging in, go to System Settings > Displays and set the resolution to your preferred setting (e.g. 4K)."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Configure macOS System Settings",
+          "titleEn": "Configure macOS System Settings",
+          "estimatedTime": "2 min",
+          "content": "In addition to Terminal commands, configure these macOS System Settings for a fully always-on setup:\n\n**Lock Screen:**\n- Turn off display when inactive: Never (for both battery and power adapter if on MacBook)\n\n**Screen Saver:**\n- Start screen saver: Never\n\n**Energy Saver (System Settings > Battery > Options):**\n- Wake for network access: Always\n- Optimize video streaming while on battery: Off\n\n**MacBook-specific:**\n- You can dim brightness to the lowest setting to save energy\n- **Do NOT close the lid** — this forces hardware sleep regardless of pmset settings\n- If you must close the lid, use clamshell mode with external display + power adapter",
+          "commands": [
+            "pmset -g custom"
+          ],
+          "expectedResult": "The output should show: sleep 0, disksleep 0, networkoversleep 1, tcpkeepalive 1. This confirms your Mac is fully configured for always-on operation.",
+          "tips": [
+            "MacBook users: keep the lid open and dim the screen instead of closing it",
+            "Enable Remote Management in System Settings > General > Sharing for remote access",
+            "Consider enabling Screen Sharing for remote GUI access",
+            "Set up SSH for terminal access: System Settings > General > Sharing > Remote Login"
+          ],
+          "troubleshooting": {
+            "title": "Troubleshooting",
+            "items": [
+              {
+                "q": "My MacBook still sleeps when I close the lid",
+                "a": "Closing the lid triggers hardware sleep — no software setting can override this. Keep the lid open or use clamshell mode with an external display and power adapter."
+              },
+              {
+                "q": "How do I undo all of this?",
+                "a": "Run: sudo pmset -c sleep 1 disksleep 10 networkoversleep 0 && pkill caffeinate"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Verify & Next Steps",
+          "titleEn": "Verify & Next Steps",
+          "estimatedTime": "1 min",
+          "content": "Your Mac is now configured for 24/7 always-on operation. Here is how to verify everything is working:\n\n1. Leave your Mac running for 30+ minutes — it should not sleep\n2. Check agents are connected: your OpenClaw gateway should maintain its TCP connection\n3. For Mac Mini: verify the dummy display is still detected\n\nYou are now ready to run AI agents around the clock!",
+          "nextStepCards": [
+            {
+              "emoji": "llama",
+              "title": "Run Local AI",
+              "desc": "Set up Ollama on your always-on Mac",
+              "link": "/learn/ollama",
+              "cta": "Start Tutorial"
+            },
+            {
+              "emoji": "plug",
+              "title": "HDMI Dummy Plug",
+              "desc": "Get the EVanlak 8K plug for Mac Mini",
+              "link": "/apps/hdmi-dummy-plug",
+              "cta": "View Product"
+            },
+            {
+              "emoji": "desktop",
+              "title": "Mac Mini M4",
+              "desc": "The ultimate compact AI workstation",
+              "link": "/apps/mac-mini-m4",
+              "cta": "View Product"
+            }
+          ],
+          "tips": [
+            "Set up a cron job to check your agents health periodically",
+            "Consider a UPS (uninterruptible power supply) for power outage protection",
+            "Use macOS built-in Screen Sharing for remote access when you are away"
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Does the HDMI Dummy Plug use electricity?",
+          "a": "Negligible — it draws less than 0.1W from the HDMI port. It is a passive device."
+        },
+        {
+          "q": "Can I use the Mac Mini without any monitor at all?",
+          "a": "Yes! With the HDMI Dummy Plug inserted, macOS thinks a monitor is connected. Use Screen Sharing or VNC for remote access."
+        },
+        {
+          "q": "Will always-on reduce my Mac's lifespan?",
+          "a": "Modern Macs are designed for continuous operation. Apple's own data centers run Mac hardware 24/7. SSDs have very long lifespans, and Apple Silicon is extremely power efficient."
         }
       ]
     }

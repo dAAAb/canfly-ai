@@ -208,9 +208,6 @@ export default function ProductPage() {
                     {product.affiliateDiscount && product.affiliateCode && (
                       <div className="text-sm text-blue-400">{t('product.discountWithCode', { discount: product.affiliateDiscount, code: product.affiliateCode })}</div>
                     )}
-                    {product.commission && (
-                      <div className="text-xs text-gray-500">{t('product.affiliateCommission', { commission: product.commission })}</div>
-                    )}
                   </div>
                   <div className="flex gap-2 flex-wrap">
                     {isExternal(product.cta.primaryLink) ? (
