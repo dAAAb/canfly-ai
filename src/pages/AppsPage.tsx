@@ -7,7 +7,26 @@ import { products, categories } from '../data/products'
 import { useLanguage } from '../hooks/useLanguage'
 import { useHead } from '../hooks/useHead'
 
-const featuredIds = ['ollama', 'zeabur'] as const
+const categoryFeatured: Record<string, string[]> = {
+  all: ['ollama', 'zeabur'],
+  free: ['ollama'],
+  skills: ['heygen', 'elevenlabs'],
+  hosting: ['zeabur', 'umbrel'],
+  hardware: ['mac-mini-m4', 'macbook-neo'],
+  vm: ['utm', 'virtual-buddy'],
+}
+
+const featuredGradients: Record<string, string> = {
+  ollama: 'bg-gradient-to-br from-green-950/60 to-emerald-950/40 border border-green-800/30 hover:border-green-700/50',
+  zeabur: 'bg-gradient-to-br from-blue-950/60 to-indigo-950/40 border border-blue-800/30 hover:border-blue-700/50',
+  heygen: 'bg-gradient-to-br from-violet-950/60 to-purple-950/40 border border-violet-800/30 hover:border-violet-700/50',
+  elevenlabs: 'bg-gradient-to-br from-pink-950/60 to-rose-950/40 border border-pink-800/30 hover:border-pink-700/50',
+  umbrel: 'bg-gradient-to-br from-indigo-950/60 to-blue-950/40 border border-indigo-800/30 hover:border-indigo-700/50',
+  'mac-mini-m4': 'bg-gradient-to-br from-gray-800/60 to-zinc-900/40 border border-gray-600/30 hover:border-gray-500/50',
+  'macbook-neo': 'bg-gradient-to-br from-gray-800/60 to-slate-900/40 border border-gray-600/30 hover:border-gray-500/50',
+  utm: 'bg-gradient-to-br from-cyan-950/60 to-teal-950/40 border border-cyan-800/30 hover:border-cyan-700/50',
+  'virtual-buddy': 'bg-gradient-to-br from-teal-950/60 to-emerald-950/40 border border-teal-800/30 hover:border-teal-700/50',
+}
 
 export default function AppsPage() {
   const [searchParams] = useSearchParams()
@@ -35,8 +54,9 @@ export default function AppsPage() {
     return matchesCategory && matchesSearch
   })
 
-  const featuredProducts = selectedCategory === 'all' && !searchTerm
-    ? products.filter(p => featuredIds.includes(p.id as typeof featuredIds[number]))
+  const featuredIds = categoryFeatured[selectedCategory] ?? []
+  const featuredProducts = !searchTerm && featuredIds.length > 0
+    ? products.filter(p => featuredIds.includes(p.id))
     : []
 
   return (
@@ -166,17 +186,15 @@ export default function AppsPage() {
               </div>
             </div>
 
-            {/* Featured banner — only on All Apps without search */}
+            {/* Featured banner — per-category featured products */}
             {featuredProducts.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+              <div className={`grid grid-cols-1 ${featuredProducts.length > 1 ? 'md:grid-cols-2' : ''} gap-4 mb-8`}>
                 {featuredProducts.map((product) => (
                   <Link
                     key={product.id}
                     to={localePath(`/apps/${product.id}`)}
                     className={`relative overflow-hidden rounded-2xl p-6 flex items-center gap-5 group transition-all hover:scale-[1.01] ${
-                      product.id === 'ollama'
-                        ? 'bg-gradient-to-br from-green-950/60 to-emerald-950/40 border border-green-800/30 hover:border-green-700/50'
-                        : 'bg-gradient-to-br from-blue-950/60 to-indigo-950/40 border border-blue-800/30 hover:border-blue-700/50'
+                      featuredGradients[product.id] ?? 'bg-gradient-to-br from-gray-800/60 to-gray-900/40 border border-gray-700/30 hover:border-gray-600/50'
                     }`}
                   >
                     <div className="w-16 h-16 shrink-0 rounded-2xl bg-black/30 border border-white/10 flex items-center justify-center overflow-hidden">
