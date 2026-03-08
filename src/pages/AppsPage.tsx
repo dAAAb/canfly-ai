@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { PanelLeftClose, PanelLeftOpen, Shield, Target, Rocket, LayoutGrid, List, ArrowRight } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import Navbar from '../components/Navbar'
@@ -10,7 +10,9 @@ import { useHead } from '../hooks/useHead'
 const featuredIds = ['ollama', 'zeabur'] as const
 
 export default function AppsPage() {
-  const [selectedCategory, setSelectedCategory] = useState('all')
+  const [searchParams] = useSearchParams()
+  const initialCategory = searchParams.get('category') ?? 'all'
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory)
   const [searchTerm, setSearchTerm] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')

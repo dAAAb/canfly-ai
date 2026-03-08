@@ -115,7 +115,7 @@ export default function HeroSection() {
             </Link>
             <span className="hidden sm:flex items-center text-gray-500">→</span>
             <Link
-              to={localePath('/apps')}
+              to={localePath('/apps') + '?category=skills'}
               className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 hover:bg-white/10 transition-colors text-left"
             >
               <span className="text-purple-400 font-semibold text-sm">{t('hero.funnelStep3')}</span>
