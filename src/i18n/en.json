@@ -1398,5 +1398,28 @@
     "pathDirect": "I just want to install directly",
     "pathDirectDesc": "Skip VMs entirely. Install Ollama straight on your Mac, Linux, or Windows.",
     "pathDirectLink": "Go to Ollama Tutorial →"
+  },
+  "checkout": {
+    "title": "White-Glove Setup Service",
+    "subtitle": "Let our team set up your AI environment. Sit back, relax — we'll handle everything.",
+    "serviceName": "White-Glove AI Setup",
+    "serviceTag": "One-time service",
+    "features": {
+      "0": "Full Ollama installation & configuration on your machine",
+      "1": "AI model selection & download based on your hardware",
+      "2": "Performance tuning for your specific setup",
+      "3": "30-minute walkthrough call after setup"
+    },
+    "deliveryTime": "Completed within 48 hours",
+    "trustSecure": "Secure PayPal Checkout",
+    "trustSupport": "Post-setup support included",
+    "orderSummary": "Order Summary",
+    "total": "Total",
+    "paypalNote": "You will be redirected to PayPal to complete your payment securely.",
+    "successTitle": "Payment Successful!",
+    "successMessage": "Thank you for your purchase! Our team will reach out within 24 hours to schedule your setup.",
+    "orderId": "Order ID",
+    "contactAfterPay": "Questions? Email us at juchunko@gmail.com",
+    "errorMessage": "Payment failed. Please try again or contact support."
   }
 }

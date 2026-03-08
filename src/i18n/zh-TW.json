@@ -1398,5 +1398,28 @@
     "pathDirect": "我想直接安裝在電腦上",
     "pathDirectDesc": "跳過虛擬機。直接在 Mac、Linux 或 Windows 上安裝 Ollama。",
     "pathDirectLink": "前往 Ollama 教學 →"
+  },
+  "checkout": {
+    "title": "白手套安裝服務",
+    "subtitle": "讓我們的團隊為您設定 AI 環境。您只需要坐好放鬆，其他的交給我們。",
+    "serviceName": "白手套 AI 安裝服務",
+    "serviceTag": "一次性服務",
+    "features": {
+      "0": "在您的電腦上完整安裝與設定 Ollama",
+      "1": "根據您的硬體選擇並下載最適合的 AI 模型",
+      "2": "針對您的設備進行效能調校",
+      "3": "安裝完成後 30 分鐘線上教學通話"
+    },
+    "deliveryTime": "48 小時內完成",
+    "trustSecure": "PayPal 安全結帳",
+    "trustSupport": "含售後技術支援",
+    "orderSummary": "訂單摘要",
+    "total": "合計",
+    "paypalNote": "您將被導向 PayPal 安全完成付款。",
+    "successTitle": "付款成功！",
+    "successMessage": "感謝您的購買！我們的團隊將在 24 小時內與您聯繫，安排安裝時間。",
+    "orderId": "訂單編號",
+    "contactAfterPay": "有問題嗎？請寄信至 juchunko@gmail.com",
+    "errorMessage": "付款失敗，請重試或聯繫客服。"
   }
 }
