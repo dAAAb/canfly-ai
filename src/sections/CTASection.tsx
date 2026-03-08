@@ -1,6 +1,8 @@
 import { useFadeIn } from '../hooks/useFadeIn'
-import { Mail } from 'lucide-react'
+import { Mail, PlayCircle } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useLanguage } from '../hooks/useLanguage'
 
 function XIcon() {
   return (
@@ -13,6 +15,7 @@ function XIcon() {
 export default function CTASection() {
   const ref = useFadeIn()
   const { t } = useTranslation()
+  const { localePath } = useLanguage()
 
   return (
     <section
@@ -58,15 +61,26 @@ export default function CTASection() {
           ))}
         </p>
 
-        {/* CTA buttons */}
+        {/* Primary CTA */}
+        <div className="stagger-child stagger-3" style={{ marginTop: 'clamp(32px, 4vw, 56px)' }}>
+          <Link
+            to={localePath('/apps/ollama')}
+            className="inline-flex items-center gap-3 bg-green-600 hover:bg-green-700 px-8 py-4 rounded-xl text-lg font-semibold transition-all hover:scale-105 cta-glow"
+          >
+            <PlayCircle className="w-6 h-6" />
+            {t('cta.ctaButton')}
+          </Link>
+        </div>
+
+        {/* Secondary CTAs */}
         <div
-          className="stagger-child stagger-3"
+          className="stagger-child stagger-4"
           style={{
             display: 'flex',
             flexWrap: 'wrap',
             justifyContent: 'center',
             gap: 'clamp(16px, 2vw, 24px)',
-            marginTop: 'clamp(32px, 4vw, 64px)',
+            marginTop: 'clamp(24px, 3vw, 40px)',
           }}
         >
           <a

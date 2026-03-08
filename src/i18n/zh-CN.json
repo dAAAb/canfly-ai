@@ -6,11 +6,17 @@
   "hero": {
     "titleLine1": "Now You Can",
     "titleLine2": "Fly.",
-    "subtitle": "有了 AI，你也能飞。\nAI Agent 时代的起飞平台。",
-    "ctaFree": "开始免费体验",
-    "ctaFreeTag": "(Ollama)",
+    "subtitle": "5 分钟拥有你的 AI Agent — 零费用、零门槛。\n加入 AI Agent 革命的行列。",
+    "ctaFree": "免费立即开始",
+    "ctaFreeTag": "(5 分钟设置)",
     "ctaBrowse": "浏览所有工具",
-    "funnel": "从 Ollama 免费开始 → Zeabur 云端部署 → AI 技能扩展",
+    "funnel": "从零到 AI 起飞的完整路径：",
+    "funnelStep1": "免费本地 AI",
+    "funnelStep1Desc": "Ollama — 在你的电脑上跑 AI",
+    "funnelStep2": "云端部署",
+    "funnelStep2Desc": "Zeabur — 一键上线",
+    "funnelStep3": "进阶 AI 技能",
+    "funnelStep3Desc": "语音 & 视频 — ElevenLabs + HeyGen",
     "scroll": "Scroll"
   },
   "vision": {
@@ -73,8 +79,9 @@
   },
   "cta": {
     "headingLine1": "准备好了吗？",
-    "headingHighlight": "即将起飞。",
-    "desc": "Canfly 正在打造 AI Agent 时代最友好的入门平台。\n从免费体验到专业配置，我们帮你从地面到云端。",
+    "headingHighlight": "今天就起飞。",
+    "desc": "数千名创作者已经在用 AI Agent 更聪明地工作。\n从 Ollama 免费开始 — 准备好了再升级云端和进阶技能。",
+    "ctaButton": "免费立即开始",
     "followX": "Follow @dAAAb"
   },
   "footer": {

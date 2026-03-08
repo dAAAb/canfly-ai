@@ -96,8 +96,33 @@ export default function HeroSection() {
           </Link>
         </div>
 
-        <div className="mt-8 text-sm text-gray-300">
-          <p>{t('hero.funnel')}</p>
+        <div className="mt-10 text-sm text-gray-300">
+          <p className="mb-4 text-xs uppercase tracking-widest opacity-60">{t('hero.funnel')}</p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center items-stretch max-w-3xl mx-auto">
+            <Link
+              to={localePath('/apps/ollama')}
+              className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 hover:bg-white/10 transition-colors text-left"
+            >
+              <span className="text-green-400 font-semibold text-sm">{t('hero.funnelStep1')}</span>
+              <span className="block text-xs text-gray-400 mt-1">{t('hero.funnelStep1Desc')}</span>
+            </Link>
+            <span className="hidden sm:flex items-center text-gray-500">→</span>
+            <Link
+              to={localePath('/learn/zeabur')}
+              className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 hover:bg-white/10 transition-colors text-left"
+            >
+              <span className="text-blue-400 font-semibold text-sm">{t('hero.funnelStep2')}</span>
+              <span className="block text-xs text-gray-400 mt-1">{t('hero.funnelStep2Desc')}</span>
+            </Link>
+            <span className="hidden sm:flex items-center text-gray-500">→</span>
+            <Link
+              to={localePath('/apps')}
+              className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 hover:bg-white/10 transition-colors text-left"
+            >
+              <span className="text-purple-400 font-semibold text-sm">{t('hero.funnelStep3')}</span>
+              <span className="block text-xs text-gray-400 mt-1">{t('hero.funnelStep3Desc')}</span>
+            </Link>
+          </div>
         </div>
       </div>
 
