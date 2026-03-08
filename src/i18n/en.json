@@ -505,6 +505,24 @@
             }
           ]
         }
+      ],
+      "faq": [
+        {
+          "q": "How do I install Ollama on my computer?",
+          "a": "Ollama supports macOS, Windows, and Linux. On Mac, download from ollama.com and drag to Applications. On Linux, run `curl -fsSL https://ollama.com/install.sh | sh`. On Windows, download and run the installer. The entire process takes under 2 minutes."
+        },
+        {
+          "q": "Is Ollama free to use?",
+          "a": "Yes, Ollama is 100% free and open source. It runs AI models locally on your computer with no API costs, no subscriptions, and no usage limits."
+        },
+        {
+          "q": "What are the system requirements for running local AI with Ollama?",
+          "a": "You need at least 8GB RAM for small models (3B parameters). For better performance, 16GB+ RAM is recommended. A modern CPU is sufficient — GPU is optional but speeds up inference significantly."
+        },
+        {
+          "q": "How do I connect Ollama to OpenClaw?",
+          "a": "After installing Ollama and pulling a model, OpenClaw automatically detects Ollama at http://localhost:11434. Just start both applications and they connect seamlessly."
+        }
       ]
     },
     "zeabur": {
@@ -738,6 +756,16 @@
             "# Try chatting with your cloud AI"
           ]
         }
+      ],
+      "faq": [
+        {
+          "q": "How do I deploy OpenClaw to the cloud?",
+          "a": "Fork the OpenClaw repository on GitHub, create a Zeabur account, connect your GitHub, and deploy with one click. Use code \"OpenClaw\" for 10% off."
+        },
+        {
+          "q": "How much does cloud AI hosting cost?",
+          "a": "Zeabur offers a free tier for testing. Production hosting starts from ~$5/month. Use referral code \"OpenClaw\" for 10% discount."
+        }
       ]
     },
     "elevenlabs": {
@@ -916,6 +944,16 @@
               "link": "/learn/zeabur"
             }
           ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "How do I add AI voice to my application?",
+          "a": "Sign up for ElevenLabs, get your API key, and integrate using their REST API or SDK. ElevenLabs supports 29+ languages with natural-sounding voices."
+        },
+        {
+          "q": "Is ElevenLabs free?",
+          "a": "ElevenLabs offers a free tier with limited characters per month. Premium plans start at $5/month for more usage and voice cloning features."
         }
       ]
     },
@@ -1144,6 +1182,16 @@
             }
           ]
         }
+      ],
+      "faq": [
+        {
+          "q": "Why should I run AI in a virtual machine?",
+          "a": "Virtual machines provide isolation, security, and reproducibility. You can run GPU-accelerated AI workloads without affecting your host system, and easily snapshot or share your environment."
+        },
+        {
+          "q": "What VM software supports AI workloads?",
+          "a": "For local AI, use UTM (Mac), VirtualBox (cross-platform), or VMware. For cloud VMs, AWS EC2, Google Cloud, and Azure all offer GPU-enabled instances optimized for AI."
+        }
       ]
     },
     "heygen": {
@@ -1329,6 +1377,16 @@
               "external": true
             }
           ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "How do I create AI-generated videos?",
+          "a": "Sign up for HeyGen, choose an AI avatar, type your script, and generate a professional video in minutes. No camera or editing skills required."
+        },
+        {
+          "q": "What can I use AI video generation for?",
+          "a": "AI videos are great for product demos, training materials, social media content, customer support videos, and multilingual marketing at scale."
         }
       ]
     },
@@ -1523,6 +1581,16 @@
             }
           ]
         }
+      ],
+      "faq": [
+        {
+          "q": "What is Perplexity AI and how is it different from ChatGPT?",
+          "a": "Perplexity is an AI-powered search engine that provides cited, real-time answers from the web. Unlike ChatGPT, it always shows sources and stays current with live information."
+        },
+        {
+          "q": "Is Perplexity AI free to use?",
+          "a": "Yes, Perplexity offers a free tier with generous daily usage. Perplexity Pro ($20/month) adds unlimited searches, file uploads, and more powerful models."
+        }
       ]
     },
     "brave": {
@@ -1713,6 +1781,16 @@
               "link": "/learn/elevenlabs-integration"
             }
           ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "How do I use AI search in Brave Browser?",
+          "a": "Brave's AI search (Leo) is built into the browser. Just open Brave, type your question in the address bar, and Leo provides AI-powered answers with privacy protection."
+        },
+        {
+          "q": "Is Brave's AI search private?",
+          "a": "Yes, Brave does not track your searches or build user profiles. AI queries are processed without storing personal data, making it the most private AI search option."
         }
       ]
     },
@@ -1940,6 +2018,16 @@
             "Start with cheaper models (GPT-4o-mini, Claude Haiku) while learning",
             "Both providers have generous free tiers — experiment freely!"
           ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "How do I get API keys for AI services?",
+          "a": "Each AI provider (OpenAI, Anthropic, etc.) has a developer dashboard where you can create API keys. Sign up, navigate to API settings, and generate a new key. Store it securely."
+        },
+        {
+          "q": "How should I store AI API keys securely?",
+          "a": "Use environment variables or a .env file — never hardcode keys in source code. For production, use a secrets manager like AWS Secrets Manager or HashiCorp Vault."
         }
       ]
     },
@@ -2207,6 +2295,16 @@
             "Join the CanFly community to share your multi-agent setups"
           ]
         }
+      ],
+      "faq": [
+        {
+          "q": "What is multi-agent AI orchestration?",
+          "a": "Multi-agent orchestration coordinates multiple AI agents to work together on complex tasks. Each agent specializes in different capabilities, and they communicate to solve problems no single agent could handle alone."
+        },
+        {
+          "q": "How do I set up multiple AI agents?",
+          "a": "Start with a primary agent (like Ollama), then add specialized agents for tasks like web search, code generation, or data analysis. Use an orchestration framework to manage communication between them."
+        }
       ]
     }
   },
@@ -2380,6 +2478,62 @@
           "Install Ollama from the Umbrel App Store",
           "Configure for 24/7 private AI access"
         ]
+      }
+    }
+  },
+  "pricing": {
+    "eyebrow": "Pricing",
+    "title": "Start Free, Upgrade When Ready",
+    "subtitle": "Run your own AI Agent at zero cost. Need help? Our white-glove service has you covered.",
+    "free": {
+      "name": "DIY Setup",
+      "period": "forever",
+      "desc": "Follow our step-by-step tutorials and set up your AI Agent on your own — completely free.",
+      "features": {
+        "0": "Full Ollama installation tutorials",
+        "1": "Access to all free guides & resources",
+        "2": "Community support",
+        "3": "CLI-ready automation scripts"
+      },
+      "cta": "Start Free Tutorial"
+    },
+    "pro": {
+      "name": "White-Glove Setup",
+      "badge": "Recommended",
+      "period": "one-time",
+      "desc": "Our team sets up your entire AI environment — you sit back and relax.",
+      "features": {
+        "0": "Full Ollama installation & configuration",
+        "1": "AI model selection based on your hardware",
+        "2": "Performance tuning for your setup",
+        "3": "30-minute walkthrough call",
+        "4": "Post-setup support included"
+      },
+      "cta": "Get White-Glove Setup"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "items": {
+        "0": {
+          "q": "Is the free plan really free?",
+          "a": "Yes! Our tutorials and guides are 100% free. You can set up Ollama and run AI models on your own machine without paying anything."
+        },
+        "1": {
+          "q": "What does the White-Glove service include?",
+          "a": "We remotely connect to your machine, install Ollama, select the best AI models for your hardware, tune performance, and walk you through everything in a 30-minute call."
+        },
+        "2": {
+          "q": "How long does the White-Glove setup take?",
+          "a": "We complete the setup within 48 hours of purchase. You'll receive an email to schedule a convenient time."
+        },
+        "3": {
+          "q": "What payment methods do you accept?",
+          "a": "We accept PayPal and all major credit cards through PayPal's secure checkout."
+        },
+        "4": {
+          "q": "Can I get a refund?",
+          "a": "If we're unable to complete your setup for any reason, you'll receive a full refund. No questions asked."
+        }
       }
     }
   }
