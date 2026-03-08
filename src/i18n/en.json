@@ -2322,5 +2322,65 @@
     "label": "Share",
     "copyLink": "Copy link",
     "more": "More sharing options"
+  },
+  "onboarding": {
+    "meta": {
+      "title": "Get Started — Canfly",
+      "description": "Choose your path to running your own AI Agent. Beginner-friendly guides from zero to flying in 5 minutes."
+    },
+    "eyebrow": "Get Started",
+    "title": "Choose Your Flight Path",
+    "subtitle": "Answer one question and we'll show you the fastest way to get your own AI Agent running.",
+    "question": "What best describes you?",
+    "backToQuiz": "Choose a different path",
+    "startTutorial": "Start Tutorial",
+    "browseAll": "Browse All Apps",
+    "otherPaths": "Not the right fit? Go back and choose another path.",
+    "paths": {
+      "beginner": {
+        "label": "I'm brand new to AI",
+        "description": "Never touched a terminal? No problem. We'll walk you through setting up a virtual machine first, then install your AI.",
+        "tag": "Beginner · 10 min · Free",
+        "recommendation": "Perfect choice! We'll start by setting up a clean virtual environment, then install Ollama — a free, local AI that runs on your machine. No cloud, no cost, full privacy.",
+        "steps": [
+          "Set up a virtual machine (safe sandbox)",
+          "Install Ollama with one command",
+          "Chat with your first AI model"
+        ]
+      },
+      "experienced": {
+        "label": "I know my way around a terminal",
+        "description": "Comfortable with the command line? Skip the VM and install Ollama directly on your machine in under 5 minutes.",
+        "tag": "Intermediate · 5 min · Free",
+        "recommendation": "Straight to the point! Install Ollama directly on your machine and start chatting with open-source AI models. No sign-ups, no API keys, completely free.",
+        "steps": [
+          "Install Ollama with one command",
+          "Pull your first AI model",
+          "Start chatting or build with the API"
+        ]
+      },
+      "cloud": {
+        "label": "I want cloud deployment",
+        "description": "Deploy AI services to the cloud with Zeabur. Great for teams, always-on availability, and scaling.",
+        "tag": "Any level · 10 min · Paid plans available",
+        "recommendation": "Cloud is the way to go for always-on AI! Deploy with Zeabur for one-click hosting. Start with the free tier and scale when you need to.",
+        "steps": [
+          "Create a Zeabur account (free tier available)",
+          "Deploy Ollama to the cloud with one click",
+          "Access your AI from anywhere"
+        ]
+      },
+      "hardware": {
+        "label": "I want dedicated hardware",
+        "description": "Run AI on your own hardware with Umbrel. Full control, maximum privacy, always available at home.",
+        "tag": "Advanced · 30 min · Hardware required",
+        "recommendation": "The ultimate setup! Run your own AI server on dedicated hardware with Umbrel. Full control, full privacy, no monthly fees after the initial hardware investment.",
+        "steps": [
+          "Choose and set up your Umbrel hardware",
+          "Install Ollama from the Umbrel App Store",
+          "Configure for 24/7 private AI access"
+        ]
+      }
+    }
   }
 }

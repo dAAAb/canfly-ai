@@ -2322,5 +2322,65 @@
     "label": "分享",
     "copyLink": "复制链接",
     "more": "更多分享方式"
+  },
+  "onboarding": {
+    "meta": {
+      "title": "开始使用 — Canfly",
+      "description": "选择你的路线，5 分钟内拥有自己的 AI Agent。从零开始的新手友善教程。"
+    },
+    "eyebrow": "开始使用",
+    "title": "选择你的飞行路线",
+    "subtitle": "回答一个问题，我们会告诉你最快拥有自己 AI Agent 的方法。",
+    "question": "哪个最符合你的情况？",
+    "backToQuiz": "选择其他路线",
+    "startTutorial": "开始教程",
+    "browseAll": "浏览所有应用",
+    "otherPaths": "不太合适？回去选择其他路线。",
+    "paths": {
+      "beginner": {
+        "label": "我完全没接触过 AI",
+        "description": "没碰过终端？没问题。我们会先带你设置虚拟机，再安装你的 AI。",
+        "tag": "新手 · 10 分钟 · 免费",
+        "recommendation": "完美的选择！我们会先帮你建立一个干净的虚拟环境，然后安装 Ollama — 一个免费、在你电脑上运行的本地 AI。不需要云端、不需要花钱、完全隐私。",
+        "steps": [
+          "设置虚拟机（安全的沙盒环境）",
+          "一行命令安装 Ollama",
+          "和你的第一个 AI 模型对话"
+        ]
+      },
+      "experienced": {
+        "label": "我熟悉命令行操作",
+        "description": "熟悉终端？跳过虚拟机，直接在你的电脑上 5 分钟内安装 Ollama。",
+        "tag": "进阶 · 5 分钟 · 免费",
+        "recommendation": "直接开始！在你的电脑上安装 Ollama，马上开始和开源 AI 模型对话。不需要注册、不需要 API 密钥，完全免费。",
+        "steps": [
+          "一行命令安装 Ollama",
+          "下载你的第一个 AI 模型",
+          "开始对话或用 API 开发"
+        ]
+      },
+      "cloud": {
+        "label": "我想要云端部署",
+        "description": "用 Zeabur 部署 AI 服务到云端。适合团队、24 小时不间断、可扩展。",
+        "tag": "不限程度 · 10 分钟 · 有付费方案",
+        "recommendation": "云端是 24 小时 AI 的最佳选择！用 Zeabur 一键部署。从免费方案开始，需要时再扩展。",
+        "steps": [
+          "创建 Zeabur 账号（有免费方案）",
+          "一键部署 Ollama 到云端",
+          "从任何地方访问你的 AI"
+        ]
+      },
+      "hardware": {
+        "label": "我想要专属硬件",
+        "description": "在自己的硬件上用 Umbrel 运行 AI。完全掌控、最大隐私、在家随时可用。",
+        "tag": "进阶 · 30 分钟 · 需要硬件",
+        "recommendation": "终极方案！在专属硬件上用 Umbrel 运行你自己的 AI 服务器。完全掌控、完全隐私，初始硬件投资后不再有月费。",
+        "steps": [
+          "选择并设置你的 Umbrel 硬件",
+          "从 Umbrel App Store 安装 Ollama",
+          "设置 24/7 私人 AI 访问"
+        ]
+      }
+    }
   }
 }
