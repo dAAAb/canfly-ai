@@ -84,16 +84,7 @@ function createOllamaTutorial(t: any): TutorialData {
           { src: '/images/tutorial/ollama-pull-model.png', alt: t('tutorial.ollama.screenshots.pullModel', 'ollama pull downloading a model'), caption: t('tutorial.ollama.screenshots.pullModelCaption', 'Downloading Llama 3.2 model') },
         ],
         subsections: t('tutorial.ollama.steps.1.subsections', { returnObjects: true }),
-        commands: [
-          '# ' + t('tutorial.ollama.steps.1.title') + '：Llama 3.2（3B 参数，轻量快速）',
-          'ollama pull llama3.2',
-          '',
-          '# 写程式专用：CodeLlama',
-          'ollama pull codellama',
-          '',
-          '# 想要更强大？试试 Llama 3.1（8B 参数）',
-          'ollama pull llama3.1',
-        ],
+        commands: t('tutorial.ollama.steps.1.commands', { returnObjects: true }),
         modelTable: t('tutorial.ollama.steps.1.modelTable.models', { returnObjects: true }),
         expectedResult: t('tutorial.ollama.steps.1.expectedResult'),
         tips: t('tutorial.ollama.steps.1.tips', { returnObjects: true }),
@@ -111,24 +102,8 @@ function createOllamaTutorial(t: any): TutorialData {
         screenshots: [
           { src: '/images/tutorial/ollama-chat-session.png', alt: t('tutorial.ollama.screenshots.chatSession', 'Ollama chat session in terminal'), caption: t('tutorial.ollama.screenshots.chatSessionCaption', 'Interactive chat with Llama 3.2') },
         ],
-        commands: [
-          '# 开始互动对话',
-          'ollama run llama3.2',
-          '',
-          '# 然后试着输入：',
-          '>>> 你好！请用中文自我介绍',
-          '',
-          '# 离开对话请输入：',
-          '>>> /bye',
-        ],
-        chatExample: {
-          exchanges: [
-            { role: 'user', text: '你好！请用中文自我介绍' },
-            { role: 'ai', text: '你好！我是一个在你电脑上运行的 AI 助手。我可以帮你回答问题、写文章、写程序代码，而且完全在本机运行，不需要网络连接，你的数据不会离开你的电脑。有什么我可以帮忙的吗？' },
-            { role: 'user', text: '写一个 Python hello world' },
-            { role: 'ai', text: 'print("Hello, World!")' },
-          ]
-        },
+        commands: t('tutorial.ollama.steps.2.commands', { returnObjects: true }),
+        chatExample: t('tutorial.ollama.steps.2.chatExample', { returnObjects: true }),
         expectedResult: t('tutorial.ollama.steps.2.expectedResult'),
         tips: t('tutorial.ollama.steps.2.tips', { returnObjects: true }),
         troubleshooting: {
@@ -145,19 +120,7 @@ function createOllamaTutorial(t: any): TutorialData {
         screenshots: [
           { src: '/images/tutorial/openclaw-ollama-config.png', alt: t('tutorial.ollama.screenshots.openclawConfig', 'OpenClaw settings connected to Ollama'), caption: t('tutorial.ollama.screenshots.openclawConfigCaption', 'OpenClaw model configuration') },
         ],
-        commands: [
-          '# 确认 Ollama 正在运行',
-          'curl http://localhost:11434/api/tags',
-          '',
-          '# 在 OpenClaw 设定中指定 Ollama：',
-          '# 1. 开启 OpenClaw 设定页面',
-          '# 2. 选择「模型设定」',
-          '# 3. API 位址填入：http://localhost:11434',
-          '# 4. 选择你刚才下载的模型',
-          '',
-          '# 或者用环境变数设定：',
-          'export OLLAMA_HOST="http://localhost:11434"',
-        ],
+        commands: t('tutorial.ollama.steps.3.commands', { returnObjects: true }),
         expectedResult: t('tutorial.ollama.steps.3.expectedResult'),
         tips: t('tutorial.ollama.steps.3.tips', { returnObjects: true }),
         troubleshooting: {
@@ -194,14 +157,7 @@ function createZeaburTutorial(t: any): TutorialData {
         content: t('tutorial.zeabur.steps.0.content'),
         expectedResult: t('tutorial.zeabur.steps.0.expectedResult'),
         tips: t('tutorial.zeabur.steps.0.tips', { returnObjects: true }),
-        commands: [
-          '# 1. 前往 Zeabur 官网注册',
-          'https://zeabur.com?referralCode=openclaw&utm_source=canfly&utm_medium=web&utm_campaign=zeabur',
-          '',
-          '# 2. 使用 GitHub 账号登录',
-          '# 3. 验证电子邮件地址',
-          '# 4. 完成账号设定',
-        ],
+        commands: t('tutorial.zeabur.steps.0.commands', { returnObjects: true }),
         troubleshooting: {
           title: t('tutorial.zeabur.steps.0.troubleshooting.title'),
           items: t('tutorial.zeabur.steps.0.troubleshooting.items', { returnObjects: true })
@@ -214,14 +170,7 @@ function createZeaburTutorial(t: any): TutorialData {
         estimatedTime: t('tutorial.zeabur.steps.1.estimatedTime'),
         content: t('tutorial.zeabur.steps.1.content'),
         expectedResult: t('tutorial.zeabur.steps.1.expectedResult'),
-        commands: [
-          '# 1. 前往 OpenClaw GitHub 仓库',
-          'https://github.com/openclaw/openclaw',
-          '',
-          '# 2. 点击右上角的 "Fork" 按钮',
-          '# 3. 选择你的 GitHub 账号作为目标',
-          '# 4. 保持默认设定，点击 "Create fork"',
-        ],
+        commands: t('tutorial.zeabur.steps.1.commands', { returnObjects: true }),
         tips: t('tutorial.zeabur.steps.1.tips', { returnObjects: true }),
         troubleshooting: {
           title: t('tutorial.zeabur.steps.1.troubleshooting.title'),
@@ -235,18 +184,7 @@ function createZeaburTutorial(t: any): TutorialData {
         estimatedTime: t('tutorial.zeabur.steps.2.estimatedTime'),
         content: t('tutorial.zeabur.steps.2.content'),
         expectedResult: t('tutorial.zeabur.steps.2.expectedResult'),
-        commands: [
-          '# 1. 在 Zeabur 控制台中点击 "New Project"',
-          '# 2. 选择 "Deploy from GitHub"',
-          '# 3. 找到并选择你刚复制的 openclaw 仓库',
-          '# 4. 点击 "Deploy" 开始自动部署',
-          '',
-          '# Zeabur 会自动：',
-          '# - 检测 Node.js 环境',
-          '# - 安装依赖套件',
-          '# - 构建应用程序',
-          '# - 提供 HTTPS 域名',
-        ],
+        commands: t('tutorial.zeabur.steps.2.commands', { returnObjects: true }),
         tips: t('tutorial.zeabur.steps.2.tips', { returnObjects: true }),
         troubleshooting: {
           title: t('tutorial.zeabur.steps.2.troubleshooting.title'),
@@ -259,16 +197,7 @@ function createZeaburTutorial(t: any): TutorialData {
         titleEn: t('tutorial.zeabur.steps.3.titleEn'),
         estimatedTime: t('tutorial.zeabur.steps.3.estimatedTime'),
         content: t('tutorial.zeabur.steps.3.content'),
-        commands: [
-          '# 在 Zeabur 项目设定中新增环境变数：',
-          'OPENAI_API_KEY=sk-your-openai-key-here',
-          'OLLAMA_HOST=http://localhost:11434',
-          'NODE_ENV=production',
-          '',
-          '# 可选：如果要连接其他 AI 服务',
-          'ANTHROPIC_API_KEY=your-claude-key',
-          'OPENAI_BASE_URL=https://api.openai.com/v1',
-        ],
+        commands: t('tutorial.zeabur.steps.3.commands', { returnObjects: true }),
         expectedResult: t('tutorial.zeabur.steps.3.expectedResult'),
         tips: t('tutorial.zeabur.steps.3.tips', { returnObjects: true }),
         troubleshooting: {
@@ -282,17 +211,7 @@ function createZeaburTutorial(t: any): TutorialData {
         titleEn: t('tutorial.zeabur.steps.4.titleEn'),
         estimatedTime: t('tutorial.zeabur.steps.4.estimatedTime'),
         content: t('tutorial.zeabur.steps.4.content'),
-        commands: [
-          '# 1. 在 Zeabur 项目中点击 "Domains"',
-          '# 2. 点击 "Add Domain"',
-          '# 3. 输入你的域名（如：ai.yoursite.com）',
-          '# 4. 更新你的 DNS 记录：',
-          '',
-          '# DNS 设定范例：',
-          '# Type: CNAME',
-          '# Name: ai',
-          '# Value: your-project.zeabur.app',
-        ],
+        commands: t('tutorial.zeabur.steps.4.commands', { returnObjects: true }),
         expectedResult: t('tutorial.zeabur.steps.4.expectedResult'),
         tips: t('tutorial.zeabur.steps.4.tips', { returnObjects: true }),
         troubleshooting: {
@@ -306,13 +225,7 @@ function createZeaburTutorial(t: any): TutorialData {
         titleEn: t('tutorial.zeabur.steps.5.titleEn'),
         estimatedTime: t('tutorial.zeabur.steps.5.estimatedTime'),
         content: t('tutorial.zeabur.steps.5.content'),
-        commands: [
-          '# 测试部署是否成功：',
-          'curl https://your-project.zeabur.app/health',
-          '',
-          '# 或在浏览器中打开你的网址',
-          '# 尝试与你的云端 AI 对话',
-        ],
+        commands: t('tutorial.zeabur.steps.5.commands', { returnObjects: true }),
         expectedResult: t('tutorial.zeabur.steps.5.expectedResult'),
         tips: t('tutorial.zeabur.steps.5.tips', { returnObjects: true }),
         nextStepCards: t('tutorial.zeabur.steps.5.nextStepCards', { returnObjects: true }),
@@ -335,14 +248,7 @@ function createElevenLabsTutorial(t: any): TutorialData {
         titleEn: t('tutorial.elevenlabs.steps.0.titleEn'),
         estimatedTime: t('tutorial.elevenlabs.steps.0.estimatedTime'),
         content: t('tutorial.elevenlabs.steps.0.content'),
-        commands: [
-          '# ' + t('tutorial.elevenlabs.steps.0.title'),
-          'open https://try.elevenlabs.io/clawhub?utm_source=canfly&utm_medium=web&utm_campaign=elevenlabs',
-          '',
-          '# Sign up with our affiliate link for 22% commission support',
-          '# Free tier: 10,000 characters/month',
-          '# Starter plan: 30,000 characters for $5/month',
-        ],
+        commands: t('tutorial.elevenlabs.steps.0.commands', { returnObjects: true }),
         expectedResult: t('tutorial.elevenlabs.steps.0.expectedResult'),
         tips: t('tutorial.elevenlabs.steps.0.tips', { returnObjects: true }),
         troubleshooting: {
@@ -356,11 +262,7 @@ function createElevenLabsTutorial(t: any): TutorialData {
         titleEn: t('tutorial.elevenlabs.steps.1.titleEn'),
         estimatedTime: t('tutorial.elevenlabs.steps.1.estimatedTime'),
         content: t('tutorial.elevenlabs.steps.1.content'),
-        commands: [
-          '# Navigate to Profile Settings → API Key',
-          '# Copy your API key (keep it private!)',
-          'export ELEVENLABS_API_KEY="your-api-key-here"',
-        ],
+        commands: t('tutorial.elevenlabs.steps.1.commands', { returnObjects: true }),
         expectedResult: t('tutorial.elevenlabs.steps.1.expectedResult'),
         tips: t('tutorial.elevenlabs.steps.1.tips', { returnObjects: true }),
         troubleshooting: {
@@ -374,13 +276,7 @@ function createElevenLabsTutorial(t: any): TutorialData {
         titleEn: t('tutorial.elevenlabs.steps.2.titleEn'),
         estimatedTime: t('tutorial.elevenlabs.steps.2.estimatedTime'),
         content: t('tutorial.elevenlabs.steps.2.content'),
-        commands: [
-          '# Configure OpenClaw with ElevenLabs',
-          '# 1. Open OpenClaw Settings',
-          '# 2. Add ElevenLabs skill',
-          '# 3. Enter your API key',
-          '# 4. Test with a short sentence',
-        ],
+        commands: t('tutorial.elevenlabs.steps.2.commands', { returnObjects: true }),
         expectedResult: t('tutorial.elevenlabs.steps.2.expectedResult'),
         tips: t('tutorial.elevenlabs.steps.2.tips', { returnObjects: true }),
         troubleshooting: {
@@ -394,14 +290,7 @@ function createElevenLabsTutorial(t: any): TutorialData {
         titleEn: t('tutorial.elevenlabs.steps.3.titleEn'),
         estimatedTime: t('tutorial.elevenlabs.steps.3.estimatedTime'),
         content: t('tutorial.elevenlabs.steps.3.content'),
-        commands: [
-          '# Test voice generation',
-          'curl -X POST "https://api.elevenlabs.io/v1/text-to-speech/voice-id" \\',
-          '  -H "Accept: audio/mpeg" \\',
-          '  -H "Content-Type: application/json" \\',
-          '  -H "xi-api-key: $ELEVENLABS_API_KEY" \\',
-          '  -d \'{"text": "Hello from OpenClaw!", "model_id": "eleven_monolingual_v1"}\''
-        ],
+        commands: t('tutorial.elevenlabs.steps.3.commands', { returnObjects: true }),
         expectedResult: t('tutorial.elevenlabs.steps.3.expectedResult'),
         tips: t('tutorial.elevenlabs.steps.3.tips', { returnObjects: true }),
         troubleshooting: {
@@ -441,14 +330,7 @@ function createHeyGenTutorial(t: any): TutorialData {
         titleEn: t('tutorial.heygen.steps.0.titleEn'),
         estimatedTime: t('tutorial.heygen.steps.0.estimatedTime'),
         content: t('tutorial.heygen.steps.0.content'),
-        commands: [
-          '# ' + t('tutorial.heygen.steps.0.title'),
-          'open https://www.heygen.com/?sid=rewardful&via=clawhub&utm_source=canfly&utm_medium=web&utm_campaign=heygen',
-          '',
-          '# Sign up with our affiliate link for 20% commission support',
-          '# Free tier: 1 credit (1-minute video) for testing',
-          '# Creator plan: $29/month with 15 credits',
-        ],
+        commands: t('tutorial.heygen.steps.0.commands', { returnObjects: true }),
         expectedResult: t('tutorial.heygen.steps.0.expectedResult'),
         tips: t('tutorial.heygen.steps.0.tips', { returnObjects: true }),
         troubleshooting: {
@@ -462,11 +344,7 @@ function createHeyGenTutorial(t: any): TutorialData {
         titleEn: t('tutorial.heygen.steps.1.titleEn'),
         estimatedTime: t('tutorial.heygen.steps.1.estimatedTime'),
         content: t('tutorial.heygen.steps.1.content'),
-        commands: [
-          '# Navigate to Developer Console → API Keys',
-          '# Generate new API key (requires Creator plan)',
-          'export HEYGEN_API_KEY="your-api-key-here"',
-        ],
+        commands: t('tutorial.heygen.steps.1.commands', { returnObjects: true }),
         expectedResult: t('tutorial.heygen.steps.1.expectedResult'),
         tips: t('tutorial.heygen.steps.1.tips', { returnObjects: true }),
         troubleshooting: {
@@ -480,13 +358,7 @@ function createHeyGenTutorial(t: any): TutorialData {
         titleEn: t('tutorial.heygen.steps.2.titleEn'),
         estimatedTime: t('tutorial.heygen.steps.2.estimatedTime'),
         content: t('tutorial.heygen.steps.2.content'),
-        commands: [
-          '# Configure OpenClaw with HeyGen',
-          '# 1. Open OpenClaw Settings',
-          '# 2. Add HeyGen skill',
-          '# 3. Enter your API key',
-          '# 4. Choose avatar and voice',
-        ],
+        commands: t('tutorial.heygen.steps.2.commands', { returnObjects: true }),
         expectedResult: t('tutorial.heygen.steps.2.expectedResult'),
         tips: t('tutorial.heygen.steps.2.tips', { returnObjects: true }),
         troubleshooting: {
@@ -500,13 +372,7 @@ function createHeyGenTutorial(t: any): TutorialData {
         titleEn: t('tutorial.heygen.steps.3.titleEn'),
         estimatedTime: t('tutorial.heygen.steps.3.estimatedTime'),
         content: t('tutorial.heygen.steps.3.content'),
-        commands: [
-          '# Test video generation with HeyGen API',
-          'curl -X POST "https://api.heygen.com/v2/video/generate" \\',
-          '  -H "X-API-KEY: $HEYGEN_API_KEY" \\',
-          '  -H "Content-Type: application/json" \\',
-          '  -d \'{"video_inputs": [{"character": {"type": "avatar", "avatar_id": "default"}, "voice": {"type": "text", "input_text": "Hello from OpenClaw AI!"}}]}\''
-        ],
+        commands: t('tutorial.heygen.steps.3.commands', { returnObjects: true }),
         expectedResult: t('tutorial.heygen.steps.3.expectedResult'),
         tips: t('tutorial.heygen.steps.3.tips', { returnObjects: true }),
         troubleshooting: {
@@ -560,18 +426,7 @@ function createVirtualMachineTutorial(t: any): TutorialData {
         titleEn: t('tutorial.virtualmachine.steps.1.titleEn'),
         estimatedTime: t('tutorial.virtualmachine.steps.1.estimatedTime'),
         content: t('tutorial.virtualmachine.steps.1.content'),
-        commands: [
-          '# Virtual Buddy（推薦新手，一鍵裝 Linux）',
-          '# 從 Mac App Store 下載 Virtual Buddy',
-          'open https://apps.apple.com/app/virtual-buddy/id1640730093',
-          '',
-          '# 或者選擇 UTM（免費、功能更多）',
-          '# 從官網下載 UTM',
-          'open https://mac.getutm.app/',
-          '',
-          '# Homebrew 安裝 UTM：',
-          'brew install --cask utm',
-        ],
+        commands: t('tutorial.virtualmachine.steps.1.commands', { returnObjects: true }),
         expectedResult: t('tutorial.virtualmachine.steps.1.expectedResult'),
         tips: t('tutorial.virtualmachine.steps.1.tips', { returnObjects: true }),
         troubleshooting: {
@@ -586,21 +441,7 @@ function createVirtualMachineTutorial(t: any): TutorialData {
         estimatedTime: t('tutorial.virtualmachine.steps.2.estimatedTime'),
         content: t('tutorial.virtualmachine.steps.2.content'),
         subsections: t('tutorial.virtualmachine.steps.2.subsections', { returnObjects: true }),
-        commands: [
-          '# Virtual Buddy 一鍵建立 Linux VM：',
-          '# 1. 打開 Virtual Buddy',
-          '# 2. 點擊 "Create New VM"',
-          '# 3. 選擇 "Linux" → Ubuntu 22.04',
-          '# 4. 分配資源（建議 4GB RAM + 2 CPU）',
-          '# 5. 點擊 "Create" → 自動下載安裝',
-          '',
-          '# UTM 手動建立 Linux VM：',
-          '# 1. 打開 UTM → 點擊 "+"',
-          '# 2. 選擇 "Virtualize" → "Linux"',
-          '# 3. 載入 Ubuntu ARM64 ISO',
-          '# 4. 分配 4GB RAM + 2 CPU + 20GB 磁碟',
-          '# 5. 完成安裝精靈',
-        ],
+        commands: t('tutorial.virtualmachine.steps.2.commands', { returnObjects: true }),
         expectedResult: t('tutorial.virtualmachine.steps.2.expectedResult'),
         tips: t('tutorial.virtualmachine.steps.2.tips', { returnObjects: true }),
         troubleshooting: {
@@ -614,24 +455,7 @@ function createVirtualMachineTutorial(t: any): TutorialData {
         titleEn: t('tutorial.virtualmachine.steps.3.titleEn'),
         estimatedTime: t('tutorial.virtualmachine.steps.3.estimatedTime'),
         content: t('tutorial.virtualmachine.steps.3.content'),
-        commands: [
-          '# 在 Linux VM 的終端機中執行：',
-          '',
-          '# 1. 更新系統',
-          'sudo apt update && sudo apt upgrade -y',
-          '',
-          '# 2. 安裝 Ollama（一行搞定）',
-          'curl -fsSL https://ollama.com/install.sh | sh',
-          '',
-          '# 3. 確認安裝成功',
-          'ollama --version',
-          '',
-          '# 4. 下載第一個模型',
-          'ollama pull llama3.2',
-          '',
-          '# 5. 開始聊天！',
-          'ollama run llama3.2',
-        ],
+        commands: t('tutorial.virtualmachine.steps.3.commands', { returnObjects: true }),
         expectedResult: t('tutorial.virtualmachine.steps.3.expectedResult'),
         tips: t('tutorial.virtualmachine.steps.3.tips', { returnObjects: true }),
         troubleshooting: {
@@ -798,7 +622,7 @@ function InstallTabs() {
         <div className="space-y-3">
           <CopyBlock
             label={t('tutorial.ollama.steps.0.installTabs.terminalLabel2')}
-            text={`# 一行指令安装 Ollama\ncurl -fsSL https://ollama.com/install.sh | sh`}
+            text={t('tutorial.installOllamaOneLine')}
           />
           <div className="text-sm text-gray-400">
             <p>{t('tutorial.ollama.steps.0.installTabs.terminalConfirm')}</p>
@@ -835,13 +659,7 @@ function InstallTabs() {
             <ol className="list-decimal list-inside mt-1 space-y-1 text-gray-300">
               {(t('tutorial.ollama.steps.0.installTabs.winSteps', { returnObjects: true }) as string[]).map((step, i) => (
                 <li key={i}>
-                  {i === 3 ? (
-                    <>
-                      輸入 <code className="bg-gray-800 px-1.5 py-0.5 rounded text-xs">ollama --version</code> 确认安装成功
-                    </>
-                  ) : (
-                    step
-                  )}
+                  {step}
                 </li>
               ))}
             </ol>
@@ -862,7 +680,7 @@ function ChatDemo({ exchanges }: { exchanges: ChatExchange[] }) {
           <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs ${
             ex.role === 'user' ? 'bg-blue-600 text-white' : 'bg-green-600 text-white'
           }`}>
-            {ex.role === 'user' ? '你' : 'AI'}
+            {ex.role === 'user' ? t('tutorial.chatDemo.you') : 'AI'}
           </div>
           <div className={`flex-1 text-sm ${ex.role === 'user' ? 'text-blue-300 font-mono' : 'text-gray-300'}`}>
             {ex.role === 'user' ? `>>> ${ex.text}` : ex.text}

@@ -327,7 +327,17 @@
                 "speed": "中"
               }
             ]
-          }
+          },
+          "commands": [
+            "# 下载模型：Llama 3.2（3B 参数，轻量快速）",
+            "ollama pull llama3.2",
+            "",
+            "# 写程序专用：CodeLlama",
+            "ollama pull codellama",
+            "",
+            "# 想要更强大？试试 Llama 3.1（8B 参数）",
+            "ollama pull llama3.1"
+          ]
         },
         {
           "title": "测试对话",
@@ -350,6 +360,36 @@
               {
                 "q": "显示内存不足",
                 "a": "关闭其他应用释放内存，或换用更小的模型。"
+              }
+            ]
+          },
+          "commands": [
+            "# 开始互动对话",
+            "ollama run llama3.2",
+            "",
+            "# 然后试着输入：",
+            ">>> 你好！请用中文自我介绍",
+            "",
+            "# 离开对话请输入：",
+            ">>> /bye"
+          ],
+          "chatExample": {
+            "exchanges": [
+              {
+                "role": "user",
+                "text": "你好！请用中文自我介绍"
+              },
+              {
+                "role": "ai",
+                "text": "你好！我是一个在你电脑上运行的 AI 助手。我可以帮你回答问题、写文章、写程序代码，而且完全在本机运行，不需要网络连接，你的数据不会离开你的电脑。有什么我可以帮忙的吗？"
+              },
+              {
+                "role": "user",
+                "text": "写一个 Python hello world"
+              },
+              {
+                "role": "ai",
+                "text": "print(\"Hello, World!\")"
               }
             ]
           }
@@ -381,7 +421,20 @@
                 "a": "执行：sudo pmset -c sleep 0 disksleep 0 networkoversleep 1，然后 nohup caffeinate -s &。让 Mac 保持清醒，AI agent 24/7 在线。完整教程：blog.juchunko.com/zh/openclaw-always-on-macos"
               }
             ]
-          }
+          },
+          "commands": [
+            "# 确认 Ollama 正在运行",
+            "curl http://localhost:11434/api/tags",
+            "",
+            "# 在 OpenClaw 设定中指定 Ollama：",
+            "# 1. 开启 OpenClaw 设定页面",
+            "# 2. 选择「模型设定」",
+            "# 3. API 位址填入：http://localhost:11434",
+            "# 4. 选择你刚才下载的模型",
+            "",
+            "# 或者用环境变数设定：",
+            "export OLLAMA_HOST=\"http://localhost:11434\""
+          ]
         },
         {
           "title": "下一步",
@@ -464,7 +517,15 @@
                 "a": "请确保在 OAuth 流程中允许 Zeabur 访问你的仓库。"
               }
             ]
-          }
+          },
+          "commands": [
+            "# 1. 前往 Zeabur 官网注册",
+            "https://zeabur.com?referralCode=openclaw&utm_source=canfly&utm_medium=web&utm_campaign=zeabur",
+            "",
+            "# 2. 使用 GitHub 账号登录",
+            "# 3. 验证电子邮件地址",
+            "# 4. 完成账号设定"
+          ]
         },
         {
           "title": "复制 OpenClaw 仓库",
@@ -489,7 +550,15 @@
                 "a": "确保你已登录 GitHub 且正在查看官方 OpenClaw 仓库。"
               }
             ]
-          }
+          },
+          "commands": [
+            "# 1. 前往 OpenClaw GitHub 仓库",
+            "https://github.com/openclaw/openclaw",
+            "",
+            "# 2. 点击右上角的 \"Fork\" 按钮",
+            "# 3. 选择你的 GitHub 账号作为目标",
+            "# 4. 保持默认设定，点击 \"Create fork\""
+          ]
         },
         {
           "title": "部署到 Zeabur",
@@ -514,7 +583,19 @@
                 "a": "确保你已连接 GitHub 账号，且 Zeabur 可以访问该仓库。"
               }
             ]
-          }
+          },
+          "commands": [
+            "# 1. 在 Zeabur 控制台中点击 \"New Project\"",
+            "# 2. 选择 \"Deploy from GitHub\"",
+            "# 3. 找到并选择你刚复制的 openclaw 仓库",
+            "# 4. 点击 \"Deploy\" 开始自动部署",
+            "",
+            "# Zeabur 会自动：",
+            "# - 检测 Node.js 环境",
+            "# - 安装依赖套件",
+            "# - 构建应用程序",
+            "# - 提供 HTTPS 域名"
+          ]
         },
         {
           "title": "配置环境变量",
@@ -539,7 +620,17 @@
                 "a": "在 Zeabur 控制台中，更新环境变量后手动重启你的服务。"
               }
             ]
-          }
+          },
+          "commands": [
+            "# 在 Zeabur 项目设定中新增环境变数：",
+            "OPENAI_API_KEY=sk-your-openai-key-here",
+            "OLLAMA_HOST=http://localhost:11434",
+            "NODE_ENV=production",
+            "",
+            "# 可选：如果要连接其他 AI 服务",
+            "ANTHROPIC_API_KEY=your-claude-key",
+            "OPENAI_BASE_URL=https://api.openai.com/v1"
+          ]
         },
         {
           "title": "添加自定义域名（可选）",
@@ -564,7 +655,18 @@
                 "a": "DNS 传播后等待 5-10 分钟。Zeabur 自动发放 Let's Encrypt 证书。"
               }
             ]
-          }
+          },
+          "commands": [
+            "# 1. 在 Zeabur 项目中点击 \"Domains\"",
+            "# 2. 点击 \"Add Domain\"",
+            "# 3. 输入你的域名（如：ai.yoursite.com）",
+            "# 4. 更新你的 DNS 记录：",
+            "",
+            "# DNS 设定范例：",
+            "# Type: CNAME",
+            "# Name: ai",
+            "# Value: your-project.zeabur.app"
+          ]
         },
         {
           "title": "测试你的云端 AI",
@@ -608,6 +710,13 @@
               "link": "https://blog.juchunko.com",
               "external": true
             }
+          ],
+          "commands": [
+            "# 测试部署是否成功：",
+            "curl https://your-project.zeabur.app/health",
+            "",
+            "# 或在浏览器中打开你的网址",
+            "# 尝试与你的云端 AI 对话"
           ]
         }
       ]
@@ -641,7 +750,15 @@
                 "a": "前往个人资料设置 → API 密钥。你可能需要先验证电子邮件。"
               }
             ]
-          }
+          },
+          "commands": [
+            "# 创建你的 ElevenLabs 账号",
+            "open https://try.elevenlabs.io/clawhub?utm_source=canfly&utm_medium=web&utm_campaign=elevenlabs",
+            "",
+            "# 通过我们的推荐链接注册，支持 22% 佣金回馈",
+            "# 免费方案：每月 10,000 字符",
+            "# 入门方案：30,000 字符，每月 $5"
+          ]
         },
         {
           "title": "获取你的 API 密钥",
@@ -666,7 +783,12 @@
                 "a": "你的 API 密钥可能无效，或你的账号需要电子邮件验证。"
               }
             ]
-          }
+          },
+          "commands": [
+            "# 前往个人设定 → API Key",
+            "# 复制你的 API 密钥（请妥善保管！）",
+            "export ELEVENLABS_API_KEY=\"your-api-key-here\""
+          ]
         },
         {
           "title": "配置 OpenClaw 集成",
@@ -691,7 +813,14 @@
                 "a": "检查你的系统音频设置。某些浏览器默认会阻止自动播放音频。"
               }
             ]
-          }
+          },
+          "commands": [
+            "# 设定 OpenClaw 连接 ElevenLabs",
+            "# 1. 打开 OpenClaw 设定",
+            "# 2. 添加 ElevenLabs 技能",
+            "# 3. 输入你的 API 密钥",
+            "# 4. 用一句短句测试"
+          ]
         },
         {
           "title": "实时语音演示",
@@ -716,7 +845,15 @@
                 "a": "检查你的网络连接。音频流需要稳定的带宽。"
               }
             ]
-          }
+          },
+          "commands": [
+            "# 测试语音生成",
+            "curl -X POST \"https://api.elevenlabs.io/v1/text-to-speech/voice-id\" \\",
+            "  -H \"Accept: audio/mpeg\" \\",
+            "  -H \"Content-Type: application/json\" \\",
+            "  -H \"xi-api-key: $ELEVENLABS_API_KEY\" \\",
+            "  -d '{\"text\": \"Hello from OpenClaw!\", \"model_id\": \"eleven_monolingual_v1\"}'"
+          ]
         },
         {
           "title": "语音应用场景与下一步",
@@ -831,7 +968,19 @@
                 "a": "如果你想要零麻烦，不介意花 $10，选 Virtual Buddy。如果你偏好免费软件或想要更多控制权，选 UTM。"
               }
             ]
-          }
+          },
+          "commands": [
+            "# Virtual Buddy（推荐新手，一键装 Linux）",
+            "# 从 Mac App Store 下载 Virtual Buddy",
+            "open https://apps.apple.com/app/virtual-buddy/id1640730093",
+            "",
+            "# 或者选择 UTM（免费、功能更多）",
+            "# 从官网下载 UTM",
+            "open https://mac.getutm.app/",
+            "",
+            "# Homebrew 安装 UTM：",
+            "brew install --cask utm"
+          ]
         },
         {
           "title": "创建 Linux 虚拟机",
@@ -866,7 +1015,22 @@
                 "a": "到 ubuntu.com/download/server 下载 ARM64 版本，适用于 Apple Silicon Mac。"
               }
             ]
-          }
+          },
+          "commands": [
+            "# Virtual Buddy 一键创建 Linux VM：",
+            "# 1. 打开 Virtual Buddy",
+            "# 2. 点击 \"Create New VM\"",
+            "# 3. 选择 \"Linux\" → Ubuntu 22.04",
+            "# 4. 分配资源（建议 4GB RAM + 2 CPU）",
+            "# 5. 点击 \"Create\" → 自动下载安装",
+            "",
+            "# UTM 手动创建 Linux VM：",
+            "# 1. 打开 UTM → 点击 \"+\"",
+            "# 2. 选择 \"Virtualize\" → \"Linux\"",
+            "# 3. 载入 Ubuntu ARM64 ISO",
+            "# 4. 分配 4GB RAM + 2 CPU + 20GB 磁盘",
+            "# 5. 完成安装向导"
+          ]
         },
         {
           "title": "在虚拟机里安装 Ollama",
@@ -899,7 +1063,25 @@
                 "a": "增加虚拟机的 RAM 分配到至少 4GB。先关闭虚拟机，调整设置，然后重新启动。"
               }
             ]
-          }
+          },
+          "commands": [
+            "# 在 Linux VM 的终端中执行：",
+            "",
+            "# 1. 更新系统",
+            "sudo apt update && sudo apt upgrade -y",
+            "",
+            "# 2. 安装 Ollama（一行搞定）",
+            "curl -fsSL https://ollama.com/install.sh | sh",
+            "",
+            "# 3. 确认安装成功",
+            "ollama --version",
+            "",
+            "# 4. 下载第一个模型",
+            "ollama pull llama3.2",
+            "",
+            "# 5. 开始聊天！",
+            "ollama run llama3.2"
+          ]
         },
         {
           "title": "下一步",
@@ -974,7 +1156,15 @@
                 "a": "API 访问需要付费方案。免费方案仅供手动工作室使用。"
               }
             ]
-          }
+          },
+          "commands": [
+            "# 创建你的 HeyGen 账号",
+            "open https://www.heygen.com/?sid=rewardful&via=clawhub&utm_source=canfly&utm_medium=web&utm_campaign=heygen",
+            "",
+            "# 通过我们的推荐链接注册，支持 20% 佣金回馈",
+            "# 免费方案：1 个额度（1 分钟视频）供测试",
+            "# 创作者方案：每月 $29，15 个额度"
+          ]
         },
         {
           "title": "获得 API 访问权限",
@@ -999,7 +1189,12 @@
                 "a": "验证你的方案有剩余点数。检查开发者控制台的错误消息。"
               }
             ]
-          }
+          },
+          "commands": [
+            "# 前往开发者控制台 → API Keys",
+            "# 生成新的 API 密钥（需要创作者方案）",
+            "export HEYGEN_API_KEY=\"your-api-key-here\""
+          ]
         },
         {
           "title": "配置 OpenClaw + HeyGen",
@@ -1024,7 +1219,14 @@
                 "a": "确保你选择了正确的虚拟人物 ID。先在 HeyGen Studio 中预览。"
               }
             ]
-          }
+          },
+          "commands": [
+            "# 设定 OpenClaw 连接 HeyGen",
+            "# 1. 打开 OpenClaw 设定",
+            "# 2. 添加 HeyGen 技能",
+            "# 3. 输入你的 API 密钥",
+            "# 4. 选择虚拟人物和语音"
+          ]
         },
         {
           "title": "创作你的第一个 AI 视频",
@@ -1049,7 +1251,14 @@
                 "a": "这可能发生在非常长的句子。尝试较短、更自然的语音模式。"
               }
             ]
-          }
+          },
+          "commands": [
+            "# 测试 HeyGen API 视频生成",
+            "curl -X POST \"https://api.heygen.com/v2/video/generate\" \\",
+            "  -H \"X-API-KEY: $HEYGEN_API_KEY\" \\",
+            "  -H \"Content-Type: application/json\" \\",
+            "  -d '{\"video_inputs\": [{\"character\": {\"type\": \"avatar\", \"avatar_id\": \"default\"}, \"voice\": {\"type\": \"text\", \"input_text\": \"Hello from OpenClaw AI!\"}}]}'"
+          ]
         },
         {
           "title": "视频应用场景与高级功能",
@@ -1103,6 +1312,10 @@
           ]
         }
       ]
+    },
+    "installOllamaOneLine": "# 一行指令安装 Ollama\ncurl -fsSL https://ollama.com/install.sh | sh",
+    "chatDemo": {
+      "you": "你"
     }
   },
   "hardwareCompare": {

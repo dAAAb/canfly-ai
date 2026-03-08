@@ -327,7 +327,17 @@
                 "speed": "Medium"
               }
             ]
-          }
+          },
+          "commands": [
+            "# Download model: Llama 3.2 (3B parameters, lightweight & fast)",
+            "ollama pull llama3.2",
+            "",
+            "# For coding: CodeLlama",
+            "ollama pull codellama",
+            "",
+            "# Want more power? Try Llama 3.1 (8B parameters)",
+            "ollama pull llama3.1"
+          ]
         },
         {
           "title": "Test Interactive Chat",
@@ -350,6 +360,36 @@
               {
                 "q": "Shows out of memory",
                 "a": "Close other applications to free up memory, or switch to a smaller model."
+              }
+            ]
+          },
+          "commands": [
+            "# Start interactive chat",
+            "ollama run llama3.2",
+            "",
+            "# Then try typing:",
+            ">>> Hello! Please introduce yourself",
+            "",
+            "# To exit the chat:",
+            ">>> /bye"
+          ],
+          "chatExample": {
+            "exchanges": [
+              {
+                "role": "user",
+                "text": "Hello! Please introduce yourself"
+              },
+              {
+                "role": "ai",
+                "text": "Hello! I'm an AI assistant running on your computer. I can help you answer questions, write articles, write code, and I run completely locally — no internet connection needed. Your data never leaves your computer. How can I help you?"
+              },
+              {
+                "role": "user",
+                "text": "Write a Python hello world"
+              },
+              {
+                "role": "ai",
+                "text": "print(\"Hello, World!\")"
               }
             ]
           }
@@ -381,7 +421,20 @@
                 "a": "Run: sudo pmset -c sleep 0 disksleep 0 networkoversleep 1 — then nohup caffeinate -s &. This keeps your Mac awake for 24/7 AI agent use. Full guide: blog.juchunko.com/zh/openclaw-always-on-macos"
               }
             ]
-          }
+          },
+          "commands": [
+            "# Confirm Ollama is running",
+            "curl http://localhost:11434/api/tags",
+            "",
+            "# Configure Ollama in OpenClaw settings:",
+            "# 1. Open OpenClaw settings page",
+            "# 2. Select \"Model Settings\"",
+            "# 3. Enter API address: http://localhost:11434",
+            "# 4. Choose the model you just downloaded",
+            "",
+            "# Or set via environment variable:",
+            "export OLLAMA_HOST=\"http://localhost:11434\""
+          ]
         },
         {
           "title": "Next Steps",
@@ -464,7 +517,15 @@
                 "a": "Make sure you allow Zeabur access to your repositories during the OAuth flow."
               }
             ]
-          }
+          },
+          "commands": [
+            "# 1. Go to Zeabur website to register",
+            "https://zeabur.com?referralCode=openclaw&utm_source=canfly&utm_medium=web&utm_campaign=zeabur",
+            "",
+            "# 2. Log in with your GitHub account",
+            "# 3. Verify your email address",
+            "# 4. Complete account setup"
+          ]
         },
         {
           "title": "Fork OpenClaw Repository",
@@ -489,7 +550,15 @@
                 "a": "Make sure you're logged into GitHub and viewing the official OpenClaw repository."
               }
             ]
-          }
+          },
+          "commands": [
+            "# 1. Go to the OpenClaw GitHub repository",
+            "https://github.com/openclaw/openclaw",
+            "",
+            "# 2. Click the \"Fork\" button in the top right",
+            "# 3. Select your GitHub account as the target",
+            "# 4. Keep default settings, click \"Create fork\""
+          ]
         },
         {
           "title": "Deploy to Zeabur",
@@ -514,7 +583,19 @@
                 "a": "Ensure you've connected your GitHub account and the repository is accessible to Zeabur."
               }
             ]
-          }
+          },
+          "commands": [
+            "# 1. Click \"New Project\" in Zeabur console",
+            "# 2. Select \"Deploy from GitHub\"",
+            "# 3. Find and select your forked openclaw repo",
+            "# 4. Click \"Deploy\" to start auto deployment",
+            "",
+            "# Zeabur will automatically:",
+            "# - Detect Node.js environment",
+            "# - Install dependencies",
+            "# - Build the application",
+            "# - Provide an HTTPS domain"
+          ]
         },
         {
           "title": "Configure Environment Variables",
@@ -539,7 +620,17 @@
                 "a": "In Zeabur dashboard, manually restart your service after updating environment variables."
               }
             ]
-          }
+          },
+          "commands": [
+            "# Add environment variables in Zeabur project settings:",
+            "OPENAI_API_KEY=sk-your-openai-key-here",
+            "OLLAMA_HOST=http://localhost:11434",
+            "NODE_ENV=production",
+            "",
+            "# Optional: if connecting other AI services",
+            "ANTHROPIC_API_KEY=your-claude-key",
+            "OPENAI_BASE_URL=https://api.openai.com/v1"
+          ]
         },
         {
           "title": "Add Custom Domain (Optional)",
@@ -564,7 +655,18 @@
                 "a": "Wait 5-10 minutes after DNS propagation. Zeabur automatically issues Let's Encrypt certificates."
               }
             ]
-          }
+          },
+          "commands": [
+            "# 1. Click \"Domains\" in your Zeabur project",
+            "# 2. Click \"Add Domain\"",
+            "# 3. Enter your domain (e.g.: ai.yoursite.com)",
+            "# 4. Update your DNS records:",
+            "",
+            "# DNS configuration example:",
+            "# Type: CNAME",
+            "# Name: ai",
+            "# Value: your-project.zeabur.app"
+          ]
         },
         {
           "title": "Test Your Cloud AI",
@@ -608,6 +710,13 @@
               "link": "https://blog.juchunko.com",
               "external": true
             }
+          ],
+          "commands": [
+            "# Test if deployment succeeded:",
+            "curl https://your-project.zeabur.app/health",
+            "",
+            "# Or open your URL in the browser",
+            "# Try chatting with your cloud AI"
           ]
         }
       ]
@@ -641,7 +750,15 @@
                 "a": "Go to Profile Settings → API Key. You may need to verify your email first."
               }
             ]
-          }
+          },
+          "commands": [
+            "# Create your ElevenLabs account",
+            "open https://try.elevenlabs.io/clawhub?utm_source=canfly&utm_medium=web&utm_campaign=elevenlabs",
+            "",
+            "# Sign up with our affiliate link for 22% commission support",
+            "# Free tier: 10,000 characters/month",
+            "# Starter plan: 30,000 characters for $5/month"
+          ]
         },
         {
           "title": "Get Your API Key",
@@ -666,7 +783,12 @@
                 "a": "Your API key may be invalid or your account needs email verification."
               }
             ]
-          }
+          },
+          "commands": [
+            "# Navigate to Profile Settings → API Key",
+            "# Copy your API key (keep it private!)",
+            "export ELEVENLABS_API_KEY=\"your-api-key-here\""
+          ]
         },
         {
           "title": "Configure OpenClaw Integration",
@@ -691,7 +813,14 @@
                 "a": "Check your system audio settings. Some browsers block auto-play audio by default."
               }
             ]
-          }
+          },
+          "commands": [
+            "# Configure OpenClaw with ElevenLabs",
+            "# 1. Open OpenClaw Settings",
+            "# 2. Add ElevenLabs skill",
+            "# 3. Enter your API key",
+            "# 4. Test with a short sentence"
+          ]
         },
         {
           "title": "Live Voice Demo",
@@ -716,7 +845,15 @@
                 "a": "Check your internet connection. Audio streaming requires stable bandwidth."
               }
             ]
-          }
+          },
+          "commands": [
+            "# Test voice generation",
+            "curl -X POST \"https://api.elevenlabs.io/v1/text-to-speech/voice-id\" \\",
+            "  -H \"Accept: audio/mpeg\" \\",
+            "  -H \"Content-Type: application/json\" \\",
+            "  -H \"xi-api-key: $ELEVENLABS_API_KEY\" \\",
+            "  -d '{\"text\": \"Hello from OpenClaw!\", \"model_id\": \"eleven_monolingual_v1\"}'"
+          ]
         },
         {
           "title": "Voice Use Cases & Next Steps",
@@ -831,7 +968,19 @@
                 "a": "If you want zero hassle and don't mind paying $10, go with Virtual Buddy. If you prefer free software or want more control, choose UTM."
               }
             ]
-          }
+          },
+          "commands": [
+            "# Virtual Buddy (recommended for beginners, one-click Linux)",
+            "# Download Virtual Buddy from Mac App Store",
+            "open https://apps.apple.com/app/virtual-buddy/id1640730093",
+            "",
+            "# Or choose UTM (free, more features)",
+            "# Download UTM from the official website",
+            "open https://mac.getutm.app/",
+            "",
+            "# Install UTM via Homebrew:",
+            "brew install --cask utm"
+          ]
         },
         {
           "title": "Create a Linux VM",
@@ -866,7 +1015,22 @@
                 "a": "Go to ubuntu.com/download/server and download the ARM64 version for Apple Silicon Macs."
               }
             ]
-          }
+          },
+          "commands": [
+            "# Virtual Buddy one-click Linux VM:",
+            "# 1. Open Virtual Buddy",
+            "# 2. Click \"Create New VM\"",
+            "# 3. Select \"Linux\" → Ubuntu 22.04",
+            "# 4. Allocate resources (recommended: 4GB RAM + 2 CPU)",
+            "# 5. Click \"Create\" → auto download and install",
+            "",
+            "# UTM manual Linux VM setup:",
+            "# 1. Open UTM → Click \"+\"",
+            "# 2. Select \"Virtualize\" → \"Linux\"",
+            "# 3. Load Ubuntu ARM64 ISO",
+            "# 4. Allocate 4GB RAM + 2 CPU + 20GB disk",
+            "# 5. Complete the setup wizard"
+          ]
         },
         {
           "title": "Install Ollama in Your VM",
@@ -899,7 +1063,25 @@
                 "a": "Increase the VM's RAM allocation to at least 4GB. Shut down the VM first, adjust settings, then restart."
               }
             ]
-          }
+          },
+          "commands": [
+            "# Run these in the Linux VM terminal:",
+            "",
+            "# 1. Update system",
+            "sudo apt update && sudo apt upgrade -y",
+            "",
+            "# 2. Install Ollama (one command)",
+            "curl -fsSL https://ollama.com/install.sh | sh",
+            "",
+            "# 3. Confirm installation",
+            "ollama --version",
+            "",
+            "# 4. Download your first model",
+            "ollama pull llama3.2",
+            "",
+            "# 5. Start chatting!",
+            "ollama run llama3.2"
+          ]
         },
         {
           "title": "Next Steps",
@@ -974,7 +1156,15 @@
                 "a": "API access requires a paid plan. Free tier is for manual studio use only."
               }
             ]
-          }
+          },
+          "commands": [
+            "# Create your HeyGen account",
+            "open https://www.heygen.com/?sid=rewardful&via=clawhub&utm_source=canfly&utm_medium=web&utm_campaign=heygen",
+            "",
+            "# Sign up with our affiliate link for 20% commission support",
+            "# Free tier: 1 credit (1-minute video) for testing",
+            "# Creator plan: $29/month with 15 credits"
+          ]
         },
         {
           "title": "Get API Access",
@@ -999,7 +1189,12 @@
                 "a": "Verify your plan has remaining credits. Check the developer console for error messages."
               }
             ]
-          }
+          },
+          "commands": [
+            "# Navigate to Developer Console → API Keys",
+            "# Generate new API key (requires Creator plan)",
+            "export HEYGEN_API_KEY=\"your-api-key-here\""
+          ]
         },
         {
           "title": "Configure OpenClaw + HeyGen",
@@ -1024,7 +1219,14 @@
                 "a": "Make sure you selected the correct avatar ID. Preview in HeyGen Studio first."
               }
             ]
-          }
+          },
+          "commands": [
+            "# Configure OpenClaw with HeyGen",
+            "# 1. Open OpenClaw Settings",
+            "# 2. Add HeyGen skill",
+            "# 3. Enter your API key",
+            "# 4. Choose avatar and voice"
+          ]
         },
         {
           "title": "Create Your First AI Video",
@@ -1049,7 +1251,14 @@
                 "a": "This can happen with very long sentences. Try shorter, more natural speech patterns."
               }
             ]
-          }
+          },
+          "commands": [
+            "# Test video generation with HeyGen API",
+            "curl -X POST \"https://api.heygen.com/v2/video/generate\" \\",
+            "  -H \"X-API-KEY: $HEYGEN_API_KEY\" \\",
+            "  -H \"Content-Type: application/json\" \\",
+            "  -d '{\"video_inputs\": [{\"character\": {\"type\": \"avatar\", \"avatar_id\": \"default\"}, \"voice\": {\"type\": \"text\", \"input_text\": \"Hello from OpenClaw AI!\"}}]}'"
+          ]
         },
         {
           "title": "Video Use Cases & Advanced Features",
@@ -1103,6 +1312,10 @@
           ]
         }
       ]
+    },
+    "installOllamaOneLine": "# Install Ollama with one command\ncurl -fsSL https://ollama.com/install.sh | sh",
+    "chatDemo": {
+      "you": "You"
     }
   },
   "hardwareCompare": {
