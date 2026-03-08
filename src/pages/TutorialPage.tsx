@@ -1507,8 +1507,8 @@ ollama run llama3.2 "Hello, respond with OK if you are working."
 # Step 5: Configure OpenClaw
 export OLLAMA_HOST="http://localhost:11434"` : `# Complete Zeabur Deployment Automation
 # Step 1: Account Setup
-# Visit: https://zeabur.com?referralCode=openclaw&utm_source=canfly&utm_medium=web&utm_campaign=zeabur
-# Use code "OpenClaw" for 10% off
+# Visit: https://zeabur.com?referralCode=dAAAb&utm_source=canfly&utm_medium=web&utm_campaign=zeabur
+# Use code "dAAAb" for 10% off
 
 # Step 2: Fork OpenClaw Repository
 curl -H "Authorization: token YOUR_GITHUB_TOKEN" \\

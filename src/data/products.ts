@@ -64,8 +64,8 @@ export const products: Product[] = [
     price: 'Free — $5/mo',
     status: 'available',
     description: 'Deploy your OpenClaw agents to the cloud with zero configuration. Get started in minutes with our affiliate partnership.',
-    affiliateLink: 'https://zeabur.com?referralCode=openclaw&utm_source=canfly&utm_medium=web&utm_campaign=zeabur',
-    affiliateCode: 'OpenClaw',
+    affiliateLink: 'https://zeabur.com?referralCode=dAAAb&utm_source=canfly&utm_medium=web&utm_campaign=zeabur',
+    affiliateCode: 'dAAAb',
     affiliateDiscount: '10% off',
     features: [
       'One-click deployment',
@@ -79,7 +79,7 @@ export const products: Product[] = [
     tutorial: '/learn/zeabur',
     cta: {
       primary: 'Deploy Now (10% off)',
-      primaryLink: 'https://zeabur.com?referralCode=openclaw&utm_source=canfly&utm_medium=web&utm_campaign=zeabur',
+      primaryLink: 'https://zeabur.com?referralCode=dAAAb&utm_source=canfly&utm_medium=web&utm_campaign=zeabur',
       secondary: 'View Tutorial',
       secondaryLink: '/learn/zeabur',
     },
@@ -352,6 +352,7 @@ export const products: Product[] = [
   {
     id: 'mac-mini-m4',
     icon: '/images/icons/apple.png',
+    heroImage: '/images/products/mac-mini-m4.jpg',
     name: 'Apple Mac Mini M4',
     tagline: 'Compact AI powerhouse',
     category: 'hardware',
@@ -382,6 +383,7 @@ export const products: Product[] = [
   {
     id: 'macbook-neo',
     icon: '/images/icons/apple.png',
+    heroImage: '/images/products/macbook-neo.jpg',
     name: 'Apple MacBook Neo',
     tagline: 'Most affordable MacBook ever',
     category: 'hardware',
@@ -413,6 +415,7 @@ export const products: Product[] = [
   {
     id: 'hdmi-dummy-plug',
     icon: '/images/icons/hdmi-dummy.png',
+    heroImage: '/images/products/hdmi-dummy-plug.jpg',
     name: 'EVanlak 8K HDMI Dummy Plug',
     tagline: 'World\'s tiniest HDMI dummy plug',
     category: 'hardware',
@@ -443,6 +446,7 @@ export const products: Product[] = [
   {
     id: 'geekom-a8',
     icon: '/images/icons/geekom.png',
+    heroImage: '/images/products/geekom-a8.jpg',
     name: 'GEEKOM A8 Mini PC',
     tagline: 'Best mini PC for local AI',
     category: 'hardware',
@@ -473,6 +477,7 @@ export const products: Product[] = [
   {
     id: 'beelink-ser5-max',
     icon: '/images/icons/beelink.png',
+    heroImage: '/images/products/beelink-ser5-max.jpg',
     name: 'Beelink SER5 MAX',
     tagline: 'High value AI mini PC',
     category: 'hardware',
@@ -503,6 +508,7 @@ export const products: Product[] = [
   {
     id: 'raspberry-pi-5',
     icon: '/images/icons/raspberry-pi.png',
+    heroImage: '/images/products/raspberry-pi-5.jpg',
     name: 'Raspberry Pi 5',
     tagline: 'Budget AI learning kit',
     category: 'hardware',
@@ -533,6 +539,7 @@ export const products: Product[] = [
   {
     id: 'elgato-stream-deck',
     icon: '/images/icons/elgato.png',
+    heroImage: '/images/products/elgato-stream-deck.jpg',
     name: 'Elgato Stream Deck MK.2',
     tagline: 'AI workflow control panel',
     category: 'hardware',
@@ -563,6 +570,7 @@ export const products: Product[] = [
   {
     id: 'fifine-am8',
     icon: '/images/icons/fifine.png',
+    heroImage: '/images/products/fifine-am8.jpg',
     name: 'Fifine AM8 Microphone',
     tagline: 'AI voice input made easy',
     category: 'hardware',
