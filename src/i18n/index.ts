@@ -1,8 +1,6 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import en from './en.json'
-import zhTW from './zh-TW.json'
-import zhCN from './zh-CN.json'
 
 export const SUPPORTED_LANGS = ['en', 'zh-TW', 'zh-CN'] as const
 export type SupportedLang = (typeof SUPPORTED_LANGS)[number]
@@ -46,11 +44,24 @@ function detectLangFromUrl(): SupportedLang {
 
 const detectedLang = detectLangFromUrl()
 
+/** Lazy-load a language bundle and add it to i18next */
+const langLoaders: Record<string, () => Promise<{ default: Record<string, unknown> }>> = {
+  'zh-TW': () => import('./zh-TW.json'),
+  'zh-CN': () => import('./zh-CN.json'),
+}
+
+async function loadLanguage(lang: string) {
+  if (lang === 'en' || i18n.hasResourceBundle(lang, 'translation')) return
+  const loader = langLoaders[lang]
+  if (loader) {
+    const mod = await loader()
+    i18n.addResourceBundle(lang, 'translation', mod.default, true, true)
+  }
+}
+
 i18n.use(initReactI18next).init({
   resources: {
     en: { translation: en },
-    'zh-TW': { translation: zhTW },
-    'zh-CN': { translation: zhCN },
   },
   lng: detectedLang,
   fallbackLng: 'en',
@@ -59,6 +70,16 @@ i18n.use(initReactI18next).init({
   interpolation: { escapeValue: false },
   initImmediate: false,
   react: { useSuspense: false },
+})
+
+// Load initial language if not English
+if (detectedLang !== 'en') {
+  loadLanguage(detectedLang)
+}
+
+// Load language on change
+i18n.on('languageChanged', (lang) => {
+  loadLanguage(lang)
 })
 
 export default i18n

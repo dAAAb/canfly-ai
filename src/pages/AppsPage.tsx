@@ -135,9 +135,12 @@ export default function AppsPage() {
                         <p className="text-sm text-gray-500 mt-0.5">{t(`product.products.${product.id}.tagline`)}</p>
                       </div>
                       <div className="text-right shrink-0 ml-4">
-                        <div className="text-sm font-medium text-white">{product.price}</div>
-                        {product.status === 'coming-soon' && (
-                          <div className="text-xs text-yellow-500">{t('apps.comingSoon')}</div>
+                        {product.status === 'coming-soon' ? (
+                          <span className="px-2 py-0.5 bg-purple-600/20 text-purple-400 text-xs rounded-full border border-purple-600/40">
+                            Coming Soon
+                          </span>
+                        ) : (
+                          <div className="text-sm font-medium text-white">{product.price}</div>
                         )}
                       </div>
                     </div>

@@ -1,0 +1,12 @@
+name = "canfly-profile"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+# Wildcard subdomain route: *.canfly.ai
+# Configure in Cloudflare dashboard: Routes > *.canfly.ai/*
+# Requires DNS wildcard A/AAAA or CNAME record for *.canfly.ai
+
+[[kv_namespaces]]
+binding = "PROFILES"
+id = ""  # Fill after: wrangler kv namespace create PROFILES
+# preview_id = ""  # Fill after: wrangler kv namespace create PROFILES --preview

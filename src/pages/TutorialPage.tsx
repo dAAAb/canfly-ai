@@ -3,6 +3,7 @@ import { Clock, CheckCircle, Copy, ExternalLink, ChevronDown, ChevronRight, Term
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import Navbar from '../components/Navbar'
+import { useHead } from '../hooks/useHead'
 
 // ─── Types ──────────────────────────────────────────────────────────
 
@@ -793,6 +794,12 @@ export default function TutorialPage() {
   const tutorials = getTutorials(t)
   const tutorial = tutorials[slug!] ?? null
   const [completedSteps, setCompletedSteps] = useState<number[]>([])
+
+  useHead(tutorial ? {
+    title: `${tutorial.title} — Canfly`,
+    description: tutorial.subtitle,
+    canonical: `https://canfly.ai/learn/${slug}`,
+  } : {})
 
   const toggleStep = (i: number) =>
     setCompletedSteps((prev) => prev.includes(i) ? prev.filter((s) => s !== i) : [...prev, i])

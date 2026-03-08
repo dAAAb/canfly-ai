@@ -211,6 +211,7 @@
             "items": [
               { "q": "Mac 無法開啟 Ollama.app", "a": "到「系統設定 → 隱私與安全性」，點擊「仍然開啟」。這是 macOS 對未簽名應用的安全機制。" },
               { "q": "終端機顯示 \"command not found\"", "a": "請重新開啟終端機，或執行 source ~/.zshrc 重新載入環境變數。" },
+              { "q": "Mac 上安裝 OpenClaw 出現 npm 權限錯誤", "a": "經典 macOS 問題。快速修復：sudo chown -R $(whoami) /usr/local/lib/node_modules/ /usr/local/bin/ — 或更好的方式是用 nvm 管理 Node.js。完整教學：blog.juchunko.com/zh/ollama-openclaw-npm-permission-fix" },
               { "q": "Windows 安裝卡住", "a": "請用系統管理員身分執行安裝程式。右鍵點擊 → 以系統管理員身分執行。" }
             ]
           },
@@ -315,7 +316,8 @@
             "title": "卡關了？連接問題排解",
             "items": [
               { "q": "OpenClaw 找不到 Ollama", "a": "確認 Ollama 正在運行：在終端機輸入 ollama list。如果沒有反應，重新啟動 Ollama。" },
-              { "q": "API 位址填什麼？", "a": "預設是 http://localhost:11434，除非你有特別更改過。" }
+              { "q": "API 位址填什麼？", "a": "預設是 http://localhost:11434，除非你有特別更改過。" },
+              { "q": "Mac 睡覺後 AI agent 斷線？", "a": "執行：sudo pmset -c sleep 0 disksleep 0 networkoversleep 1，然後 nohup caffeinate -s &。讓 Mac 保持清醒，AI agent 24/7 在線。完整教學：blog.juchunko.com/zh/openclaw-always-on-macos" }
             ]
           }
         },
@@ -331,24 +333,41 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "☁️",
               "title": "部署到雲端",
               "desc": "用 Zeabur 一鍵部署，讓你的 AI 隨時隨地可用。使用優惠碼 OpenClaw 享 10% 折扣。",
-              "cta": "學習部署"
+              "cta": "學習部署",
+              "link": "/learn/zeabur"
             },
             {
+              "emoji": "🎙️",
               "title": "加上語音功能",
               "desc": "用 ElevenLabs 讓你的 AI 開口說話，支援中文語音合成。",
-              "cta": "探索 ElevenLabs"
+              "cta": "探索 ElevenLabs",
+              "link": "/learn/elevenlabs-integration"
             },
             {
+              "emoji": "🎬",
               "title": "生成 AI 影片",
               "desc": "用 HeyGen 製作 AI 數位人影片，適合教學和行銷內容。",
-              "cta": "探索 HeyGen"
+              "cta": "探索 HeyGen",
+              "link": "/learn/heygen-video"
             },
             {
+              "emoji": "🦞",
+              "title": "開源 15 個 Agent Skills",
+              "desc": "給你的 AI agent Web3 超能力 — 錢包、鏈上身份、信箱。支援 40+ 個 AI 程式代理。",
+              "cta": "在部落格閱讀",
+              "link": "https://blog.juchunko.com/zh/agent-skills-open-source",
+              "external": true
+            },
+            {
+              "emoji": "🔍",
               "title": "探索更多模型",
               "desc": "到 Ollama 模型庫瀏覽數百種模型：文字、程式碼、視覺辨識等。",
-              "cta": "瀏覽模型庫"
+              "cta": "瀏覽模型庫",
+              "link": "https://ollama.com/library",
+              "external": true
             }
           ]
         }
@@ -720,6 +739,14 @@
               "title": "自動化影片工作流程",
               "desc": "將你的影片生成 AI 部署到 Zeabur 雲端並創作自動化內容管線。",
               "cta": "部署到雲端"
+            },
+            {
+              "title": "HeyGen + ZapCap + Whisper 完整指南",
+              "desc": "完整製作流程：HeyGen 數位人 + ZapCap 自動字幕 + Whisper 中文人名辨識修正。含實戰自動化腳本。",
+              "cta": "閱讀完整指南",
+              "emoji": "🎬",
+              "link": "https://blog.juchunko.com/zh/heygen-zapcap-ai-video-workflow",
+              "external": true
             }
           ]
         }

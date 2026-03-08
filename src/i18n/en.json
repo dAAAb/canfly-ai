@@ -211,6 +211,7 @@
             "items": [
               { "q": "Can't open Ollama.app on Mac", "a": "Go to System Settings \u2192 Privacy & Security, click \"Open Anyway\". This is macOS's security mechanism for unsigned apps." },
               { "q": "Terminal shows \"command not found\"", "a": "Reopen your terminal, or run source ~/.zshrc to reload environment variables." },
+              { "q": "npm permission error installing OpenClaw on Mac", "a": "Classic macOS issue with pkg-installed Node.js. Quick fix: sudo chown -R $(whoami) /usr/local/lib/node_modules/ /usr/local/bin/ — or better, use nvm to manage Node.js. Full guide: blog.juchunko.com/zh/ollama-openclaw-npm-permission-fix" },
               { "q": "Windows installation stuck", "a": "Run the installer as Administrator. Right-click \u2192 Run as administrator." }
             ]
           },
@@ -315,7 +316,8 @@
             "title": "Stuck? Connection Troubleshooting",
             "items": [
               { "q": "OpenClaw can't find Ollama", "a": "Confirm Ollama is running: type ollama list in terminal. If no response, restart Ollama." },
-              { "q": "What to put for API address?", "a": "Default is http://localhost:11434, unless you've changed it." }
+              { "q": "What to put for API address?", "a": "Default is http://localhost:11434, unless you've changed it." },
+              { "q": "Mac sleeps and AI agent goes offline?", "a": "Run: sudo pmset -c sleep 0 disksleep 0 networkoversleep 1 — then nohup caffeinate -s &. This keeps your Mac awake for 24/7 AI agent use. Full guide: blog.juchunko.com/zh/openclaw-always-on-macos" }
             ]
           }
         },
@@ -331,24 +333,41 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "☁️",
               "title": "Deploy to Cloud",
               "desc": "One-click deploy with Zeabur to make your AI available anywhere. Use code OpenClaw for 10% off.",
-              "cta": "Learn to Deploy"
+              "cta": "Learn to Deploy",
+              "link": "/learn/zeabur"
             },
             {
+              "emoji": "🎙️",
               "title": "Add Voice Features",
               "desc": "Use ElevenLabs to give your AI a voice, with Chinese text-to-speech support.",
-              "cta": "Explore ElevenLabs"
+              "cta": "Explore ElevenLabs",
+              "link": "/learn/elevenlabs-integration"
             },
             {
+              "emoji": "🎬",
               "title": "Generate AI Videos",
               "desc": "Use HeyGen to create AI avatar videos, perfect for education and marketing content.",
-              "cta": "Explore HeyGen"
+              "cta": "Explore HeyGen",
+              "link": "/learn/heygen-video"
             },
             {
+              "emoji": "🦞",
+              "title": "15 Open Source Agent Skills",
+              "desc": "Give your AI agent Web3 superpowers — wallets, on-chain identity, email, and more. Works with 40+ AI coding agents.",
+              "cta": "Read on Blog",
+              "link": "https://blog.juchunko.com/zh/agent-skills-open-source",
+              "external": true
+            },
+            {
+              "emoji": "🔍",
               "title": "Explore More Models",
               "desc": "Browse hundreds of models in the Ollama library: text, code, vision, and more.",
-              "cta": "Browse Model Library"
+              "cta": "Browse Model Library",
+              "link": "https://ollama.com/library",
+              "external": true
             }
           ]
         }
@@ -720,6 +739,14 @@
               "title": "Automate Video Workflows",
               "desc": "Deploy your video-generating AI to Zeabur cloud and create automated content pipelines.",
               "cta": "Deploy to Cloud"
+            },
+            {
+              "title": "HeyGen + ZapCap + Whisper Guide",
+              "desc": "Complete production workflow: HeyGen avatars + ZapCap auto-subtitles + Whisper for Chinese name recognition. Real-world automation scripts included.",
+              "cta": "Read Full Guide",
+              "emoji": "🎬",
+              "link": "https://blog.juchunko.com/zh/heygen-zapcap-ai-video-workflow",
+              "external": true
             }
           ]
         }

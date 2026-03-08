@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- Homepage -->
+  <url>
+    <loc>https://canfly.ai/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/" />
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn" />
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn" />
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Apps catalog -->
+  <url>
+    <loc>https://canfly.ai/apps</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/apps" />
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/apps</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps" />
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/apps</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps" />
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Product pages -->
+  <url>
+    <loc>https://canfly.ai/apps/ollama</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/ollama" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/ollama" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/ollama" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/apps/zeabur</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/zeabur" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/zeabur" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/zeabur" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/apps/elevenlabs</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/elevenlabs" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/elevenlabs" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/elevenlabs" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/apps/heygen</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/heygen" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/heygen" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/heygen" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/apps/umbrel</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/umbrel" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/umbrel" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/umbrel" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Tutorial pages -->
+  <url>
+    <loc>https://canfly.ai/learn/ollama-setup</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/ollama-setup" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/ollama-setup" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/ollama-setup" />
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/learn/zeabur-deployment</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/zeabur-deployment" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/zeabur-deployment" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/zeabur-deployment" />
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/learn/elevenlabs-integration</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/elevenlabs-integration" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/elevenlabs-integration" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/elevenlabs-integration" />
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/learn/heygen-video</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/heygen-video" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/heygen-video" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/heygen-video" />
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+</urlset>

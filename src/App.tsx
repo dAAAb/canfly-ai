@@ -1,12 +1,13 @@
 import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useMemo, useEffect } from 'react'
-import HomePage from './pages/HomePage'
-import AppsPage from './pages/AppsPage'
-import ProductPage from './pages/ProductPage'
-import TutorialPage from './pages/TutorialPage'
+import { useMemo, useEffect, lazy, Suspense } from 'react'
 import Footer from './sections/Footer'
 import { langFromPrefix } from './i18n'
+
+const HomePage = lazy(() => import('./pages/HomePage'))
+const AppsPage = lazy(() => import('./pages/AppsPage'))
+const ProductPage = lazy(() => import('./pages/ProductPage'))
+const TutorialPage = lazy(() => import('./pages/TutorialPage'))
 
 /** Wrapper that syncs i18next language from URL :lang param.
  *  Uses useMemo (not useEffect) so language is set before children render. */
@@ -33,19 +34,21 @@ function App() {
   return (
     <Router>
       <div className="bg-black text-white min-h-screen">
-        <Routes>
-          {/* Default (English) — no prefix */}
-          <Route path="/" element={<HomePage />} />
-          <Route path="/apps" element={<AppsPage />} />
-          <Route path="/apps/:slug" element={<ProductPage />} />
-          <Route path="/learn/:slug" element={<TutorialPage />} />
+        <Suspense fallback={<div className="min-h-screen" />}>
+          <Routes>
+            {/* Default (English) — no prefix */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/apps" element={<AppsPage />} />
+            <Route path="/apps/:slug" element={<ProductPage />} />
+            <Route path="/learn/:slug" element={<TutorialPage />} />
 
-          {/* Language-prefixed routes */}
-          <Route path="/:lang" element={<LangSync><HomePage /></LangSync>} />
-          <Route path="/:lang/apps" element={<LangSync><AppsPage /></LangSync>} />
-          <Route path="/:lang/apps/:slug" element={<LangSync><ProductPage /></LangSync>} />
-          <Route path="/:lang/learn/:slug" element={<LangSync><TutorialPage /></LangSync>} />
-        </Routes>
+            {/* Language-prefixed routes */}
+            <Route path="/:lang" element={<LangSync><HomePage /></LangSync>} />
+            <Route path="/:lang/apps" element={<LangSync><AppsPage /></LangSync>} />
+            <Route path="/:lang/apps/:slug" element={<LangSync><ProductPage /></LangSync>} />
+            <Route path="/:lang/learn/:slug" element={<LangSync><TutorialPage /></LangSync>} />
+          </Routes>
+        </Suspense>
         <Footer />
       </div>
     </Router>
