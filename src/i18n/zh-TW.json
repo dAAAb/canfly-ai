@@ -2306,5 +2306,9 @@
     "orderId": "訂單編號",
     "contactAfterPay": "有問題嗎？請寄信至 juchunko@gmail.com",
     "errorMessage": "付款失敗，請重試或聯繫客服。"
+  },
+  "errors": {
+    "notFoundMessage": "此頁面不存在或已被移動。",
+    "backHome": "回到首頁"
   }
 }

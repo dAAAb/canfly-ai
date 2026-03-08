@@ -6,11 +6,17 @@
   "hero": {
     "titleLine1": "Now You Can",
     "titleLine2": "Fly.",
-    "subtitle": "With AI, you can fly.\nThe launchpad for the AI Agent era.",
-    "ctaFree": "Start Free",
-    "ctaFreeTag": "(Ollama)",
+    "subtitle": "Your own AI Agent in 5 minutes — zero cost, zero experience needed.\nJoin the AI Agent revolution.",
+    "ctaFree": "Get Started Free",
+    "ctaFreeTag": "(5 min setup)",
     "ctaBrowse": "Browse All Tools",
-    "funnel": "Start free with Ollama → Deploy to Zeabur cloud → Expand AI skills",
+    "funnel": "Your path from zero to AI-powered:",
+    "funnelStep1": "Free Local AI",
+    "funnelStep1Desc": "Ollama — run AI on your machine",
+    "funnelStep2": "Cloud Deploy",
+    "funnelStep2Desc": "Zeabur — go live in 1 click",
+    "funnelStep3": "Premium AI Skills",
+    "funnelStep3Desc": "Voice & video with ElevenLabs + HeyGen",
     "scroll": "Scroll"
   },
   "vision": {
@@ -73,8 +79,9 @@
   },
   "cta": {
     "headingLine1": "Ready?",
-    "headingHighlight": "Preparing for takeoff.",
-    "desc": "Canfly is building the friendliest onboarding platform for the AI Agent era.\nFrom free experiences to professional setups, we take you from ground to cloud.",
+    "headingHighlight": "Start flying today.",
+    "desc": "Thousands of builders are already using AI Agents to work smarter.\nStart free with Ollama — upgrade to cloud and premium skills when you're ready.",
+    "ctaButton": "Get Started Free",
     "followX": "Follow @dAAAb"
   },
   "footer": {
@@ -2306,5 +2313,9 @@
     "orderId": "Order ID",
     "contactAfterPay": "Questions? Email us at juchunko@gmail.com",
     "errorMessage": "Payment failed. Please try again or contact support."
+  },
+  "errors": {
+    "notFoundMessage": "This page doesn't exist or has been moved.",
+    "backHome": "Back to Home"
   }
 }
