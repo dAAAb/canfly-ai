@@ -96,7 +96,8 @@
       "free": "免费工具",
       "skills": "AI 技能",
       "hosting": "云端托管",
-      "hardware": "硬件"
+      "hardware": "硬件",
+      "vm": "虚拟机"
     }
   },
   "product": {
@@ -172,6 +173,14 @@
         ],
         "ctaPrimary": "前往 Umbrel",
         "ctaSecondary": "查看教程"
+      },
+      "utm": {
+        "tagline": "Mac 免费虚拟机",
+        "description": "在 Mac 里安全地运行 Windows、Linux 等操作系统。"
+      },
+      "virtual-buddy": {
+        "tagline": "一键创建 Linux 虚拟机",
+        "description": "在 Mac 上创建 Linux 虚拟机最简单的方式。"
       }
     }
   },
@@ -784,8 +793,14 @@
           "troubleshooting": {
             "title": "卡住了？概念问题解答",
             "items": [
-              { "q": "虚拟机会拖慢我的 Mac 吗？", "a": "只在虚拟机运行时稍微影响。关掉虚拟机后 Mac 就恢复全速。16GB 以上 RAM 的话，几乎感觉不到变慢。" },
-              { "q": "这跟 Docker 一样吗？", "a": "概念类似，但虚拟机是跑一个完整的操作系统，有自己的桌面。Docker 跑的是轻量级容器，没有完整的操作系统。对新手来说，虚拟机比较容易理解。" }
+              {
+                "q": "虚拟机会拖慢我的 Mac 吗？",
+                "a": "只在虚拟机运行时稍微影响。关掉虚拟机后 Mac 就恢复全速。16GB 以上 RAM 的话，几乎感觉不到变慢。"
+              },
+              {
+                "q": "这跟 Docker 一样吗？",
+                "a": "概念类似，但虚拟机是跑一个完整的操作系统，有自己的桌面。Docker 跑的是轻量级容器，没有完整的操作系统。对新手来说，虚拟机比较容易理解。"
+              }
             ]
           }
         },
@@ -803,9 +818,18 @@
           "troubleshooting": {
             "title": "卡住了？安装问题排解",
             "items": [
-              { "q": "UTM 在 Mac 上打不开", "a": "到「系统设置 → 隐私与安全性」，点击「仍然打开」。这是 macOS 对 App Store 外下载的 App 的标准安全机制。" },
-              { "q": "Virtual Buddy 需要 macOS 13+", "a": "Virtual Buddy 需要 macOS Ventura 或更新版本。如果你的版本较旧，改用 UTM — 它支持 macOS 11+。" },
-              { "q": "该选哪一个？", "a": "如果你想要零麻烦，不介意花 $10，选 Virtual Buddy。如果你偏好免费软件或想要更多控制权，选 UTM。" }
+              {
+                "q": "UTM 在 Mac 上打不开",
+                "a": "到「系统设置 → 隐私与安全性」，点击「仍然打开」。这是 macOS 对 App Store 外下载的 App 的标准安全机制。"
+              },
+              {
+                "q": "Virtual Buddy 需要 macOS 13+",
+                "a": "Virtual Buddy 需要 macOS Ventura 或更新版本。如果你的版本较旧，改用 UTM — 它支持 macOS 11+。"
+              },
+              {
+                "q": "该选哪一个？",
+                "a": "如果你想要零麻烦，不介意花 $10，选 Virtual Buddy。如果你偏好免费软件或想要更多控制权，选 UTM。"
+              }
             ]
           }
         },
@@ -829,9 +853,18 @@
           "troubleshooting": {
             "title": "卡住了？虚拟机创建问题排解",
             "items": [
-              { "q": "虚拟机很慢", "a": "确认你分配了足够的 RAM（至少 4GB）。关掉 Mac 上其他吃资源的 App。也要确认你用的是 ARM64 版本的 Ubuntu，不是 x86。" },
-              { "q": "创建虚拟机后屏幕全黑", "a": "等 1-2 分钟 — 第一次开机需要时间初始化。如果还是全黑，试试重新启动虚拟机。" },
-              { "q": "UTM 的 Ubuntu ISO 去哪下载？", "a": "到 ubuntu.com/download/server 下载 ARM64 版本，适用于 Apple Silicon Mac。" }
+              {
+                "q": "虚拟机很慢",
+                "a": "确认你分配了足够的 RAM（至少 4GB）。关掉 Mac 上其他吃资源的 App。也要确认你用的是 ARM64 版本的 Ubuntu，不是 x86。"
+              },
+              {
+                "q": "创建虚拟机后屏幕全黑",
+                "a": "等 1-2 分钟 — 第一次开机需要时间初始化。如果还是全黑，试试重新启动虚拟机。"
+              },
+              {
+                "q": "UTM 的 Ubuntu ISO 去哪下载？",
+                "a": "到 ubuntu.com/download/server 下载 ARM64 版本，适用于 Apple Silicon Mac。"
+              }
             ]
           }
         },
@@ -849,10 +882,22 @@
           "troubleshooting": {
             "title": "卡住了？Ollama 安装问题排解",
             "items": [
-              { "q": "找不到 curl 命令", "a": "执行：sudo apt install curl — 然后重新试一次 Ollama 安装命令。" },
-              { "q": "虚拟机没有网络", "a": "UTM 中，到虚拟机设置 → 网络，确认选了「共享」网络。Virtual Buddy 的网络应该会自动正常运作。" },
-              { "q": "模型下载很慢", "a": "虚拟机的网络可能比主机慢。耐心等待，或先试较小的 llama3.2 模型（2GB）。" },
-              { "q": "Ollama 说内存不足", "a": "增加虚拟机的 RAM 分配到至少 4GB。先关闭虚拟机，调整设置，然后重新启动。" }
+              {
+                "q": "找不到 curl 命令",
+                "a": "执行：sudo apt install curl — 然后重新试一次 Ollama 安装命令。"
+              },
+              {
+                "q": "虚拟机没有网络",
+                "a": "UTM 中，到虚拟机设置 → 网络，确认选了「共享」网络。Virtual Buddy 的网络应该会自动正常运作。"
+              },
+              {
+                "q": "模型下载很慢",
+                "a": "虚拟机的网络可能比主机慢。耐心等待，或先试较小的 llama3.2 模型（2GB）。"
+              },
+              {
+                "q": "Ollama 说内存不足",
+                "a": "增加虚拟机的 RAM 分配到至少 4GB。先关闭虚拟机，调整设置，然后重新启动。"
+              }
             ]
           }
         },
@@ -1120,5 +1165,25 @@
     },
     "ctaText": "不管选哪台硬件，先从我们的免费 Ollama 教程开始，5 分钟内让你的第一个 AI 上线。",
     "ctaButton": "免费开始 Ollama"
+  },
+  "vm": {
+    "categoryName": "虚拟机",
+    "whyTitle": "为什么需要虚拟机？",
+    "whySubtitle": "给你的 AI 旅程一个安全的练习场",
+    "whyDesc": "虚拟机（VM）就像是你电脑里的「另一台电脑」。它创造一个完全独立的环境，让你可以安心地安装和实验各种 AI 工具 —— 完全不会影响到你的主系统。",
+    "benefit1Title": "🛡️ 安心实验",
+    "benefit1Desc": "随便装、随便试。你的真实电脑完全不受影响。搞坏了？删掉虚拟机，重新来过就好。",
+    "benefit2Title": "🎯 最适合新手",
+    "benefit2Desc": "还不确定 AI 适不适合你？先在虚拟机里试试看。零承诺、零风险、完全免费。",
+    "benefit3Title": "🚀 准备好升级了？",
+    "benefit3Desc": "等你上手了，可以直接装在电脑上追求更好的性能 —— 或继续用虚拟机保持隔离。",
+    "pathTitle": "选择你的路线",
+    "pathBeginner": "我完全是新手",
+    "pathBeginnerDesc": "从 Virtual Buddy 开始 —— 一键就有 Linux 环境，马上可以跑 AI。",
+    "pathIntermediate": "我稍微懂一些电脑",
+    "pathIntermediateDesc": "用 UTM 获得更多控制权。为不同用途建立不同的虚拟机。",
+    "pathDirect": "我想直接安装在电脑上",
+    "pathDirectDesc": "跳过虚拟机。直接在 Mac、Linux 或 Windows 上安装 Ollama。",
+    "pathDirectLink": "前往 Ollama 教学 →"
   }
 }

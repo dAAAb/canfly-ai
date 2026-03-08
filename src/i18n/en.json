@@ -69,7 +69,7 @@
     "followX": "Follow @dAAAb"
   },
   "footer": {
-    "copyright": "\u00a9 2026 Canfly",
+    "copyright": "© 2026 Canfly",
     "tagline": "With AI Lobster, you can fly too"
   },
   "apps": {
@@ -96,12 +96,13 @@
       "free": "Free Tools",
       "skills": "AI Skills",
       "hosting": "Cloud Hosting",
-      "hardware": "Hardware"
+      "hardware": "Hardware",
+      "vm": "Virtual Machines"
     }
   },
   "product": {
     "notFound": "Product not found",
-    "backToApps": "\u2190 Back to Apps",
+    "backToApps": "← Back to Apps",
     "breadcrumbApps": "Apps",
     "openclawPartner": "OpenClaw Partner",
     "discountWithCode": "{{discount}} with code: {{code}}",
@@ -172,12 +173,20 @@
         ],
         "ctaPrimary": "Visit Umbrel",
         "ctaSecondary": "View Tutorial"
+      },
+      "utm": {
+        "tagline": "Free virtual machines for Mac",
+        "description": "Run Windows, Linux, or other operating systems safely inside your Mac."
+      },
+      "virtual-buddy": {
+        "tagline": "One-click Linux VM setup",
+        "description": "The easiest way to get a Linux virtual machine on your Mac."
       }
     }
   },
   "tutorial": {
     "notFound": "Tutorial not found",
-    "backToApps": "\u2190 Back to Apps",
+    "backToApps": "← Back to Apps",
     "free": "Completely free",
     "progress": "Progress",
     "steps": "{{completed}}/{{total}} steps",
@@ -209,10 +218,22 @@
           "troubleshooting": {
             "title": "Stuck? Installation Troubleshooting",
             "items": [
-              { "q": "Can't open Ollama.app on Mac", "a": "Go to System Settings \u2192 Privacy & Security, click \"Open Anyway\". This is macOS's security mechanism for unsigned apps." },
-              { "q": "Terminal shows \"command not found\"", "a": "Reopen your terminal, or run source ~/.zshrc to reload environment variables." },
-              { "q": "npm permission error installing OpenClaw on Mac", "a": "Classic macOS issue with pkg-installed Node.js. Quick fix: sudo chown -R $(whoami) /usr/local/lib/node_modules/ /usr/local/bin/ — or better, use nvm to manage Node.js. Full guide: blog.juchunko.com/zh/ollama-openclaw-npm-permission-fix" },
-              { "q": "Windows installation stuck", "a": "Run the installer as Administrator. Right-click \u2192 Run as administrator." }
+              {
+                "q": "Can't open Ollama.app on Mac",
+                "a": "Go to System Settings → Privacy & Security, click \"Open Anyway\". This is macOS's security mechanism for unsigned apps."
+              },
+              {
+                "q": "Terminal shows \"command not found\"",
+                "a": "Reopen your terminal, or run source ~/.zshrc to reload environment variables."
+              },
+              {
+                "q": "npm permission error installing OpenClaw on Mac",
+                "a": "Classic macOS issue with pkg-installed Node.js. Quick fix: sudo chown -R $(whoami) /usr/local/lib/node_modules/ /usr/local/bin/ — or better, use nvm to manage Node.js. Full guide: blog.juchunko.com/zh/ollama-openclaw-npm-permission-fix"
+              },
+              {
+                "q": "Windows installation stuck",
+                "a": "Run the installer as Administrator. Right-click → Run as administrator."
+              }
             ]
           },
           "installTabs": {
@@ -222,7 +243,7 @@
             "terminalSublabel": "Terminal install (curl)",
             "winLabel": "Windows",
             "winSublabel": "Download installer",
-            "guiTitle": "Ollama.app \u2014 Best for Beginners",
+            "guiTitle": "Ollama.app — Best for Beginners",
             "guiDesc": "Official Ollama macOS app with built-in graphical chat interface.\nDownload, drag to Applications, double-click and start chatting with AI. No terminal, no commands needed.",
             "downloadOllamaApp": "Download Ollama.app",
             "installSteps": "Installation steps:",
@@ -265,8 +286,14 @@
           "troubleshooting": {
             "title": "Stuck? Download Troubleshooting",
             "items": [
-              { "q": "Download speed is slow", "a": "Model files are large, ensure stable internet. You can also try a smaller model like llama3.2." },
-              { "q": "Shows disk space insufficient", "a": "Use ollama list to check installed models, use ollama rm <model> to remove unneeded models." }
+              {
+                "q": "Download speed is slow",
+                "a": "Model files are large, ensure stable internet. You can also try a smaller model like llama3.2."
+              },
+              {
+                "q": "Shows disk space insufficient",
+                "a": "Use ollama list to check installed models, use ollama rm <model> to remove unneeded models."
+              }
             ]
           },
           "modelTable": {
@@ -275,10 +302,30 @@
             "bestHeader": "Best For",
             "speedHeader": "Speed",
             "models": [
-              { "name": "llama3.2", "size": "2 GB", "best": "Daily chat, Q&A", "speed": "Fast" },
-              { "name": "codellama", "size": "3.8 GB", "best": "Coding, Debug", "speed": "Medium" },
-              { "name": "llama3.1", "size": "4.7 GB", "best": "Complex reasoning, creative writing", "speed": "Medium" },
-              { "name": "mistral", "size": "4.1 GB", "best": "Multi-language, analysis", "speed": "Medium" }
+              {
+                "name": "llama3.2",
+                "size": "2 GB",
+                "best": "Daily chat, Q&A",
+                "speed": "Fast"
+              },
+              {
+                "name": "codellama",
+                "size": "3.8 GB",
+                "best": "Coding, Debug",
+                "speed": "Medium"
+              },
+              {
+                "name": "llama3.1",
+                "size": "4.7 GB",
+                "best": "Complex reasoning, creative writing",
+                "speed": "Medium"
+              },
+              {
+                "name": "mistral",
+                "size": "4.1 GB",
+                "best": "Multi-language, analysis",
+                "speed": "Medium"
+              }
             ]
           }
         },
@@ -296,8 +343,14 @@
           "troubleshooting": {
             "title": "Stuck? Chat Troubleshooting",
             "items": [
-              { "q": "Response is very slow", "a": "Normal! Loading a model for the first time takes time. If consistently slow, try the smaller llama3.2 model." },
-              { "q": "Shows out of memory", "a": "Close other applications to free up memory, or switch to a smaller model." }
+              {
+                "q": "Response is very slow",
+                "a": "Normal! Loading a model for the first time takes time. If consistently slow, try the smaller llama3.2 model."
+              },
+              {
+                "q": "Shows out of memory",
+                "a": "Close other applications to free up memory, or switch to a smaller model."
+              }
             ]
           }
         },
@@ -315,9 +368,18 @@
           "troubleshooting": {
             "title": "Stuck? Connection Troubleshooting",
             "items": [
-              { "q": "OpenClaw can't find Ollama", "a": "Confirm Ollama is running: type ollama list in terminal. If no response, restart Ollama." },
-              { "q": "What to put for API address?", "a": "Default is http://localhost:11434, unless you've changed it." },
-              { "q": "Mac sleeps and AI agent goes offline?", "a": "Run: sudo pmset -c sleep 0 disksleep 0 networkoversleep 1 — then nohup caffeinate -s &. This keeps your Mac awake for 24/7 AI agent use. Full guide: blog.juchunko.com/zh/openclaw-always-on-macos" }
+              {
+                "q": "OpenClaw can't find Ollama",
+                "a": "Confirm Ollama is running: type ollama list in terminal. If no response, restart Ollama."
+              },
+              {
+                "q": "What to put for API address?",
+                "a": "Default is http://localhost:11434, unless you've changed it."
+              },
+              {
+                "q": "Mac sleeps and AI agent goes offline?",
+                "a": "Run: sudo pmset -c sleep 0 disksleep 0 networkoversleep 1 — then nohup caffeinate -s &. This keeps your Mac awake for 24/7 AI agent use. Full guide: blog.juchunko.com/zh/openclaw-always-on-macos"
+              }
             ]
           }
         },
@@ -393,8 +455,14 @@
           "troubleshooting": {
             "title": "Stuck? Account Troubleshooting",
             "items": [
-              { "q": "Verification email not received", "a": "Check spam folder. If still missing, try signing up with a different email provider like Gmail." },
-              { "q": "GitHub connection failed", "a": "Make sure you allow Zeabur access to your repositories during the OAuth flow." }
+              {
+                "q": "Verification email not received",
+                "a": "Check spam folder. If still missing, try signing up with a different email provider like Gmail."
+              },
+              {
+                "q": "GitHub connection failed",
+                "a": "Make sure you allow Zeabur access to your repositories during the OAuth flow."
+              }
             ]
           }
         },
@@ -412,8 +480,14 @@
           "troubleshooting": {
             "title": "Stuck? Fork Troubleshooting",
             "items": [
-              { "q": "Don't have a GitHub account", "a": "Create one at github.com — it's free and takes 2 minutes. You'll need it for most cloud deployments." },
-              { "q": "Fork button not visible", "a": "Make sure you're logged into GitHub and viewing the official OpenClaw repository." }
+              {
+                "q": "Don't have a GitHub account",
+                "a": "Create one at github.com — it's free and takes 2 minutes. You'll need it for most cloud deployments."
+              },
+              {
+                "q": "Fork button not visible",
+                "a": "Make sure you're logged into GitHub and viewing the official OpenClaw repository."
+              }
             ]
           }
         },
@@ -431,8 +505,14 @@
           "troubleshooting": {
             "title": "Stuck? Deployment Troubleshooting",
             "items": [
-              { "q": "Build failed", "a": "Check the build logs in Zeabur dashboard. Most issues are missing environment variables or incorrect Node.js version." },
-              { "q": "Repository not found", "a": "Ensure you've connected your GitHub account and the repository is accessible to Zeabur." }
+              {
+                "q": "Build failed",
+                "a": "Check the build logs in Zeabur dashboard. Most issues are missing environment variables or incorrect Node.js version."
+              },
+              {
+                "q": "Repository not found",
+                "a": "Ensure you've connected your GitHub account and the repository is accessible to Zeabur."
+              }
             ]
           }
         },
@@ -450,8 +530,14 @@
           "troubleshooting": {
             "title": "Stuck? Environment Troubleshooting",
             "items": [
-              { "q": "Where to get OpenAI API key", "a": "Visit platform.openai.com, create an account, and generate an API key. You'll need to add billing info." },
-              { "q": "App not restarting after env changes", "a": "In Zeabur dashboard, manually restart your service after updating environment variables." }
+              {
+                "q": "Where to get OpenAI API key",
+                "a": "Visit platform.openai.com, create an account, and generate an API key. You'll need to add billing info."
+              },
+              {
+                "q": "App not restarting after env changes",
+                "a": "In Zeabur dashboard, manually restart your service after updating environment variables."
+              }
             ]
           }
         },
@@ -469,8 +555,14 @@
           "troubleshooting": {
             "title": "Stuck? Domain Troubleshooting",
             "items": [
-              { "q": "Domain not working after setup", "a": "Check that your DNS CNAME record points to your zeabur.app domain. Use dig or nslookup to verify." },
-              { "q": "SSL certificate not working", "a": "Wait 5-10 minutes after DNS propagation. Zeabur automatically issues Let's Encrypt certificates." }
+              {
+                "q": "Domain not working after setup",
+                "a": "Check that your DNS CNAME record points to your zeabur.app domain. Use dig or nslookup to verify."
+              },
+              {
+                "q": "SSL certificate not working",
+                "a": "Wait 5-10 minutes after DNS propagation. Zeabur automatically issues Let's Encrypt certificates."
+              }
             ]
           }
         },
@@ -540,8 +632,14 @@
           "troubleshooting": {
             "title": "Stuck? Account Troubleshooting",
             "items": [
-              { "q": "Verification email not received", "a": "Check spam folder. ElevenLabs sometimes takes a few minutes to send confirmation emails." },
-              { "q": "Can't find API key", "a": "Go to Profile Settings → API Key. You may need to verify your email first." }
+              {
+                "q": "Verification email not received",
+                "a": "Check spam folder. ElevenLabs sometimes takes a few minutes to send confirmation emails."
+              },
+              {
+                "q": "Can't find API key",
+                "a": "Go to Profile Settings → API Key. You may need to verify your email first."
+              }
             ]
           }
         },
@@ -559,8 +657,14 @@
           "troubleshooting": {
             "title": "Stuck? API Key Troubleshooting",
             "items": [
-              { "q": "API key not working", "a": "Make sure you copied the entire key without extra spaces. Some browsers add spaces when copying." },
-              { "q": "Getting 401 unauthorized", "a": "Your API key may be invalid or your account needs email verification." }
+              {
+                "q": "API key not working",
+                "a": "Make sure you copied the entire key without extra spaces. Some browsers add spaces when copying."
+              },
+              {
+                "q": "Getting 401 unauthorized",
+                "a": "Your API key may be invalid or your account needs email verification."
+              }
             ]
           }
         },
@@ -578,8 +682,14 @@
           "troubleshooting": {
             "title": "Stuck? Integration Troubleshooting",
             "items": [
-              { "q": "OpenClaw can't find ElevenLabs skill", "a": "Make sure you have the latest version of OpenClaw and restart the application." },
-              { "q": "Audio not playing", "a": "Check your system audio settings. Some browsers block auto-play audio by default." }
+              {
+                "q": "OpenClaw can't find ElevenLabs skill",
+                "a": "Make sure you have the latest version of OpenClaw and restart the application."
+              },
+              {
+                "q": "Audio not playing",
+                "a": "Check your system audio settings. Some browsers block auto-play audio by default."
+              }
             ]
           }
         },
@@ -597,8 +707,14 @@
           "troubleshooting": {
             "title": "Stuck? Demo Troubleshooting",
             "items": [
-              { "q": "Voice sounds robotic", "a": "Try a different voice model in ElevenLabs. Premium voices sound more natural than free tier voices." },
-              { "q": "Audio is choppy", "a": "Check your internet connection. Audio streaming requires stable bandwidth." }
+              {
+                "q": "Voice sounds robotic",
+                "a": "Try a different voice model in ElevenLabs. Premium voices sound more natural than free tier voices."
+              },
+              {
+                "q": "Audio is choppy",
+                "a": "Check your internet connection. Audio streaming requires stable bandwidth."
+              }
             ]
           }
         },
@@ -677,8 +793,14 @@
           "troubleshooting": {
             "title": "Stuck? Concept Questions",
             "items": [
-              { "q": "Will a VM slow down my Mac?", "a": "Only slightly while the VM is running. Close the VM and your Mac returns to full speed. With 16GB+ RAM, you won't notice any slowdown." },
-              { "q": "Is this the same as Docker?", "a": "Similar idea, but VMs run a full operating system with its own desktop. Docker runs lightweight containers without a full OS. For beginners, VMs are easier to understand." }
+              {
+                "q": "Will a VM slow down my Mac?",
+                "a": "Only slightly while the VM is running. Close the VM and your Mac returns to full speed. With 16GB+ RAM, you won't notice any slowdown."
+              },
+              {
+                "q": "Is this the same as Docker?",
+                "a": "Similar idea, but VMs run a full operating system with its own desktop. Docker runs lightweight containers without a full OS. For beginners, VMs are easier to understand."
+              }
             ]
           }
         },
@@ -696,9 +818,18 @@
           "troubleshooting": {
             "title": "Stuck? Installation Troubleshooting",
             "items": [
-              { "q": "UTM won't open on Mac", "a": "Go to System Settings → Privacy & Security, click \"Open Anyway\". This is macOS's standard security for apps downloaded outside the App Store." },
-              { "q": "Virtual Buddy requires macOS 13+", "a": "Virtual Buddy needs macOS Ventura or later. If you're on an older version, use UTM instead — it supports macOS 11+." },
-              { "q": "Which one should I pick?", "a": "If you want zero hassle and don't mind paying $10, go with Virtual Buddy. If you prefer free software or want more control, choose UTM." }
+              {
+                "q": "UTM won't open on Mac",
+                "a": "Go to System Settings → Privacy & Security, click \"Open Anyway\". This is macOS's standard security for apps downloaded outside the App Store."
+              },
+              {
+                "q": "Virtual Buddy requires macOS 13+",
+                "a": "Virtual Buddy needs macOS Ventura or later. If you're on an older version, use UTM instead — it supports macOS 11+."
+              },
+              {
+                "q": "Which one should I pick?",
+                "a": "If you want zero hassle and don't mind paying $10, go with Virtual Buddy. If you prefer free software or want more control, choose UTM."
+              }
             ]
           }
         },
@@ -722,9 +853,18 @@
           "troubleshooting": {
             "title": "Stuck? VM Creation Troubleshooting",
             "items": [
-              { "q": "VM is very slow", "a": "Make sure you allocated enough RAM (4GB minimum). Close other heavy apps on your Mac. Also ensure you're using the ARM64 version of Ubuntu, not x86." },
-              { "q": "Screen is black after creating VM", "a": "Wait 1-2 minutes — the first boot takes time to initialize. If still black, try restarting the VM." },
-              { "q": "Where to download Ubuntu ISO for UTM?", "a": "Go to ubuntu.com/download/server and download the ARM64 version for Apple Silicon Macs." }
+              {
+                "q": "VM is very slow",
+                "a": "Make sure you allocated enough RAM (4GB minimum). Close other heavy apps on your Mac. Also ensure you're using the ARM64 version of Ubuntu, not x86."
+              },
+              {
+                "q": "Screen is black after creating VM",
+                "a": "Wait 1-2 minutes — the first boot takes time to initialize. If still black, try restarting the VM."
+              },
+              {
+                "q": "Where to download Ubuntu ISO for UTM?",
+                "a": "Go to ubuntu.com/download/server and download the ARM64 version for Apple Silicon Macs."
+              }
             ]
           }
         },
@@ -742,10 +882,22 @@
           "troubleshooting": {
             "title": "Stuck? Ollama Installation Troubleshooting",
             "items": [
-              { "q": "curl command not found", "a": "Run: sudo apt install curl — then retry the Ollama install command." },
-              { "q": "VM has no internet", "a": "In UTM, go to VM Settings → Network and ensure \"Shared\" networking is selected. In Virtual Buddy, networking should work automatically." },
-              { "q": "Model download is very slow", "a": "VM network can be slower than host. Be patient, or try the smaller llama3.2 model (2GB) first." },
-              { "q": "Ollama says not enough memory", "a": "Increase the VM's RAM allocation to at least 4GB. Shut down the VM first, adjust settings, then restart." }
+              {
+                "q": "curl command not found",
+                "a": "Run: sudo apt install curl — then retry the Ollama install command."
+              },
+              {
+                "q": "VM has no internet",
+                "a": "In UTM, go to VM Settings → Network and ensure \"Shared\" networking is selected. In Virtual Buddy, networking should work automatically."
+              },
+              {
+                "q": "Model download is very slow",
+                "a": "VM network can be slower than host. Be patient, or try the smaller llama3.2 model (2GB) first."
+              },
+              {
+                "q": "Ollama says not enough memory",
+                "a": "Increase the VM's RAM allocation to at least 4GB. Shut down the VM first, adjust settings, then restart."
+              }
             ]
           }
         },
@@ -813,8 +965,14 @@
           "troubleshooting": {
             "title": "Stuck? Account Troubleshooting",
             "items": [
-              { "q": "Free credit not showing", "a": "Free credits may take a few minutes to appear. Refresh the page or contact HeyGen support." },
-              { "q": "Can't access API features", "a": "API access requires a paid plan. Free tier is for manual studio use only." }
+              {
+                "q": "Free credit not showing",
+                "a": "Free credits may take a few minutes to appear. Refresh the page or contact HeyGen support."
+              },
+              {
+                "q": "Can't access API features",
+                "a": "API access requires a paid plan. Free tier is for manual studio use only."
+              }
             ]
           }
         },
@@ -832,8 +990,14 @@
           "troubleshooting": {
             "title": "Stuck? API Troubleshooting",
             "items": [
-              { "q": "API key option not visible", "a": "Upgrade to Creator plan first. API access is not available on free tier." },
-              { "q": "API calls failing", "a": "Verify your plan has remaining credits. Check the developer console for error messages." }
+              {
+                "q": "API key option not visible",
+                "a": "Upgrade to Creator plan first. API access is not available on free tier."
+              },
+              {
+                "q": "API calls failing",
+                "a": "Verify your plan has remaining credits. Check the developer console for error messages."
+              }
             ]
           }
         },
@@ -851,8 +1015,14 @@
           "troubleshooting": {
             "title": "Stuck? Integration Troubleshooting",
             "items": [
-              { "q": "Video generation takes too long", "a": "Normal for first video. HeyGen processes videos in queue during peak times." },
-              { "q": "Avatar looks different than preview", "a": "Make sure you selected the correct avatar ID. Preview in HeyGen Studio first." }
+              {
+                "q": "Video generation takes too long",
+                "a": "Normal for first video. HeyGen processes videos in queue during peak times."
+              },
+              {
+                "q": "Avatar looks different than preview",
+                "a": "Make sure you selected the correct avatar ID. Preview in HeyGen Studio first."
+              }
             ]
           }
         },
@@ -870,8 +1040,14 @@
           "troubleshooting": {
             "title": "Stuck? Video Generation Troubleshooting",
             "items": [
-              { "q": "Video quality is poor", "a": "Check your internet connection during download. Re-generate if needed." },
-              { "q": "Audio doesn't sync with avatar lips", "a": "This can happen with very long sentences. Try shorter, more natural speech patterns." }
+              {
+                "q": "Video quality is poor",
+                "a": "Check your internet connection during download. Re-generate if needed."
+              },
+              {
+                "q": "Audio doesn't sync with avatar lips",
+                "a": "This can happen with very long sentences. Try shorter, more natural speech patterns."
+              }
             ]
           }
         },
@@ -989,5 +1165,25 @@
     },
     "ctaText": "No matter which hardware you pick, start with our free Ollama tutorial to get your first AI running in 5 minutes.",
     "ctaButton": "Start Free with Ollama"
+  },
+  "vm": {
+    "categoryName": "Virtual Machines",
+    "whyTitle": "Why Virtual Machines?",
+    "whySubtitle": "A safe playground for your AI journey",
+    "whyDesc": "A virtual machine (VM) is like a computer inside your computer. It creates a completely isolated environment where you can install and experiment with AI tools — without any risk to your main system.",
+    "benefit1Title": "🛡️ Safe to Experiment",
+    "benefit1Desc": "Install anything, break anything. Your real computer stays untouched. If something goes wrong, just delete the VM and start fresh.",
+    "benefit2Title": "🎯 Perfect for Beginners",
+    "benefit2Desc": "Not sure if AI is right for you? Try it in a VM first. No commitment, no risk, completely free.",
+    "benefit3Title": "🚀 Ready to Level Up?",
+    "benefit3Desc": "Once you're comfortable, you can install directly on your computer for better performance — or keep using VMs for isolation.",
+    "pathTitle": "Choose Your Path",
+    "pathBeginner": "I'm completely new",
+    "pathBeginnerDesc": "Start with Virtual Buddy — one click and you have Linux ready for AI.",
+    "pathIntermediate": "I know a bit about computers",
+    "pathIntermediateDesc": "Use UTM for more control. Create VMs for different purposes.",
+    "pathDirect": "I just want to install directly",
+    "pathDirectDesc": "Skip VMs entirely. Install Ollama straight on your Mac, Linux, or Windows.",
+    "pathDirectLink": "Go to Ollama Tutorial →"
   }
 }

@@ -69,7 +69,7 @@
     "followX": "Follow @dAAAb"
   },
   "footer": {
-    "copyright": "\u00a9 2026 Canfly",
+    "copyright": "© 2026 Canfly",
     "tagline": "有了小龍蝦 AI，你也能飛"
   },
   "apps": {
@@ -96,7 +96,8 @@
       "free": "免費工具",
       "skills": "AI 技能",
       "hosting": "雲端託管",
-      "hardware": "硬體"
+      "hardware": "硬體",
+      "vm": "虛擬機器"
     }
   },
   "product": {
@@ -172,6 +173,14 @@
         ],
         "ctaPrimary": "前往 Umbrel",
         "ctaSecondary": "查看教學"
+      },
+      "utm": {
+        "tagline": "Mac 免費虛擬機器",
+        "description": "在 Mac 裡安全地執行 Windows、Linux 等作業系統。"
+      },
+      "virtual-buddy": {
+        "tagline": "一鍵建立 Linux 虛擬機",
+        "description": "在 Mac 上建立 Linux 虛擬機器最簡單的方式。"
       }
     }
   },
@@ -209,10 +218,22 @@
           "troubleshooting": {
             "title": "卡關了？安裝問題排解",
             "items": [
-              { "q": "Mac 無法開啟 Ollama.app", "a": "到「系統設定 → 隱私與安全性」，點擊「仍然開啟」。這是 macOS 對未簽名應用的安全機制。" },
-              { "q": "終端機顯示 \"command not found\"", "a": "請重新開啟終端機，或執行 source ~/.zshrc 重新載入環境變數。" },
-              { "q": "Mac 上安裝 OpenClaw 出現 npm 權限錯誤", "a": "經典 macOS 問題。快速修復：sudo chown -R $(whoami) /usr/local/lib/node_modules/ /usr/local/bin/ — 或更好的方式是用 nvm 管理 Node.js。完整教學：blog.juchunko.com/zh/ollama-openclaw-npm-permission-fix" },
-              { "q": "Windows 安裝卡住", "a": "請用系統管理員身分執行安裝程式。右鍵點擊 → 以系統管理員身分執行。" }
+              {
+                "q": "Mac 無法開啟 Ollama.app",
+                "a": "到「系統設定 → 隱私與安全性」，點擊「仍然開啟」。這是 macOS 對未簽名應用的安全機制。"
+              },
+              {
+                "q": "終端機顯示 \"command not found\"",
+                "a": "請重新開啟終端機，或執行 source ~/.zshrc 重新載入環境變數。"
+              },
+              {
+                "q": "Mac 上安裝 OpenClaw 出現 npm 權限錯誤",
+                "a": "經典 macOS 問題。快速修復：sudo chown -R $(whoami) /usr/local/lib/node_modules/ /usr/local/bin/ — 或更好的方式是用 nvm 管理 Node.js。完整教學：blog.juchunko.com/zh/ollama-openclaw-npm-permission-fix"
+              },
+              {
+                "q": "Windows 安裝卡住",
+                "a": "請用系統管理員身分執行安裝程式。右鍵點擊 → 以系統管理員身分執行。"
+              }
             ]
           },
           "installTabs": {
@@ -265,8 +286,14 @@
           "troubleshooting": {
             "title": "卡關了？下載問題排解",
             "items": [
-              { "q": "下載速度很慢", "a": "模型檔案較大，確保網路穩定。也可以試試較小的模型如 llama3.2。" },
-              { "q": "顯示磁碟空間不足", "a": "用 ollama list 查看已安裝的模型，用 ollama rm <model> 刪除不需要的模型。" }
+              {
+                "q": "下載速度很慢",
+                "a": "模型檔案較大，確保網路穩定。也可以試試較小的模型如 llama3.2。"
+              },
+              {
+                "q": "顯示磁碟空間不足",
+                "a": "用 ollama list 查看已安裝的模型，用 ollama rm <model> 刪除不需要的模型。"
+              }
             ]
           },
           "modelTable": {
@@ -275,10 +302,30 @@
             "bestHeader": "最適合",
             "speedHeader": "速度",
             "models": [
-              { "name": "llama3.2", "size": "2 GB", "best": "日常聊天、問答", "speed": "快" },
-              { "name": "codellama", "size": "3.8 GB", "best": "寫程式、Debug", "speed": "中" },
-              { "name": "llama3.1", "size": "4.7 GB", "best": "複雜推理、創作", "speed": "中" },
-              { "name": "mistral", "size": "4.1 GB", "best": "多語言、分析", "speed": "中" }
+              {
+                "name": "llama3.2",
+                "size": "2 GB",
+                "best": "日常聊天、問答",
+                "speed": "快"
+              },
+              {
+                "name": "codellama",
+                "size": "3.8 GB",
+                "best": "寫程式、Debug",
+                "speed": "中"
+              },
+              {
+                "name": "llama3.1",
+                "size": "4.7 GB",
+                "best": "複雜推理、創作",
+                "speed": "中"
+              },
+              {
+                "name": "mistral",
+                "size": "4.1 GB",
+                "best": "多語言、分析",
+                "speed": "中"
+              }
             ]
           }
         },
@@ -296,8 +343,14 @@
           "troubleshooting": {
             "title": "卡關了？對話問題排解",
             "items": [
-              { "q": "回應速度很慢", "a": "正常！第一次載入模型需要時間。如果持續很慢，試試較小的模型 llama3.2。" },
-              { "q": "顯示記憶體不足", "a": "關閉其他應用程式釋放記憶體，或換用更小的模型。" }
+              {
+                "q": "回應速度很慢",
+                "a": "正常！第一次載入模型需要時間。如果持續很慢，試試較小的模型 llama3.2。"
+              },
+              {
+                "q": "顯示記憶體不足",
+                "a": "關閉其他應用程式釋放記憶體，或換用更小的模型。"
+              }
             ]
           }
         },
@@ -315,9 +368,18 @@
           "troubleshooting": {
             "title": "卡關了？連接問題排解",
             "items": [
-              { "q": "OpenClaw 找不到 Ollama", "a": "確認 Ollama 正在運行：在終端機輸入 ollama list。如果沒有反應，重新啟動 Ollama。" },
-              { "q": "API 位址填什麼？", "a": "預設是 http://localhost:11434，除非你有特別更改過。" },
-              { "q": "Mac 睡覺後 AI agent 斷線？", "a": "執行：sudo pmset -c sleep 0 disksleep 0 networkoversleep 1，然後 nohup caffeinate -s &。讓 Mac 保持清醒，AI agent 24/7 在線。完整教學：blog.juchunko.com/zh/openclaw-always-on-macos" }
+              {
+                "q": "OpenClaw 找不到 Ollama",
+                "a": "確認 Ollama 正在運行：在終端機輸入 ollama list。如果沒有反應，重新啟動 Ollama。"
+              },
+              {
+                "q": "API 位址填什麼？",
+                "a": "預設是 http://localhost:11434，除非你有特別更改過。"
+              },
+              {
+                "q": "Mac 睡覺後 AI agent 斷線？",
+                "a": "執行：sudo pmset -c sleep 0 disksleep 0 networkoversleep 1，然後 nohup caffeinate -s &。讓 Mac 保持清醒，AI agent 24/7 在線。完整教學：blog.juchunko.com/zh/openclaw-always-on-macos"
+              }
             ]
           }
         },
@@ -393,8 +455,14 @@
           "troubleshooting": {
             "title": "卡關了？帳號問題排解",
             "items": [
-              { "q": "沒收到驗證信件", "a": "檢查垃圾郵件資料夾。若仍未收到，請嘗試使用其他電子郵件服務商，如 Gmail。" },
-              { "q": "GitHub 連接失敗", "a": "請確保在 OAuth 流程中允許 Zeabur 存取你的儲存庫。" }
+              {
+                "q": "沒收到驗證信件",
+                "a": "檢查垃圾郵件資料夾。若仍未收到，請嘗試使用其他電子郵件服務商，如 Gmail。"
+              },
+              {
+                "q": "GitHub 連接失敗",
+                "a": "請確保在 OAuth 流程中允許 Zeabur 存取你的儲存庫。"
+              }
             ]
           }
         },
@@ -412,8 +480,14 @@
           "troubleshooting": {
             "title": "卡關了？複製問題排解",
             "items": [
-              { "q": "沒有 GitHub 帳號", "a": "到 github.com 建立帳號 — 免費且只需 2 分鐘。大多數雲端部署都需要它。" },
-              { "q": "看不到複製按鈕", "a": "確保你已登入 GitHub 且正在查看官方 OpenClaw 儲存庫。" }
+              {
+                "q": "沒有 GitHub 帳號",
+                "a": "到 github.com 建立帳號 — 免費且只需 2 分鐘。大多數雲端部署都需要它。"
+              },
+              {
+                "q": "看不到複製按鈕",
+                "a": "確保你已登入 GitHub 且正在查看官方 OpenClaw 儲存庫。"
+              }
             ]
           }
         },
@@ -431,8 +505,14 @@
           "troubleshooting": {
             "title": "卡關了？部署問題排解",
             "items": [
-              { "q": "建置失敗", "a": "檢查 Zeabur 控制台中的建置日誌。大多數問題是缺少環境變數或 Node.js 版本不正確。" },
-              { "q": "找不到儲存庫", "a": "確保你已連接 GitHub 帳號，且 Zeabur 可以存取該儲存庫。" }
+              {
+                "q": "建置失敗",
+                "a": "檢查 Zeabur 控制台中的建置日誌。大多數問題是缺少環境變數或 Node.js 版本不正確。"
+              },
+              {
+                "q": "找不到儲存庫",
+                "a": "確保你已連接 GitHub 帳號，且 Zeabur 可以存取該儲存庫。"
+              }
             ]
           }
         },
@@ -450,8 +530,14 @@
           "troubleshooting": {
             "title": "卡關了？環境變數問題排解",
             "items": [
-              { "q": "如何取得 OpenAI API 金鑰", "a": "前往 platform.openai.com，建立帳號並產生 API 金鑰。你需要添加帳單資訊。" },
-              { "q": "更新環境變數後應用程式沒重啟", "a": "在 Zeabur 控制台中，更新環境變數後手動重啟你的服務。" }
+              {
+                "q": "如何取得 OpenAI API 金鑰",
+                "a": "前往 platform.openai.com，建立帳號並產生 API 金鑰。你需要添加帳單資訊。"
+              },
+              {
+                "q": "更新環境變數後應用程式沒重啟",
+                "a": "在 Zeabur 控制台中，更新環境變數後手動重啟你的服務。"
+              }
             ]
           }
         },
@@ -469,8 +555,14 @@
           "troubleshooting": {
             "title": "卡關了？網域問題排解",
             "items": [
-              { "q": "設定後網域無法運作", "a": "檢查你的 DNS CNAME 記錄是否指向你的 zeabur.app 網域。使用 dig 或 nslookup 驗證。" },
-              { "q": "SSL 憑證無法運作", "a": "DNS 傳播後等待 5-10 分鐘。Zeabur 自動發放 Let's Encrypt 憑證。" }
+              {
+                "q": "設定後網域無法運作",
+                "a": "檢查你的 DNS CNAME 記錄是否指向你的 zeabur.app 網域。使用 dig 或 nslookup 驗證。"
+              },
+              {
+                "q": "SSL 憑證無法運作",
+                "a": "DNS 傳播後等待 5-10 分鐘。Zeabur 自動發放 Let's Encrypt 憑證。"
+              }
             ]
           }
         },
@@ -540,8 +632,14 @@
           "troubleshooting": {
             "title": "卡住了？帳號疑難排解",
             "items": [
-              { "q": "沒有收到驗證郵件", "a": "檢查垃圾郵件匣。ElevenLabs 有時需要幾分鐘才會發送確認郵件。" },
-              { "q": "找不到 API 金鑰", "a": "前往個人資料設定 → API 金鑰。你可能需要先驗證電子郵件。" }
+              {
+                "q": "沒有收到驗證郵件",
+                "a": "檢查垃圾郵件匣。ElevenLabs 有時需要幾分鐘才會發送確認郵件。"
+              },
+              {
+                "q": "找不到 API 金鑰",
+                "a": "前往個人資料設定 → API 金鑰。你可能需要先驗證電子郵件。"
+              }
             ]
           }
         },
@@ -559,8 +657,14 @@
           "troubleshooting": {
             "title": "卡住了？API 金鑰疑難排解",
             "items": [
-              { "q": "API 金鑰無法運作", "a": "確保複製了完整的金鑰，沒有額外空格。某些瀏覽器在複製時會添加空格。" },
-              { "q": "得到 401 未授權錯誤", "a": "你的 API 金鑰可能無效，或你的帳號需要電子郵件驗證。" }
+              {
+                "q": "API 金鑰無法運作",
+                "a": "確保複製了完整的金鑰，沒有額外空格。某些瀏覽器在複製時會添加空格。"
+              },
+              {
+                "q": "得到 401 未授權錯誤",
+                "a": "你的 API 金鑰可能無效，或你的帳號需要電子郵件驗證。"
+              }
             ]
           }
         },
@@ -578,8 +682,14 @@
           "troubleshooting": {
             "title": "卡住了？整合疑難排解",
             "items": [
-              { "q": "OpenClaw 找不到 ElevenLabs 技能", "a": "確保你有最新版本的 OpenClaw 並重啟應用程式。" },
-              { "q": "音訊無法播放", "a": "檢查你的系統音訊設定。某些瀏覽器預設會阻擋自動播放音訊。" }
+              {
+                "q": "OpenClaw 找不到 ElevenLabs 技能",
+                "a": "確保你有最新版本的 OpenClaw 並重啟應用程式。"
+              },
+              {
+                "q": "音訊無法播放",
+                "a": "檢查你的系統音訊設定。某些瀏覽器預設會阻擋自動播放音訊。"
+              }
             ]
           }
         },
@@ -597,8 +707,14 @@
           "troubleshooting": {
             "title": "卡住了？示範疑難排解",
             "items": [
-              { "q": "語音聽起來很機械", "a": "在 ElevenLabs 中嘗試不同的語音模型。高級語音比免費方案語音聽起來更自然。" },
-              { "q": "音訊斷斷續續", "a": "檢查你的網路連線。音訊串流需要穩定的頻寬。" }
+              {
+                "q": "語音聽起來很機械",
+                "a": "在 ElevenLabs 中嘗試不同的語音模型。高級語音比免費方案語音聽起來更自然。"
+              },
+              {
+                "q": "音訊斷斷續續",
+                "a": "檢查你的網路連線。音訊串流需要穩定的頻寬。"
+              }
             ]
           }
         },
@@ -677,8 +793,14 @@
           "troubleshooting": {
             "title": "卡關了？概念問題解答",
             "items": [
-              { "q": "虛擬機會拖慢我的 Mac 嗎？", "a": "只在虛擬機運行時稍微影響。關掉虛擬機後 Mac 就恢復全速。16GB 以上 RAM 的話，幾乎感覺不到變慢。" },
-              { "q": "這跟 Docker 一樣嗎？", "a": "概念類似，但虛擬機是跑一個完整的作業系統，有自己的桌面。Docker 跑的是輕量級容器，沒有完整的作業系統。對新手來說，虛擬機比較容易理解。" }
+              {
+                "q": "虛擬機會拖慢我的 Mac 嗎？",
+                "a": "只在虛擬機運行時稍微影響。關掉虛擬機後 Mac 就恢復全速。16GB 以上 RAM 的話，幾乎感覺不到變慢。"
+              },
+              {
+                "q": "這跟 Docker 一樣嗎？",
+                "a": "概念類似，但虛擬機是跑一個完整的作業系統，有自己的桌面。Docker 跑的是輕量級容器，沒有完整的作業系統。對新手來說，虛擬機比較容易理解。"
+              }
             ]
           }
         },
@@ -696,9 +818,18 @@
           "troubleshooting": {
             "title": "卡關了？安裝問題排解",
             "items": [
-              { "q": "UTM 在 Mac 上打不開", "a": "到「系統設定 → 隱私與安全性」，點擊「仍然開啟」。這是 macOS 對 App Store 外下載的 App 的標準安全機制。" },
-              { "q": "Virtual Buddy 需要 macOS 13+", "a": "Virtual Buddy 需要 macOS Ventura 或更新版本。如果你的版本較舊，改用 UTM — 它支援 macOS 11+。" },
-              { "q": "該選哪一個？", "a": "如果你想要零麻煩，不介意花 $10，選 Virtual Buddy。如果你偏好免費軟體或想要更多控制權，選 UTM。" }
+              {
+                "q": "UTM 在 Mac 上打不開",
+                "a": "到「系統設定 → 隱私與安全性」，點擊「仍然開啟」。這是 macOS 對 App Store 外下載的 App 的標準安全機制。"
+              },
+              {
+                "q": "Virtual Buddy 需要 macOS 13+",
+                "a": "Virtual Buddy 需要 macOS Ventura 或更新版本。如果你的版本較舊，改用 UTM — 它支援 macOS 11+。"
+              },
+              {
+                "q": "該選哪一個？",
+                "a": "如果你想要零麻煩，不介意花 $10，選 Virtual Buddy。如果你偏好免費軟體或想要更多控制權，選 UTM。"
+              }
             ]
           }
         },
@@ -722,9 +853,18 @@
           "troubleshooting": {
             "title": "卡關了？虛擬機建立問題排解",
             "items": [
-              { "q": "虛擬機很慢", "a": "確認你分配了足夠的 RAM（至少 4GB）。關掉 Mac 上其他吃資源的 App。也要確認你用的是 ARM64 版本的 Ubuntu，不是 x86。" },
-              { "q": "建立虛擬機後螢幕全黑", "a": "等 1-2 分鐘 — 第一次開機需要時間初始化。如果還是全黑，試試重新啟動虛擬機。" },
-              { "q": "UTM 的 Ubuntu ISO 去哪下載？", "a": "到 ubuntu.com/download/server 下載 ARM64 版本，適用於 Apple Silicon Mac。" }
+              {
+                "q": "虛擬機很慢",
+                "a": "確認你分配了足夠的 RAM（至少 4GB）。關掉 Mac 上其他吃資源的 App。也要確認你用的是 ARM64 版本的 Ubuntu，不是 x86。"
+              },
+              {
+                "q": "建立虛擬機後螢幕全黑",
+                "a": "等 1-2 分鐘 — 第一次開機需要時間初始化。如果還是全黑，試試重新啟動虛擬機。"
+              },
+              {
+                "q": "UTM 的 Ubuntu ISO 去哪下載？",
+                "a": "到 ubuntu.com/download/server 下載 ARM64 版本，適用於 Apple Silicon Mac。"
+              }
             ]
           }
         },
@@ -742,10 +882,22 @@
           "troubleshooting": {
             "title": "卡關了？Ollama 安裝問題排解",
             "items": [
-              { "q": "找不到 curl 指令", "a": "執行：sudo apt install curl — 然後重新試一次 Ollama 安裝指令。" },
-              { "q": "虛擬機沒有網路", "a": "UTM 中，到虛擬機設定 → 網路，確認選了「共享」網路。Virtual Buddy 的網路應該會自動正常運作。" },
-              { "q": "模型下載很慢", "a": "虛擬機的網路可能比主機慢。耐心等待，或先試較小的 llama3.2 模型（2GB）。" },
-              { "q": "Ollama 說記憶體不足", "a": "增加虛擬機的 RAM 分配到至少 4GB。先關閉虛擬機，調整設定，然後重新啟動。" }
+              {
+                "q": "找不到 curl 指令",
+                "a": "執行：sudo apt install curl — 然後重新試一次 Ollama 安裝指令。"
+              },
+              {
+                "q": "虛擬機沒有網路",
+                "a": "UTM 中，到虛擬機設定 → 網路，確認選了「共享」網路。Virtual Buddy 的網路應該會自動正常運作。"
+              },
+              {
+                "q": "模型下載很慢",
+                "a": "虛擬機的網路可能比主機慢。耐心等待，或先試較小的 llama3.2 模型（2GB）。"
+              },
+              {
+                "q": "Ollama 說記憶體不足",
+                "a": "增加虛擬機的 RAM 分配到至少 4GB。先關閉虛擬機，調整設定，然後重新啟動。"
+              }
             ]
           }
         },
@@ -813,8 +965,14 @@
           "troubleshooting": {
             "title": "卡住了？帳號疑難排解",
             "items": [
-              { "q": "免費點數沒有顯示", "a": "免費點數可能需要幾分鐘才會出現。重新整理頁面或聯繫 HeyGen 支援。" },
-              { "q": "無法存取 API 功能", "a": "API 存取需要付費方案。免費方案僅供手動工作室使用。" }
+              {
+                "q": "免費點數沒有顯示",
+                "a": "免費點數可能需要幾分鐘才會出現。重新整理頁面或聯繫 HeyGen 支援。"
+              },
+              {
+                "q": "無法存取 API 功能",
+                "a": "API 存取需要付費方案。免費方案僅供手動工作室使用。"
+              }
             ]
           }
         },
@@ -832,8 +990,14 @@
           "troubleshooting": {
             "title": "卡住了？API 疑難排解",
             "items": [
-              { "q": "看不到 API 金鑰選項", "a": "請先升級到創作者方案。免費方案無法使用 API 存取。" },
-              { "q": "API 呼叫失敗", "a": "驗證你的方案有剩餘點數。檢查開發者控制台的錯誤訊息。" }
+              {
+                "q": "看不到 API 金鑰選項",
+                "a": "請先升級到創作者方案。免費方案無法使用 API 存取。"
+              },
+              {
+                "q": "API 呼叫失敗",
+                "a": "驗證你的方案有剩餘點數。檢查開發者控制台的錯誤訊息。"
+              }
             ]
           }
         },
@@ -851,8 +1015,14 @@
           "troubleshooting": {
             "title": "卡住了？整合疑難排解",
             "items": [
-              { "q": "影片生成時間太長", "a": "第一部影片是正常的。HeyGen 在尖峰時間會將影片放入佇列處理。" },
-              { "q": "虛擬人物與預覽不同", "a": "確保你選擇了正確的虛擬人物 ID。先在 HeyGen Studio 中預覽。" }
+              {
+                "q": "影片生成時間太長",
+                "a": "第一部影片是正常的。HeyGen 在尖峰時間會將影片放入佇列處理。"
+              },
+              {
+                "q": "虛擬人物與預覽不同",
+                "a": "確保你選擇了正確的虛擬人物 ID。先在 HeyGen Studio 中預覽。"
+              }
             ]
           }
         },
@@ -870,8 +1040,14 @@
           "troubleshooting": {
             "title": "卡住了？影片生成疑難排解",
             "items": [
-              { "q": "影片品質很差", "a": "在下載期間檢查你的網路連線。如有需要請重新生成。" },
-              { "q": "音訊與虛擬人物唇形不同步", "a": "這可能發生在非常長的句子。嘗試較短、更自然的語音模式。" }
+              {
+                "q": "影片品質很差",
+                "a": "在下載期間檢查你的網路連線。如有需要請重新生成。"
+              },
+              {
+                "q": "音訊與虛擬人物唇形不同步",
+                "a": "這可能發生在非常長的句子。嘗試較短、更自然的語音模式。"
+              }
             ]
           }
         },
@@ -989,5 +1165,25 @@
     },
     "ctaText": "不管選哪台硬體，先從我們的免費 Ollama 教學開始，5 分鐘內讓你的第一個 AI 上線。",
     "ctaButton": "免費開始 Ollama"
+  },
+  "vm": {
+    "categoryName": "虛擬機器",
+    "whyTitle": "為什麼需要虛擬機器？",
+    "whySubtitle": "給你的 AI 旅程一個安全的練習場",
+    "whyDesc": "虛擬機器（VM）就像是你電腦裡的「另一台電腦」。它創造一個完全獨立的環境，讓你可以安心地安裝和實驗各種 AI 工具 —— 完全不會影響到你的主系統。",
+    "benefit1Title": "🛡️ 安心實驗",
+    "benefit1Desc": "隨便裝、隨便試。你的真實電腦完全不受影響。搞壞了？刪掉虛擬機，重新來過就好。",
+    "benefit2Title": "🎯 最適合新手",
+    "benefit2Desc": "還不確定 AI 適不適合你？先在虛擬機裡試試看。零承諾、零風險、完全免費。",
+    "benefit3Title": "🚀 準備好升級了？",
+    "benefit3Desc": "等你上手了，可以直接裝在電腦上追求更好的效能 —— 或繼續用虛擬機保持隔離。",
+    "pathTitle": "選擇你的路線",
+    "pathBeginner": "我完全是新手",
+    "pathBeginnerDesc": "從 Virtual Buddy 開始 —— 一鍵就有 Linux 環境，馬上可以跑 AI。",
+    "pathIntermediate": "我稍微懂一些電腦",
+    "pathIntermediateDesc": "用 UTM 取得更多控制權。為不同用途建立不同的虛擬機。",
+    "pathDirect": "我想直接安裝在電腦上",
+    "pathDirectDesc": "跳過虛擬機。直接在 Mac、Linux 或 Windows 上安裝 Ollama。",
+    "pathDirectLink": "前往 Ollama 教學 →"
   }
 }

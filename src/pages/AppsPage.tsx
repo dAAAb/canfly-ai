@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { PanelLeftClose, PanelLeftOpen } from 'lucide-react'
+import { PanelLeftClose, PanelLeftOpen, Shield, Target, Rocket } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import Navbar from '../components/Navbar'
 import { products, categories } from '../data/products'
@@ -112,6 +112,61 @@ export default function AppsPage() {
                 </p>
               </div>
             </div>
+
+            {/* VM Explainer — shows when VM category selected or on 'all' */}
+            {(selectedCategory === 'vm' || selectedCategory === 'all') && (
+              <div className={`mb-8 ${selectedCategory === 'all' ? 'order-last mt-4' : ''}`}>
+                {selectedCategory === 'vm' && (
+                  <div className="bg-gradient-to-br from-indigo-950/40 to-purple-950/30 border border-indigo-800/30 rounded-2xl p-8 mb-8">
+                    <h2 className="text-2xl font-bold mb-2">{t('vm.whyTitle')}</h2>
+                    <p className="text-gray-400 mb-6 max-w-2xl">{t('vm.whyDesc')}</p>
+
+                    <div className="grid md:grid-cols-3 gap-4 mb-8">
+                      <div className="bg-black/30 rounded-xl p-5 border border-gray-800/50">
+                        <Shield className="w-6 h-6 text-indigo-400 mb-3" />
+                        <h3 className="font-semibold text-white mb-1">{t('vm.benefit1Title')}</h3>
+                        <p className="text-sm text-gray-400">{t('vm.benefit1Desc')}</p>
+                      </div>
+                      <div className="bg-black/30 rounded-xl p-5 border border-gray-800/50">
+                        <Target className="w-6 h-6 text-green-400 mb-3" />
+                        <h3 className="font-semibold text-white mb-1">{t('vm.benefit2Title')}</h3>
+                        <p className="text-sm text-gray-400">{t('vm.benefit2Desc')}</p>
+                      </div>
+                      <div className="bg-black/30 rounded-xl p-5 border border-gray-800/50">
+                        <Rocket className="w-6 h-6 text-orange-400 mb-3" />
+                        <h3 className="font-semibold text-white mb-1">{t('vm.benefit3Title')}</h3>
+                        <p className="text-sm text-gray-400">{t('vm.benefit3Desc')}</p>
+                      </div>
+                    </div>
+
+                    <h3 className="text-lg font-semibold mb-4">{t('vm.pathTitle')}</h3>
+                    <div className="grid md:grid-cols-3 gap-3">
+                      <Link
+                        to={localePath('/learn/virtual-machine')}
+                        className="bg-green-900/20 border border-green-800/40 rounded-lg p-4 hover:bg-green-900/30 transition-colors block"
+                      >
+                        <div className="text-sm font-medium text-green-400 mb-1">{t('vm.pathBeginner')}</div>
+                        <p className="text-xs text-gray-400">{t('vm.pathBeginnerDesc')}</p>
+                      </Link>
+                      <Link
+                        to={localePath('/apps/utm')}
+                        className="bg-blue-900/20 border border-blue-800/40 rounded-lg p-4 hover:bg-blue-900/30 transition-colors block"
+                      >
+                        <div className="text-sm font-medium text-blue-400 mb-1">{t('vm.pathIntermediate')}</div>
+                        <p className="text-xs text-gray-400">{t('vm.pathIntermediateDesc')}</p>
+                      </Link>
+                      <Link
+                        to={localePath('/learn/ollama')}
+                        className="bg-gray-800/50 border border-gray-700/40 rounded-lg p-4 hover:bg-gray-800/70 transition-colors block"
+                      >
+                        <div className="text-sm font-medium text-gray-300 mb-1">{t('vm.pathDirect')}</div>
+                        <p className="text-xs text-gray-400">{t('vm.pathDirectDesc')}</p>
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Product grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">

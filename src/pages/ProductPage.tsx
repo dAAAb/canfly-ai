@@ -117,15 +117,18 @@ export default function ProductPage() {
                   <button
                     key={index}
                     onClick={() => setActiveScreenshot(index)}
-                    className={`aspect-video w-20 rounded border-2 transition-colors overflow-hidden ${
+                    className={`aspect-video w-20 rounded border-2 transition-colors overflow-hidden relative ${
                       activeScreenshot === index ? 'border-blue-500' : 'border-gray-700'
                     }`}
                   >
                     <img
                       src={_screenshot}
                       alt={`${product.name} thumbnail ${index + 1}`}
-                      className="w-full h-full object-cover object-top"
+                      className="w-full h-full object-cover object-top opacity-40"
                     />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-xs font-medium text-white drop-shadow-md">{index + 1}</span>
+                    </div>
                   </button>
                 ))}
               </div>

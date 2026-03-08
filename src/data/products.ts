@@ -208,6 +208,54 @@ export const products: Product[] = [
       secondaryLink: 'https://www.switch-bot.com',
     },
   },
+  {
+    id: 'utm',
+    name: 'UTM',
+    tagline: 'Free virtual machines for Mac',
+    category: 'vm',
+    price: 'Free',
+    status: 'available',
+    description: 'Run Windows, Linux, or other operating systems safely inside your Mac. UTM lets you create isolated virtual machines — perfect for trying AI tools without affecting your main system. If something goes wrong, just delete the VM and start over.',
+    features: [
+      'Free & open source',
+      'Run Linux/Windows on Mac',
+      'Safe sandbox environment',
+      'Easy snapshot & restore',
+      'Apple Silicon optimized',
+    ],
+    screenshots: [],
+    tutorial: '/learn/virtual-machine',
+    cta: {
+      primary: 'Free Tutorial',
+      primaryLink: '/learn/virtual-machine',
+      secondary: 'Download UTM',
+      secondaryLink: 'https://mac.getutm.app',
+    },
+  },
+  {
+    id: 'virtual-buddy',
+    name: 'Virtual Buddy',
+    tagline: 'One-click Linux VM setup',
+    category: 'vm',
+    price: 'Free',
+    status: 'available',
+    description: 'The easiest way to get a Linux virtual machine on your Mac. Virtual Buddy sets up everything automatically — no technical knowledge needed. One click and you have a full Linux environment ready for Ollama and OpenClaw.',
+    features: [
+      'One-click Linux install',
+      'No technical knowledge needed',
+      'Automatic VM configuration',
+      'Perfect for beginners',
+      'macOS native app',
+    ],
+    screenshots: [],
+    tutorial: '/learn/virtual-machine',
+    cta: {
+      primary: 'Free Tutorial',
+      primaryLink: '/learn/virtual-machine',
+      secondary: 'Get Virtual Buddy',
+      secondaryLink: 'https://github.com/insidegui/VirtualBuddy',
+    },
+  },
 ]
 
 export const productsBySlug = Object.fromEntries(products.map((p) => [p.id, p]))
@@ -215,6 +263,7 @@ export const productsBySlug = Object.fromEntries(products.map((p) => [p.id, p]))
 export const categories = [
   { id: 'all', name: 'All Apps', count: products.length },
   { id: 'free', name: 'Free Tools', count: products.filter((p) => p.category === 'free').length },
+  { id: 'vm', name: 'Virtual Machines', count: products.filter((p) => p.category === 'vm').length },
   { id: 'skills', name: 'AI Skills', count: products.filter((p) => p.category === 'skills').length },
   { id: 'hosting', name: 'Cloud Hosting', count: products.filter((p) => p.category === 'hosting').length },
   { id: 'hardware', name: 'Hardware', count: products.filter((p) => p.category === 'hardware').length },
