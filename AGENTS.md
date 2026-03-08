@@ -51,6 +51,29 @@ curl -s "$API/companies/$COMPANY/issues" | python3 -c "import sys,json; [print(f
 
 **Content Writer 負責翻譯品質，Dev 負責確保 key 同步。**
 
+### ⚠️ 語言切換 — 必須遵守的 async 規則（CAN-76 教訓）
+
+翻譯檔是 **lazy import**（zh-TW.json / zh-CN.json 不在初始 bundle 中）。
+任何切換語言的程式碼，**必須先載完翻譯再切語言**，否則會閃英文：
+
+```typescript
+import { loadLanguage } from '../i18n'
+
+// ❌ 錯誤：翻譯還沒載完就切語言 → 閃英文
+i18n.changeLanguage('zh-TW')
+
+// ✅ 正確：先載翻譯，再切語言
+await loadLanguage('zh-TW')
+i18n.changeLanguage('zh-TW')
+```
+
+**已修好的三個路徑（不要改壞）：**
+1. `App.tsx` → `LangSync` — useEffect + await loadLanguage
+2. `hooks/useLanguage.ts` → useEffect — loadLanguage().then(changeLanguage)
+3. `hooks/useLanguage.ts` → `switchLang` — await loadLanguage
+
+**如果你新增了任何語言切換邏輯，一定要走這個 pattern！**
+
 ## 🔍 自主巡檢（CEO 職責）
 
 CEO 每次 heartbeat 除了監督進度，還要：
