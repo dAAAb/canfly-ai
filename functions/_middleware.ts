@@ -3,8 +3,15 @@
  * for social-media crawlers (Facebook, Twitter/X, LinkedIn, etc.).
  *
  * Normal users get the SPA as-is; bots get rewritten HTML with correct
- * og:title / og:description / og:url so link previews look right.
+ * og:title / og:description / og:image / og:url so link previews look right.
+ *
+ * Covers static pages, dynamic product pages (/apps/:slug), and blog posts
+ * (/blog/:slug). Language-prefixed URLs (/:lang/...) are normalised before
+ * lookup so every locale gets the same preview metadata.
  */
+
+const SITE = 'https://canfly.ai'
+const DEFAULT_OG_IMAGE = `${SITE}/og-image.png`
 
 const BOT_UA =
   /facebookexternalhit|Facebot|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|TelegramBot|Applebot|Pinterest|Embedly|Quora Link Preview|vkShare|W3C_Validator/i
@@ -13,9 +20,13 @@ interface OgMeta {
   title: string
   description: string
   ogType?: string
+  ogImage?: string // absolute URL or site-relative path
 }
 
-// Route → OG metadata (English defaults; covers all static pages)
+// ── Static route metadata ──────────────────────────────────────────────
+// ogImage is omitted for static pages → resolves to DEFAULT_OG_IMAGE.
+// When CMO creates per-page images, add them to public/og/ and set the
+// path here (e.g. ogImage: `${SITE}/og/home.png`).
 const ROUTE_META: Record<string, OgMeta> = {
   '/': {
     title: 'CanFly — Your Own AI Agent in 5 Minutes',
@@ -84,12 +95,191 @@ const ROUTE_META: Record<string, OgMeta> = {
   },
 }
 
-/** Strip /:lang prefix from path to match against ROUTE_META keys */
+// ── Dynamic product metadata (keyed by product slug / id) ──────────────
+const PRODUCT_META: Record<string, OgMeta> = {
+  ollama: {
+    title: 'Ollama — Free Local AI Models | CanFly',
+    description:
+      'Run powerful AI models locally without API keys or internet. Privacy-focused, free, and easy.',
+    ogImage: `${SITE}/images/icons/ollama.png`,
+  },
+  zeabur: {
+    title: 'Zeabur — One-Click Cloud Deployment | CanFly',
+    description:
+      'Deploy AI agents to the cloud with zero configuration. Get started in minutes.',
+    ogImage: `${SITE}/images/icons/zeabur.png`,
+  },
+  elevenlabs: {
+    title: 'ElevenLabs — AI Voice Synthesis | CanFly',
+    description:
+      'Add realistic voice capabilities to your AI agents with high-quality text-to-speech.',
+    ogImage: `${SITE}/images/icons/elevenlabs.png`,
+  },
+  heygen: {
+    title: 'HeyGen — AI Video Generation | CanFly',
+    description:
+      'Create professional AI-generated videos with digital avatars for content and marketing.',
+    ogImage: `${SITE}/images/icons/heygen.png`,
+  },
+  umbrel: {
+    title: 'Umbrel — Self-Hosted Home Server | CanFly',
+    description:
+      'Run your own personal cloud server at home with complete data sovereignty.',
+    ogImage: `${SITE}/images/icons/umbrel.png`,
+  },
+  pinata: {
+    title: 'Pinata — IPFS & Web3 Storage | CanFly',
+    description:
+      'Decentralised file storage powered by IPFS. Perfect for Web3 apps and permanent data.',
+    ogImage: `${SITE}/images/icons/pinata.png`,
+  },
+  'switchbot-ai-hub': {
+    title: 'SwitchBot AI Hub — Smart Home Meets AI | CanFly',
+    description:
+      'Connect smart home devices with AI. Voice and agent-controlled home automation.',
+    ogImage: `${SITE}/images/icons/switchbot-ai-hub.png`,
+  },
+  perplexity: {
+    title: 'Perplexity — AI-Powered Search | CanFly',
+    description:
+      'AI search engine with direct answers and citations. Free tier available.',
+    ogImage: `${SITE}/images/icons/perplexity.png`,
+  },
+  'even-g2-bridge': {
+    title: 'Even Realities G2 Bridge — Smart Glasses AI | CanFly',
+    description:
+      'Talk to your AI through smart glasses. Voice-to-AI via Cloudflare Worker.',
+    ogImage: `${SITE}/images/icons/even-g2.png`,
+  },
+  'brave-search': {
+    title: 'Brave Search API — Free Web Search | CanFly',
+    description:
+      'Privacy-focused web search API with 2,000 free queries/month. No credit card required.',
+    ogImage: `${SITE}/images/icons/brave-search.png`,
+  },
+  utm: {
+    title: 'UTM — Free Virtual Machines for Mac | CanFly',
+    description:
+      'Run Windows, Linux, or other OSes safely inside your Mac with free, open-source UTM.',
+    ogImage: `${SITE}/images/icons/utm.webp`,
+  },
+  'virtual-buddy': {
+    title: 'Virtual Buddy — One-Click Linux VM | CanFly',
+    description:
+      'The easiest way to get Linux on your Mac. One click and you have a full environment.',
+    ogImage: `${SITE}/images/icons/virtual-buddy.png`,
+  },
+  'mac-mini-m4': {
+    title: 'Apple Mac Mini M4 — Compact AI Powerhouse | CanFly',
+    description:
+      'M4 chip, 16GB unified memory, Thunderbolt 5 — your palm-sized AI workstation.',
+    ogImage: `${SITE}/images/icons/apple.png`,
+  },
+  'macbook-neo': {
+    title: 'Apple MacBook Neo — Most Affordable MacBook | CanFly',
+    description:
+      "Apple's most affordable laptop. A18 Pro chip, 13\" Liquid Retina — AI-ready out of the box.",
+    ogImage: `${SITE}/images/icons/apple.png`,
+  },
+  'hdmi-dummy-plug': {
+    title: 'HDMI Dummy Plug — Headless AI Server Essential | CanFly',
+    description:
+      'Enable GPU acceleration on headless AI servers. Plug and play, under $10.',
+    ogImage: `${SITE}/images/icons/hdmi-dummy.png`,
+  },
+  'geekom-a8': {
+    title: 'GEEKOM A8 Mini PC — Best for Local AI | CanFly',
+    description:
+      'AMD Ryzen 7, 32GB DDR5 — handles Ollama and OpenClaw with ease. Compact and quiet.',
+    ogImage: `${SITE}/images/icons/geekom.png`,
+  },
+  'beelink-ser5-max': {
+    title: 'Beelink SER5 MAX — High Value AI Mini PC | CanFly',
+    description:
+      'AMD Ryzen 7 5800H, 24GB RAM, 1TB SSD — unbeatable price for dedicated AI hardware.',
+    ogImage: `${SITE}/images/icons/beelink.png`,
+  },
+  'raspberry-pi-5': {
+    title: 'Raspberry Pi 5 — Budget AI Learning Kit | CanFly',
+    description:
+      'The most affordable way to start local AI. Sub-$100 setup with Ollama.',
+    ogImage: `${SITE}/images/icons/raspberry-pi.png`,
+  },
+  'elgato-stream-deck': {
+    title: 'Elgato Stream Deck MK.2 — AI Control Panel | CanFly',
+    description:
+      '15 programmable LCD keys to trigger AI agents and workflows with one tap.',
+    ogImage: `${SITE}/images/icons/elgato.png`,
+  },
+  'fifine-am8': {
+    title: 'Fifine AM8 Microphone — AI Voice Input | CanFly',
+    description:
+      'Crystal-clear USB microphone with noise cancellation for AI voice commands.',
+    ogImage: `${SITE}/images/icons/fifine.png`,
+  },
+}
+
+// ── Dynamic blog post metadata ─────────────────────────────────────────
+const BLOG_META: Record<string, OgMeta> = {
+  'local-ai-privacy-2026': {
+    title: 'Local AI & Privacy in 2026 — CanFly Blog',
+    description:
+      'Why running AI locally matters for privacy, and how to get started for free.',
+    ogType: 'article',
+  },
+  'deploy-ai-agent-cloud': {
+    title: 'Deploy AI Agents to the Cloud — CanFly Blog',
+    description:
+      'Step-by-step guide to deploying your AI agents with one-click cloud hosting.',
+    ogType: 'article',
+  },
+  'ai-voice-video-content-creation': {
+    title: 'AI Voice & Video Content Creation — CanFly Blog',
+    description:
+      'How to use AI voice synthesis and video generation for content marketing.',
+    ogType: 'article',
+  },
+}
+
+// ── Helpers ─────────────────────────────────────────────────────────────
+
+/** Strip /:lang prefix from path to match against lookup keys */
 function stripLangPrefix(path: string): string {
   const match = path.match(/^\/(zh-tw|zh-cn)(\/.*)?$/)
   if (match) return match[2] || '/'
   return path
 }
+
+/** Resolve OG metadata for any path (static → product → blog → null) */
+function resolveMeta(path: string): OgMeta | null {
+  // 1. Exact static match
+  if (ROUTE_META[path]) return ROUTE_META[path]
+
+  // 2. Dynamic product page: /apps/:slug
+  const productMatch = path.match(/^\/apps\/([a-z0-9-]+)$/)
+  if (productMatch) {
+    const slug = productMatch[1]
+    if (PRODUCT_META[slug]) return PRODUCT_META[slug]
+  }
+
+  // 3. Dynamic blog post: /blog/:slug
+  const blogMatch = path.match(/^\/blog\/([a-z0-9-]+)$/)
+  if (blogMatch) {
+    const slug = blogMatch[1]
+    if (BLOG_META[slug]) return BLOG_META[slug]
+  }
+
+  return null
+}
+
+/** Ensure og:image is an absolute URL */
+function resolveOgImage(img: string | undefined): string {
+  if (!img) return DEFAULT_OG_IMAGE
+  if (img.startsWith('http')) return img
+  return `${SITE}${img}`
+}
+
+// ── Middleware entry point ──────────────────────────────────────────────
 
 export const onRequest: PagesFunction = async (context) => {
   const ua = context.request.headers.get('user-agent') || ''
@@ -109,14 +299,15 @@ export const onRequest: PagesFunction = async (context) => {
 
   const url = new URL(context.request.url)
   const strippedPath = stripLangPrefix(url.pathname)
-  const meta = ROUTE_META[strippedPath]
+  const meta = resolveMeta(strippedPath)
 
   if (!meta) {
     return response
   }
 
-  const ogUrl = `https://canfly.ai${url.pathname}`
+  const ogUrl = `${SITE}${url.pathname}`
   const ogType = meta.ogType || 'website'
+  const ogImage = resolveOgImage(meta.ogImage)
 
   // Use HTMLRewriter to replace OG meta tags in the response
   return new HTMLRewriter()
@@ -158,6 +349,16 @@ export const onRequest: PagesFunction = async (context) => {
     .on('meta[property="og:type"]', {
       element(el) {
         el.setAttribute('content', ogType)
+      },
+    })
+    .on('meta[property="og:image"]', {
+      element(el) {
+        el.setAttribute('content', ogImage)
+      },
+    })
+    .on('meta[name="twitter:image"]', {
+      element(el) {
+        el.setAttribute('content', ogImage)
       },
     })
     .on('link[rel="canonical"]', {
