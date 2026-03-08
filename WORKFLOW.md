@@ -109,6 +109,7 @@ CEO 可以直接用 Paperclip API 建 issue（見 AGENTS.md），不需要等寶
 - ❌ 沒經過 CEO 回饋就直接提交寶博
 - ❌ 沒經過寶博確認就開始建票
 - ❌ Ticket description 寫得模糊（「優化首頁」→ 具體哪裡？）
+- ❌ **小龍蝦直接做事不建 ticket** — 即使是自己能做的事，也要建 ticket → checkout → 做 → 回報。這樣團隊才有紀錄，其他人才能給意見或幫忙
 
 ---
 
