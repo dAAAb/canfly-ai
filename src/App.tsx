@@ -14,6 +14,8 @@ const CheckoutPage = lazy(() => import('./pages/CheckoutPage'))
 const GetStartedPage = lazy(() => import('./pages/GetStartedPage'))
 const PricingPage = lazy(() => import('./pages/PricingPage'))
 const CommunityPage = lazy(() => import('./pages/CommunityPage'))
+const BlogListPage = lazy(() => import('./pages/BlogListPage'))
+const BlogPostPage = lazy(() => import('./pages/BlogPostPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 /** Wrapper that syncs i18next language from URL :lang param.
@@ -54,6 +56,8 @@ function App() {
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/pricing" element={<PricingPage />} />
               <Route path="/community" element={<CommunityPage />} />
+              <Route path="/blog" element={<BlogListPage />} />
+              <Route path="/blog/:slug" element={<BlogPostPage />} />
 
               {/* Language-prefixed routes */}
               <Route path="/:lang" element={<LangSync><HomePage /></LangSync>} />
@@ -65,6 +69,8 @@ function App() {
               <Route path="/:lang/checkout" element={<LangSync><CheckoutPage /></LangSync>} />
               <Route path="/:lang/pricing" element={<LangSync><PricingPage /></LangSync>} />
               <Route path="/:lang/community" element={<LangSync><CommunityPage /></LangSync>} />
+              <Route path="/:lang/blog" element={<LangSync><BlogListPage /></LangSync>} />
+              <Route path="/:lang/blog/:slug" element={<LangSync><BlogPostPage /></LangSync>} />
 
               {/* 404 catch-all */}
               <Route path="*" element={<NotFoundPage />} />

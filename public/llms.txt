@@ -36,6 +36,16 @@
 - /learn/elevenlabs-integration - Voice synthesis setup
 - /learn/heygen-video - AI video generation
 
+## Blog
+
+/blog - Blog listing page with category filters
+/blog/:slug - Individual blog post pages with JSON-LD BlogPosting schema
+
+### Posts
+- /blog/local-ai-privacy-2026 - Why Local AI Is the Privacy Breakthrough of 2026
+- /blog/deploy-ai-agent-cloud - From Laptop to Cloud: Deploy Your AI Agent in One Click
+- /blog/ai-voice-video-content-creation - AI Voice and Video: The Next Frontier of Content Creation
+
 ## For AI Agents
 
 Each product page includes:
@@ -57,6 +67,8 @@ Tutorial pages provide:
 - WebSite schema with SearchAction (index.html)
 - SoftwareApplication schema (each product page)
 - HowTo schema (each tutorial page)
+- Blog schema (blog listing page)
+- BlogPosting schema (each blog post)
 
 ## Affiliate Information
 
