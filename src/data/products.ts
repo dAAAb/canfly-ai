@@ -8,6 +8,7 @@ export interface Product {
   description: string
   features: string[]
   screenshots: string[]
+  reviewVideo?: string
   tutorial: string
   affiliateLink?: string
   affiliateCode?: string
@@ -42,6 +43,7 @@ export const products: Product[] = [
       '/images/tutorial/ollama-pull-model.png',
       '/images/tutorial/ollama-chat-session.png',
     ],
+    reviewVideo: '/videos/reviews/ollama-review.mp4',
     tutorial: '/learn/ollama',
     cta: {
       primary: 'Start Free Tutorial',
@@ -69,6 +71,7 @@ export const products: Product[] = [
       'OpenClaw optimized templates',
     ],
     screenshots: [],
+    reviewVideo: '/videos/reviews/zeabur-review.mp4',
     tutorial: '/learn/zeabur',
     cta: {
       primary: 'Deploy Now (10% off)',
@@ -95,6 +98,7 @@ export const products: Product[] = [
       'OpenClaw skill',
     ],
     screenshots: [],
+    reviewVideo: '/videos/reviews/elevenlabs-review.mp4',
     tutorial: '/learn/elevenlabs-integration',
     cta: {
       primary: 'Try ElevenLabs',
@@ -121,6 +125,7 @@ export const products: Product[] = [
       'Works with OpenClaw',
     ],
     screenshots: [],
+    reviewVideo: '/videos/reviews/heygen-review.mp4',
     tutorial: '/learn/heygen-video',
     cta: {
       primary: 'Try HeyGen',
@@ -146,6 +151,7 @@ export const products: Product[] = [
       'No subscription',
     ],
     screenshots: [],
+    reviewVideo: '/videos/reviews/umbrel-review.mp4',
     tutorial: '/learn/umbrel-setup',
     cta: {
       primary: 'Visit Umbrel',

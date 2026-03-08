@@ -8,6 +8,7 @@ const HomePage = lazy(() => import('./pages/HomePage'))
 const AppsPage = lazy(() => import('./pages/AppsPage'))
 const ProductPage = lazy(() => import('./pages/ProductPage'))
 const TutorialPage = lazy(() => import('./pages/TutorialPage'))
+const HardwareComparePage = lazy(() => import('./pages/HardwareComparePage'))
 
 /** Wrapper that syncs i18next language from URL :lang param.
  *  Uses useMemo (not useEffect) so language is set before children render. */
@@ -40,12 +41,14 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/apps" element={<AppsPage />} />
             <Route path="/apps/:slug" element={<ProductPage />} />
+            <Route path="/learn/hardware-compare" element={<HardwareComparePage />} />
             <Route path="/learn/:slug" element={<TutorialPage />} />
 
             {/* Language-prefixed routes */}
             <Route path="/:lang" element={<LangSync><HomePage /></LangSync>} />
             <Route path="/:lang/apps" element={<LangSync><AppsPage /></LangSync>} />
             <Route path="/:lang/apps/:slug" element={<LangSync><ProductPage /></LangSync>} />
+            <Route path="/:lang/learn/hardware-compare" element={<LangSync><HardwareComparePage /></LangSync>} />
             <Route path="/:lang/learn/:slug" element={<LangSync><TutorialPage /></LangSync>} />
           </Routes>
         </Suspense>

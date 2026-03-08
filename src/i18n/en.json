@@ -647,6 +647,152 @@
         }
       ]
     },
+    "virtualmachine": {
+      "title": "Zero-to-Hero: Run AI in a Virtual Machine in 10 Minutes",
+      "subtitle": "No tech experience needed — learn what a VM is, install Linux with one click, and run your own AI inside it",
+      "duration": "10 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "What Is a Virtual Machine?",
+          "titleEn": "What Is a Virtual Machine?",
+          "estimatedTime": "2 min",
+          "content": "A virtual machine (VM) is like a computer inside your computer. It lets you run a completely separate operating system — like Linux — inside a window on your Mac, without affecting anything on your main system. Think of it as a sandbox: you can experiment freely, and if anything goes wrong, just delete the VM and start over.",
+          "subsections": [
+            {
+              "label": "Why use a VM for AI?",
+              "text": "Running AI models in a VM keeps your main system clean. You get a dedicated Linux environment optimized for AI tools like Ollama, without worrying about messing up your Mac's settings. It's also great for learning Linux basics in a safe environment."
+            },
+            {
+              "label": "UTM vs Virtual Buddy",
+              "text": "Both are Mac apps for running VMs. Virtual Buddy is simpler — one-click Linux install, perfect for beginners. UTM is free and more powerful, with support for many operating systems. We'll cover both so you can choose."
+            }
+          ],
+          "expectedResult": "You understand what a VM is and why it's useful for running AI. You're ready to pick your tool.",
+          "tips": [
+            "VMs are completely isolated — nothing you do inside affects your Mac",
+            "You can run multiple VMs at once if you have enough RAM",
+            "Apple Silicon Macs (M1/M2/M3/M4) run Linux VMs extremely fast"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? Concept Questions",
+            "items": [
+              { "q": "Will a VM slow down my Mac?", "a": "Only slightly while the VM is running. Close the VM and your Mac returns to full speed. With 16GB+ RAM, you won't notice any slowdown." },
+              { "q": "Is this the same as Docker?", "a": "Similar idea, but VMs run a full operating system with its own desktop. Docker runs lightweight containers without a full OS. For beginners, VMs are easier to understand." }
+            ]
+          }
+        },
+        {
+          "title": "Install UTM or Virtual Buddy",
+          "titleEn": "Install UTM or Virtual Buddy",
+          "estimatedTime": "2 min",
+          "content": "Choose one: Virtual Buddy for the easiest experience (paid, from Mac App Store), or UTM for a free, full-featured option. Both work great on Apple Silicon Macs.",
+          "expectedResult": "You have UTM or Virtual Buddy installed and ready to create your first VM.",
+          "tips": [
+            "Virtual Buddy: $10 on Mac App Store, one-click Linux setup — perfect for beginners",
+            "UTM: 100% free and open source, more configuration options",
+            "Both support Apple Silicon natively for best performance"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? Installation Troubleshooting",
+            "items": [
+              { "q": "UTM won't open on Mac", "a": "Go to System Settings → Privacy & Security, click \"Open Anyway\". This is macOS's standard security for apps downloaded outside the App Store." },
+              { "q": "Virtual Buddy requires macOS 13+", "a": "Virtual Buddy needs macOS Ventura or later. If you're on an older version, use UTM instead — it supports macOS 11+." },
+              { "q": "Which one should I pick?", "a": "If you want zero hassle and don't mind paying $10, go with Virtual Buddy. If you prefer free software or want more control, choose UTM." }
+            ]
+          }
+        },
+        {
+          "title": "Create a Linux VM",
+          "titleEn": "Create a Linux VM",
+          "estimatedTime": "3 min",
+          "content": "Now let's create your Linux virtual machine. Virtual Buddy makes this a one-click process. With UTM, you'll download an Ubuntu image and follow a short setup wizard.",
+          "subsections": [
+            {
+              "label": "Why Ubuntu?",
+              "text": "Ubuntu is the most beginner-friendly Linux distribution. It has a graphical desktop, tons of online help, and excellent support for AI tools. Most AI tutorials and documentation assume Ubuntu."
+            }
+          ],
+          "expectedResult": "A Linux (Ubuntu) VM is running in a window on your Mac. You can see the Ubuntu desktop or terminal.",
+          "tips": [
+            "Allocate at least 4GB RAM and 2 CPU cores to the VM for smooth AI performance",
+            "20GB disk space is enough to start; you can expand later",
+            "The VM downloads Ubuntu automatically — no need to find ISO files yourself with Virtual Buddy"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? VM Creation Troubleshooting",
+            "items": [
+              { "q": "VM is very slow", "a": "Make sure you allocated enough RAM (4GB minimum). Close other heavy apps on your Mac. Also ensure you're using the ARM64 version of Ubuntu, not x86." },
+              { "q": "Screen is black after creating VM", "a": "Wait 1-2 minutes — the first boot takes time to initialize. If still black, try restarting the VM." },
+              { "q": "Where to download Ubuntu ISO for UTM?", "a": "Go to ubuntu.com/download/server and download the ARM64 version for Apple Silicon Macs." }
+            ]
+          }
+        },
+        {
+          "title": "Install Ollama in Your VM",
+          "titleEn": "Install Ollama in Your VM",
+          "estimatedTime": "3 min",
+          "content": "Open the terminal inside your Linux VM and install Ollama with one command. Then download an AI model and start chatting — all running inside your virtual machine!",
+          "expectedResult": "Ollama is installed in your VM and you can chat with a local AI model. Everything runs inside the VM, completely isolated.",
+          "tips": [
+            "The curl command downloads and installs Ollama automatically",
+            "First model download (llama3.2) is about 2GB — make sure your VM has internet",
+            "Type /bye to exit the chat when you're done"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? Ollama Installation Troubleshooting",
+            "items": [
+              { "q": "curl command not found", "a": "Run: sudo apt install curl — then retry the Ollama install command." },
+              { "q": "VM has no internet", "a": "In UTM, go to VM Settings → Network and ensure \"Shared\" networking is selected. In Virtual Buddy, networking should work automatically." },
+              { "q": "Model download is very slow", "a": "VM network can be slower than host. Be patient, or try the smaller llama3.2 model (2GB) first." },
+              { "q": "Ollama says not enough memory", "a": "Increase the VM's RAM allocation to at least 4GB. Shut down the VM first, adjust settings, then restart." }
+            ]
+          }
+        },
+        {
+          "title": "Next Steps",
+          "titleEn": "Next Steps",
+          "estimatedTime": "Exploration time!",
+          "content": "Amazing! You've built your own AI lab inside a virtual machine. Your Mac stays clean, and you have a full Linux environment for AI experiments. Here's where to go next:",
+          "tips": [
+            "Your VM is saved — close it and reopen anytime without losing your setup",
+            "You can snapshot your VM to save its current state as a backup",
+            "Everything you learned here applies to real Linux servers too"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "Connect OpenClaw",
+              "desc": "Give your AI a beautiful interface. Install OpenClaw in your VM and connect it to your local Ollama.",
+              "cta": "Ollama + OpenClaw Tutorial",
+              "link": "/learn/ollama"
+            },
+            {
+              "emoji": "☁️",
+              "title": "Deploy to the Cloud",
+              "desc": "Take your AI online with Zeabur. One-click cloud deployment so you can access your AI from anywhere.",
+              "cta": "Learn Cloud Deploy",
+              "link": "/learn/zeabur"
+            },
+            {
+              "emoji": "🎙️",
+              "title": "Add Voice Features",
+              "desc": "Use ElevenLabs to give your AI a voice with Chinese text-to-speech support.",
+              "cta": "Explore ElevenLabs",
+              "link": "/learn/elevenlabs-integration"
+            },
+            {
+              "emoji": "🔍",
+              "title": "Explore More Models",
+              "desc": "Browse hundreds of AI models in the Ollama library: chat, code, vision, and more.",
+              "cta": "Browse Models",
+              "link": "https://ollama.com/library",
+              "external": true
+            }
+          ]
+        }
+      ]
+    },
     "heygen": {
       "title": "Create AI Avatar Videos with HeyGen + OpenClaw in 5 Minutes",
       "subtitle": "Transform your AI conversations into professional avatar videos — perfect for content creation and training",
@@ -782,5 +928,66 @@
         }
       ]
     }
+  },
+  "hardwareCompare": {
+    "pageTitle": "Hardware Comparison — Canfly",
+    "title": "AI Hardware Buying Guide",
+    "subtitle": "Umbrel Home vs Mac mini vs Raspberry Pi — which one is right for you? Compare price, difficulty, and best use cases.",
+    "feature": "Feature",
+    "devices": {
+      "umbrelHome": "Umbrel Home",
+      "umbrelPrice": "$299",
+      "umbrel-homeDesc": "Purpose-built home server with one-click app store. Plug in, set up in 10 minutes, and run AI + self-hosted apps 24/7 with zero maintenance.",
+      "macMini": "Mac mini",
+      "macMiniPrice": "$599+",
+      "mac-miniDesc": "Apple's compact powerhouse. M-series chips deliver excellent AI inference performance. Best for developers who also need a desktop workstation.",
+      "raspberryPi": "Raspberry Pi 5",
+      "raspberryPiPrice": "$60–$80",
+      "raspberry-piDesc": "The classic DIY single-board computer. Ultra-affordable entry point for tinkerers, learners, and lightweight AI experiments."
+    },
+    "rows": {
+      "price": "Price",
+      "setupDifficulty": "Setup Difficulty",
+      "targetAudience": "Best For",
+      "performance": "AI Performance",
+      "storage": "Storage",
+      "ollamaSupport": "Ollama Support",
+      "appStore": "App Store",
+      "alwaysOn": "Always-On Server",
+      "noSubscription": "No Subscription",
+      "portability": "Portability",
+      "communitySize": "Community"
+    },
+    "ratings": {
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Advanced"
+    },
+    "values": {
+      "targetUmbrel": "Privacy enthusiasts, non-technical users",
+      "targetMac": "Developers, power users",
+      "targetPi": "Tinkerers, students, hobbyists",
+      "perfUmbrel": "Good (Intel N100)",
+      "perfMac": "Excellent (Apple M-series)",
+      "perfPi": "Limited (ARM Cortex-A76)",
+      "storageUmbrel": "1TB SSD included",
+      "storageMac": "256GB–2TB (configurable)",
+      "storagePi": "microSD / USB SSD (BYO)",
+      "communityUmbrel": "Growing",
+      "communityMac": "Massive",
+      "communityPi": "Massive"
+    },
+    "rec": {
+      "umbrelTitle": "Choose Umbrel Home if…",
+      "umbrelDesc": "You want a plug-and-play home server that runs AI models, Bitcoin nodes, and self-hosted apps without touching a terminal. Perfect for non-technical users who value privacy and sovereignty.",
+      "macTitle": "Choose Mac mini if…",
+      "macDesc": "You need a powerful development machine that doubles as an AI inference server. M-series chips run Ollama models fast, and you get a full macOS desktop for coding.",
+      "piTitle": "Choose Raspberry Pi if…",
+      "piDesc": "You want the cheapest possible entry point and enjoy building things from scratch. Great for learning, lightweight AI tasks, and IoT projects. Runs small models only.",
+      "learnMore": "Learn more",
+      "visitSite": "Visit site"
+    },
+    "ctaText": "No matter which hardware you pick, start with our free Ollama tutorial to get your first AI running in 5 minutes.",
+    "ctaButton": "Start Free with Ollama"
   }
 }

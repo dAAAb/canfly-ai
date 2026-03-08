@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom'
 import { useState } from 'react'
 import { ExternalLink, CheckCircle, Play } from 'lucide-react'
 import Navbar from '../components/Navbar'
+import ReviewVideoPlayer from '../components/ReviewVideoPlayer'
 import { productsBySlug } from '../data/products'
 import { useHead } from '../hooks/useHead'
 
@@ -99,7 +100,7 @@ export default function ProductPage() {
                 <img
                   src={product.screenshots[activeScreenshot]}
                   alt={`${product.name} screenshot`}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-top"
                 />
               ) : (
                 <div className="text-center">
@@ -116,15 +117,32 @@ export default function ProductPage() {
                   <button
                     key={index}
                     onClick={() => setActiveScreenshot(index)}
-                    className={`aspect-video w-20 rounded border-2 transition-colors ${
+                    className={`aspect-video w-20 rounded border-2 transition-colors overflow-hidden ${
                       activeScreenshot === index ? 'border-blue-500' : 'border-gray-700'
                     }`}
                   >
-                    <div className="w-full h-full bg-gray-800 rounded flex items-center justify-center">
-                      <div className="text-xs">{index + 1}</div>
-                    </div>
+                    <img
+                      src={_screenshot}
+                      alt={`${product.name} thumbnail ${index + 1}`}
+                      className="w-full h-full object-cover object-top"
+                    />
                   </button>
                 ))}
+              </div>
+            )}
+
+            {/* Review Video */}
+            {product.reviewVideo && (
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold mb-3">Review</h3>
+                <ReviewVideoPlayer
+                  src={product.reviewVideo}
+                  subtitles={[
+                    { label: 'English', srclang: 'en', src: product.reviewVideo.replace('.mp4', '.en.vtt') },
+                    { label: '繁體中文', srclang: 'zh-TW', src: product.reviewVideo.replace('.mp4', '.zh-TW.vtt') },
+                    { label: '简体中文', srclang: 'zh-CN', src: product.reviewVideo.replace('.mp4', '.zh-CN.vtt') },
+                  ]}
+                />
               </div>
             )}
           </div>
@@ -256,21 +274,34 @@ zeabur deploy --template openclaw`}
               </div>
             </details>
 
-            {/* JSON-LD for AI agents */}
+            {/* JSON-LD structured data */}
             <script type="application/ld+json">
               {JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "SoftwareApplication",
                 "name": product.name,
                 "description": product.description,
-                "category": product.category,
-                "price": product.price,
+                "url": `https://canfly.ai/apps/${slug}`,
+                "applicationCategory": product.category === 'free' ? 'DeveloperApplication' :
+                  product.category === 'skills' ? 'MultimediaApplication' :
+                  product.category === 'hosting' ? 'WebApplication' : 'DesktopApplication',
+                "operatingSystem": "All",
                 "offers": {
                   "@type": "Offer",
-                  "price": product.price,
-                  "priceCurrency": "USD"
+                  "price": product.price === 'Free' ? '0' : product.price.replace(/[^0-9.]/g, ''),
+                  "priceCurrency": "USD",
+                  "availability": product.status === 'available'
+                    ? "https://schema.org/InStock"
+                    : "https://schema.org/PreOrder"
                 },
-                "featureList": product.features
+                "featureList": product.features,
+                ...(product.affiliateLink ? { "installUrl": product.affiliateLink } : {}),
+                ...(product.tutorial ? { "softwareHelp": { "@type": "CreativeWork", "url": `https://canfly.ai${product.tutorial}` } } : {}),
+                "provider": {
+                  "@type": "Organization",
+                  "name": "Canfly",
+                  "url": "https://canfly.ai"
+                }
               })}
             </script>
           </div>

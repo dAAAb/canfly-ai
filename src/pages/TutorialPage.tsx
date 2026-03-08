@@ -532,12 +532,133 @@ function createHeyGenTutorial(t: any): TutorialData {
   }
 }
 
+function createVirtualMachineTutorial(t: any): TutorialData {
+  return {
+    id: 'virtual-machine',
+    title: t('tutorial.virtualmachine.title'),
+    subtitle: t('tutorial.virtualmachine.subtitle'),
+    duration: t('tutorial.virtualmachine.duration'),
+    difficulty: t('tutorial.virtualmachine.difficulty'),
+    steps: [
+      {
+        icon: Monitor,
+        title: t('tutorial.virtualmachine.steps.0.title'),
+        titleEn: t('tutorial.virtualmachine.steps.0.titleEn'),
+        estimatedTime: t('tutorial.virtualmachine.steps.0.estimatedTime'),
+        content: t('tutorial.virtualmachine.steps.0.content'),
+        subsections: t('tutorial.virtualmachine.steps.0.subsections', { returnObjects: true }),
+        expectedResult: t('tutorial.virtualmachine.steps.0.expectedResult'),
+        tips: t('tutorial.virtualmachine.steps.0.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.virtualmachine.steps.0.troubleshooting.title'),
+          items: t('tutorial.virtualmachine.steps.0.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Download,
+        title: t('tutorial.virtualmachine.steps.1.title'),
+        titleEn: t('tutorial.virtualmachine.steps.1.titleEn'),
+        estimatedTime: t('tutorial.virtualmachine.steps.1.estimatedTime'),
+        content: t('tutorial.virtualmachine.steps.1.content'),
+        commands: [
+          '# Virtual Buddy（推薦新手，一鍵裝 Linux）',
+          '# 從 Mac App Store 下載 Virtual Buddy',
+          'open https://apps.apple.com/app/virtual-buddy/id1640730093',
+          '',
+          '# 或者選擇 UTM（免費、功能更多）',
+          '# 從官網下載 UTM',
+          'open https://mac.getutm.app/',
+          '',
+          '# Homebrew 安裝 UTM：',
+          'brew install --cask utm',
+        ],
+        expectedResult: t('tutorial.virtualmachine.steps.1.expectedResult'),
+        tips: t('tutorial.virtualmachine.steps.1.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.virtualmachine.steps.1.troubleshooting.title'),
+          items: t('tutorial.virtualmachine.steps.1.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Cpu,
+        title: t('tutorial.virtualmachine.steps.2.title'),
+        titleEn: t('tutorial.virtualmachine.steps.2.titleEn'),
+        estimatedTime: t('tutorial.virtualmachine.steps.2.estimatedTime'),
+        content: t('tutorial.virtualmachine.steps.2.content'),
+        subsections: t('tutorial.virtualmachine.steps.2.subsections', { returnObjects: true }),
+        commands: [
+          '# Virtual Buddy 一鍵建立 Linux VM：',
+          '# 1. 打開 Virtual Buddy',
+          '# 2. 點擊 "Create New VM"',
+          '# 3. 選擇 "Linux" → Ubuntu 22.04',
+          '# 4. 分配資源（建議 4GB RAM + 2 CPU）',
+          '# 5. 點擊 "Create" → 自動下載安裝',
+          '',
+          '# UTM 手動建立 Linux VM：',
+          '# 1. 打開 UTM → 點擊 "+"',
+          '# 2. 選擇 "Virtualize" → "Linux"',
+          '# 3. 載入 Ubuntu ARM64 ISO',
+          '# 4. 分配 4GB RAM + 2 CPU + 20GB 磁碟',
+          '# 5. 完成安裝精靈',
+        ],
+        expectedResult: t('tutorial.virtualmachine.steps.2.expectedResult'),
+        tips: t('tutorial.virtualmachine.steps.2.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.virtualmachine.steps.2.troubleshooting.title'),
+          items: t('tutorial.virtualmachine.steps.2.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Terminal,
+        title: t('tutorial.virtualmachine.steps.3.title'),
+        titleEn: t('tutorial.virtualmachine.steps.3.titleEn'),
+        estimatedTime: t('tutorial.virtualmachine.steps.3.estimatedTime'),
+        content: t('tutorial.virtualmachine.steps.3.content'),
+        commands: [
+          '# 在 Linux VM 的終端機中執行：',
+          '',
+          '# 1. 更新系統',
+          'sudo apt update && sudo apt upgrade -y',
+          '',
+          '# 2. 安裝 Ollama（一行搞定）',
+          'curl -fsSL https://ollama.com/install.sh | sh',
+          '',
+          '# 3. 確認安裝成功',
+          'ollama --version',
+          '',
+          '# 4. 下載第一個模型',
+          'ollama pull llama3.2',
+          '',
+          '# 5. 開始聊天！',
+          'ollama run llama3.2',
+        ],
+        expectedResult: t('tutorial.virtualmachine.steps.3.expectedResult'),
+        tips: t('tutorial.virtualmachine.steps.3.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.virtualmachine.steps.3.troubleshooting.title'),
+          items: t('tutorial.virtualmachine.steps.3.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.virtualmachine.steps.4.title'),
+        titleEn: t('tutorial.virtualmachine.steps.4.titleEn'),
+        estimatedTime: t('tutorial.virtualmachine.steps.4.estimatedTime'),
+        content: t('tutorial.virtualmachine.steps.4.content'),
+        nextStepCards: t('tutorial.virtualmachine.steps.4.nextStepCards', { returnObjects: true }),
+        tips: t('tutorial.virtualmachine.steps.4.tips', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
 function getTutorials(t: any): Record<string, TutorialData> {
   return {
     ollama: createOllamaTutorial(t),
     zeabur: createZeaburTutorial(t),
     'elevenlabs-integration': createElevenLabsTutorial(t),
-    'heygen-video': createHeyGenTutorial(t)
+    'heygen-video': createHeyGenTutorial(t),
+    'virtual-machine': createVirtualMachineTutorial(t)
   }
 }
 

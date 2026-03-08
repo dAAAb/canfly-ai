@@ -53,14 +53,14 @@ export default function OutroSlide() {
           {/* CTA Cards */}
           <div className="flex gap-[3%] mt-[4%]" style={{ maxWidth: '55%' }}>
             <GlassCard className="flex-1">
-              <a href="mailto:hello@canfly.ai" className="flex items-center gap-4 no-underline text-white" style={{ padding: 'clamp(16px, 2.5vw, 36px)' }}>
+              <a href="mailto:hi@canfly.ai" className="flex items-center gap-4 no-underline text-white" style={{ padding: 'clamp(16px, 2.5vw, 36px)' }}>
                 <Mail style={{ width: 'clamp(20px, 2vw, 32px)', height: 'clamp(20px, 2vw, 32px)', flexShrink: 0 }} strokeWidth={1.5} />
                 <div>
                   <p className="font-semibold" style={{ fontSize: 'clamp(13px, 1.2vw, 22px)', lineHeight: 1.3 }}>
                     聯繫我們
                   </p>
                   <p style={{ fontSize: 'clamp(11px, 1vw, 18px)', opacity: 0.7, lineHeight: 1.5 }}>
-                    hello@canfly.ai
+                    hi@canfly.ai
                   </p>
                 </div>
               </a>

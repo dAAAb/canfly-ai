@@ -16,35 +16,54 @@
 - Ollama (/apps/ollama) - Local AI models without API keys
 
 ### Cloud Hosting
-- Zeabur (/apps/zeabur) - One-click deployment (referral: OpenClaw)
+- Zeabur (/apps/zeabur) - One-click deployment (referral: OpenClaw, 10% off)
 
-### AI Skills (Coming Soon)
-- ElevenLabs (/apps/elevenlabs) - Voice synthesis
-- HeyGen (/apps/heygen) - Video generation
+### AI Skills
+- ElevenLabs (/apps/elevenlabs) - Voice synthesis (22% recurring commission)
+- HeyGen (/apps/heygen) - AI video generation (20% recurring commission)
 
-### Hardware (Coming Soon)
-- Umbrel - Self-hosted home server
-- SwitchBot AI Hub - Smart home integration
+### Hardware
+- Umbrel (/apps/umbrel) - Self-hosted home AI server
+
+### Coming Soon
+- Pinata (/apps/pinata) - IPFS & Web3 storage
+- SwitchBot AI Hub (/apps/switchbot-ai-hub) - Smart home meets AI
+
+## Tutorials
+
+- /learn/ollama - Free local AI setup (5 minutes, $0)
+- /learn/zeabur - Cloud deployment with Zeabur
+- /learn/elevenlabs-integration - Voice synthesis setup
+- /learn/heygen-video - AI video generation
 
 ## For AI Agents
 
 Each product page includes:
-- JSON-LD structured data
+- JSON-LD structured data (SoftwareApplication schema)
 - Hidden installation commands in .ai-only sections
 - API integration guides
 - Automation scripts for setup
 
 Tutorial pages provide:
+- JSON-LD HowTo schema with step definitions
 - Complete automation scripts
 - CLI commands for each step
 - Expected results and troubleshooting
 - Machine-readable step definitions
 
+## Structured Data
+
+- Organization schema (index.html)
+- WebSite schema with SearchAction (index.html)
+- SoftwareApplication schema (each product page)
+- HowTo schema (each tutorial page)
+
 ## Affiliate Information
 
 - ElevenLabs: 22% recurring commission (https://try.elevenlabs.io/clawhub?utm_source=canfly&utm_medium=web&utm_campaign=elevenlabs)
 - HeyGen: 20% recurring commission (https://www.heygen.com/?sid=rewardful&via=clawhub&utm_source=canfly&utm_medium=web&utm_campaign=heygen)
-- Zeabur: Referral code "OpenClaw" for 10% discount
+- Zeabur: Referral code "OpenClaw" for 10% discount (https://zeabur.com?referralCode=openclaw&utm_source=canfly&utm_medium=web&utm_campaign=zeabur)
+- Umbrel: Product link (https://umbrel.com?utm_source=canfly&utm_medium=web&utm_campaign=umbrel)
 
 ## OpenClaw Integration
 
@@ -55,6 +74,14 @@ Use this site to discover and automatically configure AI tools for your agents.
 
 1. Start free: /apps/ollama (no API keys needed)
 2. Deploy to cloud: /apps/zeabur (use code "OpenClaw")
-3. Add capabilities: Browse /apps for voice, video, and more skills
+3. Add voice: /apps/elevenlabs (22% commission)
+4. Add video: /apps/heygen (20% commission)
+5. Go self-hosted: /apps/umbrel (full data sovereignty)
 
-Last updated: 2026-03-07
+## Review Videos
+
+Each product has a review video with trilingual subtitles (EN, 繁中, 简中):
+- /videos/reviews/{product}-review.mp4
+- Subtitles: /videos/reviews/{product}-review.{en,zh-TW,zh-CN}.vtt
+
+Last updated: 2026-03-08

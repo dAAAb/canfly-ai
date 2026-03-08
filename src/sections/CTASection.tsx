@@ -70,7 +70,7 @@ export default function CTASection() {
           }}
         >
           <a
-            href="mailto:hello@canfly.ai"
+            href="mailto:hi@canfly.ai"
             className="inline-flex items-center gap-4 rounded-2xl no-underline text-white transition-all hover:scale-105"
             style={{
               background: 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04))',
@@ -80,7 +80,7 @@ export default function CTASection() {
             }}
           >
             <Mail className="w-5 h-5 opacity-70 flex-shrink-0" />
-            <span style={{ fontSize: 'clamp(15px, 1.2vw, 20px)' }}>hello@canfly.ai</span>
+            <span style={{ fontSize: 'clamp(15px, 1.2vw, 20px)' }}>hi@canfly.ai</span>
           </a>
 
           <a

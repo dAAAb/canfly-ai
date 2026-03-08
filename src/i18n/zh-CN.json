@@ -754,6 +754,152 @@
         }
       ]
     },
+    "virtualmachine": {
+      "title": "零基础：10 分钟在虚拟机里跑 AI",
+      "subtitle": "完全不需要技术背景 — 了解什么是虚拟机、一键安装 Linux、在里面跑你自己的 AI",
+      "duration": "10 分钟",
+      "difficulty": "入门",
+      "steps": [
+        {
+          "title": "什么是虚拟机？",
+          "titleEn": "What Is a Virtual Machine?",
+          "estimatedTime": "2 分钟",
+          "content": "虚拟机（VM）就像是「电脑里的电脑」。它让你在 Mac 的一个窗口里跑一个完全独立的操作系统（例如 Linux），完全不会影响你的主系统。可以把它想象成一个沙盒：你可以自由实验，如果搞砸了，删掉虚拟机重来就好。",
+          "subsections": [
+            {
+              "label": "为什么要用虚拟机跑 AI？",
+              "text": "在虚拟机里跑 AI 可以保持你的主系统干净。你会得到一个专门为 Ollama 等 AI 工具优化的 Linux 环境，不用担心弄乱 Mac 的设置。同时也是在安全环境中学习 Linux 基础的好方法。"
+            },
+            {
+              "label": "UTM vs Virtual Buddy",
+              "text": "两者都是 Mac 上用来跑虚拟机的 App。Virtual Buddy 更简单 — 一键安装 Linux，非常适合新手。UTM 免费且功能更强大，支持多种操作系统。我们会介绍两个，让你自己选。"
+            }
+          ],
+          "expectedResult": "你了解了什么是虚拟机，以及为什么它对跑 AI 很有用。准备好选择你的工具了。",
+          "tips": [
+            "虚拟机是完全隔离的 — 里面做什么都不会影响你的 Mac",
+            "如果 RAM 够多，你可以同时跑多个虚拟机",
+            "Apple Silicon Mac（M1/M2/M3/M4）跑 Linux 虚拟机非常快"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？概念问题解答",
+            "items": [
+              { "q": "虚拟机会拖慢我的 Mac 吗？", "a": "只在虚拟机运行时稍微影响。关掉虚拟机后 Mac 就恢复全速。16GB 以上 RAM 的话，几乎感觉不到变慢。" },
+              { "q": "这跟 Docker 一样吗？", "a": "概念类似，但虚拟机是跑一个完整的操作系统，有自己的桌面。Docker 跑的是轻量级容器，没有完整的操作系统。对新手来说，虚拟机比较容易理解。" }
+            ]
+          }
+        },
+        {
+          "title": "安装 UTM 或 Virtual Buddy",
+          "titleEn": "Install UTM or Virtual Buddy",
+          "estimatedTime": "2 分钟",
+          "content": "二选一：Virtual Buddy 最轻松（付费，从 Mac App Store 下载），或 UTM 免费、功能更完整。两者都在 Apple Silicon Mac 上表现很好。",
+          "expectedResult": "你已经安装好 UTM 或 Virtual Buddy，准备创建你的第一个虚拟机。",
+          "tips": [
+            "Virtual Buddy：Mac App Store 售价 $10，一键安装 Linux — 最适合新手",
+            "UTM：100% 免费开源，更多设置选项",
+            "两者都原生支持 Apple Silicon，性能最佳"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？安装问题排解",
+            "items": [
+              { "q": "UTM 在 Mac 上打不开", "a": "到「系统设置 → 隐私与安全性」，点击「仍然打开」。这是 macOS 对 App Store 外下载的 App 的标准安全机制。" },
+              { "q": "Virtual Buddy 需要 macOS 13+", "a": "Virtual Buddy 需要 macOS Ventura 或更新版本。如果你的版本较旧，改用 UTM — 它支持 macOS 11+。" },
+              { "q": "该选哪一个？", "a": "如果你想要零麻烦，不介意花 $10，选 Virtual Buddy。如果你偏好免费软件或想要更多控制权，选 UTM。" }
+            ]
+          }
+        },
+        {
+          "title": "创建 Linux 虚拟机",
+          "titleEn": "Create a Linux VM",
+          "estimatedTime": "3 分钟",
+          "content": "现在来创建你的 Linux 虚拟机。Virtual Buddy 一键搞定。UTM 的话，你需要下载 Ubuntu 镜像文件，然后按照简单的设置向导完成。",
+          "subsections": [
+            {
+              "label": "为什么选 Ubuntu？",
+              "text": "Ubuntu 是最适合新手的 Linux 发行版。它有图形桌面、大量在线资源，而且对 AI 工具的支持非常好。大部分 AI 教程和文档都假设你用的是 Ubuntu。"
+            }
+          ],
+          "expectedResult": "一个 Linux（Ubuntu）虚拟机在你的 Mac 上的窗口中运行。你可以看到 Ubuntu 的桌面或终端。",
+          "tips": [
+            "至少分配 4GB RAM 和 2 个 CPU 核心给虚拟机，确保 AI 运行顺畅",
+            "20GB 磁盘空间足够开始使用；之后可以扩充",
+            "Virtual Buddy 会自动下载 Ubuntu — 不需要自己找 ISO 文件"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？虚拟机创建问题排解",
+            "items": [
+              { "q": "虚拟机很慢", "a": "确认你分配了足够的 RAM（至少 4GB）。关掉 Mac 上其他吃资源的 App。也要确认你用的是 ARM64 版本的 Ubuntu，不是 x86。" },
+              { "q": "创建虚拟机后屏幕全黑", "a": "等 1-2 分钟 — 第一次开机需要时间初始化。如果还是全黑，试试重新启动虚拟机。" },
+              { "q": "UTM 的 Ubuntu ISO 去哪下载？", "a": "到 ubuntu.com/download/server 下载 ARM64 版本，适用于 Apple Silicon Mac。" }
+            ]
+          }
+        },
+        {
+          "title": "在虚拟机里安装 Ollama",
+          "titleEn": "Install Ollama in Your VM",
+          "estimatedTime": "3 分钟",
+          "content": "打开 Linux 虚拟机里的终端，用一行命令安装 Ollama。然后下载 AI 模型开始聊天 — 全部在你的虚拟机里运行！",
+          "expectedResult": "Ollama 已在你的虚拟机中安装完成，你可以跟本地 AI 模型聊天。一切都在虚拟机里运行，完全隔离。",
+          "tips": [
+            "curl 命令会自动下载并安装 Ollama",
+            "第一个模型下载（llama3.2）大约 2GB — 确保虚拟机有网络",
+            "输入 /bye 即可退出聊天"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？Ollama 安装问题排解",
+            "items": [
+              { "q": "找不到 curl 命令", "a": "执行：sudo apt install curl — 然后重新试一次 Ollama 安装命令。" },
+              { "q": "虚拟机没有网络", "a": "UTM 中，到虚拟机设置 → 网络，确认选了「共享」网络。Virtual Buddy 的网络应该会自动正常运作。" },
+              { "q": "模型下载很慢", "a": "虚拟机的网络可能比主机慢。耐心等待，或先试较小的 llama3.2 模型（2GB）。" },
+              { "q": "Ollama 说内存不足", "a": "增加虚拟机的 RAM 分配到至少 4GB。先关闭虚拟机，调整设置，然后重新启动。" }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "探索时间！",
+          "content": "太棒了！你已经在虚拟机里建立了自己的 AI 实验室。你的 Mac 保持干净，而且你有一个完整的 Linux 环境来做 AI 实验。接下来可以探索：",
+          "tips": [
+            "你的虚拟机会被保存 — 关闭后随时可以重新打开，不会丢失设置",
+            "你可以对虚拟机做快照，备份当前的状态",
+            "你在这里学到的一切，同样适用于真正的 Linux 服务器"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "连接 OpenClaw",
+              "desc": "给你的 AI 一个漂亮的界面。在虚拟机里安装 OpenClaw 并连接到你的本地 Ollama。",
+              "cta": "Ollama + OpenClaw 教程",
+              "link": "/learn/ollama"
+            },
+            {
+              "emoji": "☁️",
+              "title": "部署到云端",
+              "desc": "用 Zeabur 把你的 AI 上线。一键云端部署，让你随时随地都能使用 AI。",
+              "cta": "学习云端部署",
+              "link": "/learn/zeabur"
+            },
+            {
+              "emoji": "🎙️",
+              "title": "加上语音功能",
+              "desc": "用 ElevenLabs 让你的 AI 开口说话，支持中文语音合成。",
+              "cta": "探索 ElevenLabs",
+              "link": "/learn/elevenlabs-integration"
+            },
+            {
+              "emoji": "🔍",
+              "title": "探索更多模型",
+              "desc": "到 Ollama 模型库浏览数百种 AI 模型：聊天、代码、视觉识别等。",
+              "cta": "浏览模型库",
+              "link": "https://ollama.com/library",
+              "external": true
+            }
+          ]
+        }
+      ]
+    },
     "heygen": {
       "title": "5 分钟使用 HeyGen + OpenClaw 创作 AI 虚拟人物视频",
       "subtitle": "将你的 AI 对话转换成专业虚拟人物视频 — 非常适合内容创作和培训",
@@ -913,5 +1059,66 @@
         }
       ]
     }
+  },
+  "hardwareCompare": {
+    "pageTitle": "硬件对比 — Canfly",
+    "title": "AI 硬件选购指南",
+    "subtitle": "Umbrel Home vs Mac mini vs Raspberry Pi — 哪一台最适合你？对比价格、难度、适合人群。",
+    "feature": "功能",
+    "devices": {
+      "umbrelHome": "Umbrel Home",
+      "umbrelPrice": "$299 美元",
+      "umbrel-homeDesc": "专为家庭服务器打造，内置一键式应用商店。插上电源，10 分钟完成设置，全天候运行 AI 及自建应用，零维护。",
+      "macMini": "Mac mini",
+      "macMiniPrice": "$599+ 美元",
+      "mac-miniDesc": "Apple 的小型高性能主机。M 系列芯片提供出色的 AI 推理性能，最适合同时需要桌面工作站的开发者。",
+      "raspberryPi": "Raspberry Pi 5",
+      "raspberryPiPrice": "$60–$80 美元",
+      "raspberry-piDesc": "经典 DIY 单板电脑。超低价格入门，适合动手玩家、学习者及轻量 AI 实验。"
+    },
+    "rows": {
+      "price": "价格",
+      "setupDifficulty": "安装难度",
+      "targetAudience": "最适合",
+      "performance": "AI 性能",
+      "storage": "存储空间",
+      "ollamaSupport": "Ollama 支持",
+      "appStore": "应用商店",
+      "alwaysOn": "24/7 服务器",
+      "noSubscription": "免月费",
+      "portability": "便携性",
+      "communitySize": "社区规模"
+    },
+    "ratings": {
+      "easy": "简单",
+      "medium": "中等",
+      "hard": "进阶"
+    },
+    "values": {
+      "targetUmbrel": "注重隐私、非技术用户",
+      "targetMac": "开发者、高级用户",
+      "targetPi": "动手玩家、学生、爱好者",
+      "perfUmbrel": "良好（Intel N100）",
+      "perfMac": "优秀（Apple M 系列）",
+      "perfPi": "有限（ARM Cortex-A76）",
+      "storageUmbrel": "内置 1TB SSD",
+      "storageMac": "256GB–2TB（可选配）",
+      "storagePi": "microSD / USB SSD（自备）",
+      "communityUmbrel": "增长中",
+      "communityMac": "庞大",
+      "communityPi": "庞大"
+    },
+    "rec": {
+      "umbrelTitle": "选 Umbrel Home 如果…",
+      "umbrelDesc": "你想要一台即插即用的家庭服务器，能运行 AI 模型、Bitcoin 节点和自建应用，完全不需要碰终端。最适合注重隐私和数据主权的非技术用户。",
+      "macTitle": "选 Mac mini 如果…",
+      "macDesc": "你需要一台强大的开发机，同时也能作为 AI 推理服务器。M 系列芯片运行 Ollama 模型速度快，还有完整的 macOS 桌面环境可以写代码。",
+      "piTitle": "选 Raspberry Pi 如果…",
+      "piDesc": "你想要最便宜的入门方案，而且喜欢从零开始动手做。适合学习、轻量 AI 任务和 IoT 项目。只能跑小型模型。",
+      "learnMore": "了解更多",
+      "visitSite": "访问官网"
+    },
+    "ctaText": "不管选哪台硬件，先从我们的免费 Ollama 教程开始，5 分钟内让你的第一个 AI 上线。",
+    "ctaButton": "免费开始 Ollama"
   }
 }
