@@ -50,7 +50,7 @@ const langLoaders: Record<string, () => Promise<{ default: Record<string, unknow
   'zh-CN': () => import('./zh-CN.json'),
 }
 
-async function loadLanguage(lang: string) {
+export async function loadLanguage(lang: string) {
   if (lang === 'en' || i18n.hasResourceBundle(lang, 'translation')) return
   const loader = langLoaders[lang]
   if (loader) {
