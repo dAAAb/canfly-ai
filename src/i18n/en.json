@@ -1700,6 +1700,229 @@
     "installOllamaOneLine": "# Install Ollama with one command\ncurl -fsSL https://ollama.com/install.sh | sh",
     "chatDemo": {
       "you": "You"
+    },
+    "apikeys": {
+      "title": "Get Your AI API Keys — OpenAI & Anthropic",
+      "subtitle": "Step-by-step guide to getting your OpenAI and Anthropic API keys — the first step to using AI-powered apps like OpenClaw",
+      "duration": "10 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "What Are API Keys?",
+          "titleEn": "What Are API Keys?",
+          "estimatedTime": "1 min",
+          "content": "An API key is like a password that lets apps talk to AI services on your behalf. When you use tools like OpenClaw, they need your API key to send your questions to AI models like GPT-4 or Claude. Don't worry — you control your key and can revoke it anytime.",
+          "expectedResult": "You understand what API keys are and why you need them.",
+          "tips": [
+            "API keys are secret — never share them publicly or commit them to GitHub",
+            "You can create multiple keys for different projects",
+            "Both OpenAI and Anthropic offer pay-as-you-go pricing — you only pay for what you use",
+            "Most casual users spend less than $5/month"
+          ],
+          "troubleshooting": {
+            "title": "Common Questions",
+            "items": [
+              {
+                "q": "Is it safe to give my API key to OpenClaw?",
+                "a": "Yes — OpenClaw runs locally on your machine. Your key is stored on your device and sent directly to the AI provider. It never passes through a third-party server."
+              },
+              {
+                "q": "Do I need both OpenAI and Anthropic keys?",
+                "a": "No! You can start with just one. OpenAI gives you GPT-4, Anthropic gives you Claude. Try whichever interests you more."
+              }
+            ]
+          },
+          "commands": [
+            "# API keys let apps access AI models on your behalf",
+            "# Think of them as a personal password for AI services",
+            "",
+            "# You'll need at least one of these:",
+            "# - OpenAI API Key → access GPT-4, GPT-4o, o1",
+            "# - Anthropic API Key → access Claude 4, Claude Sonnet, Claude Haiku"
+          ]
+        },
+        {
+          "title": "Get Your OpenAI API Key",
+          "titleEn": "Get Your OpenAI API Key",
+          "estimatedTime": "3 min",
+          "content": "OpenAI provides GPT-4, GPT-4o, and other powerful models. Follow these steps to create your account and generate an API key.",
+          "expectedResult": "You have an OpenAI API key starting with 'sk-' copied to your clipboard.",
+          "tips": [
+            "New accounts get $5 free credit (expires after 3 months)",
+            "Save your API key immediately — OpenAI only shows it once!",
+            "Use a descriptive name like 'openclaw-mac' so you remember what it's for",
+            "You can set spending limits in Settings → Limits to avoid surprises"
+          ],
+          "troubleshooting": {
+            "title": "OpenAI Account Issues",
+            "items": [
+              {
+                "q": "I don't see the 'Create new secret key' button",
+                "a": "Make sure you're on platform.openai.com (the API site), not chatgpt.com (the chat app). They're separate products with separate accounts."
+              },
+              {
+                "q": "My API key doesn't work",
+                "a": "Check that you've added a payment method. Free credits may have expired. Go to Settings → Billing to add a card."
+              },
+              {
+                "q": "I accidentally closed the key popup",
+                "a": "Unfortunately, you can't view the key again. Delete the old key and create a new one — it only takes a few seconds."
+              }
+            ]
+          },
+          "commands": [
+            "# Step 1: Go to the OpenAI API platform",
+            "open https://platform.openai.com/signup",
+            "",
+            "# Step 2: Sign up or log in",
+            "# Use Google, Microsoft, Apple, or email to create your account",
+            "",
+            "# Step 3: Navigate to API Keys page",
+            "open https://platform.openai.com/api-keys",
+            "",
+            "# Step 4: Click '+ Create new secret key'",
+            "# Give it a name like 'openclaw-mac'",
+            "# Copy the key (starts with 'sk-') — save it somewhere safe!",
+            "",
+            "# Step 5: Add a payment method (if needed)",
+            "open https://platform.openai.com/settings/organization/billing/overview",
+            "# Add a credit card for pay-as-you-go billing",
+            "# Set a monthly spending limit to stay in control"
+          ]
+        },
+        {
+          "title": "Get Your Anthropic API Key",
+          "titleEn": "Get Your Anthropic API Key",
+          "estimatedTime": "3 min",
+          "content": "Anthropic makes Claude — known for being helpful, safe, and great at following instructions. Here's how to get your Anthropic API key.",
+          "expectedResult": "You have an Anthropic API key starting with 'sk-ant-' copied to your clipboard.",
+          "tips": [
+            "New accounts get $5 free credit to try the API",
+            "Claude excels at long documents, coding tasks, and nuanced reasoning",
+            "Anthropic's Console has a built-in Workbench to test prompts before using the API",
+            "Set spending limits in Settings → Plans & Billing → Limits"
+          ],
+          "troubleshooting": {
+            "title": "Anthropic Account Issues",
+            "items": [
+              {
+                "q": "I can't find where to create API keys",
+                "a": "Go to console.anthropic.com → Settings → API Keys. Make sure you're on the Console (API platform), not claude.ai (the chat app)."
+              },
+              {
+                "q": "My key doesn't work — 'insufficient credits'",
+                "a": "You need to add a payment method or wait for free credits to activate. Go to Settings → Plans & Billing."
+              },
+              {
+                "q": "What's the difference between claude.ai and the API?",
+                "a": "claude.ai is the chat app (like ChatGPT). The API (console.anthropic.com) lets other apps use Claude programmatically. They have separate billing."
+              }
+            ]
+          },
+          "commands": [
+            "# Step 1: Go to the Anthropic Console",
+            "open https://console.anthropic.com/",
+            "",
+            "# Step 2: Sign up or log in",
+            "# Use Google or email to create your account",
+            "",
+            "# Step 3: Navigate to API Keys",
+            "open https://console.anthropic.com/settings/keys",
+            "",
+            "# Step 4: Click 'Create Key'",
+            "# Give it a name like 'openclaw-mac'",
+            "# Copy the key (starts with 'sk-ant-') — save it somewhere safe!",
+            "",
+            "# Step 5: Add billing (if needed)",
+            "open https://console.anthropic.com/settings/plans",
+            "# Add a credit card for pay-as-you-go billing",
+            "# Set a monthly spending limit in the Limits section"
+          ]
+        },
+        {
+          "title": "Store Your Keys Safely",
+          "titleEn": "Store Your Keys Safely",
+          "estimatedTime": "2 min",
+          "content": "Your API keys are secrets — treat them like passwords. Here are the best practices to keep them safe and ready to use in your apps.",
+          "expectedResult": "Your API keys are stored securely and you know how to use them in your apps.",
+          "tips": [
+            "Never paste API keys into public chat, forums, or code repositories",
+            "Use environment variables instead of hardcoding keys in your code",
+            "If a key is compromised, revoke it immediately and create a new one",
+            "Consider using a password manager to store your keys"
+          ],
+          "troubleshooting": {
+            "title": "Key Safety Tips",
+            "items": [
+              {
+                "q": "I accidentally posted my key on GitHub",
+                "a": "Revoke it immediately! Go to the provider's dashboard, delete the exposed key, and create a new one. Both OpenAI and Anthropic scan for leaked keys and may auto-revoke them."
+              },
+              {
+                "q": "How do I use environment variables?",
+                "a": "On Mac/Linux, add 'export OPENAI_API_KEY=sk-...' to your ~/.zshrc file. On Windows, use System Properties → Environment Variables."
+              }
+            ]
+          },
+          "commands": [
+            "# Option 1: Store as environment variables (recommended for developers)",
+            "",
+            "# Mac / Linux — add to your shell profile:",
+            "echo 'export OPENAI_API_KEY=\"sk-your-key-here\"' >> ~/.zshrc",
+            "echo 'export ANTHROPIC_API_KEY=\"sk-ant-your-key-here\"' >> ~/.zshrc",
+            "source ~/.zshrc",
+            "",
+            "# Verify they're set:",
+            "echo $OPENAI_API_KEY | head -c 10",
+            "# Should print: sk-your-ke...",
+            "",
+            "# Option 2: Paste directly into OpenClaw settings",
+            "# OpenClaw stores keys locally on your device — never sent to third parties",
+            "",
+            "# Option 3: Use a .env file (for projects)",
+            "echo 'OPENAI_API_KEY=sk-your-key-here' > .env",
+            "echo 'ANTHROPIC_API_KEY=sk-ant-your-key-here' >> .env",
+            "echo '.env' >> .gitignore  # Never commit .env files!"
+          ]
+        },
+        {
+          "title": "You're Ready!",
+          "titleEn": "You're Ready!",
+          "estimatedTime": "1 min",
+          "content": "Congratulations! You now have API keys to access the world's most powerful AI models. Use them with OpenClaw, build your own apps, or explore the AI ecosystem.",
+          "nextStepCards": [
+            {
+              "emoji": "🦙",
+              "title": "Try Ollama (Free)",
+              "desc": "Run AI locally on your Mac — no API key needed",
+              "cta": "Start Tutorial"
+            },
+            {
+              "emoji": "☁️",
+              "title": "Deploy with Zeabur",
+              "desc": "Put your AI app in the cloud with one click",
+              "cta": "Deploy Now"
+            },
+            {
+              "emoji": "🔍",
+              "title": "Perplexity AI Search",
+              "desc": "AI-powered search with source citations",
+              "cta": "Try Perplexity"
+            },
+            {
+              "emoji": "🎙️",
+              "title": "ElevenLabs Voice AI",
+              "desc": "Add natural voice synthesis to your projects",
+              "cta": "Get Started"
+            }
+          ],
+          "tips": [
+            "Monitor your usage regularly to avoid unexpected charges",
+            "Start with cheaper models (GPT-4o-mini, Claude Haiku) while learning",
+            "Both providers have generous free tiers — experiment freely!"
+          ]
+        }
+      ]
     }
   },
   "hardwareCompare": {

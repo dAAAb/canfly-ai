@@ -25,27 +25,10 @@ export default function AppsPage() {
     <div className="min-h-screen bg-black text-white">
       <Navbar search={{ value: searchTerm, onChange: setSearchTerm, placeholder: t('apps.searchPlaceholder') }} />
 
-      {/* Mobile horizontal tabs */}
-      <div className="md:hidden overflow-x-auto border-b border-gray-800 bg-gray-950/50 px-4 py-3 flex gap-2 no-scrollbar">
-        {categories.map((category) => (
-          <button
-            key={category.id}
-            onClick={() => setSelectedCategory(category.id)}
-            className={`px-3 py-1.5 rounded-full text-sm whitespace-nowrap transition-all ${
-              selectedCategory === category.id
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-800 text-gray-400 hover:text-white'
-            }`}
-          >
-            {t(`apps.categoryNames.${category.id}`)} ({category.count})
-          </button>
-        ))}
-      </div>
-
       <div className="flex">
-        {/* Sidebar — hidden on mobile */}
+        {/* Sidebar */}
         <aside
-          className={`hidden md:block ${sidebarOpen ? 'w-64' : 'w-0'} shrink-0 transition-all duration-200 overflow-hidden border-r border-gray-800 bg-gray-950/50`}
+          className={`${sidebarOpen ? 'w-64' : 'w-0'} shrink-0 transition-all duration-200 overflow-hidden border-r border-gray-800 bg-gray-950/50`}
           style={{ minHeight: 'calc(100vh - 65px)' }}
         >
           <div className="w-64 p-6">
@@ -193,36 +176,27 @@ export default function AppsPage() {
                   to={localePath(`/apps/${product.id}`)}
                   className="bg-gray-900/60 border border-gray-800 rounded-xl overflow-hidden hover:border-gray-600 transition-all hover:scale-[1.02] group card-hover"
                 >
+                  {/* Image placeholder */}
+                  <div className="aspect-video bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                    <div className="text-4xl text-gray-600">{product.name[0]}</div>
+                  </div>
+
                   <div className="p-5">
-                    <div className="flex items-start gap-3 mb-2">
-                      {/* App Icon */}
-                      <div className="w-14 h-14 shrink-0 rounded-xl bg-gray-800 border border-gray-700/50 flex items-center justify-center overflow-hidden">
-                        <img
-                          src={product.icon}
-                          alt={product.name}
-                          className="w-10 h-10 object-contain"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = 'none'
-                            ;(e.target as HTMLImageElement).parentElement!.innerHTML = `<span class="text-xl text-gray-500 font-bold">${product.name[0]}</span>`
-                          }}
-                        />
+                    <div className="flex items-start justify-between mb-2">
+                      <div>
+                        <h3 className="font-semibold text-white group-hover:text-blue-400 transition-colors">
+                          {product.name}
+                        </h3>
+                        <p className="text-sm text-gray-500 mt-0.5">{t(`product.products.${product.id}.tagline`)}</p>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-2">
-                          <h3 className="font-semibold text-white group-hover:text-blue-400 transition-colors truncate">
-                            {product.name}
-                          </h3>
-                          <div className="text-right shrink-0">
-                            {product.status === 'coming-soon' ? (
-                              <span className="px-2 py-0.5 bg-purple-600/20 text-purple-400 text-xs rounded-full border border-purple-600/40 whitespace-nowrap">
-                                Coming Soon
-                              </span>
-                            ) : (
-                              <div className="text-sm font-medium text-white whitespace-nowrap">{product.price}</div>
-                            )}
-                          </div>
-                        </div>
-                        <p className="text-sm text-gray-500 mt-0.5 line-clamp-2">{t(`product.products.${product.id}.tagline`)}</p>
+                      <div className="text-right shrink-0 ml-4">
+                        {product.status === 'coming-soon' ? (
+                          <span className="px-2 py-0.5 bg-purple-600/20 text-purple-400 text-xs rounded-full border border-purple-600/40">
+                            Coming Soon
+                          </span>
+                        ) : (
+                          <div className="text-sm font-medium text-white">{product.price}</div>
+                        )}
                       </div>
                     </div>
 
