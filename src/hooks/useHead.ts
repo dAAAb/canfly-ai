@@ -1,5 +1,25 @@
 import { useEffect } from 'react'
 
+const SITE_ORIGIN = 'https://canfly.ai'
+const LANG_PREFIXES = ['/zh-tw', '/zh-cn']
+const HREFLANG_MAP: { hreflang: string; prefix: string }[] = [
+  { hreflang: 'en', prefix: '' },
+  { hreflang: 'zh-Hant', prefix: '/zh-tw' },
+  { hreflang: 'zh-Hans', prefix: '/zh-cn' },
+]
+
+/** Extract the language-neutral base path from a canonical URL. */
+function basePathFromCanonical(canonical: string): string {
+  let path = canonical.replace(SITE_ORIGIN, '')
+  for (const prefix of LANG_PREFIXES) {
+    if (path.startsWith(prefix)) {
+      path = path.slice(prefix.length) || '/'
+      break
+    }
+  }
+  return path
+}
+
 interface HeadProps {
   title?: string
   description?: string
@@ -51,6 +71,32 @@ export function useHead({ title, description, ogImage, canonical, ogType }: Head
       setMeta('property', 'og:type', ogType)
     }
     setMeta('name', 'twitter:card', 'summary_large_image')
+
+    // --- hreflang alternate links ---
+    // Remove any existing hreflang links (both static from index.html and from prior renders)
+    document.querySelectorAll('link[rel="alternate"][hreflang]').forEach(el => el.remove())
+
+    if (canonical) {
+      const basePath = basePathFromCanonical(canonical)
+      const created: HTMLLinkElement[] = []
+
+      for (const { hreflang, prefix } of HREFLANG_MAP) {
+        const link = document.createElement('link')
+        link.rel = 'alternate'
+        link.hreflang = hreflang
+        link.href = `${SITE_ORIGIN}${prefix}${basePath === '/' ? '' : basePath}`
+        document.head.appendChild(link)
+        created.push(link)
+      }
+
+      // x-default points to English
+      const xDefault = document.createElement('link')
+      xDefault.rel = 'alternate'
+      xDefault.hreflang = 'x-default'
+      xDefault.href = `${SITE_ORIGIN}${basePath === '/' ? '' : basePath}`
+      document.head.appendChild(xDefault)
+      created.push(xDefault)
+    }
 
     return () => {
       if (title) document.title = 'Canfly — Now You Can Fly'
