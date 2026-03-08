@@ -10,7 +10,7 @@ export function useVideoBackground(src: string) {
     let hls: { destroy(): void } | null = null
 
     // Dynamic import hls.js only when needed
-    import('hls.js').then(({ default: Hls }) => {
+    import('hls.js/dist/hls.light.mjs').then(({ default: Hls }) => {
       if (Hls.isSupported()) {
         const instance = new Hls({ enableWorker: true })
         hls = instance
