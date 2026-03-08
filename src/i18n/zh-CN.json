@@ -226,6 +226,81 @@
         ],
         "ctaPrimary": "获取免费 API 密钥",
         "ctaSecondary": "查看教程"
+      },
+      "geekom-a8": {
+        "tagline": "本地 AI 最佳迷你电脑",
+        "description": "GEEKOM A8 是运行本地 AI 模型的最佳迷你电脑之一。搭载 AMD Ryzen 7 8745HS、32GB DDR5 内存与 Radeon 780M GPU，轻松运行 Ollama 和 OpenClaw。",
+        "features": [
+          "AMD Ryzen 7 8745HS（8 核 16 线程）",
+          "32GB DDR5 内存（可升级至 64GB）",
+          "1TB PCIe 4.0 NVMe 固态硬盘",
+          "Radeon 780M 内置显卡",
+          "2.5G 以太网 + Wi-Fi 6E",
+          "三屏 4K 输出",
+          "超迷你 0.5L 设计"
+        ]
+      },
+      "beelink-ser5-max": {
+        "tagline": "高性价比 AI 迷你电脑",
+        "description": "Beelink SER5 MAX 在 0.6L 的小巧机身中搭载 AMD Ryzen 7 5800H。适合想要专用 AI 硬件但预算有限的新手。",
+        "features": [
+          "AMD Ryzen 7 5800H（8 核 16 线程）",
+          "24GB DDR4 内存",
+          "1TB PCIe 3.0 NVMe 固态硬盘",
+          "三屏 4K 输出",
+          "2.5G 以太网 + Wi-Fi 6",
+          "超迷你 0.6L 设计",
+          "本地 AI 最高性价比"
+        ]
+      },
+      "raspberry-pi-5": {
+        "tagline": "入门 AI 学习套件",
+        "description": "Raspberry Pi 5（8GB）是开始本地 AI 之旅最经济实惠的方式。搭配 Ollama，不到 $100 就能拥有自己的 AI。",
+        "features": [
+          "四核心 ARM Cortex-A76",
+          "8GB LPDDR4X 内存",
+          "Gigabit 以太网 + Wi-Fi 5",
+          "PCIe 2.0 扩展",
+          "GPIO 物联网接口",
+          "庞大社区支持",
+          "总花费不到 $100"
+        ]
+      },
+      "hdmi-dummy-plug": {
+        "tagline": "无显示器 AI 服务器必备",
+        "description": "运行无显示器 AI 服务器？HDMI 假负载让电脑以为连接了显示器，启用完整 GPU 加速和远程桌面。任何常驻 AI 设置的必备配件。",
+        "features": [
+          "4K@60Hz 显示模拟",
+          "启用 GPU 加速",
+          "远程桌面必备",
+          "适用所有电脑",
+          "即插即用",
+          "不到 $10"
+        ]
+      },
+      "elgato-stream-deck": {
+        "tagline": "AI 工作流控制面板",
+        "description": "把 Elgato Stream Deck 变成你的 AI 指挥中心。15 颗可编程 LCD 按键，一键触发 AI 代理、切换模型、控制工作流。",
+        "features": [
+          "15 颗可自定义 LCD 按键",
+          "一键触发 AI 代理",
+          "拖拽式设置",
+          "支持 OBS、Zoom、Slack",
+          "USB-C 连接",
+          "插件生态系统"
+        ]
+      },
+      "fifine-am8": {
+        "tagline": "AI 语音输入好简单",
+        "description": "用清晰的声音与 AI 代理对话。Fifine AM8 动圈 USB 麦克风，内置降噪功能。",
+        "features": [
+          "动圈心形指向",
+          "USB + XLR 双连接",
+          "内置降噪",
+          "含防震架",
+          "RGB 灯效",
+          "即插即用"
+        ]
       }
     }
   },

@@ -226,6 +226,81 @@
         ],
         "ctaPrimary": "Get Free API Key",
         "ctaSecondary": "View Tutorial"
+      },
+      "geekom-a8": {
+        "tagline": "Best mini PC for local AI",
+        "description": "The GEEKOM A8 is one of the best mini PCs for running local AI models. With AMD Ryzen 7 8745HS, 32GB DDR5 RAM, and Radeon 780M GPU, it handles Ollama and OpenClaw with ease.",
+        "features": [
+          "AMD Ryzen 7 8745HS (8 cores, 16 threads)",
+          "32GB DDR5 RAM (upgradeable to 64GB)",
+          "1TB PCIe 4.0 NVMe SSD",
+          "Radeon 780M integrated GPU",
+          "2.5G Ethernet + Wi-Fi 6E",
+          "Triple 4K display output",
+          "Ultra compact 0.5L design"
+        ]
+      },
+      "beelink-ser5-max": {
+        "tagline": "High value AI mini PC",
+        "description": "The Beelink SER5 MAX packs AMD Ryzen 7 5800H into a tiny 0.6L body. Great for beginners who want dedicated AI hardware without breaking the bank.",
+        "features": [
+          "AMD Ryzen 7 5800H (8 cores, 16 threads)",
+          "24GB DDR4 RAM",
+          "1TB PCIe 3.0 NVMe SSD",
+          "Triple 4K display",
+          "2.5G Ethernet + Wi-Fi 6",
+          "Ultra compact 0.6L design",
+          "Best value for local AI"
+        ]
+      },
+      "raspberry-pi-5": {
+        "tagline": "Budget AI learning kit",
+        "description": "The Raspberry Pi 5 (8GB) is the most affordable way to start your local AI journey. Pair with Ollama for a sub-$100 AI setup.",
+        "features": [
+          "Quad-core ARM Cortex-A76",
+          "8GB LPDDR4X RAM",
+          "Gigabit Ethernet + Wi-Fi 5",
+          "PCIe 2.0 expansion",
+          "GPIO for IoT projects",
+          "Massive community support",
+          "Under $100 total setup"
+        ]
+      },
+      "hdmi-dummy-plug": {
+        "tagline": "Essential for headless AI servers",
+        "description": "Running a headless AI server? An HDMI dummy plug enables full GPU acceleration and remote desktop. A must-have for any always-on AI setup.",
+        "features": [
+          "4K@60Hz display emulation",
+          "Enables GPU acceleration",
+          "Essential for remote desktop",
+          "Works with all computers",
+          "Plug and play",
+          "Under $10"
+        ]
+      },
+      "elgato-stream-deck": {
+        "tagline": "AI workflow control panel",
+        "description": "Turn the Elgato Stream Deck into your AI command center. 15 programmable LCD keys to trigger agents, switch models, and control workflows.",
+        "features": [
+          "15 customizable LCD keys",
+          "One-tap AI agent triggers",
+          "Drag-and-drop setup",
+          "Works with OBS, Zoom, Slack",
+          "USB-C connectivity",
+          "Plugin ecosystem"
+        ]
+      },
+      "fifine-am8": {
+        "tagline": "AI voice input made easy",
+        "description": "Talk to your AI agents with crystal-clear audio. The Fifine AM8 is a dynamic USB microphone with noise cancellation.",
+        "features": [
+          "Dynamic cardioid pattern",
+          "USB + XLR dual connectivity",
+          "Built-in noise cancellation",
+          "Shock mount included",
+          "RGB lighting",
+          "Plug and play"
+        ]
       }
     }
   },
