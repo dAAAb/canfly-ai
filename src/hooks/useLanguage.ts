@@ -27,6 +27,9 @@ export function useLanguage() {
 
   /** Switch to a different language, preserving current page path. */
   function switchLang(newLang: SupportedLang) {
+    // Change i18n language first so useTranslation() re-renders with new translations
+    i18n.changeLanguage(newLang)
+
     const prefix = prefixForLang(currentLang)
     let path = location.pathname
     if (prefix && path.startsWith(prefix)) {
