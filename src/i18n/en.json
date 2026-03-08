@@ -135,17 +135,19 @@
     "features": "Features",
     "products": {
       "ollama": {
-        "tagline": "Free local AI models",
-        "description": "Run powerful AI models locally without requiring API keys or internet connection. Perfect for privacy-conscious users and development environments.",
+        "tagline": "Free Local & Cloud AI Models × OpenClaw",
+        "description": "Run AI models locally or in the cloud. Install OpenClaw with one command: ollama launch openclaw. Free cloud models included — no GPU needed. Upgrade to Pro ($20/mo) for unlimited usage.",
         "features": [
-          "No API keys required",
+          "One-line OpenClaw install: ollama launch openclaw",
+          "Free cloud models — no GPU required",
           "Privacy-focused local processing",
-          "Multiple model support (Llama, CodeLlama, Mistral)",
-          "Easy command-line interface",
+          "Cloud models: kimi-k2.5, minimax-m2.5, glm-5",
+          "Local models: glm-4.7-flash, Llama, Mistral",
+          "Pro $20/mo for daily work, Max for heavy usage",
           "Works with OpenClaw agents"
         ],
         "ctaPrimary": "Start Free Tutorial",
-        "ctaSecondary": "View on GitHub"
+        "ctaSecondary": "One-Click OpenClaw Install"
       },
       "zeabur": {
         "tagline": "One-click cloud deployment",
@@ -386,7 +388,7 @@
     "congratsDesc": "You've successfully run AI locally. Now You Can Fly!",
     "ollama": {
       "title": "Run Your First Local AI in 5 Minutes",
-      "subtitle": "Free, offline, completely private — run large language models on your own computer with Ollama",
+      "subtitle": "Free local & cloud AI models × OpenClaw — run large language models on your own computer or use free cloud models with zero setup",
       "duration": "5 min",
       "difficulty": "Beginner",
       "steps": [
@@ -461,6 +463,10 @@
             {
               "label": "What is a model?",
               "text": "A model is an AI program trained on massive amounts of data. Like different experts having different specialties, different models excel at different tasks. Model file sizes range from 2GB to 40GB+."
+            },
+            {
+              "label": "Cloud vs Local models",
+              "text": "Cloud models (marked with :cloud) run on Ollama's servers — free quota included, no GPU needed. Local models run on your hardware for complete privacy. Start with cloud models to try AI instantly, then buy hardware for local inference when ready."
             }
           ],
           "expectedResult": "After download completes, it will show success. You can use ollama list to check installed models.",
@@ -495,22 +501,34 @@
                 "speed": "Fast"
               },
               {
+                "name": "glm-4.7-flash",
+                "size": "~25 GB VRAM",
+                "best": "Powerful local reasoning",
+                "speed": "Medium"
+              },
+              {
                 "name": "codellama",
                 "size": "3.8 GB",
                 "best": "Coding, Debug",
                 "speed": "Medium"
               },
               {
-                "name": "llama3.1",
-                "size": "4.7 GB",
-                "best": "Complex reasoning, creative writing",
-                "speed": "Medium"
+                "name": "kimi-k2.5:cloud",
+                "size": "Cloud",
+                "best": "Free cloud model, general use",
+                "speed": "Fast"
               },
               {
-                "name": "mistral",
-                "size": "4.1 GB",
-                "best": "Multi-language, analysis",
-                "speed": "Medium"
+                "name": "minimax-m2.5:cloud",
+                "size": "Cloud",
+                "best": "Free cloud model, creative tasks",
+                "speed": "Fast"
+              },
+              {
+                "name": "glm-5:cloud",
+                "size": "Cloud",
+                "best": "Free cloud model, multilingual",
+                "speed": "Fast"
               }
             ]
           },
@@ -521,8 +539,13 @@
             "# For coding: CodeLlama",
             "ollama pull codellama",
             "",
-            "# Want more power? Try Llama 3.1 (8B parameters)",
-            "ollama pull llama3.1"
+            "# Powerful local model (requires ~25GB VRAM):",
+            "ollama pull glm-4.7-flash",
+            "",
+            "# Or use FREE cloud models — no GPU needed!",
+            "ollama pull kimi-k2.5:cloud",
+            "ollama pull minimax-m2.5:cloud",
+            "ollama pull glm-5:cloud"
           ]
         },
         {
@@ -634,6 +657,13 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "🚀",
+              "title": "One-Click OpenClaw Install",
+              "desc": "Use ollama launch openclaw to auto-install and start OpenClaw with free cloud models. The fastest way to experience AI agents.",
+              "cta": "Quick Start Guide",
+              "link": "/learn/ollama-openclaw"
+            },
+            {
               "emoji": "☁️",
               "title": "Deploy to Cloud",
               "desc": "One-click deploy with Zeabur to make your AI available anywhere. Use code OpenClaw for 10% off.",
@@ -689,6 +719,18 @@
         {
           "q": "How do I connect Ollama to OpenClaw?",
           "a": "After installing Ollama and pulling a model, OpenClaw automatically detects Ollama at http://localhost:11434. Just start both applications and they connect seamlessly."
+        },
+        {
+          "q": "What are Ollama cloud models?",
+          "a": "Ollama now offers cloud models (marked with :cloud suffix) that run on Ollama's servers. You get free quota to try them — no GPU, no hardware needed. Great for getting started before investing in local hardware."
+        },
+        {
+          "q": "How do I install OpenClaw with Ollama?",
+          "a": "Just run `ollama launch openclaw` in your terminal. Ollama will automatically download, install, configure, and start OpenClaw for you. It's the fastest way to get an AI agent running."
+        },
+        {
+          "q": "What is the difference between Ollama free and Pro plans?",
+          "a": "Free tier includes local model usage (unlimited) plus limited cloud model quota. Pro ($20/month) gives you more cloud model usage for daily work. Max tier is for heavy cloud usage. Local models are always free regardless of plan."
         }
       ]
     },
@@ -2859,6 +2901,169 @@
         {
           "q": "Will always-on reduce my Mac's lifespan?",
           "a": "Modern Macs are designed for continuous operation. Apple's own data centers run Mac hardware 24/7. SSDs have very long lifespans, and Apple Silicon is extremely power efficient."
+        }
+      ]
+    },
+    "ollamaOpenclaw": {
+      "title": "Install OpenClaw with Ollama in One Command",
+      "subtitle": "ollama launch openclaw — the fastest way to experience AI agents with free cloud models, no GPU needed",
+      "duration": "3 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "Install Ollama",
+          "titleEn": "Install Ollama",
+          "estimatedTime": "1 min",
+          "content": "If you don't have Ollama yet, install it with a single command. Already have Ollama? Skip to the next step!",
+          "commands": [
+            "# macOS / Linux — one-line install",
+            "curl -fsSL https://ollama.com/install.sh | sh",
+            "",
+            "# Verify installation",
+            "ollama --version"
+          ],
+          "expectedResult": "Ollama is installed and running in the background.",
+          "tips": [
+            "Mac users can also download Ollama.app from ollama.com",
+            "Windows users: download the installer from ollama.com",
+            "If you already have Ollama installed, just make sure it's updated to the latest version"
+          ]
+        },
+        {
+          "title": "One-Click Launch OpenClaw",
+          "titleEn": "One-Click Launch OpenClaw",
+          "estimatedTime": "1 min",
+          "content": "This is the magic command! Ollama will automatically download, install, configure, and start OpenClaw for you. No manual setup needed.",
+          "commands": [
+            "# The magic one-liner — installs and launches OpenClaw",
+            "ollama launch openclaw",
+            "",
+            "# That's it! OpenClaw will open in your browser automatically."
+          ],
+          "expectedResult": "OpenClaw opens in your browser, ready to use. Ollama handles all the configuration automatically.",
+          "tips": [
+            "First run takes a bit longer as it downloads OpenClaw",
+            "Subsequent launches are near-instant",
+            "OpenClaw auto-connects to your local Ollama instance"
+          ],
+          "troubleshooting": {
+            "title": "Launch not working?",
+            "items": [
+              {
+                "q": "\"ollama launch\" command not found",
+                "a": "Update Ollama to the latest version: curl -fsSL https://ollama.com/install.sh | sh"
+              },
+              {
+                "q": "Browser doesn't open automatically",
+                "a": "Check the terminal output for the URL (usually http://localhost:3000) and open it manually."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Choose a Free Cloud Model",
+          "titleEn": "Choose a Free Cloud Model",
+          "estimatedTime": "30 sec",
+          "content": "Free cloud models let you experience AI instantly — no GPU, no hardware investment needed. Ollama gives you free quota on sign-up.",
+          "commands": [
+            "# Pull a free cloud model (runs on Ollama's servers)",
+            "ollama pull kimi-k2.5:cloud",
+            "",
+            "# More free cloud models to try:",
+            "ollama pull minimax-m2.5:cloud",
+            "ollama pull glm-5:cloud",
+            "",
+            "# Or use a local model if you have the hardware:",
+            "ollama pull glm-4.7-flash"
+          ],
+          "expectedResult": "Cloud model is ready to use in OpenClaw. Select it from the model dropdown.",
+          "tips": [
+            "Cloud models are free with your Ollama account (light usage)",
+            "No GPU required — models run on Ollama's cloud servers",
+            "kimi-k2.5:cloud is great for general tasks",
+            "Switch between cloud and local models anytime in OpenClaw"
+          ]
+        },
+        {
+          "title": "Connect Messaging (Optional)",
+          "titleEn": "Connect Messaging",
+          "estimatedTime": "30 sec",
+          "content": "Want to chat with your AI agent from Telegram or WhatsApp? Connect your messaging apps in OpenClaw settings.",
+          "commands": [
+            "# In OpenClaw settings, you can connect:",
+            "# - Telegram bot",
+            "# - WhatsApp",
+            "# - LINE",
+            "# - Discord",
+            "",
+            "# Follow the in-app instructions for each platform."
+          ],
+          "expectedResult": "You can now talk to your AI agent from your favorite messaging app.",
+          "tips": [
+            "Telegram is the easiest to set up",
+            "You can connect multiple messaging platforms simultaneously",
+            "This step is optional — you can use OpenClaw directly in the browser"
+          ]
+        },
+        {
+          "title": "What's Next?",
+          "titleEn": "What's Next",
+          "estimatedTime": "Explore!",
+          "content": "You're running a full AI agent with zero cost! Here's how to level up:",
+          "tips": [
+            "Free cloud quota is great for getting started",
+            "No GPU needed for cloud models",
+            "All data stays private with local models"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🖥️",
+              "title": "Buy Hardware for Local AI",
+              "desc": "Want unlimited private AI? Get a Mac Mini or GEEKOM mini PC to run models locally 24/7.",
+              "cta": "Hardware Guide",
+              "link": "/learn/hardware"
+            },
+            {
+              "emoji": "💎",
+              "title": "Upgrade to Ollama Pro",
+              "desc": "Need more cloud usage? Ollama Pro ($20/mo) covers daily work. Max for heavy users.",
+              "cta": "View Pricing",
+              "link": "https://ollama.com/pricing",
+              "external": true
+            },
+            {
+              "emoji": "☁️",
+              "title": "Deploy to Cloud",
+              "desc": "Make your AI available anywhere with Zeabur one-click deploy. Use code OpenClaw for 10% off.",
+              "cta": "Deploy Guide",
+              "link": "/learn/zeabur"
+            },
+            {
+              "emoji": "🎙️",
+              "title": "Add Voice Features",
+              "desc": "Give your AI a voice with ElevenLabs — supports Chinese text-to-speech.",
+              "cta": "Explore ElevenLabs",
+              "link": "/learn/elevenlabs-integration"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "What does 'ollama launch openclaw' do?",
+          "a": "It automatically downloads, installs, configures, and starts OpenClaw. No manual setup — Ollama handles everything. It's the fastest way to get an AI agent running."
+        },
+        {
+          "q": "Do I need a GPU for cloud models?",
+          "a": "No! Cloud models run on Ollama's servers. You just need an internet connection. Free quota is included when you sign up."
+        },
+        {
+          "q": "How much does Ollama Pro cost?",
+          "a": "Free tier: unlimited local models + limited cloud quota. Pro: $20/month for daily cloud usage. Max: for heavy cloud usage. Local models are always 100% free."
+        },
+        {
+          "q": "Can I use both cloud and local models?",
+          "a": "Yes! Switch between cloud and local models anytime in OpenClaw. Use cloud models when you want speed and convenience, local models when you want privacy."
         }
       ]
     }

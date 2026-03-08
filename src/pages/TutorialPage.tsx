@@ -147,6 +147,72 @@ function createOllamaTutorial(t: any): TutorialData {
   }
 }
 
+function createOllamaOpenclawTutorial(t: any): TutorialData {
+  return {
+    id: 'ollama-openclaw',
+    title: t('tutorial.ollamaOpenclaw.title'),
+    subtitle: t('tutorial.ollamaOpenclaw.subtitle'),
+    duration: t('tutorial.ollamaOpenclaw.duration'),
+    difficulty: t('tutorial.ollamaOpenclaw.difficulty'),
+    faq: t('tutorial.ollamaOpenclaw.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Download,
+        title: t('tutorial.ollamaOpenclaw.steps.0.title'),
+        titleEn: t('tutorial.ollamaOpenclaw.steps.0.titleEn'),
+        estimatedTime: t('tutorial.ollamaOpenclaw.steps.0.estimatedTime'),
+        content: t('tutorial.ollamaOpenclaw.steps.0.content'),
+        commands: t('tutorial.ollamaOpenclaw.steps.0.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.ollamaOpenclaw.steps.0.expectedResult'),
+        tips: t('tutorial.ollamaOpenclaw.steps.0.tips', { returnObjects: true }),
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.ollamaOpenclaw.steps.1.title'),
+        titleEn: t('tutorial.ollamaOpenclaw.steps.1.titleEn'),
+        estimatedTime: t('tutorial.ollamaOpenclaw.steps.1.estimatedTime'),
+        content: t('tutorial.ollamaOpenclaw.steps.1.content'),
+        commands: t('tutorial.ollamaOpenclaw.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.ollamaOpenclaw.steps.1.expectedResult'),
+        tips: t('tutorial.ollamaOpenclaw.steps.1.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.ollamaOpenclaw.steps.1.troubleshooting.title'),
+          items: t('tutorial.ollamaOpenclaw.steps.1.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Globe,
+        title: t('tutorial.ollamaOpenclaw.steps.2.title'),
+        titleEn: t('tutorial.ollamaOpenclaw.steps.2.titleEn'),
+        estimatedTime: t('tutorial.ollamaOpenclaw.steps.2.estimatedTime'),
+        content: t('tutorial.ollamaOpenclaw.steps.2.content'),
+        commands: t('tutorial.ollamaOpenclaw.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.ollamaOpenclaw.steps.2.expectedResult'),
+        tips: t('tutorial.ollamaOpenclaw.steps.2.tips', { returnObjects: true }),
+      },
+      {
+        icon: MessageSquare,
+        title: t('tutorial.ollamaOpenclaw.steps.3.title'),
+        titleEn: t('tutorial.ollamaOpenclaw.steps.3.titleEn'),
+        estimatedTime: t('tutorial.ollamaOpenclaw.steps.3.estimatedTime'),
+        content: t('tutorial.ollamaOpenclaw.steps.3.content'),
+        commands: t('tutorial.ollamaOpenclaw.steps.3.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.ollamaOpenclaw.steps.3.expectedResult'),
+        tips: t('tutorial.ollamaOpenclaw.steps.3.tips', { returnObjects: true }),
+      },
+      {
+        icon: Sparkles,
+        title: t('tutorial.ollamaOpenclaw.steps.4.title'),
+        titleEn: t('tutorial.ollamaOpenclaw.steps.4.titleEn'),
+        estimatedTime: t('tutorial.ollamaOpenclaw.steps.4.estimatedTime'),
+        content: t('tutorial.ollamaOpenclaw.steps.4.content'),
+        nextStepCards: t('tutorial.ollamaOpenclaw.steps.4.nextStepCards', { returnObjects: true }),
+        tips: t('tutorial.ollamaOpenclaw.steps.4.tips', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
 function createZeaburTutorial(t: any): TutorialData {
   return {
     id: 'zeabur',
@@ -975,6 +1041,7 @@ function createAlwaysOnMacTutorial(t: any): TutorialData {
 function getTutorials(t: any): Record<string, TutorialData> {
   return {
     ollama: createOllamaTutorial(t),
+    'ollama-openclaw': createOllamaOpenclawTutorial(t),
     zeabur: createZeaburTutorial(t),
     'elevenlabs-integration': createElevenLabsTutorial(t),
     'heygen-video': createHeyGenTutorial(t),

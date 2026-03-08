@@ -135,17 +135,19 @@
     "features": "功能特色",
     "products": {
       "ollama": {
-        "tagline": "免费本地 AI 模型",
-        "description": "在本机运行强大的 AI 模型，不需要 API 密钥或网络连接。最适合重视隐私的用户和开发环境。",
+        "tagline": "免费本地 & 云端 AI 模型 × OpenClaw",
+        "description": "本地或云端跑 AI 模型。一行命令安装 OpenClaw：ollama launch openclaw。免费云端模型免 GPU，升级 Pro（$20/月）无限使用。",
         "features": [
-          "不需要 API 密钥",
-          "隐私优先的本机处理",
-          "支持多种模型（Llama、CodeLlama、Mistral）",
-          "简单的命令行界面",
-          "与 OpenClaw agents 兼容"
+          "一行安装 OpenClaw：ollama launch openclaw",
+          "免费云端模型 — 不需要 GPU",
+          "隐私优先的本地运算",
+          "云端模型：kimi-k2.5、minimax-m2.5、glm-5",
+          "本地模型：glm-4.7-flash、Llama、Mistral",
+          "Pro $20/月 日常工作、Max 重度使用",
+          "支持 OpenClaw agents"
         ],
         "ctaPrimary": "开始免费教程",
-        "ctaSecondary": "在 GitHub 查看"
+        "ctaSecondary": "一键安装 OpenClaw"
       },
       "zeabur": {
         "tagline": "一键云端部署",
@@ -386,7 +388,7 @@
     "congratsDesc": "你已经成功在本机跑起了 AI。Now You Can Fly!",
     "ollama": {
       "title": "5 分钟跑起你的第一个本地 AI",
-      "subtitle": "免费、离线、完全隐私 — 用 Ollama 在自己电脑上跑大型语言模型",
+      "subtitle": "免费本地 & 云端 AI 模型 × OpenClaw — 在自己电脑上跑大型语言模型，或免费使用云端模型零设置",
       "duration": "5 分钟",
       "difficulty": "入门",
       "steps": [
@@ -461,6 +463,10 @@
             {
               "label": "什么是模型？",
               "text": "模型是经过大量数据训练的 AI 程序。就像不同的专家各有专长，不同的模型也擅长不同的任务。模型文件大小从 2GB 到 40GB+ 不等。"
+            },
+            {
+              "label": "云端 vs 本地模型",
+              "text": "云端模型（标记 :cloud）在 Ollama 服务器上运行 — 免费额度、不需要 GPU。本地模型在你的硬件上运行，完全隐私。先用云端模型立即体验 AI，准备好了再买硬件跑本地推理。"
             }
           ],
           "expectedResult": "下载完成后会显示 success。可以用 ollama list 确认已安装的模型。",
@@ -495,22 +501,34 @@
                 "speed": "快"
               },
               {
+                "name": "glm-4.7-flash",
+                "size": "~25 GB VRAM",
+                "best": "强大本地推理",
+                "speed": "中"
+              },
+              {
                 "name": "codellama",
                 "size": "3.8 GB",
                 "best": "写代码、Debug",
                 "speed": "中"
               },
               {
-                "name": "llama3.1",
-                "size": "4.7 GB",
-                "best": "复杂推理、创作",
-                "speed": "中"
+                "name": "kimi-k2.5:cloud",
+                "size": "云端",
+                "best": "免费云端模型、通用",
+                "speed": "快"
               },
               {
-                "name": "mistral",
-                "size": "4.1 GB",
-                "best": "多语言、分析",
-                "speed": "中"
+                "name": "minimax-m2.5:cloud",
+                "size": "云端",
+                "best": "免费云端模型、创作",
+                "speed": "快"
+              },
+              {
+                "name": "glm-5:cloud",
+                "size": "云端",
+                "best": "免费云端模型、多语言",
+                "speed": "快"
               }
             ]
           },
@@ -521,8 +539,13 @@
             "# 写程序专用：CodeLlama",
             "ollama pull codellama",
             "",
-            "# 想要更强大？试试 Llama 3.1（8B 参数）",
-            "ollama pull llama3.1"
+            "# 强大本地模型（需要 ~25GB VRAM）：",
+            "ollama pull glm-4.7-flash",
+            "",
+            "# 或使用免费云端模型 — 不需要 GPU！",
+            "ollama pull kimi-k2.5:cloud",
+            "ollama pull minimax-m2.5:cloud",
+            "ollama pull glm-5:cloud"
           ]
         },
         {
@@ -634,6 +657,13 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "🚀",
+              "title": "一键安装 OpenClaw",
+              "desc": "用 ollama launch openclaw 自动安装启动 OpenClaw，免费云端模型马上用。最快体验 AI Agent 的方式。",
+              "cta": "快速入门指南",
+              "link": "/learn/ollama-openclaw"
+            },
+            {
               "emoji": "☁️",
               "title": "部署到云端",
               "desc": "用 Zeabur 一键部署，让你的 AI 随时随地可用。使用优惠码 OpenClaw 享 10% 折扣。",
@@ -689,6 +719,18 @@
         {
           "q": "如何将 Ollama 连接到 OpenClaw？",
           "a": "安装 Ollama 并拉取模型后，OpenClaw 会自动检测 http://localhost:11434 上的 Ollama。只需启动两个应用程序，它们就会无缝连接。"
+        },
+        {
+          "q": "什么是 Ollama 云端模型？",
+          "a": "Ollama 现在提供云端模型（标记 :cloud 后缀），在 Ollama 服务器上运行。免费额度让你试用 — 不需要 GPU、不需要硬件。很适合在投资本地硬件前先体验。"
+        },
+        {
+          "q": "怎么用 Ollama 安装 OpenClaw？",
+          "a": "在终端执行 `ollama launch openclaw`。Ollama 会自动下载、安装、配置并启动 OpenClaw。这是最快让 AI agent 跑起来的方式。"
+        },
+        {
+          "q": "Ollama 免费版和 Pro 方案有什么区别？",
+          "a": "免费版包含本地模型无限使用，加上有限的云端模型额度。Pro（$20/月）提供更多云端模型用量，适合日常工作。Max 方案适合重度云端使用。本地模型不论哪个方案都永远免费。"
         }
       ]
     },
@@ -2859,6 +2901,169 @@
         {
           "q": "常驻运行会缩短 Mac 寿命吗？",
           "a": "现代 Mac 设计为可持续运行。Apple 自家的数据中心 24/7 运行 Mac 硬件。SSD 寿命很长，Apple Silicon 极为省电。"
+        }
+      ]
+    },
+    "ollamaOpenclaw": {
+      "title": "用 Ollama 一键安装 OpenClaw + 免费云端模型",
+      "subtitle": "ollama launch openclaw — 最快体验 AI Agent 的方式，免费云端模型、不需要 GPU",
+      "duration": "3 分钟",
+      "difficulty": "入门",
+      "steps": [
+        {
+          "title": "安装 Ollama",
+          "titleEn": "Install Ollama",
+          "estimatedTime": "1 分钟",
+          "content": "如果你还没有 Ollama，一行命令就能安装。已经有了？直接跳到下一步！",
+          "commands": [
+            "# macOS / Linux — 一行安装",
+            "curl -fsSL https://ollama.com/install.sh | sh",
+            "",
+            "# 确认安装成功",
+            "ollama --version"
+          ],
+          "expectedResult": "Ollama 已安装并在后台运行。",
+          "tips": [
+            "Mac 用户也可以从 ollama.com 下载 Ollama.app",
+            "Windows 用户：从 ollama.com 下载安装程序",
+            "如果已经安装了 Ollama，确认更新到最新版本即可"
+          ]
+        },
+        {
+          "title": "一键启动 OpenClaw",
+          "titleEn": "One-Click Launch OpenClaw",
+          "estimatedTime": "1 分钟",
+          "content": "这就是神奇的命令！Ollama 会自动下载、安装、配置并启动 OpenClaw。完全不需要手动设置。",
+          "commands": [
+            "# 神奇的一行命令 — 自动安装并启动 OpenClaw",
+            "ollama launch openclaw",
+            "",
+            "# 就这样！OpenClaw 会自动在浏览器中打开。"
+          ],
+          "expectedResult": "OpenClaw 在浏览器中打开，准备好使用了。Ollama 自动处理所有配置。",
+          "tips": [
+            "第一次运行会比较久（需要下载 OpenClaw）",
+            "之后的启动几乎是瞬间完成",
+            "OpenClaw 会自动连接到你的本地 Ollama"
+          ],
+          "troubleshooting": {
+            "title": "启动有问题？",
+            "items": [
+              {
+                "q": "找不到 \"ollama launch\" 命令",
+                "a": "更新 Ollama 到最新版本：curl -fsSL https://ollama.com/install.sh | sh"
+              },
+              {
+                "q": "浏览器没有自动打开",
+                "a": "查看终端输出的网址（通常是 http://localhost:3000），手动打开。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "选择免费云端模型",
+          "titleEn": "Choose a Free Cloud Model",
+          "estimatedTime": "30 秒",
+          "content": "免费云端模型让你立即体验 AI — 不需要 GPU、不需要投资硬件。Ollama 注册就送免费额度。",
+          "commands": [
+            "# 拉取免费云端模型（在 Ollama 服务器上运行）",
+            "ollama pull kimi-k2.5:cloud",
+            "",
+            "# 更多免费云端模型可以试：",
+            "ollama pull minimax-m2.5:cloud",
+            "ollama pull glm-5:cloud",
+            "",
+            "# 如果你有硬件，也可以用本地模型：",
+            "ollama pull glm-4.7-flash"
+          ],
+          "expectedResult": "云端模型已经可以在 OpenClaw 中使用了。从模型下拉菜单中选择。",
+          "tips": [
+            "云端模型用你的 Ollama 账号免费使用（轻量使用）",
+            "不需要 GPU — 模型在 Ollama 的云端服务器上运行",
+            "kimi-k2.5:cloud 适合一般任务",
+            "随时可以在 OpenClaw 中切换云端和本地模型"
+          ]
+        },
+        {
+          "title": "连接通讯软件（可选）",
+          "titleEn": "Connect Messaging",
+          "estimatedTime": "30 秒",
+          "content": "想从 Telegram 或 WhatsApp 跟你的 AI agent 聊天？在 OpenClaw 设置中连接你的通讯软件。",
+          "commands": [
+            "# 在 OpenClaw 设置中，你可以连接：",
+            "# - Telegram bot",
+            "# - WhatsApp",
+            "# - LINE",
+            "# - Discord",
+            "",
+            "# 按照 app 内的指示设置各个平台。"
+          ],
+          "expectedResult": "你现在可以从喜欢的通讯软件跟 AI agent 对话了。",
+          "tips": [
+            "Telegram 是最容易设置的",
+            "你可以同时连接多个通讯平台",
+            "这个步骤是可选的 — 也可以直接在浏览器使用 OpenClaw"
+          ]
+        },
+        {
+          "title": "下一步",
+          "titleEn": "What's Next",
+          "estimatedTime": "探索时间！",
+          "content": "你已经零成本跑起一个完整的 AI agent！以下是升级的方式：",
+          "tips": [
+            "免费云端额度很适合入门",
+            "云端模型不需要 GPU",
+            "本地模型的所有数据都留在你的电脑上"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🖥️",
+              "title": "购买硬件跑本地 AI",
+              "desc": "想要无限量的私人 AI？买一台 Mac Mini 或 GEEKOM 迷你电脑，24/7 跑本地模型。",
+              "cta": "硬件指南",
+              "link": "/learn/hardware"
+            },
+            {
+              "emoji": "💎",
+              "title": "升级 Ollama Pro",
+              "desc": "需要更多云端用量？Ollama Pro（$20/月）覆盖日常工作。Max 适合重度用户。",
+              "cta": "查看方案",
+              "link": "https://ollama.com/pricing",
+              "external": true
+            },
+            {
+              "emoji": "☁️",
+              "title": "部署到云端",
+              "desc": "用 Zeabur 一键部署，让 AI 随时可用。输入优惠码 OpenClaw 享 10% 折扣。",
+              "cta": "部署教程",
+              "link": "/learn/zeabur"
+            },
+            {
+              "emoji": "🎙️",
+              "title": "加上语音功能",
+              "desc": "用 ElevenLabs 让你的 AI 开口说话，支持中文语音合成。",
+              "cta": "探索 ElevenLabs",
+              "link": "/learn/elevenlabs-integration"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "「ollama launch openclaw」做了什么？",
+          "a": "自动下载、安装、配置并启动 OpenClaw。不需要手动设置 — Ollama 处理一切。这是最快让 AI agent 跑起来的方式。"
+        },
+        {
+          "q": "云端模型需要 GPU 吗？",
+          "a": "不需要！云端模型在 Ollama 的服务器上运行。你只需要网络连接。注册就送免费额度。"
+        },
+        {
+          "q": "Ollama Pro 多少钱？",
+          "a": "免费版：无限本地模型 + 有限云端额度。Pro：$20/月，日常云端使用。Max：重度云端使用。本地模型永远 100% 免费。"
+        },
+        {
+          "q": "可以同时用云端和本地模型吗？",
+          "a": "可以！随时在 OpenClaw 中切换。要速度和方便用云端模型，要隐私用本地模型。"
         }
       ]
     }
