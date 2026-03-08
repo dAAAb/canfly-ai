@@ -91,15 +91,15 @@ export default function FeaturesSection() {
           </h2>
         </div>
 
-        {/* Feature cards grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Feature cards grid — 6-col so bottom row of 2 aligns with top row of 3 */}
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-8">
           {[0, 1, 2].map((i) => (
-            <FeatureCard key={i} index={i} />
+            <div key={i} className="md:col-span-2">
+              <FeatureCard index={i} />
+            </div>
           ))}
-        </div>
-        <div className="flex flex-wrap justify-center gap-8" style={{ marginTop: '2rem' }}>
           {[3, 4].map((i) => (
-            <div key={i} style={{ width: 'calc((100% - 4rem) / 3)' }} className="min-w-[280px]">
+            <div key={i} className="md:col-span-3">
               <FeatureCard index={i} />
             </div>
           ))}
