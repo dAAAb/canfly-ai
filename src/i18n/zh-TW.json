@@ -1313,6 +1313,390 @@
         }
       ]
     },
+    "perplexity": {
+      "title": "Perplexity AI 搜尋 — 5 分鐘快速上手",
+      "subtitle": "AI 驅動的搜尋引擎，直接給你有來源的答案 — 非常適合研究和學習",
+      "duration": "5 分鐘",
+      "difficulty": "初學者",
+      "steps": [
+        {
+          "title": "建立 Perplexity 帳號",
+          "titleEn": "Create Your Perplexity Account",
+          "estimatedTime": "1 分鐘",
+          "content": "透過我們的推薦連結註冊 Perplexity。免費方案提供無限基本搜尋和每天 5 次 Pro 搜尋。",
+          "expectedResult": "你已擁有 Perplexity 帳號，可以開始使用 AI 搜尋。",
+          "tips": [
+            "免費方案：無限基本搜尋 + 每天 5 次 Pro 搜尋",
+            "Pro 方案：每月 $20，無限 Pro 搜尋和檔案上傳",
+            "使用我們的推薦連結 — 你可以獲得 $10 額度"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？帳號疑難排解",
+            "items": [
+              {
+                "q": "不註冊可以用 Perplexity 嗎？",
+                "a": "可以！你不需要帳號也能搜尋，但無法使用 Pro 搜尋或搜尋紀錄。"
+              },
+              {
+                "q": "基本搜尋和 Pro 搜尋差在哪裡？",
+                "a": "Pro 搜尋使用更進階的模型，搜尋更多來源，還會提出追問以獲得更精確的結果。"
+              }
+            ]
+          },
+          "commands": [
+            "# 開啟 Perplexity 並建立帳號",
+            "open https://perplexity.ai/?referral=canfly",
+            "",
+            "# 用 Google、Apple 或電子郵件註冊",
+            "# 免費方案包含無限基本搜尋",
+            "# Pro 方案：每月 $20 無限 Pro 搜尋"
+          ]
+        },
+        {
+          "title": "掌握 AI 智慧搜尋",
+          "titleEn": "Master AI-Powered Search",
+          "estimatedTime": "2 分鐘",
+          "content": "和傳統搜尋引擎不同，Perplexity 會閱讀並整合多個來源的資訊，然後給你一個附帶引用的直接答案。試著問一個研究問題吧。",
+          "expectedResult": "你會得到一個完整的、有來源引用的答案，而不只是一堆連結。",
+          "tips": [
+            "用自然語言提問，例如「Mac 上最好的免費 AI 工具有哪些？」",
+            "使用焦點模式：學術、寫作、數學、影片、社群來做專門搜尋",
+            "開啟 Pro 搜尋來處理需要深入研究的複雜問題"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？搜尋小技巧",
+            "items": [
+              {
+                "q": "答案太籠統",
+                "a": "試試 Pro 搜尋模式 — 它會提出追問並做更深入的搜尋。另外，提問時盡量具體。"
+              },
+              {
+                "q": "來源看起來不可靠",
+                "a": "使用「學術」焦點模式來取得經過同行評審的來源。你也可以點擊引用來自己驗證。"
+              }
+            ]
+          },
+          "commands": [
+            "# 試試看這些搜尋範例：",
+            "",
+            "# 基本搜尋（免費、即時）：",
+            "# 「Ollama 是什麼？如何在 Mac 上安裝？」",
+            "",
+            "# Pro 搜尋（更深入的多步驟研究）：",
+            "# 「比較自架 AI 方案：Ollama vs LM Studio vs LocalAI」",
+            "",
+            "# 學術焦點：",
+            "# 「2025 年 Transformer 模型效率最新研究」"
+          ]
+        },
+        {
+          "title": "取得你的 API 金鑰",
+          "titleEn": "Get Your API Key",
+          "estimatedTime": "1 分鐘",
+          "content": "Perplexity 提供 API（pplx-api）供程式化存取。從設定頁面取得你的 API 金鑰，將 AI 搜尋整合到你的專案中。",
+          "expectedResult": "你已準備好 Perplexity API 金鑰，可以進行整合。",
+          "tips": [
+            "API 定價：按使用量計費，基本模型每 1000 次請求 $0.20 起",
+            "支援多種模型，包括 sonar-small 和 sonar-large",
+            "API 相容 OpenAI — 可搭配任何 OpenAI SDK 使用"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？API 疑難排解",
+            "items": [
+              {
+                "q": "在哪裡找到 API 金鑰？",
+                "a": "前往 perplexity.ai → 設定 → API → 產生 API 金鑰。你需要先新增付款資訊。"
+              },
+              {
+                "q": "API 是免費的嗎？",
+                "a": "不是，API 按使用量計費。但很實惠 — 基本模型每 1000 次請求只要 $0.20。"
+              }
+            ]
+          },
+          "commands": [
+            "# 從 Perplexity 設定取得 API 金鑰",
+            "open https://www.perplexity.ai/settings/api",
+            "",
+            "# 設定你的 API 金鑰",
+            "export PERPLEXITY_API_KEY=\"pplx-your-api-key-here\"",
+            "",
+            "# 用快速 API 呼叫測試（相容 OpenAI！）",
+            "curl -X POST https://api.perplexity.ai/chat/completions \\",
+            "  -H \"Authorization: Bearer $PERPLEXITY_API_KEY\" \\",
+            "  -H \"Content-Type: application/json\" \\",
+            "  -d '{\"model\": \"sonar\", \"messages\": [{\"role\": \"user\", \"content\": \"What is the latest version of Ollama?\"}]}'"
+          ]
+        },
+        {
+          "title": "建立 AI 研究工作流程",
+          "titleEn": "Build an AI Research Workflow",
+          "estimatedTime": "1 分鐘",
+          "content": "將 Perplexity 與你的本地 AI 結合。用 Perplexity 做即時網路研究，用 Ollama 做私密的離線處理 — 兩全其美。",
+          "expectedResult": "你有一個工作流程：用 Perplexity 做網路研究，用 Ollama 做本地 AI 任務。",
+          "tips": [
+            "需要即時網路資料的問題用 Perplexity",
+            "需要隱私的任務用 Ollama，如寫程式、寫作和分析",
+            "Perplexity Collections 讓你把研究整理成可分享的資料夾"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？工作流程小技巧",
+            "items": [
+              {
+                "q": "什麼時候該用 Perplexity、什麼時候該用 Ollama？",
+                "a": "需要最新網路資訊用 Perplexity。隱私敏感的任務、寫程式幫助或離線時用 Ollama。"
+              },
+              {
+                "q": "可以把 Perplexity API 跟 OpenClaw 搭配使用嗎？",
+                "a": "可以！因為 API 相容 OpenAI，你可以在 OpenClaw 設定中把它設為替代端點。"
+              }
+            ]
+          },
+          "commands": [
+            "# 把 Perplexity API 當作 OpenAI 相容端點使用",
+            "# 在你的 OpenClaw 設定或任何 OpenAI SDK 中：",
+            "",
+            "export OPENAI_API_KEY=\"pplx-your-api-key-here\"",
+            "export OPENAI_BASE_URL=\"https://api.perplexity.ai\"",
+            "",
+            "# 現在任何 OpenAI 相容工具都會使用 Perplexity！",
+            "# 這讓你的 AI 代理擁有即時網路搜尋功能"
+          ]
+        },
+        {
+          "title": "下一步與進階技巧",
+          "titleEn": "Next Steps & Power Tips",
+          "estimatedTime": "探索時間！",
+          "content": "恭喜！你現在擁有了 AI 驅動的搜尋能力。探索進階功能，提升你的研究效率。",
+          "tips": [
+            "使用 Perplexity Spaces 來建立有特定知識庫的自訂 AI 助手",
+            "透過 Perplexity Pages 分享你的研究 — 把答案變成精美文章",
+            "安裝 Perplexity 瀏覽器擴充功能，在任何網頁上即時搜尋"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "⭐",
+              "title": "升級到 Perplexity Pro",
+              "desc": "無限 Pro 搜尋、檔案上傳和進階模型。使用我們的推薦連結獲得 $10 額度。",
+              "cta": "免費試用 Pro",
+              "link": "https://perplexity.ai/?referral=canfly",
+              "external": true
+            },
+            {
+              "emoji": "🔍",
+              "title": "試試 Brave Search API",
+              "desc": "需要原始的網路搜尋結果來開發應用程式？Brave Search API 讓你直接存取搜尋資料。",
+              "cta": "學習 Brave Search",
+              "link": "/learn/brave-search"
+            },
+            {
+              "emoji": "🦞",
+              "title": "搭配 OpenClaw",
+              "desc": "將 Perplexity 作為研究工具，搭配本地 Ollama AI 打造終極設定。",
+              "cta": "Ollama 教學",
+              "link": "/learn/ollama"
+            },
+            {
+              "emoji": "☁️",
+              "title": "部署到雲端",
+              "desc": "用 Zeabur 把你的 AI 研究助手放到雲端，24/7 隨時存取。",
+              "cta": "部署到雲端",
+              "link": "/learn/zeabur"
+            }
+          ]
+        }
+      ]
+    },
+    "brave": {
+      "title": "Brave Search API — 5 分鐘讓你的 AI 擁有網路搜尋能力",
+      "subtitle": "免費的網路搜尋 API — 非常適合打造能搜尋網路的 AI 代理",
+      "duration": "5 分鐘",
+      "difficulty": "初學者",
+      "steps": [
+        {
+          "title": "註冊 Brave Search API",
+          "titleEn": "Sign Up for Brave Search API",
+          "estimatedTime": "1 分鐘",
+          "content": "建立 Brave Search API 帳號，免費取得網路搜尋結果。免費方案每月提供 2,000 次查詢 — 個人專案和開發足夠使用。",
+          "expectedResult": "你已擁有 Brave Search API 帳號，可以存取開發者控制台。",
+          "tips": [
+            "免費方案：每月 2,000 次查詢，每秒 1 次",
+            "免費方案不需要信用卡",
+            "Brave Search 注重隱私 — 不追蹤使用者"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？帳號疑難排解",
+            "items": [
+              {
+                "q": "這跟 Brave 瀏覽器一樣嗎？",
+                "a": "Brave Search API 是和 Brave 瀏覽器分開的產品。你不需要安裝瀏覽器就能使用 API。"
+              },
+              {
+                "q": "需要付費方案嗎？",
+                "a": "不需要！免費方案的每月 2,000 次查詢對大多數個人專案和開發來說已經足夠。"
+              }
+            ]
+          },
+          "commands": [
+            "# 建立你的 Brave Search API 帳號",
+            "open https://brave.com/search/api/?utm_source=canfly&utm_medium=web&utm_campaign=brave-search",
+            "",
+            "# 點擊「Get Started」建立帳號",
+            "# 免費方案：每月 2,000 次查詢",
+            "# 不需要信用卡"
+          ]
+        },
+        {
+          "title": "取得你的 API 金鑰",
+          "titleEn": "Get Your API Key",
+          "estimatedTime": "30 秒",
+          "content": "從 Brave Search 開發者控制台產生你的 API 金鑰。這個金鑰用來驗證你的搜尋請求。",
+          "expectedResult": "你已準備好 Brave Search API 金鑰，可以開始搜尋查詢。",
+          "tips": [
+            "保持 API 金鑰私密 — 不要提交到公開的程式碼庫",
+            "你可以為不同專案建立多個 API 金鑰",
+            "在控制台監控使用量，確保不超過免費方案限制"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？API 金鑰疑難排解",
+            "items": [
+              {
+                "q": "在哪裡找到 API 金鑰？",
+                "a": "登入 api.search.brave.com，前往控制台，點擊「API Keys」來產生。"
+              },
+              {
+                "q": "API 金鑰無法運作",
+                "a": "確保你使用正確的標頭：「X-Subscription-Token」。也要在控制台確認金鑰是否啟用。"
+              }
+            ]
+          },
+          "commands": [
+            "# 前往 Brave Search API 控制台",
+            "open https://api.search.brave.com/app/dashboard",
+            "",
+            "# 產生你的 API 金鑰",
+            "# 複製並設定為環境變數：",
+            "export BRAVE_SEARCH_API_KEY=\"BSA-your-api-key-here\""
+          ]
+        },
+        {
+          "title": "發出你的第一個搜尋",
+          "titleEn": "Make Your First Search",
+          "estimatedTime": "1 分鐘",
+          "content": "發出你的第一個 API 呼叫來搜尋網路。Brave Search 回傳結構化的結果，包含標題、網址、描述等 — 非常適合餵給 AI 模型使用。",
+          "expectedResult": "你從 Brave Search API 取得結構化的 JSON 搜尋結果。",
+          "tips": [
+            "結果包含標題、網址、描述和頁面時間",
+            "使用「count」參數控制回傳幾筆結果（最多 20 筆）",
+            "加上「search_lang」參數可以取得特定語言的結果"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？API 呼叫疑難排解",
+            "items": [
+              {
+                "q": "收到 401 Unauthorized 錯誤",
+                "a": "再次確認你的 API 金鑰。標頭必須是「X-Subscription-Token」，不是「Authorization」。"
+              },
+              {
+                "q": "收到 429 Too Many Requests 錯誤",
+                "a": "免費方案限制每秒 1 次請求。在請求之間加一點延遲。"
+              }
+            ]
+          },
+          "commands": [
+            "# 發出你的第一個 Brave Search API 呼叫",
+            "curl -s \"https://api.search.brave.com/res/v1/web/search?q=best+free+AI+tools+2025\" \\",
+            "  -H \"Accept: application/json\" \\",
+            "  -H \"X-Subscription-Token: $BRAVE_SEARCH_API_KEY\" | python3 -m json.tool",
+            "",
+            "# 使用特定參數搜尋",
+            "curl -s \"https://api.search.brave.com/res/v1/web/search?q=ollama+tutorial&count=5&search_lang=en\" \\",
+            "  -H \"Accept: application/json\" \\",
+            "  -H \"X-Subscription-Token: $BRAVE_SEARCH_API_KEY\" | python3 -m json.tool"
+          ]
+        },
+        {
+          "title": "讓你的 AI 擁有網路搜尋能力",
+          "titleEn": "Give Your AI Web Search",
+          "estimatedTime": "2 分鐘",
+          "content": "將 Brave Search 連接到你的 AI 工作流程。用它讓 Ollama 或任何 AI 模型在回答問題前先搜尋網路，取得即時資訊。",
+          "expectedResult": "你的 AI 可以搜尋網路並使用即時資訊來回答問題。",
+          "tips": [
+            "結合 Brave Search 和 Ollama，打造免費的私密 AI + 網路搜尋組合",
+            "解析 JSON 回應，只擷取標題和描述作為 AI 上下文",
+            "快取結果以減少 API 呼叫次數，保持在免費方案限制內"
+          ],
+          "troubleshooting": {
+            "title": "卡住了？整合小技巧",
+            "items": [
+              {
+                "q": "如何把搜尋結果餵給 Ollama？",
+                "a": "用 Brave API 搜尋，擷取結果中的文字，然後在 Ollama 的提示中包含它作為上下文。"
+              },
+              {
+                "q": "結果對我的 AI 上下文來說太長了",
+                "a": "用「count=3」限制結果數量，並且只擷取每個結果的「description」欄位。"
+              }
+            ]
+          },
+          "commands": [
+            "# 簡單腳本：搜尋網路並讓 Ollama 分析結果",
+            "",
+            "# 步驟 1：用 Brave 搜尋",
+            "QUERY=\"latest AI news today\"",
+            "RESULTS=$(curl -s \"https://api.search.brave.com/res/v1/web/search?q=${QUERY}&count=3\" \\",
+            "  -H \"Accept: application/json\" \\",
+            "  -H \"X-Subscription-Token: $BRAVE_SEARCH_API_KEY\")",
+            "",
+            "# 步驟 2：擷取描述",
+            "CONTEXT=$(echo $RESULTS | python3 -c \"import sys,json; r=json.load(sys.stdin); print('\\n'.join([w['description'] for w in r.get('web',{}).get('results',[])])[:1000])\")",
+            "",
+            "# 步驟 3：用網路上下文問 Ollama",
+            "curl -s http://localhost:11434/api/generate -d \"{\\\"model\\\": \\\"llama3.2\\\", \\\"prompt\\\": \\\"Based on these search results:\\n${CONTEXT}\\n\\nSummarize the latest AI news.\\\", \\\"stream\\\": false}\" | python3 -c \"import sys,json; print(json.load(sys.stdin)['response'])\""
+          ]
+        },
+        {
+          "title": "下一步與進階功能",
+          "titleEn": "Next Steps & Advanced Features",
+          "estimatedTime": "探索時間！",
+          "content": "恭喜！你的 AI 現在擁有了網路搜尋超能力。探索 Brave Search 的進階功能，打造更強大的應用程式。",
+          "tips": [
+            "Brave Search 還提供新聞、圖片和影片 API 端點",
+            "使用「freshness」參數按日期篩選結果",
+            "結合 Perplexity 同時取得原始搜尋資料和 AI 整理的答案"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🔍",
+              "title": "試試 Perplexity AI",
+              "desc": "想要 AI 整理過的答案而不是原始結果？Perplexity 提供有來源引用的研究答案。",
+              "cta": "學習 Perplexity",
+              "link": "/learn/perplexity"
+            },
+            {
+              "emoji": "🦞",
+              "title": "用 OpenClaw 來開發",
+              "desc": "用 Brave Search 賦予你的 OpenClaw 代理網路搜尋能力，取得即時知識。",
+              "cta": "Ollama 教學",
+              "link": "/learn/ollama"
+            },
+            {
+              "emoji": "☁️",
+              "title": "部署到雲端",
+              "desc": "用 Zeabur 把你有搜尋功能的 AI 放到雲端，24/7 連接網路的智慧。",
+              "cta": "部署到雲端",
+              "link": "/learn/zeabur"
+            },
+            {
+              "emoji": "🎙️",
+              "title": "加上語音輸出",
+              "desc": "用 ElevenLabs 語音合成讓你的 AI 說出研究結果。",
+              "cta": "探索 ElevenLabs",
+              "link": "/learn/elevenlabs-integration"
+            }
+          ]
+        }
+      ]
+    },
     "installOllamaOneLine": "# 一行指令安裝 Ollama\ncurl -fsSL https://ollama.com/install.sh | sh",
     "chatDemo": {
       "you": "你"

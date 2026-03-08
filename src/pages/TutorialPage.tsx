@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom'
-import { Clock, CheckCircle, Copy, ExternalLink, ChevronDown, ChevronRight, Terminal, Download, Monitor, MessageSquare, Rocket, HelpCircle, Cpu, Sparkles } from 'lucide-react'
+import { Clock, CheckCircle, Copy, ExternalLink, ChevronDown, ChevronRight, Terminal, Download, Monitor, MessageSquare, Rocket, HelpCircle, Cpu, Sparkles, Search, Globe } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import Navbar from '../components/Navbar'
@@ -476,13 +476,175 @@ function createVirtualMachineTutorial(t: any): TutorialData {
   }
 }
 
+function createPerplexityTutorial(t: any): TutorialData {
+  return {
+    id: 'perplexity',
+    title: t('tutorial.perplexity.title'),
+    subtitle: t('tutorial.perplexity.subtitle'),
+    duration: t('tutorial.perplexity.duration'),
+    difficulty: t('tutorial.perplexity.difficulty'),
+    steps: [
+      {
+        icon: Download,
+        title: t('tutorial.perplexity.steps.0.title'),
+        titleEn: t('tutorial.perplexity.steps.0.titleEn'),
+        estimatedTime: t('tutorial.perplexity.steps.0.estimatedTime'),
+        content: t('tutorial.perplexity.steps.0.content'),
+        commands: t('tutorial.perplexity.steps.0.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.perplexity.steps.0.expectedResult'),
+        tips: t('tutorial.perplexity.steps.0.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.perplexity.steps.0.troubleshooting.title'),
+          items: t('tutorial.perplexity.steps.0.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Search,
+        title: t('tutorial.perplexity.steps.1.title'),
+        titleEn: t('tutorial.perplexity.steps.1.titleEn'),
+        estimatedTime: t('tutorial.perplexity.steps.1.estimatedTime'),
+        content: t('tutorial.perplexity.steps.1.content'),
+        commands: t('tutorial.perplexity.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.perplexity.steps.1.expectedResult'),
+        tips: t('tutorial.perplexity.steps.1.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.perplexity.steps.1.troubleshooting.title'),
+          items: t('tutorial.perplexity.steps.1.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Terminal,
+        title: t('tutorial.perplexity.steps.2.title'),
+        titleEn: t('tutorial.perplexity.steps.2.titleEn'),
+        estimatedTime: t('tutorial.perplexity.steps.2.estimatedTime'),
+        content: t('tutorial.perplexity.steps.2.content'),
+        commands: t('tutorial.perplexity.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.perplexity.steps.2.expectedResult'),
+        tips: t('tutorial.perplexity.steps.2.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.perplexity.steps.2.troubleshooting.title'),
+          items: t('tutorial.perplexity.steps.2.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Sparkles,
+        title: t('tutorial.perplexity.steps.3.title'),
+        titleEn: t('tutorial.perplexity.steps.3.titleEn'),
+        estimatedTime: t('tutorial.perplexity.steps.3.estimatedTime'),
+        content: t('tutorial.perplexity.steps.3.content'),
+        commands: t('tutorial.perplexity.steps.3.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.perplexity.steps.3.expectedResult'),
+        tips: t('tutorial.perplexity.steps.3.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.perplexity.steps.3.troubleshooting.title'),
+          items: t('tutorial.perplexity.steps.3.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.perplexity.steps.4.title'),
+        titleEn: t('tutorial.perplexity.steps.4.titleEn'),
+        estimatedTime: t('tutorial.perplexity.steps.4.estimatedTime'),
+        content: t('tutorial.perplexity.steps.4.content'),
+        nextStepCards: t('tutorial.perplexity.steps.4.nextStepCards', { returnObjects: true }).map((card: any) => ({
+          ...card,
+          link: card.title.includes('Perplexity') ? 'https://perplexity.ai/?referral=canfly' :
+                card.title.includes('Brave') ? '/learn/brave-search' :
+                card.title.includes('OpenClaw') ? '/learn/ollama' :
+                card.title.includes('Cloud') ? '/learn/zeabur' : '#'
+        })),
+        tips: t('tutorial.perplexity.steps.4.tips', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
+function createBraveSearchTutorial(t: any): TutorialData {
+  return {
+    id: 'brave-search',
+    title: t('tutorial.brave.title'),
+    subtitle: t('tutorial.brave.subtitle'),
+    duration: t('tutorial.brave.duration'),
+    difficulty: t('tutorial.brave.difficulty'),
+    steps: [
+      {
+        icon: Globe,
+        title: t('tutorial.brave.steps.0.title'),
+        titleEn: t('tutorial.brave.steps.0.titleEn'),
+        estimatedTime: t('tutorial.brave.steps.0.estimatedTime'),
+        content: t('tutorial.brave.steps.0.content'),
+        commands: t('tutorial.brave.steps.0.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.brave.steps.0.expectedResult'),
+        tips: t('tutorial.brave.steps.0.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.brave.steps.0.troubleshooting.title'),
+          items: t('tutorial.brave.steps.0.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Terminal,
+        title: t('tutorial.brave.steps.1.title'),
+        titleEn: t('tutorial.brave.steps.1.titleEn'),
+        estimatedTime: t('tutorial.brave.steps.1.estimatedTime'),
+        content: t('tutorial.brave.steps.1.content'),
+        commands: t('tutorial.brave.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.brave.steps.1.expectedResult'),
+        tips: t('tutorial.brave.steps.1.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.brave.steps.1.troubleshooting.title'),
+          items: t('tutorial.brave.steps.1.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Search,
+        title: t('tutorial.brave.steps.2.title'),
+        titleEn: t('tutorial.brave.steps.2.titleEn'),
+        estimatedTime: t('tutorial.brave.steps.2.estimatedTime'),
+        content: t('tutorial.brave.steps.2.content'),
+        commands: t('tutorial.brave.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.brave.steps.2.expectedResult'),
+        tips: t('tutorial.brave.steps.2.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.brave.steps.2.troubleshooting.title'),
+          items: t('tutorial.brave.steps.2.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Sparkles,
+        title: t('tutorial.brave.steps.3.title'),
+        titleEn: t('tutorial.brave.steps.3.titleEn'),
+        estimatedTime: t('tutorial.brave.steps.3.estimatedTime'),
+        content: t('tutorial.brave.steps.3.content'),
+        commands: t('tutorial.brave.steps.3.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.brave.steps.3.expectedResult'),
+        tips: t('tutorial.brave.steps.3.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.brave.steps.3.troubleshooting.title'),
+          items: t('tutorial.brave.steps.3.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.brave.steps.4.title'),
+        titleEn: t('tutorial.brave.steps.4.titleEn'),
+        estimatedTime: t('tutorial.brave.steps.4.estimatedTime'),
+        content: t('tutorial.brave.steps.4.content'),
+        nextStepCards: t('tutorial.brave.steps.4.nextStepCards', { returnObjects: true }),
+        tips: t('tutorial.brave.steps.4.tips', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
 function getTutorials(t: any): Record<string, TutorialData> {
   return {
     ollama: createOllamaTutorial(t),
     zeabur: createZeaburTutorial(t),
     'elevenlabs-integration': createElevenLabsTutorial(t),
     'heygen-video': createHeyGenTutorial(t),
-    'virtual-machine': createVirtualMachineTutorial(t)
+    'virtual-machine': createVirtualMachineTutorial(t),
+    perplexity: createPerplexityTutorial(t),
+    'brave-search': createBraveSearchTutorial(t),
   }
 }
 

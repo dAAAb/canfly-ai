@@ -1313,6 +1313,390 @@
         }
       ]
     },
+    "perplexity": {
+      "title": "Perplexity AI Search — 5-Minute Quick Start",
+      "subtitle": "An AI-powered search engine that gives you direct answers with sources — perfect for research and learning",
+      "duration": "5 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "Create Your Perplexity Account",
+          "titleEn": "Create Your Perplexity Account",
+          "estimatedTime": "1 min",
+          "content": "Sign up for Perplexity using our referral link. The free tier gives you unlimited basic searches and 5 Pro searches per day.",
+          "expectedResult": "You have a Perplexity account and can start searching with AI-powered answers.",
+          "tips": [
+            "Free tier: unlimited basic searches + 5 Pro searches/day",
+            "Pro plan: $20/month with unlimited Pro searches and file uploads",
+            "Use our referral link — you get $10 credit, we get $10 too"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? Account Troubleshooting",
+            "items": [
+              {
+                "q": "Can I use Perplexity without an account?",
+                "a": "Yes! You can search without signing up, but you won't get Pro searches or search history."
+              },
+              {
+                "q": "What's the difference between basic and Pro search?",
+                "a": "Pro search uses more advanced models, searches more sources, and can follow up with clarifying questions for better results."
+              }
+            ]
+          },
+          "commands": [
+            "# Open Perplexity and create your account",
+            "open https://perplexity.ai/?referral=canfly",
+            "",
+            "# Sign up with Google, Apple, or email",
+            "# Free tier includes unlimited basic searches",
+            "# Pro plan: $20/month for unlimited Pro searches"
+          ]
+        },
+        {
+          "title": "Master AI-Powered Search",
+          "titleEn": "Master AI-Powered Search",
+          "estimatedTime": "2 min",
+          "content": "Unlike traditional search engines, Perplexity reads and synthesizes information from multiple sources, then gives you a direct answer with citations. Try asking it a research question.",
+          "expectedResult": "You get a comprehensive, sourced answer instead of a list of links.",
+          "tips": [
+            "Ask natural questions like 'What are the best free AI tools for Mac?'",
+            "Use Focus modes: Academic, Writing, Math, Video, Social for specialized searches",
+            "Toggle Pro search for complex questions that need deeper research"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? Search Tips",
+            "items": [
+              {
+                "q": "Answers seem too generic",
+                "a": "Try Pro search mode — it asks follow-up questions and searches deeper. Also be specific in your query."
+              },
+              {
+                "q": "Sources look unreliable",
+                "a": "Use Academic focus mode for peer-reviewed sources. You can also click on citations to verify them yourself."
+              }
+            ]
+          },
+          "commands": [
+            "# Example searches to try:",
+            "",
+            "# Basic search (free, instant):",
+            "# 'What is Ollama and how do I install it on Mac?'",
+            "",
+            "# Pro search (deeper, multi-step research):",
+            "# 'Compare self-hosted AI solutions: Ollama vs LM Studio vs LocalAI'",
+            "",
+            "# Academic focus:",
+            "# 'Latest research on transformer model efficiency 2025'"
+          ]
+        },
+        {
+          "title": "Get Your API Key",
+          "titleEn": "Get Your API Key",
+          "estimatedTime": "1 min",
+          "content": "Perplexity offers an API (pplx-api) for programmatic access. Get your API key from the settings page to integrate AI search into your projects.",
+          "expectedResult": "You have your Perplexity API key ready for integration.",
+          "tips": [
+            "API pricing: pay-per-use, starting from $0.20 per 1000 requests for basic models",
+            "Supports multiple models including sonar-small and sonar-large",
+            "API is OpenAI-compatible — works with any OpenAI SDK"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? API Troubleshooting",
+            "items": [
+              {
+                "q": "Where do I find the API key?",
+                "a": "Go to perplexity.ai → Settings → API → Generate API Key. You need to add billing info first."
+              },
+              {
+                "q": "Is the API free?",
+                "a": "No, the API is pay-per-use. But it's very affordable — basic models start at $0.20/1000 requests."
+              }
+            ]
+          },
+          "commands": [
+            "# Get your API key from Perplexity settings",
+            "open https://www.perplexity.ai/settings/api",
+            "",
+            "# Set up your API key",
+            "export PERPLEXITY_API_KEY=\"pplx-your-api-key-here\"",
+            "",
+            "# Test with a quick API call (OpenAI-compatible!)",
+            "curl -X POST https://api.perplexity.ai/chat/completions \\",
+            "  -H \"Authorization: Bearer $PERPLEXITY_API_KEY\" \\",
+            "  -H \"Content-Type: application/json\" \\",
+            "  -d '{\"model\": \"sonar\", \"messages\": [{\"role\": \"user\", \"content\": \"What is the latest version of Ollama?\"}]}'"
+          ]
+        },
+        {
+          "title": "Build an AI Research Workflow",
+          "titleEn": "Build an AI Research Workflow",
+          "estimatedTime": "1 min",
+          "content": "Combine Perplexity with your local AI setup. Use Perplexity for real-time web research and Ollama for private, offline processing — the best of both worlds.",
+          "expectedResult": "You have a workflow that uses Perplexity for web research and Ollama for local AI tasks.",
+          "tips": [
+            "Use Perplexity for questions that need current web data",
+            "Use Ollama for private tasks like coding, writing, and analysis",
+            "Perplexity Collections let you organize research into shareable folders"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? Workflow Tips",
+            "items": [
+              {
+                "q": "When should I use Perplexity vs Ollama?",
+                "a": "Perplexity for anything requiring up-to-date web info. Ollama for privacy-sensitive tasks, coding help, or when you're offline."
+              },
+              {
+                "q": "Can I use Perplexity API with OpenClaw?",
+                "a": "Yes! Since the API is OpenAI-compatible, you can set it as an alternative endpoint in OpenClaw's settings."
+              }
+            ]
+          },
+          "commands": [
+            "# Use Perplexity API as an OpenAI-compatible endpoint",
+            "# In your OpenClaw config or any OpenAI SDK:",
+            "",
+            "export OPENAI_API_KEY=\"pplx-your-api-key-here\"",
+            "export OPENAI_BASE_URL=\"https://api.perplexity.ai\"",
+            "",
+            "# Now any OpenAI-compatible tool will use Perplexity!",
+            "# This gives your AI agent real-time web search capability"
+          ]
+        },
+        {
+          "title": "Next Steps & Power Tips",
+          "titleEn": "Next Steps & Power Tips",
+          "estimatedTime": "Exploration time!",
+          "content": "Congratulations! You now have AI-powered search at your fingertips. Explore advanced features and level up your research game.",
+          "tips": [
+            "Use Perplexity Spaces to create custom AI assistants with specific knowledge bases",
+            "Share your research with Perplexity Pages — turn answers into polished articles",
+            "Install the Perplexity browser extension for instant search from any webpage"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "⭐",
+              "title": "Upgrade to Perplexity Pro",
+              "desc": "Unlimited Pro searches, file uploads, and advanced models. Use our referral for $10 credit.",
+              "cta": "Try Pro Free",
+              "link": "https://perplexity.ai/?referral=canfly",
+              "external": true
+            },
+            {
+              "emoji": "🔍",
+              "title": "Try Brave Search API",
+              "desc": "Need raw web search results for your apps? Brave Search API gives you direct access to search data.",
+              "cta": "Learn Brave Search",
+              "link": "/learn/brave-search"
+            },
+            {
+              "emoji": "🦞",
+              "title": "Connect with OpenClaw",
+              "desc": "Use Perplexity as a research tool alongside your local Ollama AI for the ultimate setup.",
+              "cta": "Ollama Tutorial",
+              "link": "/learn/ollama"
+            },
+            {
+              "emoji": "☁️",
+              "title": "Deploy to Cloud",
+              "desc": "Put your AI research assistant in the cloud with Zeabur for 24/7 access.",
+              "cta": "Deploy to Cloud",
+              "link": "/learn/zeabur"
+            }
+          ]
+        }
+      ]
+    },
+    "brave": {
+      "title": "Brave Search API — Give Your AI Real Web Search in 5 Minutes",
+      "subtitle": "Free API for web search results — perfect for building AI agents that can search the internet",
+      "duration": "5 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "Sign Up for Brave Search API",
+          "titleEn": "Sign Up for Brave Search API",
+          "estimatedTime": "1 min",
+          "content": "Create a Brave Search API account to get free access to web search results. The free tier gives you 2,000 queries per month — plenty for personal projects and development.",
+          "expectedResult": "You have a Brave Search API account and can access the developer dashboard.",
+          "tips": [
+            "Free tier: 2,000 queries/month, 1 query/second",
+            "No credit card required for the free plan",
+            "Brave Search is privacy-focused — no user tracking"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? Account Troubleshooting",
+            "items": [
+              {
+                "q": "Is this the same as Brave Browser?",
+                "a": "Brave Search API is a separate product from the Brave browser. You don't need the browser to use the API."
+              },
+              {
+                "q": "Do I need a paid plan?",
+                "a": "No! The free tier with 2,000 queries/month is enough for most personal projects and development."
+              }
+            ]
+          },
+          "commands": [
+            "# Create your Brave Search API account",
+            "open https://brave.com/search/api/?utm_source=canfly&utm_medium=web&utm_campaign=brave-search",
+            "",
+            "# Click 'Get Started' and create your account",
+            "# Free tier: 2,000 queries/month",
+            "# No credit card required"
+          ]
+        },
+        {
+          "title": "Get Your API Key",
+          "titleEn": "Get Your API Key",
+          "estimatedTime": "30 sec",
+          "content": "Generate your API key from the Brave Search developer dashboard. This key authenticates your search requests.",
+          "expectedResult": "You have your Brave Search API key ready for making search queries.",
+          "tips": [
+            "Keep your API key private — don't commit it to public repos",
+            "You can create multiple API keys for different projects",
+            "Monitor your usage in the dashboard to stay within free tier limits"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? API Key Troubleshooting",
+            "items": [
+              {
+                "q": "Where do I find my API key?",
+                "a": "Log in to api.search.brave.com, go to your dashboard, and click 'API Keys' to generate one."
+              },
+              {
+                "q": "API key not working",
+                "a": "Make sure you're using the correct header: 'X-Subscription-Token'. Also check that your key is active in the dashboard."
+              }
+            ]
+          },
+          "commands": [
+            "# Go to the Brave Search API dashboard",
+            "open https://api.search.brave.com/app/dashboard",
+            "",
+            "# Generate your API key",
+            "# Copy it and set as environment variable:",
+            "export BRAVE_SEARCH_API_KEY=\"BSA-your-api-key-here\""
+          ]
+        },
+        {
+          "title": "Make Your First Search",
+          "titleEn": "Make Your First Search",
+          "estimatedTime": "1 min",
+          "content": "Make your first API call to search the web. Brave Search returns structured results including titles, URLs, descriptions, and more — perfect for feeding into AI models.",
+          "expectedResult": "You get structured JSON search results from the Brave Search API.",
+          "tips": [
+            "Results include title, URL, description, and page age",
+            "Use the 'count' parameter to control how many results you get (max 20)",
+            "Add 'search_lang' parameter for language-specific results"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? API Call Troubleshooting",
+            "items": [
+              {
+                "q": "Getting 401 Unauthorized",
+                "a": "Double-check your API key. The header must be 'X-Subscription-Token', not 'Authorization'."
+              },
+              {
+                "q": "Getting 429 Too Many Requests",
+                "a": "Free tier is limited to 1 request per second. Add a small delay between requests."
+              }
+            ]
+          },
+          "commands": [
+            "# Make your first Brave Search API call",
+            "curl -s \"https://api.search.brave.com/res/v1/web/search?q=best+free+AI+tools+2025\" \\",
+            "  -H \"Accept: application/json\" \\",
+            "  -H \"X-Subscription-Token: $BRAVE_SEARCH_API_KEY\" | python3 -m json.tool",
+            "",
+            "# Search with specific parameters",
+            "curl -s \"https://api.search.brave.com/res/v1/web/search?q=ollama+tutorial&count=5&search_lang=en\" \\",
+            "  -H \"Accept: application/json\" \\",
+            "  -H \"X-Subscription-Token: $BRAVE_SEARCH_API_KEY\" | python3 -m json.tool"
+          ]
+        },
+        {
+          "title": "Give Your AI Web Search",
+          "titleEn": "Give Your AI Web Search",
+          "estimatedTime": "2 min",
+          "content": "Connect Brave Search to your AI workflow. Use it to give Ollama or any AI model the ability to search the web for real-time information before answering questions.",
+          "expectedResult": "Your AI can search the web and use real-time information to answer questions.",
+          "tips": [
+            "Combine Brave Search results with Ollama for a free, private AI + web search combo",
+            "Parse the JSON response to extract just titles and descriptions for your AI context",
+            "Cache results to reduce API calls and stay within free tier limits"
+          ],
+          "troubleshooting": {
+            "title": "Stuck? Integration Tips",
+            "items": [
+              {
+                "q": "How do I feed search results to Ollama?",
+                "a": "Search with Brave API, extract the text from results, then include it as context in your Ollama prompt."
+              },
+              {
+                "q": "Results are too long for my AI context",
+                "a": "Use 'count=3' to limit results, and only extract the 'description' field from each result."
+              }
+            ]
+          },
+          "commands": [
+            "# Simple script: search the web and ask Ollama about results",
+            "",
+            "# Step 1: Search with Brave",
+            "QUERY=\"latest AI news today\"",
+            "RESULTS=$(curl -s \"https://api.search.brave.com/res/v1/web/search?q=${QUERY}&count=3\" \\",
+            "  -H \"Accept: application/json\" \\",
+            "  -H \"X-Subscription-Token: $BRAVE_SEARCH_API_KEY\")",
+            "",
+            "# Step 2: Extract descriptions",
+            "CONTEXT=$(echo $RESULTS | python3 -c \"import sys,json; r=json.load(sys.stdin); print('\\n'.join([w['description'] for w in r.get('web',{}).get('results',[])])[:1000])\")",
+            "",
+            "# Step 3: Ask Ollama with web context",
+            "curl -s http://localhost:11434/api/generate -d \"{\\\"model\\\": \\\"llama3.2\\\", \\\"prompt\\\": \\\"Based on these search results:\\n${CONTEXT}\\n\\nSummarize the latest AI news.\\\", \\\"stream\\\": false}\" | python3 -c \"import sys,json; print(json.load(sys.stdin)['response'])\""
+          ]
+        },
+        {
+          "title": "Next Steps & Advanced Features",
+          "titleEn": "Next Steps & Advanced Features",
+          "estimatedTime": "Exploration time!",
+          "content": "Congratulations! Your AI now has web search superpowers. Explore advanced Brave Search features and build more powerful applications.",
+          "tips": [
+            "Brave Search also offers News, Images, and Videos API endpoints",
+            "Use the 'freshness' parameter to filter results by date",
+            "Combine with Perplexity for both raw search data and AI-synthesized answers"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🔍",
+              "title": "Try Perplexity AI",
+              "desc": "Want AI-synthesized answers instead of raw results? Perplexity gives you researched answers with sources.",
+              "cta": "Learn Perplexity",
+              "link": "/learn/perplexity"
+            },
+            {
+              "emoji": "🦞",
+              "title": "Build with OpenClaw",
+              "desc": "Give your OpenClaw agent web search capability using Brave Search for real-time knowledge.",
+              "cta": "Ollama Tutorial",
+              "link": "/learn/ollama"
+            },
+            {
+              "emoji": "☁️",
+              "title": "Deploy to Cloud",
+              "desc": "Put your search-enabled AI in the cloud with Zeabur for 24/7 web-connected intelligence.",
+              "cta": "Deploy to Cloud",
+              "link": "/learn/zeabur"
+            },
+            {
+              "emoji": "🎙️",
+              "title": "Add Voice Output",
+              "desc": "Make your AI speak its research findings with ElevenLabs voice synthesis.",
+              "cta": "Explore ElevenLabs",
+              "link": "/learn/elevenlabs-integration"
+            }
+          ]
+        }
+      ]
+    },
     "installOllamaOneLine": "# Install Ollama with one command\ncurl -fsSL https://ollama.com/install.sh | sh",
     "chatDemo": {
       "you": "You"
