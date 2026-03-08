@@ -38,14 +38,14 @@ export const products: Product[] = [
       'Works with OpenClaw agents',
     ],
     screenshots: [
-      '/images/ollama-terminal.jpg',
-      '/images/ollama-models.jpg',
-      '/images/ollama-openclaw.jpg',
+      '/images/tutorial/ollama-mac-installer.png',
+      '/images/tutorial/ollama-pull-model.png',
+      '/images/tutorial/ollama-chat-session.png',
     ],
-    tutorial: '/learn/ollama-setup',
+    tutorial: '/learn/ollama',
     cta: {
       primary: 'Start Free Tutorial',
-      primaryLink: '/learn/ollama-setup',
+      primaryLink: '/learn/ollama',
       secondary: 'View on GitHub',
       secondaryLink: 'https://github.com/ollama/ollama',
     },
@@ -68,17 +68,13 @@ export const products: Product[] = [
       '24/7 monitoring',
       'OpenClaw optimized templates',
     ],
-    screenshots: [
-      '/images/zeabur-dashboard.jpg',
-      '/images/zeabur-deploy.jpg',
-      '/images/zeabur-logs.jpg',
-    ],
-    tutorial: '/learn/zeabur-deployment',
+    screenshots: [],
+    tutorial: '/learn/zeabur',
     cta: {
       primary: 'Deploy Now (10% off)',
       primaryLink: 'https://zeabur.com?referralCode=openclaw',
       secondary: 'View Tutorial',
-      secondaryLink: '/learn/zeabur-deployment',
+      secondaryLink: '/learn/zeabur',
     },
   },
   {
@@ -98,11 +94,7 @@ export const products: Product[] = [
       'API',
       'OpenClaw skill',
     ],
-    screenshots: [
-      '/images/elevenlabs-interface.jpg',
-      '/images/elevenlabs-voices.jpg',
-      '/images/elevenlabs-openclaw.jpg',
-    ],
+    screenshots: [],
     tutorial: '/learn/elevenlabs-integration',
     cta: {
       primary: 'Try ElevenLabs',
@@ -128,11 +120,7 @@ export const products: Product[] = [
       'Custom avatar training',
       'Works with OpenClaw',
     ],
-    screenshots: [
-      '/images/heygen-studio.jpg',
-      '/images/heygen-avatars.jpg',
-      '/images/heygen-output.jpg',
-    ],
+    screenshots: [],
     tutorial: '/learn/heygen-video',
     cta: {
       primary: 'Try HeyGen',
@@ -157,11 +145,7 @@ export const products: Product[] = [
       'Run your own AI',
       'No subscription',
     ],
-    screenshots: [
-      '/images/umbrel-home.jpg',
-      '/images/umbrel-apps.jpg',
-      '/images/umbrel-hardware.jpg',
-    ],
+    screenshots: [],
     tutorial: '/learn/umbrel-setup',
     cta: {
       primary: 'Visit Umbrel',
