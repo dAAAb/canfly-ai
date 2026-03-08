@@ -91,6 +91,9 @@
     "comingSoon": "Coming Soon",
     "useCode": "Use code: {{code}}",
     "openclawPartner": "OpenClaw Partner",
+    "gridView": "Grid view",
+    "listView": "List view",
+    "featured": "Featured",
     "categoryNames": {
       "all": "All Apps",
       "free": "Free Tools",

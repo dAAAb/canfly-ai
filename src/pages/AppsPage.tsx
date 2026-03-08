@@ -1,15 +1,18 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { PanelLeftClose, PanelLeftOpen, Shield, Target, Rocket } from 'lucide-react'
+import { PanelLeftClose, PanelLeftOpen, Shield, Target, Rocket, LayoutGrid, List, ArrowRight } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import Navbar from '../components/Navbar'
 import { products, categories } from '../data/products'
 import { useLanguage } from '../hooks/useLanguage'
 
+const featuredIds = ['ollama', 'zeabur'] as const
+
 export default function AppsPage() {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const { t } = useTranslation()
   const { localePath } = useLanguage()
 
@@ -21,14 +24,35 @@ export default function AppsPage() {
     return matchesCategory && matchesSearch
   })
 
+  const featuredProducts = selectedCategory === 'all' && !searchTerm
+    ? products.filter(p => featuredIds.includes(p.id as typeof featuredIds[number]))
+    : []
+
   return (
     <div className="min-h-screen bg-black text-white">
       <Navbar search={{ value: searchTerm, onChange: setSearchTerm, placeholder: t('apps.searchPlaceholder') }} />
 
+      {/* Mobile horizontal tabs */}
+      <div className="md:hidden overflow-x-auto border-b border-gray-800 bg-gray-950/50 px-4 py-3 flex gap-2" style={{ scrollbarWidth: 'none' }}>
+        {categories.map((category) => (
+          <button
+            key={category.id}
+            onClick={() => setSelectedCategory(category.id)}
+            className={`px-3 py-1.5 rounded-full text-sm whitespace-nowrap transition-all ${
+              selectedCategory === category.id
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-800 text-gray-400 hover:text-white'
+            }`}
+          >
+            {t(`apps.categoryNames.${category.id}`)} ({category.count})
+          </button>
+        ))}
+      </div>
+
       <div className="flex">
-        {/* Sidebar */}
+        {/* Sidebar — hidden on mobile */}
         <aside
-          className={`${sidebarOpen ? 'w-64' : 'w-0'} shrink-0 transition-all duration-200 overflow-hidden border-r border-gray-800 bg-gray-950/50`}
+          className={`hidden md:block ${sidebarOpen ? 'w-64' : 'w-0'} shrink-0 transition-all duration-200 overflow-hidden border-r border-gray-800 bg-gray-950/50`}
           style={{ minHeight: 'calc(100vh - 65px)' }}
         >
           <div className="w-64 p-6">
@@ -91,19 +115,19 @@ export default function AppsPage() {
 
         {/* Main content */}
         <div className="flex-1 min-w-0">
-          <div className="px-8 py-8 max-w-6xl page-enter">
+          <div className="px-4 md:px-8 py-8 max-w-6xl page-enter">
             {/* Header row */}
             <div className="flex items-center gap-4 mb-8">
               {!sidebarOpen && (
                 <button
                   onClick={() => setSidebarOpen(true)}
-                  className="p-2 text-gray-500 hover:text-white transition-colors rounded-lg hover:bg-gray-800"
+                  className="hidden md:block p-2 text-gray-500 hover:text-white transition-colors rounded-lg hover:bg-gray-800"
                   title={t('apps.openSidebar')}
                 >
                   <PanelLeftOpen className="w-5 h-5" />
                 </button>
               )}
-              <div>
+              <div className="flex-1">
                 <h1 className="text-3xl font-bold">
                   {selectedCategory === 'all' ? t('apps.allApps') : t(`apps.categoryNames.${selectedCategory}`)}
                 </h1>
@@ -111,7 +135,52 @@ export default function AppsPage() {
                   {t('apps.appCount', { count: filteredProducts.length })}
                 </p>
               </div>
+
+              {/* View mode toggle */}
+              <div className="flex items-center gap-1 bg-gray-800/50 rounded-lg p-1">
+                <button
+                  onClick={() => setViewMode('grid')}
+                  className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-gray-700 text-white' : 'text-gray-500 hover:text-gray-300'}`}
+                  title={t('apps.gridView')}
+                >
+                  <LayoutGrid className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-gray-700 text-white' : 'text-gray-500 hover:text-gray-300'}`}
+                  title={t('apps.listView')}
+                >
+                  <List className="w-4 h-4" />
+                </button>
+              </div>
             </div>
+
+            {/* Featured banner — only on All Apps without search */}
+            {featuredProducts.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                {featuredProducts.map((product) => (
+                  <Link
+                    key={product.id}
+                    to={localePath(`/apps/${product.id}`)}
+                    className={`relative overflow-hidden rounded-2xl p-6 flex items-center gap-5 group transition-all hover:scale-[1.01] ${
+                      product.id === 'ollama'
+                        ? 'bg-gradient-to-br from-green-950/60 to-emerald-950/40 border border-green-800/30 hover:border-green-700/50'
+                        : 'bg-gradient-to-br from-blue-950/60 to-indigo-950/40 border border-blue-800/30 hover:border-blue-700/50'
+                    }`}
+                  >
+                    <div className="w-16 h-16 shrink-0 rounded-2xl bg-black/30 border border-white/10 flex items-center justify-center overflow-hidden">
+                      <img src={product.icon} alt={product.name} className="w-11 h-11 object-contain" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">{t('apps.featured')}</div>
+                      <h3 className="text-lg font-bold text-white group-hover:text-blue-300 transition-colors">{product.name}</h3>
+                      <p className="text-sm text-gray-400 mt-0.5 line-clamp-1">{t(`product.products.${product.id}.tagline`)}</p>
+                    </div>
+                    <ArrowRight className="w-5 h-5 text-gray-500 group-hover:text-white transition-colors shrink-0" />
+                  </Link>
+                ))}
+              </div>
+            )}
 
             {/* VM Explainer — shows when VM category selected or on 'all' */}
             {(selectedCategory === 'vm' || selectedCategory === 'all') && (
@@ -168,47 +237,108 @@ export default function AppsPage() {
               </div>
             )}
 
-            {/* Product grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {filteredProducts.map((product) => (
-                <Link
-                  key={product.id}
-                  to={localePath(`/apps/${product.id}`)}
-                  className="bg-gray-900/60 border border-gray-800 rounded-xl overflow-hidden hover:border-gray-600 transition-all hover:scale-[1.02] group card-hover"
-                >
-                  {/* Image placeholder */}
-                  <div className="aspect-video bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-                    <div className="text-4xl text-gray-600">{product.name[0]}</div>
-                  </div>
-
-                  <div className="p-5">
-                    <div className="flex items-start justify-between mb-2">
-                      <div>
-                        <h3 className="font-semibold text-white group-hover:text-blue-400 transition-colors">
-                          {product.name}
-                        </h3>
-                        <p className="text-sm text-gray-500 mt-0.5">{t(`product.products.${product.id}.tagline`)}</p>
-                      </div>
-                      <div className="text-right shrink-0 ml-4">
-                        {product.status === 'coming-soon' ? (
-                          <span className="px-2 py-0.5 bg-purple-600/20 text-purple-400 text-xs rounded-full border border-purple-600/40">
-                            Coming Soon
-                          </span>
-                        ) : (
-                          <div className="text-sm font-medium text-white">{product.price}</div>
-                        )}
+            {/* Grid View */}
+            {viewMode === 'grid' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {filteredProducts.map((product) => (
+                  <Link
+                    key={product.id}
+                    to={localePath(`/apps/${product.id}`)}
+                    className="bg-gray-900/60 border border-gray-800 rounded-xl overflow-hidden hover:border-gray-600 transition-all hover:scale-[1.02] group card-hover"
+                  >
+                    {/* Gradient area with icon */}
+                    <div className="aspect-video bg-gradient-to-br from-gray-800 to-gray-900 relative flex items-center justify-center">
+                      <div className="text-6xl text-gray-700/40 font-bold select-none">{product.name[0]}</div>
+                      {/* App icon — bottom-left overlay */}
+                      <div className="absolute bottom-3 left-4 w-14 h-14 rounded-xl bg-gray-900/80 border border-gray-700/50 flex items-center justify-center overflow-hidden backdrop-blur-sm shadow-lg">
+                        <img
+                          src={product.icon}
+                          alt={product.name}
+                          className="w-10 h-10 object-contain"
+                          onError={(e) => {
+                            const el = e.target as HTMLImageElement
+                            el.style.display = 'none'
+                            el.parentElement!.innerHTML = `<span class="text-xl text-gray-400 font-bold">${product.name[0]}</span>`
+                          }}
+                        />
                       </div>
                     </div>
 
-                    {product.affiliateLink && (
-                      <div className="text-xs text-blue-400 mt-2">
-                        {product.affiliateCode ? t('apps.useCode', { code: product.affiliateCode }) : t('apps.openclawPartner')}
+                    <div className="p-5">
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <h3 className="font-semibold text-white group-hover:text-blue-400 transition-colors">
+                            {product.name}
+                          </h3>
+                          <p className="text-sm text-gray-500 mt-0.5">{t(`product.products.${product.id}.tagline`)}</p>
+                        </div>
+                        <div className="text-right shrink-0 ml-4">
+                          {product.status === 'coming-soon' ? (
+                            <span className="px-2 py-0.5 bg-purple-600/20 text-purple-400 text-xs rounded-full border border-purple-600/40 whitespace-nowrap">
+                              Coming Soon
+                            </span>
+                          ) : (
+                            <div className="text-sm font-medium text-white whitespace-nowrap">{product.price}</div>
+                          )}
+                        </div>
                       </div>
-                    )}
-                  </div>
-                </Link>
-              ))}
-            </div>
+
+                      {product.affiliateLink && (
+                        <div className="text-xs text-blue-400 mt-2">
+                          {product.affiliateCode ? t('apps.useCode', { code: product.affiliateCode }) : t('apps.openclawPartner')}
+                        </div>
+                      )}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+
+            {/* List View */}
+            {viewMode === 'list' && (
+              <div className="space-y-2">
+                {filteredProducts.map((product) => (
+                  <Link
+                    key={product.id}
+                    to={localePath(`/apps/${product.id}`)}
+                    className="flex items-center gap-4 p-4 bg-gray-900/40 border border-gray-800 rounded-xl hover:border-gray-600 transition-all group"
+                  >
+                    {/* Icon */}
+                    <div className="w-14 h-14 shrink-0 rounded-xl bg-gray-800 border border-gray-700/50 flex items-center justify-center overflow-hidden">
+                      <img
+                        src={product.icon}
+                        alt={product.name}
+                        className="w-10 h-10 object-contain"
+                        onError={(e) => {
+                          const el = e.target as HTMLImageElement
+                          el.style.display = 'none'
+                          el.parentElement!.innerHTML = `<span class="text-xl text-gray-400 font-bold">${product.name[0]}</span>`
+                        }}
+                      />
+                    </div>
+
+                    {/* Name + tagline */}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-white group-hover:text-blue-400 transition-colors truncate">
+                        {product.name}
+                      </h3>
+                      <p className="text-sm text-gray-500 truncate">{t(`product.products.${product.id}.tagline`)}</p>
+                    </div>
+
+                    {/* Price */}
+                    <div className="shrink-0">
+                      {product.status === 'coming-soon' ? (
+                        <span className="px-2 py-0.5 bg-purple-600/20 text-purple-400 text-xs rounded-full border border-purple-600/40 whitespace-nowrap">
+                          Coming Soon
+                        </span>
+                      ) : (
+                        <div className="text-sm font-medium text-white whitespace-nowrap">{product.price}</div>
+                      )}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
 
             {filteredProducts.length === 0 && (
               <div className="text-center py-16">

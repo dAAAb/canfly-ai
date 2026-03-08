@@ -91,6 +91,9 @@
     "comingSoon": "即将推出",
     "useCode": "使用优惠码：{{code}}",
     "openclawPartner": "OpenClaw 合作伙伴",
+    "gridView": "网格视图",
+    "listView": "列表视图",
+    "featured": "精选推荐",
     "categoryNames": {
       "all": "所有应用",
       "free": "免费工具",
