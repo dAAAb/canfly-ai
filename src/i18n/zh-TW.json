@@ -1926,6 +1926,272 @@
           ]
         }
       ]
+    },
+    "multiagent": {
+      "title": "多 Agent 部署 — 進階 OpenClaw 設定",
+      "subtitle": "部署多個 OpenClaw Agent 協作完成任務 — 路由請求、共享上下文、打造你的 AI 團隊",
+      "duration": "15 分鐘",
+      "difficulty": "進階",
+      "steps": [
+        {
+          "title": "為什麼需要多 Agent？",
+          "titleEn": "Why Multi-Agent?",
+          "estimatedTime": "2 分鐘",
+          "content": "單一 OpenClaw Agent 適合處理個別任務，但現實工作流程往往需要分工合作。多 Agent 部署讓你為不同角色運行獨立的 Agent — 程式設計師、研究員、寫手 — 透過共享上下文和訊息路由進行協作。",
+          "expectedResult": "你了解何時應該使用多 Agent 架構，而非單一 Agent。",
+          "tips": [
+            "多 Agent 在任務需要不同專長時特別出色 — 例如程式開發 + 文件撰寫",
+            "每個 Agent 可以使用不同的模型（快速模型做分類、強大模型寫程式）",
+            "Agent 可以分布在你網路中的不同機器上",
+            "先從 2 個 Agent 開始，再逐步擴展"
+          ],
+          "troubleshooting": {
+            "title": "常見問題",
+            "items": [
+              {
+                "q": "需要多台電腦嗎？",
+                "a": "不用！你可以在一台機器上運行多個 Agent。每個 Agent 是獨立的 OpenClaw 程序，有自己的設定檔。"
+              },
+              {
+                "q": "這跟 Paperclip 一樣嗎？",
+                "a": "Paperclip 是協調 Agent 的管理層。OpenClaw 是每個 Agent 的運行引擎。你可以搭配或不搭配 Paperclip 使用多 Agent。"
+              }
+            ]
+          },
+          "commands": [
+            "# 多 Agent 架構概覽：",
+            "",
+            "# Agent 1：研究員 — 使用 Perplexity + 網路搜尋",
+            "# Agent 2：程式設計師 — 使用 Claude/GPT-4 實作",
+            "# Agent 3：審查員 — 檢查程式碼品質與測試",
+            "",
+            "# 每個 Agent 作為獨立的 OpenClaw 實例運行",
+            "# 各自擁有模型、工具和系統提示",
+            "",
+            "# 前置需求：",
+            "# - 已安裝 OpenClaw（參考 Ollama 教學）",
+            "# - 至少一個 AI 模型（Ollama 或 API 金鑰）",
+            "# - Node.js 18+ 已安裝"
+          ]
+        },
+        {
+          "title": "建立第一對 Agent",
+          "titleEn": "Set Up Your First Agent Pair",
+          "estimatedTime": "5 分鐘",
+          "content": "我們從兩個 Agent 開始：「規劃者」負責拆解任務，「執行者」負責完成任務。每個 Agent 有自己的 OpenClaw 設定目錄和系統提示。",
+          "expectedResult": "兩個 OpenClaw Agent 實例已用各自的設定檔運行中。",
+          "tips": [
+            "為每個 Agent 使用獨立的設定目錄，避免衝突",
+            "給每個 Agent 明確、聚焦的系統提示 — 專業分工是關鍵",
+            "規劃者可以使用較便宜/快速的模型，因為只負責路由任務",
+            "執行者應該使用更強大的模型來進行實際開發"
+          ],
+          "troubleshooting": {
+            "title": "設定疑難排解",
+            "items": [
+              {
+                "q": "啟動第二個 Agent 時連接埠衝突",
+                "a": "每個 OpenClaw 實例需要自己的連接埠。第二個 Agent 使用 --port 3001，第三個用 --port 3002，依此類推。"
+              },
+              {
+                "q": "Agent 之間看不到彼此",
+                "a": "Agent 透過檔案系統或 API 橋接通訊，不是直接連線。確保它們共用一個工作區目錄。"
+              }
+            ]
+          },
+          "commands": [
+            "# 為每個 Agent 建立工作區目錄",
+            "mkdir -p ~/openclaw-agents/planner",
+            "mkdir -p ~/openclaw-agents/worker",
+            "mkdir -p ~/openclaw-agents/shared",
+            "",
+            "# 建立規劃者 Agent 設定",
+            "cat > ~/openclaw-agents/planner/config.json << 'EOF'",
+            "{",
+            "  \"name\": \"Planner Agent\",",
+            "  \"model\": \"llama3.2\",",
+            "  \"systemPrompt\": \"你是任務規劃者。將使用者的需求拆解為清晰、可執行的子任務。輸出編號任務清單。\",",
+            "  \"port\": 3001",
+            "}",
+            "EOF",
+            "",
+            "# 建立執行者 Agent 設定",
+            "cat > ~/openclaw-agents/worker/config.json << 'EOF'",
+            "{",
+            "  \"name\": \"Worker Agent\",",
+            "  \"model\": \"llama3.2\",",
+            "  \"systemPrompt\": \"你是任務執行者。精確完成指派的任務並回報結果。\",",
+            "  \"port\": 3002",
+            "}",
+            "EOF",
+            "",
+            "# 啟動兩個 Agent",
+            "cd ~/openclaw-agents/planner && npx openclaw start --config config.json &",
+            "cd ~/openclaw-agents/worker && npx openclaw start --config config.json &",
+            "",
+            "# 確認都在運行",
+            "curl -s http://localhost:3001/health",
+            "curl -s http://localhost:3002/health"
+          ]
+        },
+        {
+          "title": "設定 Agent 協作",
+          "titleEn": "Configure Agent Collaboration",
+          "estimatedTime": "5 分鐘",
+          "content": "現在連接你的 Agent 讓它們協作。規劃者將任務拆解後寫入共享目錄，執行者取出任務並完成。這種基於檔案的方式簡單有效，適合本機部署。",
+          "expectedResult": "Agent 可以透過共享工作區互相傳遞任務。",
+          "tips": [
+            "基於檔案的交接是最簡單的模式 — 非常適合入門",
+            "正式環境建議使用訊息佇列（Redis、RabbitMQ）",
+            "加入監聽腳本可自動將任務分配給執行者 Agent",
+            "記錄所有 Agent 互動，方便除錯和改進"
+          ],
+          "troubleshooting": {
+            "title": "協作問題",
+            "items": [
+              {
+                "q": "執行者沒有接收任務",
+                "a": "檢查兩邊設定中的共享目錄路徑是否正確。同時確認監聽腳本正在運行：ps aux | grep openclaw-watcher"
+              },
+              {
+                "q": "任務重複執行",
+                "a": "加入鎖定檔案機制或使用原子檔案操作。監聽器應該將任務從 .pending 改名為 .processing 以防止重複取用。"
+              }
+            ]
+          },
+          "commands": [
+            "# 建立簡單的任務路由腳本",
+            "cat > ~/openclaw-agents/router.sh << 'SCRIPT'",
+            "#!/bin/bash",
+            "# 路由任務：規劃者拆解，執行者完成",
+            "",
+            "TASK=\"$1\"",
+            "SHARED=~/openclaw-agents/shared",
+            "",
+            "# 步驟 1：請規劃者拆解任務",
+            "echo \"規劃中：$TASK\"",
+            "curl -s http://localhost:3001/api/chat \\",
+            "  -H 'Content-Type: application/json' \\",
+            "  -d \"{\\\"message\\\": \\\"$TASK\\\"}\" \\",
+            "  | jq -r '.response' > \"$SHARED/plan.md\"",
+            "",
+            "# 步驟 2：將計畫傳給執行者",
+            "echo \"執行計畫中...\"",
+            "PLAN=$(cat \"$SHARED/plan.md\")",
+            "curl -s http://localhost:3002/api/chat \\",
+            "  -H 'Content-Type: application/json' \\",
+            "  -d \"{\\\"message\\\": \\\"執行此計畫：$PLAN\\\"}\" \\",
+            "  | jq -r '.response' > \"$SHARED/result.md\"",
+            "",
+            "echo \"完成！結果已存至 $SHARED/result.md\"",
+            "cat \"$SHARED/result.md\"",
+            "SCRIPT",
+            "chmod +x ~/openclaw-agents/router.sh",
+            "",
+            "# 測試看看！",
+            "~/openclaw-agents/router.sh \"寫一個 Python 腳本來抓取天氣資料\""
+          ]
+        },
+        {
+          "title": "新增專業 Agent 角色",
+          "titleEn": "Add Specialized Agent Roles",
+          "estimatedTime": "3 分鐘",
+          "content": "擴展到兩個以上的 Agent，新增專業角色。審查 Agent 可以檢查執行者的輸出，研究 Agent 可以蒐集資訊，摘要 Agent 可以彙整結果。每個角色有聚焦的系統提示和最佳模型。",
+          "expectedResult": "你擁有一個多角色的 Agent 團隊在本機運行。",
+          "tips": [
+            "別過度分工 — 3 到 4 個 Agent 通常是最佳數量",
+            "用 Ollama 的輕量模型（phi3、gemma2）處理簡單的路由任務",
+            "把強大的模型（llama3.1:70b、Claude）留給複雜推理",
+            "監控記憶體使用量 — 每個 Agent 會佔用 RAM 載入模型"
+          ],
+          "troubleshooting": {
+            "title": "擴展問題",
+            "items": [
+              {
+                "q": "多個 Agent 時記憶體不足",
+                "a": "簡單的 Agent 使用小模型。Ollama 會在多個實例之間共用模型權重，所以使用相同模型的多個 Agent 很省記憶體。或者將部分 Agent 部署到 Zeabur 雲端。"
+              },
+              {
+                "q": "Agent 輸出不一致",
+                "a": "將 temperature 設為 0 以獲得確定性輸出。同時確保系統提示夠具體 — 模糊的提示會導致不一致的行為。"
+              }
+            ]
+          },
+          "commands": [
+            "# 新增審查 Agent",
+            "mkdir -p ~/openclaw-agents/reviewer",
+            "cat > ~/openclaw-agents/reviewer/config.json << 'EOF'",
+            "{",
+            "  \"name\": \"Reviewer Agent\",",
+            "  \"model\": \"llama3.2\",",
+            "  \"systemPrompt\": \"你是程式碼審查者。檢查給定的程式碼是否有 bug、安全問題和最佳實踐。提供具體、可行的回饋。\",",
+            "  \"port\": 3003",
+            "}",
+            "EOF",
+            "",
+            "# 新增研究 Agent（使用 Perplexity 做網路搜尋）",
+            "mkdir -p ~/openclaw-agents/researcher",
+            "cat > ~/openclaw-agents/researcher/config.json << 'EOF'",
+            "{",
+            "  \"name\": \"Researcher Agent\",",
+            "  \"model\": \"llama3.2\",",
+            "  \"systemPrompt\": \"你是研究助理。找到準確、最新的資訊並註明來源。\",",
+            "  \"port\": 3004,",
+            "  \"tools\": [\"web-search\"]",
+            "}",
+            "EOF",
+            "",
+            "# 啟動新 Agent",
+            "cd ~/openclaw-agents/reviewer && npx openclaw start --config config.json &",
+            "cd ~/openclaw-agents/researcher && npx openclaw start --config config.json &",
+            "",
+            "# 檢查所有 Agent 狀態",
+            "echo \"Agent 狀態：\"",
+            "for port in 3001 3002 3003 3004; do",
+            "  echo -n \"  連接埠 $port: \"",
+            "  curl -s http://localhost:$port/health | jq -r '.name // \"離線\"'",
+            "done"
+          ]
+        },
+        {
+          "title": "你的 AI 團隊準備就緒！",
+          "titleEn": "Your AI Team is Ready!",
+          "estimatedTime": "1 分鐘",
+          "content": "恭喜！你已經部署了一個多 Agent 系統，讓專業化的 AI Agent 協作完成任務。接下來，你可以將 Agent 部署到雲端、加入語音功能，或連接 Paperclip 進行企業級編排。",
+          "nextStepCards": [
+            {
+              "emoji": "🦙",
+              "title": "回到 Ollama 基礎",
+              "desc": "複習本機 AI 的基本操作",
+              "cta": "查看教學"
+            },
+            {
+              "emoji": "☁️",
+              "title": "用 Zeabur 部署到雲端",
+              "desc": "讓你的 Agent 在雲端 24/7 全天候運行",
+              "cta": "立即部署"
+            },
+            {
+              "emoji": "🎙️",
+              "title": "用 ElevenLabs 加入語音",
+              "desc": "為你的 Agent 加入自然語音能力",
+              "cta": "開始使用"
+            },
+            {
+              "emoji": "🔑",
+              "title": "管理 API 金鑰",
+              "desc": "設定雲端 AI 模型的 API 金鑰",
+              "cta": "了解更多"
+            }
+          ],
+          "tips": [
+            "從 2 個 Agent 開始，按需擴展 — 別過度設計",
+            "定期用健康檢查腳本監控你的 Agent",
+            "部署到 Zeabur 實現 24/7 運行，不用一直開著 Mac",
+            "加入 CanFly 社群分享你的多 Agent 設定"
+          ]
+        }
+      ]
     }
   },
   "hardwareCompare": {

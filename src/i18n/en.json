@@ -1926,6 +1926,272 @@
           ]
         }
       ]
+    },
+    "multiagent": {
+      "title": "Multi-Agent Deployment — Advanced OpenClaw Setup",
+      "subtitle": "Deploy multiple OpenClaw agents that collaborate on tasks — route requests, share context, and build an AI team",
+      "duration": "15 min",
+      "difficulty": "Advanced",
+      "steps": [
+        {
+          "title": "Why Multi-Agent?",
+          "titleEn": "Why Multi-Agent?",
+          "estimatedTime": "2 min",
+          "content": "A single OpenClaw agent is great for individual tasks, but real-world workflows often need specialization. Multi-agent deployment lets you run separate agents for different roles — a coder, a researcher, a writer — and have them collaborate through shared context and message routing.",
+          "expectedResult": "You understand when multi-agent setups are better than a single agent.",
+          "tips": [
+            "Multi-agent shines when tasks need different expertise — e.g. coding + documentation",
+            "Each agent can use a different model (fast model for triage, powerful model for coding)",
+            "Agents can run on different machines across your network",
+            "Start simple with 2 agents before scaling up"
+          ],
+          "troubleshooting": {
+            "title": "Common Questions",
+            "items": [
+              {
+                "q": "Do I need multiple machines?",
+                "a": "No! You can run multiple agents on one machine. Each agent is a separate OpenClaw process with its own configuration."
+              },
+              {
+                "q": "Is this the same as Paperclip?",
+                "a": "Paperclip is the management layer that coordinates agents. OpenClaw is the runtime engine for each individual agent. You can use multi-agent with or without Paperclip."
+              }
+            ]
+          },
+          "commands": [
+            "# Multi-agent architecture overview:",
+            "",
+            "# Agent 1: Researcher — uses Perplexity + web search",
+            "# Agent 2: Coder — uses Claude/GPT-4 for implementation",
+            "# Agent 3: Reviewer — checks code quality and tests",
+            "",
+            "# Each agent runs as a separate OpenClaw instance",
+            "# with its own model, tools, and system prompt",
+            "",
+            "# Prerequisites:",
+            "# - OpenClaw installed (see our Ollama tutorial)",
+            "# - At least one AI model running (Ollama or API key)",
+            "# - Node.js 18+ installed"
+          ]
+        },
+        {
+          "title": "Set Up Your First Agent Pair",
+          "titleEn": "Set Up Your First Agent Pair",
+          "estimatedTime": "5 min",
+          "content": "We'll start with two agents: a 'planner' that breaks down tasks, and a 'worker' that executes them. Each gets its own OpenClaw configuration directory and system prompt.",
+          "expectedResult": "Two OpenClaw agent instances running with separate configs.",
+          "tips": [
+            "Use separate directories for each agent's config to avoid conflicts",
+            "Give each agent a clear, focused system prompt — specialization is key",
+            "The planner can use a cheaper/faster model since it's only routing tasks",
+            "The worker should use a more capable model for actual implementation"
+          ],
+          "troubleshooting": {
+            "title": "Setup Troubleshooting",
+            "items": [
+              {
+                "q": "Port conflict when starting second agent",
+                "a": "Each OpenClaw instance needs its own port. Use --port 3001 for the second agent, --port 3002 for the third, etc."
+              },
+              {
+                "q": "Agents can't see each other",
+                "a": "Agents communicate through the filesystem or an API bridge, not directly. Make sure they share a common workspace directory."
+              }
+            ]
+          },
+          "commands": [
+            "# Create workspace directories for each agent",
+            "mkdir -p ~/openclaw-agents/planner",
+            "mkdir -p ~/openclaw-agents/worker",
+            "mkdir -p ~/openclaw-agents/shared",
+            "",
+            "# Create planner agent config",
+            "cat > ~/openclaw-agents/planner/config.json << 'EOF'",
+            "{",
+            "  \"name\": \"Planner Agent\",",
+            "  \"model\": \"llama3.2\",",
+            "  \"systemPrompt\": \"You are a task planner. Break down user requests into clear, actionable subtasks. Output a numbered task list.\",",
+            "  \"port\": 3001",
+            "}",
+            "EOF",
+            "",
+            "# Create worker agent config",
+            "cat > ~/openclaw-agents/worker/config.json << 'EOF'",
+            "{",
+            "  \"name\": \"Worker Agent\",",
+            "  \"model\": \"llama3.2\",",
+            "  \"systemPrompt\": \"You are a task executor. Complete the assigned task precisely and report the result.\",",
+            "  \"port\": 3002",
+            "}",
+            "EOF",
+            "",
+            "# Start both agents",
+            "cd ~/openclaw-agents/planner && npx openclaw start --config config.json &",
+            "cd ~/openclaw-agents/worker && npx openclaw start --config config.json &",
+            "",
+            "# Verify both are running",
+            "curl -s http://localhost:3001/health",
+            "curl -s http://localhost:3002/health"
+          ]
+        },
+        {
+          "title": "Configure Agent Collaboration",
+          "titleEn": "Configure Agent Collaboration",
+          "estimatedTime": "5 min",
+          "content": "Now connect your agents so they can collaborate. The planner breaks tasks down and writes them to a shared directory. The worker picks up tasks and executes them. This simple file-based approach works well for local setups.",
+          "expectedResult": "Agents can pass tasks to each other through the shared workspace.",
+          "tips": [
+            "File-based handoff is the simplest pattern — great for getting started",
+            "For production, consider using a message queue (Redis, RabbitMQ) instead",
+            "Add a watcher script to auto-assign tasks to the worker agent",
+            "Log all agent interactions for debugging and improvement"
+          ],
+          "troubleshooting": {
+            "title": "Collaboration Issues",
+            "items": [
+              {
+                "q": "Worker doesn't pick up tasks",
+                "a": "Check that the shared directory path is correct in both configs. Also verify the watcher script is running: ps aux | grep openclaw-watcher"
+              },
+              {
+                "q": "Tasks are duplicated",
+                "a": "Add a lock file mechanism or use atomic file operations. The watcher should rename tasks from .pending to .processing to prevent double-pickup."
+              }
+            ]
+          },
+          "commands": [
+            "# Create a simple task routing script",
+            "cat > ~/openclaw-agents/router.sh << 'SCRIPT'",
+            "#!/bin/bash",
+            "# Route a task: planner breaks it down, worker executes",
+            "",
+            "TASK=\"$1\"",
+            "SHARED=~/openclaw-agents/shared",
+            "",
+            "# Step 1: Ask planner to break down the task",
+            "echo \"Planning: $TASK\"",
+            "curl -s http://localhost:3001/api/chat \\",
+            "  -H 'Content-Type: application/json' \\",
+            "  -d \"{\\\"message\\\": \\\"$TASK\\\"}\" \\",
+            "  | jq -r '.response' > \"$SHARED/plan.md\"",
+            "",
+            "# Step 2: Send plan to worker for execution",
+            "echo \"Executing plan...\"",
+            "PLAN=$(cat \"$SHARED/plan.md\")",
+            "curl -s http://localhost:3002/api/chat \\",
+            "  -H 'Content-Type: application/json' \\",
+            "  -d \"{\\\"message\\\": \\\"Execute this plan: $PLAN\\\"}\" \\",
+            "  | jq -r '.response' > \"$SHARED/result.md\"",
+            "",
+            "echo \"Done! Result saved to $SHARED/result.md\"",
+            "cat \"$SHARED/result.md\"",
+            "SCRIPT",
+            "chmod +x ~/openclaw-agents/router.sh",
+            "",
+            "# Test it!",
+            "~/openclaw-agents/router.sh \"Write a Python script that fetches weather data\""
+          ]
+        },
+        {
+          "title": "Add Specialized Agent Roles",
+          "titleEn": "Add Specialized Agent Roles",
+          "estimatedTime": "3 min",
+          "content": "Scale beyond two agents by adding specialized roles. A reviewer agent can check the worker's output, a researcher agent can gather information, and a summarizer can compile results. Each role gets a focused system prompt and optimal model.",
+          "expectedResult": "You have a multi-agent team with specialized roles running locally.",
+          "tips": [
+            "Don't over-specialize — 3-4 agents is usually the sweet spot",
+            "Use Ollama's lighter models (phi3, gemma2) for simple routing tasks",
+            "Reserve powerful models (llama3.1:70b, Claude) for complex reasoning",
+            "Monitor memory usage — each agent consumes RAM for its loaded model"
+          ],
+          "troubleshooting": {
+            "title": "Scaling Issues",
+            "items": [
+              {
+                "q": "Running out of memory with multiple agents",
+                "a": "Use smaller models for simple agents. Ollama shares model weights between instances, so multiple agents using the same model are efficient. Or offload some agents to Zeabur cloud."
+              },
+              {
+                "q": "Agents give inconsistent results",
+                "a": "Set temperature to 0 for deterministic outputs. Also ensure system prompts are specific — vague prompts lead to inconsistent behavior."
+              }
+            ]
+          },
+          "commands": [
+            "# Add a reviewer agent",
+            "mkdir -p ~/openclaw-agents/reviewer",
+            "cat > ~/openclaw-agents/reviewer/config.json << 'EOF'",
+            "{",
+            "  \"name\": \"Reviewer Agent\",",
+            "  \"model\": \"llama3.2\",",
+            "  \"systemPrompt\": \"You are a code reviewer. Check the given code for bugs, security issues, and best practices. Provide specific, actionable feedback.\",",
+            "  \"port\": 3003",
+            "}",
+            "EOF",
+            "",
+            "# Add a researcher agent (uses Perplexity for web search)",
+            "mkdir -p ~/openclaw-agents/researcher",
+            "cat > ~/openclaw-agents/researcher/config.json << 'EOF'",
+            "{",
+            "  \"name\": \"Researcher Agent\",",
+            "  \"model\": \"llama3.2\",",
+            "  \"systemPrompt\": \"You are a research assistant. Find accurate, up-to-date information and cite your sources.\",",
+            "  \"port\": 3004,",
+            "  \"tools\": [\"web-search\"]",
+            "}",
+            "EOF",
+            "",
+            "# Start new agents",
+            "cd ~/openclaw-agents/reviewer && npx openclaw start --config config.json &",
+            "cd ~/openclaw-agents/researcher && npx openclaw start --config config.json &",
+            "",
+            "# Check all agents are running",
+            "echo \"Agent Status:\"",
+            "for port in 3001 3002 3003 3004; do",
+            "  echo -n \"  Port $port: \"",
+            "  curl -s http://localhost:$port/health | jq -r '.name // \"offline\"'",
+            "done"
+          ]
+        },
+        {
+          "title": "Your AI Team is Ready!",
+          "titleEn": "Your AI Team is Ready!",
+          "estimatedTime": "1 min",
+          "content": "Congratulations! You've deployed a multi-agent system where specialized AI agents collaborate on tasks. From here, you can deploy agents to the cloud, add voice capabilities, or connect to Paperclip for enterprise-grade orchestration.",
+          "nextStepCards": [
+            {
+              "emoji": "🦙",
+              "title": "Back to Ollama Basics",
+              "desc": "Review the fundamentals of running local AI",
+              "cta": "View Tutorial"
+            },
+            {
+              "emoji": "☁️",
+              "title": "Deploy to Cloud with Zeabur",
+              "desc": "Run your agents 24/7 in the cloud",
+              "cta": "Deploy Now"
+            },
+            {
+              "emoji": "🎙️",
+              "title": "Add Voice with ElevenLabs",
+              "desc": "Give your agents natural speech capabilities",
+              "cta": "Get Started"
+            },
+            {
+              "emoji": "🔑",
+              "title": "Manage API Keys",
+              "desc": "Set up API keys for cloud AI models",
+              "cta": "Learn More"
+            }
+          ],
+          "tips": [
+            "Start with 2 agents and scale up as needed — don't over-engineer",
+            "Monitor your agents with the health check script regularly",
+            "Deploy to Zeabur for 24/7 availability without keeping your Mac on",
+            "Join the CanFly community to share your multi-agent setups"
+          ]
+        }
+      ]
     }
   },
   "hardwareCompare": {

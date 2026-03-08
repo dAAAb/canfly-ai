@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom'
-import { Clock, CheckCircle, Copy, ExternalLink, ChevronDown, ChevronRight, Terminal, Download, Monitor, MessageSquare, Rocket, HelpCircle, Cpu, Sparkles, Search, Globe, Key, Shield } from 'lucide-react'
+import { Clock, CheckCircle, Copy, ExternalLink, ChevronDown, ChevronRight, Terminal, Download, Monitor, MessageSquare, Rocket, HelpCircle, Cpu, Sparkles, Search, Globe, Key, Shield, Users } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import Navbar from '../components/Navbar'
@@ -719,6 +719,89 @@ function createApiKeysTutorial(t: any): TutorialData {
   }
 }
 
+function createMultiAgentTutorial(t: any): TutorialData {
+  return {
+    id: 'multi-agent',
+    title: t('tutorial.multiagent.title'),
+    subtitle: t('tutorial.multiagent.subtitle'),
+    duration: t('tutorial.multiagent.duration'),
+    difficulty: t('tutorial.multiagent.difficulty'),
+    steps: [
+      {
+        icon: HelpCircle,
+        title: t('tutorial.multiagent.steps.0.title'),
+        titleEn: t('tutorial.multiagent.steps.0.titleEn'),
+        estimatedTime: t('tutorial.multiagent.steps.0.estimatedTime'),
+        content: t('tutorial.multiagent.steps.0.content'),
+        commands: t('tutorial.multiagent.steps.0.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.multiagent.steps.0.expectedResult'),
+        tips: t('tutorial.multiagent.steps.0.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.multiagent.steps.0.troubleshooting.title'),
+          items: t('tutorial.multiagent.steps.0.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Download,
+        title: t('tutorial.multiagent.steps.1.title'),
+        titleEn: t('tutorial.multiagent.steps.1.titleEn'),
+        estimatedTime: t('tutorial.multiagent.steps.1.estimatedTime'),
+        content: t('tutorial.multiagent.steps.1.content'),
+        commands: t('tutorial.multiagent.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.multiagent.steps.1.expectedResult'),
+        tips: t('tutorial.multiagent.steps.1.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.multiagent.steps.1.troubleshooting.title'),
+          items: t('tutorial.multiagent.steps.1.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Users,
+        title: t('tutorial.multiagent.steps.2.title'),
+        titleEn: t('tutorial.multiagent.steps.2.titleEn'),
+        estimatedTime: t('tutorial.multiagent.steps.2.estimatedTime'),
+        content: t('tutorial.multiagent.steps.2.content'),
+        commands: t('tutorial.multiagent.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.multiagent.steps.2.expectedResult'),
+        tips: t('tutorial.multiagent.steps.2.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.multiagent.steps.2.troubleshooting.title'),
+          items: t('tutorial.multiagent.steps.2.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Terminal,
+        title: t('tutorial.multiagent.steps.3.title'),
+        titleEn: t('tutorial.multiagent.steps.3.titleEn'),
+        estimatedTime: t('tutorial.multiagent.steps.3.estimatedTime'),
+        content: t('tutorial.multiagent.steps.3.content'),
+        commands: t('tutorial.multiagent.steps.3.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.multiagent.steps.3.expectedResult'),
+        tips: t('tutorial.multiagent.steps.3.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.multiagent.steps.3.troubleshooting.title'),
+          items: t('tutorial.multiagent.steps.3.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.multiagent.steps.4.title'),
+        titleEn: t('tutorial.multiagent.steps.4.titleEn'),
+        estimatedTime: t('tutorial.multiagent.steps.4.estimatedTime'),
+        content: t('tutorial.multiagent.steps.4.content'),
+        nextStepCards: (t('tutorial.multiagent.steps.4.nextStepCards', { returnObjects: true }) as any[]).map((card: any) => ({
+          ...card,
+          link: card.title.includes('Ollama') ? '/learn/ollama' :
+                card.title.includes('Zeabur') || card.title.includes('雲端') || card.title.includes('Cloud') ? '/learn/zeabur' :
+                card.title.includes('ElevenLabs') || card.title.includes('語音') || card.title.includes('Voice') ? '/learn/elevenlabs-integration' :
+                card.title.includes('API') ? '/learn/api-keys' : '#'
+        })),
+        tips: t('tutorial.multiagent.steps.4.tips', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
 function getTutorials(t: any): Record<string, TutorialData> {
   return {
     ollama: createOllamaTutorial(t),
@@ -729,6 +812,7 @@ function getTutorials(t: any): Record<string, TutorialData> {
     perplexity: createPerplexityTutorial(t),
     'brave-search': createBraveSearchTutorial(t),
     'api-keys': createApiKeysTutorial(t),
+    'multi-agent': createMultiAgentTutorial(t),
   }
 }
 
