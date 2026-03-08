@@ -65,9 +65,9 @@ function createOllamaTutorial(t: any): TutorialData {
         content: t('tutorial.ollama.steps.0.content'),
         installTabs: true,
         screenshots: [
-          { src: '/images/tutorial/ollama-mac-installer.png', alt: t('tutorial.ollama.screenshots.macInstaller', 'Ollama.app installer on macOS'), caption: t('tutorial.ollama.screenshots.macInstallerCaption', 'Drag Ollama to Applications') },
-          { src: '/images/tutorial/ollama-linux-install.png', alt: t('tutorial.ollama.screenshots.linuxInstall', 'Ollama install on Linux terminal'), caption: t('tutorial.ollama.screenshots.linuxInstallCaption', 'curl install on Ubuntu') },
-          { src: '/images/tutorial/ollama-win-installer.png', alt: t('tutorial.ollama.screenshots.winInstaller', 'Ollama installer on Windows'), caption: t('tutorial.ollama.screenshots.winInstallerCaption', 'Windows installer wizard') },
+          { src: '/images/tutorial/ollama-mac-installer.webp', alt: t('tutorial.ollama.screenshots.macInstaller', 'Ollama.app installer on macOS'), caption: t('tutorial.ollama.screenshots.macInstallerCaption', 'Drag Ollama to Applications') },
+          { src: '/images/tutorial/ollama-linux-install.webp', alt: t('tutorial.ollama.screenshots.linuxInstall', 'Ollama install on Linux terminal'), caption: t('tutorial.ollama.screenshots.linuxInstallCaption', 'curl install on Ubuntu') },
+          { src: '/images/tutorial/ollama-win-installer.webp', alt: t('tutorial.ollama.screenshots.winInstaller', 'Ollama installer on Windows'), caption: t('tutorial.ollama.screenshots.winInstallerCaption', 'Windows installer wizard') },
         ].filter(s => {
           // Only show screenshots that exist (check at render time via onError fallback)
           return true
@@ -86,7 +86,7 @@ function createOllamaTutorial(t: any): TutorialData {
         estimatedTime: t('tutorial.ollama.steps.1.estimatedTime'),
         content: t('tutorial.ollama.steps.1.content'),
         screenshots: [
-          { src: '/images/tutorial/ollama-pull-model.png', alt: t('tutorial.ollama.screenshots.pullModel', 'ollama pull downloading a model'), caption: t('tutorial.ollama.screenshots.pullModelCaption', 'Downloading Llama 3.2 model') },
+          { src: '/images/tutorial/ollama-pull-model.webp', alt: t('tutorial.ollama.screenshots.pullModel', 'ollama pull downloading a model'), caption: t('tutorial.ollama.screenshots.pullModelCaption', 'Downloading Llama 3.2 model') },
         ],
         subsections: t('tutorial.ollama.steps.1.subsections', { returnObjects: true }),
         commands: t('tutorial.ollama.steps.1.commands', { returnObjects: true }),
@@ -105,7 +105,7 @@ function createOllamaTutorial(t: any): TutorialData {
         estimatedTime: t('tutorial.ollama.steps.2.estimatedTime'),
         content: t('tutorial.ollama.steps.2.content'),
         screenshots: [
-          { src: '/images/tutorial/ollama-chat-session.png', alt: t('tutorial.ollama.screenshots.chatSession', 'Ollama chat session in terminal'), caption: t('tutorial.ollama.screenshots.chatSessionCaption', 'Interactive chat with Llama 3.2') },
+          { src: '/images/tutorial/ollama-chat-session.webp', alt: t('tutorial.ollama.screenshots.chatSession', 'Ollama chat session in terminal'), caption: t('tutorial.ollama.screenshots.chatSessionCaption', 'Interactive chat with Llama 3.2') },
         ],
         commands: t('tutorial.ollama.steps.2.commands', { returnObjects: true }),
         chatExample: t('tutorial.ollama.steps.2.chatExample', { returnObjects: true }),
@@ -123,7 +123,7 @@ function createOllamaTutorial(t: any): TutorialData {
         estimatedTime: t('tutorial.ollama.steps.3.estimatedTime'),
         content: t('tutorial.ollama.steps.3.content'),
         screenshots: [
-          { src: '/images/tutorial/openclaw-ollama-config.png', alt: t('tutorial.ollama.screenshots.openclawConfig', 'OpenClaw settings connected to Ollama'), caption: t('tutorial.ollama.screenshots.openclawConfigCaption', 'OpenClaw model configuration') },
+          { src: '/images/tutorial/openclaw-ollama-config.webp', alt: t('tutorial.ollama.screenshots.openclawConfig', 'OpenClaw settings connected to Ollama'), caption: t('tutorial.ollama.screenshots.openclawConfigCaption', 'OpenClaw model configuration') },
         ],
         commands: t('tutorial.ollama.steps.3.commands', { returnObjects: true }),
         expectedResult: t('tutorial.ollama.steps.3.expectedResult'),
@@ -1107,6 +1107,9 @@ function ScreenshotGallery({ screenshots }: { screenshots: ScreenshotData[] }) {
             alt={ss.alt}
             className="w-full"
             loading="lazy"
+            decoding="async"
+            width={800}
+            height={450}
             onLoad={() => setLoaded(prev => ({ ...prev, [i]: true }))}
             onError={() => setLoaded(prev => ({ ...prev, [i]: false }))}
           />

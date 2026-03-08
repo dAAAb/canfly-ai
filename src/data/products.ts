@@ -270,7 +270,7 @@ export const products: Product[] = [
   },
   {
     id: 'utm',
-    icon: '/images/icons/utm.png',
+    icon: '/images/icons/utm.webp',
     name: 'UTM',
     tagline: 'Free virtual machines for Mac',
     category: 'vm',

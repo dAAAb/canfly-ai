@@ -169,7 +169,7 @@ export default function AppsPage() {
                     }`}
                   >
                     <div className="w-16 h-16 shrink-0 rounded-2xl bg-black/30 border border-white/10 flex items-center justify-center overflow-hidden">
-                      <img src={product.icon} alt={product.name} className="w-11 h-11 object-contain" />
+                      <img src={product.icon} alt={product.name} className="w-11 h-11 object-contain" loading="lazy" decoding="async" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">{t('apps.featured')}</div>
@@ -255,6 +255,8 @@ export default function AppsPage() {
                           src={product.icon}
                           alt={product.name}
                           className="w-10 h-10 object-contain"
+                          loading="lazy"
+                          decoding="async"
                           onError={(e) => {
                             const el = e.target as HTMLImageElement
                             el.style.display = 'none'
@@ -309,6 +311,8 @@ export default function AppsPage() {
                         src={product.icon}
                         alt={product.name}
                         className="w-10 h-10 object-contain"
+                        loading="lazy"
+                        decoding="async"
                         onError={(e) => {
                           const el = e.target as HTMLImageElement
                           el.style.display = 'none'
