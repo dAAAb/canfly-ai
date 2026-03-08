@@ -3012,6 +3012,44 @@
           "At CanFly.ai, we see voice and video as the natural next step after text-based AI. Our tutorials guide you from free local AI to cloud deployment to premium capabilities like voice and video. It's the complete journey from zero to a fully-capable AI agent.",
           "The content creation landscape is being reshaped by AI. The creators who embrace these tools early will have a significant advantage. The question isn't whether to adopt AI voice and video — it's when."
         ]
+      },
+      "localAiJourney": {
+        "title": "Building Your Local AI Agent: From Zero to Llama",
+        "summary": "The journey from curiosity to a working local AI agent is shorter than you think. Here's a hands-on guide to going from nothing to a Llama-powered agent on your own machine.",
+        "content": [
+          "There's a moment every AI enthusiast remembers: the first time a language model runs on their own hardware. No cloud. No API keys. No monthly bills. Just you and a model, having a conversation on your machine. That moment is now five minutes away.",
+          "The Llama family of models — Meta's open-weight language models — changed the game for local AI. Llama 3 delivers responses that rival cloud services, and it runs comfortably on a laptop with 16GB of RAM. Combined with Ollama, which handles model management and serving, you have a complete local AI stack in a single command.",
+          "But running a model is just the beginning. The real magic happens when you turn that model into an agent — a system that doesn't just answer questions, but takes actions. An agent can browse the web, write and execute code, manage files, and interact with APIs. All running locally, all under your control.",
+          "The architecture is elegant in its simplicity. Ollama serves the model through a local API. Your agent code connects to that API, sends prompts, and receives responses. Add a tool framework — function calling, shell access, or browser automation — and your agent can interact with the real world.",
+          "Start with a simple loop: the agent receives a task, breaks it into steps, executes each step using tools, and reports back. This is the foundation of every AI agent, from simple chatbots to complex automation systems. The difference between a toy and a production agent is the quality of the tools and the robustness of the loop.",
+          "Privacy is the hidden superpower of local agents. When your agent processes sensitive data — customer information, proprietary code, personal documents — nothing leaves your machine. This isn't just a nice-to-have; for many businesses and individuals, it's a requirement.",
+          "The CanFly approach is to start local and expand outward. Master Ollama and Llama on your own hardware first. Then, when you're ready for more power or need to share your agent with others, deploy to the cloud with a single click. The skills transfer perfectly — the same agent that runs on your laptop can run on a server."
+        ]
+      },
+      "autonomousAgents": {
+        "title": "AI Agents That Work For You: Autonomous Task Automation",
+        "summary": "What if your AI agent could fill out forms, register accounts, and handle routine tasks without your input? Autonomous agents are making this real — here's how it works.",
+        "content": [
+          "The promise of AI agents has always been clear: software that works for you, not just with you. Instead of manually clicking through forms, copying data between apps, and repeating the same workflows daily, an agent handles it all. We're finally at the point where this isn't science fiction — it's practical engineering.",
+          "Consider a simple but powerful example: automated account registration. An AI agent can navigate to a website, fill out a signup form, verify an email address, and complete onboarding — all without human intervention. The same pattern applies to booking appointments, submitting applications, or monitoring price changes.",
+          "The key technology behind autonomous agents is tool use. Modern language models can decide which tools to invoke — a web browser, an email client, a file system — and chain them together to complete multi-step tasks. The model provides the reasoning; the tools provide the actions.",
+          "Building your first autonomous agent doesn't require a massive framework. Start with a local model through Ollama, add a browser automation library like Playwright, and write a simple orchestration script. Your agent can read a webpage, extract relevant information, make decisions, and take actions — all running on your own machine.",
+          "The challenges are real but solvable. Websites change layouts, CAPTCHAs block automation, and edge cases abound. The best agents handle these gracefully: they retry with different strategies, fall back to human assistance when stuck, and learn from failures. Robustness comes from iteration, not complexity.",
+          "Autonomous agents shine in repetitive, time-consuming workflows. Data entry, form submission, content aggregation, competitive monitoring — these are tasks where humans add little creative value but spend significant time. Delegating them to agents frees you to focus on work that actually requires human judgment.",
+          "At CanFly.ai, we believe the future is a personal fleet of AI agents, each specialized for different tasks. Start with one agent, one workflow. Prove the value. Then expand. The tools are ready, the models are capable, and the learning curve has never been gentler."
+        ]
+      },
+      "openSourceSkills": {
+        "title": "Open-Source Agent Skills: Why Community Wins",
+        "summary": "Closed AI platforms lock you in. Open-source agent skills let you customize, share, and build on each other's work. Here's why the community approach is winning.",
+        "content": [
+          "When it comes to AI agent capabilities, there are two paths. Closed platforms offer polished but rigid experiences — you use exactly the skills they've built, in exactly the way they allow. Open-source agent skills offer something fundamentally different: the ability to inspect, modify, share, and compose capabilities without permission.",
+          "An agent 'skill' is a packaged capability — web browsing, code execution, image generation, API integration. In the open-source world, these skills are published as reusable modules. Anyone can install them, anyone can improve them, and anyone can create new ones. The result is an ecosystem that evolves faster than any single company could manage.",
+          "The practical benefits are immediate. Need your agent to interact with a niche API? Someone in the community has probably built a skill for it. Want to customize how your agent browses the web? Fork the skill, modify the code, and run your version. This isn't theoretical — it's how thousands of developers build agents today.",
+          "Quality in open-source comes from transparency. When a skill's source code is visible, bugs get found faster, security issues get patched quicker, and best practices emerge organically. Compare this to closed platforms where a bug might persist for months because users can't see or fix the underlying code.",
+          "The composability of open-source skills is where things get really powerful. Combine a web-browsing skill with a data-extraction skill and a notification skill, and you have a monitoring agent. Swap the notification skill for an email-drafting skill, and you have a research assistant. The building blocks snap together in ways their individual creators never imagined.",
+          "At CanFly.ai, we champion the open-source approach because it aligns with our core belief: AI should empower individuals, not create dependencies. Every tutorial we offer uses open-source tools. Every agent you build on our platform is yours — no vendor lock-in, no permission required, no monthly fee to keep your skills running."
+        ]
       }
     }
   },
