@@ -2981,5 +2981,27 @@
         ]
       }
     }
+  },
+  "meta": {
+    "home": {
+      "title": "CanFly — 5 分鐘擁有你的 AI Agent",
+      "description": "AI Agent 時代的起飛平台。免費開始、知識驅動、白手套服務。"
+    },
+    "apps": {
+      "title": "CanFly Apps — AI 工具推薦",
+      "description": "探索最適合你的 AI 工具。從本地 LLM 到雲端部署，找到最適合你的方案。"
+    },
+    "pricing": {
+      "title": "方案價格 — CanFly",
+      "description": "免費開始，準備好再升級。零成本運行你自己的 AI Agent。"
+    },
+    "community": {
+      "title": "社群 — CanFly",
+      "description": "看看其他人用 CanFly 做了什麼。來自社群的真實案例。"
+    },
+    "checkout": {
+      "title": "白手套服務 — CanFly",
+      "description": "讓我們的團隊為你設定 AI 環境。你只需放鬆，剩下的交給我們。"
+    }
   }
 }

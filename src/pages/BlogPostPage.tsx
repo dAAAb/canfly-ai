@@ -18,7 +18,8 @@ export default function BlogPostPage() {
   useHead({
     title: post ? t(post.titleKey) : t('blog.notFound'),
     description: post ? t(post.summaryKey) : '',
-    canonical: post ? `https://canfly.ai/blog/${post.slug}` : undefined,
+    canonical: post ? `https://canfly.ai${localePath(`/blog/${post.slug}`)}` : undefined,
+    ogType: 'article',
   })
 
   if (!post) {

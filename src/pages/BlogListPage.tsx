@@ -15,7 +15,8 @@ export default function BlogListPage() {
   useHead({
     title: t('blog.pageTitle'),
     description: t('blog.pageDescription'),
-    canonical: 'https://canfly.ai/blog',
+    canonical: `https://canfly.ai${localePath('/blog')}`,
+    ogType: 'website',
   })
 
   const filtered =

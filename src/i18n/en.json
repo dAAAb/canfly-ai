@@ -2981,5 +2981,27 @@
         ]
       }
     }
+  },
+  "meta": {
+    "home": {
+      "title": "CanFly — Your Own AI Agent in 5 Minutes",
+      "description": "The launchpad for the AI Agent era. Free to start, knowledge-driven, white-glove service."
+    },
+    "apps": {
+      "title": "CanFly Apps — AI Tools & Recommendations",
+      "description": "Discover the best AI tools for your workflow. From local LLMs to cloud deployment, find the right tool for you."
+    },
+    "pricing": {
+      "title": "Pricing — CanFly",
+      "description": "Start free, upgrade when ready. Run your own AI Agent at zero cost."
+    },
+    "community": {
+      "title": "Community — CanFly",
+      "description": "See what others are building with CanFly. Real setups from the community."
+    },
+    "checkout": {
+      "title": "White-Glove Setup — CanFly",
+      "description": "Let our team set up your AI environment. Sit back, relax — we'll handle everything."
+    }
   }
 }

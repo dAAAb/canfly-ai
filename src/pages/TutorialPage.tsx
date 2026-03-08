@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import Navbar from '../components/Navbar'
 import ShareBar from '../components/ShareBar'
 import { useHead } from '../hooks/useHead'
+import { useLanguage } from '../hooks/useLanguage'
 
 // ─── Types ──────────────────────────────────────────────────────────
 
@@ -1203,6 +1204,7 @@ function ScreenshotGallery({ screenshots }: { screenshots: ScreenshotData[] }) {
 export default function TutorialPage() {
   const { slug } = useParams()
   const { t } = useTranslation()
+  const { localePath } = useLanguage()
   const tutorials = getTutorials(t)
   const tutorial = tutorials[slug!] ?? null
   const [completedSteps, setCompletedSteps] = useState<number[]>([])
@@ -1210,7 +1212,8 @@ export default function TutorialPage() {
   useHead(tutorial ? {
     title: `${tutorial.title} — Canfly`,
     description: tutorial.subtitle,
-    canonical: `https://canfly.ai/learn/${slug}`,
+    canonical: `https://canfly.ai${localePath(`/learn/${slug}`)}`,
+    ogType: 'article',
   } : {})
 
   const toggleStep = (i: number) =>

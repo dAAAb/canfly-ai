@@ -5,9 +5,10 @@ interface HeadProps {
   description?: string
   ogImage?: string
   canonical?: string
+  ogType?: string
 }
 
-export function useHead({ title, description, ogImage, canonical }: HeadProps) {
+export function useHead({ title, description, ogImage, canonical, ogType }: HeadProps) {
   useEffect(() => {
     if (title) {
       document.title = title
@@ -37,6 +38,7 @@ export function useHead({ title, description, ogImage, canonical }: HeadProps) {
       setMeta('name', 'twitter:image', ogImage)
     }
     if (canonical) {
+      setMeta('property', 'og:url', canonical)
       let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null
       if (!link) {
         link = document.createElement('link')
@@ -45,9 +47,13 @@ export function useHead({ title, description, ogImage, canonical }: HeadProps) {
       }
       link.href = canonical
     }
+    if (ogType) {
+      setMeta('property', 'og:type', ogType)
+    }
+    setMeta('name', 'twitter:card', 'summary_large_image')
 
     return () => {
       if (title) document.title = 'Canfly — Now You Can Fly'
     }
-  }, [title, description, ogImage, canonical])
+  }, [title, description, ogImage, canonical, ogType])
 }

@@ -2,12 +2,20 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useLanguage } from '../hooks/useLanguage'
+import { useHead } from '../hooks/useHead'
 import Navbar from '../components/Navbar'
 import { Check, ChevronDown, Rocket, Crown } from 'lucide-react'
 
 export default function PricingPage() {
   const { t } = useTranslation()
   const { localePath } = useLanguage()
+
+  useHead({
+    title: t('meta.pricing.title'),
+    description: t('meta.pricing.description'),
+    canonical: `https://canfly.ai${localePath('/pricing')}`,
+    ogType: 'website',
+  })
 
   return (
     <>

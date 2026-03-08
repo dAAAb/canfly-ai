@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { CheckCircle, XCircle, Minus, ExternalLink } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import { useHead } from '../hooks/useHead'
+import { useLanguage } from '../hooks/useLanguage'
 
 interface HardwareOption {
   id: string
@@ -61,11 +62,13 @@ function SupportIcon({ support }: { support: Support }) {
 
 export default function HardwareComparePage() {
   const { t } = useTranslation()
+  const { localePath } = useLanguage()
 
   useHead({
     title: t('hardwareCompare.pageTitle'),
     description: t('hardwareCompare.subtitle'),
-    canonical: 'https://canfly.ai/learn/hardware-compare',
+    canonical: `https://canfly.ai${localePath('/learn/hardware-compare')}`,
+    ogType: 'article',
   })
 
   return (

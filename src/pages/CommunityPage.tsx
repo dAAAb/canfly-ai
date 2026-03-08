@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useLanguage } from '../hooks/useLanguage'
+import { useHead } from '../hooks/useHead'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import { Cpu, Globe, Mic, Video, Server, Bot } from 'lucide-react'
@@ -26,6 +27,13 @@ const SHOWCASE_ENTRIES = [
 export default function CommunityPage() {
   const { t } = useTranslation()
   const { localePath } = useLanguage()
+
+  useHead({
+    title: t('meta.community.title'),
+    description: t('meta.community.description'),
+    canonical: `https://canfly.ai${localePath('/community')}`,
+    ogType: 'website',
+  })
 
   return (
     <>

@@ -7,6 +7,7 @@ import ShareBar from '../components/ShareBar'
 import ReviewVideoPlayer from '../components/ReviewVideoPlayer'
 import { productsBySlug } from '../data/products'
 import { useHead } from '../hooks/useHead'
+import { useLanguage } from '../hooks/useLanguage'
 
 function isExternal(url: string) {
   return url.startsWith('http')
@@ -54,6 +55,7 @@ function NotifyForm({ productName, t }: { productName: string; t: (key: string, 
 export default function ProductPage() {
   const { slug } = useParams()
   const { t } = useTranslation()
+  const { localePath } = useLanguage()
   const [activeScreenshot, setActiveScreenshot] = useState(0)
 
   const product = productsBySlug[slug as string]
@@ -63,7 +65,9 @@ export default function ProductPage() {
   useHead(product ? {
     title: `${product.name} — Canfly`,
     description: t(`product.products.${pid}.description`, { defaultValue: product.description }),
-    canonical: `https://canfly.ai/apps/${slug}`,
+    canonical: `https://canfly.ai${localePath(`/apps/${slug}`)}`,
+    ogImage: product.icon ? `https://canfly.ai${product.icon}` : undefined,
+    ogType: 'website',
   } : {})
 
   if (!product) {

@@ -69,6 +69,8 @@ export default function GetStartedPage() {
   useHead({
     title: t('onboarding.meta.title'),
     description: t('onboarding.meta.description'),
+    canonical: `https://canfly.ai${localePath('/get-started')}`,
+    ogType: 'website',
   })
 
   const selectedPath = PATHS.find((p) => p.key === selected)

@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useLanguage } from '../hooks/useLanguage'
+import { useHead } from '../hooks/useHead'
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js'
 import Navbar from '../components/Navbar'
 import { Shield, Wrench, MessageCircle, CheckCircle, Clock } from 'lucide-react'
@@ -10,7 +12,15 @@ const SERVICE_CURRENCY = 'USD'
 
 export default function CheckoutPage() {
   const { t } = useTranslation()
+  const { localePath } = useLanguage()
   const [paymentStatus, setPaymentStatus] = useState<'idle' | 'success' | 'error'>('idle')
+
+  useHead({
+    title: t('meta.checkout.title'),
+    description: t('meta.checkout.description'),
+    canonical: `https://canfly.ai${localePath('/checkout')}`,
+    ogType: 'website',
+  })
   const [orderId, setOrderId] = useState<string | null>(null)
 
   if (paymentStatus === 'success') {

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import Navbar from '../components/Navbar'
 import { products, categories } from '../data/products'
 import { useLanguage } from '../hooks/useLanguage'
+import { useHead } from '../hooks/useHead'
 
 const featuredIds = ['ollama', 'zeabur'] as const
 
@@ -15,6 +16,14 @@ export default function AppsPage() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const { t } = useTranslation()
   const { localePath } = useLanguage()
+
+  useHead({
+    title: t('meta.apps.title'),
+    description: t('meta.apps.description'),
+    canonical: `https://canfly.ai${localePath('/apps')}`,
+    ogImage: 'https://canfly.ai/og-image.png',
+    ogType: 'website',
+  })
 
   const filteredProducts = products.filter(product => {
     const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory
