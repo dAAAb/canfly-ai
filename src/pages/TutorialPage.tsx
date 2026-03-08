@@ -34,6 +34,8 @@ interface ModelInfo { name: string; size: string; best: string; speed: string }
 interface ChatExchange { role: 'user' | 'ai'; text: string }
 interface NextStepCard { emoji: string; title: string; desc: string; link: string; cta: string; external?: boolean }
 
+interface FaqItem { q: string; a: string }
+
 interface TutorialData {
   id: string
   title: string
@@ -41,6 +43,7 @@ interface TutorialData {
   duration: string
   difficulty: string
   steps: StepData[]
+  faq: FaqItem[]
 }
 
 // ─── Dynamic Tutorial Data Functions ───────────────────────────────
@@ -52,6 +55,7 @@ function createOllamaTutorial(t: any): TutorialData {
     subtitle: t('tutorial.ollama.subtitle'),
     duration: t('tutorial.ollama.duration'),
     difficulty: t('tutorial.ollama.difficulty'),
+    faq: t('tutorial.ollama.faq', { returnObjects: true }) || [],
     steps: [
       {
         icon: Download,
@@ -149,6 +153,7 @@ function createZeaburTutorial(t: any): TutorialData {
     subtitle: t('tutorial.zeabur.subtitle'),
     duration: t('tutorial.zeabur.duration'),
     difficulty: t('tutorial.zeabur.difficulty'),
+    faq: t('tutorial.zeabur.faq', { returnObjects: true }) || [],
     steps: [
       {
         icon: Download,
@@ -242,6 +247,7 @@ function createElevenLabsTutorial(t: any): TutorialData {
     subtitle: t('tutorial.elevenlabs.subtitle'),
     duration: t('tutorial.elevenlabs.duration'),
     difficulty: t('tutorial.elevenlabs.difficulty'),
+    faq: t('tutorial.elevenlabs.faq', { returnObjects: true }) || [],
     steps: [
       {
         icon: Download,
@@ -324,6 +330,7 @@ function createHeyGenTutorial(t: any): TutorialData {
     subtitle: t('tutorial.heygen.subtitle'),
     duration: t('tutorial.heygen.duration'),
     difficulty: t('tutorial.heygen.difficulty'),
+    faq: t('tutorial.heygen.faq', { returnObjects: true }) || [],
     steps: [
       {
         icon: Download,
@@ -406,6 +413,7 @@ function createVirtualMachineTutorial(t: any): TutorialData {
     subtitle: t('tutorial.virtualmachine.subtitle'),
     duration: t('tutorial.virtualmachine.duration'),
     difficulty: t('tutorial.virtualmachine.difficulty'),
+    faq: t('tutorial.virtualmachine.faq', { returnObjects: true }) || [],
     steps: [
       {
         icon: Monitor,
@@ -484,6 +492,7 @@ function createPerplexityTutorial(t: any): TutorialData {
     subtitle: t('tutorial.perplexity.subtitle'),
     duration: t('tutorial.perplexity.duration'),
     difficulty: t('tutorial.perplexity.difficulty'),
+    faq: t('tutorial.perplexity.faq', { returnObjects: true }) || [],
     steps: [
       {
         icon: Download,
@@ -567,6 +576,7 @@ function createBraveSearchTutorial(t: any): TutorialData {
     subtitle: t('tutorial.brave.subtitle'),
     duration: t('tutorial.brave.duration'),
     difficulty: t('tutorial.brave.difficulty'),
+    faq: t('tutorial.brave.faq', { returnObjects: true }) || [],
     steps: [
       {
         icon: Globe,
@@ -644,6 +654,7 @@ function createApiKeysTutorial(t: any): TutorialData {
     subtitle: t('tutorial.apikeys.subtitle'),
     duration: t('tutorial.apikeys.duration'),
     difficulty: t('tutorial.apikeys.difficulty'),
+    faq: t('tutorial.apikeys.faq', { returnObjects: true }) || [],
     steps: [
       {
         icon: HelpCircle,
@@ -727,6 +738,7 @@ function createMultiAgentTutorial(t: any): TutorialData {
     subtitle: t('tutorial.multiagent.subtitle'),
     duration: t('tutorial.multiagent.duration'),
     difficulty: t('tutorial.multiagent.difficulty'),
+    faq: t('tutorial.multiagent.faq', { returnObjects: true }) || [],
     steps: [
       {
         icon: HelpCircle,
@@ -1289,6 +1301,26 @@ export default function TutorialPage() {
               "code": step.commands?.join('\n'),
               "expectedResult": step.expectedResult,
             })),
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              ...tutorial.faq.map((item: FaqItem) => ({
+                "@type": "Question",
+                "name": item.q,
+                "acceptedAnswer": { "@type": "Answer", "text": item.a },
+              })),
+              ...tutorial.steps.flatMap((step) =>
+                (step.troubleshooting?.items || []).map((item) => ({
+                  "@type": "Question",
+                  "name": item.q,
+                  "acceptedAnswer": { "@type": "Answer", "text": item.a },
+                }))
+              ),
+            ],
           })}
         </script>
 
