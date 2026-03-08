@@ -20,7 +20,10 @@ export function useLanguage() {
       return
     }
     if (i18n.language !== currentLang) {
-      i18n.changeLanguage(currentLang)
+      // Load translations first, then switch language
+      loadLanguage(currentLang).then(() => {
+        i18n.changeLanguage(currentLang)
+      })
     }
   }, [currentLang, i18n])
 
