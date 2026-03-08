@@ -327,6 +327,32 @@
         ],
         "ctaPrimary": "Notify Me",
         "ctaSecondary": "Visit SwitchBot"
+      },
+      "mac-mini-m4": {
+        "tagline": "Compact AI powerhouse",
+        "description": "The new Mac Mini M4 is the ultimate compact AI workstation. Runs Ollama and OpenClaw natively on Apple Silicon. Silent, efficient, always-on.",
+        "features": [
+          "Apple M4 chip (10-core CPU, 10-core GPU)",
+          "16GB unified memory",
+          "256GB SSD (configurable to 8TB)",
+          "3x Thunderbolt 5 ports",
+          "Wi-Fi 6E + Bluetooth 5.3",
+          "Ultra compact design",
+          "Apple Intelligence built-in"
+        ]
+      },
+      "macbook-neo": {
+        "tagline": "Most affordable MacBook ever",
+        "description": "The brand new MacBook Neo is Apple's most affordable laptop ever. A18 Pro chip, 13\" display, 2.7 pounds. Set up OpenClaw out of the box — no external monitor needed.",
+        "features": [
+          "Apple A18 Pro chip",
+          "8GB unified memory",
+          "256GB SSD",
+          "13\" Liquid Retina display",
+          "Up to 16 hours battery",
+          "Ultra light 2.7 lbs",
+          "4 gorgeous colors"
+        ]
       }
     },
     "comingSoon": "Coming Soon",

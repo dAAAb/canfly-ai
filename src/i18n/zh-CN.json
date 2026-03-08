@@ -327,6 +327,32 @@
         ],
         "ctaPrimary": "通知我",
         "ctaSecondary": "前往 SwitchBot"
+      },
+      "mac-mini-m4": {
+        "tagline": "迷你 AI 强力工作站",
+        "description": "全新 Mac Mini M4 是终极迷你 AI 工作站。原生 Apple Silicon 运行 Ollama 和 OpenClaw。安静、省电、永不关机。",
+        "features": [
+          "Apple M4 芯片（10 核心 CPU、10 核心 GPU）",
+          "16GB 统一内存",
+          "256GB SSD（可升级至 8TB）",
+          "3 个 Thunderbolt 5 接口",
+          "Wi-Fi 6E + 蓝牙 5.3",
+          "超迷你设计",
+          "内置 Apple Intelligence"
+        ]
+      },
+      "macbook-neo": {
+        "tagline": "史上最便宜的 MacBook",
+        "description": "全新 MacBook Neo 是 Apple 史上最便宜的笔记本。A18 Pro 芯片、13 英寸屏幕、1.23 公斤。开箱即可设置 OpenClaw — 不需外接显示器。",
+        "features": [
+          "Apple A18 Pro 芯片",
+          "8GB 统一内存",
+          "256GB SSD",
+          "13 英寸 Liquid Retina 屏幕",
+          "最长 16 小时电池续航",
+          "超轻 1.23 公斤",
+          "4 种美丽颜色"
+        ]
       }
     },
     "comingSoon": "即将推出",
