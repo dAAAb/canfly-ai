@@ -163,7 +163,7 @@ export default function HardwareComparePage() {
             <h3 className="text-lg font-bold mb-2 text-purple-400">{t('hardwareCompare.rec.umbrelTitle')}</h3>
             <p className="text-gray-400 text-sm leading-relaxed mb-4">{t('hardwareCompare.rec.umbrelDesc')}</p>
             <Link
-              to="/apps/umbrel"
+              to={localePath('/apps/umbrel')}
               className="inline-flex items-center gap-1.5 text-sm text-purple-400 hover:text-purple-300 transition-colors"
             >
               {t('hardwareCompare.rec.learnMore')} →
@@ -199,7 +199,7 @@ export default function HardwareComparePage() {
         <div className="mt-12 text-center">
           <p className="text-gray-400 mb-4">{t('hardwareCompare.ctaText')}</p>
           <Link
-            to="/learn/ollama"
+            to={localePath('/learn/ollama')}
             className="inline-block px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
           >
             {t('hardwareCompare.ctaButton')}

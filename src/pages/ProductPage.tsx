@@ -75,7 +75,7 @@ export default function ProductPage() {
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">{t('product.notFound')}</h1>
-          <Link to="/apps" className="text-blue-400 hover:text-blue-300">
+          <Link to={localePath('/apps')} className="text-blue-400 hover:text-blue-300">
             {t('product.backToApps')}
           </Link>
         </div>
@@ -90,7 +90,7 @@ export default function ProductPage() {
       <div className="max-w-6xl mx-auto px-6 md:px-8 py-10 page-enter">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-gray-400 mb-8">
-          <Link to="/apps" className="hover:text-white transition-colors">{t('product.breadcrumbApps')}</Link>
+          <Link to={localePath('/apps')} className="hover:text-white transition-colors">{t('product.breadcrumbApps')}</Link>
           <span>&gt;</span>
           <span className="text-white">{product.name}</span>
         </nav>
@@ -228,7 +228,7 @@ export default function ProductPage() {
                       </a>
                     ) : (
                       <Link
-                        to={product.cta.primaryLink}
+                        to={localePath(product.cta.primaryLink)}
                         className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-all hover:shadow-[0_0_20px_rgba(59,130,246,0.4)]"
                       >
                         {t(`product.products.${pid}.ctaPrimary`, { defaultValue: product.cta.primary })}
@@ -247,7 +247,7 @@ export default function ProductPage() {
                       </a>
                     ) : (
                       <Link
-                        to={product.cta.secondaryLink}
+                        to={localePath(product.cta.secondaryLink)}
                         className="px-4 py-3 border border-gray-600 rounded-lg hover:border-gray-500 transition-colors flex items-center gap-2"
                       >
                         <Play className="w-4 h-4" />

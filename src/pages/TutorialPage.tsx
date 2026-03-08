@@ -1222,6 +1222,7 @@ function ModelTable({ models }: { models: ModelInfo[] }) {
 }
 
 function NextStepGrid({ cards }: { cards: NextStepCard[] }) {
+  const { localePath } = useLanguage()
   return (
     <div className="grid sm:grid-cols-2 gap-3 mb-4">
       {cards.map((card, i) => {
@@ -1240,7 +1241,7 @@ function NextStepGrid({ cards }: { cards: NextStepCard[] }) {
         return card.external ? (
           <a key={i} href={card.link} target="_blank" rel="noopener noreferrer" className={cls}>{inner}</a>
         ) : (
-          <Link key={i} to={card.link} className={cls}>{inner}</Link>
+          <Link key={i} to={localePath(card.link)} className={cls}>{inner}</Link>
         )
       })}
     </div>
@@ -1304,7 +1305,7 @@ export default function TutorialPage() {
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">{t('tutorial.notFound')}</h1>
-          <Link to="/apps" className="text-blue-400 hover:text-blue-300">{t('tutorial.backToApps')}</Link>
+          <Link to={localePath('/apps')} className="text-blue-400 hover:text-blue-300">{t('tutorial.backToApps')}</Link>
         </div>
       </div>
     )
