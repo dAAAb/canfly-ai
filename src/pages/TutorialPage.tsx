@@ -196,7 +196,7 @@ function createZeaburTutorial(t: any): TutorialData {
         tips: t('tutorial.zeabur.steps.0.tips', { returnObjects: true }),
         commands: [
           '# 1. 前往 Zeabur 官网注册',
-          'https://zeabur.com?referralCode=openclaw',
+          'https://zeabur.com?referralCode=openclaw&utm_source=canfly&utm_medium=web&utm_campaign=zeabur',
           '',
           '# 2. 使用 GitHub 账号登录',
           '# 3. 验证电子邮件地址',
@@ -337,7 +337,7 @@ function createElevenLabsTutorial(t: any): TutorialData {
         content: t('tutorial.elevenlabs.steps.0.content'),
         commands: [
           '# ' + t('tutorial.elevenlabs.steps.0.title'),
-          'open https://try.elevenlabs.io/clawhub',
+          'open https://try.elevenlabs.io/clawhub?utm_source=canfly&utm_medium=web&utm_campaign=elevenlabs',
           '',
           '# Sign up with our affiliate link for 22% commission support',
           '# Free tier: 10,000 characters/month',
@@ -417,7 +417,7 @@ function createElevenLabsTutorial(t: any): TutorialData {
         content: t('tutorial.elevenlabs.steps.4.content'),
         nextStepCards: t('tutorial.elevenlabs.steps.4.nextStepCards', { returnObjects: true }).map((card: any) => ({
           ...card,
-          link: card.title.includes('ElevenLabs') ? 'https://try.elevenlabs.io/clawhub' :
+          link: card.title.includes('ElevenLabs') ? 'https://try.elevenlabs.io/clawhub?utm_source=canfly&utm_medium=web&utm_campaign=elevenlabs' :
                 card.title.includes('HeyGen') ? '/learn/heygen-video' :
                 card.title.includes('Cloud') ? '/learn/zeabur' : '#'
         })),
@@ -443,7 +443,7 @@ function createHeyGenTutorial(t: any): TutorialData {
         content: t('tutorial.heygen.steps.0.content'),
         commands: [
           '# ' + t('tutorial.heygen.steps.0.title'),
-          'open https://www.heygen.com/?sid=rewardful&via=clawhub',
+          'open https://www.heygen.com/?sid=rewardful&via=clawhub&utm_source=canfly&utm_medium=web&utm_campaign=heygen',
           '',
           '# Sign up with our affiliate link for 20% commission support',
           '# Free tier: 1 credit (1-minute video) for testing',
@@ -522,7 +522,7 @@ function createHeyGenTutorial(t: any): TutorialData {
         content: t('tutorial.heygen.steps.4.content'),
         nextStepCards: t('tutorial.heygen.steps.4.nextStepCards', { returnObjects: true }).map((card: any) => ({
           ...card,
-          link: card.title.includes('HeyGen') ? 'https://www.heygen.com/?sid=rewardful&via=clawhub' :
+          link: card.title.includes('HeyGen') ? 'https://www.heygen.com/?sid=rewardful&via=clawhub&utm_source=canfly&utm_medium=web&utm_campaign=heygen' :
                 card.title.includes('ElevenLabs') ? '/learn/elevenlabs-integration' :
                 card.title.includes('Cloud') ? '/learn/zeabur' : '#'
         })),
@@ -1040,7 +1040,7 @@ ollama run llama3.2 "Hello, respond with OK if you are working."
 # Step 5: Configure OpenClaw
 export OLLAMA_HOST="http://localhost:11434"` : `# Complete Zeabur Deployment Automation
 # Step 1: Account Setup
-# Visit: https://zeabur.com?referralCode=openclaw
+# Visit: https://zeabur.com?referralCode=openclaw&utm_source=canfly&utm_medium=web&utm_campaign=zeabur
 # Use code "OpenClaw" for 10% off
 
 # Step 2: Fork OpenClaw Repository

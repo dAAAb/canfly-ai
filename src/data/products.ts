@@ -58,7 +58,7 @@ export const products: Product[] = [
     price: '$5/month',
     status: 'available',
     description: 'Deploy your OpenClaw agents to the cloud with zero configuration. Get started in minutes with our affiliate partnership.',
-    affiliateLink: 'https://zeabur.com?referralCode=openclaw',
+    affiliateLink: 'https://zeabur.com?referralCode=openclaw&utm_source=canfly&utm_medium=web&utm_campaign=zeabur',
     affiliateCode: 'OpenClaw',
     affiliateDiscount: '10% off',
     features: [
@@ -72,7 +72,7 @@ export const products: Product[] = [
     tutorial: '/learn/zeabur',
     cta: {
       primary: 'Deploy Now (10% off)',
-      primaryLink: 'https://zeabur.com?referralCode=openclaw',
+      primaryLink: 'https://zeabur.com?referralCode=openclaw&utm_source=canfly&utm_medium=web&utm_campaign=zeabur',
       secondary: 'View Tutorial',
       secondaryLink: '/learn/zeabur',
     },
@@ -85,7 +85,7 @@ export const products: Product[] = [
     price: '$5/month',
     status: 'available',
     description: 'Add realistic voice capabilities to your OpenClaw agents. High-quality text-to-speech with multiple voice options.',
-    affiliateLink: 'https://try.elevenlabs.io/clawhub',
+    affiliateLink: 'https://try.elevenlabs.io/clawhub?utm_source=canfly&utm_medium=web&utm_campaign=elevenlabs',
     commission: '22% recurring',
     features: [
       'Natural voices',
@@ -98,7 +98,7 @@ export const products: Product[] = [
     tutorial: '/learn/elevenlabs-integration',
     cta: {
       primary: 'Try ElevenLabs',
-      primaryLink: 'https://try.elevenlabs.io/clawhub',
+      primaryLink: 'https://try.elevenlabs.io/clawhub?utm_source=canfly&utm_medium=web&utm_campaign=elevenlabs',
       secondary: 'View Tutorial',
       secondaryLink: '/learn/elevenlabs-integration',
     },
@@ -111,7 +111,7 @@ export const products: Product[] = [
     price: '$29/month',
     status: 'available',
     description: 'Create professional AI-generated videos with digital avatars. Perfect for content creation, marketing, and training materials.',
-    affiliateLink: 'https://www.heygen.com/?sid=rewardful&via=clawhub',
+    affiliateLink: 'https://www.heygen.com/?sid=rewardful&via=clawhub&utm_source=canfly&utm_medium=web&utm_campaign=heygen',
     commission: '20% recurring',
     features: [
       'AI avatar videos',
@@ -124,7 +124,7 @@ export const products: Product[] = [
     tutorial: '/learn/heygen-video',
     cta: {
       primary: 'Try HeyGen',
-      primaryLink: 'https://www.heygen.com/?sid=rewardful&via=clawhub',
+      primaryLink: 'https://www.heygen.com/?sid=rewardful&via=clawhub&utm_source=canfly&utm_medium=web&utm_campaign=heygen',
       secondary: 'View Tutorial',
       secondaryLink: '/learn/heygen-video',
     },
@@ -137,7 +137,7 @@ export const products: Product[] = [
     price: '$299',
     status: 'available',
     description: 'Run your own personal cloud server at home. Host AI models, apps, and services with complete data sovereignty.',
-    affiliateLink: 'https://umbrel.com',
+    affiliateLink: 'https://umbrel.com?utm_source=canfly&utm_medium=web&utm_campaign=umbrel',
     features: [
       'Self-hosted home server',
       'Privacy-focused',
@@ -149,7 +149,7 @@ export const products: Product[] = [
     tutorial: '/learn/umbrel-setup',
     cta: {
       primary: 'Visit Umbrel',
-      primaryLink: 'https://umbrel.com',
+      primaryLink: 'https://umbrel.com?utm_source=canfly&utm_medium=web&utm_campaign=umbrel',
       secondary: 'View Tutorial',
       secondaryLink: '/learn/umbrel-setup',
     },

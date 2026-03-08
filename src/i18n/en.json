@@ -618,7 +618,7 @@
               "title": "Upgrade to Starter Plan",
               "desc": "Get 30,000 characters, premium voices, and commercial usage. Support Canfly with 22% affiliate commission.",
               "cta": "Upgrade Now",
-              "link": "https://try.elevenlabs.io/clawhub",
+              "link": "https://try.elevenlabs.io/clawhub?utm_source=canfly&utm_medium=web&utm_campaign=elevenlabs",
               "external": true
             },
             {
@@ -626,7 +626,7 @@
               "title": "Custom Voice Cloning",
               "desc": "Clone your own voice or create brand-specific voices with ElevenLabs Voice Lab.",
               "cta": "Explore Voice Lab",
-              "link": "https://try.elevenlabs.io/clawhub",
+              "link": "https://try.elevenlabs.io/clawhub?utm_source=canfly&utm_medium=web&utm_campaign=elevenlabs",
               "external": true
             },
             {
@@ -745,7 +745,7 @@
               "title": "Upgrade to Creator Plan",
               "desc": "Get 15 credits/month, API access, and commercial usage. Support Canfly with 20% affiliate commission.",
               "cta": "Upgrade Now",
-              "link": "https://www.heygen.com/?sid=rewardful&via=clawhub",
+              "link": "https://www.heygen.com/?sid=rewardful&via=clawhub&utm_source=canfly&utm_medium=web&utm_campaign=heygen",
               "external": true
             },
             {
@@ -753,7 +753,7 @@
               "title": "Custom Avatar Creation",
               "desc": "Create personalized avatars with HeyGen's custom avatar service for brand consistency.",
               "cta": "Create Custom Avatar",
-              "link": "https://www.heygen.com/?sid=rewardful&via=clawhub",
+              "link": "https://www.heygen.com/?sid=rewardful&via=clawhub&utm_source=canfly&utm_medium=web&utm_campaign=heygen",
               "external": true
             },
             {

@@ -42,8 +42,8 @@ Tutorial pages provide:
 
 ## Affiliate Information
 
-- ElevenLabs: 22% recurring commission (https://try.elevenlabs.io/clawhub)
-- HeyGen: 20% recurring commission (https://www.heygen.com/?sid=rewardful&via=clawhub)
+- ElevenLabs: 22% recurring commission (https://try.elevenlabs.io/clawhub?utm_source=canfly&utm_medium=web&utm_campaign=elevenlabs)
+- HeyGen: 20% recurring commission (https://www.heygen.com/?sid=rewardful&via=clawhub&utm_source=canfly&utm_medium=web&utm_campaign=heygen)
 - Zeabur: Referral code "OpenClaw" for 10% discount
 
 ## OpenClaw Integration

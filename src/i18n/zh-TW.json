@@ -618,7 +618,7 @@
               "title": "升級到入門方案",
               "desc": "取得 30,000 字元、高級語音和商業用途。透過 22% 推薦佣金支持 Canfly。",
               "cta": "立即升級",
-              "link": "https://try.elevenlabs.io/clawhub",
+              "link": "https://try.elevenlabs.io/clawhub?utm_source=canfly&utm_medium=web&utm_campaign=elevenlabs",
               "external": true
             },
             {
@@ -626,7 +626,7 @@
               "title": "自訂語音克隆",
               "desc": "使用 ElevenLabs Voice Lab 克隆你自己的語音或建立品牌專屬語音。",
               "cta": "探索 Voice Lab",
-              "link": "https://try.elevenlabs.io/clawhub",
+              "link": "https://try.elevenlabs.io/clawhub?utm_source=canfly&utm_medium=web&utm_campaign=elevenlabs",
               "external": true
             },
             {
@@ -745,7 +745,7 @@
               "title": "升級到創作者方案",
               "desc": "取得每月 15 點數、API 存取和商業用途。透過 20% 推薦佣金支持 Canfly。",
               "cta": "立即升級",
-              "link": "https://www.heygen.com/?sid=rewardful&via=clawhub",
+              "link": "https://www.heygen.com/?sid=rewardful&via=clawhub&utm_source=canfly&utm_medium=web&utm_campaign=heygen",
               "external": true
             },
             {
@@ -753,7 +753,7 @@
               "title": "自訂虛擬人物創作",
               "desc": "使用 HeyGen 的自訂虛擬人物服務創作個人化虛擬人物以保持品牌一致性。",
               "cta": "創作自訂虛擬人物",
-              "link": "https://www.heygen.com/?sid=rewardful&via=clawhub",
+              "link": "https://www.heygen.com/?sid=rewardful&via=clawhub&utm_source=canfly&utm_medium=web&utm_campaign=heygen",
               "external": true
             },
             {
