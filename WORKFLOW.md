@@ -82,6 +82,23 @@ CEO 收到草案後：
 
 ---
 
+## 🌐 i18n 鐵律（絕對不能違反）
+
+1. **繁簡絕對不能混** — zh-TW 頁面裡出現簡體字 = Bug（critical）
+2. **英文頁面不能有中文** — code comments、chat examples 全部要英文
+3. **不能 hardcode 文字在 .tsx 裡** — 所有用戶看得到的文字都要走 i18n JSON
+4. **三檔同步** — en.json / zh-TW.json / zh-CN.json 的 key 數量必須一致
+5. **zh-TW 用台灣用語** — 程式（不是程序）、資料（不是数据）、設定（不是设置）
+
+### CEO 巡檢必查
+每次 heartbeat 用 curl 抓 `/zh-tw/learn/ollama` 等頁面，grep 簡體字：
+```bash
+curl -s https://canfly.ai/zh-tw/learn/ollama | grep -oP '[\x{4e00}-\x{9fff}]+' | sort -u > /tmp/tw-chars.txt
+# 檢查有沒有簡體特徵字：个、们、这、里、开、关、写、对、进、还、运、应、发、实、着
+```
+
+---
+
 ## 🔍 自治巡檢機制（CEO 每 15 分鐘 heartbeat）
 
 CEO 不只是等人派工，每次 heartbeat 必須主動巡檢：
