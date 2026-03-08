@@ -62,6 +62,15 @@
     "line3": "Now, you can fly.",
     "attribution": "Canfly"
   },
+  "newsletter": {
+    "badge": "Newsletter",
+    "heading": "Stay on the runway",
+    "desc": "AI tutorials, tool reviews, and launch updates — delivered to your inbox. No spam, unsubscribe anytime.",
+    "placeholder": "your@email.com",
+    "cta": "Subscribe",
+    "success": "You're on the list! Check your inbox to confirm.",
+    "privacy": "We respect your privacy. Unsubscribe anytime."
+  },
   "cta": {
     "headingLine1": "Ready?",
     "headingHighlight": "Preparing for takeoff.",

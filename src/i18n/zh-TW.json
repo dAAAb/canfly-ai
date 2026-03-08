@@ -62,6 +62,15 @@
     "line3": "現在，你也能飛。",
     "attribution": "Canfly"
   },
+  "newsletter": {
+    "badge": "電子報",
+    "heading": "掌握最新動態",
+    "desc": "AI 教學、工具評測、新功能上線通知，直送你的信箱。不寄垃圾信，隨時可退訂。",
+    "placeholder": "你的 email",
+    "cta": "訂閱",
+    "success": "訂閱成功！請到信箱確認。",
+    "privacy": "我們尊重你的隱私，隨時可退訂。"
+  },
   "cta": {
     "headingLine1": "準備好了嗎？",
     "headingHighlight": "即將起飛。",

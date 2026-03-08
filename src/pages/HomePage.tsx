@@ -2,6 +2,7 @@ import HeroSection from '../sections/HeroSection'
 import VisionSection from '../sections/VisionSection'
 import FeaturesSection from '../sections/FeaturesSection'
 import QuoteSection from '../sections/QuoteSection'
+import NewsletterSection from '../sections/NewsletterSection'
 import CTASection from '../sections/CTASection'
 
 export default function HomePage() {
@@ -11,6 +12,7 @@ export default function HomePage() {
       <VisionSection />
       <FeaturesSection />
       <QuoteSection />
+      <NewsletterSection />
       <CTASection />
     </div>
   )
