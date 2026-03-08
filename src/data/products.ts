@@ -1,6 +1,7 @@
 export interface Product {
   id: string
   name: string
+  icon: string
   tagline: string
   category: string
   price: string
@@ -25,6 +26,7 @@ export interface Product {
 export const products: Product[] = [
   {
     id: 'ollama',
+    icon: '/images/icons/ollama.png',
     name: 'Ollama',
     tagline: 'Free local AI models',
     category: 'free',
@@ -54,6 +56,7 @@ export const products: Product[] = [
   },
   {
     id: 'zeabur',
+    icon: '/images/icons/zeabur.png',
     name: 'Zeabur',
     tagline: 'One-click cloud deployment',
     category: 'hosting',
@@ -82,6 +85,7 @@ export const products: Product[] = [
   },
   {
     id: 'elevenlabs',
+    icon: '/images/icons/elevenlabs.png',
     name: 'ElevenLabs',
     tagline: 'AI voice synthesis',
     category: 'skills',
@@ -109,6 +113,7 @@ export const products: Product[] = [
   },
   {
     id: 'heygen',
+    icon: '/images/icons/heygen.png',
     name: 'HeyGen',
     tagline: 'AI video generation',
     category: 'skills',
@@ -136,6 +141,7 @@ export const products: Product[] = [
   },
   {
     id: 'umbrel',
+    icon: '/images/icons/umbrel.png',
     name: 'Umbrel',
     tagline: 'Self-hosted home server',
     category: 'hardware',
@@ -162,6 +168,7 @@ export const products: Product[] = [
   },
   {
     id: 'pinata',
+    icon: '/images/icons/pinata.png',
     name: 'Pinata',
     tagline: 'IPFS & Web3 storage',
     category: 'hosting',
@@ -186,6 +193,7 @@ export const products: Product[] = [
   },
   {
     id: 'switchbot-ai-hub',
+    icon: '/images/icons/switchbot-ai-hub.png',
     name: 'SwitchBot AI Hub',
     tagline: 'Smart home meets AI',
     category: 'hardware',
@@ -210,6 +218,7 @@ export const products: Product[] = [
   },
   {
     id: 'perplexity',
+    icon: '/images/icons/perplexity.png',
     name: 'Perplexity',
     tagline: 'AI-powered search engine',
     category: 'skills',
@@ -236,6 +245,7 @@ export const products: Product[] = [
   },
   {
     id: 'brave-search',
+    icon: '/images/icons/brave-search.png',
     name: 'Brave Search API',
     tagline: 'Free web search API',
     category: 'skills',
@@ -260,6 +270,7 @@ export const products: Product[] = [
   },
   {
     id: 'utm',
+    icon: '/images/icons/utm.png',
     name: 'UTM',
     tagline: 'Free virtual machines for Mac',
     category: 'vm',
@@ -284,6 +295,7 @@ export const products: Product[] = [
   },
   {
     id: 'virtual-buddy',
+    icon: '/images/icons/virtual-buddy.png',
     name: 'Virtual Buddy',
     tagline: 'One-click Linux VM setup',
     category: 'vm',
