@@ -55,7 +55,7 @@ export default function Navbar({ search, children }: NavbarProps) {
           <LanguageSwitcher />
           <Link
             to={localePath('/apps/ollama')}
-            className="text-sm bg-green-600/20 border border-green-600 px-3 py-1.5 rounded-full hover:bg-green-600/30 transition-colors text-green-400"
+            className="text-sm bg-green-600/20 border border-green-600 px-3 py-1.5 rounded-full hover:bg-green-600/30 transition-all text-green-400 hover:shadow-[0_0_16px_rgba(34,197,94,0.3)]"
           >
             {t('nav.startFree')}
           </Link>

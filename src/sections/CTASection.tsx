@@ -71,7 +71,7 @@ export default function CTASection() {
         >
           <a
             href="mailto:hi@canfly.ai"
-            className="inline-flex items-center gap-4 rounded-2xl no-underline text-white transition-all hover:scale-105"
+            className="inline-flex items-center gap-4 rounded-2xl no-underline text-white transition-all hover:scale-105 hover:shadow-[0_4px_24px_rgba(255,255,255,0.08)]"
             style={{
               background: 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04))',
               border: '1px solid rgba(255,255,255,0.15)',
@@ -87,7 +87,7 @@ export default function CTASection() {
             href="https://x.com/dAAAb"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-4 rounded-2xl no-underline text-white transition-all hover:scale-105"
+            className="inline-flex items-center gap-4 rounded-2xl no-underline text-white transition-all hover:scale-105 hover:shadow-[0_4px_24px_rgba(255,255,255,0.08)]"
             style={{
               background: 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04))',
               border: '1px solid rgba(255,255,255,0.15)',

@@ -8,7 +8,7 @@ interface GlassCardProps {
 export default function GlassCard({ children, className = '' }: GlassCardProps) {
   return (
     <div
-      className={`relative rounded-2xl overflow-hidden ${className}`}
+      className={`relative rounded-2xl overflow-hidden glass-hover ${className}`}
       style={{
         backdropFilter: 'blur(24px) saturate(1.4)',
         WebkitBackdropFilter: 'blur(24px) saturate(1.4)',

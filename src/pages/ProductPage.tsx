@@ -79,7 +79,7 @@ export default function ProductPage() {
     <div className="min-h-screen bg-black text-white">
       <Navbar />
 
-      <div className="max-w-6xl mx-auto px-6 md:px-8 py-10">
+      <div className="max-w-6xl mx-auto px-6 md:px-8 py-10 page-enter">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-gray-400 mb-8">
           <Link to="/apps" className="hover:text-white transition-colors">Apps</Link>
@@ -117,8 +117,8 @@ export default function ProductPage() {
                   <button
                     key={index}
                     onClick={() => setActiveScreenshot(index)}
-                    className={`aspect-video w-20 rounded border-2 transition-colors overflow-hidden relative ${
-                      activeScreenshot === index ? 'border-blue-500' : 'border-gray-700'
+                    className={`aspect-video w-20 rounded border-2 transition-all overflow-hidden relative hover:border-blue-400 ${
+                      activeScreenshot === index ? 'border-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.3)]' : 'border-gray-700'
                     }`}
                   >
                     <img
@@ -209,7 +209,7 @@ export default function ProductPage() {
                         href={product.cta.primaryLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors inline-flex items-center gap-2"
+                        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-all inline-flex items-center gap-2 hover:shadow-[0_0_20px_rgba(59,130,246,0.4)]"
                       >
                         {product.cta.primary}
                         <ExternalLink className="w-4 h-4" />
@@ -217,7 +217,7 @@ export default function ProductPage() {
                     ) : (
                       <Link
                         to={product.cta.primaryLink}
-                        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+                        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-all hover:shadow-[0_0_20px_rgba(59,130,246,0.4)]"
                       >
                         {product.cta.primary}
                       </Link>

@@ -22,7 +22,7 @@ function FeatureCard({ index }: { index: number }) {
   return (
     <div ref={ref} className="fade-section">
       <div
-        className="relative rounded-3xl overflow-hidden h-full"
+        className="relative rounded-3xl overflow-hidden h-full glass-hover"
         style={{
           backdropFilter: 'blur(24px) saturate(1.4)',
           WebkitBackdropFilter: 'blur(24px) saturate(1.4)',

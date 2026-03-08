@@ -80,7 +80,7 @@ export default function HeroSection() {
         <div className="mt-12 flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Link
             to={localePath('/apps/ollama')}
-            className="group flex items-center gap-3 bg-green-600 hover:bg-green-700 px-8 py-4 rounded-xl text-lg font-semibold transition-all hover:scale-105"
+            className="group flex items-center gap-3 bg-green-600 hover:bg-green-700 px-8 py-4 rounded-xl text-lg font-semibold transition-all hover:scale-105 cta-glow"
           >
             <PlayCircle className="w-6 h-6" />
             {t('hero.ctaFree')}
