@@ -301,8 +301,42 @@
           "RGB lighting",
           "Plug and play"
         ]
+      },
+      "pinata": {
+        "tagline": "IPFS & Web3 storage",
+        "description": "Decentralized file storage powered by IPFS. Store and retrieve files with content-addressable hashing. Perfect for Web3 apps, NFT metadata, and permanent data storage.",
+        "features": [
+          "IPFS pinning service",
+          "Content-addressable storage",
+          "Web3-native file management",
+          "Dedicated IPFS gateways",
+          "API & SDK access"
+        ],
+        "ctaPrimary": "Notify Me",
+        "ctaSecondary": "Visit Pinata"
+      },
+      "switchbot-ai-hub": {
+        "tagline": "Smart home meets AI",
+        "description": "Connect your smart home devices with AI capabilities. SwitchBot AI Hub bridges the gap between IoT hardware and intelligent automation, enabling voice and agent-controlled home environments.",
+        "features": [
+          "AI-powered home automation",
+          "Voice assistant integration",
+          "Matter/Thread support",
+          "Agent-controllable via API",
+          "Compatible with 100+ SwitchBot devices"
+        ],
+        "ctaPrimary": "Notify Me",
+        "ctaSecondary": "Visit SwitchBot"
       }
-    }
+    },
+    "comingSoon": "Coming Soon",
+    "integrationComingSoon": "Integration coming soon",
+    "review": "Review",
+    "notifyTitle": "Get notified when it launches",
+    "notifyDescription": "We'll send you an email when {{name}} is available on Canfly.",
+    "notifyButton": "Notify Me",
+    "notifySuccess": "You're on the list!",
+    "notifySuccessDescription": "We'll notify you when {{name}} launches on Canfly."
   },
   "tutorial": {
     "notFound": "Tutorial not found",

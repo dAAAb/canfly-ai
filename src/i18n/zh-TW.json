@@ -301,8 +301,42 @@
           "RGB 燈效",
           "隨插即用"
         ]
+      },
+      "pinata": {
+        "tagline": "IPFS 與 Web3 儲存",
+        "description": "由 IPFS 驅動的去中心化檔案儲存。使用內容定址雜湊來儲存和取回檔案，適合 Web3 應用、NFT 元資料及永久資料儲存。",
+        "features": [
+          "IPFS 固定服務",
+          "內容定址儲存",
+          "Web3 原生檔案管理",
+          "專屬 IPFS 閘道",
+          "API 與 SDK 存取"
+        ],
+        "ctaPrimary": "通知我",
+        "ctaSecondary": "前往 Pinata"
+      },
+      "switchbot-ai-hub": {
+        "tagline": "智慧家庭遇見 AI",
+        "description": "將智慧家庭裝置與 AI 功能連接。SwitchBot AI Hub 橋接 IoT 硬體和智慧自動化，支援語音和 AI 代理控制的家居環境。",
+        "features": [
+          "AI 驅動的家庭自動化",
+          "語音助手整合",
+          "Matter/Thread 支援",
+          "透過 API 由代理控制",
+          "相容 100+ SwitchBot 裝置"
+        ],
+        "ctaPrimary": "通知我",
+        "ctaSecondary": "前往 SwitchBot"
       }
-    }
+    },
+    "comingSoon": "即將推出",
+    "integrationComingSoon": "整合即將推出",
+    "review": "評測",
+    "notifyTitle": "上線時通知我",
+    "notifyDescription": "當 {{name}} 在 Canfly 上架時，我們會寄 Email 通知你。",
+    "notifyButton": "通知我",
+    "notifySuccess": "已加入等候清單！",
+    "notifySuccessDescription": "{{name}} 上架時我們會通知你。"
   },
   "tutorial": {
     "notFound": "找不到教學",

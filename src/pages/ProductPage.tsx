@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ExternalLink, CheckCircle, Play } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import ShareBar from '../components/ShareBar'
@@ -11,7 +12,7 @@ function isExternal(url: string) {
   return url.startsWith('http')
 }
 
-function NotifyForm({ productName }: { productName: string }) {
+function NotifyForm({ productName, t }: { productName: string; t: (key: string, opts?: Record<string, string>) => string }) {
   const [email, setEmail] = useState('')
   const [submitted, setSubmitted] = useState(false)
 
@@ -24,8 +25,8 @@ function NotifyForm({ productName }: { productName: string }) {
   if (submitted) {
     return (
       <div className="p-4 bg-green-900/30 border border-green-800 rounded-lg text-center">
-        <p className="text-green-400 font-medium">You're on the list!</p>
-        <p className="text-gray-400 text-sm mt-1">We'll notify you when {productName} launches on Canfly.</p>
+        <p className="text-green-400 font-medium">{t('product.notifySuccess')}</p>
+        <p className="text-gray-400 text-sm mt-1">{t('product.notifySuccessDescription', { name: productName })}</p>
       </div>
     )
   }
@@ -44,7 +45,7 @@ function NotifyForm({ productName }: { productName: string }) {
         type="submit"
         className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors whitespace-nowrap"
       >
-        Notify Me
+        {t('product.notifyButton')}
       </button>
     </form>
   )
@@ -52,14 +53,16 @@ function NotifyForm({ productName }: { productName: string }) {
 
 export default function ProductPage() {
   const { slug } = useParams()
+  const { t } = useTranslation()
   const [activeScreenshot, setActiveScreenshot] = useState(0)
 
   const product = productsBySlug[slug as string]
   const isComingSoon = product?.status === 'coming-soon'
+  const pid = product?.id ?? ''
 
   useHead(product ? {
     title: `${product.name} — Canfly`,
-    description: product.description,
+    description: t(`product.products.${pid}.description`, { defaultValue: product.description }),
     canonical: `https://canfly.ai/apps/${slug}`,
   } : {})
 
@@ -67,9 +70,9 @@ export default function ProductPage() {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Product not found</h1>
+          <h1 className="text-2xl font-bold mb-4">{t('product.notFound')}</h1>
           <Link to="/apps" className="text-blue-400 hover:text-blue-300">
-            &larr; Back to Apps
+            {t('product.backToApps')}
           </Link>
         </div>
       </div>
@@ -83,7 +86,7 @@ export default function ProductPage() {
       <div className="max-w-6xl mx-auto px-6 md:px-8 py-10 page-enter">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-gray-400 mb-8">
-          <Link to="/apps" className="hover:text-white transition-colors">Apps</Link>
+          <Link to="/apps" className="hover:text-white transition-colors">{t('product.breadcrumbApps')}</Link>
           <span>&gt;</span>
           <span className="text-white">{product.name}</span>
         </nav>
@@ -94,7 +97,7 @@ export default function ProductPage() {
             <div className="aspect-video bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl mb-4 flex items-center justify-center overflow-hidden relative">
               {isComingSoon && (
                 <div className="absolute top-4 right-4 px-3 py-1 bg-purple-600 text-white text-sm font-medium rounded-full">
-                  Coming Soon
+                  {t('product.comingSoon')}
                 </div>
               )}
               {product.screenshots[activeScreenshot] ? (
@@ -106,7 +109,7 @@ export default function ProductPage() {
               ) : (
                 <div className="text-center">
                   <div className="text-7xl mb-3 opacity-60">{product.name[0]}</div>
-                  {isComingSoon && <div className="text-gray-500 text-sm">Integration coming soon</div>}
+                  {isComingSoon && <div className="text-gray-500 text-sm">{t('product.integrationComingSoon')}</div>}
                 </div>
               )}
             </div>
@@ -138,7 +141,7 @@ export default function ProductPage() {
             {/* Review Video */}
             {product.reviewVideo && (
               <div className="mt-6">
-                <h3 className="text-lg font-semibold mb-3">Review</h3>
+                <h3 className="text-lg font-semibold mb-3">{t('product.review')}</h3>
                 <ReviewVideoPlayer
                   src={product.reviewVideo}
                   poster={product.reviewVideo.replace('.mp4', '-poster.jpg')}
@@ -159,27 +162,27 @@ export default function ProductPage() {
                 <h1 className="text-4xl font-bold">{product.name}</h1>
                 {isComingSoon && (
                   <span className="px-2 py-1 bg-purple-600/20 text-purple-400 text-xs rounded-full border border-purple-600/40">
-                    Coming Soon
+                    {t('product.comingSoon')}
                   </span>
                 )}
                 {!isComingSoon && product.affiliateLink && (
                   <span className="px-2 py-1 bg-blue-600 text-xs rounded-full">
-                    OpenClaw Partner
+                    {t('product.openclawPartner')}
                   </span>
                 )}
               </div>
-              <p className="text-xl text-gray-400 mb-4">{product.tagline}</p>
-              <p className="text-gray-300 leading-relaxed">{product.description}</p>
+              <p className="text-xl text-gray-400 mb-4">{t(`product.products.${pid}.tagline`, { defaultValue: product.tagline })}</p>
+              <p className="text-gray-300 leading-relaxed">{t(`product.products.${pid}.description`, { defaultValue: product.description })}</p>
             </div>
 
             {/* Coming Soon: Notify Me section */}
             {isComingSoon ? (
               <div className="mb-6 p-5 bg-gray-900 rounded-lg border border-gray-800">
                 <div className="mb-4">
-                  <div className="text-lg font-semibold mb-1">Get notified when it launches</div>
-                  <p className="text-gray-400 text-sm">We'll send you an email when {product.name} is available on Canfly.</p>
+                  <div className="text-lg font-semibold mb-1">{t('product.notifyTitle')}</div>
+                  <p className="text-gray-400 text-sm">{t('product.notifyDescription', { name: product.name })}</p>
                 </div>
-                <NotifyForm productName={product.name} />
+                <NotifyForm productName={product.name} t={t} />
                 {product.cta.secondaryLink && isExternal(product.cta.secondaryLink) && (
                   <a
                     href={product.cta.secondaryLink}
@@ -187,7 +190,7 @@ export default function ProductPage() {
                     rel="noopener noreferrer"
                     className="mt-3 inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors"
                   >
-                    {product.cta.secondary}
+                    {t(`product.products.${pid}.ctaSecondary`, { defaultValue: product.cta.secondary })}
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                 )}
@@ -199,10 +202,10 @@ export default function ProductPage() {
                   <div>
                     <div className="text-2xl font-bold text-green-400">{product.price}</div>
                     {product.affiliateDiscount && product.affiliateCode && (
-                      <div className="text-sm text-blue-400">{product.affiliateDiscount} with code: {product.affiliateCode}</div>
+                      <div className="text-sm text-blue-400">{t('product.discountWithCode', { discount: product.affiliateDiscount, code: product.affiliateCode })}</div>
                     )}
                     {product.commission && (
-                      <div className="text-xs text-gray-500">{product.commission} affiliate commission</div>
+                      <div className="text-xs text-gray-500">{t('product.affiliateCommission', { commission: product.commission })}</div>
                     )}
                   </div>
                   <div className="flex gap-2 flex-wrap">
@@ -213,7 +216,7 @@ export default function ProductPage() {
                         rel="noopener noreferrer"
                         className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-all inline-flex items-center gap-2 hover:shadow-[0_0_20px_rgba(59,130,246,0.4)]"
                       >
-                        {product.cta.primary}
+                        {t(`product.products.${pid}.ctaPrimary`, { defaultValue: product.cta.primary })}
                         <ExternalLink className="w-4 h-4" />
                       </a>
                     ) : (
@@ -221,7 +224,7 @@ export default function ProductPage() {
                         to={product.cta.primaryLink}
                         className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-all hover:shadow-[0_0_20px_rgba(59,130,246,0.4)]"
                       >
-                        {product.cta.primary}
+                        {t(`product.products.${pid}.ctaPrimary`, { defaultValue: product.cta.primary })}
                       </Link>
                     )}
                     {isExternal(product.cta.secondaryLink) ? (
@@ -232,7 +235,7 @@ export default function ProductPage() {
                         className="px-4 py-3 border border-gray-600 rounded-lg hover:border-gray-500 transition-colors inline-flex items-center gap-2"
                       >
                         <Play className="w-4 h-4" />
-                        {product.cta.secondary}
+                        {t(`product.products.${pid}.ctaSecondary`, { defaultValue: product.cta.secondary })}
                         <ExternalLink className="w-4 h-4" />
                       </a>
                     ) : (
@@ -241,7 +244,7 @@ export default function ProductPage() {
                         className="px-4 py-3 border border-gray-600 rounded-lg hover:border-gray-500 transition-colors flex items-center gap-2"
                       >
                         <Play className="w-4 h-4" />
-                        {product.cta.secondary}
+                        {t(`product.products.${pid}.ctaSecondary`, { defaultValue: product.cta.secondary })}
                       </Link>
                     )}
                   </div>
@@ -251,9 +254,9 @@ export default function ProductPage() {
 
             {/* Features */}
             <div className="mb-8">
-              <h3 className="text-lg font-semibold mb-4">Features</h3>
+              <h3 className="text-lg font-semibold mb-4">{t('product.features')}</h3>
               <ul className="space-y-2">
-                {product.features.map((feature, index) => (
+                {(t(`product.products.${pid}.features`, { returnObjects: true, defaultValue: product.features }) as string[]).map((feature, index) => (
                   <li key={index} className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-400 shrink-0" />
                     <span className="text-gray-300">{feature}</span>
