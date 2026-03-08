@@ -140,6 +140,7 @@ export default function ProductPage() {
                 <h3 className="text-lg font-semibold mb-3">Review</h3>
                 <ReviewVideoPlayer
                   src={product.reviewVideo}
+                  poster={product.reviewVideo.replace('.mp4', '-poster.jpg')}
                   subtitles={[
                     { label: 'English', srclang: 'en', src: product.reviewVideo.replace('.mp4', '.en.vtt') },
                     { label: '繁體中文', srclang: 'zh-TW', src: product.reviewVideo.replace('.mp4', '.zh-TW.vtt') },
@@ -193,7 +194,7 @@ export default function ProductPage() {
             ) : (
               /* Pricing - only for available products */
               <div className="mb-6 p-4 bg-gray-900 rounded-lg border border-gray-800">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div>
                     <div className="text-2xl font-bold text-green-400">{product.price}</div>
                     {product.affiliateDiscount && product.affiliateCode && (
@@ -203,7 +204,7 @@ export default function ProductPage() {
                       <div className="text-xs text-gray-500">{product.commission} affiliate commission</div>
                     )}
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 flex-wrap">
                     {isExternal(product.cta.primaryLink) ? (
                       <a
                         href={product.cta.primaryLink}
