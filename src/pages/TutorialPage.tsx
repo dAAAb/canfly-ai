@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom'
-import { Clock, CheckCircle, Copy, ExternalLink, ChevronDown, ChevronRight, Terminal, Download, Monitor, MessageSquare, Rocket, HelpCircle, Cpu, Sparkles, Search, Globe } from 'lucide-react'
+import { Clock, CheckCircle, Copy, ExternalLink, ChevronDown, ChevronRight, Terminal, Download, Monitor, MessageSquare, Rocket, HelpCircle, Cpu, Sparkles, Search, Globe, Key, Shield } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import Navbar from '../components/Navbar'
@@ -636,6 +636,89 @@ function createBraveSearchTutorial(t: any): TutorialData {
   }
 }
 
+function createApiKeysTutorial(t: any): TutorialData {
+  return {
+    id: 'api-keys',
+    title: t('tutorial.apikeys.title'),
+    subtitle: t('tutorial.apikeys.subtitle'),
+    duration: t('tutorial.apikeys.duration'),
+    difficulty: t('tutorial.apikeys.difficulty'),
+    steps: [
+      {
+        icon: HelpCircle,
+        title: t('tutorial.apikeys.steps.0.title'),
+        titleEn: t('tutorial.apikeys.steps.0.titleEn'),
+        estimatedTime: t('tutorial.apikeys.steps.0.estimatedTime'),
+        content: t('tutorial.apikeys.steps.0.content'),
+        commands: t('tutorial.apikeys.steps.0.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.apikeys.steps.0.expectedResult'),
+        tips: t('tutorial.apikeys.steps.0.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.apikeys.steps.0.troubleshooting.title'),
+          items: t('tutorial.apikeys.steps.0.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Key,
+        title: t('tutorial.apikeys.steps.1.title'),
+        titleEn: t('tutorial.apikeys.steps.1.titleEn'),
+        estimatedTime: t('tutorial.apikeys.steps.1.estimatedTime'),
+        content: t('tutorial.apikeys.steps.1.content'),
+        commands: t('tutorial.apikeys.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.apikeys.steps.1.expectedResult'),
+        tips: t('tutorial.apikeys.steps.1.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.apikeys.steps.1.troubleshooting.title'),
+          items: t('tutorial.apikeys.steps.1.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Key,
+        title: t('tutorial.apikeys.steps.2.title'),
+        titleEn: t('tutorial.apikeys.steps.2.titleEn'),
+        estimatedTime: t('tutorial.apikeys.steps.2.estimatedTime'),
+        content: t('tutorial.apikeys.steps.2.content'),
+        commands: t('tutorial.apikeys.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.apikeys.steps.2.expectedResult'),
+        tips: t('tutorial.apikeys.steps.2.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.apikeys.steps.2.troubleshooting.title'),
+          items: t('tutorial.apikeys.steps.2.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Shield,
+        title: t('tutorial.apikeys.steps.3.title'),
+        titleEn: t('tutorial.apikeys.steps.3.titleEn'),
+        estimatedTime: t('tutorial.apikeys.steps.3.estimatedTime'),
+        content: t('tutorial.apikeys.steps.3.content'),
+        commands: t('tutorial.apikeys.steps.3.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.apikeys.steps.3.expectedResult'),
+        tips: t('tutorial.apikeys.steps.3.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.apikeys.steps.3.troubleshooting.title'),
+          items: t('tutorial.apikeys.steps.3.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.apikeys.steps.4.title'),
+        titleEn: t('tutorial.apikeys.steps.4.titleEn'),
+        estimatedTime: t('tutorial.apikeys.steps.4.estimatedTime'),
+        content: t('tutorial.apikeys.steps.4.content'),
+        nextStepCards: (t('tutorial.apikeys.steps.4.nextStepCards', { returnObjects: true }) as any[]).map((card: any) => ({
+          ...card,
+          link: card.title.includes('Ollama') ? '/learn/ollama' :
+                card.title.includes('Zeabur') || card.title.includes('雲端') ? '/learn/zeabur' :
+                card.title.includes('Perplexity') ? '/learn/perplexity' :
+                card.title.includes('ElevenLabs') || card.title.includes('語音') ? '/learn/elevenlabs-integration' : '#'
+        })),
+        tips: t('tutorial.apikeys.steps.4.tips', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
 function getTutorials(t: any): Record<string, TutorialData> {
   return {
     ollama: createOllamaTutorial(t),
@@ -645,6 +728,7 @@ function getTutorials(t: any): Record<string, TutorialData> {
     'virtual-machine': createVirtualMachineTutorial(t),
     perplexity: createPerplexityTutorial(t),
     'brave-search': createBraveSearchTutorial(t),
+    'api-keys': createApiKeysTutorial(t),
   }
 }
 

@@ -1700,6 +1700,229 @@
     "installOllamaOneLine": "# 一行指令安装 Ollama\ncurl -fsSL https://ollama.com/install.sh | sh",
     "chatDemo": {
       "you": "你"
+    },
+    "apikeys": {
+      "title": "获取你的 AI API 密钥 — OpenAI 与 Anthropic",
+      "subtitle": "一步步教你获取 OpenAI 和 Anthropic API 密钥 — 使用 OpenClaw 等 AI 应用的第一步",
+      "duration": "10 分钟",
+      "difficulty": "初学者",
+      "steps": [
+        {
+          "title": "什么是 API 密钥？",
+          "titleEn": "What Are API Keys?",
+          "estimatedTime": "1 分钟",
+          "content": "API 密钥就像一组密码，让应用程序可以代替你与 AI 服务沟通。当你使用 OpenClaw 这类工具时，它需要你的 API 密钥来把问题发送到 GPT-4 或 Claude 等 AI 模型。别担心 — 你可以完全掌控你的密钥，随时都能撤销。",
+          "expectedResult": "你已了解什么是 API 密钥，以及为什么需要它。",
+          "tips": [
+            "API 密钥是保密的 — 绝对不要公开分享或提交到 GitHub",
+            "你可以为不同项目创建多个密钥",
+            "OpenAI 和 Anthropic 都采用按量付费 — 只为你用到的部分付费",
+            "大多数普通用户每月花费不到 $5 美元"
+          ],
+          "troubleshooting": {
+            "title": "常见问题",
+            "items": [
+              {
+                "q": "把 API 密钥给 OpenClaw 安全吗？",
+                "a": "安全的 — OpenClaw 在你的电脑上本地运行。你的密钥存在你的设备上，直接发送给 AI 供应商，绝不会经过第三方服务器。"
+              },
+              {
+                "q": "我需要同时拥有 OpenAI 和 Anthropic 的密钥吗？",
+                "a": "不需要！你可以只从一个开始。OpenAI 提供 GPT-4，Anthropic 提供 Claude。先试试你比较感兴趣的那个。"
+              }
+            ]
+          },
+          "commands": [
+            "# API 密钥让应用程序可以代替你访问 AI 模型",
+            "# 可以把它想成 AI 服务的个人密码",
+            "",
+            "# 你至少需要以下其中一个：",
+            "# - OpenAI API Key → 访问 GPT-4、GPT-4o、o1",
+            "# - Anthropic API Key → 访问 Claude 4、Claude Sonnet、Claude Haiku"
+          ]
+        },
+        {
+          "title": "获取你的 OpenAI API 密钥",
+          "titleEn": "Get Your OpenAI API Key",
+          "estimatedTime": "3 分钟",
+          "content": "OpenAI 提供 GPT-4、GPT-4o 等强大模型。按照以下步骤创建账号并生成 API 密钥。",
+          "expectedResult": "你已获得一个以 'sk-' 开头的 OpenAI API 密钥，并已复制到剪贴板。",
+          "tips": [
+            "新账号可获得 $5 美元免费额度（3 个月内有效）",
+            "立即保存你的 API 密钥 — OpenAI 只会显示一次！",
+            "使用有意义的名称，例如 'openclaw-mac'，方便日后辨认用途",
+            "你可以在「设置 → 限额」中设定消费上限，避免意外支出"
+          ],
+          "troubleshooting": {
+            "title": "OpenAI 账号问题",
+            "items": [
+              {
+                "q": "我找不到「创建新密钥」的按钮",
+                "a": "请确认你在 platform.openai.com（API 网站），而不是 chatgpt.com（聊天应用）。它们是不同的产品，账号也是分开的。"
+              },
+              {
+                "q": "我的 API 密钥无法使用",
+                "a": "请确认你已添加付款方式。免费额度可能已过期。前往「设置 → 账单」来添加信用卡。"
+              },
+              {
+                "q": "我不小心关掉了密钥弹出窗口",
+                "a": "很遗憾，你无法再次查看该密钥。请删除旧密钥并创建新的 — 只需要几秒钟。"
+              }
+            ]
+          },
+          "commands": [
+            "# 步骤 1：前往 OpenAI API 平台",
+            "open https://platform.openai.com/signup",
+            "",
+            "# 步骤 2：注册或登录",
+            "# 使用 Google、Microsoft、Apple 或电子邮件创建账号",
+            "",
+            "# 步骤 3：前往 API Keys 页面",
+            "open https://platform.openai.com/api-keys",
+            "",
+            "# 步骤 4：点击 '+ Create new secret key'",
+            "# 取一个名称，例如 'openclaw-mac'",
+            "# 复制密钥（以 'sk-' 开头）— 保存到安全的地方！",
+            "",
+            "# 步骤 5：添加付款方式（如有需要）",
+            "open https://platform.openai.com/settings/organization/billing/overview",
+            "# 添加信用卡以启用按量付费",
+            "# 设定每月消费上限以掌控支出"
+          ]
+        },
+        {
+          "title": "获取你的 Anthropic API 密钥",
+          "titleEn": "Get Your Anthropic API Key",
+          "estimatedTime": "3 分钟",
+          "content": "Anthropic 开发了 Claude — 以乐于助人、安全可靠，且善于遵循指令而闻名。以下是获取 Anthropic API 密钥的方法。",
+          "expectedResult": "你已获得一个以 'sk-ant-' 开头的 Anthropic API 密钥，并已复制到剪贴板。",
+          "tips": [
+            "新账号可获得 $5 美元免费额度来试用 API",
+            "Claude 特别擅长处理长文档、编程任务和细致推理",
+            "Anthropic 的 Console 内置 Workbench，可在使用 API 前先测试提示词",
+            "在「设置 → 方案与账单 → 限额」中设定消费上限"
+          ],
+          "troubleshooting": {
+            "title": "Anthropic 账号问题",
+            "items": [
+              {
+                "q": "我找不到创建 API 密钥的地方",
+                "a": "前往 console.anthropic.com → 设置 → API Keys。请确认你在 Console（API 平台），而不是 claude.ai（聊天应用）。"
+              },
+              {
+                "q": "我的密钥无法使用 — 显示「额度不足」",
+                "a": "你需要添加付款方式，或等待免费额度启用。前往「设置 → 方案与账单」。"
+              },
+              {
+                "q": "claude.ai 和 API 有什么不同？",
+                "a": "claude.ai 是聊天应用（类似 ChatGPT）。API（console.anthropic.com）让其他应用可以用编程方式使用 Claude。两者的账单是分开的。"
+              }
+            ]
+          },
+          "commands": [
+            "# 步骤 1：前往 Anthropic Console",
+            "open https://console.anthropic.com/",
+            "",
+            "# 步骤 2：注册或登录",
+            "# 使用 Google 或电子邮件创建账号",
+            "",
+            "# 步骤 3：前往 API Keys",
+            "open https://console.anthropic.com/settings/keys",
+            "",
+            "# 步骤 4：点击 'Create Key'",
+            "# 取一个名称，例如 'openclaw-mac'",
+            "# 复制密钥（以 'sk-ant-' 开头）— 保存到安全的地方！",
+            "",
+            "# 步骤 5：设置账单（如有需要）",
+            "open https://console.anthropic.com/settings/plans",
+            "# 添加信用卡以启用按量付费",
+            "# 在「限额」区域中设定每月消费上限"
+          ]
+        },
+        {
+          "title": "安全保管你的密钥",
+          "titleEn": "Store Your Keys Safely",
+          "estimatedTime": "2 分钟",
+          "content": "你的 API 密钥是机密信息 — 请像对待密码一样保护它们。以下是保护密钥安全并在应用中使用的最佳做法。",
+          "expectedResult": "你的 API 密钥已安全保存，你也知道如何在应用中使用它们。",
+          "tips": [
+            "绝对不要把 API 密钥贴到公开聊天室、论坛或代码仓库",
+            "使用环境变量，而不是在代码中硬编码密钥",
+            "如果密钥泄露，请立即撤销并创建新的",
+            "考虑使用密码管理工具来保管你的密钥"
+          ],
+          "troubleshooting": {
+            "title": "密钥安全须知",
+            "items": [
+              {
+                "q": "我不小心把密钥贴到 GitHub 了",
+                "a": "请立即撤销！前往供应商的控制台，删除泄露的密钥，然后创建新的。OpenAI 和 Anthropic 都会扫描泄露的密钥，可能会自动撤销。"
+              },
+              {
+                "q": "如何使用环境变量？",
+                "a": "在 Mac/Linux 上，将 'export OPENAI_API_KEY=sk-...' 添加到你的 ~/.zshrc 文件中。在 Windows 上，使用「系统属性 → 环境变量」。"
+              }
+            ]
+          },
+          "commands": [
+            "# 方法 1：保存为环境变量（推荐开发者使用）",
+            "",
+            "# Mac / Linux — 添加到你的 shell 配置文件：",
+            "echo 'export OPENAI_API_KEY=\"sk-your-key-here\"' >> ~/.zshrc",
+            "echo 'export ANTHROPIC_API_KEY=\"sk-ant-your-key-here\"' >> ~/.zshrc",
+            "source ~/.zshrc",
+            "",
+            "# 验证是否已设置：",
+            "echo $OPENAI_API_KEY | head -c 10",
+            "# 应该显示：sk-your-ke...",
+            "",
+            "# 方法 2：直接粘贴到 OpenClaw 设置中",
+            "# OpenClaw 将密钥存在你的设备上 — 绝不会发送给第三方",
+            "",
+            "# 方法 3：使用 .env 文件（适用于项目）",
+            "echo 'OPENAI_API_KEY=sk-your-key-here' > .env",
+            "echo 'ANTHROPIC_API_KEY=sk-ant-your-key-here' >> .env",
+            "echo '.env' >> .gitignore  # 千万不要提交 .env 文件！"
+          ]
+        },
+        {
+          "title": "准备就绪！",
+          "titleEn": "You're Ready!",
+          "estimatedTime": "1 分钟",
+          "content": "恭喜！你现在有了 API 密钥，可以访问全球最强大的 AI 模型。搭配 OpenClaw 使用、打造自己的应用，或探索更多 AI 生态系。",
+          "nextStepCards": [
+            {
+              "emoji": "🦙",
+              "title": "试试 Ollama（免费）",
+              "desc": "在你的 Mac 上本地运行 AI — 不需要 API 密钥",
+              "cta": "开始教程"
+            },
+            {
+              "emoji": "☁️",
+              "title": "用 Zeabur 部署云端",
+              "desc": "一键将你的 AI 应用部署到云端",
+              "cta": "立即部署"
+            },
+            {
+              "emoji": "🔍",
+              "title": "Perplexity AI 搜索",
+              "desc": "AI 驱动的搜索引擎，附带来源引用",
+              "cta": "试试 Perplexity"
+            },
+            {
+              "emoji": "🎙️",
+              "title": "ElevenLabs 语音 AI",
+              "desc": "为你的项目加入自然语音合成",
+              "cta": "开始使用"
+            }
+          ],
+          "tips": [
+            "定期查看用量，避免意外支出",
+            "学习期间先用便宜的模型（GPT-4o-mini、Claude Haiku）",
+            "两家供应商都有很宽裕的免费额度 — 尽情实验！"
+          ]
+        }
+      ]
     }
   },
   "hardwareCompare": {
