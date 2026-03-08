@@ -235,6 +235,7 @@ export const products: Product[] = [
       'Multiple focus modes (Academic, Writing, etc.)',
     ],
     screenshots: [],
+    reviewVideo: '/videos/reviews/perplexity-review.mp4',
     tutorial: '/learn/perplexity',
     cta: {
       primary: 'Try Perplexity (Free)',
@@ -260,6 +261,7 @@ export const products: Product[] = [
       'No credit card required',
     ],
     screenshots: [],
+    reviewVideo: '/videos/reviews/brave-search-review.mp4',
     tutorial: '/learn/brave-search',
     cta: {
       primary: 'Get Free API Key',

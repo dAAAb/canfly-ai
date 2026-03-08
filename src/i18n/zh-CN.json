@@ -200,6 +200,32 @@
       "virtual-buddy": {
         "tagline": "一键创建 Linux 虚拟机",
         "description": "在 Mac 上创建 Linux 虚拟机最简单的方式。"
+      },
+      "perplexity": {
+        "tagline": "AI 智能搜索引擎",
+        "description": "AI 驱动的搜索引擎，帮你读遍全网并附上来源给出直接答案。适合研究、学习和掌握最新资讯。提供 OpenAI 兼容 API。",
+        "features": [
+          "AI 汇整答案附带来源引用",
+          "Pro Search 深度研究功能",
+          "OpenAI 兼容 API",
+          "收藏集与页面分享功能",
+          "多种聚焦模式（学术、写作等）"
+        ],
+        "ctaPrimary": "免费试用 Perplexity",
+        "ctaSecondary": "查看教程"
+      },
+      "brave-search": {
+        "tagline": "免费网络搜索 API",
+        "description": "注重隐私的网络搜索 API，提供慷慨的免费额度。获取结构化搜索结果，让你的 AI 助理获得实时网络知识。不需要信用卡。",
+        "features": [
+          "免费方案：每月 2,000 次查询",
+          "隐私优先，不追踪用户",
+          "结构化 JSON 搜索结果",
+          "新闻、图片与视频搜索端点",
+          "不需要信用卡"
+        ],
+        "ctaPrimary": "获取免费 API 密钥",
+        "ctaSecondary": "查看教程"
       }
     }
   },

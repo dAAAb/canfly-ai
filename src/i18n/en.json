@@ -200,6 +200,32 @@
       "virtual-buddy": {
         "tagline": "One-click Linux VM setup",
         "description": "The easiest way to get a Linux virtual machine on your Mac."
+      },
+      "perplexity": {
+        "tagline": "AI-powered search engine",
+        "description": "AI-powered search engine that reads the web and gives you direct answers with citations. Perfect for research, learning, and staying up-to-date. OpenAI-compatible API available.",
+        "features": [
+          "AI-synthesized answers with sources",
+          "Pro search for deep research",
+          "OpenAI-compatible API",
+          "Collections & Pages for sharing",
+          "Multiple focus modes (Academic, Writing, etc.)"
+        ],
+        "ctaPrimary": "Try Perplexity (Free)",
+        "ctaSecondary": "View Tutorial"
+      },
+      "brave-search": {
+        "tagline": "Free web search API",
+        "description": "Privacy-focused web search API with a generous free tier. Get structured search results to power your AI agents with real-time web knowledge. No credit card required.",
+        "features": [
+          "Free tier: 2,000 queries/month",
+          "Privacy-focused, no tracking",
+          "Structured JSON results",
+          "News, Images & Videos endpoints",
+          "No credit card required"
+        ],
+        "ctaPrimary": "Get Free API Key",
+        "ctaSecondary": "View Tutorial"
       }
     }
   },
@@ -2571,6 +2597,61 @@
       "title": "Ready to Build Your Own?",
       "desc": "Start with our free tutorials and join the community of AI builders.",
       "button": "Get Started"
+    }
+  },
+  "blog": {
+    "pageTitle": "Blog — CanFly.ai",
+    "pageDescription": "Insights, guides, and tutorials on AI agents, local AI, and the tools that let you fly.",
+    "heading": "CanFly Blog",
+    "subheading": "Original insights on AI agents, privacy-first tools, and the future of personal AI.",
+    "noPosts": "No posts in this category yet.",
+    "notFound": "Post not found",
+    "backToList": "Back to Blog",
+    "relatedProducts": "Related Tools",
+    "categories": {
+      "all": "All",
+      "guide": "Guide",
+      "tutorial": "Tutorial",
+      "insight": "Insight"
+    },
+    "posts": {
+      "localAiPrivacy": {
+        "title": "Why Local AI Is the Privacy Breakthrough of 2026",
+        "summary": "Cloud AI means your data leaves your device. Local AI changes that equation entirely. Here's why running models on your own hardware matters more than ever.",
+        "content": [
+          "Every time you send a prompt to a cloud AI service, your data travels across the internet to a remote server. That server processes it, stores logs, and may use your inputs for training. For personal conversations, business secrets, or creative work, that's a real concern.",
+          "Local AI flips this model. With tools like Ollama, you can run powerful language models — Llama 3, Mistral, CodeLlama — entirely on your own machine. Your prompts never leave your device. There are no API keys, no usage fees, and no data retention policies to worry about.",
+          "The performance gap between local and cloud AI has narrowed dramatically. A modern laptop with 16GB RAM can run 7B-parameter models with near-instant responses. For coding assistance, writing, and general Q&A, local models are now genuinely competitive.",
+          "Setting up local AI used to require deep technical knowledge. Today, Ollama makes it a single command: `ollama run llama3`. That's it — you're running a state-of-the-art language model locally in under 5 minutes.",
+          "At CanFly.ai, we believe everyone deserves access to AI that respects their privacy. That's why our free Ollama tutorial is the entry point to our entire platform. Start local, stay private, and upgrade to cloud deployment only when you're ready.",
+          "The future of AI isn't just about capability — it's about control. Local AI gives you both."
+        ]
+      },
+      "deployAiCloud": {
+        "title": "From Laptop to Cloud: Deploy Your AI Agent in One Click",
+        "summary": "You've built something amazing locally. Now it's time to share it with the world. Here's how to go from local prototype to cloud-hosted AI agent.",
+        "content": [
+          "Building an AI agent on your laptop is exciting. But when you want to share it with teammates, customers, or the world, you need cloud deployment. The good news: it's never been easier.",
+          "The traditional path — setting up servers, configuring Docker, managing SSL certificates — is a barrier that stops most creators. Platforms like Zeabur have eliminated this complexity entirely.",
+          "With Zeabur, you connect your GitHub repo and click deploy. Your AI agent gets a public URL, automatic HTTPS, and scales automatically based on demand. The entire process takes about 3 minutes.",
+          "The key insight is starting local, then deploying to cloud. Build and test with Ollama on your machine where iteration is free and fast. Once your agent works well, push to cloud for production use.",
+          "This local-first, cloud-ready approach is the CanFly philosophy. You maintain full control during development, and you only pay for cloud resources when you actually need them. Use referral code 'OpenClaw' for 10% off your first Zeabur deployment.",
+          "The transition from prototype to production should be seamless. With the right tools, it is."
+        ]
+      },
+      "voiceVideoCreation": {
+        "title": "AI Voice and Video: The Next Frontier of Content Creation",
+        "summary": "Text-based AI is just the beginning. Voice synthesis and AI video are transforming how creators produce content — and it's more accessible than you think.",
+        "content": [
+          "We've entered an era where AI can speak with human-quality voices and generate professional video content. These aren't gimmicks — they're production-ready tools that creators and businesses are using right now.",
+          "Voice synthesis through platforms like ElevenLabs has reached a remarkable level of quality. You can clone voices, create multilingual narrations, and produce audiobooks — all from text input. The applications range from accessibility (making content available to visually impaired users) to education (multilingual course delivery).",
+          "AI video generation with HeyGen takes this further. Create talking-head videos, product demos, and educational content without cameras, studios, or actors. Upload a script, choose an avatar or use your own likeness, and generate professional video in minutes.",
+          "For AI agent builders, these tools open up entirely new capabilities. Imagine an agent that doesn't just respond in text, but speaks to users in their language, or creates video tutorials on demand. The integration possibilities are endless.",
+          "The cost structure has also shifted dramatically. What used to require a production studio and a team of specialists can now be done by a single person with the right AI tools. ElevenLabs starts at $5/month, and HeyGen offers a free tier for getting started.",
+          "At CanFly.ai, we see voice and video as the natural next step after text-based AI. Our tutorials guide you from free local AI to cloud deployment to premium capabilities like voice and video. It's the complete journey from zero to a fully-capable AI agent.",
+          "The content creation landscape is being reshaped by AI. The creators who embrace these tools early will have a significant advantage. The question isn't whether to adopt AI voice and video — it's when."
+        ]
+      }
     }
   }
 }
