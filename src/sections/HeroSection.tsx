@@ -13,7 +13,7 @@ export default function HeroSection() {
   )
 
   return (
-    <section className="relative h-screen w-full overflow-hidden flex items-center justify-center">
+    <section className="relative min-h-[100dvh] w-full overflow-x-hidden flex items-center justify-center">
       {/* Video background */}
       <video
         ref={videoRef}
@@ -46,11 +46,11 @@ export default function HeroSection() {
       </nav>
 
       {/* Content */}
-      <div className="relative z-10 text-center max-w-5xl mx-auto" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
+      <div className="relative z-10 text-center max-w-5xl mx-auto pt-28 pb-20" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
         <h1
           className="font-black tracking-tight"
           style={{
-            fontSize: 'clamp(48px, 10vw, 140px)',
+            fontSize: 'clamp(40px, 8vw, 120px)',
             lineHeight: 1.0,
             letterSpacing: '-0.03em',
           }}
@@ -63,12 +63,11 @@ export default function HeroSection() {
         </h1>
 
         <p
-          className="mt-16 mx-auto opacity-80"
+          className="mt-8 mx-auto opacity-80"
           style={{
-            fontSize: 'clamp(18px, 2.5vw, 32px)',
+            fontSize: 'clamp(16px, 2vw, 28px)',
             lineHeight: 1.5,
             textAlign: 'center',
-            paddingTop: '30px',
           }}
         >
           {t('hero.subtitle').split('\n').map((line, i) => (
@@ -77,7 +76,7 @@ export default function HeroSection() {
         </p>
 
         {/* CTA Buttons */}
-        <div className="mt-12 flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Link
             to={localePath('/apps/ollama')}
             className="group flex items-center gap-3 bg-green-600 hover:bg-green-700 px-8 py-4 rounded-xl text-lg font-semibold transition-all hover:scale-105 cta-glow"
@@ -96,7 +95,7 @@ export default function HeroSection() {
           </Link>
         </div>
 
-        <div className="mt-10 text-sm text-gray-300">
+        <div className="mt-8 text-sm text-gray-300">
           <p className="mb-4 text-xs uppercase tracking-widest opacity-60">{t('hero.funnel')}</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-stretch max-w-3xl mx-auto">
             <Link
