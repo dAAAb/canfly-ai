@@ -16,11 +16,49 @@ function isExternal(url: string) {
 function NotifyForm({ productName, t }: { productName: string; t: (key: string, opts?: Record<string, string>) => string }) {
   const [email, setEmail] = useState('')
   const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Connect to email service (e.g. Mailchimp, Resend)
-    setSubmitted(true)
+    if (!email || loading) return
+    setLoading(true)
+
+    try {
+      const res = await fetch('https://buttondown.com/api/emails/embed-subscribe/canfly', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ email, tag: productName }),
+      })
+      if (res.ok || res.status === 201) {
+        setSubmitted(true)
+        setEmail('')
+      } else {
+        throw new Error('fetch failed')
+      }
+    } catch {
+      // Fallback: submit via form action
+      const form = document.createElement('form')
+      form.method = 'POST'
+      form.action = 'https://buttondown.com/api/emails/embed-subscribe/canfly'
+      form.target = '_blank'
+      const input = document.createElement('input')
+      input.type = 'hidden'
+      input.name = 'email'
+      input.value = email
+      form.appendChild(input)
+      const tagInput = document.createElement('input')
+      tagInput.type = 'hidden'
+      tagInput.name = 'tag'
+      tagInput.value = productName
+      form.appendChild(tagInput)
+      document.body.appendChild(form)
+      form.submit()
+      document.body.removeChild(form)
+      setSubmitted(true)
+      setEmail('')
+    } finally {
+      setLoading(false)
+    }
   }
 
   if (submitted) {
@@ -44,7 +82,8 @@ function NotifyForm({ productName, t }: { productName: string; t: (key: string, 
       />
       <button
         type="submit"
-        className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors whitespace-nowrap"
+        disabled={loading}
+        className="px-6 py-3 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white rounded-lg font-medium transition-colors whitespace-nowrap"
       >
         {t('product.notifyButton')}
       </button>

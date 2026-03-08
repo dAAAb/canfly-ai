@@ -77,6 +77,32 @@
     "success": "You're on the list! Check your inbox to confirm.",
     "privacy": "We respect your privacy. Unsubscribe anytime."
   },
+  "subscribeConfirmed": {
+    "meta": {
+      "title": "Subscription Confirmed — Canfly",
+      "description": "You're officially on the Canfly newsletter. Welcome aboard!"
+    },
+    "heading": "You're in! Welcome aboard.",
+    "desc": "Your subscription is confirmed. We'll send you AI tutorials, tool reviews, and launch updates — no spam, ever.",
+    "nextStepsHeading": "What to do next",
+    "nextSteps": {
+      "tutorial": {
+        "title": "Run your first AI",
+        "desc": "Set up a local AI on your computer in 5 minutes — completely free.",
+        "cta": "Start tutorial"
+      },
+      "apps": {
+        "title": "Browse AI tools",
+        "desc": "Explore curated AI apps with one-click setup and guided tutorials.",
+        "cta": "View apps"
+      },
+      "community": {
+        "title": "Join the community",
+        "desc": "Connect with other AI Agent creators and share your setup.",
+        "cta": "Explore"
+      }
+    }
+  },
   "cta": {
     "headingLine1": "Ready?",
     "headingHighlight": "Start flying today.",

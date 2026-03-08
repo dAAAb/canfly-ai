@@ -16,6 +16,7 @@ const PricingPage = lazy(() => import('./pages/PricingPage'))
 const CommunityPage = lazy(() => import('./pages/CommunityPage'))
 const BlogListPage = lazy(() => import('./pages/BlogListPage'))
 const BlogPostPage = lazy(() => import('./pages/BlogPostPage'))
+const SubscribeConfirmedPage = lazy(() => import('./pages/SubscribeConfirmedPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 /** Wrapper that syncs i18next language from URL :lang param.
@@ -70,6 +71,7 @@ function App() {
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/pricing" element={<PricingPage />} />
               <Route path="/community" element={<CommunityPage />} />
+              <Route path="/subscribe/confirmed" element={<SubscribeConfirmedPage />} />
               <Route path="/blog" element={<BlogListPage />} />
               <Route path="/blog/:slug" element={<BlogPostPage />} />
 
@@ -83,6 +85,7 @@ function App() {
               <Route path="/:lang/checkout" element={<LangSync><CheckoutPage /></LangSync>} />
               <Route path="/:lang/pricing" element={<LangSync><PricingPage /></LangSync>} />
               <Route path="/:lang/community" element={<LangSync><CommunityPage /></LangSync>} />
+              <Route path="/:lang/subscribe/confirmed" element={<LangSync><SubscribeConfirmedPage /></LangSync>} />
               <Route path="/:lang/blog" element={<LangSync><BlogListPage /></LangSync>} />
               <Route path="/:lang/blog/:slug" element={<LangSync><BlogPostPage /></LangSync>} />
 

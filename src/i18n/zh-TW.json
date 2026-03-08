@@ -77,6 +77,32 @@
     "success": "訂閱成功！請到信箱確認。",
     "privacy": "我們尊重你的隱私，隨時可退訂。"
   },
+  "subscribeConfirmed": {
+    "meta": {
+      "title": "訂閱確認 — Canfly",
+      "description": "你已成功訂閱 Canfly 電子報，歡迎加入！"
+    },
+    "heading": "訂閱成功！歡迎加入。",
+    "desc": "你的訂閱已確認。我們會寄給你 AI 教學、工具評測和最新動態——絕不寄垃圾信。",
+    "nextStepsHeading": "接下來做什麼",
+    "nextSteps": {
+      "tutorial": {
+        "title": "跑你的第一隻 AI",
+        "desc": "5 分鐘在你的電腦上設好本地 AI——完全免費。",
+        "cta": "開始教學"
+      },
+      "apps": {
+        "title": "瀏覽 AI 工具",
+        "desc": "探索精選 AI 應用，一鍵安裝、附帶教學指南。",
+        "cta": "查看應用"
+      },
+      "community": {
+        "title": "加入社群",
+        "desc": "和其他 AI Agent 創作者交流，分享你的設定。",
+        "cta": "探索"
+      }
+    }
+  },
   "cta": {
     "headingLine1": "準備好了嗎？",
     "headingHighlight": "今天就起飛。",
