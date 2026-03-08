@@ -1,6 +1,7 @@
+import { useState } from 'react'
 import { useVideoBackground } from '../hooks/useVideoBackground'
 import { Link } from 'react-router-dom'
-import { ArrowRight, PlayCircle } from 'lucide-react'
+import { ArrowRight, PlayCircle, Menu, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useLanguage } from '../hooks/useLanguage'
 import LanguageSwitcher from '../components/LanguageSwitcher'
@@ -8,6 +9,7 @@ import LanguageSwitcher from '../components/LanguageSwitcher'
 export default function HeroSection() {
   const { t } = useTranslation()
   const { localePath } = useLanguage()
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const videoRef = useVideoBackground(
     'https://stream.mux.com/JNJEOYI6B3EffB9f5ZhpGbuxzc6gSyJcXaCBbCgZKRg.m3u8'
   )
@@ -26,12 +28,13 @@ export default function HeroSection() {
       <div className="absolute inset-0 bg-black/50" />
 
       {/* Nav */}
-      <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between py-10" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
+      <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between py-6 sm:py-10" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
         <Link to={localePath('/')} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <span className="text-xl">🦞</span>
           <span className="font-bold text-xl tracking-tight">Canfly</span>
         </Link>
-        <div className="flex items-center gap-6">
+        {/* Desktop nav */}
+        <div className="hidden sm:flex items-center gap-6">
           <Link to={localePath('/apps')} className="text-sm text-gray-300 hover:text-white transition-colors">
             {t('nav.browseApps')}
           </Link>
@@ -43,7 +46,31 @@ export default function HeroSection() {
             {t('nav.startFree')}
           </Link>
         </div>
+        {/* Mobile hamburger */}
+        <button
+          onClick={() => setMobileNavOpen(!mobileNavOpen)}
+          className="sm:hidden p-2 text-gray-300 hover:text-white transition-colors"
+          aria-label="Toggle menu"
+        >
+          {mobileNavOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
       </nav>
+      {/* Mobile dropdown */}
+      {mobileNavOpen && (
+        <div className="absolute top-16 left-0 right-0 z-20 bg-black/90 backdrop-blur-md border-b border-gray-800 px-[8%] py-4 sm:hidden space-y-3">
+          <Link to={localePath('/apps')} onClick={() => setMobileNavOpen(false)} className="block text-sm text-gray-300 hover:text-white transition-colors">
+            {t('nav.browseApps')}
+          </Link>
+          <LanguageSwitcher />
+          <Link
+            to={localePath('/apps/ollama')}
+            onClick={() => setMobileNavOpen(false)}
+            className="inline-block text-sm bg-green-600/20 border border-green-600 px-3 py-1 rounded-full hover:bg-green-600/30 transition-colors"
+          >
+            {t('nav.startFree')}
+          </Link>
+        </div>
+      )}
 
       {/* Content */}
       <div className="relative z-10 text-center max-w-5xl mx-auto pt-28 pb-20" style={{ paddingLeft: '8%', paddingRight: '8%' }}>

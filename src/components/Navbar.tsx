@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useLanguage } from '../hooks/useLanguage'
 import LanguageSwitcher from './LanguageSwitcher'
+import { Menu, X } from 'lucide-react'
 
 interface NavbarProps {
   /** Show search box */
@@ -17,6 +19,7 @@ interface NavbarProps {
 export default function Navbar({ search, children }: NavbarProps) {
   const { t } = useTranslation()
   const { localePath } = useLanguage()
+  const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
     <div className="border-b border-gray-800 bg-black/80 backdrop-blur-md sticky top-0 z-50">
@@ -27,10 +30,10 @@ export default function Navbar({ search, children }: NavbarProps) {
           <span className="font-bold text-lg tracking-tight text-white">Canfly</span>
         </Link>
 
-        {/* Right side */}
-        <div className="flex items-center gap-4">
+        {/* Desktop right side */}
+        <div className="hidden sm:flex items-center gap-4">
           {search && (
-            <div className="relative hidden sm:block">
+            <div className="relative">
               <svg
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-4 h-4"
                 fill="none"
@@ -60,7 +63,57 @@ export default function Navbar({ search, children }: NavbarProps) {
             {t('nav.startFree')}
           </Link>
         </div>
+
+        {/* Mobile hamburger */}
+        <button
+          onClick={() => setMobileOpen(!mobileOpen)}
+          className="sm:hidden p-2 text-gray-400 hover:text-white transition-colors"
+          aria-label="Toggle menu"
+        >
+          {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
       </div>
+
+      {/* Mobile menu */}
+      {mobileOpen && (
+        <div className="sm:hidden border-t border-gray-800 bg-black/95 backdrop-blur-md px-6 py-4 space-y-4">
+          {search && (
+            <div className="relative">
+              <svg
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                type="text"
+                placeholder={search.placeholder || t('apps.searchPlaceholder')}
+                value={search.value}
+                onChange={(e) => search.onChange(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none text-sm"
+              />
+            </div>
+          )}
+          {children}
+          <Link
+            to={localePath('/apps')}
+            onClick={() => setMobileOpen(false)}
+            className="block text-sm text-gray-400 hover:text-white transition-colors"
+          >
+            {t('nav.browseApps')}
+          </Link>
+          <LanguageSwitcher />
+          <Link
+            to={localePath('/apps/ollama')}
+            onClick={() => setMobileOpen(false)}
+            className="inline-block text-sm bg-green-600/20 border border-green-600 px-3 py-1.5 rounded-full hover:bg-green-600/30 transition-all text-green-400"
+          >
+            {t('nav.startFree')}
+          </Link>
+        </div>
+      )}
     </div>
   )
 }

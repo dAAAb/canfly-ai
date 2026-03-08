@@ -62,7 +62,7 @@ export default function VisionSection() {
         </div>
 
         {/* Stats row */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-12" style={{ marginTop: 'clamp(64px, 7vw, 112px)', textAlign: 'center' }}>
+        <div className="grid grid-cols-3 gap-6 md:gap-12" style={{ marginTop: 'clamp(64px, 7vw, 112px)', textAlign: 'center' }}>
           <div className="stagger-child stagger-3">
             <span
               className="font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent block"

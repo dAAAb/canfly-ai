@@ -5,7 +5,7 @@ export default function Footer() {
 
   return (
     <footer className="border-t border-white/5" style={{ padding: '3rem 8%' }}>
-      <div style={{ maxWidth: '1024px', marginLeft: 'auto', marginRight: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-1" style={{ maxWidth: '1024px', marginLeft: 'auto', marginRight: 'auto' }}>
         <span style={{ fontSize: '14px', opacity: 0.4 }}>
           {t('footer.copyright')}
         </span>

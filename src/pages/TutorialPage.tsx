@@ -1096,7 +1096,7 @@ function CopyBlock({ text, label }: { text: string; label?: string }) {
       <div className="bg-gray-900 rounded-lg p-4 relative group">
         <button
           onClick={copy}
-          className="absolute top-3 right-3 p-2 text-gray-500 hover:text-white transition-colors opacity-0 group-hover:opacity-100"
+          className="absolute top-3 right-3 p-2 text-gray-500 hover:text-white transition-colors sm:opacity-0 sm:group-hover:opacity-100"
           title={t('tutorial.copyCommand')}
         >
           {copied ? <CheckCircle className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
@@ -1443,7 +1443,7 @@ export default function TutorialPage() {
                 </div>
 
                 {/* Content */}
-                <div className="ml-14">
+                <div className="ml-0 sm:ml-14">
                   <p className="text-gray-300 mb-4 leading-relaxed">{step.content}</p>
 
                   {step.screenshots && step.screenshots.length > 0 && (

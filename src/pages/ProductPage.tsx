@@ -126,12 +126,12 @@ export default function ProductPage() {
 
             {/* Screenshot thumbnails */}
             {product.screenshots.length > 0 && (
-              <div className="flex gap-2">
+              <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'thin' }}>
                 {product.screenshots.map((_screenshot, index) => (
                   <button
                     key={index}
                     onClick={() => setActiveScreenshot(index)}
-                    className={`aspect-video w-20 rounded border-2 transition-all overflow-hidden relative hover:border-blue-400 ${
+                    className={`aspect-video w-20 shrink-0 rounded border-2 transition-all overflow-hidden relative hover:border-blue-400 ${
                       activeScreenshot === index ? 'border-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.3)]' : 'border-gray-700'
                     }`}
                   >
