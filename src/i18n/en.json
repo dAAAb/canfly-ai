@@ -2407,6 +2407,225 @@
           "a": "Start with a primary agent (like Ollama), then add specialized agents for tasks like web search, code generation, or data analysis. Use an orchestration framework to manage communication between them."
         }
       ]
+    },
+    "hardware": {
+      "title": "How to Choose AI Hardware — Complete Buying Guide",
+      "subtitle": "Find the right hardware for running local AI models. From budget-friendly Raspberry Pi to powerful mini PCs — we compare specs, price, and use cases.",
+      "duration": "10 min read",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "Understand Your AI Hardware Needs",
+          "titleEn": "Understand Your AI Hardware Needs",
+          "estimatedTime": "2 min",
+          "content": "Before buying hardware, figure out what you want to run. Small models (1-3B parameters) work on almost anything. Medium models (7-13B) need 16GB+ RAM. Large models (30B+) need 32GB+ RAM and a beefy CPU or GPU. Your use case determines your budget.",
+          "tips": [
+            "Running Ollama with Llama 3.2 (3B)? Even a Raspberry Pi 5 can handle it",
+            "Want to run Llama 3.1 (8B) smoothly? Get at least 16GB RAM",
+            "Planning an always-on AI server? Prioritize power efficiency and passive cooling",
+            "Budget under $100? Start with Raspberry Pi 5. Budget $400-500? Go with a mini PC"
+          ],
+          "troubleshooting": {
+            "title": "Common Questions",
+            "items": [
+              {
+                "q": "Do I need a GPU for local AI?",
+                "a": "Not necessarily. Ollama runs models on CPU just fine. A GPU speeds up inference but is not required. Integrated GPUs (like AMD Radeon 780M) help a lot."
+              },
+              {
+                "q": "Can I use my existing Mac or PC?",
+                "a": "Absolutely! You can run Ollama on any Mac (M1+), Windows, or Linux machine. Dedicated hardware is only needed if you want an always-on AI server."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Compare Hardware Options",
+          "titleEn": "Compare Hardware Options",
+          "estimatedTime": "3 min",
+          "content": "We've tested the best hardware for running local AI. Here's our recommendation at every price point:\n\n**Under $100 — Raspberry Pi 5 (8GB) — $80**\nPerfect for learning and lightweight models. Runs Llama 3.2 (3B) and small inference tasks. Ultra low power consumption (~15W).\n\n**$400-450 — Beelink SER5 MAX — $439**\nBest value mini PC for AI. AMD Ryzen 7 5800H, 24GB RAM, 1TB SSD. Runs 7B models smoothly. Great first dedicated AI machine.\n\n**$500+ — GEEKOM A8 Mini PC — $529+**\nOur top pick. AMD Ryzen 7 8745HS, 32GB DDR5, Radeon 780M GPU. Handles 13B models and runs multiple agents simultaneously. Upgradeable to 64GB RAM.\n\n**Essential Accessories:**\n- HDMI Dummy Plug ($8-16) — Required for headless server setups\n- Elgato Stream Deck ($150) — Optional but amazing for AI workflow shortcuts\n- Fifine AM8 Microphone ($50) — Great for voice-to-AI input",
+          "tips": [
+            "The GEEKOM A8 is our #1 recommendation for most users — best balance of power, price, and size",
+            "Beelink SER5 MAX is the best value if you're on a tighter budget",
+            "Raspberry Pi 5 is unbeatable for learning — pair it with Ollama for a sub-$100 AI setup",
+            "Always get an HDMI dummy plug if running headless (no monitor)"
+          ],
+          "troubleshooting": {
+            "title": "Choosing the Right Option",
+            "items": [
+              {
+                "q": "Which one should I get if I'm just starting?",
+                "a": "If budget allows, get the Beelink SER5 MAX ($439). It's the sweet spot of price and performance. If you're on a tight budget, the Raspberry Pi 5 ($80) is a great learning tool."
+              },
+              {
+                "q": "Can I upgrade RAM later?",
+                "a": "GEEKOM A8 supports up to 64GB DDR5. Beelink SER5 MAX RAM is usually soldered. Raspberry Pi 5 has fixed 8GB. Buy the right amount upfront if upgradeability matters."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Set Up Your AI Server",
+          "titleEn": "Set Up Your AI Server",
+          "estimatedTime": "3 min",
+          "content": "Once you have your hardware, setting up Ollama takes just a few commands. Here's the universal setup that works on any of our recommended machines.",
+          "commands": [
+            "# Step 1: Install Ollama (works on Linux, macOS, Windows)",
+            "curl -fsSL https://ollama.com/install.sh | sh",
+            "",
+            "# Step 2: Pull a model (start with Llama 3.2 for testing)",
+            "ollama pull llama3.2",
+            "",
+            "# Step 3: Test it",
+            "ollama run llama3.2 \"Hello! What hardware am I running on?\"",
+            "",
+            "# Step 4: For headless servers, enable network access",
+            "# Edit /etc/systemd/system/ollama.service (Linux)",
+            "# Add: Environment=\"OLLAMA_HOST=0.0.0.0\"",
+            "sudo systemctl restart ollama",
+            "",
+            "# Step 5: Verify remote access",
+            "curl http://YOUR_SERVER_IP:11434/api/tags"
+          ],
+          "expectedResult": "Ollama is running on your dedicated hardware and accessible from other devices on your network.",
+          "tips": [
+            "On Raspberry Pi 5, use the 64-bit Raspberry Pi OS for best Ollama compatibility",
+            "On mini PCs (GEEKOM/Beelink), Ubuntu 24.04 LTS is our recommended OS",
+            "Set OLLAMA_HOST=0.0.0.0 to access your AI from any device on your network",
+            "Use an HDMI dummy plug for headless setups to avoid display issues"
+          ],
+          "troubleshooting": {
+            "title": "Setup Troubleshooting",
+            "items": [
+              {
+                "q": "Ollama won't start on Raspberry Pi",
+                "a": "Make sure you're using 64-bit Raspberry Pi OS. Run 'uname -m' — it should show 'aarch64'. If it shows 'armv7l', you need to reinstall with the 64-bit image."
+              },
+              {
+                "q": "Can't access Ollama from other devices",
+                "a": "By default Ollama only listens on localhost. Set OLLAMA_HOST=0.0.0.0 and restart the service. Also check your firewall allows port 11434."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Optimize Performance",
+          "titleEn": "Optimize Performance",
+          "estimatedTime": "2 min",
+          "content": "Get the most out of your hardware with these optimization tips. The right configuration can double your inference speed.",
+          "commands": [
+            "# Check which models fit your RAM",
+            "# Rule of thumb: model needs ~1.2x its file size in RAM",
+            "ollama list",
+            "",
+            "# For GEEKOM A8 / Beelink (32GB/24GB RAM):",
+            "ollama pull llama3.1:8b          # Fast general purpose",
+            "ollama pull codellama:13b         # Code generation",
+            "ollama pull llama3.1:8b-instruct  # Best for chat/agents",
+            "",
+            "# For Raspberry Pi 5 (8GB RAM):",
+            "ollama pull llama3.2:3b           # Best for 8GB",
+            "ollama pull phi3:mini             # Microsoft's small model",
+            "ollama pull tinyllama             # Ultra lightweight",
+            "",
+            "# Monitor system resources while running",
+            "htop  # or top on macOS"
+          ],
+          "expectedResult": "You're running the right models for your hardware with optimal performance.",
+          "tips": [
+            "GEEKOM A8 (32GB): Comfortably runs 13B models, can handle 30B with quantization",
+            "Beelink SER5 MAX (24GB): Sweet spot is 7-8B models, fast inference",
+            "Raspberry Pi 5 (8GB): Stick to 3B models for usable speed",
+            "Use quantized models (Q4_K_M) for better speed with minimal quality loss"
+          ],
+          "troubleshooting": {
+            "title": "Performance Issues",
+            "items": [
+              {
+                "q": "Model is running very slowly",
+                "a": "You're probably running a model that's too large for your RAM. Check with 'ollama list' and switch to a smaller model. On Raspberry Pi, use 3B models max."
+              },
+              {
+                "q": "System runs out of memory",
+                "a": "Close other applications, or use a smaller model. Ollama needs roughly 1.2x the model file size in available RAM."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Next Steps — Build Your AI Lab",
+          "titleEn": "Next Steps — Build Your AI Lab",
+          "estimatedTime": "1 min",
+          "content": "You've got the hardware and Ollama running. Now take your setup to the next level with cloud deployment, voice AI, and video generation.",
+          "nextStepCards": [
+            {
+              "emoji": "🖥",
+              "title": "GEEKOM A8 Mini PC",
+              "desc": "Our #1 pick — AMD Ryzen 7, 32GB DDR5, Radeon 780M. The ultimate local AI workstation.",
+              "link": "https://www.amazon.com/dp/B0D22PDDFN?tag=juchunko-20",
+              "cta": "Buy on Amazon — $529+",
+              "external": true
+            },
+            {
+              "emoji": "💰",
+              "title": "Beelink SER5 MAX",
+              "desc": "Best value — AMD Ryzen 7, 24GB RAM, 1TB SSD for just $439.",
+              "link": "https://www.amazon.com/dp/B0C2X5ZJ5S?tag=juchunko-20",
+              "cta": "Buy on Amazon — $439",
+              "external": true
+            },
+            {
+              "emoji": "🍓",
+              "title": "Raspberry Pi 5",
+              "desc": "Start for under $100 — perfect for learning and lightweight AI models.",
+              "link": "https://www.amazon.com/dp/B0CL3B4R4H?tag=juchunko-20",
+              "cta": "Buy on Amazon — $80",
+              "external": true
+            },
+            {
+              "emoji": "☁️",
+              "title": "Deploy to Cloud",
+              "desc": "Ready to share your AI? Deploy to Zeabur with one click. Use code 'OpenClaw' for 10% off.",
+              "link": "/learn/zeabur",
+              "cta": "Cloud Tutorial"
+            },
+            {
+              "emoji": "🎤",
+              "title": "Add Voice AI",
+              "desc": "Give your AI a voice with ElevenLabs. Natural speech synthesis from just $5/month.",
+              "link": "/learn/elevenlabs-integration",
+              "cta": "Voice Tutorial"
+            }
+          ],
+          "tips": [
+            "Start with Ollama locally, then deploy to Zeabur when you're ready to share",
+            "Pair your hardware with ElevenLabs for voice-enabled AI agents",
+            "Join the CanFly community to share your setup and get tips from other builders"
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "What's the minimum hardware for running Ollama?",
+          "a": "Any machine with 8GB RAM and a 64-bit processor can run Ollama with small models (3B parameters). For comfortable use with 7B+ models, we recommend at least 16GB RAM."
+        },
+        {
+          "q": "Do I need a dedicated GPU?",
+          "a": "No. Ollama runs on CPU and is well-optimized. Integrated GPUs like AMD Radeon 780M (in the GEEKOM A8) accelerate inference but aren't required. Dedicated GPUs (NVIDIA) are only needed for training or very large models."
+        },
+        {
+          "q": "Mac Mini vs dedicated mini PC?",
+          "a": "Mac Mini with M-series chips is excellent for AI but costs $599+. For a dedicated AI server, the GEEKOM A8 ($529) or Beelink SER5 MAX ($439) offer better value with more RAM and Linux compatibility."
+        },
+        {
+          "q": "How much electricity does an always-on AI server use?",
+          "a": "Raspberry Pi 5: ~5-15W (pennies per month). Mini PCs (GEEKOM/Beelink): ~15-45W at idle (~$3-8/month). Much cheaper than cloud GPU instances."
+        },
+        {
+          "q": "What's an HDMI dummy plug and do I need one?",
+          "a": "An HDMI dummy plug tricks your computer into thinking a monitor is connected. You need one if running your AI server headless (no monitor) to enable GPU acceleration and remote desktop. They cost $8-16 on Amazon."
+        }
+      ]
     }
   },
   "hardwareCompare": {

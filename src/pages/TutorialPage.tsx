@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom'
-import { Clock, CheckCircle, Copy, ExternalLink, ChevronDown, ChevronRight, Terminal, Download, Monitor, MessageSquare, Rocket, HelpCircle, Cpu, Sparkles, Search, Globe, Key, Shield, Users } from 'lucide-react'
+import { Clock, CheckCircle, Copy, ExternalLink, ChevronDown, ChevronRight, Terminal, Download, Monitor, MessageSquare, Rocket, HelpCircle, Cpu, Sparkles, Search, Globe, Key, Shield, Users, HardDrive, Zap } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import Navbar from '../components/Navbar'
@@ -815,6 +815,83 @@ function createMultiAgentTutorial(t: any): TutorialData {
   }
 }
 
+function createHardwareTutorial(t: any): TutorialData {
+  return {
+    id: 'hardware',
+    title: t('tutorial.hardware.title'),
+    subtitle: t('tutorial.hardware.subtitle'),
+    duration: t('tutorial.hardware.duration'),
+    difficulty: t('tutorial.hardware.difficulty'),
+    faq: t('tutorial.hardware.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Cpu,
+        title: t('tutorial.hardware.steps.0.title'),
+        titleEn: t('tutorial.hardware.steps.0.titleEn'),
+        estimatedTime: t('tutorial.hardware.steps.0.estimatedTime'),
+        content: t('tutorial.hardware.steps.0.content'),
+        tips: t('tutorial.hardware.steps.0.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.hardware.steps.0.troubleshooting.title'),
+          items: t('tutorial.hardware.steps.0.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: HardDrive,
+        title: t('tutorial.hardware.steps.1.title'),
+        titleEn: t('tutorial.hardware.steps.1.titleEn'),
+        estimatedTime: t('tutorial.hardware.steps.1.estimatedTime'),
+        content: t('tutorial.hardware.steps.1.content'),
+        tips: t('tutorial.hardware.steps.1.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.hardware.steps.1.troubleshooting.title'),
+          items: t('tutorial.hardware.steps.1.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Monitor,
+        title: t('tutorial.hardware.steps.2.title'),
+        titleEn: t('tutorial.hardware.steps.2.titleEn'),
+        estimatedTime: t('tutorial.hardware.steps.2.estimatedTime'),
+        content: t('tutorial.hardware.steps.2.content'),
+        commands: t('tutorial.hardware.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.hardware.steps.2.expectedResult'),
+        tips: t('tutorial.hardware.steps.2.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.hardware.steps.2.troubleshooting.title'),
+          items: t('tutorial.hardware.steps.2.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Zap,
+        title: t('tutorial.hardware.steps.3.title'),
+        titleEn: t('tutorial.hardware.steps.3.titleEn'),
+        estimatedTime: t('tutorial.hardware.steps.3.estimatedTime'),
+        content: t('tutorial.hardware.steps.3.content'),
+        commands: t('tutorial.hardware.steps.3.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.hardware.steps.3.expectedResult'),
+        tips: t('tutorial.hardware.steps.3.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.hardware.steps.3.troubleshooting.title'),
+          items: t('tutorial.hardware.steps.3.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.hardware.steps.4.title'),
+        titleEn: t('tutorial.hardware.steps.4.titleEn'),
+        estimatedTime: t('tutorial.hardware.steps.4.estimatedTime'),
+        content: t('tutorial.hardware.steps.4.content'),
+        nextStepCards: (t('tutorial.hardware.steps.4.nextStepCards', { returnObjects: true }) || []).map((card: NextStepCard) => ({
+          ...card,
+          link: card.link || '#',
+        })),
+        tips: t('tutorial.hardware.steps.4.tips', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
 function getTutorials(t: any): Record<string, TutorialData> {
   return {
     ollama: createOllamaTutorial(t),
@@ -826,6 +903,7 @@ function getTutorials(t: any): Record<string, TutorialData> {
     'brave-search': createBraveSearchTutorial(t),
     'api-keys': createApiKeysTutorial(t),
     'multi-agent': createMultiAgentTutorial(t),
+    hardware: createHardwareTutorial(t),
   }
 }
 

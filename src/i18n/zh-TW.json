@@ -2407,6 +2407,225 @@
           "a": "從一個主要代理（例如 Ollama）開始，然後加入專門負責網頁搜尋、程式碼生成或資料分析的代理。使用協作框架來管理代理之間的溝通。"
         }
       ]
+    },
+    "hardware": {
+      "title": "如何選擇 AI 硬體 — 完整導購指南",
+      "subtitle": "找到最適合執行本地 AI 模型的硬體。從平價的 Raspberry Pi 到強大的迷你電腦 — 我們比較規格、價格和使用場景。",
+      "duration": "10 分鐘閱讀",
+      "difficulty": "初學者",
+      "steps": [
+        {
+          "title": "了解你的 AI 硬體需求",
+          "titleEn": "Understand Your AI Hardware Needs",
+          "estimatedTime": "2 分鐘",
+          "content": "購買硬體前，先搞清楚你想跑什麼。小模型（1-3B 參數）幾乎任何設備都能跑。中型模型（7-13B）需要 16GB+ 記憶體。大模型（30B+）需要 32GB+ 記憶體和強大的 CPU 或 GPU。你的使用需求決定預算。",
+          "tips": [
+            "用 Ollama 跑 Llama 3.2 (3B)？連 Raspberry Pi 5 都能搞定",
+            "想流暢跑 Llama 3.1 (8B)？至少需要 16GB 記憶體",
+            "打算建一台 24 小時運作的 AI 伺服器？優先考慮省電和被動散熱",
+            "預算 $100 以下？選 Raspberry Pi 5。預算 $400-500？選迷你電腦"
+          ],
+          "troubleshooting": {
+            "title": "常見問題",
+            "items": [
+              {
+                "q": "本地 AI 需要 GPU 嗎？",
+                "a": "不一定。Ollama 用 CPU 就能跑模型。GPU 能加速推理但非必須。內建 GPU（如 AMD Radeon 780M）有很大幫助。"
+              },
+              {
+                "q": "可以用現有的 Mac 或 PC 嗎？",
+                "a": "當然可以！任何 Mac（M1+）、Windows 或 Linux 電腦都能跑 Ollama。專用硬體只在你需要 24 小時運作的 AI 伺服器時才必要。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "比較硬體選項",
+          "titleEn": "Compare Hardware Options",
+          "estimatedTime": "3 分鐘",
+          "content": "我們測試了最適合跑本地 AI 的硬體。以下是各價位的推薦：\n\n**$100 以下 — Raspberry Pi 5 (8GB) — $80**\n最適合學習和輕量級模型。可跑 Llama 3.2 (3B) 和小型推理任務。超低功耗（約 15W）。\n\n**$400-450 — Beelink SER5 MAX — $439**\nCP 值最高的 AI 迷你電腦。AMD Ryzen 7 5800H、24GB RAM、1TB SSD。流暢跑 7B 模型。極佳的第一台專用 AI 機器。\n\n**$500+ — GEEKOM A8 迷你電腦 — $529+**\n我們的首選推薦。AMD Ryzen 7 8745HS、32GB DDR5、Radeon 780M GPU。能跑 13B 模型，同時運行多個代理。可升級至 64GB RAM。\n\n**必備配件：**\n- HDMI 假負載（$8-16）— 無螢幕伺服器必備\n- Elgato Stream Deck（$150）— AI 工作流程快捷鍵控制台\n- Fifine AM8 麥克風（$50）— 適合語音 AI 輸入",
+          "tips": [
+            "GEEKOM A8 是我們對大多數使用者的 #1 推薦 — 效能、價格、體積的最佳平衡",
+            "Beelink SER5 MAX 預算較緊時 CP 值最高",
+            "Raspberry Pi 5 學習用無可匹敵 — 搭配 Ollama 不到 $100 就能開始",
+            "無螢幕運行時一定要買 HDMI 假負載"
+          ],
+          "troubleshooting": {
+            "title": "選擇指南",
+            "items": [
+              {
+                "q": "剛入門應該買哪台？",
+                "a": "預算允許的話，選 Beelink SER5 MAX（$439）。它是價格和效能的甜蜜點。預算有限就選 Raspberry Pi 5（$80），是很好的學習工具。"
+              },
+              {
+                "q": "之後可以升級記憶體嗎？",
+                "a": "GEEKOM A8 最高可升級到 64GB DDR5。Beelink SER5 MAX 記憶體通常焊死。Raspberry Pi 5 固定 8GB。如果可升級性很重要，一開始就買夠。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "設定你的 AI 伺服器",
+          "titleEn": "Set Up Your AI Server",
+          "estimatedTime": "3 分鐘",
+          "content": "有了硬體後，安裝 Ollama 只需幾個指令。以下是適用於所有推薦硬體的通用設定步驟。",
+          "commands": [
+            "# 步驟 1：安裝 Ollama（適用 Linux、macOS、Windows）",
+            "curl -fsSL https://ollama.com/install.sh | sh",
+            "",
+            "# 步驟 2：下載模型（先用 Llama 3.2 測試）",
+            "ollama pull llama3.2",
+            "",
+            "# 步驟 3：測試一下",
+            "ollama run llama3.2 \"你好！我在什麼硬體上運行？\"",
+            "",
+            "# 步驟 4：無螢幕伺服器啟用網路存取",
+            "# 編輯 /etc/systemd/system/ollama.service（Linux）",
+            "# 加入：Environment=\"OLLAMA_HOST=0.0.0.0\"",
+            "sudo systemctl restart ollama",
+            "",
+            "# 步驟 5：驗證遠端存取",
+            "curl http://你的伺服器IP:11434/api/tags"
+          ],
+          "expectedResult": "Ollama 已在你的專用硬體上運行，可從網路上的其他設備存取。",
+          "tips": [
+            "在 Raspberry Pi 5 上，使用 64 位元 Raspberry Pi OS 以獲得最佳 Ollama 相容性",
+            "迷你電腦（GEEKOM/Beelink）建議使用 Ubuntu 24.04 LTS",
+            "設定 OLLAMA_HOST=0.0.0.0 讓網路上的任何設備都能存取你的 AI",
+            "無螢幕設定時使用 HDMI 假負載避免顯示問題"
+          ],
+          "troubleshooting": {
+            "title": "設定疑難排解",
+            "items": [
+              {
+                "q": "Ollama 在 Raspberry Pi 上啟動失敗",
+                "a": "確認你使用的是 64 位元 Raspberry Pi OS。執行 'uname -m' — 應該顯示 'aarch64'。如果顯示 'armv7l'，需要重新安裝 64 位元映像。"
+              },
+              {
+                "q": "無法從其他設備存取 Ollama",
+                "a": "Ollama 預設只監聽 localhost。設定 OLLAMA_HOST=0.0.0.0 並重啟服務。同時檢查防火牆是否允許 11434 埠。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "效能優化",
+          "titleEn": "Optimize Performance",
+          "estimatedTime": "2 分鐘",
+          "content": "透過這些優化技巧，讓你的硬體發揮最大效能。正確的設定可以讓推理速度翻倍。",
+          "commands": [
+            "# 檢查哪些模型適合你的記憶體",
+            "# 經驗法則：模型需要約 1.2 倍檔案大小的記憶體",
+            "ollama list",
+            "",
+            "# GEEKOM A8 / Beelink（32GB/24GB RAM）：",
+            "ollama pull llama3.1:8b          # 快速通用",
+            "ollama pull codellama:13b         # 程式碼生成",
+            "ollama pull llama3.1:8b-instruct  # 最適合對話/代理",
+            "",
+            "# Raspberry Pi 5（8GB RAM）：",
+            "ollama pull llama3.2:3b           # 8GB 最佳選擇",
+            "ollama pull phi3:mini             # 微軟的小模型",
+            "ollama pull tinyllama             # 超輕量",
+            "",
+            "# 運行時監控系統資源",
+            "htop  # 或 macOS 上用 top"
+          ],
+          "expectedResult": "你正在為硬體選用最適合的模型，獲得最佳效能。",
+          "tips": [
+            "GEEKOM A8（32GB）：可舒適跑 13B 模型，量化後能跑 30B",
+            "Beelink SER5 MAX（24GB）：7-8B 模型是甜蜜點，推理速度快",
+            "Raspberry Pi 5（8GB）：建議只跑 3B 模型以維持可用速度",
+            "使用量化模型（Q4_K_M）可在品質損失極小的情況下提升速度"
+          ],
+          "troubleshooting": {
+            "title": "效能問題",
+            "items": [
+              {
+                "q": "模型跑起來很慢",
+                "a": "你可能在跑對你記憶體來說太大的模型。用 'ollama list' 檢查，換成較小的模型。Raspberry Pi 上最大跑 3B 模型。"
+              },
+              {
+                "q": "系統記憶體不足",
+                "a": "關閉其他應用程式，或使用更小的模型。Ollama 大約需要模型檔案大小 1.2 倍的可用記憶體。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步 — 打造你的 AI 實驗室",
+          "titleEn": "Next Steps — Build Your AI Lab",
+          "estimatedTime": "1 分鐘",
+          "content": "你已經有硬體和 Ollama 在運行了。現在用雲端部署、語音 AI 和影片生成，讓你的設定更上一層樓。",
+          "nextStepCards": [
+            {
+              "emoji": "🖥",
+              "title": "GEEKOM A8 迷你電腦",
+              "desc": "我們的 #1 推薦 — AMD Ryzen 7、32GB DDR5、Radeon 780M。終極本地 AI 工作站。",
+              "link": "https://www.amazon.com/dp/B0D22PDDFN?tag=juchunko-20",
+              "cta": "在 Amazon 購買 — $529+",
+              "external": true
+            },
+            {
+              "emoji": "💰",
+              "title": "Beelink SER5 MAX",
+              "desc": "最佳 CP 值 — AMD Ryzen 7、24GB RAM、1TB SSD，只要 $439。",
+              "link": "https://www.amazon.com/dp/B0C2X5ZJ5S?tag=juchunko-20",
+              "cta": "在 Amazon 購買 — $439",
+              "external": true
+            },
+            {
+              "emoji": "🍓",
+              "title": "Raspberry Pi 5",
+              "desc": "不到 $100 就能開始 — 最適合學習和輕量級 AI 模型。",
+              "link": "https://www.amazon.com/dp/B0CL3B4R4H?tag=juchunko-20",
+              "cta": "在 Amazon 購買 — $80",
+              "external": true
+            },
+            {
+              "emoji": "☁️",
+              "title": "部署到雲端",
+              "desc": "準備好分享你的 AI？一鍵部署到 Zeabur。使用代碼 'OpenClaw' 享 9 折。",
+              "link": "/learn/zeabur",
+              "cta": "雲端教學"
+            },
+            {
+              "emoji": "🎤",
+              "title": "加入語音 AI",
+              "desc": "用 ElevenLabs 給你的 AI 加上語音。自然語音合成每月只要 $5 起。",
+              "link": "/learn/elevenlabs-integration",
+              "cta": "語音教學"
+            }
+          ],
+          "tips": [
+            "先在本地用 Ollama 開始，準備好分享時再部署到 Zeabur",
+            "搭配 ElevenLabs 讓你的 AI 代理具備語音功能",
+            "加入 CanFly 社群，分享你的設定並從其他創作者獲得靈感"
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "跑 Ollama 最低需要什麼硬體？",
+          "a": "任何有 8GB 記憶體和 64 位元處理器的機器都能跑 Ollama 的小模型（3B 參數）。要舒適使用 7B+ 模型，建議至少 16GB 記憶體。"
+        },
+        {
+          "q": "需要獨立 GPU 嗎？",
+          "a": "不需要。Ollama 在 CPU 上運行，優化得很好。內建 GPU 如 AMD Radeon 780M（GEEKOM A8 內建）能加速推理但非必須。獨立 GPU（NVIDIA）只在訓練或超大模型時才需要。"
+        },
+        {
+          "q": "Mac Mini 和專用迷你電腦比較？",
+          "a": "M 系列晶片的 Mac Mini 跑 AI 很出色但要 $599+。作為專用 AI 伺服器，GEEKOM A8（$529）或 Beelink SER5 MAX（$439）提供更好的性價比，更多記憶體和 Linux 相容性。"
+        },
+        {
+          "q": "24 小時運作的 AI 伺服器耗多少電？",
+          "a": "Raspberry Pi 5：約 5-15W（每月幾塊錢）。迷你電腦（GEEKOM/Beelink）：待機約 15-45W（約每月 $3-8）。比雲端 GPU 便宜很多。"
+        },
+        {
+          "q": "什麼是 HDMI 假負載？我需要嗎？",
+          "a": "HDMI 假負載讓你的電腦以為有接螢幕。如果無螢幕運行 AI 伺服器（headless），需要它來啟用 GPU 加速和遠端桌面。Amazon 上 $8-16 就能買到。"
+        }
+      ]
     }
   },
   "hardwareCompare": {
