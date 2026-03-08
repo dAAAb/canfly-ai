@@ -3,6 +3,7 @@ import { Clock, CheckCircle, Copy, ExternalLink, ChevronDown, ChevronRight, Term
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import Navbar from '../components/Navbar'
+import ShareBar from '../components/ShareBar'
 import { useHead } from '../hooks/useHead'
 
 // ─── Types ──────────────────────────────────────────────────────────
@@ -1151,6 +1152,7 @@ export default function TutorialPage() {
           <p className="text-gray-400 text-lg mb-8 max-w-xl mx-auto">{tutorial.subtitle}</p>
 
           <ProgressBar completed={completedSteps.length} total={totalSteps} />
+          <ShareBar title={tutorial.title} className="justify-center mt-6" />
         </div>
       </div>
 

@@ -2317,5 +2317,10 @@
   "errors": {
     "notFoundMessage": "此頁面不存在或已被移動。",
     "backHome": "回到首頁"
+  },
+  "share": {
+    "label": "分享",
+    "copyLink": "複製連結",
+    "more": "更多分享方式"
   }
 }

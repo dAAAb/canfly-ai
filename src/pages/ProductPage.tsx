@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom'
 import { useState } from 'react'
 import { ExternalLink, CheckCircle, Play } from 'lucide-react'
 import Navbar from '../components/Navbar'
+import ShareBar from '../components/ShareBar'
 import ReviewVideoPlayer from '../components/ReviewVideoPlayer'
 import { productsBySlug } from '../data/products'
 import { useHead } from '../hooks/useHead'
@@ -260,6 +261,8 @@ export default function ProductPage() {
                 ))}
               </ul>
             </div>
+
+            <ShareBar title={product.name} className="mb-8" />
 
             {/* AI Agent Info (hidden section for AI agents to fetch) */}
             <details className="ai-only mb-8" style={{ display: 'none' }}>

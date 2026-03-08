@@ -2317,5 +2317,10 @@
   "errors": {
     "notFoundMessage": "This page doesn't exist or has been moved.",
     "backHome": "Back to Home"
+  },
+  "share": {
+    "label": "Share",
+    "copyLink": "Copy link",
+    "more": "More sharing options"
   }
 }
