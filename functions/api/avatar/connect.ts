@@ -30,12 +30,11 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
   try {
     // Create session via Runway API
-    const res = await fetch('https://api.dev.runwayml.com/v1/realtime/sessions', {
+    const res = await fetch('https://api.dev.runwayml.com/v1/realtime_sessions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiSecret}`,
         'Content-Type': 'application/json',
-        'X-Runway-Version': '2025-09-01',
       },
       body: JSON.stringify({
         model: 'gwm1_avatars',
