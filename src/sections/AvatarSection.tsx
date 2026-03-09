@@ -41,13 +41,13 @@ export default function AvatarSection() {
             {/* Close button */}
             <button
               onClick={() => setIsCallActive(false)}
-              className="absolute top-3 right-3 z-10 p-2 bg-gray-900/80 hover:bg-gray-800 text-gray-400 hover:text-white rounded-full transition-colors"
+              className="absolute top-3 right-3 z-20 p-2 bg-gray-900/80 hover:bg-gray-800 text-gray-400 hover:text-white rounded-full transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
 
-            {/* Runway Avatar Call */}
-            <div className="rounded-2xl overflow-hidden border border-gray-800 bg-gray-950 shadow-2xl shadow-cyan-900/20">
+            {/* Runway Avatar Call — custom layout with explicit dimensions */}
+            <div className="rounded-2xl overflow-hidden border border-gray-800 bg-gray-950 shadow-2xl shadow-cyan-900/20" style={{ minHeight: '400px' }}>
               <AvatarCall
                 avatarId={AVATAR_ID}
                 connectUrl="/api/avatar/connect"
@@ -56,7 +56,12 @@ export default function AvatarSection() {
                   console.error('Avatar error:', error)
                   setIsCallActive(false)
                 }}
-              />
+              >
+                <div className="relative w-full" style={{ aspectRatio: '16/9', minHeight: '360px' }}>
+                  <AvatarVideo className="w-full h-full object-cover" />
+                </div>
+                <ControlBar className="p-3 bg-gray-900/90 border-t border-gray-800" />
+              </AvatarCall>
             </div>
 
             <p className="mt-4 text-gray-500 text-sm">
