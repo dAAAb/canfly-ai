@@ -102,15 +102,6 @@ body {
   animation: page-enter 0.4s ease-out;
 }
 
-/* Plyr dark theme for CanFly */
-.plyr {
-  --plyr-color-main: #06b6d4;
-  --plyr-video-background: #0a0a0a;
-  --plyr-menu-background: #1a1a2e;
-  --plyr-menu-color: #e5e7eb;
-  border-radius: 12px;
-  overflow: hidden;
-}
 .plyr__captions {
   font-size: var(--plyr-font-size-captions-large, 20px) !important;
 }

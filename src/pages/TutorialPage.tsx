@@ -1,6 +1,5 @@
 import ReactMarkdown from 'react-markdown'
-import Plyr from 'plyr-react'
-import 'plyr-react/plyr.css'
+import ReviewVideoPlayer from '../components/ReviewVideoPlayer'
 import { useParams, Link } from 'react-router-dom'
 import { Clock, CheckCircle, Copy, ExternalLink, ChevronDown, ChevronRight, Terminal, Download, Monitor, MessageSquare, Rocket, HelpCircle, Cpu, Sparkles, Search, Globe, Key, Shield, Users, HardDrive, Zap } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
@@ -1424,30 +1423,16 @@ export default function TutorialPage() {
             const lang = i18n.language || 'en'
             const videoSrc = tutorial.video!.src[lang] || tutorial.video!.src['en']
             const subtitleEntries = Object.entries(tutorial.video!.subtitles)
-            // Find default subtitle index matching current lang
-            const defaultSubIdx = subtitleEntries.findIndex(([sLang]) => sLang === lang)
             return (
               <div className="max-w-2xl mx-auto mb-8">
-                <div className="rounded-xl overflow-hidden border border-gray-800 bg-gray-950">
-                  <Plyr
-                    source={{
-                      type: 'video' as const,
-                      sources: [{ src: videoSrc, type: 'video/mp4' }],
-                      tracks: subtitleEntries.map(([sLang, sUrl], idx) => ({
-                        kind: 'captions' as const,
-                        label: sLang === 'en' ? 'English' : sLang === 'zh-TW' ? '繁體中文' : '简体中文',
-                        srcLang: sLang === 'zh-TW' ? 'zh-Hant' : sLang === 'zh-CN' ? 'zh-Hans' : sLang,
-                        src: sUrl,
-                        default: idx === (defaultSubIdx >= 0 ? defaultSubIdx : 0),
-                      })),
-                    }}
-                    options={{
-                      controls: ['play-large', 'play', 'progress', 'current-time', 'duration', 'mute', 'volume', 'captions', 'settings', 'pip', 'fullscreen'],
-                      captions: { active: true, update: true, language: lang === 'zh-TW' ? 'zh-Hant' : lang === 'zh-CN' ? 'zh-Hans' : lang },
-                      settings: ['captions', 'quality', 'speed'],
-                    }}
-                  />
-                </div>
+                <ReviewVideoPlayer
+                  src={videoSrc}
+                  subtitles={subtitleEntries.map(([sLang, sUrl]) => ({
+                    label: sLang === 'en' ? 'English' : sLang === 'zh-TW' ? '繁體中文' : '简体中文',
+                    srclang: sLang,
+                    src: sUrl,
+                  }))}
+                />
               </div>
             )
           })()}
