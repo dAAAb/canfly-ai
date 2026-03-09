@@ -38,6 +38,31 @@ const ROUTE_META: Record<string, OgMeta> = {
     description:
       'Discover the best AI tools for your workflow. From local LLMs to cloud deployment, find the right tool for you.',
   },
+  '/apps/free': {
+    title: 'Free AI Tools — CanFly',
+    description:
+      'Free tools to get started with AI. No credit card, no subscription — just download and go.',
+  },
+  '/apps/vm': {
+    title: 'Virtual Machines for AI — CanFly',
+    description:
+      'Run Linux VMs on your Mac for safe AI experimentation. One-click setup, zero risk.',
+  },
+  '/apps/skills': {
+    title: 'AI Skills & Integrations — CanFly',
+    description:
+      'Voice synthesis, video generation, web search, email — extend your AI agent with powerful skills.',
+  },
+  '/apps/hosting': {
+    title: 'Cloud Hosting for AI — CanFly',
+    description:
+      'Deploy your AI agents to the cloud with one click. Always-on, always available.',
+  },
+  '/apps/hardware': {
+    title: 'AI Hardware Recommendations — CanFly',
+    description:
+      'From $80 Raspberry Pi to Mac Mini M4 — find the perfect hardware for running local AI.',
+  },
   '/pricing': {
     title: 'Pricing — CanFly',
     description:
@@ -173,13 +198,13 @@ const PRODUCT_META: Record<string, OgMeta> = {
     title: 'Apple Mac Mini M4 — Compact AI Powerhouse | CanFly',
     description:
       'M4 chip, 16GB unified memory, Thunderbolt 5 — your palm-sized AI workstation.',
-    ogImage: `${SITE}/images/icons/apple.png`,
+    ogImage: `${SITE}/images/products/mac-mini-m4.jpg`,
   },
   'macbook-neo': {
     title: 'Apple MacBook Neo — Most Affordable MacBook | CanFly',
     description:
       "Apple's most affordable laptop. A18 Pro chip, 13\" Liquid Retina — AI-ready out of the box.",
-    ogImage: `${SITE}/images/icons/apple.png`,
+    ogImage: `${SITE}/images/products/macbook-neo.jpg`,
   },
   'hdmi-dummy-plug': {
     title: 'HDMI Dummy Plug — Unlock Full Resolution on Headless Servers | CanFly',
@@ -191,31 +216,49 @@ const PRODUCT_META: Record<string, OgMeta> = {
     title: 'GEEKOM A8 Mini PC — Best for Local AI | CanFly',
     description:
       'AMD Ryzen 7, 32GB DDR5 — handles Ollama and OpenClaw with ease. Compact and quiet.',
-    ogImage: `${SITE}/images/icons/geekom.png`,
+    ogImage: `${SITE}/images/products/geekom-a8.jpg`,
   },
   'beelink-ser5-max': {
     title: 'Beelink SER5 MAX — High Value AI Mini PC | CanFly',
     description:
       'AMD Ryzen 7 5800H, 24GB RAM, 1TB SSD — unbeatable price for dedicated AI hardware.',
-    ogImage: `${SITE}/images/icons/beelink.png`,
+    ogImage: `${SITE}/images/products/beelink-ser5-max.jpg`,
   },
   'raspberry-pi-5': {
     title: 'Raspberry Pi 5 — Budget AI Learning Kit | CanFly',
     description:
       'The most affordable way to start local AI. Sub-$100 setup with Ollama.',
-    ogImage: `${SITE}/images/icons/raspberry-pi.png`,
+    ogImage: `${SITE}/images/products/raspberry-pi-5.jpg`,
   },
   'elgato-stream-deck': {
     title: 'Elgato Stream Deck MK.2 — AI Control Panel | CanFly',
     description:
       '15 programmable LCD keys to trigger AI agents and workflows with one tap.',
-    ogImage: `${SITE}/images/icons/elgato.png`,
+    ogImage: `${SITE}/images/products/elgato-stream-deck.jpg`,
   },
   'fifine-am8': {
     title: 'Fifine AM8 Microphone — AI Voice Input | CanFly',
     description:
       'Crystal-clear USB microphone with noise cancellation for AI voice commands.',
-    ogImage: `${SITE}/images/icons/fifine.png`,
+    ogImage: `${SITE}/images/products/fifine-am8.jpg`,
+  },
+  basemail: {
+    title: 'BaseMail — Crypto-Native Email for AI Agents | CanFly',
+    description:
+      'Wallet-based email with SIWE auth, ERC-8004 identity, and $ATTN economy. Your wallet is your identity.',
+    ogImage: `${SITE}/images/icons/basemail.png`,
+  },
+  agentmail: {
+    title: 'AgentMail — Email Infrastructure for AI Agents | CanFly',
+    description:
+      'Y Combinator-backed. Create inboxes on the fly, Python/Node SDKs, webhooks, semantic search.',
+    ogImage: `${SITE}/images/icons/agentmail.png`,
+  },
+  agentcard: {
+    title: 'AgentCard — Virtual Visa Cards for AI Agents | CanFly',
+    description:
+      'Prepaid virtual Visa cards with MCP-native integration. Let your agents make purchases autonomously.',
+    ogImage: `${SITE}/images/icons/agentcard.png`,
   },
 }
 
@@ -255,11 +298,21 @@ function resolveMeta(path: string): OgMeta | null {
   // 1. Exact static match
   if (ROUTE_META[path]) return ROUTE_META[path]
 
-  // 2. Dynamic product page: /apps/:slug
+  // 2a. Dynamic product page: /apps/:category/:slug (new URL format)
+  const productMatch2 = path.match(/^\/apps\/[a-z]+\/([a-z0-9-]+)$/)
+  if (productMatch2) {
+    const slug = productMatch2[1]
+    if (PRODUCT_META[slug]) return PRODUCT_META[slug]
+  }
+
+  // 2b. Legacy product page: /apps/:slug (old URL format, still matched for compat)
   const productMatch = path.match(/^\/apps\/([a-z0-9-]+)$/)
   if (productMatch) {
     const slug = productMatch[1]
-    if (PRODUCT_META[slug]) return PRODUCT_META[slug]
+    // Skip if slug is a category name
+    if (!['all', 'free', 'vm', 'skills', 'hosting', 'hardware'].includes(slug) && PRODUCT_META[slug]) {
+      return PRODUCT_META[slug]
+    }
   }
 
   // 3. Dynamic blog post: /blog/:slug
