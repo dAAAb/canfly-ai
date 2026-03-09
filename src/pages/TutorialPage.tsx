@@ -171,9 +171,9 @@ function createOllamaOpenclawTutorial(t: any): TutorialData {
         'zh-CN': 'https://github.com/dAAAb/canfly-ai/releases/download/v0.1.0-videos/ollama_openclaw_tw.mp4',
       },
       subtitles: {
-        en: '/videos/ollama-openclaw/ollama_openclaw-English.srt',
-        'zh-TW': '/videos/ollama-openclaw/ollama_openclaw_tw.srt',
-        'zh-CN': '/videos/ollama-openclaw/ollama_openclaw_cn.srt',
+        en: '/videos/ollama-openclaw/ollama_openclaw-English.vtt',
+        'zh-TW': '/videos/ollama-openclaw/ollama_openclaw_tw.vtt',
+        'zh-CN': '/videos/ollama-openclaw/ollama_openclaw_cn.vtt',
       },
       aspectRatio: '2218/1440',
     },
