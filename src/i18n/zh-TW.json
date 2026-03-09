@@ -301,15 +301,15 @@
         ]
       },
       "hdmi-dummy-plug": {
-        "tagline": "世界最小 HDMI 假負載",
-        "description": "EVanlak 8K HDMI Dummy Plug — 超迷你，世界最小的 HDMI 假負載。讓你的 Mac Mini 或無螢幕主機以為有接螢幕，啟用完整 GPU 加速和遠端桌面。支援 8K@30Hz、4K@120Hz、1080p@144Hz。隨插即用，免驅動。",
+        "tagline": "無頭伺服器必備 — 解鎖完整解析度",
+        "description": "為什麼需要這個？當你把 Mac Mini、Umbrel 或任何電腦當作無頭 AI 伺服器（不接螢幕）使用時，GPU 會降到最低解析度 — 遠端桌面變得模糊不清，GPU 加速也會被停用。EVanlak 8K HDMI Dummy Plug 一插即解：插入 HDMI 埠，電腦就以為接了 4K 螢幕。完整 GPU 加速、清晰的遠端桌面、流暢的 AI 運算 — 不到 $10 美金搞定。世界最小的 HDMI 假負載，支援 8K@30Hz、4K@120Hz、1080p@144Hz。隨插即用，免驅動。",
         "features": [
-          "超迷你 — 世界最小",
+          "解鎖無頭伺服器完整 GPU 加速",
+          "修復模糊的遠端桌面（VNC / RDP / 螢幕共享）",
+          "Mac Mini + Umbrel AI 伺服器必備配件",
+          "超迷你 — 世界最小 HDMI 假負載",
           "8K@30Hz / 4K@120Hz / 1080p@144Hz",
-          "啟用 GPU 加速",
-          "遠端桌面必備",
-          "適用所有電腦",
-          "隨插即用，免驅動"
+          "隨插即用 — 免驅動，適用任何電腦"
         ]
       },
       "elgato-stream-deck": {

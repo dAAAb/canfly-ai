@@ -301,15 +301,15 @@
         ]
       },
       "hdmi-dummy-plug": {
-        "tagline": "World's tiniest HDMI dummy plug",
-        "description": "The EVanlak 8K HDMI Dummy Plug is the world's smallest — super tiny, plug and play. Tricks your Mac Mini or headless PC into thinking a monitor is connected. Supports 8K@30Hz, 4K@120Hz, 1080p@144Hz. Essential for always-on AI server setups.",
+        "tagline": "Headless server essential — unlock full resolution",
+        "description": "Why do you need this? When you run a Mac Mini, Umbrel, or any PC as a headless AI server (no monitor attached), the GPU drops to the lowest resolution — remote desktop becomes unusable and GPU acceleration is disabled. The EVanlak 8K HDMI Dummy Plug solves this instantly: plug it into your HDMI port and your computer thinks a 4K display is connected. Full GPU acceleration, crisp remote desktop, and smooth AI workloads — all for under $10. The world's smallest HDMI dummy plug, supports 8K@30Hz, 4K@120Hz, 1080p@144Hz. Plug and play, no drivers needed.",
         "features": [
-          "Super Tiny — world's smallest",
+          "Unlocks full GPU acceleration on headless servers",
+          "Fixes blurry remote desktop (VNC / RDP / Screen Sharing)",
+          "Essential for Mac Mini + Umbrel AI server setups",
+          "Super tiny — world's smallest HDMI dummy plug",
           "8K@30Hz / 4K@120Hz / 1080p@144Hz",
-          "Enables GPU acceleration",
-          "Essential for remote desktop",
-          "Works with all computers",
-          "Plug and play — no drivers"
+          "Plug and play — no drivers, works with any computer"
         ]
       },
       "elgato-stream-deck": {

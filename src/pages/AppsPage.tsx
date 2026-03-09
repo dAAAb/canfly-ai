@@ -12,7 +12,7 @@ const categoryFeatured: Record<string, string[]> = {
   free: ['ollama'],
   skills: ['heygen', 'elevenlabs'],
   hosting: ['zeabur', 'umbrel'],
-  hardware: ['mac-mini-m4', 'macbook-neo'],
+  hardware: ['hdmi-dummy-plug', 'mac-mini-m4', 'macbook-neo'],
   vm: ['utm', 'virtual-buddy'],
 }
 
@@ -22,6 +22,7 @@ const featuredGradients: Record<string, string> = {
   heygen: 'bg-gradient-to-br from-violet-950/60 to-purple-950/40 border border-violet-800/30 hover:border-violet-700/50',
   elevenlabs: 'bg-gradient-to-br from-pink-950/60 to-rose-950/40 border border-pink-800/30 hover:border-pink-700/50',
   umbrel: 'bg-gradient-to-br from-indigo-950/60 to-blue-950/40 border border-indigo-800/30 hover:border-indigo-700/50',
+  'hdmi-dummy-plug': 'bg-gradient-to-br from-amber-950/60 to-orange-950/40 border border-amber-800/30 hover:border-amber-700/50',
   'mac-mini-m4': 'bg-gradient-to-br from-gray-800/60 to-zinc-900/40 border border-gray-600/30 hover:border-gray-500/50',
   'macbook-neo': 'bg-gradient-to-br from-gray-800/60 to-slate-900/40 border border-gray-600/30 hover:border-gray-500/50',
   utm: 'bg-gradient-to-br from-cyan-950/60 to-teal-950/40 border border-cyan-800/30 hover:border-cyan-700/50',
