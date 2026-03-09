@@ -38,6 +38,13 @@ interface NextStepCard { emoji: string; title: string; desc: string; link: strin
 
 interface FaqItem { q: string; a: string }
 
+interface TutorialVideo {
+  src: Record<string, string>       // lang → video URL
+  subtitles: Record<string, string> // lang → SRT/VTT URL
+  poster?: string
+  aspectRatio?: string              // e.g. "2218/1440"
+}
+
 interface TutorialData {
   id: string
   title: string
@@ -46,6 +53,7 @@ interface TutorialData {
   difficulty: string
   steps: StepData[]
   faq: FaqItem[]
+  video?: TutorialVideo
 }
 
 // ─── Dynamic Tutorial Data Functions ───────────────────────────────
@@ -156,6 +164,19 @@ function createOllamaOpenclawTutorial(t: any): TutorialData {
     duration: t('tutorial.ollamaOpenclaw.duration'),
     difficulty: t('tutorial.ollamaOpenclaw.difficulty'),
     faq: t('tutorial.ollamaOpenclaw.faq', { returnObjects: true }) || [],
+    video: {
+      src: {
+        en: '/videos/ollama-openclaw/ollama_openclaw-English.mp4',
+        'zh-TW': '/videos/ollama-openclaw/ollama_openclaw_tw.mp4',
+        'zh-CN': '/videos/ollama-openclaw/ollama_openclaw_tw.mp4',
+      },
+      subtitles: {
+        en: '/videos/ollama-openclaw/ollama_openclaw-English.srt',
+        'zh-TW': '/videos/ollama-openclaw/ollama_openclaw_tw.srt',
+        'zh-CN': '/videos/ollama-openclaw/ollama_openclaw_cn.srt',
+      },
+      aspectRatio: '2218/1440',
+    },
     steps: [
       {
         icon: Download,
@@ -1352,7 +1373,7 @@ function ScreenshotGallery({ screenshots }: { screenshots: ScreenshotData[] }) {
 
 export default function TutorialPage() {
   const { slug } = useParams()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { localePath } = useLanguage()
   const tutorials = getTutorials(t)
   const tutorial = tutorials[slug!] ?? null
@@ -1395,6 +1416,39 @@ export default function TutorialPage() {
 
           <h1 className="text-3xl md:text-4xl font-bold mb-3 leading-tight">{tutorial.title}</h1>
           <p className="text-gray-400 text-lg mb-8 max-w-xl mx-auto">{tutorial.subtitle}</p>
+
+          {/* Tutorial Video */}
+          {tutorial.video && (() => {
+            const lang = i18n.language || 'en'
+            const videoSrc = tutorial.video!.src[lang] || tutorial.video!.src['en']
+            const subtitleEntries = Object.entries(tutorial.video!.subtitles)
+            const aspectRatio = tutorial.video!.aspectRatio || '16/9'
+            return (
+              <div className="max-w-2xl mx-auto mb-8">
+                <div className="rounded-xl overflow-hidden border border-gray-800 bg-gray-950" style={{ aspectRatio }}>
+                  <video
+                    controls
+                    playsInline
+                    preload="metadata"
+                    className="w-full h-full"
+                    poster={tutorial.video!.poster}
+                  >
+                    <source src={videoSrc} type="video/mp4" />
+                    {subtitleEntries.map(([sLang, sUrl]) => (
+                      <track
+                        key={sLang}
+                        kind="subtitles"
+                        src={sUrl}
+                        srcLang={sLang === 'zh-TW' ? 'zh' : sLang === 'zh-CN' ? 'zh' : sLang}
+                        label={sLang === 'en' ? 'English' : sLang === 'zh-TW' ? '繁體中文' : '简体中文'}
+                        default={sLang === lang}
+                      />
+                    ))}
+                  </video>
+                </div>
+              </div>
+            )
+          })()}
 
           <ProgressBar completed={completedSteps.length} total={totalSteps} />
           <ShareBar title={tutorial.title} className="justify-center mt-6" />
