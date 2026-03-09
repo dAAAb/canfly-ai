@@ -35,6 +35,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       headers: {
         'Authorization': `Bearer ${apiSecret}`,
         'Content-Type': 'application/json',
+        'X-Runway-Version': '2024-11-06',
       },
       body: JSON.stringify({
         model: 'gwm1_avatars',
