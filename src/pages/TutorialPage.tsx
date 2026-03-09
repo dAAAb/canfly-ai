@@ -167,9 +167,9 @@ function createOllamaOpenclawTutorial(t: any): TutorialData {
     faq: t('tutorial.ollamaOpenclaw.faq', { returnObjects: true }) || [],
     video: {
       src: {
-        en: 'https://github.com/dAAAb/canfly-ai/releases/download/v0.1.0-videos/ollama_openclaw-English.mp4',
-        'zh-TW': 'https://github.com/dAAAb/canfly-ai/releases/download/v0.1.0-videos/ollama_openclaw_tw.mp4',
-        'zh-CN': 'https://github.com/dAAAb/canfly-ai/releases/download/v0.1.0-videos/ollama_openclaw_tw.mp4',
+        en: '/videos/ollama-openclaw/ollama_openclaw-English.mp4',
+        'zh-TW': '/videos/ollama-openclaw/ollama_openclaw_tw.mp4',
+        'zh-CN': '/videos/ollama-openclaw/ollama_openclaw_tw.mp4',
       },
       subtitles: {
         en: '/videos/ollama-openclaw/ollama_openclaw-English.vtt',
