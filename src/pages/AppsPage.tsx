@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import { PanelLeftClose, PanelLeftOpen, HelpCircle, LayoutGrid, List, ArrowRight, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import Navbar from '../components/Navbar'
@@ -30,17 +30,37 @@ const featuredGradients: Record<string, string> = {
 }
 
 export default function AppsPage() {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const categoryFromUrl = searchParams.get('category') ?? 'all'
-  const [selectedCategory, setSelectedCategoryRaw] = useState(categoryFromUrl)
+  const { category: categoryParam } = useParams<{ category?: string }>()
+  const navigate = useNavigate()
+  const { t } = useTranslation()
+  const { localePath } = useLanguage()
 
-  // Sync category to URL so browser back button remembers it
+  // Valid category IDs — if param is a product slug instead, redirect to new URL
+  const validCategories = ['all', 'free', 'vm', 'skills', 'hosting', 'hardware']
+  useEffect(() => {
+    if (categoryParam && !validCategories.includes(categoryParam)) {
+      // Old URL like /apps/ollama — find product and redirect
+      const product = products.find(p => p.id === categoryParam)
+      if (product) {
+        navigate(localePath(`/apps/${product.category}/${product.id}`), { replace: true })
+      }
+    }
+  }, [categoryParam])
+
+  const categoryFromUrl = (categoryParam && validCategories.includes(categoryParam)) ? categoryParam : 'all'
+  const [selectedCategory, setSelectedCategoryRaw] = useState(categoryFromUrl)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [showCategoryInfo, setShowCategoryInfo] = useState(false)
+
+  // Navigate to category path for SEO-friendly URLs
   const setSelectedCategory = (cat: string) => {
     setSelectedCategoryRaw(cat)
     if (cat === 'all') {
-      setSearchParams({}, { replace: false })
+      navigate(localePath('/apps'))
     } else {
-      setSearchParams({ category: cat }, { replace: false })
+      navigate(localePath(`/apps/${cat}`))
     }
   }
 
@@ -48,17 +68,11 @@ export default function AppsPage() {
   useEffect(() => {
     setSelectedCategoryRaw(categoryFromUrl)
   }, [categoryFromUrl])
-  const [searchTerm, setSearchTerm] = useState('')
-  const [sidebarOpen, setSidebarOpen] = useState(true)
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-  const [showCategoryInfo, setShowCategoryInfo] = useState(false)
-  const { t } = useTranslation()
-  const { localePath } = useLanguage()
 
   useHead({
     title: t('meta.apps.title'),
     description: t('meta.apps.description'),
-    canonical: `https://canfly.ai${localePath('/apps')}`,
+    canonical: `https://canfly.ai${localePath(selectedCategory === 'all' ? '/apps' : `/apps/${selectedCategory}`)}`,
     ogImage: 'https://canfly.ai/og-image.png',
     ogType: 'website',
   })
@@ -143,7 +157,7 @@ export default function AppsPage() {
               <div>
                 <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">{t('apps.quickStart')}</h3>
                 <Link
-                  to={localePath('/apps/ollama')}
+                  to={localePath('/apps/free/ollama')}
                   className="block p-3 bg-green-900/20 border border-green-800/40 rounded-lg hover:bg-green-900/30 transition-all hover:shadow-[0_0_12px_rgba(34,197,94,0.15)] hover:border-green-700/60"
                 >
                   <div className="text-sm font-medium text-green-400">{t('apps.startFree')}</div>
@@ -154,7 +168,7 @@ export default function AppsPage() {
               <div>
                 <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">{t('apps.staffPicks')}</h3>
                 <Link
-                  to={localePath('/apps/zeabur')}
+                  to={localePath('/apps/hosting/zeabur')}
                   className="block p-3 bg-blue-900/20 border border-blue-800/40 rounded-lg hover:bg-blue-900/30 transition-all hover:shadow-[0_0_12px_rgba(59,130,246,0.15)] hover:border-blue-700/60"
                 >
                   <div className="text-sm font-medium text-blue-400">{t('apps.cloudDeploy')}</div>
@@ -238,7 +252,7 @@ export default function AppsPage() {
                 {featuredProducts.map((product) => (
                   <Link
                     key={product.id}
-                    to={localePath(`/apps/${product.id}`)}
+                    to={localePath(`/apps/${product.category}/${product.id}`)}
                     className={`relative overflow-hidden rounded-2xl p-6 flex items-center gap-5 group transition-all hover:scale-[1.01] ${
                       featuredGradients[product.id] ?? 'bg-gradient-to-br from-gray-800/60 to-gray-900/40 border border-gray-700/30 hover:border-gray-600/50'
                     }`}
@@ -263,7 +277,7 @@ export default function AppsPage() {
                 {filteredProducts.map((product) => (
                   <Link
                     key={product.id}
-                    to={localePath(`/apps/${product.id}`)}
+                    to={localePath(`/apps/${product.category}/${product.id}`)}
                     className="bg-gray-900/60 border border-gray-800 rounded-xl overflow-hidden hover:border-gray-600 transition-all hover:scale-[1.02] group card-hover"
                   >
                     {/* Gradient area with icon */}
@@ -322,7 +336,7 @@ export default function AppsPage() {
                 {filteredProducts.map((product) => (
                   <Link
                     key={product.id}
-                    to={localePath(`/apps/${product.id}`)}
+                    to={localePath(`/apps/${product.category}/${product.id}`)}
                     className="flex items-center gap-4 p-4 bg-gray-900/40 border border-gray-800 rounded-xl hover:border-gray-600 transition-all group"
                   >
                     {/* Icon */}

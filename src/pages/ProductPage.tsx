@@ -105,7 +105,7 @@ export default function ProductPage() {
   useHead(product ? {
     title: `${product.name} — Canfly`,
     description: t(`product.products.${pid}.description`, { defaultValue: product.description }),
-    canonical: `https://canfly.ai${localePath(`/apps/${slug}`)}`,
+    canonical: `https://canfly.ai${localePath(`/apps/${product.category}/${slug}`)}`,
     ogImage: product.ogImage ? `https://canfly.ai${product.ogImage}` : product.heroImage ? `https://canfly.ai${product.heroImage}` : product.icon ? `https://canfly.ai${product.icon}` : undefined,
     ogType: 'website',
   } : {})
@@ -135,7 +135,7 @@ export default function ProductPage() {
           {product.category && product.category !== 'all' && (
             <>
               <span>&gt;</span>
-              <Link to={localePath(`/apps?category=${product.category}`)} className="hover:text-white transition-colors">
+              <Link to={localePath(`/apps/${product.category}`)} className="hover:text-white transition-colors">
                 {t(`apps.categoryNames.${product.category}`, { defaultValue: product.category })}
               </Link>
             </>

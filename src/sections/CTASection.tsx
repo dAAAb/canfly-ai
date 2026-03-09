@@ -64,7 +64,7 @@ export default function CTASection() {
         {/* Primary CTA */}
         <div className="stagger-child stagger-3" style={{ marginTop: 'clamp(32px, 4vw, 56px)' }}>
           <Link
-            to={localePath('/apps/ollama')}
+            to={localePath('/apps/free/ollama')}
             className="inline-flex items-center gap-3 bg-green-600 hover:bg-green-700 px-8 py-4 rounded-xl text-lg font-semibold transition-all hover:scale-105 cta-glow"
           >
             <PlayCircle className="w-6 h-6" />

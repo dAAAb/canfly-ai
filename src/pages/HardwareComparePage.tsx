@@ -163,7 +163,7 @@ export default function HardwareComparePage() {
             <h3 className="text-lg font-bold mb-2 text-purple-400">{t('hardwareCompare.rec.umbrelTitle')}</h3>
             <p className="text-gray-400 text-sm leading-relaxed mb-4">{t('hardwareCompare.rec.umbrelDesc')}</p>
             <Link
-              to={localePath('/apps/umbrel')}
+              to={localePath('/apps/hosting/umbrel')}
               className="inline-flex items-center gap-1.5 text-sm text-purple-400 hover:text-purple-300 transition-colors"
             >
               {t('hardwareCompare.rec.learnMore')} →

@@ -40,7 +40,7 @@ export default function HeroSection() {
           </Link>
           <LanguageSwitcher />
           <Link
-            to={localePath('/apps/ollama')}
+            to={localePath('/apps/free/ollama')}
             className="text-sm bg-green-600/20 border border-green-600 px-3 py-1 rounded-full hover:bg-green-600/30 transition-colors"
           >
             {t('nav.startFree')}
@@ -63,7 +63,7 @@ export default function HeroSection() {
           </Link>
           <LanguageSwitcher />
           <Link
-            to={localePath('/apps/ollama')}
+            to={localePath('/apps/free/ollama')}
             onClick={() => setMobileNavOpen(false)}
             className="inline-block text-sm bg-green-600/20 border border-green-600 px-3 py-1 rounded-full hover:bg-green-600/30 transition-colors"
           >
@@ -105,7 +105,7 @@ export default function HeroSection() {
         {/* CTA Buttons */}
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Link
-            to={localePath('/apps/ollama')}
+            to={localePath('/apps/free/ollama')}
             className="group flex items-center gap-3 bg-green-600 hover:bg-green-700 px-8 py-4 rounded-xl text-lg font-semibold transition-all hover:scale-105 cta-glow"
           >
             <PlayCircle className="w-6 h-6" />
@@ -126,7 +126,7 @@ export default function HeroSection() {
           <p className="mb-4 text-xs uppercase tracking-widest opacity-60">{t('hero.funnel')}</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-stretch max-w-3xl mx-auto">
             <Link
-              to={localePath('/apps/ollama')}
+              to={localePath('/apps/free/ollama')}
               className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 hover:bg-white/10 transition-colors text-left"
             >
               <span className="text-green-400 font-semibold text-sm">{t('hero.funnelStep1')}</span>
@@ -142,7 +142,7 @@ export default function HeroSection() {
             </Link>
             <span className="hidden sm:flex items-center text-gray-500">→</span>
             <Link
-              to={localePath('/apps') + '?category=skills'}
+              to={localePath('/apps/skills')}
               className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 hover:bg-white/10 transition-colors text-left"
             >
               <span className="text-purple-400 font-semibold text-sm">{t('hero.funnelStep3')}</span>

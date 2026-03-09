@@ -64,7 +64,8 @@ function App() {
               {/* Default (English) — no prefix */}
               <Route path="/" element={<HomePage />} />
               <Route path="/apps" element={<AppsPage />} />
-              <Route path="/apps/:slug" element={<ProductPage />} />
+              <Route path="/apps/:category" element={<AppsPage />} />
+              <Route path="/apps/:category/:slug" element={<ProductPage />} />
               <Route path="/learn/hardware-compare" element={<HardwareComparePage />} />
               <Route path="/learn/:slug" element={<TutorialPage />} />
               <Route path="/get-started" element={<GetStartedPage />} />
@@ -78,7 +79,8 @@ function App() {
               {/* Language-prefixed routes */}
               <Route path="/:lang" element={<LangSync><HomePage /></LangSync>} />
               <Route path="/:lang/apps" element={<LangSync><AppsPage /></LangSync>} />
-              <Route path="/:lang/apps/:slug" element={<LangSync><ProductPage /></LangSync>} />
+              <Route path="/:lang/apps/:category" element={<LangSync><AppsPage /></LangSync>} />
+              <Route path="/:lang/apps/:category/:slug" element={<LangSync><ProductPage /></LangSync>} />
               <Route path="/:lang/learn/hardware-compare" element={<LangSync><HardwareComparePage /></LangSync>} />
               <Route path="/:lang/learn/:slug" element={<LangSync><TutorialPage /></LangSync>} />
               <Route path="/:lang/get-started" element={<LangSync><GetStartedPage /></LangSync>} />

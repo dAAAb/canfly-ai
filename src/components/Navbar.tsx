@@ -57,7 +57,7 @@ export default function Navbar({ search, children }: NavbarProps) {
           </Link>
           <LanguageSwitcher />
           <Link
-            to={localePath('/apps/ollama')}
+            to={localePath('/apps/free/ollama')}
             className="text-sm bg-green-600/20 border border-green-600 px-3 py-1.5 rounded-full hover:bg-green-600/30 transition-all text-green-400 hover:shadow-[0_0_16px_rgba(34,197,94,0.3)]"
           >
             {t('nav.startFree')}
@@ -106,7 +106,7 @@ export default function Navbar({ search, children }: NavbarProps) {
           </Link>
           <LanguageSwitcher />
           <Link
-            to={localePath('/apps/ollama')}
+            to={localePath('/apps/free/ollama')}
             onClick={() => setMobileOpen(false)}
             className="inline-block text-sm bg-green-600/20 border border-green-600 px-3 py-1.5 rounded-full hover:bg-green-600/30 transition-all text-green-400"
           >
