@@ -39,7 +39,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       },
       body: JSON.stringify({
         model: 'gwm1_avatars',
-        options: { avatar: avatarId },
+        avatar: { type: 'custom', avatarId },
       }),
     })
 
