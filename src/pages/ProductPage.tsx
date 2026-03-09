@@ -118,6 +118,7 @@ export default function ProductPage() {
           <Link to={localePath('/apps')} className="text-blue-400 hover:text-blue-300">
             {t('product.backToApps')}
           </Link>
+
         </div>
       </div>
     )
@@ -128,9 +129,17 @@ export default function ProductPage() {
       <Navbar />
 
       <div className="max-w-6xl mx-auto px-6 md:px-8 py-10 page-enter">
-        {/* Breadcrumb */}
+        {/* Breadcrumb — link back to category if product has one */}
         <nav className="flex items-center gap-2 text-sm text-gray-400 mb-8">
           <Link to={localePath('/apps')} className="hover:text-white transition-colors">{t('product.breadcrumbApps')}</Link>
+          {product.category && product.category !== 'all' && (
+            <>
+              <span>&gt;</span>
+              <Link to={localePath(`/apps?category=${product.category}`)} className="hover:text-white transition-colors">
+                {t(`apps.categoryNames.${product.category}`, { defaultValue: product.category })}
+              </Link>
+            </>
+          )}
           <span>&gt;</span>
           <span className="text-white">{product.name}</span>
         </nav>

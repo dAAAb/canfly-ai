@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { PanelLeftClose, PanelLeftOpen, HelpCircle, LayoutGrid, List, ArrowRight, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -30,9 +30,24 @@ const featuredGradients: Record<string, string> = {
 }
 
 export default function AppsPage() {
-  const [searchParams] = useSearchParams()
-  const initialCategory = searchParams.get('category') ?? 'all'
-  const [selectedCategory, setSelectedCategory] = useState(initialCategory)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const categoryFromUrl = searchParams.get('category') ?? 'all'
+  const [selectedCategory, setSelectedCategoryRaw] = useState(categoryFromUrl)
+
+  // Sync category to URL so browser back button remembers it
+  const setSelectedCategory = (cat: string) => {
+    setSelectedCategoryRaw(cat)
+    if (cat === 'all') {
+      setSearchParams({}, { replace: false })
+    } else {
+      setSearchParams({ category: cat }, { replace: false })
+    }
+  }
+
+  // Sync from URL when navigating back/forward
+  useEffect(() => {
+    setSelectedCategoryRaw(categoryFromUrl)
+  }, [categoryFromUrl])
   const [searchTerm, setSearchTerm] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
