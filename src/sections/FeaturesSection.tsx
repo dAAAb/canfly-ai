@@ -20,9 +20,9 @@ function FeatureCard({ index }: { index: number }) {
   const desc = t(`features.items.${index}.desc`)
 
   return (
-    <div ref={ref} className="fade-section">
+    <div ref={ref} className="fade-section w-full flex">
       <div
-        className="relative rounded-3xl overflow-hidden h-full glass-hover"
+        className="relative rounded-3xl overflow-hidden h-full w-full glass-hover"
         style={{
           backdropFilter: 'blur(24px) saturate(1.4)',
           WebkitBackdropFilter: 'blur(24px) saturate(1.4)',
@@ -92,14 +92,14 @@ export default function FeaturesSection() {
         </div>
 
         {/* Feature cards grid — 6-col so bottom row of 2 aligns with top row of 3 */}
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-8 items-stretch">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="md:col-span-2">
+            <div key={i} className="md:col-span-2 flex">
               <FeatureCard index={i} />
             </div>
           ))}
           {[3, 4].map((i) => (
-            <div key={i} className="md:col-span-3">
+            <div key={i} className="md:col-span-3 flex">
               <FeatureCard index={i} />
             </div>
           ))}
