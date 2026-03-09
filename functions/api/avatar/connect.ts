@@ -2,12 +2,81 @@
  * Cloudflare Pages Function — Runway Avatar session endpoint
  * POST /api/avatar/connect
  *
- * Creates a real-time session with the Runway Characters API.
- * API secret is stored in Cloudflare Pages env vars (never exposed to client).
+ * 1. Creates a realtime session via Runway API
+ * 2. Polls until session is READY (has sessionKey)
+ * 3. Returns { sessionId, sessionKey } to the client SDK
  */
 
 interface Env {
   RUNWAYML_API_SECRET: string
+}
+
+const RUNWAY_API = 'https://api.dev.runwayml.com'
+const RUNWAY_VERSION = '2024-11-06'
+
+async function createSession(apiSecret: string, avatarId: string) {
+  const res = await fetch(`${RUNWAY_API}/v1/realtime_sessions`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiSecret}`,
+      'Content-Type': 'application/json',
+      'X-Runway-Version': RUNWAY_VERSION,
+    },
+    body: JSON.stringify({
+      model: 'gwm1_avatars',
+      avatar: { type: 'custom', avatarId },
+    }),
+  })
+
+  if (!res.ok) {
+    const errText = await res.text()
+    throw new Error(`Create session failed: ${res.status} ${errText}`)
+  }
+
+  return (await res.json()) as { id: string }
+}
+
+async function getSession(apiSecret: string, sessionId: string) {
+  const res = await fetch(`${RUNWAY_API}/v1/realtime_sessions/${sessionId}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${apiSecret}`,
+      'X-Runway-Version': RUNWAY_VERSION,
+    },
+  })
+
+  if (!res.ok) {
+    const errText = await res.text()
+    throw new Error(`Get session failed: ${res.status} ${errText}`)
+  }
+
+  return (await res.json()) as {
+    id: string
+    status: string
+    sessionKey?: string
+  }
+}
+
+async function waitForReady(apiSecret: string, sessionId: string, timeoutMs = 30000, pollMs = 1000) {
+  const start = Date.now()
+
+  while (true) {
+    if (Date.now() - start > timeoutMs) {
+      throw new Error('Session creation timed out')
+    }
+
+    const session = await getSession(apiSecret, sessionId)
+
+    if (session.status === 'READY' && session.sessionKey) {
+      return { sessionKey: session.sessionKey }
+    }
+
+    if (['COMPLETED', 'FAILED', 'CANCELLED'].includes(session.status)) {
+      throw new Error(`Session ${session.status.toLowerCase()} before becoming ready`)
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, pollMs))
+  }
 }
 
 export const onRequestPost: PagesFunction<Env> = async (context) => {
@@ -18,7 +87,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
   let avatarId: string
   try {
-    const body = await context.request.json() as { avatarId?: string }
+    const body = (await context.request.json()) as { avatarId?: string }
     avatarId = body.avatarId || ''
   } catch {
     return Response.json({ error: 'Invalid request body' }, { status: 400 })
@@ -29,44 +98,16 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   }
 
   try {
-    // Create session via Runway API
-    const res = await fetch('https://api.dev.runwayml.com/v1/realtime_sessions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiSecret}`,
-        'Content-Type': 'application/json',
-        'X-Runway-Version': '2024-11-06',
-      },
-      body: JSON.stringify({
-        model: 'gwm1_avatars',
-        avatar: { type: 'custom', avatarId },
-      }),
-    })
+    // Step 1: Create session
+    const { id: sessionId } = await createSession(apiSecret, avatarId)
 
-    if (!res.ok) {
-      const errText = await res.text()
-      console.error('Runway API error:', res.status, errText)
-      return Response.json(
-        { error: 'Failed to create avatar session', detail: errText },
-        { status: res.status }
-      )
-    }
+    // Step 2: Poll until READY (get sessionKey)
+    const { sessionKey } = await waitForReady(apiSecret, sessionId)
 
-    const session = await res.json() as {
-      id: string
-      url: string
-      token: string
-      room_name: string
-    }
-
-    return Response.json({
-      sessionId: session.id,
-      serverUrl: session.url,
-      token: session.token,
-      roomName: session.room_name,
-    })
+    // Step 3: Return to SDK — it will call /consume internally
+    return Response.json({ sessionId, sessionKey })
   } catch (err: any) {
-    console.error('Avatar connect error:', err)
-    return Response.json({ error: 'Internal server error' }, { status: 500 })
+    console.error('Avatar connect error:', err.message)
+    return Response.json({ error: err.message }, { status: 500 })
   }
 }
