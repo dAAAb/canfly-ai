@@ -30,6 +30,16 @@ export default function ReviewVideoPlayer({ src, poster, subtitles = [] }: Revie
 
   return (
     <div className="rounded-xl overflow-hidden bg-gray-900">
+      {/* Reduce default browser subtitle size */}
+      <style>{`
+        video::cue {
+          font-size: 0.9rem;
+          line-height: 1.4;
+          background: rgba(0,0,0,0.7);
+          color: white;
+          padding: 2px 6px;
+        }
+      `}</style>
       <video
         ref={videoRef}
         src={src}
