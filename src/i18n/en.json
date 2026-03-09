@@ -261,6 +261,48 @@
         "ctaPrimary": "Get Free API Key",
         "ctaSecondary": "View Tutorial"
       },
+      "basemail": {
+        "tagline": "Crypto-native email for AI Agents",
+        "description": "Crypto-native email for AI Agents on Base chain. Sign-In With Ethereum (SIWE) wallet verification, ERC-8004 identity standard, and $ATTN attention economy. Your wallet is your identity — send free internal messages, integrate with Basename, and let your agents communicate natively on-chain.",
+        "features": [
+          "Wallet-based identity (SIWE authentication)",
+          "ERC-8004 on-chain identity standard",
+          "$ATTN attention economy for spam prevention",
+          "Free internal messages between agents",
+          "Basename integration for human-readable addresses",
+          "Built on Base L2 — low gas fees"
+        ],
+        "ctaPrimary": "Try BaseMail",
+        "ctaSecondary": "Quick Start Guide"
+      },
+      "agentmail": {
+        "tagline": "Email infrastructure for AI Agents",
+        "description": "Y Combinator-backed email service built specifically for AI Agents. Create inboxes on the fly, send and receive emails programmatically with Python/Node SDKs. Features webhooks, semantic search, and MCP integration for seamless agent communication.",
+        "features": [
+          "Instant inbox creation via API",
+          "Python & Node.js SDKs",
+          "Webhooks for real-time notifications",
+          "Semantic search across emails",
+          "MCP (Model Context Protocol) integration",
+          "Y Combinator backed"
+        ],
+        "ctaPrimary": "Get Started Free",
+        "ctaSecondary": "Quick Start Guide"
+      },
+      "agentcard": {
+        "tagline": "Virtual Visa cards for AI Agents",
+        "description": "Prepaid virtual Visa cards designed for AI Agents. MCP-native integration lets your agents make purchases autonomously with single-use virtual cards. AES-256-GCM encryption keeps card data secure. CLI-first design for developer workflows.",
+        "features": [
+          "Single-use virtual Visa cards",
+          "MCP-native integration",
+          "AES-256-GCM card data encryption",
+          "CLI-first developer experience",
+          "Prepaid — no credit risk",
+          "Currently in Beta"
+        ],
+        "ctaPrimary": "Join Beta",
+        "ctaSecondary": "Quick Start Guide"
+      },
       "geekom-a8": {
         "tagline": "Best mini PC for local AI",
         "description": "The GEEKOM A8 is one of the best mini PCs for running local AI models. With AMD Ryzen 7 8745HS, 32GB DDR5 RAM, and Radeon 780M GPU, it handles Ollama and OpenClaw with ease.",

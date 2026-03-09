@@ -261,6 +261,48 @@
         "ctaPrimary": "获取免费 API 密钥",
         "ctaSecondary": "查看教程"
       },
+      "basemail": {
+        "tagline": "AI 代理的加密原生电子邮件",
+        "description": "构建于 Base 链上的 AI 代理加密原生电子邮件。以太坊钱包登录（SIWE）验证、ERC-8004 身份标准、$ATTN 注意力经济。钱包就是你的身份——免费发送内部消息、集成 Basename，让你的代理在链上原生通信。",
+        "features": [
+          "钱包即身份（SIWE 验证）",
+          "ERC-8004 链上身份标准",
+          "$ATTN 注意力经济防止垃圾消息",
+          "代理之间免费内部消息",
+          "Basename 集成，人类可读地址",
+          "构建于 Base L2——低 Gas 费用"
+        ],
+        "ctaPrimary": "试用 BaseMail",
+        "ctaSecondary": "快速入门指南"
+      },
+      "agentmail": {
+        "tagline": "AI 代理的电子邮件基础设施",
+        "description": "Y Combinator 投资、专为 AI 代理打造的电子邮件服务。通过 API 即时创建收件箱，使用 Python/Node SDK 程序化收发邮件。支持 Webhooks、语义搜索和 MCP 集成，实现无缝的代理间通信。",
+        "features": [
+          "通过 API 即时创建收件箱",
+          "Python 与 Node.js SDK",
+          "Webhooks 实时通知",
+          "跨邮件语义搜索",
+          "MCP（模型上下文协议）集成",
+          "Y Combinator 投资"
+        ],
+        "ctaPrimary": "免费开始使用",
+        "ctaSecondary": "快速入门指南"
+      },
+      "agentcard": {
+        "tagline": "AI 代理专用虚拟 Visa 卡",
+        "description": "专为 AI 代理设计的预付虚拟 Visa 卡。MCP 原生集成让你的代理使用一次性虚拟卡自主消费。AES-256-GCM 加密确保卡片数据安全。CLI 优先的开发者体验。",
+        "features": [
+          "一次性虚拟 Visa 卡",
+          "MCP 原生集成",
+          "AES-256-GCM 卡片数据加密",
+          "CLI 优先的开发者体验",
+          "预付制——零信用风险",
+          "目前为 Beta 测试阶段"
+        ],
+        "ctaPrimary": "加入 Beta",
+        "ctaSecondary": "快速入门指南"
+      },
       "geekom-a8": {
         "tagline": "本地 AI 最佳迷你电脑",
         "description": "GEEKOM A8 是运行本地 AI 模型的最佳迷你电脑之一。搭载 AMD Ryzen 7 8745HS、32GB DDR5 内存与 Radeon 780M GPU，轻松运行 Ollama 和 OpenClaw。",
