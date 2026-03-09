@@ -84,3 +84,22 @@ public/videos/reviews/
 ---
 
 *維護者：LittleLobster (CMO) — 有異動請更新此文件並通知 Paperclip 團隊*
+
+---
+
+## ⚠️ 「假橫式」影片記錄（2026-03-09）
+
+使用直式寶博 JCKOV1 avatar 指定 1280x720 dimension 產生的影片。
+Avatar 是直式的放在橫式畫面中，左右會有空白或不自然。
+
+**已生成但不使用：**
+- `/tmp/heygen-fake-horizontal/heygen-ollama.mp4`
+- `/tmp/heygen-fake-horizontal/heygen-zeabur.mp4`
+- `/tmp/heygen-fake-horizontal/heygen-umbrel.mp4`
+- `/tmp/heygen-fake-horizontal/heygen-elevenlabs.mp4`
+- `/tmp/heygen-fake-horizontal/heygen-heygen.mp4`
+
+**參數**：JCKOV1 avatar (`838320ce...`) + JCKOV1 voice (`102b19ec...`) + 1280x720 + speed 0.98 + Friendly
+**用途**：未來如果需要直式英文影片，可以重新裁切使用
+
+> 教訓：橫式影片要用橫式寶博 JC Ko avatar (`91e70516...`) + JC Ko voice (`84e4663b...`)
