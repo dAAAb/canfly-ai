@@ -26,8 +26,8 @@ export default function HomePage() {
       <HeroSection />
       <VisionSection />
       <FeaturesSection />
-      <QuoteSection />
       <AvatarSection />
+      <QuoteSection />
       <NewsletterSection />
       <CTASection />
     </div>
