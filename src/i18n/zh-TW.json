@@ -3554,5 +3554,12 @@
       "title": "白手套服務 — CanFly",
       "description": "讓我們的團隊為你設定 AI 環境。你只需放鬆，剩下的交給我們。"
     }
+  },
+  "avatar": {
+    "badge": "AI 助理",
+    "title": "跟小龍蝦聊聊",
+    "subtitle": "對 AI Agent 有疑問？跟我們的 AI 助理面對面聊天吧 — 由 Runway Characters 驅動。",
+    "startCall": "開始視訊通話 🦞",
+    "hint": "自然說話就好 — 小龍蝦聽得到，會即時回應。"
   }
 }

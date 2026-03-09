@@ -5,6 +5,7 @@ import HeroSection from '../sections/HeroSection'
 import VisionSection from '../sections/VisionSection'
 import FeaturesSection from '../sections/FeaturesSection'
 import QuoteSection from '../sections/QuoteSection'
+import AvatarSection from '../sections/AvatarSection'
 import NewsletterSection from '../sections/NewsletterSection'
 import CTASection from '../sections/CTASection'
 
@@ -26,6 +27,7 @@ export default function HomePage() {
       <VisionSection />
       <FeaturesSection />
       <QuoteSection />
+      <AvatarSection />
       <NewsletterSection />
       <CTASection />
     </div>

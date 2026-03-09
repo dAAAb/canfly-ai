@@ -3554,5 +3554,12 @@
       "title": "White-Glove Setup — CanFly",
       "description": "Let our team set up your AI environment. Sit back, relax — we'll handle everything."
     }
+  },
+  "avatar": {
+    "badge": "AI Assistant",
+    "title": "Talk to LittleLobster",
+    "subtitle": "Have questions about AI agents? Chat face-to-face with our AI assistant — powered by Runway Characters.",
+    "startCall": "Start Video Call with 🦞",
+    "hint": "Speak naturally — LittleLobster can hear and respond in real-time."
   }
 }
