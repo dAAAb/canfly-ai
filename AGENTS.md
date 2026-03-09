@@ -74,6 +74,35 @@ i18n.changeLanguage('zh-TW')
 
 **如果你新增了任何語言切換邏輯，一定要走這個 pattern！**
 
+## 🚀 Git Push 流程（重要！）
+
+**Agent 不可以自己 push！** 正確流程：
+
+```
+Agent 完成工作 → git commit → 回報 CEO → CEO review → CEO push
+```
+
+### Agent（Dev / Content Writer / LittleLobster）的職責：
+1. 做完工作後 `git add` + `git commit`
+2. **不要自己 `git push`**
+3. 在 ticket comment 回報 CEO：「已完成，請 review」
+4. 等 CEO review 通過
+
+### CEO 的職責：
+1. 收到 agent 回報後 review 程式碼品質
+2. 驗證 `npx vite build` 通過
+3. 驗證 i18n 三語 key 數量一致
+4. 用 curl 抽查頁面功能
+5. 通過後 `git push origin main`
+6. 確認 Cloudflare 部署成功
+
+### CEO 定期巡檢（每次 heartbeat 必做！）
+1. `git log origin/main..HEAD` — 有沒有 commit 了但沒 push 的？
+2. 有未 push 的 commits → review → 沒問題就 push
+3. **不要讓 commits 堆積！每次巡檢都要清空**
+
+---
+
 ## 🔍 自主巡檢（CEO 職責）
 
 CEO 每次 heartbeat 除了監督進度，還要：
@@ -81,3 +110,4 @@ CEO 每次 heartbeat 除了監督進度，還要：
 2. **檢查 git diff**：看最近的 commit 有沒有問題
 3. **自建 Bug ticket**：發現問題就自己建 issue，不用等人指派
 4. **推動改善**：主動發現可以優化的地方，建 issue 提案
+5. **檢查未 push commits**：`git log origin/main..HEAD`，有就 review + push
