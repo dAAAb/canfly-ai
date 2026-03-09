@@ -105,7 +105,7 @@ export default function ProductPage() {
     title: `${product.name} — Canfly`,
     description: t(`product.products.${pid}.description`, { defaultValue: product.description }),
     canonical: `https://canfly.ai${localePath(`/apps/${slug}`)}`,
-    ogImage: product.heroImage ? `https://canfly.ai${product.heroImage}` : product.icon ? `https://canfly.ai${product.icon}` : undefined,
+    ogImage: product.ogImage ? `https://canfly.ai${product.ogImage}` : product.heroImage ? `https://canfly.ai${product.heroImage}` : product.icon ? `https://canfly.ai${product.icon}` : undefined,
     ogType: 'website',
   } : {})
 

@@ -3,6 +3,7 @@ export interface Product {
   name: string
   icon: string
   heroImage?: string
+  ogImage?: string
   tagline: string
   category: string
   price: string
@@ -145,8 +146,9 @@ export const products: Product[] = [
   // === Budget Essential ===
   {
     id: 'hdmi-dummy-plug',
-    icon: '/images/icons/hdmi-dummy.png',
+    icon: '/images/products/hdmi-dummy-plug/logo-icon.jpg',
     heroImage: '/images/products/hdmi-dummy-plug.jpg',
+    ogImage: '/images/products/hdmi-dummy-plug/og-image.jpg',
     name: 'EVanlak 8K HDMI Dummy Plug',
     tagline: 'Headless server essential — unlock full resolution',
     category: 'hardware',
@@ -161,7 +163,12 @@ export const products: Product[] = [
       '8K@30Hz / 4K@120Hz / 1080p@144Hz',
       'Plug and play — no drivers, works with any computer',
     ],
-    screenshots: [],
+    screenshots: [
+      '/images/products/hdmi-dummy-plug/product-front.jpg',
+      '/images/products/hdmi-dummy-plug/mac-mini-setup.jpg',
+      '/images/products/hdmi-dummy-plug/headless-diagram.jpg',
+      '/images/products/hdmi-dummy-plug/connector-detail.jpg',
+    ],
     tutorial: '/learn/always-on-mac',
     affiliateLink: 'https://www.amazon.com/dp/B0CL21JLB1?tag=juchunko-20',
     affiliateCode: 'juchunko-20',
