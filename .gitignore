@@ -4,3 +4,4 @@ dist
 .env.local
 *.local
 reference/
+public/videos/**/*.mp4
