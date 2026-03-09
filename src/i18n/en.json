@@ -6,7 +6,7 @@
   "hero": {
     "titleLine1": "Now You Can",
     "titleLine2": "Fly.",
-    "subtitle": "Your own AI Agent in 5 minutes — zero cost, zero experience needed.\nJoin the AI Agent revolution.",
+    "subtitle": "Your own OpenClaw AI Agent in 5 minutes — zero cost, zero experience needed.\nJoin the AI Agent revolution.",
     "ctaFree": "Get Started Free",
     "ctaFreeTag": "(5 min setup)",
     "ctaBrowse": "Browse All Tools",
@@ -25,8 +25,8 @@
     "headingLine2": "an",
     "headingHighlight": "AI Agent.",
     "descLeft1": "The AI Agent market is exploding — from personal assistants to enterprise automation, 2026 is the year everyone can have an AI partner. But most people don't know where to start.",
-    "descLeft2": "What hardware to choose? How to install software? How to run an Agent? Canfly solves all these questions at once.",
-    "descRight1": "We are the knowledge guide to the AI Agent world. From free experiences to hardware recommendations, from white-glove setup to community support — we take you from zero to takeoff.",
+    "descLeft2": "What hardware to choose? How to install software? How to run an OpenClaw Agent? Canfly solves all these questions at once.",
+    "descRight1": "We are the knowledge guide to the OpenClaw AI Agent world. From free experiences to hardware recommendations, from white-glove setup to community support — we take you from zero to takeoff.",
     "descRight2": "Not just a tool platform, but a community. Every user has their own flight log, showcasing your AI Agent, sharing your setup, and inspiring others.",
     "stat1Value": "$300B",
     "stat1Label": "2027 AI Agent market size",
@@ -42,7 +42,7 @@
     "items": [
       {
         "title": "Free Takeoff",
-        "desc": "Experience AI Agents at zero cost — Ollama + OpenClaw, set up in five minutes. Own your first AI partner without spending a dime."
+        "desc": "Experience OpenClaw AI Agents at zero cost — Ollama + OpenClaw, set up in five minutes. Own your first AI partner without spending a dime."
       },
       {
         "title": "Knowledge Guide",
@@ -106,13 +106,13 @@
   "cta": {
     "headingLine1": "Ready?",
     "headingHighlight": "Start flying today.",
-    "desc": "Thousands of builders are already using AI Agents to work smarter.\nStart free with Ollama — upgrade to cloud and premium skills when you're ready.",
+    "desc": "Thousands of builders are already using OpenClaw AI Agents to work smarter.\nStart free with Ollama — upgrade to cloud and premium skills when you're ready.",
     "ctaButton": "Get Started Free",
     "followX": "Follow @dAAAb"
   },
   "footer": {
     "copyright": "© 2026 Canfly",
-    "tagline": "With AI Lobster, you can fly too"
+    "tagline": "With OpenClaw AI Lobster, you can fly too"
   },
   "apps": {
     "searchPlaceholder": "Search apps...",

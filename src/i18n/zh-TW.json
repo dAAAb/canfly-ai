@@ -6,7 +6,7 @@
   "hero": {
     "titleLine1": "Now You Can",
     "titleLine2": "Fly.",
-    "subtitle": "5 分鐘擁有你的 AI Agent — 零費用、零門檻。\n加入 AI Agent 革命的行列。",
+    "subtitle": "5 分鐘擁有你的 OpenClaw 小龍蝦 AI Agent — 零費用、零門檻。\n加入 AI Agent 革命的行列。",
     "ctaFree": "免費立即開始",
     "ctaFreeTag": "(5 分鐘設定)",
     "ctaBrowse": "瀏覽所有工具",
@@ -25,8 +25,8 @@
     "headingLine2": "an",
     "headingHighlight": "AI Agent.",
     "descLeft1": "AI Agent 市場正在爆發 — 從個人助理到企業自動化，2026 是人人都能擁有 AI 夥伴的元年。但大多數人不知道從哪裡開始。",
-    "descLeft2": "硬體怎麼選？軟體怎麼裝？Agent 怎麼跑？這些問題，Canfly 一次解決。",
-    "descRight1": "我們是 AI Agent 世界的知識嚮導。從免費體驗到硬體導購，從白手套設定到社群互助 — 帶你從零開始起飛。",
+    "descLeft2": "硬體怎麼選？軟體怎麼裝？OpenClaw Agent 怎麼跑？這些問題，Canfly 一次解決。",
+    "descRight1": "我們是 OpenClaw 小龍蝦 AI Agent 世界的知識嚮導。從免費體驗到硬體導購，從白手套設定到社群互助 — 帶你從零開始起飛。",
     "descRight2": "不只是工具平台，更是一個社群。每位使用者都有自己的飛行日誌，展示你的 AI Agent、分享你的配置、啟發更多人。",
     "stat1Value": "$300B",
     "stat1Label": "2027 AI Agent 市場規模",
@@ -42,7 +42,7 @@
     "items": [
       {
         "title": "免費起飛",
-        "desc": "零成本體驗 AI Agent — Ollama + OpenClaw，五分鐘搞定。不用花一毛錢，就能擁有你的第一個 AI 夥伴。"
+        "desc": "零成本體驗 OpenClaw 小龍蝦 AI Agent — Ollama + OpenClaw，五分鐘搞定。不用花一毛錢，就能擁有你的第一個 AI 夥伴。"
       },
       {
         "title": "知識導購",
@@ -106,13 +106,13 @@
   "cta": {
     "headingLine1": "準備好了嗎？",
     "headingHighlight": "今天就起飛。",
-    "desc": "數千名創作者已經在用 AI Agent 更聰明地工作。\n從 Ollama 免費開始 — 準備好了再升級雲端和進階技能。",
+    "desc": "數千名創作者已經在用 OpenClaw 小龍蝦 AI Agent 更聰明地工作。\n從 Ollama 免費開始 — 準備好了再升級雲端和進階技能。",
     "ctaButton": "免費立即開始",
     "followX": "Follow @dAAAb"
   },
   "footer": {
     "copyright": "© 2026 Canfly",
-    "tagline": "有了小龍蝦 AI，你也能飛"
+    "tagline": "有了 OpenClaw 小龍蝦 AI，你也能飛"
   },
   "apps": {
     "searchPlaceholder": "搜尋應用...",
