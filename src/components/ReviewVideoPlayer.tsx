@@ -33,11 +33,11 @@ export default function ReviewVideoPlayer({ src, poster, subtitles = [] }: Revie
       {/* Reduce default browser subtitle size */}
       <style>{`
         video::cue {
-          font-size: 0.9rem;
-          line-height: 1.4;
-          background: rgba(0,0,0,0.7);
+          font-size: clamp(10px, 1.8vw, 16px);
+          line-height: 1.3;
+          background: rgba(0,0,0,0.75);
           color: white;
-          padding: 2px 6px;
+          padding: 1px 4px;
         }
       `}</style>
       <video
