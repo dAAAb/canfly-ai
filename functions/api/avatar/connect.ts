@@ -4,7 +4,8 @@
  *
  * 1. Creates a realtime session via Runway API
  * 2. Polls until session is READY (has sessionKey)
- * 3. Returns { sessionId, sessionKey } to the client SDK
+ * 3. Calls /consume to get LiveKit WebRTC credentials
+ * 4. Returns full credentials { sessionId, serverUrl, token, roomName }
  */
 
 interface Env {
@@ -79,6 +80,28 @@ async function waitForReady(apiSecret: string, sessionId: string, timeoutMs = 30
   }
 }
 
+async function consumeSession(sessionId: string, sessionKey: string) {
+  const res = await fetch(`${RUNWAY_API}/v1/realtime_sessions/${sessionId}/consume`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${sessionKey}`,
+      'X-Runway-Version': RUNWAY_VERSION,
+      'Content-Type': 'application/json',
+    },
+  })
+
+  if (!res.ok) {
+    const errText = await res.text()
+    throw new Error(`Consume session failed: ${res.status} ${errText}`)
+  }
+
+  return (await res.json()) as {
+    url: string
+    token: string
+    roomName: string
+  }
+}
+
 export const onRequestPost: PagesFunction<Env> = async (context) => {
   const apiSecret = context.env.RUNWAYML_API_SECRET
   if (!apiSecret) {
@@ -104,8 +127,16 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     // Step 2: Poll until READY (get sessionKey)
     const { sessionKey } = await waitForReady(apiSecret, sessionId)
 
-    // Step 3: Return to SDK — it will call /consume internally
-    return Response.json({ sessionId, sessionKey })
+    // Step 3: Consume — get LiveKit WebRTC credentials
+    const { url, token, roomName } = await consumeSession(sessionId, sessionKey)
+
+    // Step 4: Return full credentials to SDK
+    return Response.json({
+      sessionId,
+      serverUrl: url,
+      token,
+      roomName,
+    })
   } catch (err: any) {
     console.error('Avatar connect error:', err.message)
     return Response.json({ error: err.message }, { status: 500 })
