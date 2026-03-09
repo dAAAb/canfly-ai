@@ -1,3 +1,4 @@
+import ReactMarkdown from 'react-markdown'
 import { useParams, Link } from 'react-router-dom'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -221,7 +222,9 @@ export default function ProductPage() {
                 )}
               </div>
               <p className="text-xl text-gray-400 mb-4">{t(`product.products.${pid}.tagline`, { defaultValue: product.tagline })}</p>
-              <p className="text-gray-300 leading-relaxed">{t(`product.products.${pid}.description`, { defaultValue: product.description })}</p>
+              <div className="text-gray-300 leading-relaxed prose prose-invert prose-sm max-w-none">
+                <ReactMarkdown>{t(`product.products.${pid}.description`, { defaultValue: product.description })}</ReactMarkdown>
+              </div>
             </div>
 
             {/* Coming Soon: Notify Me section */}

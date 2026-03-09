@@ -1,3 +1,4 @@
+import ReactMarkdown from 'react-markdown'
 import { useParams, Link } from 'react-router-dom'
 import { Clock, CheckCircle, Copy, ExternalLink, ChevronDown, ChevronRight, Terminal, Download, Monitor, MessageSquare, Rocket, HelpCircle, Cpu, Sparkles, Search, Globe, Key, Shield, Users, HardDrive, Zap } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
@@ -1444,7 +1445,9 @@ export default function TutorialPage() {
 
                 {/* Content */}
                 <div className="ml-0 sm:ml-14">
-                  <p className="text-gray-300 mb-4 leading-relaxed">{step.content}</p>
+                  <div className="text-gray-300 mb-4 leading-relaxed prose prose-invert prose-sm max-w-none">
+                    <ReactMarkdown>{step.content}</ReactMarkdown>
+                  </div>
 
                   {step.screenshots && step.screenshots.length > 0 && (
                     <ScreenshotGallery screenshots={step.screenshots} />
@@ -1453,7 +1456,9 @@ export default function TutorialPage() {
                   {step.subsections?.map((sub, si) => (
                     <div key={si} className="bg-gray-900/50 border border-gray-800 rounded-lg p-4 mb-4">
                       <h4 className="text-sm font-medium text-gray-200 mb-1">{sub.label}</h4>
-                      <p className="text-sm text-gray-400">{sub.text}</p>
+                      <div className="text-sm text-gray-400 prose prose-invert prose-xs max-w-none">
+                        <ReactMarkdown>{sub.text}</ReactMarkdown>
+                      </div>
                     </div>
                   ))}
 
