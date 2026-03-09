@@ -182,10 +182,10 @@ const PRODUCT_META: Record<string, OgMeta> = {
     ogImage: `${SITE}/images/icons/apple.png`,
   },
   'hdmi-dummy-plug': {
-    title: 'HDMI Dummy Plug — Headless AI Server Essential | CanFly',
+    title: 'HDMI Dummy Plug — Unlock Full Resolution on Headless Servers | CanFly',
     description:
-      'Enable GPU acceleration on headless AI servers. Plug and play, under $10.',
-    ogImage: `${SITE}/images/icons/hdmi-dummy.png`,
+      'No monitor? No problem. Plug in and unlock full GPU acceleration + crisp remote desktop on your Mac Mini or AI server. Under $10.',
+    ogImage: `${SITE}/images/products/hdmi-dummy-plug.jpg`,
   },
   'geekom-a8': {
     title: 'GEEKOM A8 Mini PC — Best for Local AI | CanFly',
