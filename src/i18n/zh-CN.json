@@ -3095,8 +3095,14 @@
           ],
           "chatExample": {
             "exchanges": [
-              { "role": "user", "text": "中国的首都在哪里？" },
-              { "role": "ai", "text": "中国的首都是北京（Beijing）。北京是中国最重要的城市之一，也是中国的政治、经济和文化中心。" }
+              {
+                "role": "user",
+                "text": "中国的首都在哪里？"
+              },
+              {
+                "role": "ai",
+                "text": "中国的首都是北京（Beijing）。北京是中国最重要的城市之一，也是中国的政治、经济和文化中心。"
+              }
             ]
           },
           "expectedResult": "你会看到 AI 实时回复你的消息。模型完全在你 Mac 的硬件上通过 VM 运行 — 完全私密，可以离线使用。",
@@ -3602,6 +3608,289 @@
         {
           "question": "oMLX 可以配合 Claude Code 用吗？",
           "answer": "**完全可以！而且效果惊人。**\n\n### 🤝 完美搭配的理由\n\n**本地 + 云端的最佳组合**：\n- 🏠 **oMLX（本地）**：处理频繁的工具调用、代码补全、快速查询\n- ☁️ **Claude Code（云端）**：处理复杂推理、创意写作、专业分析\n\n### ⚙️ 配置方案\n\n```json\n{\n  \"models\": {\n    \"fast\": \"omlx/qwen2.5-7b-instruct\",  // 本地快速响应\n    \"smart\": \"anthropic/claude-3.5-sonnet\", // 云端强大推理\n    \"routing\": {\n      \"tool_calls\": \"fast\",\n      \"complex_reasoning\": \"smart\",\n      \"code_generation\": \"fast\",\n      \"creative_writing\": \"smart\"\n    }\n  }\n}\n```\n\n### 🎯 使用场景\n\n- **日常编程**：oMLX 处理代码补全和简单查询\n- **复杂项目**：Claude 处理架构设计和算法优化\n- **学习研究**：本地快速验证 + 云端深度分析\n\n**结果**：既有本地的隐私和速度，又有云端的强大能力！"
+        }
+      ]
+    },
+    "openclaw-troubleshooting": {
+      "title": "OpenClaw 故障排查指南",
+      "subtitle": "3 分钟内解决 OpenClaw + Ollama 最常见的两个问题 — npm 权限错误和工具禁用。",
+      "duration": "3 分钟",
+      "difficulty": "初学者",
+      "steps": [
+        {
+          "title": "判断问题类型",
+          "titleEn": "Identify the Problem",
+          "estimatedTime": "30 秒",
+          "content": "通过 Ollama 安装 OpenClaw 后，你可能会遇到两个常见问题：\n\n**问题 A — npm 权限错误：** 执行 `openclaw` 命令时出现 `npm error path: '/usr/local/lib/node_modules/openclaw'` 和 `The operation was rejected by your operating system` 错误信息。\n\n**问题 B — 工具禁用：** OpenClaw 安装成功但 Agent 只能聊天 — 无法执行终端命令、无法抓取网页、无法搜索。执行 `openclaw status` 时每个工具旁边都显示 `disabled by profile`。",
+          "expectedResult": "你已经判断出遇到哪个问题。npm 权限错误请看步骤 2，工具禁用请跳到步骤 3。",
+          "tips": [
+            "你可能同时遇到两个问题 — 先修 npm 权限，再检查工具配置",
+            "这些问题只影响通过 Ollama 安装的用户，直接用 npm 安装不会遇到"
+          ]
+        },
+        {
+          "title": "修复 npm 权限错误",
+          "titleEn": "Fix npm Permission Errors",
+          "estimatedTime": "1 分钟",
+          "content": "当 Node.js 通过 macOS `.pkg` 安装包安装时，npm 的全局目录（`/usr/local/lib/node_modules/`）归 root 所有。因为 Ollama 用你的普通用户身份运行，所以没有写入权限。\n\n**快速修复** — 更改全局 npm 目录的所有者：",
+          "commands": [
+            "# 修复 npm 全局目录权限",
+            "sudo chown -R $(whoami) /usr/local/lib/node_modules/",
+            "sudo chown -R $(whoami) /usr/local/bin/",
+            "",
+            "# 验证修复",
+            "openclaw --version"
+          ],
+          "expectedResult": "OpenClaw 版本号正常显示（例如 `openclaw v0.17.x`）。",
+          "tips": [
+            "如果你使用 nvm（Node 版本管理器），不会遇到这个问题 — nvm 把所有东西装在你的主目录下",
+            "长期解决方案：改用 nvm `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash`"
+          ],
+          "troubleshooting": {
+            "title": "还是有权限错误？",
+            "items": [
+              {
+                "q": "~/.ollama/config.json 权限错误？",
+                "a": "这个文件可能也归 root 所有。修复命令：`sudo chown $(whoami) ~/.ollama/config.json`"
+              },
+              {
+                "q": "在 Windows 上？",
+                "a": "以管理员身份运行终端，或使用 `npm config set prefix` 把全局目录指向你的用户文件夹。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "修复工具禁用（tools.profile）",
+          "titleEn": "Fix Disabled Tools (tools.profile)",
+          "estimatedTime": "1 分钟",
+          "content": "默认情况下，Ollama 安装 OpenClaw 时会使用限制性的 `chat` 配置文件 — 你的 Agent 只能聊天，无法使用终端、网页或文件工具。这是安全机制，因为不是所有 Ollama 用户都希望 Agent 动到系统。\n\n**步骤 1：** 检查当前状态：",
+          "commands": [
+            "# 检查哪些工具已启用/禁用",
+            "openclaw status",
+            "",
+            "# 你会看到大部分工具旁边写 'disabled by profile'",
+            "# 切换到完整配置来修复：",
+            "openclaw config set tools.profile full",
+            "",
+            "# 重启 gateway 应用配置",
+            "openclaw gateway restart",
+            "",
+            "# 确认工具已启用",
+            "openclaw status"
+          ],
+          "expectedResult": "所有工具现在都显示 `enabled`。你的 Agent 可以使用终端、网页抓取、搜索等所有功能。",
+          "tips": [
+            "三种配置等级：**chat**（纯对话）、**standard**（对话 + 搜索 + 读取）、**full**（所有工具启用）",
+            "如果只要搜索/读取功能而不要终端执行，选择 `standard`",
+            "随时可以切回：`openclaw config set tools.profile chat`"
+          ],
+          "troubleshooting": {
+            "title": "工具还是不能用？",
+            "items": [
+              {
+                "q": "配置文件在哪里？",
+                "a": "OpenClaw 配置文件位于 `~/.openclaw/openclaw.json`。你也可以直接编辑后重启。"
+              },
+              {
+                "q": "Gateway 无法重启？",
+                "a": "先尝试 `openclaw gateway stop`，等几秒后再 `openclaw gateway start`。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "确认一切正常",
+          "titleEn": "Verify Everything Works",
+          "estimatedTime": "30 秒",
+          "content": "确认两个修复都成功。运行状态检查并测试基本的 Agent 交互：",
+          "commands": [
+            "# 完整状态检查",
+            "openclaw status",
+            "",
+            "# 测试 gateway",
+            "openclaw gateway status",
+            "",
+            "# 快速测试 — 让你的 Agent 做点事",
+            "openclaw chat \"What's today's date?\""
+          ],
+          "expectedResult": "所有系统正常。你的 Agent 回复今天的日期，确认工具运行正常。",
+          "nextStepCards": [
+            {
+              "emoji": "🚀",
+              "title": "OpenClaw 快速上手",
+              "desc": "从零开始设置 OpenClaw + Ollama",
+              "cta": "开始教程",
+              "link": "/learn/ollama-openclaw"
+            },
+            {
+              "emoji": "🧩",
+              "title": "Agent 技能市场",
+              "desc": "为你的 Agent 安装 15+ 开源技能",
+              "cta": "浏览技能",
+              "link": "/learn/agent-skills"
+            },
+            {
+              "emoji": "☁️",
+              "title": "部署到云端",
+              "desc": "在 Zeabur 上 24/7 运行你的 Agent",
+              "cta": "云端教程",
+              "link": "/learn/zeabur"
+            }
+          ],
+          "tips": [
+            "收藏这个页面 — 这是 OpenClaw 最常见的两个问题",
+            "遇到其他问题可以加入社区讨论"
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "为什么 Ollama 安装 OpenClaw 时会限制工具？",
+          "a": "安全第一。Ollama 用户从初学者到高级用户都有，所以默认的 'chat' 配置可以防止 Agent 不小心修改你的系统。高级用户只要一条命令就能解锁全部功能。"
+        },
+        {
+          "q": "这些修复在 Ollama 更新后还有效吗？",
+          "a": "npm 权限修复是永久的。tools.profile 配置会保存在你的配置文件中，更新后也会保留。"
+        },
+        {
+          "q": "可以用 'standard' 配置代替 'full' 吗？",
+          "a": "可以！Standard 让你的 Agent 有搜索和读取的能力，但不能执行终端命令。适合想要研究功能但不想让 Agent 修改系统的用户。"
+        }
+      ]
+    },
+    "agent-skills": {
+      "title": "安装 AI Agent 技能 — 15 个开源超能力",
+      "subtitle": "一行命令为任何 AI 编程助手添加钱包、电子邮件、语音、视频和智能家居功能。支持 Claude Code、Codex、Cursor 等 40+ 平台。",
+      "duration": "5 分钟",
+      "difficulty": "初学者",
+      "steps": [
+        {
+          "title": "什么是 Agent Skills？",
+          "titleEn": "What Are Agent Skills?",
+          "estimatedTime": "1 分钟",
+          "content": "**Agent Skills** 是一个开放标准（由 Vercel Labs 推动），让 AI 编程助手通过简单的 `SKILL.md` 文件学习新能力。把它想成 **AI Agent 的 USB 标准** — 一个技能可以在 40+ 个平台上通用。\n\n葛如钧博士的团队已开源 **15 个技能**，涵盖：\n- **钱包与身份** — 加密货币钱包、链上名称、Agent 身份\n- **通信** — AI Agent 电子邮件（BaseMail、NADMail）\n- **媒体与内容** — HeyGen 视频、ElevenLabs 语音、Podcast\n- **智能家居** — SwitchBot 设备控制\n- **Agent 基础设施** — 协议互通、市场委托簿\n\n所有 15 个技能免费、开源，在 ClawHub 上累计 **15,400+ 次下载**。",
+          "tips": [
+            "技能支持所有兼容 Agent Skills 的平台：Claude Code、Codex、Cursor、Windsurf 等",
+            "每个技能就是一个 SKILL.md 文件 — 不需要复杂的安装"
+          ]
+        },
+        {
+          "title": "一次安装全部技能",
+          "titleEn": "Install All Skills at Once",
+          "estimatedTime": "1 分钟",
+          "content": "最快的开始方式是安装整个技能包。这会为你当前的 AI Agent 添加所有 15 个技能：",
+          "commands": [
+            "# 一次安装全部 15 个技能",
+            "npx skills add dAAAb/agent-skills",
+            "",
+            "# 或通过 ClawHub 安装",
+            "clawhub install agent-skills"
+          ],
+          "expectedResult": "全部 15 个技能安装完成。你的 AI Agent 现在可以使用钱包、电子邮件、语音、视频和智能家居功能。",
+          "tips": [
+            "技能以 SKILL.md 文件安装到你的项目中 — 不需要额外依赖或构建步骤",
+            "你可以在 Agent 使用前先查看每个技能的内容"
+          ]
+        },
+        {
+          "title": "安装单个技能",
+          "titleEn": "Install Individual Skills",
+          "estimatedTime": "1 分钟",
+          "content": "想要挑选特定的？只安装你需要的技能：\n\n**钱包与身份（5 个技能）：**\n- `base-wallet` — 创建和管理 Base L2 钱包\n- `basename-agent` — 注册 .base.eth 名称\n- `nad-wallet` — NAD 区块链钱包\n- `nadname-agent` — NAD 名称注册\n- `walletconnect-agent` — 连接 dApps\n\n**通信（3 个技能）：**\n- `basemail` — 通过 BaseMail 收发 AI Agent 电子邮件\n- `nadmail` — NAD 邮件服务\n- `ethermail` — 以太坊邮件\n\n**媒体与内容（4 个技能）：**\n- `heygen` — 生成虚拟形象视频\n- `elevenlabs-phone-reminder` — 语音电话提醒\n- `daily-voice-quote` — 每日语音金句\n- `podcast-summarizer` — AI 摘要 Podcast\n\n**智能家居（1 个技能）：**\n- `switchbot` — 控制 SwitchBot 设备\n\n**Agent 基础设施（2 个技能）：**\n- `virtuals-protocol-acp` — 虚拟协议互通\n- `moltbook` — 市场委托簿访问",
+          "commands": [
+            "# 安装特定技能",
+            "npx skills add dAAAb/agent-skills --skill basemail",
+            "",
+            "# 安装多个特定技能",
+            "npx skills add dAAAb/agent-skills --skill heygen",
+            "npx skills add dAAAb/agent-skills --skill elevenlabs-phone-reminder",
+            "npx skills add dAAAb/agent-skills --skill switchbot"
+          ],
+          "expectedResult": "已安装选定的技能。你的 Agent 获得你选择的能力。",
+          "tips": [
+            "建议从通信技能开始（basemail）— 最通用实用",
+            "媒体技能（heygen、elevenlabs）和 CanFly.ai 的联盟教程搭配得很好"
+          ]
+        },
+        {
+          "title": "让你的 Agent 使用技能",
+          "titleEn": "Use a Skill with Your Agent",
+          "estimatedTime": "1 分钟",
+          "content": "安装完成后，技能会自动提供给你的 AI Agent。以下是实际使用示例：\n\n**示例：用 BaseMail 发邮件**\n告诉你的 Agent：*「发一封邮件给 alice@basemail.ai 说你好」*\n\n**示例：用 HeyGen 生成视频**\n告诉你的 Agent：*「制作一段 30 秒的虚拟形象视频介绍我们的产品」*\n\n**示例：控制智能家居**\n告诉你的 Agent：*「通过 SwitchBot 关掉客厅的灯」*\n\nAgent 会读取 SKILL.md 文件、理解功能、自主执行任务。",
+          "expectedResult": "你的 Agent 成功使用安装的技能，执行超越基本编程的任务。",
+          "tips": [
+            "需要 API 密钥的技能（HeyGen、ElevenLabs、SwitchBot）会在首次使用时提示你输入凭据",
+            "查看 SKILL.md 文件了解每个技能的完整功能"
+          ],
+          "troubleshooting": {
+            "title": "技能不能用？",
+            "items": [
+              {
+                "q": "Agent 认不出这个技能？",
+                "a": "确认 SKILL.md 文件在你的项目根目录或 `.skills/` 文件夹中。部分平台添加技能后需要重启。"
+              },
+              {
+                "q": "API 密钥错误？",
+                "a": "连接外部服务的技能需要 API 密钥。请查看技能的 SKILL.md 设置说明，或参考我们的 API 密钥管理教程（/learn/api-keys）。"
+              },
+              {
+                "q": "技能在某个平台可以用但在另一个不行？",
+                "a": "并非所有平台都支持每个 Agent Skills 功能。请查看技能 SKILL.md 中的兼容性说明。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "探索 ClawHub 上的更多技能",
+          "titleEn": "Explore More on ClawHub",
+          "estimatedTime": "1 分钟",
+          "content": "ClawHub 是 Agent Skills 的开放市场。除了这 15 个，社区每天都在打造更多技能。\n\n**下载量排行：**\n1. HeyGen 虚拟形象视频 — 2,100+ 次下载\n2. BaseMail — 1,800+ 次下载\n3. SwitchBot — 1,500+ 次下载\n4. Daily Voice Quote — 1,200+ 次下载\n\n在 ClawHub 上浏览、安装，甚至发布你自己的技能。",
+          "nextStepCards": [
+            {
+              "emoji": "🎤",
+              "title": "ElevenLabs 语音教程",
+              "desc": "为你的项目添加专业语音合成",
+              "cta": "开始教程",
+              "link": "/learn/elevenlabs-integration"
+            },
+            {
+              "emoji": "🎥",
+              "title": "HeyGen 视频教程",
+              "desc": "制作 AI 虚拟形象视频用于营销和教育",
+              "cta": "开始教程",
+              "link": "/learn/heygen-video"
+            },
+            {
+              "emoji": "🔑",
+              "title": "API 密钥管理",
+              "desc": "学习如何安全管理所有技能的 API 密钥",
+              "cta": "开始教程",
+              "link": "/learn/api-keys"
+            }
+          ],
+          "tips": [
+            "想打造自己的技能？只要写一个 SKILL.md 文件，遵循 Agent Skills 格式",
+            "发布到 ClawHub：`clawhub publish`"
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Agent Skills 免费吗？",
+          "a": "是的，这个系列的 15 个技能全部开源免费。部分技能连接到付费服务（如 HeyGen 或 ElevenLabs），那些服务有各自的价格。"
+        },
+        {
+          "q": "需要 OpenClaw 才能使用 Agent Skills 吗？",
+          "a": "不需要。Agent Skills 是开放标准，支持 40+ 个 AI 编程助手平台，包括 Claude Code、Codex 和 Cursor。OpenClaw/ClawHub 只是其中一种探索和安装的方式。"
+        },
+        {
+          "q": "可以自己打造 Agent Skills 吗？",
+          "a": "当然可以！写一个 SKILL.md 文件、遵循 Agent Skills 格式、用你喜欢的 AI 平台测试，然后选择性地发布到 ClawHub 让其他人使用。"
+        },
+        {
+          "q": "技能的安全性如何？",
+          "a": "每个技能都是透明的 SKILL.md markdown 文件，使用前你可以审查。API 密钥存储在本地，不会被分享。技能只在你的 Agent 明确调用时才会执行。"
         }
       ]
     }

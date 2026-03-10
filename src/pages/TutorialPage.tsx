@@ -1262,6 +1262,136 @@ function createOmlxTutorial(t: any): TutorialData {
   }
 }
 
+function createOpenclawTroubleshootingTutorial(t: any): TutorialData {
+  return {
+    id: 'openclaw-troubleshooting',
+    title: t('tutorial.openclaw-troubleshooting.title'),
+    subtitle: t('tutorial.openclaw-troubleshooting.subtitle'),
+    duration: t('tutorial.openclaw-troubleshooting.duration'),
+    difficulty: t('tutorial.openclaw-troubleshooting.difficulty'),
+    faq: t('tutorial.openclaw-troubleshooting.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: HelpCircle,
+        title: t('tutorial.openclaw-troubleshooting.steps.0.title'),
+        titleEn: t('tutorial.openclaw-troubleshooting.steps.0.titleEn'),
+        estimatedTime: t('tutorial.openclaw-troubleshooting.steps.0.estimatedTime'),
+        content: t('tutorial.openclaw-troubleshooting.steps.0.content'),
+        expectedResult: t('tutorial.openclaw-troubleshooting.steps.0.expectedResult'),
+        tips: t('tutorial.openclaw-troubleshooting.steps.0.tips', { returnObjects: true }),
+      },
+      {
+        icon: Shield,
+        title: t('tutorial.openclaw-troubleshooting.steps.1.title'),
+        titleEn: t('tutorial.openclaw-troubleshooting.steps.1.titleEn'),
+        estimatedTime: t('tutorial.openclaw-troubleshooting.steps.1.estimatedTime'),
+        content: t('tutorial.openclaw-troubleshooting.steps.1.content'),
+        commands: t('tutorial.openclaw-troubleshooting.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.openclaw-troubleshooting.steps.1.expectedResult'),
+        tips: t('tutorial.openclaw-troubleshooting.steps.1.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.openclaw-troubleshooting.steps.1.troubleshooting.title'),
+          items: t('tutorial.openclaw-troubleshooting.steps.1.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Key,
+        title: t('tutorial.openclaw-troubleshooting.steps.2.title'),
+        titleEn: t('tutorial.openclaw-troubleshooting.steps.2.titleEn'),
+        estimatedTime: t('tutorial.openclaw-troubleshooting.steps.2.estimatedTime'),
+        content: t('tutorial.openclaw-troubleshooting.steps.2.content'),
+        commands: t('tutorial.openclaw-troubleshooting.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.openclaw-troubleshooting.steps.2.expectedResult'),
+        tips: t('tutorial.openclaw-troubleshooting.steps.2.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.openclaw-troubleshooting.steps.2.troubleshooting.title'),
+          items: t('tutorial.openclaw-troubleshooting.steps.2.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.openclaw-troubleshooting.steps.3.title'),
+        titleEn: t('tutorial.openclaw-troubleshooting.steps.3.titleEn'),
+        estimatedTime: t('tutorial.openclaw-troubleshooting.steps.3.estimatedTime'),
+        content: t('tutorial.openclaw-troubleshooting.steps.3.content'),
+        commands: t('tutorial.openclaw-troubleshooting.steps.3.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.openclaw-troubleshooting.steps.3.expectedResult'),
+        nextStepCards: (t('tutorial.openclaw-troubleshooting.steps.3.nextStepCards', { returnObjects: true }) || []).map((card: NextStepCard) => ({
+          ...card,
+          link: card.link || '#',
+        })),
+        tips: t('tutorial.openclaw-troubleshooting.steps.3.tips', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
+function createAgentSkillsTutorial(t: any): TutorialData {
+  return {
+    id: 'agent-skills',
+    title: t('tutorial.agent-skills.title'),
+    subtitle: t('tutorial.agent-skills.subtitle'),
+    duration: t('tutorial.agent-skills.duration'),
+    difficulty: t('tutorial.agent-skills.difficulty'),
+    faq: t('tutorial.agent-skills.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Sparkles,
+        title: t('tutorial.agent-skills.steps.0.title'),
+        titleEn: t('tutorial.agent-skills.steps.0.titleEn'),
+        estimatedTime: t('tutorial.agent-skills.steps.0.estimatedTime'),
+        content: t('tutorial.agent-skills.steps.0.content'),
+        tips: t('tutorial.agent-skills.steps.0.tips', { returnObjects: true }),
+      },
+      {
+        icon: Download,
+        title: t('tutorial.agent-skills.steps.1.title'),
+        titleEn: t('tutorial.agent-skills.steps.1.titleEn'),
+        estimatedTime: t('tutorial.agent-skills.steps.1.estimatedTime'),
+        content: t('tutorial.agent-skills.steps.1.content'),
+        commands: t('tutorial.agent-skills.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.agent-skills.steps.1.expectedResult'),
+        tips: t('tutorial.agent-skills.steps.1.tips', { returnObjects: true }),
+      },
+      {
+        icon: Terminal,
+        title: t('tutorial.agent-skills.steps.2.title'),
+        titleEn: t('tutorial.agent-skills.steps.2.titleEn'),
+        estimatedTime: t('tutorial.agent-skills.steps.2.estimatedTime'),
+        content: t('tutorial.agent-skills.steps.2.content'),
+        commands: t('tutorial.agent-skills.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.agent-skills.steps.2.expectedResult'),
+        tips: t('tutorial.agent-skills.steps.2.tips', { returnObjects: true }),
+      },
+      {
+        icon: MessageSquare,
+        title: t('tutorial.agent-skills.steps.3.title'),
+        titleEn: t('tutorial.agent-skills.steps.3.titleEn'),
+        estimatedTime: t('tutorial.agent-skills.steps.3.estimatedTime'),
+        content: t('tutorial.agent-skills.steps.3.content'),
+        expectedResult: t('tutorial.agent-skills.steps.3.expectedResult'),
+        tips: t('tutorial.agent-skills.steps.3.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.agent-skills.steps.3.troubleshooting.title'),
+          items: t('tutorial.agent-skills.steps.3.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Globe,
+        title: t('tutorial.agent-skills.steps.4.title'),
+        titleEn: t('tutorial.agent-skills.steps.4.titleEn'),
+        estimatedTime: t('tutorial.agent-skills.steps.4.estimatedTime'),
+        content: t('tutorial.agent-skills.steps.4.content'),
+        nextStepCards: (t('tutorial.agent-skills.steps.4.nextStepCards', { returnObjects: true }) || []).map((card: NextStepCard) => ({
+          ...card,
+          link: card.link || '#',
+        })),
+        tips: t('tutorial.agent-skills.steps.4.tips', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
 function getTutorials(t: any): Record<string, TutorialData> {
   return {
     ollama: createOllamaTutorial(t),
@@ -1278,6 +1408,8 @@ function getTutorials(t: any): Record<string, TutorialData> {
     hardware: createHardwareTutorial(t),
     'always-on-mac': createAlwaysOnMacTutorial(t),
     'virtual-buddy-ollama': createVirtualBuddyOllamaTutorial(t),
+    'openclaw-troubleshooting': createOpenclawTroubleshootingTutorial(t),
+    'agent-skills': createAgentSkillsTutorial(t),
   }
 }
 

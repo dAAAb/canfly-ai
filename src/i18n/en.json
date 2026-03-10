@@ -3096,8 +3096,14 @@
           ],
           "chatExample": {
             "exchanges": [
-              { "role": "user", "text": "What is the capital of Taiwan?" },
-              { "role": "ai", "text": "The capital of Taiwan is Taipei (台北). It is the largest city in Taiwan and serves as the political, economic, and cultural center of the country." }
+              {
+                "role": "user",
+                "text": "What is the capital of Taiwan?"
+              },
+              {
+                "role": "ai",
+                "text": "The capital of Taiwan is Taipei (台北). It is the largest city in Taiwan and serves as the political, economic, and cultural center of the country."
+              }
             ]
           },
           "expectedResult": "You see the AI respond to your messages in real-time. The model runs entirely on your Mac's hardware via the VM — completely private and offline-capable.",
@@ -3616,6 +3622,289 @@
         {
           "q": "Does oMLX work with Claude Code and other AI coding agents?",
           "a": "Absolutely. oMLX provides an OpenAI-compatible API, so it works with any tool that supports OpenAI API format. This includes Claude Code, Codex, Aider, and dozens of other AI coding tools. The speed improvement is especially noticeable for coding agents that make many tool calls."
+        }
+      ]
+    },
+    "openclaw-troubleshooting": {
+      "title": "OpenClaw Troubleshooting Guide",
+      "subtitle": "Fix the two most common OpenClaw + Ollama issues in under 3 minutes — npm permission errors and disabled tools.",
+      "duration": "3 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "Identify the Problem",
+          "titleEn": "Identify the Problem",
+          "estimatedTime": "30 sec",
+          "content": "After installing OpenClaw via Ollama, you might run into one of two common issues:\n\n**Issue A — npm Permission Error:** You see `npm error path: '/usr/local/lib/node_modules/openclaw'` and `The operation was rejected by your operating system` when running `openclaw` commands.\n\n**Issue B — Tools Disabled:** OpenClaw installs fine but your agent can only chat — no terminal commands, no web fetching, no search. Running `openclaw status` shows `disabled by profile` next to every tool.",
+          "expectedResult": "You've identified which issue you're facing. Follow Step 2 for npm permission errors, or skip to Step 3 for disabled tools.",
+          "tips": [
+            "You might have both issues — fix npm permissions first, then check the tools profile",
+            "These issues only affect Ollama-based installs, not direct npm installs"
+          ]
+        },
+        {
+          "title": "Fix npm Permission Errors",
+          "titleEn": "Fix npm Permission Errors",
+          "estimatedTime": "1 min",
+          "content": "When Node.js is installed via macOS `.pkg` installer, npm's global directory (`/usr/local/lib/node_modules/`) is owned by root. Since Ollama runs as your regular user, it can't write there.\n\n**Quick Fix** — Change ownership of the global npm directories:",
+          "commands": [
+            "# Fix npm global directory permissions",
+            "sudo chown -R $(whoami) /usr/local/lib/node_modules/",
+            "sudo chown -R $(whoami) /usr/local/bin/",
+            "",
+            "# Verify the fix",
+            "openclaw --version"
+          ],
+          "expectedResult": "OpenClaw version number displays without errors (e.g. `openclaw v0.17.x`).",
+          "tips": [
+            "If you use nvm (Node Version Manager), you won't have this issue — nvm installs everything under your home directory",
+            "For a permanent fix, consider switching to nvm: `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash`"
+          ],
+          "troubleshooting": {
+            "title": "Still Getting Permission Errors?",
+            "items": [
+              {
+                "q": "Permission error on ~/.ollama/config.json?",
+                "a": "This file might also be root-owned. Fix with: `sudo chown $(whoami) ~/.ollama/config.json`"
+              },
+              {
+                "q": "Using Windows?",
+                "a": "Run your terminal as Administrator, or use `npm config set prefix` to redirect the global directory to your user folder."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Fix Disabled Tools (tools.profile)",
+          "titleEn": "Fix Disabled Tools (tools.profile)",
+          "estimatedTime": "1 min",
+          "content": "By default, Ollama installs OpenClaw with a restrictive `chat` profile — your agent can only chat, with no access to terminal, web, or file tools. This is a safety precaution since Ollama users don't always want agents touching their system.\n\n**Step 1:** Check current status:",
+          "commands": [
+            "# Check which tools are enabled/disabled",
+            "openclaw status",
+            "",
+            "# You'll see 'disabled by profile' next to most tools",
+            "# Fix it by switching to full profile:",
+            "openclaw config set tools.profile full",
+            "",
+            "# Restart the gateway to apply",
+            "openclaw gateway restart",
+            "",
+            "# Verify tools are now enabled",
+            "openclaw status"
+          ],
+          "expectedResult": "All tools now show as `enabled`. Your agent can use terminal, web fetch, search, and all other capabilities.",
+          "tips": [
+            "Three profile levels: **chat** (conversation only), **standard** (chat + search + read), **full** (all tools enabled)",
+            "Choose `standard` if you want search/read but don't want your agent executing terminal commands",
+            "You can always switch back: `openclaw config set tools.profile chat`"
+          ],
+          "troubleshooting": {
+            "title": "Tools Still Not Working?",
+            "items": [
+              {
+                "q": "Where is the config file?",
+                "a": "OpenClaw config lives at `~/.openclaw/openclaw.json`. You can also edit it directly and restart."
+              },
+              {
+                "q": "Gateway won't restart?",
+                "a": "Try `openclaw gateway stop` first, wait a few seconds, then `openclaw gateway start`."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Verify Everything Works",
+          "titleEn": "Verify Everything Works",
+          "estimatedTime": "30 sec",
+          "content": "Let's confirm both fixes are working. Run the status check and test a basic agent interaction:",
+          "commands": [
+            "# Full status check",
+            "openclaw status",
+            "",
+            "# Test the gateway",
+            "openclaw gateway status",
+            "",
+            "# Quick test — ask your agent to do something",
+            "openclaw chat \"What's today's date?\""
+          ],
+          "expectedResult": "All systems green. Your agent responds with today's date, confirming tools are working.",
+          "nextStepCards": [
+            {
+              "emoji": "🚀",
+              "title": "OpenClaw Quick Start",
+              "desc": "Set up OpenClaw with Ollama from scratch",
+              "cta": "Start Tutorial",
+              "link": "/learn/ollama-openclaw"
+            },
+            {
+              "emoji": "🧩",
+              "title": "Agent Skills Marketplace",
+              "desc": "Install 15+ open-source skills for your agent",
+              "cta": "Browse Skills",
+              "link": "/learn/agent-skills"
+            },
+            {
+              "emoji": "☁️",
+              "title": "Deploy to Cloud",
+              "desc": "Run your agent 24/7 on Zeabur",
+              "cta": "Cloud Tutorial",
+              "link": "/learn/zeabur"
+            }
+          ],
+          "tips": [
+            "Bookmark this page — these are the two most common OpenClaw issues",
+            "Join the community if you hit other issues"
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Why does Ollama install OpenClaw with restricted tools?",
+          "a": "Safety first. Ollama users range from beginners to power users, so the default 'chat' profile prevents agents from accidentally modifying your system. Power users can unlock full access in one command."
+        },
+        {
+          "q": "Will these fixes survive Ollama updates?",
+          "a": "The npm permission fix is permanent. The tools.profile setting persists in your config file across updates."
+        },
+        {
+          "q": "Can I use 'standard' profile instead of 'full'?",
+          "a": "Yes! Standard gives your agent search and read access without terminal execution. It's a good middle ground for users who want research capabilities without system modifications."
+        }
+      ]
+    },
+    "agent-skills": {
+      "title": "Install AI Agent Skills — 15 Open-Source Superpowers",
+      "subtitle": "Add wallet, email, voice, video, and smart home capabilities to any AI coding agent in one command. Works with Claude Code, Codex, Cursor, and 40+ platforms.",
+      "duration": "5 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "What Are Agent Skills?",
+          "titleEn": "What Are Agent Skills?",
+          "estimatedTime": "1 min",
+          "content": "**Agent Skills** is an open standard (championed by Vercel Labs) that lets AI coding agents learn new capabilities through simple `SKILL.md` files. Think of it as a **USB standard for AI agents** — one skill works across 40+ platforms.\n\nDr. JU CHUN KO's team has open-sourced **15 skills** covering:\n- **Wallet & Identity** — Crypto wallets, on-chain names, agent identity\n- **Communication** — Email for AI agents (BaseMail, NADMail)\n- **Media & Content** — HeyGen videos, ElevenLabs voice, podcasts\n- **Smart Home** — SwitchBot device control\n- **Agent Infrastructure** — Protocol interop, market books\n\nAll 15 skills are free, open-source, and available on ClawHub with **15,400+ total downloads**.",
+          "tips": [
+            "Skills work with any Agent Skills-compatible platform: Claude Code, Codex, Cursor, Windsurf, and many more",
+            "Each skill is a single SKILL.md file — no complex installations needed"
+          ]
+        },
+        {
+          "title": "Install All Skills at Once",
+          "titleEn": "Install All Skills at Once",
+          "estimatedTime": "1 min",
+          "content": "The fastest way to get started is installing the entire collection. This adds all 15 skills to your current AI agent:",
+          "commands": [
+            "# Install all 15 skills at once",
+            "npx skills add dAAAb/agent-skills",
+            "",
+            "# Or install via ClawHub",
+            "clawhub install agent-skills"
+          ],
+          "expectedResult": "All 15 skills installed. Your AI agent now has access to wallet, email, voice, video, and smart home capabilities.",
+          "tips": [
+            "Skills are installed as SKILL.md files in your project — no dependencies or build steps",
+            "You can review each skill before your agent uses it"
+          ]
+        },
+        {
+          "title": "Install Individual Skills",
+          "titleEn": "Install Individual Skills",
+          "estimatedTime": "1 min",
+          "content": "Prefer to pick and choose? Install only the skills you need:\n\n**Wallet & Identity (5 skills):**\n- `base-wallet` — Create and manage Base L2 wallets\n- `basename-agent` — Register .base.eth names\n- `nad-wallet` — NAD blockchain wallet\n- `nadname-agent` — NAD name registration\n- `walletconnect-agent` — Connect to dApps\n\n**Communication (3 skills):**\n- `basemail` — Email for AI agents via BaseMail\n- `nadmail` — NAD email service\n- `ethermail` — Ethereum-based email\n\n**Media & Content (4 skills):**\n- `heygen` — Generate avatar videos\n- `elevenlabs-phone-reminder` — Voice call reminders\n- `daily-voice-quote` — Daily voice inspirations\n- `podcast-summarizer` — Summarize podcasts with AI\n\n**Smart Home (1 skill):**\n- `switchbot` — Control SwitchBot devices\n\n**Agent Infrastructure (2 skills):**\n- `virtuals-protocol-acp` — Virtual protocol interop\n- `moltbook` — Market order book access",
+          "commands": [
+            "# Install a specific skill",
+            "npx skills add dAAAb/agent-skills --skill basemail",
+            "",
+            "# Install multiple specific skills",
+            "npx skills add dAAAb/agent-skills --skill heygen",
+            "npx skills add dAAAb/agent-skills --skill elevenlabs-phone-reminder",
+            "npx skills add dAAAb/agent-skills --skill switchbot"
+          ],
+          "expectedResult": "Selected skills installed individually. Your agent gains only the capabilities you chose.",
+          "tips": [
+            "Start with communication skills (basemail) — they're the most universally useful",
+            "Media skills (heygen, elevenlabs) pair well with the CanFly.ai affiliate tutorials"
+          ]
+        },
+        {
+          "title": "Use a Skill with Your Agent",
+          "titleEn": "Use a Skill with Your Agent",
+          "estimatedTime": "1 min",
+          "content": "Once installed, skills are automatically available to your AI agent. Here's how they work in practice:\n\n**Example: Send an email with BaseMail**\nJust ask your agent: *\"Send an email to alice@basemail.ai saying hello\"*\n\n**Example: Generate a video with HeyGen**\nAsk your agent: *\"Create a 30-second avatar video explaining our product\"*\n\n**Example: Control smart home**\nAsk your agent: *\"Turn off the living room lights via SwitchBot\"*\n\nThe agent reads the SKILL.md file, understands the capability, and executes it autonomously.",
+          "expectedResult": "Your agent successfully uses the installed skills to perform tasks beyond basic coding.",
+          "tips": [
+            "Skills that need API keys (HeyGen, ElevenLabs, SwitchBot) will prompt you for credentials on first use",
+            "Check the SKILL.md file to see exactly what each skill can do"
+          ],
+          "troubleshooting": {
+            "title": "Skill Not Working?",
+            "items": [
+              {
+                "q": "Agent doesn't recognize the skill?",
+                "a": "Make sure the SKILL.md file is in your project root or in the `.skills/` directory. Some platforms require a restart after adding new skills."
+              },
+              {
+                "q": "API key errors?",
+                "a": "Skills that connect to external services need API keys. Check the skill's SKILL.md for setup instructions, or follow our API Keys tutorial at /learn/api-keys."
+              },
+              {
+                "q": "Skill works in one platform but not another?",
+                "a": "Not all platforms support every Agent Skills feature. Check the skill's compatibility notes in its SKILL.md."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Explore More on ClawHub",
+          "titleEn": "Explore More on ClawHub",
+          "estimatedTime": "1 min",
+          "content": "ClawHub is the open marketplace for Agent Skills. Beyond these 15, the community is building more every day.\n\n**Top Skills by Downloads:**\n1. HeyGen Avatar Video — 2,100+ downloads\n2. BaseMail — 1,800+ downloads\n3. SwitchBot — 1,500+ downloads\n4. Daily Voice Quote — 1,200+ downloads\n\nBrowse, install, and even publish your own skills on ClawHub.",
+          "nextStepCards": [
+            {
+              "emoji": "🎤",
+              "title": "ElevenLabs Voice Tutorial",
+              "desc": "Add professional voice synthesis to your projects",
+              "cta": "Start Tutorial",
+              "link": "/learn/elevenlabs-integration"
+            },
+            {
+              "emoji": "🎥",
+              "title": "HeyGen Video Tutorial",
+              "desc": "Create AI avatar videos for marketing and education",
+              "cta": "Start Tutorial",
+              "link": "/learn/heygen-video"
+            },
+            {
+              "emoji": "🔑",
+              "title": "API Keys Management",
+              "desc": "Learn to manage API keys securely for all your skills",
+              "cta": "Start Tutorial",
+              "link": "/learn/api-keys"
+            }
+          ],
+          "tips": [
+            "Want to create your own skill? Just write a SKILL.md file following the Agent Skills format",
+            "Publish to ClawHub with: `clawhub publish`"
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Are Agent Skills free?",
+          "a": "Yes, all 15 skills in this collection are open-source and free. Some skills connect to paid services (like HeyGen or ElevenLabs) which have their own pricing."
+        },
+        {
+          "q": "Do I need OpenClaw to use Agent Skills?",
+          "a": "No. Agent Skills is an open standard that works across 40+ AI coding platforms including Claude Code, Codex, and Cursor. OpenClaw/ClawHub is just one way to discover and install them."
+        },
+        {
+          "q": "Can I create my own Agent Skills?",
+          "a": "Absolutely! Write a SKILL.md file following the Agent Skills format, test it with your preferred AI platform, and optionally publish it to ClawHub for others to use."
+        },
+        {
+          "q": "How do skills handle security?",
+          "a": "Each skill is a transparent SKILL.md markdown file you can review before use. API keys are stored locally and never shared. Skills only execute when your agent explicitly invokes them."
         }
       ]
     }
