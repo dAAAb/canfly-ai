@@ -17,11 +17,6 @@
   - 優先從 GitHub repo 下載 SVG
   - 沒有的話用 nano-banana-pro 生成
 - [ ] Dashboard/截圖 → `public/images/icons/{slug}-dashboard.png`
-- [ ] Review 影片 → `public/videos/reviews/{slug}-review.mp4`
-  - 需要寶博錄製或用 HeyGen 生成（橫式 16:9）
-  - 沒有時先放 placeholder（1 秒黑屏 mp4）
-- [ ] VTT 字幕 → `public/videos/reviews/{slug}-review-{en|zh-TW|zh-CN}.vtt`
-  - 先放 placeholder，有影片後再 Whisper + ZapCap
 
 ## 3️⃣ Product 資料
 
@@ -126,6 +121,9 @@ tutorial.{slug}.faq[].q / .a
 3. **expectedResult 必須存在**：漏了會顯示 raw key string
 4. **三語都要有相同的 keys**：i18n validation script 會檢查 missing/extra keys
 5. **zh-CN 用簡體字**：內存不是記憶體、視頻不是影片、下載不是下載
+6. **content 裡不要放 markdown table**：如果有 modelTable 組件，table 會重複顯示
+7. **nextStepCards 的 link 要正確**：用 `/learn/{slug}` 不是 `/tutorials/{slug}`，每個 card 都要有 `desc`
+8. **content 裡的 code block 長連結會爆版**：英文版內容盡量簡潔，長 URL 放在 commands 裡
 
 ### 高效做法：用 3 個 sub-agent 並行寫 EN/zh-TW/zh-CN
 
@@ -137,7 +135,102 @@ sessions_spawn → label: "app-i18n-zhCN" → 寫 zh-CN JSON
 
 寫完後用 Python deep_merge 合併進主 i18n 檔案。
 
-## 6️⃣ Build + 驗證
+### ⚠️ Sub-agent 合併後必做檢查：
+
+1. **Key 路徑**：確認 product 在 `product.products.{slug}` 不是 `product.{slug}`
+2. **頂層 key 汙染**：sub-agent 可能把 `faq` 放在頂層而非 `tutorial.{slug}.faq`
+3. **commands / expectedResult / modelTable**：sub-agent 常常漏掉，要手動補
+4. **content 裡是否有 markdown table**：有 modelTable 組件的話要刪掉 content 裡的重複 table
+
+## 6️⃣ HeyGen 橫式寶博 Review 影片（必做！）
+
+每個 app 都要有寶博的 review 影片 + 三語字幕。
+
+### 6a. 撰寫 Review 稿
+
+- **語言**：中文為主，技術名詞保留英文
+- **長度**：30-90 秒（~150-400 字）
+- **結構**：
+  1. 開場自介（「大家好，我是葛如鈞」）
+  2. 痛點描述（沒有這工具之前的問題）
+  3. 工具亮點（2-3 個核心功能）
+  4. 跟 OpenClaw 的連動
+  5. 安裝簡易度
+  6. CTA（「我在 CanFly.ai 準備了教學，歡迎試試！」）
+
+### 6b. HeyGen 生成影片
+
+```bash
+# 橫式寶博設定
+HEYGEN_API_KEY=$(cat ~/.clawdbot/clawdbot.json | python3 -c "import sys,json; print(json.load(sys.stdin)['skills']['entries']['heygen']['apiKey'])")
+
+HEYGEN_API_KEY="$HEYGEN_API_KEY" python3 /Users/vitalik/clawd/skills/heygen/scripts/generate_video.py \
+  --text "$(cat /tmp/{slug}-review-script.txt)" \
+  --avatar-id "91e70516d79043658917bc043390465f" \
+  --voice-id "84e4663b7e18494e9159e7db2cd0b4f0" \
+  --dimension "1280x720" \
+  --aspect-ratio "16:9" \
+  --output /tmp/{slug}-review-heygen.mp4
+```
+
+| 參數 | 值 | 說明 |
+|------|-----|------|
+| Avatar | JC Ko `91e70516d79043658917bc043390465f` | 橫式寶博 |
+| Voice | JC Ko `84e4663b7e18494e9159e7db2cd0b4f0` | 橫式寶博語音 |
+| Dimension | 1280x720 | 16:9 橫式 |
+
+### 6c. Re-encode 影片（重要！）
+
+```bash
+ffmpeg -i /tmp/{slug}-review-heygen.mp4 \
+  -c:v libx264 -profile:v baseline -level 3.1 -movflags +faststart \
+  -c:a aac -b:a 128k \
+  /tmp/{slug}-review-final.mp4 -y
+```
+
+**為什麼要 re-encode？**
+- HeyGen 原始檔在部分瀏覽器/LINE 可能無法播放
+- `baseline -level 3.1` = 最大相容性
+- `+faststart` = 串流播放友善
+
+### 6d. Whisper 轉錄 → zh-TW VTT
+
+```bash
+# 先抽音軌
+ffmpeg -i /tmp/{slug}-review-final.mp4 -vn -acodec aac -b:a 128k /tmp/{slug}-audio.m4a -y
+
+# Whisper API 取 VTT
+curl -s https://api.openai.com/v1/audio/transcriptions \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -F file="@/tmp/{slug}-audio.m4a" \
+  -F model="whisper-1" \
+  -F language="zh" \
+  -F response_format="vtt" \
+  -F prompt="葛如鈞 OpenClaw 小龍蝦 {工具名稱} {關鍵技術詞}" \
+  -o /tmp/{slug}-review-zh-TW.vtt
+```
+
+**⚠️ Whisper 常見錯字修正：**
+- `葛如君` → `葛如鈞`（每次都要查）
+- `Olama` → `Ollama`
+- 技術名詞要確認拼寫
+
+### 6e. 翻譯 EN + zh-CN VTT
+
+- **保持完全相同的時間戳**（只翻譯文字，不動時間）
+- EN：自然英文翻譯（不是逐字翻）
+- zh-CN：繁體 → 簡體（記憶體→内存、快取→缓存、並發→并发 等）
+
+### 6f. 複製到專案
+
+```bash
+cp /tmp/{slug}-review-final.mp4  public/videos/reviews/{slug}-review.mp4
+cp /tmp/{slug}-review-zh-TW.vtt  public/videos/reviews/{slug}-review-zh-TW.vtt
+cp /tmp/{slug}-review-en.vtt     public/videos/reviews/{slug}-review-en.vtt
+cp /tmp/{slug}-review-zh-CN.vtt  public/videos/reviews/{slug}-review-zh-CN.vtt
+```
+
+## 7️⃣ Build + 驗證
 
 ```bash
 npm run build  # 必須通過 i18n validation
@@ -153,24 +246,20 @@ npm run build  # 必須通過 i18n validation
 - [ ] commands 可複製
 - [ ] modelTable 顯示（如有）
 - [ ] FAQ 可展開
-- [ ] Review video 播放（或 placeholder 不報錯）
+- [ ] **Review video 播放正常**
+- [ ] **字幕切換正常（EN / zh-TW / zh-CN）**
+- [ ] **手機版不爆版**（code block、長連結）
+- [ ] **nextStepCards 連結可點且正確**
 
-## 7️⃣ Commit + Push
+## 8️⃣ Commit + Push
 
 ```bash
 git add -A
-git commit -m "feat: add {name} app page + tutorial (EN/zh-TW/zh-CN)"
+git commit -m "feat: add {name} app page + tutorial + review video (EN/zh-TW/zh-CN)"
 git push
 ```
 
 等 GitHub Actions 部署成功（~1 分鐘），用瀏覽器驗證線上版。
-
-## 8️⃣ Review 影片（後續）
-
-- 寶博錄製或 HeyGen 生成橫式影片
-- Whisper 轉錄 → 修正錯字
-- ZapCap 加字幕（或手工 VTT）
-- 替換 placeholder mp4 + VTT
 
 ---
 
@@ -184,7 +273,7 @@ git push
 | `src/i18n/zh-TW.json` | 繁中翻譯 |
 | `src/i18n/zh-CN.json` | 簡中翻譯 |
 | `public/images/icons/` | Logo/截圖 |
-| `public/videos/reviews/` | Review 影片 + 字幕 |
+| `public/videos/reviews/` | Review 影片 + VTT 字幕 |
 
 | 路由 | 頁面 |
 |------|------|
@@ -192,3 +281,15 @@ git push
 | `/learn/{slug}` | Tutorial 教學 |
 | `/{lang}/apps/{category}/{slug}` | 語系版本 |
 | `/{lang}/learn/{slug}` | 語系版本 |
+
+## 🎬 HeyGen 橫式寶博快速參考
+
+| 項目 | 值 |
+|------|-----|
+| Avatar ID | `91e70516d79043658917bc043390465f` (JC Ko) |
+| Voice ID | `84e4663b7e18494e9159e7db2cd0b4f0` (JC Ko) |
+| Dimension | 1280x720 (16:9) |
+| Script | generate_video.py 路徑 |
+| Re-encode | `-c:v libx264 -profile:v baseline -level 3.1 -movflags +faststart` |
+| Whisper | `model=whisper-1`, `language=zh`, `response_format=vtt` |
+| VTT 三語 | zh-TW (Whisper) + EN (翻譯) + zh-CN (繁→簡) |
