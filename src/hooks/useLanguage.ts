@@ -38,6 +38,9 @@ export function useLanguage() {
   async function switchLang(newLang: SupportedLang) {
     switchingRef.current = true
 
+    // Remember manual choice so middleware won't override it
+    document.cookie = `canfly_lang=${newLang};path=/;max-age=${60 * 60 * 24 * 365};SameSite=Lax`
+
     const prefix = prefixForLang(currentLang)
     let path = location.pathname
     if (prefix && path.startsWith(prefix)) {

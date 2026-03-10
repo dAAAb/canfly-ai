@@ -332,13 +332,115 @@ function resolveOgImage(img: string | undefined): string {
   return `${SITE}${img}`
 }
 
+// ── Language auto-detection ─────────────────────────────────────────────
+
+/** Static asset extensions — never redirect these */
+const STATIC_EXT = /\.(js|css|png|jpg|jpeg|webp|gif|svg|ico|woff2?|ttf|mp4|vtt|srt|json|xml|txt|map)$/i
+
+/** Parse Accept-Language header into sorted [lang, q] pairs */
+function parseAcceptLanguage(header: string): string[] {
+  return header
+    .split(',')
+    .map((part) => {
+      const [lang, q] = part.trim().split(';q=')
+      return { lang: lang.trim().toLowerCase(), q: q ? parseFloat(q) : 1 }
+    })
+    .sort((a, b) => b.q - a.q)
+    .map((x) => x.lang)
+}
+
+/** Detect preferred language. Returns 'zh-TW' | 'zh-CN' | null (null = English, no redirect) */
+function detectLanguage(request: Request): 'zh-TW' | 'zh-CN' | null {
+  const acceptLang = request.headers.get('accept-language')
+
+  // 1. Accept-Language header exists → browser language is the ONLY authority
+  //    (An English speaker in Taiwan must NOT be redirected to Chinese)
+  if (acceptLang) {
+    const langs = parseAcceptLanguage(acceptLang)
+    for (const lang of langs) {
+      if (lang === 'zh-tw' || lang === 'zh-hant' || lang === 'zh-hant-tw') return 'zh-TW'
+      if (lang === 'zh-cn' || lang === 'zh-hans' || lang === 'zh-hans-cn' || lang === 'zh-sg') return 'zh-CN'
+    }
+    // Bare "zh" without region — use IP to disambiguate
+    if (langs.some((l) => l === 'zh')) {
+      const country = request.headers.get('cf-ipcountry')
+      if (country === 'CN' || country === 'SG' || country === 'MY') return 'zh-CN'
+      return 'zh-TW'
+    }
+    // Accept-Language present but no Chinese → user prefers non-Chinese → English
+    return null
+  }
+
+  // 2. No Accept-Language header at all (rare: some bots, curl, old clients)
+  //    Only then fall back to IP geolocation
+  const country = request.headers.get('cf-ipcountry')
+  if (country === 'TW') return 'zh-TW'
+  if (country === 'CN' || country === 'SG' || country === 'MY') return 'zh-CN'
+
+  return null // English — no redirect
+}
+
+/** Get cookie value by name */
+function getCookie(request: Request, name: string): string | null {
+  const cookies = request.headers.get('cookie') || ''
+  const match = cookies.match(new RegExp(`(?:^|;\\s*)${name}=([^;]*)`))
+  return match ? match[1] : null
+}
+
+const LANG_URL_PREFIX: Record<string, string> = {
+  'zh-TW': '/zh-tw',
+  'zh-CN': '/zh-cn',
+}
+
 // ── Middleware entry point ──────────────────────────────────────────────
 
 export const onRequest: PagesFunction = async (context) => {
+  const url = new URL(context.request.url)
+  const path = url.pathname
   const ua = context.request.headers.get('user-agent') || ''
 
-  // Only intercept for social crawlers
-  if (!BOT_UA.test(ua)) {
+  // ── Language auto-redirect (before bot check) ──
+  // Only for non-bot, non-static, paths WITHOUT a language prefix
+  const hasLangPrefix = path.startsWith('/zh-tw') || path.startsWith('/zh-cn')
+  const isStatic = STATIC_EXT.test(path)
+  const isApi = path.startsWith('/api/')
+  const isBot = BOT_UA.test(ua)
+
+  if (!hasLangPrefix && !isStatic && !isApi && !isBot) {
+    // If user manually chose a language before, respect it
+    const cookieLang = getCookie(context.request, 'canfly_lang')
+
+    if (cookieLang && LANG_URL_PREFIX[cookieLang]) {
+      // User previously chose a non-English language — redirect
+      const target = `${LANG_URL_PREFIX[cookieLang]}${path === '/' ? '' : path}${url.search}`
+      return new Response(null, {
+        status: 302,
+        headers: { Location: target },
+      })
+    }
+
+    if (!cookieLang) {
+      // First visit — auto-detect
+      const detected = detectLanguage(context.request)
+      if (detected) {
+        const prefix = LANG_URL_PREFIX[detected]
+        const target = `${prefix}${path === '/' ? '' : path}${url.search}`
+        // Set cookie so we don't redirect again (1 year)
+        return new Response(null, {
+          status: 302,
+          headers: {
+            Location: target,
+            'Set-Cookie': `canfly_lang=${detected};path=/;max-age=31536000;SameSite=Lax`,
+          },
+        })
+      }
+      // Detected English — set cookie so we skip detection next time
+      // (Don't redirect, just remember the choice)
+    }
+  }
+
+  // ── OG meta injection for social crawlers ──
+  if (!isBot) {
     return context.next()
   }
 
