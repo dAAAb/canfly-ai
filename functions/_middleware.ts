@@ -452,7 +452,6 @@ export const onRequest: PagesFunction = async (context) => {
     return response
   }
 
-  const url = new URL(context.request.url)
   const strippedPath = stripLangPrefix(url.pathname)
   const meta = resolveMeta(strippedPath)
 
