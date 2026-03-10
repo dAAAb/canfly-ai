@@ -1593,7 +1593,7 @@ export default function TutorialPage() {
 
                 {/* Content */}
                 <div className="ml-0 sm:ml-14">
-                  <div className="text-gray-300 mb-4 leading-relaxed prose prose-invert prose-sm max-w-none">
+                  <div className="text-gray-300 mb-4 leading-relaxed prose prose-invert prose-sm max-w-none break-words [&_pre]:overflow-x-auto [&_code]:break-all">
                     <ReactMarkdown>{step.content}</ReactMarkdown>
                   </div>
 

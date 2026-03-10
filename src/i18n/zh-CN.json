@@ -3214,7 +3214,7 @@
           "title": "下载第一个模型",
           "titleEn": "Download Your First Model",
           "estimatedTime": "5-15 分钟",
-          "content": "## 选择适合你 Mac 的模型\n\n不同内存配置的 Mac 适合不同大小的模型。选对了模型，性能和体验都会大不同：\n\n### 📊 推荐模型表\n\n| Mac 配置 | 推荐模型 | 模型大小 | 性能表现 |\n|---------|---------|---------|----------|\n| **16GB 内存** | Qwen2.5-7B-Instruct | 4.1GB | ⭐⭐⭐⭐ 日常对话，代码生成 |\n| **32GB 内存** | Llama-3.1-8B-Instruct | 4.7GB | ⭐⭐⭐⭐⭐ 全能助手，复杂推理 |\n| **64GB+ 内存** | Qwen2.5-32B-Instruct | 19GB | 🚀 专业级，媲美 GPT-4 |\n\n### 🔽 下载你的第一个模型\n\n推荐从 **Qwen2.5-7B-Instruct** 开始：",
+          "content": "## 选择适合你 Mac 的模型\n\n不同内存配置的 Mac 适合不同大小的模型。选对了模型，性能和体验都会大不同：\n\n### 📊 推荐模型表\n\n\n### 🔽 下载你的第一个模型\n\n推荐从 **Qwen2.5-7B-Instruct** 开始：",
           "commands": [
             "omlx serve --model-dir ~/models"
           ],
@@ -3323,22 +3323,25 @@
           "content": "## 🎉 恭喜！你已掌握 oMLX 核心技能\n\n现在你的 Mac 已经变身为一台本地 AI 超级工作站。但这只是开始，还有更多激动人心的可能性等着你探索：",
           "nextStepCards": [
             {
-              "title": "☁️ Ollama 云端模型",
-              "description": "探索更多云端模型选择，扩展你的 AI 工具箱",
-              "action": "了解云端部署",
-              "url": "/tutorials/ollama-setup"
+              "emoji": "☁️",
+              "title": "Ollama 云端模型",
+              "desc": "在本地 oMLX 之外加入云端 AI 模型 — 两全其美。",
+              "link": "/learn/ollama",
+              "cta": "了解更多"
             },
             {
-              "title": "🚀 Zeabur 云端部署",
-              "description": "将你的 oMLX 设置部署到云端，随时随地访问",
-              "action": "开始云端部署",
-              "url": "/tutorials/zeabur-deploy"
+              "emoji": "🚀",
+              "title": "Zeabur 云端部署",
+              "desc": "需要 24 小时在线的 agent？用 Zeabur 一键部署到云端。",
+              "link": "/learn/zeabur",
+              "cta": "了解更多"
             },
             {
-              "title": "💻 硬件升级指南",
-              "description": "想要更强性能？查看我们的 Mac 硬件升级建议",
-              "action": "查看升级指南",
-              "url": "/guides/hardware-upgrade"
+              "emoji": "💻",
+              "title": "硬件升级指南",
+              "desc": "比较不同 Mac 配置，找到最适合你的 AI 工作站。",
+              "link": "/learn/hardware-compare",
+              "cta": "比较硬件"
             }
           ],
           "tips": [

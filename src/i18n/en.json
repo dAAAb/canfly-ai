@@ -3219,7 +3219,7 @@
           "title": "Download Your First Model",
           "titleEn": "Download Your First Model",
           "estimatedTime": "3 min",
-          "content": "## Launch oMLX and Download Models\n\n1. **Open oMLX** (from Applications or menu bar)\n2. **Set Model Directory**: Choose where to store models (default: `~/models`)\n3. **Use Built-in Downloader**: oMLX includes a model browser/downloader\n\n## Recommended Models by RAM\n\n### 16GB RAM Systems\n| Model | Size | Speed | Best For |\n|-------|------|-------|----------|\n| Qwen3-4B-MLX-4bit | ~3GB | Fast | Daily tasks, coding |\n| glm-4.7-flash-4bit | ~3GB | Fast | Reasoning, analysis |\n\n### 32GB RAM Systems\n| Model | Size | Speed | Best For |\n|-------|------|-------|----------|\n| Qwen3-30B-A3B-4bit | ~18GB | Medium | Advanced reasoning |\n| Step-3.5-Flash-8bit | ~14GB | Medium | Code generation |\n\n### 64GB+ RAM Systems\n| Model | Size | Speed | Best For |\n|-------|------|-------|----------|\n| Qwen3.5-32B-4bit | ~20GB | Medium | Production tasks |\n| DeepSeek-R1-Distill-70B | ~40GB | Slower | Maximum capability |\n\n## Start the Server\n\nOnce you've downloaded a model:\n\n```bash\n# Start oMLX with your model directory\nomlx serve --model-dir ~/models\n\n# Server will start on http://localhost:8000\n# Admin panel available at http://localhost:8000/admin\n```\n\n## Verify Model Loading\n\n```bash\n# List available models\ncurl http://localhost:8000/v1/models\n\n# Test chat completion\ncurl http://localhost:8000/v1/chat/completions \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"model\": \"your-model-name\",\n    \"messages\": [{\"role\": \"user\", \"content\": \"Hello!\"}],\n    \"max_tokens\": 100\n  }'\n```",
+          "content": "## Launch oMLX and Download Models\n\n1. **Open oMLX** (from Applications or menu bar)\n2. **Set Model Directory**: Choose where to store models (default: `~/models`)\n3. **Use Built-in Downloader**: oMLX includes a model browser/downloader\n\n## Recommended Models by RAM\n\n### 16GB RAM Systems\n\n### 32GB RAM Systems\n\n### 64GB+ RAM Systems\n\n## Start the Server\n\nOnce you've downloaded a model:\n\n```bash\n# Start oMLX with your model directory\nomlx serve --model-dir ~/models\n\n# Server will start on http://localhost:8000\n# Admin panel available at http://localhost:8000/admin\n```\n\n## Verify Model Loading\n\n```bash\n# List available models\ncurl http://localhost:8000/v1/models\n\n# Test chat completion\ncurl http://localhost:8000/v1/chat/completions \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"model\": \"your-model-name\",\n    \"messages\": [{\"role\": \"user\", \"content\": \"Hello!\"}],\n    \"max_tokens\": 100\n  }'\n```",
           "tips": [
             "Start with smaller models to test everything works before downloading large ones",
             "Model download requires internet, but once downloaded they run completely offline",
@@ -3279,7 +3279,7 @@
           "title": "Connect to OpenClaw 🦞",
           "titleEn": "Connect to OpenClaw 🦞",
           "estimatedTime": "1 min",
-          "content": "## Configure OpenClaw to Use oMLX\n\noMLX provides an OpenAI-compatible API, so OpenClaw connects seamlessly.\n\n### Method 1: OpenClaw Config Command\n\n```bash\n# Edit OpenClaw configuration\nopenclaw config edit\n\n# Add oMLX provider to your config\n```\n\n### Method 2: Manual JSON Edit\n\nAdd this to your OpenClaw configuration:\n\n```json\n{\n  \"providers\": {\n    \"omlx\": {\n      \"type\": \"openai\",\n      \"baseURL\": \"http://localhost:8000/v1\",\n      \"apiKey\": \"omlx-local\",\n      \"models\": [\"*\"]\n    }\n  },\n  \"defaultModel\": \"omlx/your-model-name\"\n}\n```\n\n### Test the Connection\n\n```bash\n# Start OpenClaw with oMLX\nopenclaw chat\n\n# In the chat, try a simple command:\n# \"What's 2+2?\" \n\n# Should respond instantly using your local model\n```\n\n## Expected Results\n\n✅ **Before oMLX**: OpenClaw tool calls take 20-30 seconds each  \n✅ **After oMLX**: Tool calls respond in 1-2 seconds  \n✅ **System prompt caching**: Shared context across multiple agents  \n✅ **Multiple agents**: Run concurrent OpenClaw instances  \n\n## Why This Works\n\nOpenClaw agents make frequent tool calls, each requiring system prompt reprocessing. oMLX's **prefix caching** means:\n- First tool call: Normal speed\n- Subsequent calls: Nearly instant (cached prefix)\n- Multiple agents: Share same cached system prompt",
+          "content": "## Configure OpenClaw to Use oMLX\n\noMLX provides an OpenAI-compatible API, so OpenClaw connects seamlessly.\n\nAdd oMLX as a local provider in your OpenClaw config:\n\n```json\n{\n  \"providers\": {\n    \"omlx\": {\n      \"type\": \"openai\",\n      \"baseURL\": \"http://localhost:8000/v1\",\n      \"apiKey\": \"omlx-local\",\n      \"models\": [\"*\"]\n    }\n  }\n}\n```\n\n**Why this matters for agents:** OpenClaw agents make frequent tool calls — dozens per task. Each call re-processes the full system prompt (20K+ tokens). Without prefix caching, that's a 20-30 second wait *every single time*. With oMLX's prefix cache, subsequent calls complete in seconds.\n\nThink of it like a regular at a restaurant — the first visit you study the menu, but after that the chef already knows your order.",
           "tips": [
             "Keep oMLX running in the background for best performance",
             "Set oMLX as your default provider to use it automatically",
@@ -3311,7 +3311,7 @@
           "title": "Optimize: Cache & Concurrency",
           "titleEn": "Optimize: Cache & Concurrency",
           "estimatedTime": "2 min",
-          "content": "## The Secret Sauce: Advanced Caching\n\nThis is where oMLX shines for OpenClaw agents.\n\n### Tiered KV Caching\n\n**Hot Cache (RAM)**:\n- Active conversations and system prompts\n- Ultra-fast access (microseconds)\n- Set to ~80% of available RAM\n\n**Cold Cache (SSD)**:\n- Background contexts and longer conversations\n- Survives restarts and system reboots\n- Set to available SSD space (50-200GB+)\n\n### Admin Panel Configuration\n\nVisit **http://localhost:8000/admin** for advanced settings:\n\n1. **Cache Settings**:\n   - Hot cache: 80% of RAM (e.g., 12GB on 16GB system)\n   - Cold cache: 100GB+ on SSD\n   \n2. **Model Management**:\n   - Pin frequently-used models to stay in hot cache\n   - Set priority levels for different models\n   \n3. **Concurrency Settings**:\n   - Concurrent requests: Start with 2-4\n   - Batch size: Adjust based on model size\n\n### Concurrent Agent Setup\n\n```bash\n# Terminal 1: Start first OpenClaw agent\nopenclaw chat --session=agent1\n\n# Terminal 2: Start second OpenClaw agent  \nopenclaw chat --session=agent2\n\n# Both agents share the same cached system prompt!\n```\n\n### Performance Tuning\n\n```bash\n# Check current cache usage\ncurl http://localhost:8000/v1/cache/stats\n\n# Benchmark your setup\nomlx benchmark --model your-model-name\n\n# Monitor performance\ntop -p $(pgrep omlx)\n```\n\n## Expected Performance Gains\n\n| Scenario | Before oMLX | With oMLX |\n|----------|-------------|----------|\n| Single tool call | 20-30 sec | 1-2 sec |\n| 10 tool calls | 5+ minutes | 30 seconds |\n| Multiple agents | Multiplied wait | Parallel execution |\n| Context switching | Full reload | Instant cache hit |",
+          "content": "## The Secret Sauce: Advanced Caching\n\nThis is where oMLX shines for OpenClaw agents.\n\n### Tiered KV Caching\n\n- **Hot Cache (RAM)**: Active conversations and system prompts — ultra-fast access\n- **Cold Cache (SSD)**: Evicted but reusable cache — restored on demand instead of recomputed\n- **Persistent**: Cache survives server restarts\n\n### Paged Attention (Shared Prefix)\n\nWhen running multiple OpenClaw agents, they all share the same system prompt prefix. oMLX stores it *once* and shares across all agents — just like vLLM's PagedAttention in production servers.\n\n### Real Results\n\nA base Mac Mini 16GB went from **5 minutes to answer 3 questions** to **nearly instant** with oMLX.\n\nOpen the admin panel at `localhost:8000/admin` to see cache hit rates, generation speed, and configure settings like cold cache size and memory limits.",
           "tips": [
             "Set cold cache to your available SSD space — it's persistent across restarts",
             "Pin your main OpenClaw model to keep it always in hot cache",
@@ -3353,45 +3353,24 @@
           "nextStepCards": [
             {
               "emoji": "☁️",
-              "title": "Compare with Cloud Models",
-              "desc": "Set up Ollama for cloud models when you need capabilities beyond your local hardware. Best of both worlds.",
-              "cta": "Ollama Tutorial",
-              "link": "/tutorial/ollama"
+              "title": "Ollama Cloud Models",
+              "desc": "Add cloud AI models alongside your local oMLX setup — best of both worlds.",
+              "link": "/learn/ollama",
+              "cta": "Learn more"
             },
             {
               "emoji": "🚀",
               "title": "Deploy to Cloud",
-              "desc": "Use Zeabur to deploy your optimized setup to the cloud. Share your fast agents with team members.",
-              "cta": "Cloud Deployment",
-              "link": "/tutorial/zeabur"
+              "desc": "Use Zeabur for cloud deployment when you need always-on agents.",
+              "link": "/learn/zeabur",
+              "cta": "Learn more"
             },
             {
-              "emoji": "🔧",
-              "title": "Hardware Optimization",
-              "desc": "Learn how to choose the right Mac configuration for AI workloads. RAM, SSD, and model selection guide.",
-              "cta": "Hardware Guide",
-              "link": "/learn/mac-ai-hardware"
-            },
-            {
-              "emoji": "🎯",
-              "title": "Agent Specialization",
-              "desc": "Create specialized agents for different tasks — coding, writing, analysis — each with optimized models and caching.",
-              "cta": "Multi-Agent Setup",
-              "link": "/learn/multi-agent-workflows"
-            },
-            {
-              "emoji": "📊",
-              "title": "Performance Monitoring",
-              "desc": "Set up monitoring and alerts for your oMLX deployment. Track cache hit rates, model performance, and resource usage.",
-              "cta": "Monitoring Guide",
-              "link": "/learn/omlx-monitoring"
-            },
-            {
-              "emoji": "🔬",
-              "title": "Model Fine-tuning",
-              "desc": "Advanced: Fine-tune models for your specific use cases using MLX training tools. Create domain-specific agents.",
-              "cta": "Fine-tuning Guide",
-              "link": "/learn/mlx-fine-tuning"
+              "emoji": "💻",
+              "title": "Hardware Guide",
+              "desc": "Compare Mac configurations to find the best setup for your workload.",
+              "link": "/learn/hardware-compare",
+              "cta": "Compare hardware"
             }
           ]
         }

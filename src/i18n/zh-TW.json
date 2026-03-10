@@ -3201,7 +3201,7 @@
           "title": "下載第一個模型",
           "titleEn": "Download Your First Model",
           "estimatedTime": "3 分鐘",
-          "content": "啟動 oMLX 後，首先需要下載一個 AI 模型。oMLX 內建模型下載器，會自動處理所有技術細節。\n\n根據你的 Mac 記憶體容量，我們推薦以下模型：\n\n| 記憶體 | 推薦模型 | 大小 | 特色 | 速度 |\n|--------|----------|------|------|------|\n| 16GB | Qwen3-4B-MLX-4bit | 2.5GB | 對話/工具呼叫 | ~25 tok/s |\n| 32GB | Qwen3-30B-A3B-4bit | 18GB | 通用任務 | ~15 tok/s |\n| 64GB+ | Qwen3.5-32B-4bit | 20GB | 高品質推理 | ~10 tok/s |\n\n第一次使用建議從較小的模型開始，確認一切正常運作後再嘗試更大的模型。",
+          "content": "啟動 oMLX 後，首先需要下載一個 AI 模型。oMLX 內建模型下載器，會自動處理所有技術細節。\n\n根據你的 Mac 記憶體容量，我們推薦以下模型：\n\n\n第一次使用建議從較小的模型開始，確認一切正常運作後再嘗試更大的模型。",
           "commands": [
             "omlx serve --model-dir ~/models"
           ],
@@ -3280,19 +3280,25 @@
           "content": "恭喜！你已經成功設定 oMLX，讓 Mac 上的 OpenClaw agent 速度飛快。現在可以探索更多可能性：",
           "nextStepCards": [
             {
-              "title": "Ollama 教學",
-              "description": "學習如何整合雲端模型",
-              "link": "/tutorials/ollama"
+              "emoji": "☁️",
+              "title": "Ollama 雲端模型",
+              "desc": "在本地 oMLX 之外加入雲端 AI 模型 — 兩全其美。",
+              "link": "/learn/ollama",
+              "cta": "了解更多"
             },
             {
-              "title": "Zeabur 部署",
-              "description": "將 OpenClaw 部署到雲端",
-              "link": "/tutorials/zeabur"
+              "emoji": "🚀",
+              "title": "Zeabur 雲端部署",
+              "desc": "需要 24 小時在線的 agent？用 Zeabur 一鍵部署到雲端。",
+              "link": "/learn/zeabur",
+              "cta": "了解更多"
             },
             {
+              "emoji": "💻",
               "title": "硬體升級指南",
-              "description": "如何選購最適合的 Mac 配置",
-              "link": "/guides/hardware"
+              "desc": "比較不同 Mac 配置，找到最適合你的 AI 工作站。",
+              "link": "/learn/hardware-compare",
+              "cta": "比較硬體"
             }
           ],
           "tips": [
