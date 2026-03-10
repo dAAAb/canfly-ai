@@ -1424,7 +1424,7 @@ export default function TutorialPage() {
             const videoSrc = tutorial.video!.src[lang] || tutorial.video!.src['en']
             const subtitleEntries = Object.entries(tutorial.video!.subtitles)
             return (
-              <div className="max-w-2xl mx-auto mb-8">
+              <div className="max-w-4xl mx-auto mb-8">
                 <ReviewVideoPlayer
                   src={videoSrc}
                   subtitles={subtitleEntries.map(([sLang, sUrl]) => ({
