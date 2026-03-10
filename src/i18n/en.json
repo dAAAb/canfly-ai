@@ -438,7 +438,24 @@
     "notifyDescription": "We'll send you an email when {{name}} is available on Canfly.",
     "notifyButton": "Notify Me",
     "notifySuccess": "You're on the list!",
-    "notifySuccessDescription": "We'll notify you when {{name}} launches on Canfly."
+    "notifySuccessDescription": "We'll notify you when {{name}} launches on Canfly.",
+    "omlx": {
+      "tagline": "10x Faster Local AI on Mac — OpenClaw Turbo Mode",
+      "description": "Native Apple Silicon LLM server with tiered KV caching and paged attention. Eliminate the 20-30 second wait between OpenClaw tool calls — go from 5 minutes per task to nearly instant responses.",
+      "features": [
+        "10x+ faster than LM Studio for OpenClaw agents",
+        "Tiered KV cache: hot RAM + cold SSD storage",
+        "Paged attention with shared prefix cache",
+        "Concurrent agent support on single Mac",
+        "OpenAI-compatible API (localhost:8000/v1)",
+        "Native macOS menu bar app with admin panel",
+        "Built on Apple's MLX framework (M1-M4 only)"
+      ],
+      "cta": {
+        "primary": "Start Free Tutorial",
+        "secondary": "Download oMLX"
+      }
+    }
   },
   "tutorial": {
     "notFound": "Tutorial not found",
@@ -3132,6 +3149,228 @@
         {
           "q": "Can I use both cloud and local models?",
           "a": "Yes! Switch between cloud and local models anytime in OpenClaw. Use cloud models when you want speed and convenience, local models when you want privacy."
+        }
+      ]
+    },
+    "omlx": {
+      "title": "oMLX — 10x Faster AI on Your Mac",
+      "subtitle": "Replace LM Studio with oMLX for blazing-fast OpenClaw agent performance on Apple Silicon. Free, open-source, 10 minutes to set up.",
+      "duration": "10 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "What is MLX? (Mac Only 🍎)",
+          "titleEn": "What is MLX? (Mac Only 🍎)",
+          "estimatedTime": "2 min",
+          "content": "## Understanding MLX and Apple Silicon\n\nMLX is Apple's open-source machine learning framework designed specifically for Apple Silicon chips. Unlike PyTorch or JAX, MLX leverages Apple's **unified memory architecture** where CPU and GPU share the same memory pool.\n\n### Why This Matters for OpenClaw\n\nOpenClaw agents make **dozens of tool calls per task**. Each call requires re-processing the system prompt (often 2000+ tokens). Without prefix caching:\n- **LM Studio**: 20-30 seconds wait EVERY tool call\n- **oMLX**: Nearly instant responses (shared prefix cache)\n\nA YouTube creator found: *\"Base Mac Mini 16GB went from 5 minutes to answer 3 questions → nearly instant with oMLX\"*\n\n### System Requirements\n\n⚠️ **Mac with Apple Silicon ONLY** (M1/M2/M3/M4)\n- macOS 15.0+ (Sequoia)\n- Python 3.10+\n- **16GB RAM minimum** (32GB+ recommended)\n- **Intel Macs are NOT supported**\n\n### How MLX Works\n\nApple Silicon's unified memory means:\n- CPU and GPU share same RAM\n- No memory copying between processors\n- Efficient model loading and inference\n- Perfect for LLM workloads",
+          "tips": [
+            "Check your chip: Apple menu > About This Mac → look for 'M1', 'M2', 'M3', or 'M4'",
+            "16GB RAM handles most models; 32GB+ for large models and multiple agents",
+            "MLX models are different from regular PyTorch models (but oMLX handles conversion automatically)"
+          ],
+          "troubleshooting": {
+            "title": "Common Issues",
+            "items": [
+              {
+                "q": "I have an Intel Mac — can I use oMLX?",
+                "a": "No. oMLX requires Apple Silicon (M1/M2/M3/M4) and won't run on Intel Macs. Consider using Ollama instead for Intel Macs."
+              },
+              {
+                "q": "My Mac has 8GB RAM — will it work?",
+                "a": "Not recommended. 8GB systems struggle with modern LLMs. Consider cloud models via Ollama or upgrading to 16GB+ RAM."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Install oMLX",
+          "titleEn": "Install oMLX",
+          "estimatedTime": "3 min",
+          "content": "## Two Installation Methods\n\nChoose the method that suits your preference:\n\n### Method 1: DMG Download (Recommended)\n\n1. Visit [GitHub Releases](https://github.com/jundot/omlx/releases)\n2. Download the latest `.dmg` file\n3. Drag oMLX.app to Applications folder\n4. Open oMLX — it will appear in your menu bar\n\n**Benefits**: Auto-update, GUI interface, menu bar convenience\n\n### Method 2: Homebrew Install\n\nFor developers who prefer command line:\n\n```bash\n# Add the oMLX tap\nbrew tap jundot/omlx https://github.com/jundot/omlx\n\n# Install oMLX\nbrew install omlx\n\n# Start oMLX service\nbrew services start omlx\n```\n\n**Benefits**: Command-line control, easy updates with `brew upgrade`\n\n## Verify Installation\n\nAfter installation, oMLX should start automatically:\n\n```bash\n# Check if oMLX is running\ncurl http://localhost:8000/v1/models\n\n# Should return JSON with models list\n```\n\nYou'll see the oMLX icon in your menu bar (DMG install) or service running in background (Homebrew).",
+          "tips": [
+            "DMG version includes built-in auto-update mechanism",
+            "Homebrew version can run as background service automatically",
+            "oMLX uses port 8000 by default (OpenAI-compatible endpoint)"
+          ],
+          "troubleshooting": {
+            "title": "Installation Issues",
+            "items": [
+              {
+                "q": "Can't open oMLX.app — \"unidentified developer\" error",
+                "a": "Go to System Settings → Privacy & Security, scroll down and click \"Open Anyway\" next to the oMLX warning."
+              },
+              {
+                "q": "Port 8000 already in use",
+                "a": "Another service is using port 8000. Kill it with `lsof -ti:8000 | xargs kill` or configure oMLX to use different port."
+              },
+              {
+                "q": "Homebrew installation fails",
+                "a": "Make sure you have Command Line Tools installed: `xcode-select --install`. Then retry the installation."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Download Your First Model",
+          "titleEn": "Download Your First Model",
+          "estimatedTime": "3 min",
+          "content": "## Launch oMLX and Download Models\n\n1. **Open oMLX** (from Applications or menu bar)\n2. **Set Model Directory**: Choose where to store models (default: `~/models`)\n3. **Use Built-in Downloader**: oMLX includes a model browser/downloader\n\n## Recommended Models by RAM\n\n### 16GB RAM Systems\n| Model | Size | Speed | Best For |\n|-------|------|-------|----------|\n| Qwen3-4B-MLX-4bit | ~3GB | Fast | Daily tasks, coding |\n| glm-4.7-flash-4bit | ~3GB | Fast | Reasoning, analysis |\n\n### 32GB RAM Systems\n| Model | Size | Speed | Best For |\n|-------|------|-------|----------|\n| Qwen3-30B-A3B-4bit | ~18GB | Medium | Advanced reasoning |\n| Step-3.5-Flash-8bit | ~14GB | Medium | Code generation |\n\n### 64GB+ RAM Systems\n| Model | Size | Speed | Best For |\n|-------|------|-------|----------|\n| Qwen3.5-32B-4bit | ~20GB | Medium | Production tasks |\n| DeepSeek-R1-Distill-70B | ~40GB | Slower | Maximum capability |\n\n## Start the Server\n\nOnce you've downloaded a model:\n\n```bash\n# Start oMLX with your model directory\nomlx serve --model-dir ~/models\n\n# Server will start on http://localhost:8000\n# Admin panel available at http://localhost:8000/admin\n```\n\n## Verify Model Loading\n\n```bash\n# List available models\ncurl http://localhost:8000/v1/models\n\n# Test chat completion\ncurl http://localhost:8000/v1/chat/completions \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"model\": \"your-model-name\",\n    \"messages\": [{\"role\": \"user\", \"content\": \"Hello!\"}],\n    \"max_tokens\": 100\n  }'\n```",
+          "tips": [
+            "Start with smaller models to test everything works before downloading large ones",
+            "Model download requires internet, but once downloaded they run completely offline",
+            "oMLX automatically converts models to MLX format on first load"
+          ],
+          "troubleshooting": {
+            "title": "Model Download Issues",
+            "items": [
+              {
+                "q": "Model download is very slow",
+                "a": "Large models can take time. Ensure stable internet connection. Consider starting with smaller 4GB models first."
+              },
+              {
+                "q": "Model fails to load",
+                "a": "Check RAM usage — models need to fit in memory. Try a smaller quantized version (4bit instead of 8bit)."
+              },
+              {
+                "q": "Can't find downloaded models",
+                "a": "Check your model directory setting in oMLX. Default is ~/models. Models are stored in subdirectories by name."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Connect to OpenClaw 🦞",
+          "titleEn": "Connect to OpenClaw 🦞",
+          "estimatedTime": "1 min",
+          "content": "## Configure OpenClaw to Use oMLX\n\noMLX provides an OpenAI-compatible API, so OpenClaw connects seamlessly.\n\n### Method 1: OpenClaw Config Command\n\n```bash\n# Edit OpenClaw configuration\nopenclaw config edit\n\n# Add oMLX provider to your config\n```\n\n### Method 2: Manual JSON Edit\n\nAdd this to your OpenClaw configuration:\n\n```json\n{\n  \"providers\": {\n    \"omlx\": {\n      \"type\": \"openai\",\n      \"baseURL\": \"http://localhost:8000/v1\",\n      \"apiKey\": \"omlx-local\",\n      \"models\": [\"*\"]\n    }\n  },\n  \"defaultModel\": \"omlx/your-model-name\"\n}\n```\n\n### Test the Connection\n\n```bash\n# Start OpenClaw with oMLX\nopenclaw chat\n\n# In the chat, try a simple command:\n# \"What's 2+2?\" \n\n# Should respond instantly using your local model\n```\n\n## Expected Results\n\n✅ **Before oMLX**: OpenClaw tool calls take 20-30 seconds each  \n✅ **After oMLX**: Tool calls respond in 1-2 seconds  \n✅ **System prompt caching**: Shared context across multiple agents  \n✅ **Multiple agents**: Run concurrent OpenClaw instances  \n\n## Why This Works\n\nOpenClaw agents make frequent tool calls, each requiring system prompt reprocessing. oMLX's **prefix caching** means:\n- First tool call: Normal speed\n- Subsequent calls: Nearly instant (cached prefix)\n- Multiple agents: Share same cached system prompt",
+          "tips": [
+            "Keep oMLX running in the background for best performance",
+            "Set oMLX as your default provider to use it automatically",
+            "You can still use cloud providers for specific tasks while having oMLX as default"
+          ],
+          "troubleshooting": {
+            "title": "Connection Issues",
+            "items": [
+              {
+                "q": "OpenClaw can't connect to oMLX",
+                "a": "Verify oMLX is running: `curl http://localhost:8000/v1/models`. Check firewall isn't blocking port 8000."
+              },
+              {
+                "q": "Model not found error",
+                "a": "Check model name exactly matches what's shown in `curl http://localhost:8000/v1/models`. Names are case-sensitive."
+              },
+              {
+                "q": "Still slow responses",
+                "a": "First few requests may be slower while building cache. Try the same prompt multiple times — subsequent ones should be much faster."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Optimize: Cache & Concurrency",
+          "titleEn": "Optimize: Cache & Concurrency",
+          "estimatedTime": "2 min",
+          "content": "## The Secret Sauce: Advanced Caching\n\nThis is where oMLX shines for OpenClaw agents.\n\n### Tiered KV Caching\n\n**Hot Cache (RAM)**:\n- Active conversations and system prompts\n- Ultra-fast access (microseconds)\n- Set to ~80% of available RAM\n\n**Cold Cache (SSD)**:\n- Background contexts and longer conversations\n- Survives restarts and system reboots\n- Set to available SSD space (50-200GB+)\n\n### Admin Panel Configuration\n\nVisit **http://localhost:8000/admin** for advanced settings:\n\n1. **Cache Settings**:\n   - Hot cache: 80% of RAM (e.g., 12GB on 16GB system)\n   - Cold cache: 100GB+ on SSD\n   \n2. **Model Management**:\n   - Pin frequently-used models to stay in hot cache\n   - Set priority levels for different models\n   \n3. **Concurrency Settings**:\n   - Concurrent requests: Start with 2-4\n   - Batch size: Adjust based on model size\n\n### Concurrent Agent Setup\n\n```bash\n# Terminal 1: Start first OpenClaw agent\nopenclaw chat --session=agent1\n\n# Terminal 2: Start second OpenClaw agent  \nopenclaw chat --session=agent2\n\n# Both agents share the same cached system prompt!\n```\n\n### Performance Tuning\n\n```bash\n# Check current cache usage\ncurl http://localhost:8000/v1/cache/stats\n\n# Benchmark your setup\nomlx benchmark --model your-model-name\n\n# Monitor performance\ntop -p $(pgrep omlx)\n```\n\n## Expected Performance Gains\n\n| Scenario | Before oMLX | With oMLX |\n|----------|-------------|----------|\n| Single tool call | 20-30 sec | 1-2 sec |\n| 10 tool calls | 5+ minutes | 30 seconds |\n| Multiple agents | Multiplied wait | Parallel execution |\n| Context switching | Full reload | Instant cache hit |",
+          "tips": [
+            "Set cold cache to your available SSD space — it's persistent across restarts",
+            "Pin your main OpenClaw model to keep it always in hot cache",
+            "Start with 2 concurrent agents, increase based on your RAM and model size",
+            "Monitor memory usage — if you hit swap, reduce cache sizes or use smaller models"
+          ],
+          "troubleshooting": {
+            "title": "Performance Issues",
+            "items": [
+              {
+                "q": "Cache keeps getting evicted",
+                "a": "Increase hot cache size in admin panel. If RAM is limited, use smaller quantized models (4bit instead of 8bit)."
+              },
+              {
+                "q": "Multiple agents are slow",
+                "a": "Check concurrent request limits in admin panel. Start with 2-4 concurrent requests, adjust based on performance."
+              },
+              {
+                "q": "SSD cache not persisting",
+                "a": "Verify write permissions to cache directory. Check disk space — oMLX needs space to write cache files."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Next Steps",
+          "titleEn": "Next Steps",
+          "estimatedTime": "Exploration time!",
+          "content": "## Congratulations! 🎉\n\nYou've successfully turbocharged your Mac for OpenClaw AI agents. You now have:\n\n✅ **10x faster tool calls** (20-30s → 1-2s)  \n✅ **Persistent caching** that survives restarts  \n✅ **Multi-agent capability** on single Mac  \n✅ **Complete privacy** — everything runs locally  \n\n## What You've Achieved\n\nThe difference is **dramatic**:\n- **Old setup**: Waiting 5+ minutes for complex agent tasks\n- **New setup**: Same tasks complete in 30 seconds or less\n- **Concurrent agents**: Run multiple specialized agents simultaneously\n- **Persistent memory**: Agents remember context across sessions\n\n## Time to Explore\n\nNow that you have blazing-fast local AI, consider these next steps:",
+          "tips": [
+            "Run the benchmark command to find your optimal concurrency settings",
+            "Try vision language models (VLMs) for image analysis tasks",
+            "Experiment with different quantization levels (4bit vs 8bit) for speed vs quality tradeoffs"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "☁️",
+              "title": "Compare with Cloud Models",
+              "desc": "Set up Ollama for cloud models when you need capabilities beyond your local hardware. Best of both worlds.",
+              "cta": "Ollama Tutorial",
+              "link": "/tutorial/ollama"
+            },
+            {
+              "emoji": "🚀",
+              "title": "Deploy to Cloud",
+              "desc": "Use Zeabur to deploy your optimized setup to the cloud. Share your fast agents with team members.",
+              "cta": "Cloud Deployment",
+              "link": "/tutorial/zeabur"
+            },
+            {
+              "emoji": "🔧",
+              "title": "Hardware Optimization",
+              "desc": "Learn how to choose the right Mac configuration for AI workloads. RAM, SSD, and model selection guide.",
+              "cta": "Hardware Guide",
+              "link": "/learn/mac-ai-hardware"
+            },
+            {
+              "emoji": "🎯",
+              "title": "Agent Specialization",
+              "desc": "Create specialized agents for different tasks — coding, writing, analysis — each with optimized models and caching.",
+              "cta": "Multi-Agent Setup",
+              "link": "/learn/multi-agent-workflows"
+            },
+            {
+              "emoji": "📊",
+              "title": "Performance Monitoring",
+              "desc": "Set up monitoring and alerts for your oMLX deployment. Track cache hit rates, model performance, and resource usage.",
+              "cta": "Monitoring Guide",
+              "link": "/learn/omlx-monitoring"
+            },
+            {
+              "emoji": "🔬",
+              "title": "Model Fine-tuning",
+              "desc": "Advanced: Fine-tune models for your specific use cases using MLX training tools. Create domain-specific agents.",
+              "cta": "Fine-tuning Guide",
+              "link": "/learn/mlx-fine-tuning"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "What's the difference between oMLX and LM Studio?",
+          "a": "LM Studio is a general LLM interface, while oMLX is optimized specifically for AI agents. Key differences: oMLX has prefix caching (shares system prompts across calls), tiered memory management (hot RAM + cold SSD), and concurrent agent support. For OpenClaw specifically, oMLX is 10x+ faster due to cached system prompt processing."
+        },
+        {
+          "q": "Can I use oMLX on an Intel Mac?",
+          "a": "No. oMLX requires Apple Silicon (M1, M2, M3, or M4 chips) and macOS 15.0+ (Sequoia). It's built on Apple's MLX framework which only works on Apple Silicon. Intel Mac users should stick with Ollama or cloud-based models."
+        },
+        {
+          "q": "How much RAM do I need for oMLX?",
+          "a": "Minimum 16GB for small models, 32GB+ recommended for production use. Unlike traditional inference, oMLX's caching means you need RAM for: model weights + KV cache + system memory. Rule of thumb: 2x model size in RAM for optimal caching performance."
+        },
+        {
+          "q": "Can I run multiple OpenClaw agents with oMLX?",
+          "a": "Yes! This is one of oMLX's key advantages. Multiple agents can share the same cached system prompt, making concurrent execution very efficient. Start with 2-4 concurrent agents and adjust based on your RAM and model size."
+        },
+        {
+          "q": "Does oMLX work with Claude Code and other AI coding agents?",
+          "a": "Absolutely. oMLX provides an OpenAI-compatible API, so it works with any tool that supports OpenAI API format. This includes Claude Code, Codex, Aider, and dozens of other AI coding tools. The speed improvement is especially noticeable for coding agents that make many tool calls."
         }
       ]
     }

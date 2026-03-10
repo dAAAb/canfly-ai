@@ -438,7 +438,27 @@
     "notifyDescription": "當 {{name}} 在 Canfly 上架時，我們會寄 Email 通知你。",
     "notifyButton": "通知我",
     "notifySuccess": "已加入等候清單！",
-    "notifySuccessDescription": "{{name}} 上架時我們會通知你。"
+    "notifySuccessDescription": "{{name}} 上架時我們會通知你。",
+    "omlx": {
+      "tagline": "Mac 本地 AI 加速十倍 — OpenClaw 渦輪模式",
+      "description": "專為 Apple Silicon 最佳化的 LLM 推理引擎，搭載連續批次處理與分層 KV 快取。取代 LM Studio，讓你的 OpenClaw agent 效能提升 10 倍以上 — 即使是入門款 16GB Mac Mini 也行。從 macOS 選單列輕鬆管理。",
+      "features": [
+        "🍎 僅限 Mac（Apple Silicon M1–M4）",
+        "OpenClaw agent 速度比 LM Studio 快 10 倍以上",
+        "分層 KV 快取：熱存（記憶體）+ 冷存（SSD）— 重開不遺失",
+        "分頁注意力機制：跨多個 agent 共享前綴快取",
+        "單台 Mac 同時運行多個 OpenClaw agent",
+        "OpenAI 相容 API — 即插即用",
+        "原生 macOS 選單列 app（非 Electron）",
+        "內建效能測試、模型下載器、聊天介面",
+        "支援 LLM、VLM、OCR、嵌入向量、重排序模型",
+        "基於 Apple MLX 框架"
+      ],
+      "cta": {
+        "primary": "開始免費教學",
+        "secondary": "下載 oMLX"
+      }
+    }
   },
   "tutorial": {
     "notFound": "找不到教學",
@@ -3134,6 +3154,122 @@
           "a": "可以！隨時在 OpenClaw 中切換。要速度和方便用雲端模型，要隱私用本地模型。"
         }
       ]
+    },
+    "omlx": {
+      "title": "oMLX — 你的 Mac 加速十倍",
+      "subtitle": "用 oMLX 取代 LM Studio，在 Apple Silicon 上獲得極速 OpenClaw agent 體驗。免費開源，10 分鐘搞定。",
+      "duration": "10 分鐘",
+      "difficulty": "入門",
+      "steps": [
+        {
+          "id": 0,
+          "title": "什麼是 MLX？（僅限 Mac 🍎）",
+          "titleEn": "What is MLX? (Mac Only 🍎)",
+          "estimatedTime": "2 分鐘",
+          "content": "MLX 是 Apple 開發的開源機器學習框架，專為 Apple Silicon 的統一記憶體架構量身打造。與傳統 NVIDIA GPU 不同，Apple 的 M 系列晶片讓 CPU 和 GPU 共享同一塊記憶體，這意味著模型推理時不需要在不同記憶體空間之間搬移資料，大幅提升效率。\n\n這就像是把所有工具放在同一張工作桌上，而不是需要在不同房間來回跑。oMLX 基於這個架構，讓你的 OpenClaw agent 推理速度飛快。\n\n⚠️ **重要限制**：oMLX 僅支援 Apple Silicon Mac（M1/M2/M3/M4），需要 macOS 15.0 以上版本，建議至少 16GB 記憶體。",
+          "tips": [
+            "檢查你的晶片：點選蘋果選單 > 關於這台 Mac",
+            "建議至少 16GB RAM 才能發揮最佳效能",
+            "確認 macOS 版本已更新到 15.0 以上"
+          ],
+          "troubleshooting": [
+            {
+              "question": "我是 Intel Mac 怎麼辦？",
+              "answer": "oMLX 和 MLX 框架僅支援 Apple Silicon，Intel Mac 無法使用。建議改用 Ollama 搭配雲端模型，或考慮升級到 M 系列 Mac。"
+            }
+          ]
+        },
+        {
+          "id": 1,
+          "title": "安裝 oMLX",
+          "titleEn": "Install oMLX",
+          "estimatedTime": "2 分鐘",
+          "content": "oMLX 提供兩種安裝方式，選擇最適合你的：\n\n## 方式 1：DMG 直接安裝（推薦）\n最簡單的方式！從 GitHub releases 頁面下載 DMG 檔案，拖進 Applications 資料夾就完成了。適合大部分用戶，有自動更新功能。\n\n## 方式 2：Homebrew 安裝\n適合進階用戶和開發者。可以設定為背景服務，開機自動啟動。透過 Terminal 安裝和管理。",
+          "commands": [
+            "brew tap jundot/omlx https://github.com/jundot/omlx && brew install omlx",
+            "brew services start omlx"
+          ],
+          "tips": [
+            "DMG 安裝版本有圖形界面，更容易上手",
+            "Homebrew 版本可用 `brew services start omlx` 設定開機自啟",
+            "兩種安裝方式功能完全相同，選擇你習慣的即可"
+          ]
+        },
+        {
+          "id": 2,
+          "title": "下載第一個模型",
+          "titleEn": "Download Your First Model",
+          "estimatedTime": "3 分鐘",
+          "content": "啟動 oMLX 後，首先需要下載一個 AI 模型。oMLX 內建模型下載器，會自動處理所有技術細節。\n\n根據你的 Mac 記憶體容量，我們推薦以下模型：\n\n| 記憶體 | 推薦模型 | 大小 | 特色 | 速度 |\n|--------|----------|------|------|------|\n| 16GB | Qwen3-4B-MLX-4bit | 2.5GB | 對話/工具呼叫 | ~25 tok/s |\n| 32GB | Qwen3-30B-A3B-4bit | 18GB | 通用任務 | ~15 tok/s |\n| 64GB+ | Qwen3.5-32B-4bit | 20GB | 高品質推理 | ~10 tok/s |\n\n第一次使用建議從較小的模型開始，確認一切正常運作後再嘗試更大的模型。",
+          "commands": [
+            "omlx serve --model-dir ~/models"
+          ],
+          "tips": [
+            "模型會下載到你指定的目錄，確保有足夠空間",
+            "下載時間取決於網路速度，請耐心等待",
+            "可以在 oMLX 圖形界面中監看下載進度"
+          ]
+        },
+        {
+          "id": 3,
+          "title": "連接 OpenClaw 🦞",
+          "titleEn": "Connect to OpenClaw 🦞",
+          "estimatedTime": "2 分鐘",
+          "content": "現在要讓 OpenClaw 使用 oMLX 作為本地 AI 引擎。oMLX 提供完全相容 OpenAI API 的介面，所以 OpenClaw 可以無縫連接。\n\n這個連接特別重要，因為 OpenClaw agent 在執行任務時會頻繁呼叫 AI 模型（每個任務可能幾十次），每次都需要重新處理長長的系統提示詞。沒有前綴快取的話，每次呼叫都要等 20-30 秒；有了 oMLX 的前綴快取，後續呼叫幾乎瞬間完成。\n\n就像是第一次去新餐廳需要研究菜單，但熟客一進門老闆就知道要上什麼菜一樣！",
+          "commands": [
+            {
+              "description": "在 OpenClaw 設定檔中加入以下配置",
+              "code": "{\n  \"providers\": {\n    \"omlx\": {\n      \"type\": \"openai\",\n      \"baseURL\": \"http://localhost:8080/v1\",\n      \"apiKey\": \"sk-dummy\"\n    }\n  },\n  \"models\": {\n    \"qwen3-4b\": {\n      \"provider\": \"omlx\",\n      \"model\": \"Qwen3-4B-MLX-4bit\"\n    }\n  }\n}"
+            }
+          ],
+          "tips": [
+            "確保 oMLX 已經啟動並在背景執行",
+            "預設埠號是 8080，如有衝突可在設定中修改",
+            "第一次連接可能需要幾秒鐘建立快取"
+          ]
+        },
+        {
+          "id": 4,
+          "title": "優化：快取與並發",
+          "titleEn": "Optimize: Cache & Concurrency",
+          "estimatedTime": "2 分鐘",
+          "content": "oMLX 的殺手級功能來了！透過智慧快取和並發處理，讓你的 Mac 變成 AI 效能野獸。\n\n## 分層快取系統\n- **熱快取**（記憶體）：最常用的提示詞和回應\n- **冷快取**（SSD）：較少使用但仍有價值的快取\n- **持久性**：重開機後快取仍然存在\n\n## 多 Agent 並發\n多個 OpenClaw agent 可以同時運行，共享相同的前綴快取。這意味著如果兩個 agent 都在處理類似任務，第二個 agent 可以重複使用第一個 agent 已建立的快取。\n\n實測結果驚人：一台入門版 Mac Mini 16GB，原本問 3 個問題需要 5 分鐘，現在幾乎即時完成！\n\n你可以在 http://localhost:8000/admin 查看快取狀態和效能指標。",
+          "tips": [
+            "第一次執行任務時會建立快取，後續速度會大幅提升",
+            "可以在管理介面調整快取大小和並發數量",
+            "SSD 快取檔案位於 ~/.omlx/cache，可手動清除"
+          ]
+        },
+        {
+          "id": 5,
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "1 分鐘",
+          "content": "恭喜！你已經成功設定 oMLX，讓 Mac 上的 OpenClaw agent 速度飛快。現在可以探索更多可能性：",
+          "nextStepCards": [
+            {
+              "title": "Ollama 教學",
+              "description": "學習如何整合雲端模型",
+              "link": "/tutorials/ollama"
+            },
+            {
+              "title": "Zeabur 部署",
+              "description": "將 OpenClaw 部署到雲端",
+              "link": "/tutorials/zeabur"
+            },
+            {
+              "title": "硬體升級指南",
+              "description": "如何選購最適合的 Mac 配置",
+              "link": "/guides/hardware"
+            }
+          ],
+          "tips": [
+            "執行 benchmark 測試找出你的 Mac 最佳並發數量",
+            "探索 VLM（視覺語言模型）處理圖片和文件",
+            "加入 CanFly.ai 社群分享使用心得"
+          ]
+        }
+      ]
     }
   },
   "hardwareCompare": {
@@ -3571,5 +3707,34 @@
     "notifyMessage": "留下你的 email，小龍蝦吃飽回來會第一時間通知你！",
     "emailPlaceholder": "你的 email",
     "notify": "通知我"
+  },
+  "faq": {
+    "omlx": [
+      {
+        "id": 1,
+        "question": "oMLX 跟 LM Studio 有什麼不同？",
+        "answer": "oMLX 專為 OpenClaw agent 最佳化，具有前綴快取、多 agent 並發支援，以及 SSD 持久快取。LM Studio 主要設計給單次對話使用，缺乏這些企業級功能。在 agent 工作負載下，oMLX 比 LM Studio 快 10 倍以上。"
+      },
+      {
+        "id": 2,
+        "question": "Intel Mac 可以用嗎？",
+        "answer": "不行。oMLX 基於 Apple MLX 框架，僅支援 Apple Silicon（M1/M2/M3/M4）。Intel Mac 用戶建議使用 Ollama 搭配雲端模型，或考慮升級到搭載 Apple Silicon 的新 Mac。"
+      },
+      {
+        "id": 3,
+        "question": "需要多少記憶體？",
+        "answer": "最低 16GB，建議 32GB 以上。記憶體需求取決於模型大小：4B 模型需要約 8GB，30B 模型需要約 20GB。oMLX 的分層快取會自動管理記憶體使用，在容量不足時會使用 SSD 快取。"
+      },
+      {
+        "id": 4,
+        "question": "可以同時跑多個 OpenClaw agent 嗎？",
+        "answer": "可以！這正是 oMLX 的強項。多個 agent 可以共享前綴快取，大幅減少重複計算。實測一台 Mac 可以同時運行 3-5 個 agent，具體數量取決於記憶體容量和模型大小。"
+      },
+      {
+        "id": 5,
+        "question": "oMLX 可以搭配 Claude Code 用嗎？",
+        "answer": "當然可以！oMLX 提供 OpenAI 相容 API，支援所有基於 OpenAI 格式的工具和框架。只需要將 Claude Code 的 API endpoint 指向 oMLX 即可，享受本地推理的速度和隱私保護。"
+      }
+    ]
   }
 }
