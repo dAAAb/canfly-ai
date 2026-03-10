@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AvatarCall } from '@runwayml/avatars-react'
+import { AvatarCall, AvatarVideo, ControlBar } from '@runwayml/avatars-react'
 import '@runwayml/avatars-react/styles.css'
 import { MessageCircle, X } from 'lucide-react'
 
@@ -46,7 +46,7 @@ export default function AvatarSection() {
               <X className="w-5 h-5" />
             </button>
 
-            {/* Runway Avatar Call — use SDK default layout (control bar overlays video) */}
+            {/* Runway Avatar Call — custom layout, control bar overlays video */}
             <div className="rounded-2xl overflow-hidden shadow-2xl shadow-cyan-900/20">
               <AvatarCall
                 avatarId={AVATAR_ID}
@@ -56,7 +56,10 @@ export default function AvatarSection() {
                   console.error('Avatar error:', error)
                   setIsCallActive(false)
                 }}
-              />
+              >
+                <AvatarVideo className="w-full aspect-video object-cover" />
+                <ControlBar />
+              </AvatarCall>
             </div>
 
             <p className="mt-4 text-gray-500 text-sm">
