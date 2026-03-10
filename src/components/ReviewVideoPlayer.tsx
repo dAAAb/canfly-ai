@@ -44,7 +44,7 @@ export default function ReviewVideoPlayer({ src, poster, subtitles = [] }: Revie
     <div className="rounded-xl overflow-hidden bg-gray-900">
       <style>{`
         video::cue {
-          font-size: clamp(10px, 1.8vw, 16px);
+          font-size: clamp(10px, 1.4vw, 14px);
           line-height: 1.3;
           background: rgba(0,0,0,0.75);
           color: white;

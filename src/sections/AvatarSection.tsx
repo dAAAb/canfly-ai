@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AvatarCall, AvatarVideo, ControlBar } from '@runwayml/avatars-react'
+import { AvatarCall } from '@runwayml/avatars-react'
 import '@runwayml/avatars-react/styles.css'
 import { MessageCircle, X } from 'lucide-react'
 
@@ -46,8 +46,8 @@ export default function AvatarSection() {
               <X className="w-5 h-5" />
             </button>
 
-            {/* Runway Avatar Call — custom layout with explicit dimensions */}
-            <div className="rounded-2xl overflow-hidden border border-gray-800 bg-gray-950 shadow-2xl shadow-cyan-900/20" style={{ minHeight: '400px' }}>
+            {/* Runway Avatar Call — use SDK default layout (control bar overlays video) */}
+            <div className="rounded-2xl overflow-hidden shadow-2xl shadow-cyan-900/20">
               <AvatarCall
                 avatarId={AVATAR_ID}
                 connectUrl="/api/avatar/connect"
@@ -56,12 +56,7 @@ export default function AvatarSection() {
                   console.error('Avatar error:', error)
                   setIsCallActive(false)
                 }}
-              >
-                <div className="relative w-full" style={{ aspectRatio: '16/9', minHeight: '360px' }}>
-                  <AvatarVideo className="w-full h-full object-cover" />
-                </div>
-                <ControlBar className="p-3 bg-gray-900/90 border-t border-gray-800" />
-              </AvatarCall>
+              />
             </div>
 
             <p className="mt-4 text-gray-500 text-sm">

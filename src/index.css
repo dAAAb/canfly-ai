@@ -102,6 +102,4 @@ body {
   animation: page-enter 0.4s ease-out;
 }
 
-.plyr__captions {
-  font-size: var(--plyr-font-size-captions-large, 20px) !important;
-}
+/* Plyr removed — using native <video> + ::cue in ReviewVideoPlayer */
