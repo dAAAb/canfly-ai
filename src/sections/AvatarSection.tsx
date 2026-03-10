@@ -2,13 +2,33 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AvatarCall, AvatarVideo, ControlBar } from '@runwayml/avatars-react'
 import '@runwayml/avatars-react/styles.css'
-import { MessageCircle, X } from 'lucide-react'
+import { MessageCircle, X, Heart } from 'lucide-react'
 
 const AVATAR_ID = '47996119-0180-48cb-9e97-64e93e0478d8'
+const WALLET_ADDRESS = '0x4b039112Af5b46c9BC95b66dc8d6dCe75d10E689'
+const BASENAME = 'littl3lobst3r.base.eth'
+const BASESCAN_URL = `https://basescan.org/address/${WALLET_ADDRESS}`
 
 export default function AvatarSection() {
   const { t } = useTranslation()
   const [isCallActive, setIsCallActive] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  function handleError(err: Error) {
+    console.error('Avatar error:', err)
+    const msg = err?.message || ''
+
+    if (msg.includes('429') || msg.includes('limit') || msg.includes('quota')) {
+      setError('quota')
+    } else {
+      setError('generic')
+    }
+    setIsCallActive(false)
+  }
+
+  function resetError() {
+    setError(null)
+  }
 
   return (
     <section className="py-16 bg-gradient-to-b from-black via-gray-950 to-black">
@@ -26,8 +46,69 @@ export default function AvatarSection() {
           </p>
         </div>
 
-        {/* Avatar call area */}
-        {!isCallActive ? (
+        {/* Error state — friendly message */}
+        {error === 'quota' ? (
+          <div className="max-w-md mx-auto">
+            <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-8 text-center">
+              <div className="text-5xl mb-4">🦞💤</div>
+              <h3 className="text-xl font-bold text-white mb-2">
+                {t('avatar.quotaTitle', "LittleLobster went for a walk!")}
+              </h3>
+              <p className="text-gray-400 mb-6">
+                {t('avatar.quotaMessage', "I've been chatting too much today and ran out of energy. I'll be back tomorrow with a full belly! 🍤")}
+              </p>
+
+              {/* Donation CTA */}
+              <div className="bg-cyan-900/20 border border-cyan-800/30 rounded-xl p-4 mb-6">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <Heart className="w-4 h-4 text-pink-400" />
+                  <span className="text-sm font-medium text-cyan-300">
+                    {t('avatar.donateTitle', 'Help feed LittleLobster')}
+                  </span>
+                </div>
+                <p className="text-xs text-gray-400 mb-3">
+                  {t('avatar.donateMessage', 'Donations help keep me running 24/7. Send ETH on Base:')}
+                </p>
+                <a
+                  href={BASESCAN_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 rounded-lg text-sm text-blue-300 hover:text-blue-200 transition-colors font-mono"
+                >
+                  {BASENAME}
+                </a>
+                <p className="text-xs text-gray-500 mt-2 font-mono break-all">
+                  {WALLET_ADDRESS}
+                </p>
+              </div>
+
+              <button
+                onClick={resetError}
+                className="text-sm text-gray-500 hover:text-gray-300 transition-colors underline"
+              >
+                {t('avatar.tryAgain', 'Try again')}
+              </button>
+            </div>
+          </div>
+        ) : error === 'generic' ? (
+          <div className="max-w-md mx-auto">
+            <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-8 text-center">
+              <div className="text-5xl mb-4">🦞😵</div>
+              <h3 className="text-xl font-bold text-white mb-2">
+                {t('avatar.errorTitle', 'Oops, something went wrong')}
+              </h3>
+              <p className="text-gray-400 mb-6">
+                {t('avatar.errorMessage', "LittleLobster tripped on a cable. Please try again in a moment!")}
+              </p>
+              <button
+                onClick={resetError}
+                className="px-6 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl transition-colors text-sm font-medium"
+              >
+                {t('avatar.tryAgain', 'Try again')}
+              </button>
+            </div>
+          </div>
+        ) : !isCallActive ? (
           <button
             onClick={() => setIsCallActive(true)}
             className="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-semibold rounded-2xl transition-all duration-300 shadow-lg shadow-cyan-900/30 hover:shadow-cyan-800/50 hover:scale-105"
@@ -52,10 +133,7 @@ export default function AvatarSection() {
                 avatarId={AVATAR_ID}
                 connectUrl="/api/avatar/connect"
                 onEnd={() => setIsCallActive(false)}
-                onError={(error) => {
-                  console.error('Avatar error:', error)
-                  setIsCallActive(false)
-                }}
+                onError={handleError}
               >
                 <AvatarVideo className="w-full aspect-video object-cover" />
                 <ControlBar />

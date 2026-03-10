@@ -3560,6 +3560,13 @@
     "title": "跟小龙虾聊聊",
     "subtitle": "对 AI Agent 有疑问？跟我们的 AI 助理面对面聊天吧 — 由 Runway Characters 驱动。",
     "startCall": "开始视频通话 🦞",
-    "hint": "自然说话就好 — 小龙虾听得到，会即时回应。"
+    "hint": "自然说话就好 — 小龙虾听得到，会即时回应。",
+    "quotaTitle": "小龙虾出去溜达了！",
+    "quotaMessage": "今天跟太多人聊天，能量用完啦。明天吃饱饱再回来！🍤",
+    "donateTitle": "请小龙虾吃饭",
+    "donateMessage": "捐款帮助小龙虾 24 小时待命。通过 Base 链发送 ETH：",
+    "errorTitle": "哎呀，出了点问题",
+    "errorMessage": "小龙虾被网线绊倒了。请稍后再试！",
+    "tryAgain": "再试一次"
   }
 }
