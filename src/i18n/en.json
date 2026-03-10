@@ -3212,7 +3212,8 @@
           "commands": [
             "brew tap jundot/omlx https://github.com/jundot/omlx && brew install omlx",
             "brew services start omlx"
-          ]
+          ],
+          "expectedResult": "oMLX app appears in Applications folder or `brew services info omlx` shows running"
         },
         {
           "title": "Download Your First Model",
@@ -3271,7 +3272,8 @@
                 "speed": "~10 tok/s"
               }
             ]
-          }
+          },
+          "expectedResult": "Model appears in oMLX dashboard, ready to use"
         },
         {
           "title": "Connect to OpenClaw 🦞",
@@ -3302,7 +3304,8 @@
           },
           "commands": [
             "openclaw config edit  # Add oMLX provider configuration"
-          ]
+          ],
+          "expectedResult": "OpenClaw responds using your local model via oMLX"
         },
         {
           "title": "Optimize: Cache & Concurrency",
@@ -3334,7 +3337,8 @@
           },
           "commands": [
             "open http://localhost:8000/admin"
-          ]
+          ],
+          "expectedResult": "Admin panel shows cache stats and real-time performance metrics"
         },
         {
           "title": "Next Steps",

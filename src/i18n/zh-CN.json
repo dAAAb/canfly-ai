@@ -3206,7 +3206,8 @@
               "issue": "提示「无法打开，因为无法验证开发者」",
               "solution": "右键点击 oMLX → 选择「打开」→ 在弹窗中点击「打开」。或者在「系统偏好设置 > 隐私与安全性」中点击「仍要打开」。"
             }
-          ]
+          ],
+          "expectedResult": "oMLX 出现在应用程序文件夹，或 `brew services info omlx` 显示运行中"
         },
         {
           "step": 2,
@@ -3260,7 +3261,8 @@
                 "speed": "~10 tok/s"
               }
             ]
-          }
+          },
+          "expectedResult": "模型出现在 oMLX 面板中，可以开始使用"
         },
         {
           "step": 3,
@@ -3282,7 +3284,8 @@
               "issue": "oMLX 服务器连接失败",
               "solution": "确保 oMLX 服务已启动：`omlx serve --host 0.0.0.0 --port 8000`"
             }
-          ]
+          ],
+          "expectedResult": "OpenClaw 通过 oMLX 使用本地模型响应"
         },
         {
           "step": 4,
@@ -3309,7 +3312,8 @@
               "type": "success",
               "content": "🚀 **Pro Tip**：定期查看管理面板，根据使用情况调整缓存和并发设置。"
             }
-          ]
+          ],
+          "expectedResult": "管理面板显示缓存统计和实时性能指标"
         },
         {
           "step": 5,

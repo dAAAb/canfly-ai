@@ -3193,7 +3193,8 @@
             "DMG 安裝版本有圖形界面，更容易上手",
             "Homebrew 版本可用 `brew services start omlx` 設定開機自啟",
             "兩種安裝方式功能完全相同，選擇你習慣的即可"
-          ]
+          ],
+          "expectedResult": "oMLX 出現在應用程式資料夾，或 `brew services info omlx` 顯示運行中"
         },
         {
           "id": 2,
@@ -3236,7 +3237,8 @@
                 "speed": "~10 tok/s"
               }
             ]
-          }
+          },
+          "expectedResult": "模型出現在 oMLX 面板中，可以開始使用"
         },
         {
           "id": 3,
@@ -3251,7 +3253,8 @@
             "確保 oMLX 已經啟動並在背景執行",
             "預設埠號是 8080，如有衝突可在設定中修改",
             "第一次連接可能需要幾秒鐘建立快取"
-          ]
+          ],
+          "expectedResult": "OpenClaw 透過 oMLX 使用本地模型回應"
         },
         {
           "id": 4,
@@ -3266,7 +3269,8 @@
           ],
           "commands": [
             "open http://localhost:8000/admin"
-          ]
+          ],
+          "expectedResult": "管理面板顯示快取統計和即時效能指標"
         },
         {
           "id": 5,
