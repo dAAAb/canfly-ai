@@ -3208,7 +3208,11 @@
                 "a": "Make sure you have Command Line Tools installed: `xcode-select --install`. Then retry the installation."
               }
             ]
-          }
+          },
+          "commands": [
+            "brew tap jundot/omlx https://github.com/jundot/omlx && brew install omlx",
+            "brew services start omlx"
+          ]
         },
         {
           "title": "Download Your First Model",
@@ -3234,6 +3238,37 @@
               {
                 "q": "Can't find downloaded models",
                 "a": "Check your model directory setting in oMLX. Default is ~/models. Models are stored in subdirectories by name."
+              }
+            ]
+          },
+          "commands": [
+            "omlx serve --model-dir ~/models"
+          ],
+          "modelTable": {
+            "models": [
+              {
+                "name": "Qwen3-4B-MLX-4bit",
+                "size": "2.5 GB",
+                "best": "Chat & tool calling",
+                "speed": "~25 tok/s"
+              },
+              {
+                "name": "glm-4.7-flash-4bit",
+                "size": "3.2 GB",
+                "best": "Chinese & English",
+                "speed": "~20 tok/s"
+              },
+              {
+                "name": "Qwen3-30B-A3B-4bit",
+                "size": "18 GB",
+                "best": "General (32GB RAM)",
+                "speed": "~15 tok/s"
+              },
+              {
+                "name": "Qwen3.5-32B-4bit",
+                "size": "20 GB",
+                "best": "High-quality (64GB+)",
+                "speed": "~10 tok/s"
               }
             ]
           }
@@ -3264,7 +3299,10 @@
                 "a": "First few requests may be slower while building cache. Try the same prompt multiple times — subsequent ones should be much faster."
               }
             ]
-          }
+          },
+          "commands": [
+            "openclaw config edit  # Add oMLX provider configuration"
+          ]
         },
         {
           "title": "Optimize: Cache & Concurrency",
@@ -3293,7 +3331,10 @@
                 "a": "Verify write permissions to cache directory. Check disk space — oMLX needs space to write cache files."
               }
             ]
-          }
+          },
+          "commands": [
+            "open http://localhost:8000/admin"
+          ]
         },
         {
           "title": "Next Steps",

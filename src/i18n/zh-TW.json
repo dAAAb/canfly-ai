@@ -3208,7 +3208,35 @@
             "模型會下載到你指定的目錄，確保有足夠空間",
             "下載時間取決於網路速度，請耐心等待",
             "可以在 oMLX 圖形界面中監看下載進度"
-          ]
+          ],
+          "modelTable": {
+            "models": [
+              {
+                "name": "Qwen3-4B-MLX-4bit",
+                "size": "2.5 GB",
+                "best": "對話與工具呼叫",
+                "speed": "~25 tok/s"
+              },
+              {
+                "name": "glm-4.7-flash-4bit",
+                "size": "3.2 GB",
+                "best": "中英文通用",
+                "speed": "~20 tok/s"
+              },
+              {
+                "name": "Qwen3-30B-A3B-4bit",
+                "size": "18 GB",
+                "best": "通用（32GB RAM）",
+                "speed": "~15 tok/s"
+              },
+              {
+                "name": "Qwen3.5-32B-4bit",
+                "size": "20 GB",
+                "best": "高品質推理（64GB+）",
+                "speed": "~10 tok/s"
+              }
+            ]
+          }
         },
         {
           "id": 3,
@@ -3217,10 +3245,7 @@
           "estimatedTime": "2 分鐘",
           "content": "現在要讓 OpenClaw 使用 oMLX 作為本地 AI 引擎。oMLX 提供完全相容 OpenAI API 的介面，所以 OpenClaw 可以無縫連接。\n\n這個連接特別重要，因為 OpenClaw agent 在執行任務時會頻繁呼叫 AI 模型（每個任務可能幾十次），每次都需要重新處理長長的系統提示詞。沒有前綴快取的話，每次呼叫都要等 20-30 秒；有了 oMLX 的前綴快取，後續呼叫幾乎瞬間完成。\n\n就像是第一次去新餐廳需要研究菜單，但熟客一進門老闆就知道要上什麼菜一樣！",
           "commands": [
-            {
-              "description": "在 OpenClaw 設定檔中加入以下配置",
-              "code": "{\n  \"providers\": {\n    \"omlx\": {\n      \"type\": \"openai\",\n      \"baseURL\": \"http://localhost:8080/v1\",\n      \"apiKey\": \"sk-dummy\"\n    }\n  },\n  \"models\": {\n    \"qwen3-4b\": {\n      \"provider\": \"omlx\",\n      \"model\": \"Qwen3-4B-MLX-4bit\"\n    }\n  }\n}"
-            }
+            "openclaw config edit  # 新增 oMLX provider 設定"
           ],
           "tips": [
             "確保 oMLX 已經啟動並在背景執行",
@@ -3238,6 +3263,9 @@
             "第一次執行任務時會建立快取，後續速度會大幅提升",
             "可以在管理介面調整快取大小和並發數量",
             "SSD 快取檔案位於 ~/.omlx/cache，可手動清除"
+          ],
+          "commands": [
+            "open http://localhost:8000/admin"
           ]
         },
         {

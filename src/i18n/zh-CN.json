@@ -3192,10 +3192,8 @@
           "estimatedTime": "3 分钟",
           "content": "## 两种安装方式，任选其一\n\n### 方式一：DMG 安装包（推荐新手）\n\n1. 访问 [oMLX 官网](https://omlx.ai/download)\n2. 点击 **Download for Mac** 下载 DMG 文件\n3. 双击 DMG 文件，拖拽 oMLX 到应用程序文件夹\n4. 首次启动时，可能需要在「系统偏好设置 > 隐私与安全性」中允许运行\n\n### 方式二：Homebrew 命令行（推荐极客）\n\n如果你已经安装了 Homebrew，直接运行：",
           "commands": [
-            {
-              "language": "bash",
-              "code": "# 安装 oMLX\nbrew install --cask omlx\n\n# 启动验证\nomlx --version"
-            }
+            "brew tap jundot/omlx https://github.com/jundot/omlx && brew install omlx",
+            "brew services start omlx"
           ],
           "tips": [
             {
@@ -3217,10 +3215,7 @@
           "estimatedTime": "5-15 分钟",
           "content": "## 选择适合你 Mac 的模型\n\n不同内存配置的 Mac 适合不同大小的模型。选对了模型，性能和体验都会大不同：\n\n### 📊 推荐模型表\n\n| Mac 配置 | 推荐模型 | 模型大小 | 性能表现 |\n|---------|---------|---------|----------|\n| **16GB 内存** | Qwen2.5-7B-Instruct | 4.1GB | ⭐⭐⭐⭐ 日常对话，代码生成 |\n| **32GB 内存** | Llama-3.1-8B-Instruct | 4.7GB | ⭐⭐⭐⭐⭐ 全能助手，复杂推理 |\n| **64GB+ 内存** | Qwen2.5-32B-Instruct | 19GB | 🚀 专业级，媲美 GPT-4 |\n\n### 🔽 下载你的第一个模型\n\n推荐从 **Qwen2.5-7B-Instruct** 开始：",
           "commands": [
-            {
-              "language": "bash",
-              "code": "# 下载 Qwen2.5-7B 模型（适合 16GB+ Mac）\nomlx download microsoft/DialoGPT-medium\n\n# 或者通过 HuggingFace Hub\nomlx download Qwen/Qwen2.5-7B-Instruct-MLX\n\n# 检查下载状态\nomlx list"
-            }
+            "omlx serve --model-dir ~/models"
           ],
           "tips": [
             {
@@ -3237,7 +3232,35 @@
               "issue": "下载中断或失败",
               "solution": "检查网络连接，或者使用 `omlx download --resume` 恢复下载。"
             }
-          ]
+          ],
+          "modelTable": {
+            "models": [
+              {
+                "name": "Qwen3-4B-MLX-4bit",
+                "size": "2.5 GB",
+                "best": "对话与工具调用",
+                "speed": "~25 tok/s"
+              },
+              {
+                "name": "glm-4.7-flash-4bit",
+                "size": "3.2 GB",
+                "best": "中英文通用",
+                "speed": "~20 tok/s"
+              },
+              {
+                "name": "Qwen3-30B-A3B-4bit",
+                "size": "18 GB",
+                "best": "通用（32GB 内存）",
+                "speed": "~15 tok/s"
+              },
+              {
+                "name": "Qwen3.5-32B-4bit",
+                "size": "20 GB",
+                "best": "高质量推理（64GB+）",
+                "speed": "~10 tok/s"
+              }
+            ]
+          }
         },
         {
           "step": 3,
@@ -3246,10 +3269,7 @@
           "estimatedTime": "3 分钟",
           "content": "## 解决 Agent 工具调用的性能瓶颈\n\n你可能遇到过这种情况：OpenClaw Agent 每次调用工具时，都要重新加载 20K token 的系统提示词。没有前缀缓存的话，你就得眼睁睁等 20-30 秒。这在频繁工具调用的场景下简直是噩梦！\n\n**oMLX 的前缀缓存技术完美解决了这个痛点**：\n\n- 🧠 **智能缓存**：系统提示词只需处理一次\n- ⚡ **秒级响应**：后续调用几乎是瞬时的\n- 🔄 **无缝切换**：Agent 工作流程丝滑流畅\n\n### 🔧 配置 OpenClaw 使用 oMLX\n\n编辑你的 OpenClaw 配置文件：",
           "commands": [
-            {
-              "language": "json",
-              "code": "{\n  \"models\": {\n    \"default\": \"omlx/qwen2.5-7b-instruct\",\n    \"endpoints\": {\n      \"omlx\": {\n        \"type\": \"omlx\",\n        \"base_url\": \"http://localhost:8000\",\n        \"api_key\": \"not-needed\",\n        \"models\": {\n          \"omlx/qwen2.5-7b-instruct\": {\n            \"max_tokens\": 4096,\n            \"supports_tools\": true,\n            \"supports_streaming\": true\n          }\n        }\n      }\n    }\n  }\n}"
-            }
+            "openclaw config edit  # 添加 oMLX provider 配置"
           ],
           "tips": [
             {
@@ -3271,10 +3291,7 @@
           "estimatedTime": "5 分钟",
           "content": "## 榨干你 Mac 的每一分性能\n\n### 🧠 前缀缓存：告别重复计算\n\n前缀缓存是 oMLX 的杀手锏功能。它会智能识别重复的提示词前缀，避免重复计算：\n\n```bash\n# 启用前缀缓存（默认开启）\nomlx serve --cache-prefix --max-cache-size 4GB\n```\n\n**缓存效果有多神奇？**\n- 🕐 **首次查询**：需要处理完整的 20K token 系统提示\n- ⚡ **后续查询**：只需处理新增的用户输入\n- 📊 **实测效果**：响应时间从 30 秒降到 2 秒以内\n\n### 💾 SSD 冷存储：内存优化大师\n\nMLX 支持将不常用的模型权重存储到 SSD，需要时快速加载：\n\n```bash\n# 启用 SSD 冷存储\nexport MLX_CACHE_DIR=/path/to/fast/ssd\nomlx serve --enable-cold-storage\n```\n\n### 🔄 多 Agent 并发：一机多用\n\n想要同时运行多个 OpenClaw Agent？oMLX 的并发支持让你的 Mac 变身 AI 工作站：\n\n```bash\n# 启动支持并发的 oMLX 服务\nomlx serve --max-concurrent 4 --port 8000\n```\n\n### 📹 真实案例回顾\n\n还记得我们在 YouTube 视频中的发现吗？**一台丐版 Mac Mini 16GB，问 3 个问题从 5 分钟降到几乎秒回**。这就是这些优化技术的综合效果！\n\n### 📊 监控面板：实时性能追踪",
           "commands": [
-            {
-              "language": "bash",
-              "code": "# 访问 oMLX 管理面板\nopen http://localhost:8000/admin\n\n# 或者查看实时统计\nomlx stats --live"
-            }
+            "open http://localhost:8000/admin"
           ],
           "admin_panel": {
             "title": "🎛️ 管理面板功能",
