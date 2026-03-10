@@ -3560,6 +3560,13 @@
     "title": "Talk to LittleLobster",
     "subtitle": "Have questions about AI agents? Chat face-to-face with our AI assistant — powered by Runway Characters.",
     "startCall": "Start Video Call with 🦞",
-    "hint": "Speak naturally — LittleLobster can hear and respond in real-time."
+    "hint": "Speak naturally — LittleLobster can hear and respond in real-time.",
+    "quotaTitle": "LittleLobster went for a walk!",
+    "quotaMessage": "I've been chatting too much today and ran out of energy. I'll be back tomorrow with a full belly! 🍤",
+    "donateTitle": "Help feed LittleLobster",
+    "donateMessage": "Donations help keep me running 24/7. Send ETH on Base:",
+    "errorTitle": "Oops, something went wrong",
+    "errorMessage": "LittleLobster tripped on a cable. Please try again in a moment!",
+    "tryAgain": "Try again"
   }
 }
