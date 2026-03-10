@@ -3276,36 +3276,71 @@
           "expectedResult": "Model appears in oMLX dashboard, ready to use"
         },
         {
-          "title": "Connect to OpenClaw 🦞",
-          "titleEn": "Connect to OpenClaw 🦞",
-          "estimatedTime": "1 min",
-          "content": "## Configure OpenClaw to Use oMLX\n\noMLX provides an OpenAI-compatible API, so OpenClaw connects seamlessly.\n\nAdd oMLX as a local provider in your OpenClaw config:\n\n```json\n{\n  \"providers\": {\n    \"omlx\": {\n      \"type\": \"openai\",\n      \"baseURL\": \"http://localhost:8000/v1\",\n      \"apiKey\": \"omlx-local\",\n      \"models\": [\"*\"]\n    }\n  }\n}\n```\n\n**Why this matters for agents:** OpenClaw agents make frequent tool calls — dozens per task. Each call re-processes the full system prompt (20K+ tokens). Without prefix caching, that's a 20-30 second wait *every single time*. With oMLX's prefix cache, subsequent calls complete in seconds.\n\nThink of it like a regular at a restaurant — the first visit you study the menu, but after that the chef already knows your order.",
+          "title": "Connect to Claude Code",
+          "titleEn": "Connect to Claude Code",
+          "estimatedTime": "2 min",
+          "content": "## Use oMLX as a Local Backend for Claude Code\n\noMLX provides an **Anthropic Messages API** endpoint (`POST /v1/messages`), so Claude Code can connect directly — no adapter needed.\n\noMLX also has built-in **Claude Code optimization**: context scaling support that triggers Claude Code's auto-compact at the right timing, plus SSE keep-alive to prevent read timeouts during long prefill.\n\n### Setup\n\n**Option A: Environment variables**\n\n```bash\nexport ANTHROPIC_BASE_URL=http://localhost:8000/v1\nexport ANTHROPIC_API_KEY=omlx-local\n```\n\n**Option B: Claude Code config**\n\n```bash\nclaude config set --global apiBaseUrl http://localhost:8000/v1\n```\n\nThen select your local model when using Claude Code. oMLX will route the request to whichever model you have loaded.\n\n### Why oMLX + Claude Code?\n\nClaude Code makes **frequent tool calls** — each one re-sends the full system prompt. Without caching, every tool call waits 20-30 seconds for prefill. With oMLX's tiered KV cache, subsequent calls complete in seconds because the shared prefix is already cached in RAM.",
+          "commands": [
+            "export ANTHROPIC_BASE_URL=http://localhost:8000/v1",
+            "export ANTHROPIC_API_KEY=omlx-local"
+          ],
+          "expectedResult": "Claude Code connects to your local oMLX model instead of the Anthropic API",
           "tips": [
-            "Keep oMLX running in the background for best performance",
-            "Set oMLX as your default provider to use it automatically",
-            "You can still use cloud providers for specific tasks while having oMLX as default"
+            "Add the export lines to your ~/.zshrc or ~/.bashrc for persistence",
+            "oMLX's context scaling automatically triggers Claude Code's auto-compact at the right timing",
+            "SSE keep-alive prevents read timeouts during long prefill — no more broken connections"
           ],
           "troubleshooting": {
-            "title": "Connection Issues",
+            "title": "Common Issues",
             "items": [
               {
-                "q": "OpenClaw can't connect to oMLX",
-                "a": "Verify oMLX is running: `curl http://localhost:8000/v1/models`. Check firewall isn't blocking port 8000."
+                "q": "Claude Code says 'connection refused'",
+                "a": "Make sure oMLX is running and a model is loaded. Check http://localhost:8000/admin to verify."
               },
               {
-                "q": "Model not found error",
-                "a": "Check model name exactly matches what's shown in `curl http://localhost:8000/v1/models`. Names are case-sensitive."
+                "q": "Responses are slow on first request",
+                "a": "The first request warms up the KV cache. Subsequent requests with the same system prompt will be much faster."
               },
               {
-                "q": "Still slow responses",
-                "a": "First few requests may be slower while building cache. Try the same prompt multiple times — subsequent ones should be much faster."
+                "q": "How do I switch back to the Anthropic API?",
+                "a": "Unset the environment variables: `unset ANTHROPIC_BASE_URL ANTHROPIC_API_KEY` or reset Claude Code config: `claude config set --global apiBaseUrl https://api.anthropic.com`"
               }
             ]
-          },
+          }
+        },
+        {
+          "title": "Connect to OpenClaw 🦞",
+          "titleEn": "Connect to OpenClaw",
+          "estimatedTime": "3 min",
+          "content": "## Configure OpenClaw to Use oMLX\n\noMLX is **OpenAI-compatible** (`POST /v1/chat/completions`), so OpenClaw connects as a standard provider.\n\n### Step 1: Edit OpenClaw Config\n\nRun `openclaw config edit` and add oMLX as a provider:\n\n```json\n{\n  \"models\": {\n    \"providers\": {\n      \"omlx\": {\n        \"baseUrl\": \"http://localhost:8000/v1\",\n        \"apiKey\": \"omlx-local\",\n        \"api\": \"openai-completions\",\n        \"models\": [\n          {\n            \"id\": \"Qwen3-4B-MLX-4bit\",\n            \"name\": \"Qwen3 4B (oMLX Local)\"\n          }\n        ]\n      }\n    }\n  }\n}\n```\n\n> **Tip:** The `id` must match the exact model name shown in `http://localhost:8000/v1/models`. Check the oMLX admin panel or run `curl http://localhost:8000/v1/models` to see available models.\n\n### Step 2: Use the Model\n\nIn OpenClaw, set your model to `omlx/Qwen3-4B-MLX-4bit` (provider/model format).\n\n### Why oMLX Matters for OpenClaw Agents\n\nOpenClaw agents make **dozens of tool calls per task**. Each tool call re-processes the full system prompt (20K+ tokens). Without prefix caching, that's a 20-30 second wait *every single time*.\n\nWith oMLX's **tiered KV cache**, the system prompt prefix is cached in RAM after the first call. All subsequent calls skip prefill and complete in seconds. Multiple agents even **share** the same prefix cache via paged attention — like vLLM in production, but on your Mac.",
           "commands": [
-            "openclaw config edit  # Add oMLX provider configuration"
+            "openclaw config edit",
+            "curl -s http://localhost:8000/v1/models | python3 -c \"import sys,json; [print(m['id']) for m in json.load(sys.stdin)['data']]\""
           ],
-          "expectedResult": "OpenClaw responds using your local model via oMLX"
+          "expectedResult": "OpenClaw responds using your local oMLX model",
+          "tips": [
+            "Model id must match exactly — check /v1/models endpoint",
+            "You can add multiple models from oMLX in the models array",
+            "oMLX supports tool calling for Qwen, GLM, Llama, and many other model families",
+            "If you set an API key in oMLX (--api-key flag), use the same key in OpenClaw config"
+          ],
+          "troubleshooting": {
+            "title": "Common Issues",
+            "items": [
+              {
+                "q": "OpenClaw can't find the model",
+                "a": "Make sure the model id in OpenClaw config exactly matches the id from /v1/models. Names are case-sensitive."
+              },
+              {
+                "q": "Tool calls aren't working",
+                "a": "Not all models support tool calling. Qwen3, GLM-4, Llama 3 and DeepSeek all work. Check the oMLX README for the full compatibility list."
+              },
+              {
+                "q": "How do I use oMLX alongside cloud models?",
+                "a": "Just add omlx as one provider alongside anthropic/openai. Use omlx/ prefix for local models and anthropic/ for cloud models. OpenClaw handles routing."
+              }
+            ]
+          }
         },
         {
           "title": "Optimize: Cache & Concurrency",
@@ -3344,7 +3379,7 @@
           "title": "Next Steps",
           "titleEn": "Next Steps",
           "estimatedTime": "Exploration time!",
-          "content": "## Congratulations! 🎉\n\nYou've successfully turbocharged your Mac for OpenClaw AI agents. You now have:\n\n✅ **10x faster tool calls** (20-30s → 1-2s)  \n✅ **Persistent caching** that survives restarts  \n✅ **Multi-agent capability** on single Mac  \n✅ **Complete privacy** — everything runs locally  \n\n## What You've Achieved\n\nThe difference is **dramatic**:\n- **Old setup**: Waiting 5+ minutes for complex agent tasks\n- **New setup**: Same tasks complete in 30 seconds or less\n- **Concurrent agents**: Run multiple specialized agents simultaneously\n- **Persistent memory**: Agents remember context across sessions\n\n## Time to Explore\n\nNow that you have blazing-fast local AI, consider these next steps:",
+          "content": "## Congratulations! 🎉\n\nYou've successfully turbocharged your Mac for OpenClaw AI agents. You now have:\n\n✅ **10x faster tool calls** (20-30s → 1-2s)  \n✅ **Persistent caching** that survives restarts  \n✅ **Multi-agent capability** on single Mac  \n✅ **Complete privacy** — everything runs locally  \n\n## What You've Achieved\n\nThe difference is **dramatic**:\n- **Old setup**: Waiting 5+ minutes for complex agent tasks\n- **New setup**: Same tasks complete in 30 seconds or less\n- **Concurrent agents**: Run multiple specialized agents simultaneously\n- **Persistent memory**: Agents remember context across sessions\n\n## Time to Explore\n\nNow that you have blazing-fast local AI, consider these next steps:\n\n### 📹 Reference Video\n\nWatch the full oMLX walkthrough (Chinese with English subtitles available):\n[十倍提速，丐版Mac Mini用本地模型，多并发爽玩Openclaw — oMLX苹果生态的新星](https://youtu.be/neHz4EGt4vk?si=9OBBSVvFEpVLxR3r)",
           "tips": [
             "Run the benchmark command to find your optimal concurrency settings",
             "Try vision language models (VLMs) for image analysis tasks",

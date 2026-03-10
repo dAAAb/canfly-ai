@@ -1125,7 +1125,7 @@ function createOmlxTutorial(t: any): TutorialData {
         }
       },
       {
-        icon: Sparkles,
+        icon: Terminal,
         title: t('tutorial.omlx.steps.3.title'),
         titleEn: t('tutorial.omlx.steps.3.titleEn'),
         estimatedTime: t('tutorial.omlx.steps.3.estimatedTime'),
@@ -1139,12 +1139,13 @@ function createOmlxTutorial(t: any): TutorialData {
         }
       },
       {
-        icon: Zap,
+        icon: Sparkles,
         title: t('tutorial.omlx.steps.4.title'),
         titleEn: t('tutorial.omlx.steps.4.titleEn'),
         estimatedTime: t('tutorial.omlx.steps.4.estimatedTime'),
         content: t('tutorial.omlx.steps.4.content'),
         commands: t('tutorial.omlx.steps.4.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.omlx.steps.4.expectedResult'),
         tips: t('tutorial.omlx.steps.4.tips', { returnObjects: true }),
         troubleshooting: {
           title: t('tutorial.omlx.steps.4.troubleshooting.title'),
@@ -1152,16 +1153,29 @@ function createOmlxTutorial(t: any): TutorialData {
         }
       },
       {
-        icon: Rocket,
+        icon: Zap,
         title: t('tutorial.omlx.steps.5.title'),
         titleEn: t('tutorial.omlx.steps.5.titleEn'),
         estimatedTime: t('tutorial.omlx.steps.5.estimatedTime'),
         content: t('tutorial.omlx.steps.5.content'),
-        nextStepCards: (t('tutorial.omlx.steps.5.nextStepCards', { returnObjects: true }) || []).map((card: NextStepCard) => ({
+        commands: t('tutorial.omlx.steps.5.commands', { returnObjects: true }),
+        tips: t('tutorial.omlx.steps.5.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.omlx.steps.5.troubleshooting.title'),
+          items: t('tutorial.omlx.steps.5.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.omlx.steps.6.title'),
+        titleEn: t('tutorial.omlx.steps.6.titleEn'),
+        estimatedTime: t('tutorial.omlx.steps.6.estimatedTime'),
+        content: t('tutorial.omlx.steps.6.content'),
+        nextStepCards: (t('tutorial.omlx.steps.6.nextStepCards', { returnObjects: true }) || []).map((card: NextStepCard) => ({
           ...card,
           link: card.link || '#',
         })),
-        tips: t('tutorial.omlx.steps.5.tips', { returnObjects: true }),
+        tips: t('tutorial.omlx.steps.6.tips', { returnObjects: true }),
       },
     ],
   }

@@ -3241,20 +3241,71 @@
           "expectedResult": "模型出現在 oMLX 面板中，可以開始使用"
         },
         {
-          "id": 3,
-          "title": "連接 OpenClaw 🦞",
-          "titleEn": "Connect to OpenClaw 🦞",
+          "title": "連接 Claude Code",
+          "titleEn": "Connect to Claude Code",
           "estimatedTime": "2 分鐘",
-          "content": "現在要讓 OpenClaw 使用 oMLX 作為本地 AI 引擎。oMLX 提供完全相容 OpenAI API 的介面，所以 OpenClaw 可以無縫連接。\n\n這個連接特別重要，因為 OpenClaw agent 在執行任務時會頻繁呼叫 AI 模型（每個任務可能幾十次），每次都需要重新處理長長的系統提示詞。沒有前綴快取的話，每次呼叫都要等 20-30 秒；有了 oMLX 的前綴快取，後續呼叫幾乎瞬間完成。\n\n就像是第一次去新餐廳需要研究菜單，但熟客一進門老闆就知道要上什麼菜一樣！",
+          "content": "## 用 oMLX 作為 Claude Code 的本地後端\n\noMLX 提供 **Anthropic Messages API** 端點（`POST /v1/messages`），Claude Code 可以直接連接，不需要任何轉接。\n\noMLX 還內建 **Claude Code 最佳化**：Context Scaling 功能會在適當時機觸發 Claude Code 的自動壓縮，加上 SSE keep-alive 機制防止長時間 prefill 導致的讀取超時。\n\n### 設定方式\n\n**方法 A：環境變數**\n\n```bash\nexport ANTHROPIC_BASE_URL=http://localhost:8000/v1\nexport ANTHROPIC_API_KEY=omlx-local\n```\n\n**方法 B：Claude Code 設定**\n\n```bash\nclaude config set --global apiBaseUrl http://localhost:8000/v1\n```\n\n設定完成後使用 Claude Code 時會自動連到本地 oMLX 模型。\n\n### 為什麼 oMLX + Claude Code 是絕配？\n\nClaude Code 會**頻繁呼叫工具** — 每次呼叫都會重新傳送完整的系統提示詞。沒有快取的話，每次工具呼叫要等 20-30 秒做 prefill。有了 oMLX 的分層 KV 快取，後續呼叫只要幾秒就完成，因為共用前綴已經快取在記憶體中。",
           "commands": [
-            "openclaw config edit  # 新增 oMLX provider 設定"
+            "export ANTHROPIC_BASE_URL=http://localhost:8000/v1",
+            "export ANTHROPIC_API_KEY=omlx-local"
           ],
+          "expectedResult": "Claude Code 連接到本地 oMLX 模型，而非 Anthropic API",
           "tips": [
-            "確保 oMLX 已經啟動並在背景執行",
-            "預設埠號是 8080，如有衝突可在設定中修改",
-            "第一次連接可能需要幾秒鐘建立快取"
+            "把 export 指令加到 ~/.zshrc 或 ~/.bashrc 以便持久化",
+            "oMLX 的 Context Scaling 會自動在適當時機觸發 Claude Code 的自動壓縮",
+            "SSE keep-alive 防止長時間 prefill 造成的連線中斷"
           ],
-          "expectedResult": "OpenClaw 透過 oMLX 使用本地模型回應"
+          "troubleshooting": {
+            "title": "常見問題",
+            "items": [
+              {
+                "q": "Claude Code 顯示 'connection refused'",
+                "a": "確認 oMLX 正在運行且已載入模型。到 http://localhost:8000/admin 檢查。"
+              },
+              {
+                "q": "第一次回應很慢",
+                "a": "第一次請求需要暖機建立 KV 快取。後續使用相同系統提示詞的請求會快很多。"
+              },
+              {
+                "q": "怎麼切回 Anthropic API？",
+                "a": "取消環境變數：`unset ANTHROPIC_BASE_URL ANTHROPIC_API_KEY`，或重設 Claude Code 設定：`claude config set --global apiBaseUrl https://api.anthropic.com`"
+              }
+            ]
+          }
+        },
+        {
+          "title": "連接 OpenClaw 🦞",
+          "titleEn": "Connect to OpenClaw",
+          "estimatedTime": "3 分鐘",
+          "content": "## 設定 OpenClaw 使用 oMLX\n\noMLX 完全相容 **OpenAI API**（`POST /v1/chat/completions`），OpenClaw 可以直接當標準 provider 連接。\n\n### 步驟一：編輯 OpenClaw 設定\n\n執行 `openclaw config edit`，新增 oMLX 作為 provider：\n\n```json\n{\n  \"models\": {\n    \"providers\": {\n      \"omlx\": {\n        \"baseUrl\": \"http://localhost:8000/v1\",\n        \"apiKey\": \"omlx-local\",\n        \"api\": \"openai-completions\",\n        \"models\": [\n          {\n            \"id\": \"Qwen3-4B-MLX-4bit\",\n            \"name\": \"Qwen3 4B (oMLX 本地)\"\n          }\n        ]\n      }\n    }\n  }\n}\n```\n\n> **提示：** `id` 必須和 `http://localhost:8000/v1/models` 顯示的模型名稱完全一致。到 oMLX 管理面板查看，或執行 `curl http://localhost:8000/v1/models`。\n\n### 步驟二：使用模型\n\n在 OpenClaw 中指定模型為 `omlx/Qwen3-4B-MLX-4bit`（provider/model 格式）。\n\n### 為什麼 oMLX 對 OpenClaw Agent 很重要\n\nOpenClaw agent 每個任務會發出**數十次工具呼叫**。每次呼叫都要重新處理完整的系統提示詞（20K+ tokens）。沒有前綴快取的話，每次都要等 20-30 秒。\n\n有了 oMLX 的**分層 KV 快取**，系統提示詞前綴在第一次呼叫後就快取在記憶體中。所有後續呼叫跳過 prefill，幾秒內完成。多個 agent 甚至能透過分頁注意力機制**共享**同一份前綴快取 — 就像生產環境的 vLLM，但在你的 Mac 上。",
+          "commands": [
+            "openclaw config edit",
+            "curl -s http://localhost:8000/v1/models | python3 -c \"import sys,json; [print(m['id']) for m in json.load(sys.stdin)['data']]\""
+          ],
+          "expectedResult": "OpenClaw 透過本地 oMLX 模型回應",
+          "tips": [
+            "模型 id 必須完全一致 — 到 /v1/models 端點確認",
+            "可以在 models 陣列中加入 oMLX 上的多個模型",
+            "oMLX 支援 Qwen、GLM、Llama 等多個模型系列的工具呼叫",
+            "如果 oMLX 設了 API key（--api-key），OpenClaw 設定也要用同一把 key"
+          ],
+          "troubleshooting": {
+            "title": "常見問題",
+            "items": [
+              {
+                "q": "OpenClaw 找不到模型",
+                "a": "確認 OpenClaw 設定中的模型 id 和 /v1/models 回傳的完全一致。名稱有大小寫分別。"
+              },
+              {
+                "q": "工具呼叫不正常",
+                "a": "不是所有模型都支援工具呼叫。Qwen3、GLM-4、Llama 3、DeepSeek 都可以。完整相容清單請參考 oMLX README。"
+              },
+              {
+                "q": "怎麼同時用 oMLX 和雲端模型？",
+                "a": "把 omlx 加為一個 provider，跟 anthropic/openai 並列。用 omlx/ 前綴指定本地模型，anthropic/ 指定雲端模型。OpenClaw 會自動路由。"
+              }
+            ]
+          }
         },
         {
           "id": 4,
@@ -3277,7 +3328,7 @@
           "title": "下一步",
           "titleEn": "Next Steps",
           "estimatedTime": "1 分鐘",
-          "content": "恭喜！你已經成功設定 oMLX，讓 Mac 上的 OpenClaw agent 速度飛快。現在可以探索更多可能性：",
+          "content": "恭喜！你已經成功設定 oMLX，讓 Mac 上的 OpenClaw agent 速度飛快。現在可以探索更多可能性：\n\n### 📹 參考影片\n\n觀看完整的 oMLX 教學影片：\n[十倍提速，丐版Mac Mini用本地模型，多并发爽玩Openclaw — oMLX蘋果生態的新星](https://youtu.be/neHz4EGt4vk?si=9OBBSVvFEpVLxR3r)",
           "nextStepCards": [
             {
               "emoji": "☁️",
