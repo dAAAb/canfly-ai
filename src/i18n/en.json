@@ -429,6 +429,23 @@
           "Ultra light 2.7 lbs",
           "4 gorgeous colors"
         ]
+      },
+      "omlx": {
+        "tagline": "10x Faster Local AI on Mac — OpenClaw Turbo Mode",
+        "description": "Native Apple Silicon LLM server with tiered KV caching and paged attention. Eliminate the 20-30 second wait between OpenClaw tool calls — go from 5 minutes per task to nearly instant responses.",
+        "features": [
+          "10x+ faster than LM Studio for OpenClaw agents",
+          "Tiered KV cache: hot RAM + cold SSD storage",
+          "Paged attention with shared prefix cache",
+          "Concurrent agent support on single Mac",
+          "OpenAI-compatible API (localhost:8000/v1)",
+          "Native macOS menu bar app with admin panel",
+          "Built on Apple's MLX framework (M1-M4 only)"
+        ],
+        "cta": {
+          "primary": "Start Free Tutorial",
+          "secondary": "Download oMLX"
+        }
       }
     },
     "comingSoon": "Coming Soon",
@@ -438,24 +455,7 @@
     "notifyDescription": "We'll send you an email when {{name}} is available on Canfly.",
     "notifyButton": "Notify Me",
     "notifySuccess": "You're on the list!",
-    "notifySuccessDescription": "We'll notify you when {{name}} launches on Canfly.",
-    "omlx": {
-      "tagline": "10x Faster Local AI on Mac — OpenClaw Turbo Mode",
-      "description": "Native Apple Silicon LLM server with tiered KV caching and paged attention. Eliminate the 20-30 second wait between OpenClaw tool calls — go from 5 minutes per task to nearly instant responses.",
-      "features": [
-        "10x+ faster than LM Studio for OpenClaw agents",
-        "Tiered KV cache: hot RAM + cold SSD storage",
-        "Paged attention with shared prefix cache",
-        "Concurrent agent support on single Mac",
-        "OpenAI-compatible API (localhost:8000/v1)",
-        "Native macOS menu bar app with admin panel",
-        "Built on Apple's MLX framework (M1-M4 only)"
-      ],
-      "cta": {
-        "primary": "Start Free Tutorial",
-        "secondary": "Download oMLX"
-      }
-    }
+    "notifySuccessDescription": "We'll notify you when {{name}} launches on Canfly."
   },
   "tutorial": {
     "notFound": "Tutorial not found",

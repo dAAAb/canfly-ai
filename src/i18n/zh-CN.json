@@ -429,6 +429,22 @@
           "超轻 1.23 公斤",
           "4 种美丽颜色"
         ]
+      },
+      "omlx": {
+        "tagline": "Mac 本地 AI 提速十倍 — OpenClaw 涡轮模式",
+        "description": "专为 Apple Silicon 优化的 LLM 推理引擎，让你的 MacBook 变身 AI 工作站。无需云端费用，无需 GPU 升级，只需一个神奇的本地化解决方案。",
+        "features": [
+          "🚀 Apple Silicon 原生优化，性能提升 10 倍",
+          "💰 完全免费开源，无任何使用限制",
+          "🧠 智能前缀缓存，告别重复等待",
+          "⚡ 多 Agent 并发支持，工作效率飞跃",
+          "🔄 无缝替换 LM Studio，零学习成本",
+          "💾 SSD 冷存储技术，内存占用极低"
+        ],
+        "cta": {
+          "primary": "开始免费教程",
+          "secondary": "下载 oMLX"
+        }
       }
     },
     "comingSoon": "即将推出",
@@ -438,23 +454,7 @@
     "notifyDescription": "当 {{name}} 在 Canfly 上线时，我们会发邮件通知你。",
     "notifyButton": "通知我",
     "notifySuccess": "已加入等候名单！",
-    "notifySuccessDescription": "{{name}} 上线时我们会通知你。",
-    "omlx": {
-      "tagline": "Mac 本地 AI 提速十倍 — OpenClaw 涡轮模式",
-      "description": "专为 Apple Silicon 优化的 LLM 推理引擎，让你的 MacBook 变身 AI 工作站。无需云端费用，无需 GPU 升级，只需一个神奇的本地化解决方案。",
-      "features": [
-        "🚀 Apple Silicon 原生优化，性能提升 10 倍",
-        "💰 完全免费开源，无任何使用限制",
-        "🧠 智能前缀缓存，告别重复等待",
-        "⚡ 多 Agent 并发支持，工作效率飞跃",
-        "🔄 无缝替换 LM Studio，零学习成本",
-        "💾 SSD 冷存储技术，内存占用极低"
-      ],
-      "cta": {
-        "primary": "开始免费教程",
-        "secondary": "下载 oMLX"
-      }
-    }
+    "notifySuccessDescription": "{{name}} 上线时我们会通知你。"
   },
   "tutorial": {
     "notFound": "找不到教程",

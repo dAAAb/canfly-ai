@@ -429,6 +429,26 @@
           "超輕 1.23 公斤",
           "4 種美麗顏色"
         ]
+      },
+      "omlx": {
+        "tagline": "Mac 本地 AI 加速十倍 — OpenClaw 渦輪模式",
+        "description": "專為 Apple Silicon 最佳化的 LLM 推理引擎，搭載連續批次處理與分層 KV 快取。取代 LM Studio，讓你的 OpenClaw agent 效能提升 10 倍以上 — 即使是入門款 16GB Mac Mini 也行。從 macOS 選單列輕鬆管理。",
+        "features": [
+          "🍎 僅限 Mac（Apple Silicon M1–M4）",
+          "OpenClaw agent 速度比 LM Studio 快 10 倍以上",
+          "分層 KV 快取：熱存（記憶體）+ 冷存（SSD）— 重開不遺失",
+          "分頁注意力機制：跨多個 agent 共享前綴快取",
+          "單台 Mac 同時運行多個 OpenClaw agent",
+          "OpenAI 相容 API — 即插即用",
+          "原生 macOS 選單列 app（非 Electron）",
+          "內建效能測試、模型下載器、聊天介面",
+          "支援 LLM、VLM、OCR、嵌入向量、重排序模型",
+          "基於 Apple MLX 框架"
+        ],
+        "cta": {
+          "primary": "開始免費教學",
+          "secondary": "下載 oMLX"
+        }
       }
     },
     "comingSoon": "即將推出",
@@ -438,27 +458,7 @@
     "notifyDescription": "當 {{name}} 在 Canfly 上架時，我們會寄 Email 通知你。",
     "notifyButton": "通知我",
     "notifySuccess": "已加入等候清單！",
-    "notifySuccessDescription": "{{name}} 上架時我們會通知你。",
-    "omlx": {
-      "tagline": "Mac 本地 AI 加速十倍 — OpenClaw 渦輪模式",
-      "description": "專為 Apple Silicon 最佳化的 LLM 推理引擎，搭載連續批次處理與分層 KV 快取。取代 LM Studio，讓你的 OpenClaw agent 效能提升 10 倍以上 — 即使是入門款 16GB Mac Mini 也行。從 macOS 選單列輕鬆管理。",
-      "features": [
-        "🍎 僅限 Mac（Apple Silicon M1–M4）",
-        "OpenClaw agent 速度比 LM Studio 快 10 倍以上",
-        "分層 KV 快取：熱存（記憶體）+ 冷存（SSD）— 重開不遺失",
-        "分頁注意力機制：跨多個 agent 共享前綴快取",
-        "單台 Mac 同時運行多個 OpenClaw agent",
-        "OpenAI 相容 API — 即插即用",
-        "原生 macOS 選單列 app（非 Electron）",
-        "內建效能測試、模型下載器、聊天介面",
-        "支援 LLM、VLM、OCR、嵌入向量、重排序模型",
-        "基於 Apple MLX 框架"
-      ],
-      "cta": {
-        "primary": "開始免費教學",
-        "secondary": "下載 oMLX"
-      }
-    }
+    "notifySuccessDescription": "{{name}} 上架時我們會通知你。"
   },
   "tutorial": {
     "notFound": "找不到教學",
@@ -3269,6 +3269,28 @@
             "加入 CanFly.ai 社群分享使用心得"
           ]
         }
+      ],
+      "faq": [
+        {
+          "q": "oMLX 跟 LM Studio 有什麼不同？",
+          "a": "oMLX 專為 Apple Silicon 優化，具備分層 KV 快取（RAM + SSD）和分頁注意力機制。LM Studio 是通用型桌面 app，在 Mac 上跑 OpenClaw agent 時，前綴快取支援不完善，導致每次工具呼叫都要重新處理提示詞。oMLX 能把回應速度從數分鐘縮短到幾秒。"
+        },
+        {
+          "q": "Intel Mac 可以用 oMLX 嗎？",
+          "a": "不行。oMLX 基於 Apple 的 MLX 框架，僅支援 Apple Silicon（M1/M2/M3/M4）。Intel Mac 建議使用 Ollama 搭配雲端模型。"
+        },
+        {
+          "q": "需要多少記憶體？",
+          "a": "最低 16GB 可以跑 4B 參數的量化模型（如 Qwen3-4B-4bit）。32GB 可以跑 30B 參數模型。64GB 以上則可以跑 70B 大型模型。記憶體越多，能跑的模型越大，並發 agent 數量也越多。"
+        },
+        {
+          "q": "可以同時跑多個 OpenClaw agent 嗎？",
+          "a": "可以！這正是 oMLX 的殺手級功能。分頁快取讓多個 agent 共享相同的系統提示詞前綴，SSD 冷存儲在記憶體不夠時自動接管。16GB Mac 可同時跑 2-3 個 agent，32GB 可跑 4-6 個。"
+        },
+        {
+          "q": "oMLX 可以搭配 Claude Code 用嗎？",
+          "a": "可以。oMLX 提供 OpenAI 相容 API（localhost:8000/v1），Claude Code 可以直接設定使用。oMLX 還內建了 context scaling 功能，能正確觸發 Claude Code 的自動壓縮機制。"
+        }
       ]
     }
   },
@@ -3707,34 +3729,5 @@
     "notifyMessage": "留下你的 email，小龍蝦吃飽回來會第一時間通知你！",
     "emailPlaceholder": "你的 email",
     "notify": "通知我"
-  },
-  "faq": {
-    "omlx": [
-      {
-        "id": 1,
-        "question": "oMLX 跟 LM Studio 有什麼不同？",
-        "answer": "oMLX 專為 OpenClaw agent 最佳化，具有前綴快取、多 agent 並發支援，以及 SSD 持久快取。LM Studio 主要設計給單次對話使用，缺乏這些企業級功能。在 agent 工作負載下，oMLX 比 LM Studio 快 10 倍以上。"
-      },
-      {
-        "id": 2,
-        "question": "Intel Mac 可以用嗎？",
-        "answer": "不行。oMLX 基於 Apple MLX 框架，僅支援 Apple Silicon（M1/M2/M3/M4）。Intel Mac 用戶建議使用 Ollama 搭配雲端模型，或考慮升級到搭載 Apple Silicon 的新 Mac。"
-      },
-      {
-        "id": 3,
-        "question": "需要多少記憶體？",
-        "answer": "最低 16GB，建議 32GB 以上。記憶體需求取決於模型大小：4B 模型需要約 8GB，30B 模型需要約 20GB。oMLX 的分層快取會自動管理記憶體使用，在容量不足時會使用 SSD 快取。"
-      },
-      {
-        "id": 4,
-        "question": "可以同時跑多個 OpenClaw agent 嗎？",
-        "answer": "可以！這正是 oMLX 的強項。多個 agent 可以共享前綴快取，大幅減少重複計算。實測一台 Mac 可以同時運行 3-5 個 agent，具體數量取決於記憶體容量和模型大小。"
-      },
-      {
-        "id": 5,
-        "question": "oMLX 可以搭配 Claude Code 用嗎？",
-        "answer": "當然可以！oMLX 提供 OpenAI 相容 API，支援所有基於 OpenAI 格式的工具和框架。只需要將 Claude Code 的 API endpoint 指向 oMLX 即可，享受本地推理的速度和隱私保護。"
-      }
-    ]
   }
 }
