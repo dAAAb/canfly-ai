@@ -288,7 +288,7 @@ const BLOG_META: Record<string, OgMeta> = {
 
 /** Strip /:lang prefix from path to match against lookup keys */
 function stripLangPrefix(path: string): string {
-  const match = path.match(/^\/(zh-tw|zh-cn)(\/.*)?$/)
+  const match = path.match(/^\/(en|zh-tw|zh-cn)(\/.*)?$/)
   if (match) return match[2] || '/'
   return path
 }
@@ -401,7 +401,7 @@ export const onRequest: PagesFunction = async (context) => {
 
   // ── Language auto-redirect (before bot check) ──
   // Only for non-bot, non-static, paths WITHOUT a language prefix
-  const hasLangPrefix = path.startsWith('/zh-tw') || path.startsWith('/zh-cn')
+  const hasLangPrefix = path.startsWith('/en') || path.startsWith('/zh-tw') || path.startsWith('/zh-cn')
   const isStatic = STATIC_EXT.test(path)
   const isApi = path.startsWith('/api/')
   const isBot = BOT_UA.test(ua)
