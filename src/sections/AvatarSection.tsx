@@ -58,28 +58,49 @@ export default function AvatarSection() {
                 {t('avatar.quotaMessage', "I've been chatting too much today and ran out of energy. I'll be back tomorrow with a full belly! 🍤")}
               </p>
 
+              {/* Email signup */}
+              <div className="bg-cyan-900/20 border border-cyan-800/30 rounded-xl p-4 mb-4">
+                <p className="text-sm text-cyan-300 mb-3">
+                  {t('avatar.notifyMessage', "Leave your email — I'll let you know when I'm back and ready to chat!")}
+                </p>
+                <form
+                  action="https://buttondown.com/api/emails/embed-subscribe/canfly"
+                  method="post"
+                  target="_blank"
+                  className="flex gap-2 max-w-sm mx-auto"
+                >
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder={t('avatar.emailPlaceholder', 'Your email')}
+                    required
+                    className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500"
+                  />
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-medium rounded-lg transition-colors"
+                  >
+                    {t('avatar.notify', 'Notify me')}
+                  </button>
+                </form>
+              </div>
+
               {/* Donation CTA */}
-              <div className="bg-cyan-900/20 border border-cyan-800/30 rounded-xl p-4 mb-6">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <Heart className="w-4 h-4 text-pink-400" />
-                  <span className="text-sm font-medium text-cyan-300">
+              <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-3 mb-4">
+                <div className="flex items-center justify-center gap-2 mb-1">
+                  <Heart className="w-3 h-3 text-pink-400" />
+                  <span className="text-xs font-medium text-gray-400">
                     {t('avatar.donateTitle', 'Help feed LittleLobster')}
                   </span>
                 </div>
-                <p className="text-xs text-gray-400 mb-3">
-                  {t('avatar.donateMessage', 'Donations help keep me running 24/7. Send ETH on Base:')}
-                </p>
                 <a
                   href={BASESCAN_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 rounded-lg text-sm text-blue-300 hover:text-blue-200 transition-colors font-mono"
+                  className="inline-flex items-center gap-2 px-3 py-1 text-xs text-blue-400 hover:text-blue-300 transition-colors font-mono"
                 >
                   {BASENAME}
                 </a>
-                <p className="text-xs text-gray-500 mt-2 font-mono break-all">
-                  {WALLET_ADDRESS}
-                </p>
               </div>
 
               <button

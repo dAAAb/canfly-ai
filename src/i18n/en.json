@@ -3567,6 +3567,9 @@
     "donateMessage": "Donations help keep me running 24/7. Send ETH on Base:",
     "errorTitle": "Oops, something went wrong",
     "errorMessage": "LittleLobster tripped on a cable. Please try again in a moment!",
-    "tryAgain": "Try again"
+    "tryAgain": "Try again",
+    "notifyMessage": "Leave your email — I'll let you know when I'm back and ready to chat!",
+    "emailPlaceholder": "Your email",
+    "notify": "Notify me"
   }
 }

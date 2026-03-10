@@ -3567,6 +3567,9 @@
     "donateMessage": "捐款幫助小龍蝦 24 小時待命。透過 Base 鏈發送 ETH：",
     "errorTitle": "哎呀，出了點問題",
     "errorMessage": "小龍蝦被網路線絆倒了。請稍後再試！",
-    "tryAgain": "再試一次"
+    "tryAgain": "再試一次",
+    "notifyMessage": "留下你的 email，小龍蝦吃飽回來會第一時間通知你！",
+    "emailPlaceholder": "你的 email",
+    "notify": "通知我"
   }
 }
