@@ -3986,6 +3986,26 @@
     "checkout": {
       "title": "白手套服務 — CanFly",
       "description": "讓我們的團隊為你設定 AI 環境。你只需放鬆，剩下的交給我們。"
+    },
+    "profile": {
+      "title": "使用者檔案 — CanFly",
+      "description": "看看這位創作者用 CanFly 打造了什麼。"
+    }
+  },
+  "profile": {
+    "notFound": "找不到使用者",
+    "notFoundDesc": "這個檔案還不存在。也許他們還沒開始飛翔！",
+    "backHome": "回首頁",
+    "showcaseTitle": "作品展示",
+    "showcase": {
+      "localLlm": "本地 LLM 設定",
+      "localLlmDesc": "在本地運行私人 AI 模型，處理日常任務。",
+      "cloudDeploy": "雲端部署",
+      "cloudDeployDesc": "一鍵將 AI 代理部署到雲端。",
+      "voiceBot": "語音助手",
+      "voiceBotDesc": "打造具有自然語音的語音助手。",
+      "videoCreator": "影片創作",
+      "videoCreatorDesc": "用逼真的數位人創作 AI 影片。"
     }
   },
   "avatar": {

@@ -4023,6 +4023,26 @@
     "checkout": {
       "title": "白手套服务 — CanFly",
       "description": "让我们的团队为你设定 AI 环境。你只需放松，剩下的交给我们。"
+    },
+    "profile": {
+      "title": "用户档案 — CanFly",
+      "description": "看看这位创作者用 CanFly 打造了什么。"
+    }
+  },
+  "profile": {
+    "notFound": "找不到用户",
+    "notFoundDesc": "这个档案还不存在。也许他们还没开始飞翔！",
+    "backHome": "回首页",
+    "showcaseTitle": "作品展示",
+    "showcase": {
+      "localLlm": "本地 LLM 设置",
+      "localLlmDesc": "在本地运行私有 AI 模型，处理日常任务。",
+      "cloudDeploy": "云端部署",
+      "cloudDeployDesc": "一键将 AI 代理部署到云端。",
+      "voiceBot": "语音助手",
+      "voiceBotDesc": "打造具有自然语音的语音助手。",
+      "videoCreator": "视频创作",
+      "videoCreatorDesc": "用逼真的数字人创作 AI 视频。"
     }
   },
   "avatar": {

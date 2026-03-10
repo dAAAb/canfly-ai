@@ -4037,6 +4037,26 @@
     "checkout": {
       "title": "White-Glove Setup — CanFly",
       "description": "Let our team set up your AI environment. Sit back, relax — we'll handle everything."
+    },
+    "profile": {
+      "title": "User Profile — CanFly",
+      "description": "See what this creator is building with CanFly."
+    }
+  },
+  "profile": {
+    "notFound": "User not found",
+    "notFoundDesc": "This profile doesn't exist yet. Maybe they haven't started flying!",
+    "backHome": "Back to home",
+    "showcaseTitle": "Showcase",
+    "showcase": {
+      "localLlm": "Local LLM Setup",
+      "localLlmDesc": "Running a private AI model locally for everyday tasks.",
+      "cloudDeploy": "Cloud Deployment",
+      "cloudDeployDesc": "Deployed an AI agent to the cloud with one-click.",
+      "voiceBot": "Voice Assistant",
+      "voiceBotDesc": "Built a voice-powered assistant with natural speech.",
+      "videoCreator": "Video Creator",
+      "videoCreatorDesc": "Creating AI-powered videos with realistic avatars."
     }
   },
   "avatar": {
