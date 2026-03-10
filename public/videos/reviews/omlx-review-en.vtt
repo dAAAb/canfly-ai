@@ -1,4 +1,85 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:05.000
-(Review video coming soon)
+00:00:00.000 --> 00:00:02.400
+Hi everyone, I'm Ko Ju-Chun.
+
+00:00:03.080 --> 00:00:07.680
+Today I want to share a tool that really impressed me.
+
+00:00:08.440 --> 00:00:10.760
+It's called oMLX.
+
+00:00:11.520 --> 00:00:13.060
+If you have a Mac
+
+00:00:13.320 --> 00:00:15.360
+and want to run AI models locally,
+
+00:00:16.120 --> 00:00:19.459
+you've probably used LM Studio or Ollama.
+
+00:00:19.719 --> 00:00:21.240
+But you must have hit the same problem —
+
+00:00:21.500 --> 00:00:23.559
+it's incredibly slow.
+
+00:00:23.799 --> 00:00:26.120
+A single question takes minutes to answer.
+
+00:00:26.360 --> 00:00:27.400
+oMLX
+
+00:00:27.639 --> 00:00:29.700
+completely solves this problem.
+
+00:00:30.200 --> 00:00:32.520
+It's designed specifically for Apple Silicon,
+
+00:00:33.279 --> 00:00:36.619
+leveraging MLX's unified memory architecture,
+
+00:00:37.639 --> 00:00:40.959
+plus tiered KV caching and paged attention,
+
+00:00:41.720 --> 00:00:44.040
+boosting inference speed by over 10x.
+
+00:00:44.799 --> 00:00:46.080
+The best part?
+
+00:00:46.840 --> 00:00:48.900
+It supports multi-agent concurrency.
+
+00:00:49.400 --> 00:00:52.740
+You can run multiple OpenClaw lobsters simultaneously,
+
+00:00:53.000 --> 00:00:55.560
+sharing the same prefix cache.
+
+00:00:56.320 --> 00:00:59.400
+Even a base Mac Mini with 16GB works.
+
+00:01:00.160 --> 00:01:01.959
+Installation is super easy.
+
+00:01:02.200 --> 00:01:04.760
+Download the DMG and drag to install,
+
+00:01:05.519 --> 00:01:07.839
+or use Homebrew with one command.
+
+00:01:08.360 --> 00:01:10.139
+Completely free and open source.
+
+00:01:10.400 --> 00:01:15.260
+I've prepared a complete step-by-step tutorial on CanFly.ai,
+
+00:01:16.040 --> 00:01:18.839
+from installation to connecting OpenClaw —
+
+00:01:19.099 --> 00:01:20.379
+done in 10 minutes.
+
+00:01:21.400 --> 00:01:22.680
+Give it a try!
