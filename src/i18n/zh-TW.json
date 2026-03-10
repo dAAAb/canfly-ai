@@ -2992,6 +2992,192 @@
         }
       ]
     },
+    "virtual-buddy-ollama": {
+      "title": "用 Virtual Buddy 安裝 Ollama — Mac 圖形化教學",
+      "subtitle": "在 Mac 上跑本地 AI 最友善的方式。用 Virtual Buddy 一鍵建立 Linux 虛擬機，再安裝 Ollama — 不需要 Terminal 高手也能輕鬆搞定。",
+      "duration": "10 分鐘",
+      "difficulty": "初學者",
+      "steps": [
+        {
+          "title": "下載並安裝 Virtual Buddy",
+          "titleEn": "Download & Install Virtual Buddy",
+          "estimatedTime": "2 分鐘",
+          "content": "Virtual Buddy 是一款免費、開源的 macOS 應用程式，讓你一鍵建立 Linux 虛擬機。它是在 Mac 上取得獨立 Linux 環境最簡單的方式 — 非常適合用來跑 Ollama，而且不會影響你的主系統。\n\n**系統需求：**\n- macOS 13（Ventura）或更新版本\n- Apple Silicon Mac（M1/M2/M3/M4）\n- 至少 8 GB 記憶體（建議 16 GB）\n- 約 10 GB 可用磁碟空間\n\n**從 GitHub 安裝：**\n1. 前往 Virtual Buddy 的 GitHub 發布頁面\n2. 下載最新的 `.dmg` 檔案\n3. 打開 DMG，將 Virtual Buddy 拖到「應用程式」資料夾\n4. 啟動 Virtual Buddy — macOS 可能會要求你在「系統設定 > 隱私權與安全性」中允許執行",
+          "expectedResult": "Virtual Buddy 成功安裝並啟動。你可以看到主畫面，有建立新虛擬機的選項。",
+          "tips": [
+            "Virtual Buddy 完全免費且開源（MIT 授權）",
+            "它使用 Apple 的 Virtualization 框架 — 所以虛擬機在 Apple Silicon 上幾乎以原生速度運行",
+            "如果 macOS 封鎖 App，請到「系統設定 > 隱私權與安全性」點擊「仍要打開」"
+          ],
+          "troubleshooting": {
+            "title": "疑難排解",
+            "items": [
+              {
+                "q": "Virtual Buddy 無法啟動 — 顯示「已損壞」或「未識別的開發者」",
+                "a": "在 App 上按右鍵選擇「打開」，然後確認。或者到「系統設定 > 隱私權與安全性」中允許執行。"
+              },
+              {
+                "q": "我的 Mac 不是 Apple Silicon",
+                "a": "Virtual Buddy 需要 Apple Silicon（M1 以上）。Intel Mac 請改用 UTM — 請參考我們的虛擬機教學。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "建立 Linux 虛擬機",
+          "titleEn": "Create a Linux Virtual Machine",
+          "estimatedTime": "3 分鐘",
+          "content": "現在來用 Virtual Buddy 建立一台 Linux 虛擬機。App 會自動處理一切 — 下載 Ubuntu 並幫你設定好虛擬機。\n\n**步驟：**\n1. 打開 Virtual Buddy\n2. 點擊 **建立新 VM**（或 + 按鈕）\n3. 選擇 **Linux** 作為作業系統\n4. 從發行版清單中選 **Ubuntu**（推薦）\n5. 分配資源：\n   - **CPU：** 4 核心（有更多就用更多）\n   - **記憶體：** 最少 4 GB（建議 8 GB 跑較大的 AI 模型）\n   - **磁碟：** 最少 20 GB\n6. 點擊 **建立** — Virtual Buddy 會下載 Ubuntu 並設定虛擬機\n7. 等待安裝完成（視網路速度約 2-5 分鐘）\n8. 虛擬機會自動開機進入 Ubuntu",
+          "expectedResult": "你的 Linux 虛擬機成功開機進入 Ubuntu。你可以在 Virtual Buddy 視窗中看到 Ubuntu 桌面或登入畫面。",
+          "tips": [
+            "請給虛擬機至少 4 GB 記憶體 — Ollama 需要記憶體來執行 AI 模型",
+            "20 GB 磁碟足夠跑小型模型。7B 以上的模型建議分配 30-40 GB",
+            "之後如果需要更多資源，可以調整虛擬機設定"
+          ],
+          "troubleshooting": {
+            "title": "疑難排解",
+            "items": [
+              {
+                "q": "VM 建立失敗或卡住",
+                "a": "檢查你的網路連線 — Virtual Buddy 需要下載 Ubuntu 映像檔（約 2 GB）。請在穩定的網路環境下重試。"
+              },
+              {
+                "q": "VM 跑得很慢",
+                "a": "在 VM 設定中增加分配的 CPU 核心數和記憶體。也可以關閉 Mac 上其他耗資源的 App 來釋放效能。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "在 VM 中安裝 Ollama",
+          "titleEn": "Install Ollama in the VM",
+          "estimatedTime": "2 分鐘",
+          "content": "現在你的 Linux 虛擬機已經在運行了，讓我們在裡面安裝 Ollama。在 Ubuntu VM 中打開終端機，執行官方的一行安裝指令。\n\n**在 VM 裡面**，打開終端機（Ctrl+Alt+T 或從應用程式選單找到它）然後執行：",
+          "commands": [
+            "# 安裝 Ollama（在 Linux VM 中執行）",
+            "curl -fsSL https://ollama.com/install.sh | sh",
+            "",
+            "# 驗證安裝",
+            "ollama --version",
+            "",
+            "# 下載你的第一個 AI 模型（小而快）",
+            "ollama pull llama3.2:1b"
+          ],
+          "expectedResult": "Ollama 安裝成功並顯示版本號。llama3.2:1b 模型下載完成（約 1.3 GB）。你已經準備好跟 AI 對話了！",
+          "tips": [
+            "llama3.2:1b 只有約 1.3 GB — 非常適合在磁碟空間有限的 VM 上測試",
+            "想要更好的回答品質，試試 llama3.2:3b（2 GB）或 llama3.1:8b（4.7 GB）",
+            "Ollama 安裝後會自動作為背景服務運行"
+          ],
+          "troubleshooting": {
+            "title": "疑難排解",
+            "items": [
+              {
+                "q": "curl: command not found",
+                "a": "先安裝 curl：sudo apt update && sudo apt install -y curl"
+              },
+              {
+                "q": "模型下載很慢",
+                "a": "這取決於你的網路速度。1b 模型只有 1.3 GB。確認 VM 有網路存取權限（在 Virtual Buddy 中預設是有的）。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "跟你的本地 AI 對話",
+          "titleEn": "Chat with Your Local AI",
+          "estimatedTime": "2 分鐘",
+          "content": "是時候和在本地執行的 AI 模型進行你的第一次對話了！一切都在你的 Mac 上運行 — 不需要網路，資料不會離開你的電腦。\n\n在 VM 終端機中，開始聊天：",
+          "commands": [
+            "# 開始和你的本地 AI 聊天",
+            "ollama run llama3.2:1b",
+            "",
+            "# 試著問它一些問題：",
+            "# >>> 台灣的首都在哪裡？",
+            "# >>> 寫一首關於程式設計的俳句",
+            "# >>> 用簡單的方式解釋量子計算"
+          ],
+          "chatExample": {
+            "exchanges": [
+              { "role": "user", "text": "台灣的首都在哪裡？" },
+              { "role": "ai", "text": "台灣的首都是台北（Taipei）。台北是台灣最大的城市，也是台灣的政治、經濟和文化中心。" }
+            ]
+          },
+          "expectedResult": "你會看到 AI 即時回覆你的訊息。模型完全在你 Mac 的硬體上透過 VM 運行 — 完全私密，可以離線使用。",
+          "tips": [
+            "輸入 /bye 離開聊天",
+            "回覆速度取決於模型大小和你 Mac 的規格",
+            "M1 Mac 可以舒服地跑 1b-3b 模型；M2/M3/M4 可以處理 7b-8b 模型",
+            "所有運算都在本地進行 — 你的對話 100% 隱私"
+          ],
+          "troubleshooting": {
+            "title": "疑難排解",
+            "items": [
+              {
+                "q": "回覆非常慢",
+                "a": "試試較小的模型（llama3.2:1b）。也檢查你的 VM 是否分配了足夠的記憶體（至少 4 GB）。"
+              },
+              {
+                "q": "錯誤：找不到模型",
+                "a": "先執行 'ollama pull llama3.2:1b' 下載模型，然後再試 'ollama run'。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步 — 升級你的 AI 設定",
+          "titleEn": "Next Steps — Level Up Your AI Setup",
+          "estimatedTime": "1 分鐘",
+          "content": "恭喜！你現在有一個在 Mac 上的 Linux VM 裡運行的本地 AI — 完全免費、完全隱私。\n\n**你已經完成了：**\n- ✅ 透過 Virtual Buddy 在 Mac 上運行 Linux VM\n- ✅ 安裝 Ollama 並有可用的 AI 模型\n- ✅ 私密、可離線使用的 AI 對話\n\n**想要更進一步？** 將你的本地 Ollama 連接到 OpenClaw 取得類似 ChatGPT 的介面，用 ElevenLabs 添加語音，或用 Zeabur 部署到雲端。",
+          "nextStepCards": [
+            {
+              "emoji": "claw",
+              "title": "加入 OpenClaw 介面",
+              "desc": "為你的本地 AI 取得類似 ChatGPT 的介面",
+              "link": "/learn/ollama-openclaw",
+              "cta": "開始教學"
+            },
+            {
+              "emoji": "cloud",
+              "title": "部署到雲端",
+              "desc": "用 Zeabur 分享你的 AI 設定",
+              "link": "/learn/zeabur",
+              "cta": "立即部署"
+            },
+            {
+              "emoji": "speaker",
+              "title": "加入 AI 語音",
+              "desc": "用 ElevenLabs 讓你的 AI 有自然的聲音",
+              "link": "/learn/elevenlabs-integration",
+              "cta": "添加語音"
+            }
+          ],
+          "tips": [
+            "讓 VM 在背景持續運行，隨時都能使用 AI",
+            "Virtual Buddy 的 VM 在 Mac 重開機後仍然保留 — 只要重新打開 Virtual Buddy 即可",
+            "如果要長期使用，請參考我們的 Always-On Mac 教學來防止休眠"
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "為什麼要用 VM 而不是直接在 macOS 上安裝 Ollama？",
+          "a": "你也可以直接在 macOS 上安裝 Ollama！VM 給你一個乾淨、獨立的環境 — 非常適合實驗，不會影響你的主系統。有些使用者因為安全性和隔離性而偏好這種方式。"
+        },
+        {
+          "q": "VM 需要多少記憶體？",
+          "a": "小型模型（1b-3b）最少 4 GB。7b-8b 模型建議分配 8 GB 給 VM。你的 Mac 總共至少需要 16 GB 記憶體才能舒適使用。"
+        },
+        {
+          "q": "可以從 Mac（VM 外面）存取 Ollama 嗎？",
+          "a": "可以！Ollama 預設在 VM 內監聽 11434 連接埠。你可以設定 Virtual Buddy 的網路轉發這個連接埠到你的 Mac，然後在 localhost:11434 存取它。"
+        },
+        {
+          "q": "Virtual Buddy 免費嗎？",
+          "a": "是的，Virtual Buddy 完全免費且開源，使用 MIT 授權。原始碼可以在 GitHub 上取得。"
+        }
+      ]
+    },
     "ollamaOpenclaw": {
       "title": "用 Ollama 一鍵安裝 OpenClaw + 免費雲端模型",
       "subtitle": "ollama launch openclaw — 最快體驗 AI Agent 的方式，免費雲端模型、不需要 GPU",

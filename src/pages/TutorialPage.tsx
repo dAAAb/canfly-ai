@@ -1061,6 +1061,87 @@ function createAlwaysOnMacTutorial(t: any): TutorialData {
   }
 }
 
+function createVirtualBuddyOllamaTutorial(t: any): TutorialData {
+  const key = 'tutorial.virtual-buddy-ollama'
+  return {
+    id: 'virtual-buddy-ollama',
+    title: t(`${key}.title`),
+    subtitle: t(`${key}.subtitle`),
+    duration: t(`${key}.duration`),
+    difficulty: t(`${key}.difficulty`),
+    faq: t(`${key}.faq`, { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Download,
+        title: t(`${key}.steps.0.title`),
+        titleEn: t(`${key}.steps.0.titleEn`),
+        estimatedTime: t(`${key}.steps.0.estimatedTime`),
+        content: t(`${key}.steps.0.content`),
+        expectedResult: t(`${key}.steps.0.expectedResult`),
+        tips: t(`${key}.steps.0.tips`, { returnObjects: true }),
+        troubleshooting: {
+          title: t(`${key}.steps.0.troubleshooting.title`),
+          items: t(`${key}.steps.0.troubleshooting.items`, { returnObjects: true })
+        }
+      },
+      {
+        icon: Monitor,
+        title: t(`${key}.steps.1.title`),
+        titleEn: t(`${key}.steps.1.titleEn`),
+        estimatedTime: t(`${key}.steps.1.estimatedTime`),
+        content: t(`${key}.steps.1.content`),
+        expectedResult: t(`${key}.steps.1.expectedResult`),
+        tips: t(`${key}.steps.1.tips`, { returnObjects: true }),
+        troubleshooting: {
+          title: t(`${key}.steps.1.troubleshooting.title`),
+          items: t(`${key}.steps.1.troubleshooting.items`, { returnObjects: true })
+        }
+      },
+      {
+        icon: Terminal,
+        title: t(`${key}.steps.2.title`),
+        titleEn: t(`${key}.steps.2.titleEn`),
+        estimatedTime: t(`${key}.steps.2.estimatedTime`),
+        content: t(`${key}.steps.2.content`),
+        commands: t(`${key}.steps.2.commands`, { returnObjects: true }),
+        expectedResult: t(`${key}.steps.2.expectedResult`),
+        tips: t(`${key}.steps.2.tips`, { returnObjects: true }),
+        troubleshooting: {
+          title: t(`${key}.steps.2.troubleshooting.title`),
+          items: t(`${key}.steps.2.troubleshooting.items`, { returnObjects: true })
+        }
+      },
+      {
+        icon: MessageSquare,
+        title: t(`${key}.steps.3.title`),
+        titleEn: t(`${key}.steps.3.titleEn`),
+        estimatedTime: t(`${key}.steps.3.estimatedTime`),
+        content: t(`${key}.steps.3.content`),
+        commands: t(`${key}.steps.3.commands`, { returnObjects: true }),
+        chatExample: t(`${key}.steps.3.chatExample`, { returnObjects: true }),
+        expectedResult: t(`${key}.steps.3.expectedResult`),
+        tips: t(`${key}.steps.3.tips`, { returnObjects: true }),
+        troubleshooting: {
+          title: t(`${key}.steps.3.troubleshooting.title`),
+          items: t(`${key}.steps.3.troubleshooting.items`, { returnObjects: true })
+        }
+      },
+      {
+        icon: Rocket,
+        title: t(`${key}.steps.4.title`),
+        titleEn: t(`${key}.steps.4.titleEn`),
+        estimatedTime: t(`${key}.steps.4.estimatedTime`),
+        content: t(`${key}.steps.4.content`),
+        nextStepCards: (t(`${key}.steps.4.nextStepCards`, { returnObjects: true }) || []).map((card: NextStepCard) => ({
+          ...card,
+          link: card.link || '#',
+        })),
+        tips: t(`${key}.steps.4.tips`, { returnObjects: true }),
+      },
+    ],
+  }
+}
+
 function createOmlxTutorial(t: any): TutorialData {
   return {
     id: 'omlx',
@@ -1196,6 +1277,7 @@ function getTutorials(t: any): Record<string, TutorialData> {
     'multi-agent': createMultiAgentTutorial(t),
     hardware: createHardwareTutorial(t),
     'always-on-mac': createAlwaysOnMacTutorial(t),
+    'virtual-buddy-ollama': createVirtualBuddyOllamaTutorial(t),
   }
 }
 

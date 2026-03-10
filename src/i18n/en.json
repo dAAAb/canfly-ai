@@ -2989,6 +2989,192 @@
         }
       ]
     },
+    "virtual-buddy-ollama": {
+      "title": "Install Ollama with Virtual Buddy — GUI Setup on Mac",
+      "subtitle": "The friendliest way to run local AI on your Mac. Use Virtual Buddy to create a Linux VM, then install Ollama inside it — no Terminal expertise needed.",
+      "duration": "10 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "Download & Install Virtual Buddy",
+          "titleEn": "Download & Install Virtual Buddy",
+          "estimatedTime": "2 min",
+          "content": "Virtual Buddy is a free, open-source macOS app that lets you create Linux virtual machines with one click. It is the easiest way to get a sandboxed Linux environment on your Mac — perfect for running Ollama without modifying your main system.\n\n**Requirements:**\n- macOS 13 (Ventura) or later\n- Apple Silicon Mac (M1/M2/M3/M4)\n- At least 8 GB RAM (16 GB recommended)\n- ~10 GB free disk space\n\n**Install from GitHub:**\n1. Go to the Virtual Buddy GitHub releases page\n2. Download the latest `.dmg` file\n3. Open the DMG and drag Virtual Buddy to your Applications folder\n4. Launch Virtual Buddy — macOS may ask you to allow it in System Settings > Privacy & Security",
+          "expectedResult": "Virtual Buddy is installed and launches successfully. You see the main window with options to create a new virtual machine.",
+          "tips": [
+            "Virtual Buddy is completely free and open-source (MIT license)",
+            "It uses Apple's Virtualization framework — so VMs run at near-native speed on Apple Silicon",
+            "If macOS blocks the app, go to System Settings > Privacy & Security and click 'Open Anyway'"
+          ],
+          "troubleshooting": {
+            "title": "Troubleshooting",
+            "items": [
+              {
+                "q": "Virtual Buddy won't launch — 'damaged' or 'unidentified developer'",
+                "a": "Right-click the app and select Open, then confirm. Or go to System Settings > Privacy & Security and allow it."
+              },
+              {
+                "q": "I don't have an Apple Silicon Mac",
+                "a": "Virtual Buddy requires Apple Silicon (M1+). For Intel Macs, use UTM instead — see our Virtual Machine tutorial."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Create a Linux Virtual Machine",
+          "titleEn": "Create a Linux Virtual Machine",
+          "estimatedTime": "3 min",
+          "content": "Now let's create a Linux VM inside Virtual Buddy. The app handles everything automatically — it downloads Ubuntu and configures the VM for you.\n\n**Steps:**\n1. Open Virtual Buddy\n2. Click **Create New VM** (or the + button)\n3. Select **Linux** as the operating system\n4. Choose **Ubuntu** (recommended) from the distribution list\n5. Allocate resources:\n   - **CPU:** 4 cores (or more if available)\n   - **RAM:** 4 GB minimum (8 GB recommended for larger AI models)\n   - **Disk:** 20 GB minimum\n6. Click **Create** — Virtual Buddy will download Ubuntu and set up the VM\n7. Wait for the installation to complete (2-5 minutes depending on your internet speed)\n8. The VM will boot automatically into Ubuntu",
+          "expectedResult": "Your Linux VM boots successfully into Ubuntu. You see the Ubuntu desktop or login screen inside the Virtual Buddy window.",
+          "tips": [
+            "Give the VM at least 4 GB RAM — Ollama needs memory for AI models",
+            "20 GB disk is enough for small models. For 7B+ models, allocate 30-40 GB",
+            "You can resize the VM later if you need more resources"
+          ],
+          "troubleshooting": {
+            "title": "Troubleshooting",
+            "items": [
+              {
+                "q": "VM creation fails or stalls",
+                "a": "Check your internet connection — Virtual Buddy needs to download the Ubuntu image (~2 GB). Try again on a stable connection."
+              },
+              {
+                "q": "VM is very slow",
+                "a": "Increase the allocated CPU cores and RAM in VM settings. Close other heavy apps on your Mac to free up resources."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Install Ollama in the VM",
+          "titleEn": "Install Ollama in the VM",
+          "estimatedTime": "2 min",
+          "content": "Now that your Linux VM is running, let's install Ollama inside it. Open a terminal in your Ubuntu VM and run the official one-line installer.\n\n**Inside the VM**, open Terminal (Ctrl+Alt+T or find it in the app menu) and run:",
+          "commands": [
+            "# Install Ollama (run inside the Linux VM)",
+            "curl -fsSL https://ollama.com/install.sh | sh",
+            "",
+            "# Verify the installation",
+            "ollama --version",
+            "",
+            "# Pull your first AI model (small and fast)",
+            "ollama pull llama3.2:1b"
+          ],
+          "expectedResult": "Ollama installs successfully and reports its version. The llama3.2:1b model downloads (~1.3 GB). You're ready to chat with AI!",
+          "tips": [
+            "llama3.2:1b is only ~1.3 GB — perfect for testing on VMs with limited disk",
+            "For better quality responses, try llama3.2:3b (2 GB) or llama3.1:8b (4.7 GB)",
+            "Ollama runs as a background service automatically after installation"
+          ],
+          "troubleshooting": {
+            "title": "Troubleshooting",
+            "items": [
+              {
+                "q": "curl: command not found",
+                "a": "Install curl first: sudo apt update && sudo apt install -y curl"
+              },
+              {
+                "q": "Model download is very slow",
+                "a": "This depends on your internet speed. The 1b model is only 1.3 GB. Make sure the VM has network access (it should by default in Virtual Buddy)."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Chat with Your Local AI",
+          "titleEn": "Chat with Your Local AI",
+          "estimatedTime": "2 min",
+          "content": "Time to have your first conversation with a locally-running AI model! Everything runs on your Mac — no internet required, no data leaves your machine.\n\nIn the VM terminal, start a chat session:",
+          "commands": [
+            "# Start chatting with your local AI",
+            "ollama run llama3.2:1b",
+            "",
+            "# Try asking it something:",
+            "# >>> What is the capital of Taiwan?",
+            "# >>> Write a haiku about coding",
+            "# >>> Explain quantum computing in simple terms"
+          ],
+          "chatExample": {
+            "exchanges": [
+              { "role": "user", "text": "What is the capital of Taiwan?" },
+              { "role": "ai", "text": "The capital of Taiwan is Taipei (台北). It is the largest city in Taiwan and serves as the political, economic, and cultural center of the country." }
+            ]
+          },
+          "expectedResult": "You see the AI respond to your messages in real-time. The model runs entirely on your Mac's hardware via the VM — completely private and offline-capable.",
+          "tips": [
+            "Type /bye to exit the chat",
+            "Response speed depends on the model size and your Mac's specs",
+            "M1 Macs can comfortably run 1b-3b models; M2/M3/M4 can handle 7b-8b models",
+            "All processing happens locally — your conversations are 100% private"
+          ],
+          "troubleshooting": {
+            "title": "Troubleshooting",
+            "items": [
+              {
+                "q": "Responses are very slow",
+                "a": "Try a smaller model (llama3.2:1b). Also check that your VM has enough RAM allocated (at least 4 GB)."
+              },
+              {
+                "q": "Error: model not found",
+                "a": "Run 'ollama pull llama3.2:1b' first to download the model, then try 'ollama run' again."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Next Steps — Level Up Your AI Setup",
+          "titleEn": "Next Steps — Level Up Your AI Setup",
+          "estimatedTime": "1 min",
+          "content": "Congratulations! You now have a local AI running inside a Linux VM on your Mac — completely free, completely private.\n\n**What you've achieved:**\n- ✅ Linux VM running on your Mac via Virtual Buddy\n- ✅ Ollama installed with a working AI model\n- ✅ Private, offline-capable AI chat\n\n**Ready to go further?** Connect your local Ollama to OpenClaw for a ChatGPT-like interface, add voice with ElevenLabs, or deploy to the cloud with Zeabur.",
+          "nextStepCards": [
+            {
+              "emoji": "claw",
+              "title": "Add OpenClaw UI",
+              "desc": "Get a ChatGPT-like interface for your local AI",
+              "link": "/learn/ollama-openclaw",
+              "cta": "Start Tutorial"
+            },
+            {
+              "emoji": "cloud",
+              "title": "Deploy to Cloud",
+              "desc": "Share your AI setup with Zeabur hosting",
+              "link": "/learn/zeabur",
+              "cta": "Deploy Now"
+            },
+            {
+              "emoji": "speaker",
+              "title": "Add AI Voice",
+              "desc": "Give your AI a natural voice with ElevenLabs",
+              "link": "/learn/elevenlabs-integration",
+              "cta": "Add Voice"
+            }
+          ],
+          "tips": [
+            "Keep the VM running in the background for always-available AI access",
+            "Virtual Buddy VMs survive Mac restarts — just reopen Virtual Buddy",
+            "For production use, consider our Always-On Mac tutorial to prevent sleep"
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Why use a VM instead of installing Ollama directly on macOS?",
+          "a": "You can install Ollama directly on macOS too! A VM gives you a clean, sandboxed environment — perfect for experimentation without affecting your main system. Some users prefer this for security and isolation."
+        },
+        {
+          "q": "How much RAM does the VM need?",
+          "a": "Minimum 4 GB for small models (1b-3b). For 7b-8b models, allocate 8 GB to the VM. Your Mac should have at least 16 GB total RAM for a comfortable experience."
+        },
+        {
+          "q": "Can I access Ollama from my Mac (outside the VM)?",
+          "a": "Yes! By default, Ollama listens on port 11434 inside the VM. You can configure Virtual Buddy's network settings to forward this port to your Mac, then access it at localhost:11434."
+        },
+        {
+          "q": "Is Virtual Buddy free?",
+          "a": "Yes, Virtual Buddy is completely free and open-source under the MIT license. The source code is available on GitHub."
+        }
+      ]
+    },
     "ollamaOpenclaw": {
       "title": "Install OpenClaw with Ollama in One Command",
       "subtitle": "ollama launch openclaw — the fastest way to experience AI agents with free cloud models, no GPU needed",
