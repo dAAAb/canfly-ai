@@ -1,0 +1,10 @@
+# CanFly.ai — Cloudflare Pages project config
+# Used for local dev (wrangler pages dev) and D1 migrations
+name = "canfly-ai"
+compatibility_date = "2024-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "canfly-community"
+database_id = ""  # Fill after: wrangler d1 create canfly-community
+migrations_dir = "migrations"
