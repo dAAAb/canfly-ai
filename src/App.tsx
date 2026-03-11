@@ -169,12 +169,12 @@ function App() {
               <Route path="/:lang/blog" element={<LangSync><BlogListPage /></LangSync>} />
               <Route path="/:lang/blog/:slug" element={<LangSync><BlogPostPage /></LangSync>} />
 
-              {/* Community routes with lang prefix */}
-              <Route path="/:lang/@:username/agent/:agentName" element={<LangSync><AgentCardPage /></LangSync>} />
-              <Route path="/:lang/@:username/edit" element={<LangSync><ProfileEditPage /></LangSync>} />
-              <Route path="/:lang/@:username" element={<LangSync><UserShowcasePage /></LangSync>} />
-              <Route path="/:lang/free/agent/:agentName" element={<LangSync><AgentCardPage free /></LangSync>} />
-              <Route path="/:lang/free" element={<LangSync><FreeAgentsPage /></LangSync>} />
+              {/* /@username and /free — no lang prefix (UGC content, not translatable) */}
+              <Route path="/:lang/@:username/agent/:agentName" element={<StripLangRedirect />} />
+              <Route path="/:lang/@:username/edit" element={<StripLangRedirect />} />
+              <Route path="/:lang/@:username" element={<StripLangRedirect />} />
+              <Route path="/:lang/free/agent/:agentName" element={<StripLangRedirect />} />
+              <Route path="/:lang/free" element={<StripLangRedirect />} />
               <Route path="/:lang/rankings/brand/:brandName" element={<LangSync><BrandPage /></LangSync>} />
               <Route path="/:lang/rankings" element={<LangSync><RankingsPage /></LangSync>} />
 
