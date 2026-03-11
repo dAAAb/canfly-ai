@@ -6,5 +6,5 @@ compatibility_date = "2024-01-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "canfly-community"
-database_id = ""  # Fill after: wrangler d1 create canfly-community
+database_id = "9120faa2-182e-4064-aa86-e0d9a411b169"
 migrations_dir = "migrations"
