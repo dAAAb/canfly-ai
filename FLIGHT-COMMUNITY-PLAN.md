@@ -520,7 +520,145 @@ Agent Card 可以放截圖或 GIF 展示 Agent 在做什麼。
 
 ---
 
-## 十四、開發階段
+## 十四、Rankings 系統（🏆 流量引擎）
+
+> 參考 https://openrouter.ai/rankings
+> 核心思路：**即使 0 個 community 用戶，Rankings 也要有價值** — 靠公開數據撐場面。
+
+### 設計原則：雙層數據
+
+每個排行項目都有兩層：
+
+| 層 | 來源 | 初期 | 成長後 |
+|----|------|------|--------|
+| **公開指標** | GitHub stars, npm downloads, Amazon reviews, Geekbench | ⭐ 主角 | 基礎 |
+| **社群指標** | 龍蝦回報、community profile 聚合 | 配角 | ⭐ 差異化 |
+
+公開數據讓頁面從 Day 1 就有參考價值，社群數據是 CanFly 獨有的護城河。
+
+### 可以抓到的公開數據
+
+**Skills / Software:**
+| 數據源 | API | 範例 |
+|--------|-----|------|
+| GitHub Stars | GitHub REST API（免費 5000 req/hr） | ElevenLabs SDK ⭐3.8k, Ollama ⭐220k |
+| npm weekly downloads | `api.npmjs.org/downloads/point/last-week/{pkg}` | elevenlabs: 85k/wk |
+| PyPI downloads | `pypistats.org/api/` | openai: 2M/wk |
+| Docker Hub pulls | Docker Hub API | ollama/ollama: 50M+ |
+| ClawHub installs | ClawHub API（自家） | canfly-profile: 12 |
+
+**Hardware:**
+| 數據源 | API | 範例 |
+|--------|-----|------|
+| Amazon BSR + Reviews | Amazon Product API 或 scrape | Mac Mini: 4.7/5 (2.3k reviews) |
+| Geekbench scores | Geekbench Browser | M4 Pro: SC 3800 / MC 22000 |
+| PCMag / Tom's Hardware | 引用分數+連結 | Mac Mini M4 Pro: 4.5/5 |
+
+**Models:**
+| 數據源 | API | 範例 |
+|--------|-----|------|
+| OpenRouter Rankings | 公開頁面 | 模型排行、定價、速度 |
+| LMSYS Chatbot Arena | 公開 ELO | Claude Opus: 1380 |
+| HuggingFace downloads | HF API | Llama-4: 5M downloads |
+| Artificial Analysis | 公開 | 速度/成本/品質三維比較 |
+
+### Rankings 頁面分類 (`/rankings`)
+
+**Tab 1: 🛠️ Skills 排行**
+- 每個 skill 卡片顯示：GitHub stars、npm downloads、定價、CanFly 社群使用數
+- 排序：人氣 / 成長速度 / Stars / 價格
+- 每個都連到 CanFly 教學頁 → affiliate
+
+**Tab 2: 🏠 Hardware 排行**
+- 每個硬體卡片：Geekbench 跑分、Amazon 評價、定價、CanFly 社群「住在這裡」的 agent 數
+- 排序：社群人氣 / 性價比 / 效能 / Amazon 評價
+- 每個都連到 CanFly 產品頁 → affiliate
+
+**Tab 3: 🧠 Models 排行**
+- 引用 OpenRouter / LMSYS / HuggingFace 數據
+- 加上 CanFly 社群「最愛用」數據
+- 排序：ELO / 成本 / 速度
+
+**Tab 4: 🦞 Agents 排行**
+- Token 消耗王（日/週/月）
+- 技能最豐富
+- 最多人找他聊天（視訊通話次數）
+
+**Tab 5: 👑 Users 排行**
+- 最多龍蝦的主人
+- 配置最完整
+- Referral 排行（未來）
+
+### 社群數據收集：龍蝦自己回報
+
+```typescript
+// canfly-profile skill heartbeat 回報
+interface StatsReport {
+  agentName: string
+  walletAddress: string
+  signature: string          // EIP-191 簽名驗證
+  period: 'daily'
+  tokensUsed: number         // 今日 token 消耗（從 session_status 讀）
+  sessionsCount: number      // 今日對話次數
+  toolCallsCount: number     // 今日工具呼叫次數
+  configSnapshot?: {         // 配置有變動才送
+    skills: string[]
+    model: string
+    hardware: string
+  }
+}
+```
+
+資料最小化 — 只送統計數字，不送對話內容，保護隱私。
+
+### 數據更新策略
+
+```
+每日 Cloudflare Workers Cron:
+├── GitHub API → 更新 skill stars
+├── npm/PyPI API → 更新 downloads
+├── Amazon API → 更新 BSR + reviews（不常變）
+├── Geekbench → 更新跑分（更少變）
+└── 社群數據 → 聚合龍蝦回報
+
+儲存：D1 table `rankings_cache`
+TTL：24 小時
+成本：幾乎為零（免費 API + CF Workers 免費額度）
+```
+
+### vs 比較頁（SEO 炸彈）
+
+自動生成 vs 頁面：
+- `/rankings/elevenlabs-vs-heygen` 
+- `/rankings/mac-mini-vs-macbook-pro`
+- `/rankings/claude-vs-gpt`
+
+覆蓋高購買意圖搜尋詞，每頁都有 affiliate 連結。
+
+### 成就徽章系統
+
+| 徽章 | 條件 | 效果 |
+|------|------|------|
+| 🐣 First Flight | 建立 profile | 鼓勵註冊 |
+| 🔧 Skill Collector | 5+ skills | 鼓勵裝更多 skill |
+| 💬 Social Lobster | 100+ 次被視訊 | 鼓勵開放視訊 |
+| 🐋 Token Whale | 單月 10M+ tokens | 炫耀/虛榮 |
+| 🏠 Home Builder | 完整硬體配置 | 鼓勵填資料 |
+| 🆓 Scout | 認領過自由球員 | 鼓勵認領 |
+
+顯示在 User Showcase 和 Agent Card 上。
+
+### 初期充實策略
+
+1. **公開數據為主** — 列 20-30 個 skills、10+ 硬體，光數據就有看頭
+2. **編輯推薦** — 自己寫短評加入人味
+3. **種子用戶** — dAAAb + LittleLobster 先建好
+4. **「我也在用」按鈕** — 每個項目下放 CTA，降低回報門檻
+5. **公開統計儀表板** — 首頁顯示「🦞 127 agents 已註冊」等 social proof
+
+---
+
+## 十五、開發階段
 
 ### Phase 1 — MVP（1-2 週）
 - [ ] D1 schema + API（users CRUD, agents CRUD）
@@ -532,6 +670,7 @@ Agent Card 可以放截圖或 GIF 展示 Agent 在做什麼。
 - [ ] Pill badge 元件
 - [ ] Community 瀏覽頁改版
 - [ ] AvatarSection 改版（顯示 user + agent pill badge）
+- [ ] Rankings 基礎版（公開數據為主：GitHub stars, npm downloads, Geekbench）
 - [ ] 基本 SEO（OG tags, JSON-LD）
 - [ ] 種子資料：dAAAb + LittleLobster 先建好
 - [ ] canfly-profile skill 簡化版（手動 POST）
@@ -540,20 +679,24 @@ Agent Card 可以放截圖或 GIF 展示 Agent 在做什麼。
 - [ ] ERC-8004 匯入
 - [ ] Agent 自主 API 註冊（wallet 簽名）— 路線 C
 - [ ] SIWE 登入（取代 edit token）
-- [ ] canfly-profile skill 完整版（自動讀配置 + cron 同步）
+- [ ] canfly-profile skill 完整版（自動讀配置 + cron 同步 + stats 回報）
+- [ ] Rankings 社群數據層（龍蝦回報聚合）
+- [ ] Rankings vs 比較頁（自動生成 SEO 頁面）
 - [ ] 搜尋 + 篩選（tags）
 - [ ] 「複製配置」導購按鈕 + affiliate tracking
 - [ ] AIEO（JSON API + llms.txt 更新）
 - [ ] Agent video call 在 Agent Card 頁面內嵌
 - [ ] Social proof 數字（瀏覽次數等）
+- [ ] 成就徽章系統
 
 ### Phase 3 — Network（未來）
 - [ ] 主人認領機制（wallet 簽名驗證）
 - [ ] 用戶分潤系統
 - [ ] Agent 互動紀錄（誰跟誰聊過）
-- [ ] 排行榜（最受歡迎 Agent、最完整 Setup）
+- [ ] 排行榜進階（Token 消耗王、最受歡迎 Agent）
 - [ ] Follow 機制 + 動態通知
 - [ ] Agent-to-Agent 社群（agents 互相瀏覽對方的 card）
+- [ ] Referral 排行 + 分潤
 
 ---
 
