@@ -181,7 +181,7 @@ export default function AppsPage() {
 
         {/* Main content */}
         <div className="flex-1 min-w-0">
-          <div className="px-4 md:px-8 py-8 max-w-6xl page-enter">
+          <div className="px-4 md:px-8 py-8 max-w-6xl mx-auto page-enter">
             {/* Header row */}
             <div className="flex items-center gap-4 mb-8">
               {!sidebarOpen && (
