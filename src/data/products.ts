@@ -491,7 +491,12 @@ export const products: Product[] = [
       'Perfect for beginners',
       'macOS native app',
     ],
-    screenshots: [],
+    heroImage: '/images/products/virtual-buddy/showcase.jpg',
+    screenshots: [
+      '/images/products/virtual-buddy/showcase.jpg',
+      '/images/products/virtual-buddy/guest-app.jpg',
+      '/images/products/virtual-buddy/device-support.png',
+    ],
     tutorial: '/learn/virtual-machine',
     cta: {
       primary: 'Free Tutorial',
