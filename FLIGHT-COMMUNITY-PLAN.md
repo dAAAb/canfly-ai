@@ -35,41 +35,56 @@
 
 ### 路由表
 
-| 路徑 | 頁面 | 語言前綴 | 說明 |
-|------|------|----------|------|
-| `/@{username}` | User Showcase | ❌ 無 | UGC profile，跟 Twitter 一樣 |
-| `/@{username}/agent/{name}` | Agent Card | ❌ 無 | UGC profile |
-| `/free` | Free Agents 首頁 | ❌ 無 | agent 名字不翻譯 |
-| `/free/agent/{name}` | Agent Card (自由球員) | ❌ 無 | UGC profile |
-| `/community` | Discovery 瀏覽頁 | ❌ 無 | user/agent 名字不翻譯 |
-| `/community/register` | 註冊頁 | ❌ 無 | 表單 |
-| `/rankings` | Rankings | ❌ 無 | 品牌名+數字為主，90% 不翻譯 |
-| `/rankings/brand/{name}` | Brand Page | ❌ 無 | 品牌名不翻譯 |
-| `/{lang}/tutorials/...` | 教學文章 | ✅ 有 | 內容有完整翻譯 |
-| `/{lang}/apps/...` | 產品頁 | ✅ 有 | 產品描述有翻譯 |
-| `/{lang}/blog/...` | 部落格 | ✅ 有 | 文章有翻譯 |
+| 路徑 | 頁面 | 語言前綴 | 換語系方式 | 說明 |
+|------|------|----------|-----------|------|
+| `/{lang}/community` | Discovery 瀏覽頁 | ✅ 有 | URL 切換 | SEO 可索引，UI 文字翻譯 |
+| `/{lang}/community/register` | 註冊頁 | ✅ 有 | URL 切換 | 表單 UI 翻譯 |
+| `/{lang}/rankings` | Rankings | ✅ 有 | URL 切換 | SEO 重要頁面 |
+| `/{lang}/rankings/brand/{name}` | Brand Page | ✅ 有 | URL 切換 | 品牌資訊頁 |
+| `/{lang}/free` | Free Agents 首頁 | ✅ 有 | URL 切換 | UI 文字翻譯 |
+| `/{lang}/free/agent/{name}` | Agent Card (自由球員) | ✅ 有 | URL 切換 | UI 文字翻譯 |
+| `/@{username}` | User Showcase | ❌ 無 | cookie | UGC profile，跟 Twitter 一樣 |
+| `/@{username}/agent/{name}` | Agent Card (已擁有) | ❌ 無 | cookie | UGC profile |
+| `/@{username}/edit` | Profile 編輯 | ❌ 無 | cookie | UGC 相關 |
+| `/{lang}/tutorials/...` | 教學文章 | ✅ 有 | URL 切換 | 內容有完整翻譯 |
+| `/{lang}/apps/...` | 產品頁 | ✅ 有 | URL 切換 | 產品描述有翻譯 |
+| `/{lang}/blog/...` | 部落格 | ✅ 有 | URL 切換 | 文章有翻譯 |
 
-### 多語言規則
+### 多語言規則（2026-03-11 寶博確認 ✅）
 
-**簡單規則：內容 90%+ 不翻譯的頁面 → 不加語言前綴**
+**混合策略 = CoinMarketCap 模式 + Twitter 模式**
 
-參考業界做法（Twitter/X、Instagram、GitHub）：
-- Profile/UGC 頁面用固定 URL，語言靠 cookie / Accept-Language
-- Rankings 頁內容主要是品牌名（ElevenLabs、Ollama）+ 數字（⭐3.8k、$1,399）
-- 加了 `/zh-tw/rankings` 跟 `/rankings` 內容 90% 相同 → Google 視為重複內容，不利 SEO
+**有語言前綴的頁面**（SEO + Google 可索引每個語言版本）：
+- 產品頁面（apps、tutorials、blog）
+- 平台頁面（community、rankings、free）
+- 參考：CoinMarketCap `/zh-tw/rankings/` — 搜尋引擎最佳實踐
+
+**無語言前綴的頁面**（用戶分享的 URL 要乾淨）：
+- `/@username` 開頭的所有頁面
+- 參考：Twitter `/@elonmusk`、GitHub `/torvalds`、Instagram `/zuck`
+- 語言靠 cookie 切換，URL 不變
+
+**判斷規則：**
+- ❓ 這個頁面的 URL 會被用戶分享嗎？是 UGC 內容嗎？
+  - 是 → ❌ 不加語言前綴（`/@username`）
+  - 否 → ✅ 加語言前綴（`/zh-tw/rankings`）
 
 **語言偵測優先級（無前綴頁面）：**
 1. `canfly_lang` cookie（用戶曾手動切換語言）
 2. `Accept-Language` header（瀏覽器語系）
 3. Fallback: `en`
 
-**翻譯範圍（無前綴頁面）：**
-- ✅ UI chrome：按鈕（「我的 Agents」↔「My Agents」）、標籤、導航
+**技術實作：**
+- 有語言前綴的路由 → `<LangSync>` wrapper（從 URL param 讀語言）
+- 無語言前綴的路由 → `<AutoLangSync>` wrapper（從 cookie 讀語言）
+- `useLanguage().switchLang()` 自動判斷：有 prefix 改 URL，無 prefix 寫 cookie
+- 如果有人訪問 `/zh-tw/@username` → `StripLangRedirect` 自動 redirect 到 `/@username`
+
+**翻譯範圍：**
+- ✅ UI chrome：按鈕、標籤、導航、表頭
 - ✅ 系統文字：「加入於 2026-03-11」↔「Joined 2026-03-11」
 - ❌ UGC 內容：bio、agent description → 用戶寫什麼就顯示什麼
-- ❌ 品牌名、數字、排名 → 不翻譯
-
-**分享連結永遠簡潔**：`canfly.ai/@dAAAb`、`canfly.ai/rankings` — 不帶語言參數。
+- ❌ 品牌名、數字、排名數據 → 不翻譯
 
 ### 對稱性設計
 ```

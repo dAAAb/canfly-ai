@@ -42,7 +42,39 @@ curl -s "$API/companies/$COMPANY/issues" | python3 -c "import sys,json; [print(f
 
 見 `WORKFLOW.md`。
 
-## 🌐 i18n 翻譯規則
+## 🌐 i18n 規則
+
+### URL 策略（2026-03-11 寶博確認，所有人必須遵守！）
+
+**混合策略：產品頁 = 語言前綴（SEO），用戶頁 = cookie（乾淨 URL）**
+
+| 路由類型 | 範例 | 語言前綴 | 換語系方式 | 理由 |
+|---------|------|---------|-----------|------|
+| 首頁、Apps、教學 | `/zh-tw/apps`, `/zh-tw/learn/xxx` | ✅ `/:lang/` | URL 切換 | SEO 可索引 |
+| Community 瀏覽 | `/zh-tw/community` | ✅ `/:lang/` | URL 切換 | SEO，UI 文字需翻譯 |
+| Rankings 排行 | `/zh-tw/rankings` | ✅ `/:lang/` | URL 切換 | SEO 重要頁面 |
+| Free Agents | `/zh-tw/free` | ✅ `/:lang/` | URL 切換 | SEO，UI 文字需翻譯 |
+| **User Showcase** | `/@dAAAb` | ❌ 無前綴 | cookie `canfly_lang` | UGC 內容，跟 Twitter/GitHub 一樣 |
+| **Agent Card** | `/@dAAAb/agent/LittleLobster` | ❌ 無前綴 | cookie `canfly_lang` | Agent 名稱是品牌，不翻譯 |
+
+**規則：**
+1. `/@` 開頭的路由**永遠不加語言前綴**（使用者分享的 URL 要乾淨）
+2. 如果有人訪問 `/zh-tw/@username` → 自動 redirect 到 `/@username`（StripLangRedirect）
+3. `/@` 頁面的 UI 語言由 cookie `canfly_lang` 決定，Navbar 語言切換器只寫 cookie 不改 URL
+4. 其他所有頁面都要支援 `/:lang/` 前綴
+5. 新增頁面時，**先判斷是 UGC 頁面還是產品頁面**，再決定要不要加語言前綴
+
+**參考業界：**
+- CoinMarketCap = 產品頁有前綴 ✅
+- Twitter / GitHub / Instagram = 用戶頁無前綴，cookie-based ✅
+- Google SEO 建議 = subpath 是多語言最佳實踐
+
+**技術實作：**
+- 有語言前綴的路由用 `<LangSync>` wrapper
+- 無語言前綴的路由用 `<AutoLangSync>` wrapper（從 cookie 讀語言）
+- `useLanguage()` hook 的 `switchLang()` 會自動判斷：有 prefix 就改 URL，沒有就只寫 cookie
+
+### 翻譯檔
 
 **每次修改或新增頁面內容時，必須同時更新三個語言檔：**
 - `src/i18n/en.json` — 英文
