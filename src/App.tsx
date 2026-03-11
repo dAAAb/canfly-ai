@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState, lazy, Suspense } from 'react'
 import Footer from './sections/Footer'
@@ -19,6 +19,24 @@ const BlogPostPage = lazy(() => import('./pages/BlogPostPage'))
 const SubscribeConfirmedPage = lazy(() => import('./pages/SubscribeConfirmedPage'))
 const ProfilePage = lazy(() => import('./pages/ProfilePage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
+const UserShowcasePage = lazy(() => import('./pages/UserShowcasePage'))
+const AgentCardPage = lazy(() => import('./pages/AgentCardPage'))
+const FreeAgentsPage = lazy(() => import('./pages/FreeAgentsPage'))
+const RankingsPage = lazy(() => import('./pages/RankingsPage'))
+const BrandPage = lazy(() => import('./pages/BrandPage'))
+const RegisterPage = lazy(() => import('./pages/RegisterPage'))
+
+/** Redirect /u/:username → /@:username */
+function ProfileRedirect() {
+  const { username } = useParams<{ username: string }>()
+  return <Navigate to={`/@${username}`} replace />
+}
+
+/** Redirect /:lang/u/:username → /:lang/@:username */
+function LangProfileRedirect() {
+  const { lang, username } = useParams<{ lang: string; username: string }>()
+  return <Navigate to={`/${lang}/@${username}`} replace />
+}
 
 /** Wrapper that syncs i18next language from URL :lang param.
  *  Loads translation bundle first, then switches language so React
@@ -73,10 +91,21 @@ function App() {
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/pricing" element={<PricingPage />} />
               <Route path="/community" element={<CommunityPage />} />
+              <Route path="/community/register" element={<RegisterPage />} />
               <Route path="/subscribe/confirmed" element={<SubscribeConfirmedPage />} />
               <Route path="/blog" element={<BlogListPage />} />
               <Route path="/blog/:slug" element={<BlogPostPage />} />
-              <Route path="/u/:username" element={<ProfilePage />} />
+
+              {/* Community routes */}
+              <Route path="/@:username" element={<UserShowcasePage />} />
+              <Route path="/@:username/agent/:agentName" element={<AgentCardPage />} />
+              <Route path="/free" element={<FreeAgentsPage />} />
+              <Route path="/free/agent/:agentName" element={<AgentCardPage free />} />
+              <Route path="/rankings" element={<RankingsPage />} />
+              <Route path="/rankings/brand/:brandName" element={<BrandPage />} />
+
+              {/* Legacy redirect: /u/:username → /@:username */}
+              <Route path="/u/:username" element={<ProfileRedirect />} />
 
               {/* Language-prefixed routes */}
               <Route path="/:lang" element={<LangSync><HomePage /></LangSync>} />
@@ -89,10 +118,21 @@ function App() {
               <Route path="/:lang/checkout" element={<LangSync><CheckoutPage /></LangSync>} />
               <Route path="/:lang/pricing" element={<LangSync><PricingPage /></LangSync>} />
               <Route path="/:lang/community" element={<LangSync><CommunityPage /></LangSync>} />
+              <Route path="/:lang/community/register" element={<LangSync><RegisterPage /></LangSync>} />
               <Route path="/:lang/subscribe/confirmed" element={<LangSync><SubscribeConfirmedPage /></LangSync>} />
               <Route path="/:lang/blog" element={<LangSync><BlogListPage /></LangSync>} />
               <Route path="/:lang/blog/:slug" element={<LangSync><BlogPostPage /></LangSync>} />
-              <Route path="/:lang/u/:username" element={<LangSync><ProfilePage /></LangSync>} />
+
+              {/* Language-prefixed community routes */}
+              <Route path="/:lang/@:username" element={<LangSync><UserShowcasePage /></LangSync>} />
+              <Route path="/:lang/@:username/agent/:agentName" element={<LangSync><AgentCardPage /></LangSync>} />
+              <Route path="/:lang/free" element={<LangSync><FreeAgentsPage /></LangSync>} />
+              <Route path="/:lang/free/agent/:agentName" element={<LangSync><AgentCardPage free /></LangSync>} />
+              <Route path="/:lang/rankings" element={<LangSync><RankingsPage /></LangSync>} />
+              <Route path="/:lang/rankings/brand/:brandName" element={<LangSync><BrandPage /></LangSync>} />
+
+              {/* Legacy redirect: /:lang/u/:username → /:lang/@:username */}
+              <Route path="/:lang/u/:username" element={<LangProfileRedirect />} />
 
               {/* 404 catch-all */}
               <Route path="*" element={<NotFoundPage />} />
