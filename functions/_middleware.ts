@@ -406,7 +406,9 @@ export const onRequest: PagesFunction = async (context) => {
   const isApi = path.startsWith('/api/')
   const isBot = BOT_UA.test(ua)
 
-  if (!hasLangPrefix && !isStatic && !isApi && !isBot) {
+  // /@username routes never get lang prefix — they use cookie-based i18n (like Twitter/GitHub)
+  const isUserProfile = path.startsWith('/@')
+  if (!hasLangPrefix && !isStatic && !isApi && !isBot && !isUserProfile) {
     // If user manually chose a language before, respect it
     const cookieLang = getCookie(context.request, 'canfly_lang')
 

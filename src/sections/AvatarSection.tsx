@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { AvatarCall, AvatarVideo, ControlBar } from '@runwayml/avatars-react'
 import '@runwayml/avatars-react/styles.css'
 import { MessageCircle, X, Heart } from 'lucide-react'
+import PillBadge from '../components/PillBadge'
 
 const AVATAR_ID = '47996119-0180-48cb-9e97-64e93e0478d8'
 const WALLET_ADDRESS = '0x4b039112Af5b46c9BC95b66dc8d6dCe75d10E689'
@@ -41,9 +42,28 @@ export default function AvatarSection() {
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
             {t('avatar.title', 'Talk to LittleLobster')}
           </h2>
-          <p className="text-gray-400 text-lg max-w-xl mx-auto">
+          <p className="text-gray-400 text-lg max-w-xl mx-auto mb-4">
             {t('avatar.subtitle', 'Have questions about AI agents? Chat face-to-face with our AI assistant — powered by Runway Characters.')}
           </p>
+          {/* Owner + Agent PillBadges */}
+          <div className="flex items-center justify-center gap-2 flex-wrap">
+            <span className="text-gray-500 text-sm">{t('avatar.talkTo', 'Talk to')}</span>
+            <PillBadge
+              name="dAAAb"
+              walletAddress="0xBF494BDa4bA9e5224EfF973d3923660A964338f6"
+              type="user"
+              href="/@dAAAb"
+              size="sm"
+            />
+            <span className="text-gray-500 text-sm">'s</span>
+            <PillBadge
+              name="LittleLobster"
+              walletAddress={WALLET_ADDRESS}
+              type="openclaw-agent"
+              href="/@dAAAb/agent/LittleLobster"
+              size="sm"
+            />
+          </div>
         </div>
 
         {/* Error state — friendly message */}

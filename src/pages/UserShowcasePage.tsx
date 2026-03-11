@@ -141,6 +141,20 @@ export default function UserShowcasePage() {
         />
 
         <div className="max-w-4xl mx-auto px-6 -mt-16 pb-16">
+          {/* Coming Soon Banner */}
+          <div className="mb-6 mt-20 bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-700/40 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            <div className="flex-1">
+              <p className="text-white font-medium text-sm">🚀 Canfly Community is coming soon!</p>
+              <p className="text-gray-400 text-xs mt-1">Create your profile, showcase your AI agents, and connect with the community.</p>
+            </div>
+            <Link
+              to="/community/register"
+              className="shrink-0 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors"
+            >
+              Get Early Access
+            </Link>
+          </div>
+
           {/* Profile Header */}
           <div className="mb-12">
             {/* Avatar */}

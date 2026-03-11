@@ -38,7 +38,7 @@ export default function PillBadge({
       style={{ background: walletGradient(walletAddress) }}
     >
       <span>{EMOJI[type]}</span>
-      <span>{name}</span>
+      <span>{type === 'user' ? `@${name}` : name}</span>
     </Link>
   )
 }
