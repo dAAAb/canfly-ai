@@ -35,7 +35,9 @@ interface AgentData {
 }
 
 export default function AgentCardPage({ free }: { free?: boolean }) {
-  const { username, agentName } = useParams<{ username?: string; agentName: string }>()
+  const params = useParams<{ username?: string; agentName: string; lang?: string }>()
+  const username = params.username || (params.lang?.startsWith('@') ? params.lang.slice(1) : undefined)
+  const agentName = params.agentName
   const [agent, setAgent] = useState<AgentData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)

@@ -54,9 +54,48 @@ function StripLangRedirect() {
 /** Wrapper that syncs i18next language from URL :lang param.
  *  Loads translation bundle first, then switches language so React
  *  renders with translations already available (no flash of English). */
+const VALID_LANG_PREFIXES = new Set(['en', 'zh-tw', 'zh-cn'])
+
+/** 
+ * Route dispatcher for top-level /:slug paths.
+ * 
+ * React Router v6 can't use /@:username because @ is absorbed into the param.
+ * So /:lang will match /@dAAAb with lang="@dAAAb".
+ * 
+ * This wrapper detects @-prefixed slugs and renders the user profile page,
+ * otherwise validates it as a language prefix.
+ */
+function LangOrProfile() {
+  const { lang } = useParams<{ lang?: string }>()
+  if (lang?.startsWith('@')) {
+    return <AutoLangSync><UserShowcasePage /></AutoLangSync>
+  }
+  if (lang && !VALID_LANG_PREFIXES.has(lang.toLowerCase())) {
+    return <Suspense fallback={<div className="min-h-screen" />}><NotFoundPage /></Suspense>
+  }
+  return <LangSync><HomePage /></LangSync>
+}
+
+function LangOrProfileEdit() {
+  const { lang } = useParams<{ lang?: string }>()
+  if (lang?.startsWith('@')) {
+    return <AutoLangSync><ProfileEditPage /></AutoLangSync>
+  }
+  return null
+}
+
+function LangOrAgentCard() {
+  const { lang } = useParams<{ lang?: string }>()
+  if (lang?.startsWith('@')) {
+    return <AutoLangSync><AgentCardPage /></AutoLangSync>
+  }
+  return null
+}
+
 function LangSync({ children }: { children: React.ReactNode }) {
   const { lang } = useParams<{ lang?: string }>()
   const { i18n } = useTranslation()
+
   const resolved = langFromPrefix(lang)
   const [ready, setReady] = useState(i18n.language === resolved)
 
@@ -142,9 +181,8 @@ function App() {
               <Route path="/blog/:slug" element={<BlogPostPage />} />
 
               {/* Community routes — no lang prefix, auto-detect from cookie/browser */}
-              <Route path="/@:username" element={<AutoLangSync><UserShowcasePage /></AutoLangSync>} />
-              <Route path="/@:username/edit" element={<AutoLangSync><ProfileEditPage /></AutoLangSync>} />
-              <Route path="/@:username/agent/:agentName" element={<AutoLangSync><AgentCardPage /></AutoLangSync>} />
+              {/* NOTE: /@:username does NOT work in React Router v6 — @ is absorbed into param.
+                  Instead, /:lang dispatcher handles @-prefixed slugs (see LangOrProfile). */}
               <Route path="/free" element={<AutoLangSync><FreeAgentsPage /></AutoLangSync>} />
               <Route path="/free/agent/:agentName" element={<AutoLangSync><AgentCardPage free /></AutoLangSync>} />
               <Route path="/rankings" element={<AutoLangSync><RankingsPage /></AutoLangSync>} />
@@ -153,8 +191,10 @@ function App() {
               {/* Legacy redirect: /u/:username → /@:username */}
               <Route path="/u/:username" element={<ProfileRedirect />} />
 
-              {/* Language-prefixed routes */}
-              <Route path="/:lang" element={<LangSync><HomePage /></LangSync>} />
+              {/* /:lang — dispatches to HomePage OR /@username profile */}
+              <Route path="/:lang/agent/:agentName" element={<LangOrAgentCard />} />
+              <Route path="/:lang/edit" element={<LangOrProfileEdit />} />
+              <Route path="/:lang" element={<LangOrProfile />} />
               <Route path="/:lang/apps" element={<LangSync><AppsPage /></LangSync>} />
               <Route path="/:lang/apps/:category" element={<LangSync><AppsPage /></LangSync>} />
               <Route path="/:lang/apps/:category/:slug" element={<LangSync><ProductPage /></LangSync>} />
@@ -173,10 +213,9 @@ function App() {
               <Route path="/:lang/free/agent/:agentName" element={<LangSync><AgentCardPage free /></LangSync>} />
               <Route path="/:lang/free" element={<LangSync><FreeAgentsPage /></LangSync>} />
 
-              {/* /@username — no lang prefix (UGC URLs stay clean, lang from cookie) */}
-              <Route path="/:lang/@:username/agent/:agentName" element={<StripLangRedirect />} />
-              <Route path="/:lang/@:username/edit" element={<StripLangRedirect />} />
-              <Route path="/:lang/@:username" element={<StripLangRedirect />} />
+              {/* /@username — handled by /:lang dispatcher (LangOrProfile) above.
+                  React Router v6 can't match /@:username, so /:lang/@:username won't work either.
+                  The /:lang/agent/:agentName and /:lang/edit routes handle the sub-paths. */}
               <Route path="/:lang/rankings/brand/:brandName" element={<LangSync><BrandPage /></LangSync>} />
               <Route path="/:lang/rankings" element={<LangSync><RankingsPage /></LangSync>} />
 

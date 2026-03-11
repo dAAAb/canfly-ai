@@ -32,7 +32,8 @@ interface FormData {
 }
 
 export default function ProfileEditPage() {
-  const { username } = useParams<{ username: string }>()
+  const params = useParams<{ username?: string; lang?: string }>()
+  const username = params.username || (params.lang?.startsWith('@') ? params.lang.slice(1) : undefined)
   const navigate = useNavigate()
 
   const [loading, setLoading] = useState(true)

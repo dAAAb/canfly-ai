@@ -74,7 +74,9 @@ function formatDate(iso: string): string {
 }
 
 export default function UserShowcasePage() {
-  const { username } = useParams<{ username: string }>()
+  const params = useParams<{ username?: string; lang?: string }>()
+  // React Router can't match /@:username, so /:lang catches it with lang="@dAAAb"
+  const username = params.username || (params.lang?.startsWith('@') ? params.lang.slice(1) : undefined)
   const [user, setUser] = useState<UserData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

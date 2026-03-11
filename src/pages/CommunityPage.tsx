@@ -237,7 +237,7 @@ export default function CommunityPage() {
                     {filteredUsers.map((user) => (
                       <div key={user.username} className="flex items-center gap-2">
                         <PillBadge
-                          name={user.display_name || user.username}
+                          name={user.username}
                           walletAddress={user.wallet_address}
                           type="user"
                           href={localePath(`/@${user.username}`)}
