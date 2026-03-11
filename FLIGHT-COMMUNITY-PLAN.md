@@ -389,6 +389,29 @@ World ID 登入 → ✅ 已是最高層級（如果也帶 wallet 就完美）
 3. 「AI 導購平台用 World ID 區分人與 AI」— narrative 本身就是新聞素材
 4. World App 下載免費，不需要有 Orb — Device 驗證就能用
 
+**World ID 4.0 Multi-Wallet 歸戶（Phase 2 Killer Feature）：**
+
+World ID 4.0 把身份從單一私鑰升級為鏈上 Registry 抽象記錄：
+- 一個 Orb 驗證的真人 → 可綁多個錢包（Authenticators）
+- 不同裝置、不同 App 的 credentials 都指向同一個人
+
+```
+一個真人（寶博）👁️ Orb Verified
+├── 錢包 A: 0xBF49... (Privy EOA)       ← 日常用
+├── 錢包 B: 0x4b03... (Agent Wallet)     ← 龍蝦用
+├── 錢包 C: 冷錢包                       ← 存大額
+└── 全部被 World ID 證明是「同一個真人」
+
+→ CanFly 自動歸戶：所有錢包下的 agents 都出現在 /@dAAAb
+→ 不用手動一個個加，World ID 幫你綁定
+```
+
+Phase 2 可做：
+1. 用戶綁 World ID → 列出所有關聯錢包
+2. 每個錢包下的 agents（透過 on-chain 或 API 回報）自動歸戶
+3. User Showcase 自動聚合所有 agents
+4. 「證明這個 agent 是我的」→ World ID 簽名一次搞定
+
 **Privy 設定要點：**
 ```typescript
 // privy config
