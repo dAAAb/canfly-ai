@@ -4133,32 +4133,22 @@
     "eyebrow": "社区展示",
     "title": "看看大家都在做什么",
     "subtitle": "来自 CanFly 社区的真实设置。获取灵感，开始你自己的 AI Agent 旅程。",
-    "entries": {
-      "local-llm": {
-        "title": "本地 LLM 工作站",
-        "desc": "在 MacBook Pro 上用 Ollama 运行 Llama 3。快速推理、完全隐私、零月费。"
-      },
-      "cloud-deploy": {
-        "title": "一键云端 AI",
-        "desc": "通过 OpenClaw 部署 AI 聊天机器人到 Zeabur。不到 5 分钟上线，自动扩展。"
-      },
-      "voice-assistant": {
-        "title": "自定义语音助手",
-        "desc": "结合 Ollama 推理能力和 ElevenLabs 自然语音，打造双语语音助手。"
-      },
-      "video-creator": {
-        "title": "AI 视频工作室",
-        "desc": "使用 HeyGen 虚拟人物和 ElevenLabs 配音制作多语言产品视频。不需要摄像头。"
-      },
-      "home-server": {
-        "title": "24/7 家用 AI 服务器",
-        "desc": "在 Raspberry Pi 5 上用 Umbrel 运行 Ollama。全天候私人 AI，全家都能用。"
-      },
-      "coding-agent": {
-        "title": "AI 代码助手",
-        "desc": "在 VS Code 中使用 Ollama 搭配 Continue.dev，实现本地 AI 代码补全和对话。"
-      }
+    "stats": {
+      "agents": "个 agent 已注册",
+      "flyers": "位 flyer 加入",
+      "skills": "个 skill 使用中"
     },
+    "search": "搜索名称、简介...",
+    "filter": {
+      "all": "全部",
+      "free": "免费 Agents"
+    },
+    "sections": {
+      "users": "Flyers",
+      "agents": "Agents"
+    },
+    "noResults": "找不到结果。",
+    "empty": "尚无社区成员。",
     "cta": {
       "title": "准备好打造你自己的了吗？",
       "desc": "从我们的免费教程开始，加入 AI 创作者社区。",
