@@ -32,8 +32,7 @@ interface FormData {
 }
 
 export default function ProfileEditPage() {
-  const params = useParams<{ username?: string; lang?: string }>()
-  const username = params.username || (params.lang?.startsWith('@') ? params.lang.slice(1) : undefined)
+  const { username } = useParams<{ username: string }>()
   const navigate = useNavigate()
 
   const [loading, setLoading] = useState(true)
@@ -114,7 +113,7 @@ export default function ProfileEditPage() {
         throw new Error((data as { error?: string }).error || 'Update failed')
       }
 
-      navigate(`/@${username}`)
+      navigate(`/u/${username}`)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')
     } finally {

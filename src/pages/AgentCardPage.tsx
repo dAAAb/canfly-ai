@@ -35,9 +35,7 @@ interface AgentData {
 }
 
 export default function AgentCardPage({ free }: { free?: boolean }) {
-  const params = useParams<{ username?: string; agentName: string; lang?: string }>()
-  const username = params.username || (params.lang?.startsWith('@') ? params.lang.slice(1) : undefined)
-  const agentName = params.agentName
+  const { username, agentName } = useParams<{ username?: string; agentName: string }>()
   const [agent, setAgent] = useState<AgentData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -115,7 +113,7 @@ export default function AgentCardPage({ free }: { free?: boolean }) {
                 name={agent.name}
                 walletAddress={agent.wallet_address}
                 type={badgeType}
-                href={free ? `/free/agent/${agent.name}` : `/@${agent.owner_username}/agent/${agent.name}`}
+                href={free ? `/free/agent/${agent.name}` : `/u/${agent.owner_username}/agent/${agent.name}`}
                 size="md"
               />
             </div>
@@ -140,7 +138,7 @@ export default function AgentCardPage({ free }: { free?: boolean }) {
                   name={agent.owner.display_name || agent.owner.username}
                   walletAddress={agent.owner.wallet_address}
                   type="user"
-                  href={`/@${agent.owner.username}`}
+                  href={`/u/${agent.owner.username}`}
                   size="sm"
                 />
               </div>

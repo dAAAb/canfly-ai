@@ -129,7 +129,7 @@ export default function CommunityPage() {
 
   function getAgentHref(agent: CommunityAgent): string {
     if (agent.owner_username) {
-      return localePath(`/@${agent.owner_username}/agent/${agent.name}`)
+      return localePath(`/u/${agent.owner_username}/agent/${agent.name}`)
     }
     return localePath(`/free/agent/${agent.name}`)
   }
@@ -240,7 +240,7 @@ export default function CommunityPage() {
                           name={user.username}
                           walletAddress={user.wallet_address}
                           type="user"
-                          href={localePath(`/@${user.username}`)}
+                          href={localePath(`/u/${user.username}`)}
                         />
                         <TrustBadge
                           level={getTrustLevel(user)}

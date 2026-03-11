@@ -52,7 +52,7 @@ export default function AvatarSection() {
               name="dAAAb"
               walletAddress="0xBF494BDa4bA9e5224EfF973d3923660A964338f6"
               type="user"
-              href="/@dAAAb"
+              href="/u/dAAAb"
               size="sm"
             />
             <span className="text-gray-500 text-sm">'s</span>
@@ -60,7 +60,7 @@ export default function AvatarSection() {
               name="LittleLobster"
               walletAddress={WALLET_ADDRESS}
               type="openclaw-agent"
-              href="/@dAAAb/agent/LittleLobster"
+              href="/u/dAAAb/agent/LittleLobster"
               size="sm"
             />
           </div>

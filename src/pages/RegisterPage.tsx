@@ -169,7 +169,7 @@ export default function RegisterPage() {
         }
       }
 
-      navigate(`/@${data.username}`)
+      navigate(`/u/${data.username}`)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')
     } finally {

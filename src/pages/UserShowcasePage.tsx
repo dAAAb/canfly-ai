@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import Navbar from '../components/Navbar'
 import PillBadge from '../components/PillBadge'
 import { walletGradient } from '../utils/walletGradient'
@@ -74,10 +74,7 @@ function formatDate(iso: string): string {
 }
 
 export default function UserShowcasePage() {
-  const params = useParams<{ username?: string; lang?: string }>()
-  // React Router can't match /@:username, so /:lang catches it with lang="@dAAAb"
-  const rawUsername = params.username || (params.lang?.startsWith('@') ? params.lang.slice(1) : undefined)
-  const username = useMemo(() => rawUsername, [rawUsername])
+  const { username } = useParams<{ username: string }>()
   const [user, setUser] = useState<UserData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -186,13 +183,13 @@ export default function UserShowcasePage() {
                 name={user.username}
                 walletAddress={user.wallet_address}
                 type="user"
-                href={`/@${user.username}`}
+                href={`/u/${user.username}`}
                 size="md"
               />
               <TrustBadge level={getTrustLevel(user)} />
               {canEdit && (
                 <Link
-                  to={`/@${user.username}/edit`}
+                  to={`/u/${user.username}/edit`}
                   className="text-xs text-gray-400 hover:text-white transition-colors flex items-center gap-1 px-2 py-1 border border-gray-700 rounded-lg hover:border-gray-600"
                 >
                   <Pencil className="w-3 h-3" /> Edit
@@ -267,7 +264,7 @@ export default function UserShowcasePage() {
                   return (
                     <Link
                       key={agent.name}
-                      to={`/@${user.username}/agent/${agent.name}`}
+                      to={`/u/${user.username}/agent/${agent.name}`}
                       className="bg-gray-900/50 border border-gray-800 rounded-xl p-5 hover:border-gray-700 transition-colors block"
                     >
                       <div className="flex items-start gap-4">
@@ -294,7 +291,7 @@ export default function UserShowcasePage() {
                               name={agent.name}
                               walletAddress={agent.wallet_address}
                               type={badgeType}
-                              href={`/@${user.username}/agent/${agent.name}`}
+                              href={`/u/${user.username}/agent/${agent.name}`}
                               size="sm"
                             />
                             {agent.capabilities?.videoCall && (
@@ -369,7 +366,7 @@ export default function UserShowcasePage() {
                   <span className="text-white text-sm">
                     Registered agent{' '}
                     <Link
-                      to={`/@${user.username}/agent/${agent.name}`}
+                      to={`/u/${user.username}/agent/${agent.name}`}
                       className="text-cyan-400 hover:text-cyan-300 transition-colors"
                     >
                       {agent.name}
