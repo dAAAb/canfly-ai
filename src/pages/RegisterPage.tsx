@@ -177,8 +177,9 @@ export default function RegisterPage() {
     }
   }
 
-  // Not ready yet
-  if (!ready || checkingProfile) {
+  // Not ready yet (skip Privy check if no real App ID configured)
+  const privyConfigured = !!import.meta.env.VITE_PRIVY_APP_ID
+  if (privyConfigured && (!ready || checkingProfile)) {
     return (
       <>
         <Navbar />
