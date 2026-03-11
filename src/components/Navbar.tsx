@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useLanguage } from '../hooks/useLanguage'
 import LanguageSwitcher from './LanguageSwitcher'
+import AuthButton from './AuthButton'
 import { Menu, X } from 'lucide-react'
 
 interface NavbarProps {
@@ -52,6 +53,7 @@ export default function Navbar({ search, children }: NavbarProps) {
             </div>
           )}
           {children}
+          <AuthButton />
           <Link to={localePath('/apps')} className="text-sm text-gray-400 hover:text-white transition-colors">
             {t('nav.browseApps')}
           </Link>
@@ -97,6 +99,7 @@ export default function Navbar({ search, children }: NavbarProps) {
             </div>
           )}
           {children}
+          <AuthButton />
           <Link
             to={localePath('/apps')}
             onClick={() => setMobileOpen(false)}

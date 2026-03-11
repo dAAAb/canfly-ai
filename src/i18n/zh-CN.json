@@ -3,6 +3,11 @@
     "browseApps": "浏览应用",
     "startFree": "免费开始"
   },
+  "auth": {
+    "joinCommunity": "加入 Flight 社区",
+    "profile": "个人资料",
+    "logout": "退出登录"
+  },
   "hero": {
     "titleLine1": "Now You Can",
     "titleLine2": "Fly.",

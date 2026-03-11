@@ -3,6 +3,11 @@
     "browseApps": "Browse Apps",
     "startFree": "Start Free"
   },
+  "auth": {
+    "joinCommunity": "Join Flight Community",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
   "hero": {
     "titleLine1": "Now You Can",
     "titleLine2": "Fly.",
