@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Navbar from '../components/Navbar'
 import PillBadge from '../components/PillBadge'
 import { walletGradient } from '../utils/walletGradient'
@@ -76,13 +76,16 @@ function formatDate(iso: string): string {
 export default function UserShowcasePage() {
   const params = useParams<{ username?: string; lang?: string }>()
   // React Router can't match /@:username, so /:lang catches it with lang="@dAAAb"
-  const username = params.username || (params.lang?.startsWith('@') ? params.lang.slice(1) : undefined)
+  const rawUsername = params.username || (params.lang?.startsWith('@') ? params.lang.slice(1) : undefined)
+  const username = useMemo(() => rawUsername, [rawUsername])
   const [user, setUser] = useState<UserData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!username) return
+    setLoading(true)
+    setError(null)
     fetch(`/api/community/users/${username}`)
       .then((r) => {
         if (r.status === 404) throw new Error('not_found')
