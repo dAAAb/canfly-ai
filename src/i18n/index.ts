@@ -34,12 +34,39 @@ export function prefixForLang(lang: SupportedLang): string {
   return LANG_TO_URL[lang] || ''
 }
 
+/** Read language preference from canfly_lang cookie */
+export function detectLangFromCookie(): SupportedLang | null {
+  const match = document.cookie.match(/(?:^|;\s*)canfly_lang=([^;]+)/)
+  if (match) {
+    const val = match[1]
+    if ((SUPPORTED_LANGS as readonly string[]).includes(val)) return val as SupportedLang
+  }
+  return null
+}
+
+/** Detect language from browser navigator.languages (Accept-Language equivalent) */
+export function detectLangFromBrowser(): SupportedLang {
+  for (const bl of navigator.languages ?? [navigator.language]) {
+    const lower = bl.toLowerCase()
+    if (lower.startsWith('zh-tw') || lower.startsWith('zh-hant')) return 'zh-TW'
+    if (lower.startsWith('zh-cn') || lower.startsWith('zh-hans') || lower === 'zh') return 'zh-CN'
+    if (lower.startsWith('en')) return 'en'
+  }
+  return 'en'
+}
+
+/** Detect language: cookie → browser → fallback en.
+ *  Used for pages without a language prefix in the URL. */
+export function detectLanguageAuto(): SupportedLang {
+  return detectLangFromCookie() ?? detectLangFromBrowser()
+}
+
 /** Detect initial language from current URL path */
 function detectLangFromUrl(): SupportedLang {
   const path = window.location.pathname
   if (path.startsWith('/zh-tw')) return 'zh-TW'
   if (path.startsWith('/zh-cn')) return 'zh-CN'
-  return 'en'
+  return detectLanguageAuto()
 }
 
 const detectedLang = detectLangFromUrl()
