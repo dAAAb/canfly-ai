@@ -3,14 +3,14 @@ import { useState, useEffect } from 'react'
 import Navbar from '../components/Navbar'
 import PillBadge from '../components/PillBadge'
 import { walletGradient } from '../utils/walletGradient'
+import TrustBadge from '../components/TrustBadge'
+import { getTrustLevel } from '../utils/trustLevel'
 import {
   ExternalLink,
   Sparkles,
   Monitor,
   Calendar,
   Globe,
-  Wallet,
-  Shield,
   Video,
 } from 'lucide-react'
 
@@ -63,30 +63,6 @@ interface UserData {
   hardware: Hardware[]
 }
 
-function TrustBadge({ user }: { user: UserData }) {
-  // Determine verification level from available data
-  if (user.links?.ens || user.links?.basename) {
-    return (
-      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-600/20 text-blue-400 text-sm border border-blue-600/40">
-        <Shield className="w-3.5 h-3.5" />
-        Verified
-      </span>
-    )
-  }
-  if (user.wallet_address) {
-    return (
-      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-600/20 text-orange-400 text-sm border border-orange-600/40">
-        <Wallet className="w-3.5 h-3.5" />
-        Wallet Connected
-      </span>
-    )
-  }
-  return (
-    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-600/20 text-gray-400 text-sm border border-gray-600/40">
-      User
-    </span>
-  )
-}
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString('en-US', {
@@ -192,7 +168,7 @@ export default function UserShowcasePage() {
                 href={`/@${user.username}`}
                 size="md"
               />
-              <TrustBadge user={user} />
+              <TrustBadge level={getTrustLevel(user)} />
             </div>
 
             {user.display_name && (
