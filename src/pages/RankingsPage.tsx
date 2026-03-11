@@ -6,7 +6,7 @@ import hardwareData from '../../data/rankings-hardware.json'
 
 type Tab = 'skills' | 'hardware' | 'models'
 type View = 'global' | 'community'
-type SkillSort = 'name' | 'category' | 'brand'
+type SkillSort = 'popularity' | 'stars' | 'npm' | 'pypi' | 'name'
 type HardwareSort = 'geekbench' | 'rating' | 'price'
 
 interface SkillItem {
@@ -14,12 +14,18 @@ interface SkillItem {
   category: string
   brand: string
   description: string
-  githubRepo: string | null
-  npmPackage: string | null
-  pypiPackage: string | null
+  githubRepo?: string | null
+  githubStars?: number | null
+  npmPackage?: string | null
+  npmWeekly?: number | null
+  pypiPackage?: string | null
+  pypiWeekly?: number | null
+  dockerImage?: string | null
+  dockerPulls?: number | null
   pricing: string
   website: string
-  canflyPage: string | null
+  canflySlug?: string | null
+  updatedAt?: string
 }
 
 interface HardwareItem {
@@ -66,7 +72,7 @@ function parsePriceNum(pricing: string): number {
 export default function RankingsPage() {
   const [tab, setTab] = useState<Tab>('skills')
   const [view, setView] = useState<View>('global')
-  const [skillSort, setSkillSort] = useState<SkillSort>('name')
+  const [skillSort, setSkillSort] = useState<SkillSort>('popularity')
   const [hardwareSort, setHardwareSort] = useState<HardwareSort>('geekbench')
   const [search, setSearch] = useState('')
 
@@ -79,9 +85,15 @@ export default function RankingsPage() {
         s.category.toLowerCase().includes(search.toLowerCase())
     )
     items = [...items].sort((a, b) => {
+      if (skillSort === 'popularity') {
+        const aScore = (a.githubStars ?? 0) + (a.npmWeekly ?? 0) + (a.pypiWeekly ?? 0) + (a.dockerPulls ?? 0) / 1000
+        const bScore = (b.githubStars ?? 0) + (b.npmWeekly ?? 0) + (b.pypiWeekly ?? 0) + (b.dockerPulls ?? 0) / 1000
+        return bScore - aScore
+      }
+      if (skillSort === 'stars') return (b.githubStars ?? 0) - (a.githubStars ?? 0)
+      if (skillSort === 'npm') return (b.npmWeekly ?? 0) - (a.npmWeekly ?? 0)
+      if (skillSort === 'pypi') return (b.pypiWeekly ?? 0) - (a.pypiWeekly ?? 0)
       if (skillSort === 'name') return a.name.localeCompare(b.name)
-      if (skillSort === 'category') return a.category.localeCompare(b.category)
-      if (skillSort === 'brand') return a.brand.localeCompare(b.brand)
       return 0
     })
     return items
@@ -200,9 +212,15 @@ export default function RankingsPage() {
           ) : tab === 'skills' ? (
             <>
               {/* Sort controls */}
-              <div className="flex items-center gap-2 mb-4 text-sm text-gray-400">
+              <div className="flex items-center gap-2 mb-4 text-sm text-gray-400 flex-wrap">
                 <span>Sort by:</span>
-                {(['name', 'category', 'brand'] as SkillSort[]).map((s) => (
+                {([
+                  ['popularity', '🔥 Popularity'],
+                  ['stars', '⭐ GitHub Stars'],
+                  ['npm', '📦 npm Downloads'],
+                  ['pypi', '🐍 PyPI Downloads'],
+                  ['name', '🔤 Name'],
+                ] as [SkillSort, string][]).map(([s, label]) => (
                   <button
                     key={s}
                     onClick={() => setSkillSort(s)}
@@ -212,7 +230,7 @@ export default function RankingsPage() {
                         : 'hover:text-white'
                     }`}
                   >
-                    {s.charAt(0).toUpperCase() + s.slice(1)}
+                    {label}
                   </button>
                 ))}
               </div>
@@ -225,8 +243,10 @@ export default function RankingsPage() {
                       <th className="py-3 pr-3 w-10">#</th>
                       <th className="py-3 pr-3">Name</th>
                       <th className="py-3 pr-3 hidden sm:table-cell">Category</th>
-                      <th className="py-3 pr-3 hidden md:table-cell">Pricing</th>
-                      <th className="py-3 pr-3 hidden lg:table-cell">Packages</th>
+                      <th className="py-3 pr-3 hidden md:table-cell text-right">⭐ Stars</th>
+                      <th className="py-3 pr-3 hidden lg:table-cell text-right">📦 npm/wk</th>
+                      <th className="py-3 pr-3 hidden lg:table-cell text-right">🐍 PyPI/wk</th>
+                      <th className="py-3 pr-3 hidden xl:table-cell text-right">🐳 Docker</th>
                       <th className="py-3 w-20"></th>
                     </tr>
                   </thead>
@@ -265,47 +285,75 @@ export default function RankingsPage() {
                             {CATEGORY_LABELS[skill.category] || skill.category}
                           </span>
                         </td>
-                        <td className="py-3 pr-3 hidden md:table-cell text-gray-400 text-xs max-w-[180px] truncate">
-                          {skill.pricing}
+                        <td className="py-3 pr-3 hidden md:table-cell text-right font-mono text-sm">
+                          {skill.githubStars ? (
+                            <a
+                              href={`https://github.com/${skill.githubRepo}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-yellow-400/80 hover:text-yellow-300 transition-colors"
+                            >
+                              {skill.githubStars >= 1000
+                                ? `${(skill.githubStars / 1000).toFixed(1)}k`
+                                : skill.githubStars}
+                            </a>
+                          ) : (
+                            <span className="text-gray-700">—</span>
+                          )}
                         </td>
-                        <td className="py-3 pr-3 hidden lg:table-cell">
-                          <div className="flex gap-2 text-xs">
-                            {skill.githubRepo && (
-                              <a
-                                href={`https://github.com/${skill.githubRepo}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-gray-400 hover:text-white transition-colors"
-                              >
-                                GitHub
-                              </a>
-                            )}
-                            {skill.npmPackage && (
-                              <a
-                                href={`https://www.npmjs.com/package/${skill.npmPackage}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-gray-400 hover:text-white transition-colors"
-                              >
-                                npm
-                              </a>
-                            )}
-                            {skill.pypiPackage && (
-                              <a
-                                href={`https://pypi.org/project/${skill.pypiPackage}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-gray-400 hover:text-white transition-colors"
-                              >
-                                PyPI
-                              </a>
-                            )}
-                          </div>
+                        <td className="py-3 pr-3 hidden lg:table-cell text-right font-mono text-sm">
+                          {skill.npmWeekly ? (
+                            <a
+                              href={`https://www.npmjs.com/package/${skill.npmPackage}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-green-400/80 hover:text-green-300 transition-colors"
+                            >
+                              {skill.npmWeekly >= 1000000
+                                ? `${(skill.npmWeekly / 1000000).toFixed(1)}M`
+                                : skill.npmWeekly >= 1000
+                                  ? `${(skill.npmWeekly / 1000).toFixed(0)}k`
+                                  : skill.npmWeekly}
+                            </a>
+                          ) : (
+                            <span className="text-gray-700">—</span>
+                          )}
+                        </td>
+                        <td className="py-3 pr-3 hidden lg:table-cell text-right font-mono text-sm">
+                          {skill.pypiWeekly ? (
+                            <a
+                              href={`https://pypi.org/project/${skill.pypiPackage}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-400/80 hover:text-blue-300 transition-colors"
+                            >
+                              {skill.pypiWeekly >= 1000000
+                                ? `${(skill.pypiWeekly / 1000000).toFixed(1)}M`
+                                : skill.pypiWeekly >= 1000
+                                  ? `${(skill.pypiWeekly / 1000).toFixed(0)}k`
+                                  : skill.pypiWeekly}
+                            </a>
+                          ) : (
+                            <span className="text-gray-700">—</span>
+                          )}
+                        </td>
+                        <td className="py-3 pr-3 hidden xl:table-cell text-right font-mono text-sm">
+                          {skill.dockerPulls ? (
+                            <span className="text-cyan-400/80">
+                              {skill.dockerPulls >= 1000000
+                                ? `${(skill.dockerPulls / 1000000).toFixed(0)}M`
+                                : skill.dockerPulls >= 1000
+                                  ? `${(skill.dockerPulls / 1000).toFixed(0)}k`
+                                  : skill.dockerPulls}
+                            </span>
+                          ) : (
+                            <span className="text-gray-700">—</span>
+                          )}
                         </td>
                         <td className="py-3 text-right">
-                          {skill.canflyPage && (
+                          {skill.canflySlug && (
                             <Link
-                              to={skill.canflyPage}
+                              to={`/apps/${skill.canflySlug}`}
                               className="text-xs px-2.5 py-1 rounded-full bg-green-600/20 text-green-400 border border-green-600/40 hover:bg-green-600/30 transition-colors"
                             >
                               Tutorial
