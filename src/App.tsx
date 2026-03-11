@@ -163,20 +163,20 @@ function App() {
               <Route path="/:lang/get-started" element={<LangSync><GetStartedPage /></LangSync>} />
               <Route path="/:lang/checkout" element={<LangSync><CheckoutPage /></LangSync>} />
               <Route path="/:lang/pricing" element={<LangSync><PricingPage /></LangSync>} />
-              <Route path="/:lang/community/register" element={<StripLangRedirect />} />
-              <Route path="/:lang/community" element={<StripLangRedirect />} />
+              <Route path="/:lang/community/register" element={<LangSync><RegisterPage /></LangSync>} />
+              <Route path="/:lang/community" element={<LangSync><CommunityPage /></LangSync>} />
               <Route path="/:lang/subscribe/confirmed" element={<LangSync><SubscribeConfirmedPage /></LangSync>} />
               <Route path="/:lang/blog" element={<LangSync><BlogListPage /></LangSync>} />
               <Route path="/:lang/blog/:slug" element={<LangSync><BlogPostPage /></LangSync>} />
 
-              {/* Redirects: strip lang prefix from community routes */}
-              <Route path="/:lang/@:username/agent/:agentName" element={<StripLangRedirect />} />
-              <Route path="/:lang/@:username/edit" element={<StripLangRedirect />} />
-              <Route path="/:lang/@:username" element={<StripLangRedirect />} />
-              <Route path="/:lang/free/agent/:agentName" element={<StripLangRedirect />} />
-              <Route path="/:lang/free" element={<StripLangRedirect />} />
-              <Route path="/:lang/rankings/brand/:brandName" element={<StripLangRedirect />} />
-              <Route path="/:lang/rankings" element={<StripLangRedirect />} />
+              {/* Community routes with lang prefix */}
+              <Route path="/:lang/@:username/agent/:agentName" element={<LangSync><AgentCardPage /></LangSync>} />
+              <Route path="/:lang/@:username/edit" element={<LangSync><ProfileEditPage /></LangSync>} />
+              <Route path="/:lang/@:username" element={<LangSync><UserShowcasePage /></LangSync>} />
+              <Route path="/:lang/free/agent/:agentName" element={<LangSync><AgentCardPage free /></LangSync>} />
+              <Route path="/:lang/free" element={<LangSync><FreeAgentsPage /></LangSync>} />
+              <Route path="/:lang/rankings/brand/:brandName" element={<LangSync><BrandPage /></LangSync>} />
+              <Route path="/:lang/rankings" element={<LangSync><RankingsPage /></LangSync>} />
 
               {/* Legacy redirect: /:lang/u/:username → /@:username */}
               <Route path="/:lang/u/:username" element={<LangProfileRedirect />} />
