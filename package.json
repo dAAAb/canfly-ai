@@ -11,7 +11,8 @@
     "preview": "vite preview",
     "db:migrate": "wrangler d1 migrations apply canfly-community",
     "db:migrate:local": "wrangler d1 migrations apply canfly-community --local",
-    "db:seed:local": "wrangler d1 execute canfly-community --local --file=migrations/rollback/seed.sql",
+    "db:seed:local": "wrangler d1 execute canfly-community --local --file=migrations/0001_initial.sql && wrangler d1 execute canfly-community --local --file=migrations/rollback/seed.sql",
+    "db:seed:api": "npx tsx scripts/seed-community.ts",
     "db:rollback:local": "wrangler d1 execute canfly-community --local --file=migrations/rollback/0001_initial_down.sql",
     "db:tables:local": "wrangler d1 execute canfly-community --local --command \"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name\""
   },
