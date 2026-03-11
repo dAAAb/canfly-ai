@@ -130,14 +130,31 @@ export default function AvatarSection() {
             </div>
           </div>
         ) : !isCallActive ? (
-          <button
-            onClick={() => setIsCallActive(true)}
-            className="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-semibold rounded-2xl transition-all duration-300 shadow-lg shadow-cyan-900/30 hover:shadow-cyan-800/50 hover:scale-105"
-          >
-            <MessageCircle className="w-6 h-6" />
-            <span className="text-lg">{t('avatar.startCall', 'Start Video Call with 🦞')}</span>
-            <span className="absolute -top-2 -right-2 w-4 h-4 bg-green-500 rounded-full animate-pulse" />
-          </button>
+          <div className="relative max-w-2xl mx-auto cursor-pointer group" onClick={() => setIsCallActive(true)}>
+            {/* Placeholder image — looks like a video call waiting screen */}
+            <div className="rounded-2xl overflow-hidden shadow-2xl shadow-cyan-900/20">
+              <img
+                src="/images/avatar-placeholder.jpg"
+                alt="LittleLobster video call"
+                className="w-full aspect-video object-cover group-hover:brightness-110 transition-all duration-300"
+              />
+              {/* CTA overlay — positioned at bottom to avoid covering the face */}
+              <div className="absolute bottom-0 left-0 right-0 pb-8 pt-16 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col items-center">
+                <button
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-cyan-600/90 hover:bg-cyan-500 text-white font-semibold rounded-2xl transition-all duration-300 shadow-lg shadow-cyan-900/50 group-hover:scale-105 backdrop-blur-sm"
+                >
+                  <MessageCircle className="w-6 h-6" />
+                  <span className="text-lg">{t('avatar.startCall', 'Start Video Call with 🦞')}</span>
+                </button>
+                <span className="mt-2 text-xs text-gray-300/70">{t('avatar.clickToStart', 'Click anywhere to connect')}</span>
+              </div>
+              {/* Pulse indicator — top right */}
+              <span className="absolute top-4 right-4 flex h-4 w-4">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-4 w-4 bg-green-500" />
+              </span>
+            </div>
+          </div>
         ) : (
           <div className="relative max-w-2xl mx-auto">
             {/* Close button */}
