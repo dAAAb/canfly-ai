@@ -1,7 +1,8 @@
 /**
- * GET /api/community/users/:username — Single user with agents array
+ * GET  /api/community/users/:username — Single user with agents array
+ * PUT  /api/community/users/:username — Update user profile (requires edit token)
  */
-import { type Env, json, errorResponse, handleOptions } from '../_helpers'
+import { type Env, json, errorResponse, handleOptions, parseBody } from '../_helpers'
 
 export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
   const username = params.username as string
@@ -63,6 +64,80 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
     agents,
     hardware: hardwareResult.results,
   })
+}
+
+// ── PUT /api/community/users/:username ───────────────────────────────
+interface UpdateUserBody {
+  displayName?: string
+  avatarUrl?: string
+  bio?: string
+  links?: Record<string, string>
+}
+
+export const onRequestPut: PagesFunction<Env> = async ({ env, params, request }) => {
+  const username = params.username as string
+  const editToken = request.headers.get('X-Edit-Token')
+
+  if (!editToken) {
+    return errorResponse('X-Edit-Token header required', 401)
+  }
+
+  // Verify edit token
+  const user = await env.DB.prepare(
+    'SELECT username, edit_token FROM users WHERE username = ?1'
+  )
+    .bind(username)
+    .first()
+
+  if (!user) {
+    return errorResponse('User not found', 404)
+  }
+  if (user.edit_token !== editToken) {
+    return errorResponse('Invalid edit token', 403)
+  }
+
+  const body = await parseBody<UpdateUserBody>(request)
+  if (!body) {
+    return errorResponse('Invalid request body', 400)
+  }
+
+  const updates: string[] = []
+  const values: unknown[] = []
+  let paramIdx = 1
+
+  if (body.displayName !== undefined) {
+    updates.push(`display_name = ?${paramIdx}`)
+    values.push(body.displayName)
+    paramIdx++
+  }
+  if (body.avatarUrl !== undefined) {
+    updates.push(`avatar_url = ?${paramIdx}`)
+    values.push(body.avatarUrl || null)
+    paramIdx++
+  }
+  if (body.bio !== undefined) {
+    updates.push(`bio = ?${paramIdx}`)
+    values.push(body.bio || null)
+    paramIdx++
+  }
+  if (body.links !== undefined) {
+    updates.push(`links = ?${paramIdx}`)
+    values.push(JSON.stringify(body.links))
+    paramIdx++
+  }
+
+  if (updates.length === 0) {
+    return errorResponse('No fields to update', 400)
+  }
+
+  values.push(username)
+  await env.DB.prepare(
+    `UPDATE users SET ${updates.join(', ')} WHERE username = ?${paramIdx}`
+  )
+    .bind(...values)
+    .run()
+
+  return json({ username, updated: true })
 }
 
 export const onRequestOptions: PagesFunction<Env> = async () => handleOptions()

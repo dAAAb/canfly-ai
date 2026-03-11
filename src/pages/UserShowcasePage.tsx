@@ -12,6 +12,7 @@ import {
   Calendar,
   Globe,
   Video,
+  Pencil,
 } from 'lucide-react'
 
 interface Skill {
@@ -127,6 +128,7 @@ export default function UserShowcasePage() {
   }
 
   const hasAgentsWithSlugs = user.agents.some((a) => a.skills.some((s) => s.slug))
+  const canEdit = !!localStorage.getItem(`canfly_edit_token_${user.username}`)
 
   return (
     <>
@@ -169,6 +171,14 @@ export default function UserShowcasePage() {
                 size="md"
               />
               <TrustBadge level={getTrustLevel(user)} />
+              {canEdit && (
+                <Link
+                  to={`/@${user.username}/edit`}
+                  className="text-xs text-gray-400 hover:text-white transition-colors flex items-center gap-1 px-2 py-1 border border-gray-700 rounded-lg hover:border-gray-600"
+                >
+                  <Pencil className="w-3 h-3" /> Edit
+                </Link>
+              )}
             </div>
 
             {user.display_name && (

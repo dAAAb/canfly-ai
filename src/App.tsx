@@ -25,6 +25,7 @@ const FreeAgentsPage = lazy(() => import('./pages/FreeAgentsPage'))
 const RankingsPage = lazy(() => import('./pages/RankingsPage'))
 const BrandPage = lazy(() => import('./pages/BrandPage'))
 const RegisterPage = lazy(() => import('./pages/RegisterPage'))
+const ProfileEditPage = lazy(() => import('./pages/ProfileEditPage'))
 
 /** Redirect /u/:username → /@:username */
 function ProfileRedirect() {
@@ -98,6 +99,7 @@ function App() {
 
               {/* Community routes */}
               <Route path="/@:username" element={<UserShowcasePage />} />
+              <Route path="/@:username/edit" element={<ProfileEditPage />} />
               <Route path="/@:username/agent/:agentName" element={<AgentCardPage />} />
               <Route path="/free" element={<FreeAgentsPage />} />
               <Route path="/free/agent/:agentName" element={<AgentCardPage free />} />
@@ -125,6 +127,7 @@ function App() {
 
               {/* Language-prefixed community routes */}
               <Route path="/:lang/@:username" element={<LangSync><UserShowcasePage /></LangSync>} />
+              <Route path="/:lang/@:username/edit" element={<LangSync><ProfileEditPage /></LangSync>} />
               <Route path="/:lang/@:username/agent/:agentName" element={<LangSync><AgentCardPage /></LangSync>} />
               <Route path="/:lang/free" element={<LangSync><FreeAgentsPage /></LangSync>} />
               <Route path="/:lang/free/agent/:agentName" element={<LangSync><AgentCardPage free /></LangSync>} />
