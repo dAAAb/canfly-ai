@@ -169,12 +169,14 @@ function App() {
               <Route path="/:lang/blog" element={<LangSync><BlogListPage /></LangSync>} />
               <Route path="/:lang/blog/:slug" element={<LangSync><BlogPostPage /></LangSync>} />
 
-              {/* /@username and /free — no lang prefix (UGC content, not translatable) */}
+              {/* /free — lang prefix supported */}
+              <Route path="/:lang/free/agent/:agentName" element={<LangSync><AgentCardPage free /></LangSync>} />
+              <Route path="/:lang/free" element={<LangSync><FreeAgentsPage /></LangSync>} />
+
+              {/* /@username — no lang prefix (UGC URLs stay clean, lang from cookie) */}
               <Route path="/:lang/@:username/agent/:agentName" element={<StripLangRedirect />} />
               <Route path="/:lang/@:username/edit" element={<StripLangRedirect />} />
               <Route path="/:lang/@:username" element={<StripLangRedirect />} />
-              <Route path="/:lang/free/agent/:agentName" element={<StripLangRedirect />} />
-              <Route path="/:lang/free" element={<StripLangRedirect />} />
               <Route path="/:lang/rankings/brand/:brandName" element={<LangSync><BrandPage /></LangSync>} />
               <Route path="/:lang/rankings" element={<LangSync><RankingsPage /></LangSync>} />
 
