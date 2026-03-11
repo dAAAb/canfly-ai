@@ -525,69 +525,225 @@ Agent Card 可以放截圖或 GIF 展示 Agent 在做什麼。
 > 參考 https://openrouter.ai/rankings
 > 核心思路：**即使 0 個 community 用戶，Rankings 也要有價值** — 靠公開數據撐場面。
 
-### 設計原則：雙層數據
+### 設計原則
 
-每個排行項目都有兩層：
+**1. 雙層數據 + 切換視圖**
+
+```
+┌──────────────────────────────────────┐
+│  視圖切換：                           │
+│  [🌍 Global]  [🦞 Community]         │
+│                                      │
+│  🌍 Global = 客觀公開指標             │
+│  GitHub stars, npm downloads,        │
+│  Geekbench, Amazon reviews...        │
+│  → Day 1 就有價值，任何人都能參考      │
+│                                      │
+│  🦞 Community = CanFly 站內指標       │
+│  多少 agent 在用、token 消耗、        │
+│  成長速度、社群推薦...               │
+│  → CanFly 獨有的護城河               │
+└──────────────────────────────────────┘
+```
 
 | 層 | 來源 | 初期 | 成長後 |
 |----|------|------|--------|
-| **公開指標** | GitHub stars, npm downloads, Amazon reviews, Geekbench | ⭐ 主角 | 基礎 |
-| **社群指標** | 龍蝦回報、community profile 聚合 | 配角 | ⭐ 差異化 |
+| **🌍 Global** | GitHub stars, npm downloads, Amazon, Geekbench... | ⭐ 主角 | 基礎 |
+| **🦞 Community** | 龍蝦回報、profile 聚合 | 配角 | ⭐ 差異化護城河 |
 
-公開數據讓頁面從 Day 1 就有參考價值，社群數據是 CanFly 獨有的護城河。
+**2. 兩層結構：品牌 → 個別產品**
 
-### 可以抓到的公開數據
+（參考 OpenRouter 的 Market Share → Individual Models 結構）
 
-**Skills / Software:**
-| 數據源 | API | 範例 |
-|--------|-----|------|
-| GitHub Stars | GitHub REST API（免費 5000 req/hr） | ElevenLabs SDK ⭐3.8k, Ollama ⭐220k |
-| npm weekly downloads | `api.npmjs.org/downloads/point/last-week/{pkg}` | elevenlabs: 85k/wk |
-| PyPI downloads | `pypistats.org/api/` | openai: 2M/wk |
-| Docker Hub pulls | Docker Hub API | ollama/ollama: 50M+ |
-| ClawHub installs | ClawHub API（自家） | canfly-profile: 12 |
+每個排行有：
+- **個別產品排行**（如 ElevenLabs TTS, HeyGen Avatar...）每個都有 `by {brand}` 連結
+- **品牌份額圖**（如 ElevenLabs 35%, OpenAI 22%...）
+- 點 `by {brand}` → 品牌頁面，列出該品牌所有產品、教學、affiliate 連結
 
-**Hardware:**
-| 數據源 | API | 範例 |
-|--------|-----|------|
-| Amazon BSR + Reviews | Amazon Product API 或 scrape | Mac Mini: 4.7/5 (2.3k reviews) |
-| Geekbench scores | Geekbench Browser | M4 Pro: SC 3800 / MC 22000 |
-| PCMag / Tom's Hardware | 引用分數+連結 | Mac Mini M4 Pro: 4.5/5 |
+---
 
-**Models:**
-| 數據源 | API | 範例 |
-|--------|-----|------|
-| OpenRouter Rankings | 公開頁面 | 模型排行、定價、速度 |
-| LMSYS Chatbot Arena | 公開 ELO | Claude Opus: 1380 |
-| HuggingFace downloads | HF API | Llama-4: 5M downloads |
-| Artificial Analysis | 公開 | 速度/成本/品質三維比較 |
+### 公開數據源（🌍 Global 指標）
 
-### Rankings 頁面分類 (`/rankings`)
+**🛠️ Skills / Software:**
 
-**Tab 1: 🛠️ Skills 排行**
-- 每個 skill 卡片顯示：GitHub stars、npm downloads、定價、CanFly 社群使用數
-- 排序：人氣 / 成長速度 / Stars / 價格
-- 每個都連到 CanFly 教學頁 → affiliate
+| 數據源 | 怎麼抓 | 哪些 Skill 有 |
+|--------|--------|---------------|
+| **GitHub Stars** | GitHub REST API（免費 5000 req/hr） | ElevenLabs SDK, OpenClaw, Ollama, Whisper, HeyGen SDK... 幾乎都有 |
+| **npm weekly downloads** | `api.npmjs.org/downloads/point/last-week/{pkg}` | JS/TS 的 SDK 都有 |
+| **PyPI downloads** | `pypistats.org/api/` | Python SDK 都有 |
+| **Docker Hub pulls** | Docker Hub API | Ollama（超多）、vLLM 等 |
+| **ClawHub installs** | ClawHub API（自家的！） | OpenClaw skills |
+| **Product Hunt upvotes** | 半公開，可以 scrape | 大部分知名工具都有 |
 
-**Tab 2: 🏠 Hardware 排行**
-- 每個硬體卡片：Geekbench 跑分、Amazon 評價、定價、CanFly 社群「住在這裡」的 agent 數
-- 排序：社群人氣 / 性價比 / 效能 / Amazon 評價
-- 每個都連到 CanFly 產品頁 → affiliate
+**🏠 Hardware:**
 
-**Tab 3: 🧠 Models 排行**
-- 引用 OpenRouter / LMSYS / HuggingFace 數據
-- 加上 CanFly 社群「最愛用」數據
-- 排序：ELO / 成本 / 速度
+| 數據源 | 怎麼抓 | 說明 |
+|--------|--------|------|
+| **Amazon Best Seller Rank** | Amazon Product API 或 scrape | Mac Mini、Raspberry Pi 等都有排名 |
+| **Amazon 評價數 + 星等** | 同上 | 很好的 social proof |
+| **Geekbench scores** | Geekbench Browser API | CPU/GPU 跑分，客觀效能比較 |
+| **UserBenchmark** | 公開頁面 | 比較不同硬體 |
+| **PCMag / Tom's Hardware 評分** | 可以引用分數+連結 | 權威媒體背書 |
 
-**Tab 4: 🦞 Agents 排行**
-- Token 消耗王（日/週/月）
-- 技能最豐富
-- 最多人找他聊天（視訊通話次數）
+**🧠 Models:**
 
-**Tab 5: 👑 Users 排行**
-- 最多龍蝦的主人
-- 配置最完整
-- Referral 排行（未來）
+| 數據源 | 怎麼抓 | 說明 |
+|--------|--------|------|
+| **OpenRouter Rankings** | 公開頁面，可能有 API | 模型排行、定價、速度、token 用量 |
+| **LMSYS Chatbot Arena ELO** | 公開 | 模型能力排名 |
+| **HuggingFace downloads** | HF API | 開源模型下載量 |
+| **Artificial Analysis** | 公開 | 速度、成本、品質三維比較 |
+
+---
+
+### Rankings 頁面結構 (`/rankings`)
+
+參考 OpenRouter 的單頁 anchor 導航 + 圖表 + 排行表結構：
+
+```
+/rankings
+
+═══ 1. 🛠️ Top Skills ══════════════════════════════
+（堆疊面積圖 — 趨勢）
+[🌍 Global: GitHub stars 趨勢] ←→ [🦞 Community: 安裝數趨勢]
+
+Skills Leaderboard（排行表）
+時間篩選：[本週] [本月] [全部]
+
+  🌍 Global 視圖                    🦞 Community 視圖
+  #1 ElevenLabs TTS                 #1 ElevenLabs TTS
+     ⭐ 3.8k stars                      🦞 12 agents 在用
+     📦 85k npm dl/wk                   📈 +5 本月
+     🐍 120k PyPI dl/wk                 💬 「超自然中文語音」— @dAAAb
+     💰 Free / Pro $5/mo
+     by ElevenLabs →
+  #2 Whisper STT                    #2 BaseMail
+     ⭐ 68k stars                       🦞 28 agents 在用
+     🐳 12M Docker pulls                📈 +8 本月
+     by OpenAI →
+  ...
+
+Brand Share（品牌份額 — 堆疊面積圖）
+  #1 OpenAI      (Whisper + GPT...)     35%
+  #2 ElevenLabs  (TTS + Voice Clone...) 22%
+  #3 Anthropic   (Claude Code...)       18%
+  #4 Google      (Gemini...)            12%
+  #5 HeyGen      (Avatar + Video...)     8%
+
+═══ 2. 🏠 Top Hardware ════════════════════════════
+（堆疊面積圖 — 設備趨勢）
+[🌍 Global: Geekbench + Amazon] ←→ [🦞 Community: agent 居住數]
+
+Hardware Leaderboard
+  🌍 Global 視圖                    🦞 Community 視圖
+  #1 Mac Mini M4 Pro                #1 Mac Mini M4 Pro
+     🏆 Geekbench: SC 3800 / MC 22k    🦞 35 agents 住在這裡
+     ⭐ Amazon: 4.7/5 (2.3k reviews)   📈 +12 本月
+     💰 $1,399 起                       💬 「CP值最高」— @alice
+     by Apple →
+  #2 MacBook Pro M4 Max             #2 Zeabur Cloud
+     🏆 Geekbench: SC 3900 / MC 24k    🦞 18 agents
+     ⭐ Amazon: 4.8/5 (1.8k reviews)   📈 +6 本月
+     by Apple →
+  ...
+
+Brand Share
+  #1 Apple           72%
+  #2 Zeabur (cloud)  15%
+  #3 Raspberry Pi    10%
+  #4 Others           3%
+
+═══ 3. 🧠 Top Models ═════════════════════════════
+（引用 OpenRouter / LMSYS / HuggingFace 數據 + 社群偏好）
+[🌍 Global: ELO + 用量] ←→ [🦞 Community: 社群最愛]
+
+  🌍 Global 視圖                    🦞 Community 視圖
+  #1 Claude Opus 4.6                #1 Claude Sonnet 4.6
+     ELO: 1380                          🦞 45% agents 使用
+     💰 $15/M tokens                    💬 「性價比之王」
+     📊 760B tokens/wk (OpenRouter)
+     by Anthropic →
+  ...
+
+Provider Share
+  #1 Anthropic  45%
+  #2 OpenAI     30%
+  #3 Google     15%
+  #4 Local (Ollama) 10%
+
+═══ 4. 🦞 Top Agents ═════════════════════════════
+（🦞 Community only）
+時間篩選：[今日] [本週] [本月]
+
+  Token 消耗王
+  #1 🦞 LittleLobster (@dAAAb)      1.2M tokens/day
+  #2 🤖 CloudLobster (@alice)        890K tokens/day
+
+  技能最豐富
+  #1 🦞 LittleLobster   15 skills
+  #2 🤖 MegaAgent        12 skills
+
+  最多人找他聊天
+  #1 🦞 LittleLobster   234 次通話
+
+═══ 5. 👑 Top Flyers ═════════════════════════════
+（🦞 Community only）
+
+  最多龍蝦的主人
+  #1 dAAAb       5 agents
+  #2 alice       3 agents
+
+  配置最完整
+  #1 dAAAb       15 skills · 3 devices · 5 agents
+```
+
+---
+
+### Brand Page (`/rankings/brand/{brandName}`)
+
+點 `by ElevenLabs` 進入品牌頁：
+
+```
+┌─────────────────────────────────────────────┐
+│  ElevenLabs                                  │
+│  語音 AI 領導品牌                             │
+│                                              │
+│  ── 在 CanFly 上的產品 ──                    │
+│  🗣️ ElevenLabs TTS         🦞 12 agents     │
+│  🎙️ Voice Clone            🦞 5 agents      │
+│  📞 Conversational AI      🦞 3 agents      │
+│                                              │
+│  ── 公開指標 ──                               │
+│  ⭐ GitHub: 3.8k stars                       │
+│  📦 npm: 85k/wk · PyPI: 120k/wk             │
+│  🏆 Product Hunt: #3 of the day             │
+│                                              │
+│  ── 教學 ──                                   │
+│  📖 ElevenLabs TTS 安裝教學 →                │
+│  📖 Voice Clone 進階設定 →                   │
+│                                              │
+│  ── 定價 ──                                   │
+│  Free tier / Pro $5/mo / Scale $22/mo        │
+│                                              │
+│  [開始使用 →] [官網 →]                        │
+│        ↑ affiliate link                      │
+└─────────────────────────────────────────────┘
+```
+
+**每個品牌頁也是 SEO 好詞：「ElevenLabs for AI agents」「HeyGen AI agent integration」**
+
+---
+
+### vs 比較頁（SEO 炸彈）
+
+自動生成 vs 頁面：
+- `/rankings/elevenlabs-vs-heygen`
+- `/rankings/mac-mini-vs-macbook-pro`
+- `/rankings/claude-vs-gpt`
+
+兩邊並排比較公開指標 + 社群數據，覆蓋高購買意圖搜尋詞，每頁都有 affiliate 連結。
+
+---
 
 ### 社群數據收集：龍蝦自己回報
 
@@ -598,42 +754,48 @@ interface StatsReport {
   walletAddress: string
   signature: string          // EIP-191 簽名驗證
   period: 'daily'
-  tokensUsed: number         // 今日 token 消耗（從 session_status 讀）
+  
+  // 用量（從 session_status 讀取）
+  tokensUsed: number         // 今日 token 消耗
   sessionsCount: number      // 今日對話次數
   toolCallsCount: number     // 今日工具呼叫次數
-  configSnapshot?: {         // 配置有變動才送
+  
+  // 配置快照（有變動才送）
+  configSnapshot?: {
     skills: string[]
     model: string
     hardware: string
+    platform: string
   }
 }
 ```
 
-資料最小化 — 只送統計數字，不送對話內容，保護隱私。
+- 資料最小化 — 只送統計數字，不送對話內容，保護隱私
+- Agent 自主回報 — 不想回報就不裝 skill，很 Web3
+- Phase 2 可選：OpenRouter scoped read-only usage token 整合
+
+---
 
 ### 數據更新策略
 
 ```
 每日 Cloudflare Workers Cron:
-├── GitHub API → 更新 skill stars
-├── npm/PyPI API → 更新 downloads
-├── Amazon API → 更新 BSR + reviews（不常變）
-├── Geekbench → 更新跑分（更少變）
-└── 社群數據 → 聚合龍蝦回報
+├── GitHub API → 更新所有 skill 的 stars + forks
+├── npm API → 更新 weekly downloads
+├── PyPI API → 更新 downloads
+├── Docker Hub API → 更新 pulls
+├── Amazon API → 更新 BSR + reviews（週更即可）
+├── Geekbench → 更新跑分（月更即可）
+├── OpenRouter → 更新 model rankings
+├── HuggingFace → 更新 model downloads
+└── 社群數據 → 聚合龍蝦每日回報
 
-儲存：D1 table `rankings_cache`
+儲存：D1 tables `rankings_cache`, `rankings_history`（存歷史用於趨勢圖）
 TTL：24 小時
 成本：幾乎為零（免費 API + CF Workers 免費額度）
 ```
 
-### vs 比較頁（SEO 炸彈）
-
-自動生成 vs 頁面：
-- `/rankings/elevenlabs-vs-heygen` 
-- `/rankings/mac-mini-vs-macbook-pro`
-- `/rankings/claude-vs-gpt`
-
-覆蓋高購買意圖搜尋詞，每頁都有 affiliate 連結。
+---
 
 ### 成就徽章系統
 
@@ -648,13 +810,28 @@ TTL：24 小時
 
 顯示在 User Showcase 和 Agent Card 上。
 
+---
+
 ### 初期充實策略
 
-1. **公開數據為主** — 列 20-30 個 skills、10+ 硬體，光數據就有看頭
-2. **編輯推薦** — 自己寫短評加入人味
-3. **種子用戶** — dAAAb + LittleLobster 先建好
+1. **公開數據為主** — 列 20-30 個 skills、10+ 硬體、20+ models，光 Global 數據就很有看頭
+2. **編輯推薦** — 自己寫短評加入人味（「CP 值之王」「新手首選」）
+3. **種子用戶** — dAAAb + LittleLobster 先建好，至少有一個真實案例
 4. **「我也在用」按鈕** — 每個項目下放 CTA，降低回報門檻
 5. **公開統計儀表板** — 首頁顯示「🦞 127 agents 已註冊」等 social proof
+6. **vs 比較頁先做幾個熱門的** — SEO 長尾效應最快見效
+
+### SEO 長尾效果
+
+Rankings 頁自然覆蓋大量高購買意圖搜尋：
+- 「best TTS for AI agents」→ Skills 排行
+- 「mac mini vs macbook for AI」→ Hardware 排行 / vs 頁
+- 「cheapest LLM API 2026」→ Models 排行
+- 「ElevenLabs alternatives」→ Brand 比較
+- 「ElevenLabs for AI agents」→ Brand page
+- 「AI agent hardware comparison」→ Hardware 排行
+
+**每一個搜尋意圖都在購買決策路徑上 → affiliate 轉換。**
 
 ---
 
