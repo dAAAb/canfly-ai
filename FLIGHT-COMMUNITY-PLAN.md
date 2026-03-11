@@ -1,4 +1,4 @@
-# 🛫 Flight Community & Agent Card — 設計規劃
+# 🛫 Canfly Community & Agent Card — 設計規劃
 
 > 「讓龍蝦主人和龍蝦來交流，看別人用什麼配置，social / network effect 增加轉換率。」
 
@@ -31,15 +31,45 @@
 
 ---
 
-## 二、URL 結構
+## 二、URL 結構 + 多語言策略
 
-| 路徑 | 頁面 | 說明 |
-|------|------|------|
-| `/@{username}` | User Showcase | 用戶主頁（如 `/@dAAAb`）|
-| `/@{username}/agent/{name}` | Agent Card | 用戶的 Agent（如 `/@dAAAb/agent/LittleLobster`）|
-| `/free` | Free Agents 首頁 | 說明自由球員概念 + 瀏覽頁 |
-| `/free/agent/{name}` | Agent Card (自由球員) | 無主人的 Agent |
-| `/community` | Discovery 瀏覽頁 | 所有用戶和 Agent |
+### 路由表
+
+| 路徑 | 頁面 | 語言前綴 | 說明 |
+|------|------|----------|------|
+| `/@{username}` | User Showcase | ❌ 無 | UGC profile，跟 Twitter 一樣 |
+| `/@{username}/agent/{name}` | Agent Card | ❌ 無 | UGC profile |
+| `/free` | Free Agents 首頁 | ❌ 無 | agent 名字不翻譯 |
+| `/free/agent/{name}` | Agent Card (自由球員) | ❌ 無 | UGC profile |
+| `/community` | Discovery 瀏覽頁 | ❌ 無 | user/agent 名字不翻譯 |
+| `/community/register` | 註冊頁 | ❌ 無 | 表單 |
+| `/rankings` | Rankings | ❌ 無 | 品牌名+數字為主，90% 不翻譯 |
+| `/rankings/brand/{name}` | Brand Page | ❌ 無 | 品牌名不翻譯 |
+| `/{lang}/tutorials/...` | 教學文章 | ✅ 有 | 內容有完整翻譯 |
+| `/{lang}/apps/...` | 產品頁 | ✅ 有 | 產品描述有翻譯 |
+| `/{lang}/blog/...` | 部落格 | ✅ 有 | 文章有翻譯 |
+
+### 多語言規則
+
+**簡單規則：內容 90%+ 不翻譯的頁面 → 不加語言前綴**
+
+參考業界做法（Twitter/X、Instagram、GitHub）：
+- Profile/UGC 頁面用固定 URL，語言靠 cookie / Accept-Language
+- Rankings 頁內容主要是品牌名（ElevenLabs、Ollama）+ 數字（⭐3.8k、$1,399）
+- 加了 `/zh-tw/rankings` 跟 `/rankings` 內容 90% 相同 → Google 視為重複內容，不利 SEO
+
+**語言偵測優先級（無前綴頁面）：**
+1. `canfly_lang` cookie（用戶曾手動切換語言）
+2. `Accept-Language` header（瀏覽器語系）
+3. Fallback: `en`
+
+**翻譯範圍（無前綴頁面）：**
+- ✅ UI chrome：按鈕（「我的 Agents」↔「My Agents」）、標籤、導航
+- ✅ 系統文字：「加入於 2026-03-11」↔「Joined 2026-03-11」
+- ❌ UGC 內容：bio、agent description → 用戶寫什麼就顯示什麼
+- ❌ 品牌名、數字、排名 → 不翻譯
+
+**分享連結永遠簡潔**：`canfly.ai/@dAAAb`、`canfly.ai/rankings` — 不帶語言參數。
 
 ### 對稱性設計
 ```
@@ -283,7 +313,7 @@ interface SkillEntry {
 
 ```
 ┌─────────────────────────────────────────────────┐
-│  Flight Community                                │
+│  Canfly Community                                │
 │  看看大家怎麼飛 ✈️                                │
 │                                                  │
 │  [搜尋框] [篩選: Skills | Hardware | 排序]        │
@@ -330,7 +360,7 @@ Talk to dAAAb's Agent LittleLobster
 
 ┌─────────────────────────────────────────────────┐
 │                                                 │
-│  加入 Flight Community                           │
+│  加入 Canfly Community                           │
 │                                                 │
 │  ┌─────────────────────────────────────────┐    │
 │  │ 🌍 用 World ID 登入             推薦！  │    │
