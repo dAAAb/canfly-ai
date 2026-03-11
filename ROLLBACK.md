@@ -5,7 +5,41 @@
 | 版本 | Git Tag | 日期 | 說明 |
 |------|---------|------|------|
 | v0.5 | `v0.5` | 2026-03-11 | Pre-community baseline（現有功能完整） |
-| v1.0 | `v1.0` | TBD | Flight Community + Agent Cards + Rankings |
+| v0.6 | `v0.6` | 2026-03-11 | Sprint 10: Flight Community + Agent Cards + Rankings + Register |
+| v1.0 | `v1.0` | TBD | Production-ready release |
+
+## 回滾到 v0.6
+
+### 1. Code rollback
+```bash
+cd ~/clawd/canfly-ai
+git checkout v0.6
+```
+
+### 2. Deploy v0.6 to Cloudflare Pages
+```bash
+npx vite build
+CLOUDFLARE_API_TOKEN=$(cat ~/.config/canfly/cf-api-key) \
+CLOUDFLARE_ACCOUNT_ID=3f1f83a939b2fc99ca45fd8987962514 \
+npx wrangler pages deploy dist --project-name=canfly-ai
+```
+
+### 3. D1 database
+v0.6 uses D1 with `0001_initial.sql` migration. D1 data should be intact after rollback.
+Seed data: dAAAb + LittleLobster (re-seed if needed: `npx tsx scripts/seed-community.ts https://canfly.ai`)
+
+### 4. v0.6 新增的路由
+- `/@{username}` — User Showcase
+- `/@{username}/agent/{name}` — Agent Card
+- `/rankings` — Rankings
+- `/community` — Community 瀏覽頁（真實 D1 數據）
+- `/community/register` — 登入/註冊 (Privy)
+
+### 5. Environment Variables / Bindings (v0.6)
+- D1 database binding: `DB` (canfly-community)
+- `VITE_PRIVY_APP_ID` — Privy auth (optional, gracefully degrades)
+
+---
 
 ## 回滾到 v0.5
 
