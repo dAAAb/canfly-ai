@@ -130,7 +130,7 @@ export default function AvatarSection() {
             </div>
           </div>
         ) : !isCallActive ? (
-          <div className="relative max-w-2xl mx-auto cursor-pointer group" onClick={() => setIsCallActive(true)}>
+          <div className="relative max-w-4xl mx-auto cursor-pointer group" onClick={() => setIsCallActive(true)}>
             {/* Placeholder image — looks like a video call waiting screen */}
             <div className="rounded-2xl overflow-hidden shadow-2xl shadow-cyan-900/20">
               <img
@@ -156,7 +156,7 @@ export default function AvatarSection() {
             </div>
           </div>
         ) : (
-          <div className="relative max-w-2xl mx-auto">
+          <div className="relative max-w-4xl mx-auto">
             {/* Close button */}
             <button
               onClick={() => setIsCallActive(false)}
