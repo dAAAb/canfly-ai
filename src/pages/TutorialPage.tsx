@@ -186,6 +186,9 @@ function createOllamaOpenclawTutorial(t: any): TutorialData {
         estimatedTime: t('tutorial.ollamaOpenclaw.steps.0.estimatedTime'),
         content: t('tutorial.ollamaOpenclaw.steps.0.content'),
         commands: t('tutorial.ollamaOpenclaw.steps.0.commands', { returnObjects: true }),
+        screenshots: [
+          { src: '/images/tutorial/ollama-openclaw-step1-installed.webp', alt: t('tutorial.ollamaOpenclaw.screenshots.step1Installed', 'Terminal showing Ollama installed successfully'), caption: t('tutorial.ollamaOpenclaw.screenshots.step1InstalledCaption', 'Ollama installed successfully') },
+        ],
         expectedResult: t('tutorial.ollamaOpenclaw.steps.0.expectedResult'),
         tips: t('tutorial.ollamaOpenclaw.steps.0.tips', { returnObjects: true }),
       },
@@ -210,8 +213,16 @@ function createOllamaOpenclawTutorial(t: any): TutorialData {
         estimatedTime: t('tutorial.ollamaOpenclaw.steps.2.estimatedTime'),
         content: t('tutorial.ollamaOpenclaw.steps.2.content'),
         commands: t('tutorial.ollamaOpenclaw.steps.2.commands', { returnObjects: true }),
+        screenshots: [
+          { src: '/images/tutorial/ollama-openclaw-step2-connected-final.webp', alt: t('tutorial.ollamaOpenclaw.screenshots.step2Connected', 'Browser showing Device Connected Successfully'), caption: t('tutorial.ollamaOpenclaw.screenshots.step2ConnectedCaption', 'Device connected after ollama signin') },
+          { src: '/images/tutorial/ollama-openclaw-step3-glm5-ready.webp', alt: t('tutorial.ollamaOpenclaw.screenshots.step3ModelReady', 'Terminal showing glm-5:cloud connected'), caption: t('tutorial.ollamaOpenclaw.screenshots.step3ModelReadyCaption', 'glm-5:cloud model ready with >>> prompt') },
+        ],
         expectedResult: t('tutorial.ollamaOpenclaw.steps.2.expectedResult'),
         tips: t('tutorial.ollamaOpenclaw.steps.2.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.ollamaOpenclaw.steps.2.troubleshooting.title'),
+          items: t('tutorial.ollamaOpenclaw.steps.2.troubleshooting.items', { returnObjects: true })
+        }
       },
       {
         icon: MessageSquare,
@@ -220,6 +231,9 @@ function createOllamaOpenclawTutorial(t: any): TutorialData {
         estimatedTime: t('tutorial.ollamaOpenclaw.steps.3.estimatedTime'),
         content: t('tutorial.ollamaOpenclaw.steps.3.content'),
         commands: t('tutorial.ollamaOpenclaw.steps.3.commands', { returnObjects: true }),
+        screenshots: [
+          { src: '/images/tutorial/ollama-openclaw-step3-hello-world.webp', alt: t('tutorial.ollamaOpenclaw.screenshots.step3HelloWorld', 'Terminal showing Hello World chat with AI'), caption: t('tutorial.ollamaOpenclaw.screenshots.step3HelloWorldCaption', 'Hello World — your first AI conversation') },
+        ],
         expectedResult: t('tutorial.ollamaOpenclaw.steps.3.expectedResult'),
         tips: t('tutorial.ollamaOpenclaw.steps.3.tips', { returnObjects: true }),
       },

@@ -3,6 +3,7 @@ import { Mail, PlayCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useLanguage } from '../hooks/useLanguage'
+import { trackCTAClick } from '../utils/analytics'
 
 function XIcon() {
   return (
@@ -66,6 +67,7 @@ export default function CTASection() {
           <Link
             to={localePath('/apps/free/ollama')}
             className="inline-flex items-center gap-3 bg-green-600 hover:bg-green-700 px-8 py-4 rounded-xl text-lg font-semibold transition-all hover:scale-105 cta-glow"
+            onClick={() => trackCTAClick('start_free', 'cta_section')}
           >
             <PlayCircle className="w-6 h-6" />
             {t('cta.ctaButton')}
@@ -85,6 +87,7 @@ export default function CTASection() {
         >
           <a
             href="mailto:hi@canfly.ai"
+            onClick={() => trackCTAClick('email_contact', 'cta_section')}
             className="inline-flex items-center gap-4 rounded-2xl no-underline text-white transition-all hover:scale-105 hover:shadow-[0_4px_24px_rgba(255,255,255,0.08)]"
             style={{
               background: 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04))',
@@ -101,6 +104,7 @@ export default function CTASection() {
             href="https://x.com/dAAAb"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackCTAClick('follow_x', 'cta_section')}
             className="inline-flex items-center gap-4 rounded-2xl no-underline text-white transition-all hover:scale-105 hover:shadow-[0_4px_24px_rgba(255,255,255,0.08)]"
             style={{
               background: 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04))',

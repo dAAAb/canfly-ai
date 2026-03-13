@@ -9,6 +9,7 @@ import ReviewVideoPlayer from '../components/ReviewVideoPlayer'
 import { productsBySlug } from '../data/products'
 import { useHead } from '../hooks/useHead'
 import { useLanguage } from '../hooks/useLanguage'
+import { trackAffiliateClick, trackCTAClick } from '../utils/analytics'
 
 function isExternal(url: string) {
   return url.startsWith('http')
@@ -273,6 +274,7 @@ export default function ProductPage() {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-all inline-flex items-center gap-2 hover:shadow-[0_0_20px_rgba(59,130,246,0.4)]"
+                        onClick={() => trackAffiliateClick(product.name, product.cta.primaryLink)}
                       >
                         {t(`product.products.${pid}.ctaPrimary`, { defaultValue: product.cta.primary })}
                         <ExternalLink className="w-4 h-4" />
@@ -281,6 +283,7 @@ export default function ProductPage() {
                       <Link
                         to={localePath(product.cta.primaryLink)}
                         className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-all hover:shadow-[0_0_20px_rgba(59,130,246,0.4)]"
+                        onClick={() => trackCTAClick(`product_primary_${product.slug}`, 'product_page')}
                       >
                         {t(`product.products.${pid}.ctaPrimary`, { defaultValue: product.cta.primary })}
                       </Link>
@@ -291,6 +294,7 @@ export default function ProductPage() {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="px-4 py-3 border border-gray-600 rounded-lg hover:border-gray-500 transition-colors inline-flex items-center gap-2"
+                        onClick={() => trackAffiliateClick(product.name, product.cta.secondaryLink)}
                       >
                         <Play className="w-4 h-4" />
                         {t(`product.products.${pid}.ctaSecondary`, { defaultValue: product.cta.secondary })}
@@ -300,6 +304,7 @@ export default function ProductPage() {
                       <Link
                         to={localePath(product.cta.secondaryLink)}
                         className="px-4 py-3 border border-gray-600 rounded-lg hover:border-gray-500 transition-colors flex items-center gap-2"
+                        onClick={() => trackCTAClick(`product_secondary_${product.slug}`, 'product_page')}
                       >
                         <Play className="w-4 h-4" />
                         {t(`product.products.${pid}.ctaSecondary`, { defaultValue: product.cta.secondary })}

@@ -3208,7 +3208,8 @@
           "tips": [
             "Mac users can also download Ollama.app from ollama.com",
             "Windows users: download the installer from ollama.com",
-            "If you already have Ollama installed, just make sure it's updated to the latest version"
+            "If you already have Ollama installed, just make sure it's updated to the latest version",
+            "The install script needs your admin password (sudo) — this is normal"
           ]
         },
         {
@@ -3246,25 +3247,48 @@
           "title": "Choose a Free Cloud Model",
           "titleEn": "Choose a Free Cloud Model",
           "estimatedTime": "30 sec",
-          "content": "Free cloud models let you experience AI instantly — no GPU, no hardware investment needed. Ollama gives you free quota on sign-up.",
+          "content": "Free cloud models let you experience AI instantly — no GPU needed. But first, you need to **sign in** to your Ollama account to use cloud models.\n\n**Important:** Cloud models require `ollama signin` first. This opens your browser for authentication.",
           "commands": [
-            "# Pull a free cloud model (runs on Ollama's servers)",
-            "ollama pull kimi-k2.5:cloud",
+            "# Step 1: Sign in to Ollama (opens browser)",
+            "ollama signin",
             "",
-            "# More free cloud models to try:",
-            "ollama pull minimax-m2.5:cloud",
-            "ollama pull glm-5:cloud",
+            "# Step 2: Click \"Connect\" in browser to link your device",
             "",
-            "# Or use a local model if you have the hardware:",
-            "ollama pull glm-4.7-flash"
+            "# Step 3: Run a free cloud model",
+            "ollama run glm-5:cloud",
+            "",
+            "# More free cloud models:",
+            "# ollama run kimi-k2.5:cloud",
+            "# ollama run minimax-m2.5:cloud"
           ],
-          "expectedResult": "Cloud model is ready to use in OpenClaw. Select it from the model dropdown.",
+          "expectedResult": "After signing in, the cloud model connects and shows a >>> prompt. You can start chatting!",
           "tips": [
             "Cloud models are free with your Ollama account (light usage)",
             "No GPU required — models run on Ollama's cloud servers",
             "kimi-k2.5:cloud is great for general tasks",
             "Switch between cloud and local models anytime in OpenClaw"
-          ]
+          ],
+          "troubleshooting": {
+            "title": "Cloud model not working?",
+            "items": [
+              {
+                "q": "\"You need to be signed in\"",
+                "a": "Run `ollama signin` first — it will open your browser to authenticate."
+              },
+              {
+                "q": "\"file does not exist\" error",
+                "a": "Check the model name! Use `glm-5:cloud` (with hyphen and :cloud), not `glm5` or `glm-5`."
+              },
+              {
+                "q": "\"Invalid key format\"",
+                "a": "Your signin token may be corrupted. Run `ollama signin` again to re-authenticate."
+              },
+              {
+                "q": "\"401 Unauthorized\"",
+                "a": "Your device is not linked. Run `ollama signin` and click \"Connect\" in the browser."
+              }
+            ]
+          }
         },
         {
           "title": "Connect Messaging (Optional)",
@@ -3346,8 +3370,26 @@
         {
           "q": "Can I use both cloud and local models?",
           "a": "Yes! Switch between cloud and local models anytime in OpenClaw. Use cloud models when you want speed and convenience, local models when you want privacy."
+        },
+        {
+          "q": "Why do I need to run 'ollama signin' for cloud models?",
+          "a": "Cloud models run on Ollama's servers, so they need to verify your account. Run `ollama signin` once — it opens your browser, you click \"Connect\", and you're set. You only need to do this once per device."
+        },
+        {
+          "q": "I typed 'glm5' but got 'file does not exist'?",
+          "a": "Cloud model names include a hyphen and the :cloud suffix. Use `glm-5:cloud` (not `glm5`). Similarly, use `kimi-k2.5:cloud` and `minimax-m2.5:cloud`."
         }
-      ]
+      ],
+      "screenshots": {
+        "step1Installed": "Terminal showing Ollama installed successfully",
+        "step1InstalledCaption": "Ollama installed successfully",
+        "step2Connected": "Browser showing Device Connected Successfully",
+        "step2ConnectedCaption": "Device connected after ollama signin",
+        "step3ModelReady": "Terminal showing glm-5:cloud connected",
+        "step3ModelReadyCaption": "glm-5:cloud model ready with >>> prompt",
+        "step3HelloWorld": "Terminal showing Hello World chat with AI",
+        "step3HelloWorldCaption": "Hello World — your first AI conversation"
+      }
     },
     "omlx": {
       "title": "oMLX — 10x Faster AI on Your Mac",

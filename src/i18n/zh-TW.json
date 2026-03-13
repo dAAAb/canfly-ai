@@ -3211,7 +3211,8 @@
           "tips": [
             "Mac 用戶也可以從 ollama.com 下載 Ollama.app",
             "Windows 用戶：從 ollama.com 下載安裝程式",
-            "如果已經安裝了 Ollama，確認更新到最新版本即可"
+            "如果已經安裝了 Ollama，確認更新到最新版本即可",
+            "安裝腳本需要你的管理員密碼（sudo）— 這是正常的"
           ]
         },
         {
@@ -3249,25 +3250,48 @@
           "title": "選擇免費雲端模型",
           "titleEn": "Choose a Free Cloud Model",
           "estimatedTime": "30 秒",
-          "content": "免費雲端模型讓你立即體驗 AI — 不需要 GPU、不需要投資硬體。Ollama 註冊就送免費額度。",
+          "content": "免費雲端模型讓你立即體驗 AI — 不需要 GPU。但首先，你需要**登入** Ollama 帳號才能使用雲端模型。\n\n**重要：**雲端模型需要先執行 `ollama signin`，這會開啟瀏覽器進行認證。",
           "commands": [
-            "# 拉取免費雲端模型（在 Ollama 伺服器上運行）",
-            "ollama pull kimi-k2.5:cloud",
+            "# 第一步：登入 Ollama（會開啟瀏覽器）",
+            "ollama signin",
             "",
-            "# 更多免費雲端模型可以試：",
-            "ollama pull minimax-m2.5:cloud",
-            "ollama pull glm-5:cloud",
+            "# 第二步：在瀏覽器中點擊「Connect」連結你的裝置",
             "",
-            "# 如果你有硬體，也可以用本地模型：",
-            "ollama pull glm-4.7-flash"
+            "# 第三步：執行免費雲端模型",
+            "ollama run glm-5:cloud",
+            "",
+            "# 更多免費雲端模型：",
+            "# ollama run kimi-k2.5:cloud",
+            "# ollama run minimax-m2.5:cloud"
           ],
-          "expectedResult": "雲端模型已經可以在 OpenClaw 中使用了。從模型下拉選單中選擇。",
+          "expectedResult": "登入後，雲端模型會連線並顯示 >>> 提示符。可以開始聊天了！",
           "tips": [
             "雲端模型用你的 Ollama 帳號免費使用（輕量使用）",
             "不需要 GPU — 模型在 Ollama 的雲端伺服器上運行",
             "kimi-k2.5:cloud 適合一般任務",
             "隨時可以在 OpenClaw 中切換雲端和本地模型"
-          ]
+          ],
+          "troubleshooting": {
+            "title": "雲端模型無法使用？",
+            "items": [
+              {
+                "q": "顯示「You need to be signed in」",
+                "a": "先執行 `ollama signin` — 它會開啟瀏覽器讓你認證。"
+              },
+              {
+                "q": "顯示「file does not exist」錯誤",
+                "a": "確認模型名稱！要用 `glm-5:cloud`（有連字號和 :cloud），不是 `glm5` 或 `glm-5`。"
+              },
+              {
+                "q": "顯示「Invalid key format」",
+                "a": "你的登入憑證可能損壞。重新執行 `ollama signin` 認證一次。"
+              },
+              {
+                "q": "顯示「401 Unauthorized」",
+                "a": "你的裝置尚未連結。執行 `ollama signin` 並在瀏覽器中點擊「Connect」。"
+              }
+            ]
+          }
         },
         {
           "title": "連接通訊軟體（選擇性）",
@@ -3349,8 +3373,26 @@
         {
           "q": "可以同時用雲端和本地模型嗎？",
           "a": "可以！隨時在 OpenClaw 中切換。要速度和方便用雲端模型，要隱私用本地模型。"
+        },
+        {
+          "q": "為什麼雲端模型需要執行 'ollama signin'？",
+          "a": "雲端模型在 Ollama 的伺服器上運行，所以需要驗證你的帳號。執行 `ollama signin` 一次就好 — 它會開啟瀏覽器，你點擊「Connect」就完成了。每個裝置只需做一次。"
+        },
+        {
+          "q": "我輸入 'glm5' 但顯示 'file does not exist'？",
+          "a": "雲端模型名稱包含連字號和 :cloud 後綴。要用 `glm-5:cloud`（不是 `glm5`）。同樣地，用 `kimi-k2.5:cloud` 和 `minimax-m2.5:cloud`。"
         }
-      ]
+      ],
+      "screenshots": {
+        "step1Installed": "終端機顯示 Ollama 安裝成功",
+        "step1InstalledCaption": "Ollama 安裝成功",
+        "step2Connected": "瀏覽器顯示裝置已連線成功",
+        "step2ConnectedCaption": "執行 ollama signin 後裝置已連線",
+        "step3ModelReady": "終端機顯示 glm-5:cloud 已連線",
+        "step3ModelReadyCaption": "glm-5:cloud 模型已就緒，顯示 >>> 提示符",
+        "step3HelloWorld": "終端機顯示 Hello World AI 對話",
+        "step3HelloWorldCaption": "Hello World — 你的第一次 AI 對話"
+      }
     },
     "omlx": {
       "title": "oMLX — 你的 Mac 加速十倍",

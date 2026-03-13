@@ -5,6 +5,7 @@ import { ArrowRight, PlayCircle, Menu, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useLanguage } from '../hooks/useLanguage'
 import LanguageSwitcher from '../components/LanguageSwitcher'
+import { trackCTAClick } from '../utils/analytics'
 
 export default function HeroSection() {
   const { t } = useTranslation()
@@ -107,6 +108,7 @@ export default function HeroSection() {
           <Link
             to={localePath('/apps/free/ollama')}
             className="group flex items-center gap-3 bg-green-600 hover:bg-green-700 px-8 py-4 rounded-xl text-lg font-semibold transition-all hover:scale-105 cta-glow"
+            onClick={() => trackCTAClick('start_free', 'hero')}
           >
             <PlayCircle className="w-6 h-6" />
             {t('hero.ctaFree')}
@@ -116,6 +118,7 @@ export default function HeroSection() {
           <Link
             to={localePath('/apps')}
             className="group flex items-center gap-3 bg-white/10 border border-white/20 backdrop-blur-sm px-8 py-4 rounded-xl text-lg font-semibold transition-all hover:scale-105 hover:bg-white/15"
+            onClick={() => trackCTAClick('browse_apps', 'hero')}
           >
             {t('hero.ctaBrowse')}
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -128,6 +131,7 @@ export default function HeroSection() {
             <Link
               to={localePath('/apps/free/ollama')}
               className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 hover:bg-white/10 transition-colors text-left"
+              onClick={() => trackCTAClick('funnel_step1_ollama', 'hero_funnel')}
             >
               <span className="text-green-400 font-semibold text-sm">{t('hero.funnelStep1')}</span>
               <span className="block text-xs text-gray-400 mt-1">{t('hero.funnelStep1Desc')}</span>
@@ -136,6 +140,7 @@ export default function HeroSection() {
             <Link
               to={localePath('/learn/zeabur')}
               className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 hover:bg-white/10 transition-colors text-left"
+              onClick={() => trackCTAClick('funnel_step2_zeabur', 'hero_funnel')}
             >
               <span className="text-blue-400 font-semibold text-sm">{t('hero.funnelStep2')}</span>
               <span className="block text-xs text-gray-400 mt-1">{t('hero.funnelStep2Desc')}</span>
@@ -144,6 +149,7 @@ export default function HeroSection() {
             <Link
               to={localePath('/apps/skills')}
               className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 hover:bg-white/10 transition-colors text-left"
+              onClick={() => trackCTAClick('funnel_step3_skills', 'hero_funnel')}
             >
               <span className="text-purple-400 font-semibold text-sm">{t('hero.funnelStep3')}</span>
               <span className="block text-xs text-gray-400 mt-1">{t('hero.funnelStep3Desc')}</span>
