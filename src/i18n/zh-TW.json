@@ -186,6 +186,38 @@
         "amazonButton": "Amazon"
       },
       "itemsListed": "已列出 {{count}} 項目"
+    },
+    "scoringInfo": {
+      "tooltip": "計分規則",
+      "label": "計分",
+      "dataSources": "數據來源與權重",
+      "normalization": "正規化方法",
+      "normalizationDescription": "每項指標在所有項目中轉換為百分位排名（0-100）。缺失數據會被排除，剩餘權重自動重新分配。公式：(排名 + 1) / (總數 + 1) × 100，確保沒有項目得到剛好 0 或 100 分。",
+      "footer": "分數會在來源數據更新時同步。社群投票功能即將推出。",
+      "skills": {
+        "title": "Skills 計分規則",
+        "description": "Skills 排名基於多平台真實使用數據的加權綜合分數。",
+        "sources": [
+          "ClawHub 下載量 — 30%",
+          "GitHub Stars — 20%",
+          "npm 每週下載量 — 15%",
+          "PyPI 每週下載量 — 15%",
+          "Docker Hub 拉取量 — 10%",
+          "Product Hunt 投票 — 10%"
+        ]
+      },
+      "hardware": {
+        "title": "Hardware 計分規則",
+        "description": "硬體排名基於效能跑分、用戶評價和市場數據的加權綜合分數。",
+        "sources": [
+          "Geekbench 多核心 — 25%",
+          "Amazon 評論數量 — 20%",
+          "Amazon 評分 — 15%",
+          "Amazon 暢銷排名（反轉）— 15%",
+          "媒體評分（聚合評測）— 15%",
+          "Product Hunt 投票 — 10%"
+        ]
+      }
     }
   },
   "footer": {

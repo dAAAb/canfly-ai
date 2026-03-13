@@ -186,6 +186,38 @@
         "amazonButton": "Amazon"
       },
       "itemsListed": "已列出 {{count}} 项目"
+    },
+    "scoringInfo": {
+      "tooltip": "评分规则",
+      "label": "评分",
+      "dataSources": "数据来源与权重",
+      "normalization": "标准化方法",
+      "normalizationDescription": "每项指标在所有项目中转换为百分位排名（0-100）。缺失数据会被排除，剩余权重自动重新分配。公式：(排名 + 1) / (总数 + 1) × 100，确保没有项目得到刚好 0 或 100 分。",
+      "footer": "分数会在来源数据更新时同步。社区投票功能即将推出。",
+      "skills": {
+        "title": "Skills 评分规则",
+        "description": "Skills 排名基于多平台真实使用数据的加权综合分数。",
+        "sources": [
+          "ClawHub 下载量 — 30%",
+          "GitHub Stars — 20%",
+          "npm 每周下载量 — 15%",
+          "PyPI 每周下载量 — 15%",
+          "Docker Hub 拉取量 — 10%",
+          "Product Hunt 投票 — 10%"
+        ]
+      },
+      "hardware": {
+        "title": "Hardware 评分规则",
+        "description": "硬件排名基于性能跑分、用户评价和市场数据的加权综合分数。",
+        "sources": [
+          "Geekbench 多核心 — 25%",
+          "Amazon 评论数量 — 20%",
+          "Amazon 评分 — 15%",
+          "Amazon 畅销排名（反转）— 15%",
+          "媒体评分（聚合评测）— 15%",
+          "Product Hunt 投票 — 10%"
+        ]
+      }
     }
   },
   "footer": {

@@ -130,6 +130,7 @@ export default function RankingsPage() {
   const [hardwarePriceAsc, setHardwarePriceAsc] = useState(true)
   const [search, setSearch] = useState('')
   const [showAllSkills, setShowAllSkills] = useState(false)
+  const [scoringInfo, setScoringInfo] = useState<'skills' | 'hardware' | null>(null)
 
   const skills = useMemo(() => {
     const allItems = skillsData as SkillItem[]
@@ -368,6 +369,13 @@ export default function RankingsPage() {
                   <div>
                     <h2 className="text-xl font-bold text-white flex items-center gap-2">
                       📊 {t('rankings.skills.leaderboard.title')}
+                      <button
+                        onClick={() => setScoringInfo('skills')}
+                        className="text-gray-500 hover:text-gray-300 transition-colors text-base font-normal"
+                        title={t('rankings.scoringInfo.tooltip')}
+                      >
+                        ℹ️
+                      </button>
                     </h2>
                     <p className="text-gray-500 text-sm mt-1">
                       {t('rankings.skills.leaderboard.description')}
@@ -653,6 +661,13 @@ export default function RankingsPage() {
                     {label}
                   </button>
                 ))}
+                <button
+                  onClick={() => setScoringInfo('hardware')}
+                  className="ml-auto text-gray-500 hover:text-gray-300 transition-colors"
+                  title={t('rankings.scoringInfo.tooltip')}
+                >
+                  ℹ️
+                </button>
               </div>
 
               {/* Hardware table */}
@@ -808,6 +823,58 @@ export default function RankingsPage() {
           )}
         </div>
       </main>
+
+      {/* Scoring Info Modal */}
+      {scoringInfo && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+          onClick={() => setScoringInfo(null)}
+        >
+          <div
+            className="bg-gray-900 border border-gray-700 rounded-xl max-w-lg w-full max-h-[80vh] overflow-y-auto p-6"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-white">
+                {t(`rankings.scoringInfo.${scoringInfo}.title`)}
+              </h3>
+              <button
+                onClick={() => setScoringInfo(null)}
+                className="text-gray-400 hover:text-white transition-colors text-xl leading-none"
+              >
+                &times;
+              </button>
+            </div>
+            <p className="text-gray-400 text-sm mb-4">
+              {t(`rankings.scoringInfo.${scoringInfo}.description`)}
+            </p>
+            <div className="mb-4">
+              <h4 className="text-sm font-semibold text-white mb-2">
+                {t('rankings.scoringInfo.dataSources')}
+              </h4>
+              <ul className="space-y-1.5">
+                {(t(`rankings.scoringInfo.${scoringInfo}.sources`, { returnObjects: true }) as string[]).map((source, i) => (
+                  <li key={i} className="text-gray-300 text-sm flex items-start gap-2">
+                    <span className="text-gray-500 shrink-0">•</span>
+                    {source}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="mb-4">
+              <h4 className="text-sm font-semibold text-white mb-2">
+                {t('rankings.scoringInfo.normalization')}
+              </h4>
+              <p className="text-gray-400 text-sm">
+                {t('rankings.scoringInfo.normalizationDescription')}
+              </p>
+            </div>
+            <div className="text-xs text-gray-500 border-t border-gray-800 pt-3">
+              {t('rankings.scoringInfo.footer')}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }

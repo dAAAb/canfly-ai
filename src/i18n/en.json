@@ -186,6 +186,38 @@
         "amazonButton": "Amazon"
       },
       "itemsListed": "{{count}} items listed"
+    },
+    "scoringInfo": {
+      "tooltip": "Scoring methodology",
+      "label": "Scoring",
+      "dataSources": "Data Sources & Weights",
+      "normalization": "Normalization Method",
+      "normalizationDescription": "Each metric is converted to a percentile rank (0-100) across all items. Missing data is excluded and remaining weights automatically rescale. Formula: (rank + 1) / (total + 1) × 100, ensuring no item scores exactly 0 or 100.",
+      "footer": "Scores update when source data changes. Community votes coming soon.",
+      "skills": {
+        "title": "Skills Scoring Methodology",
+        "description": "Skills are ranked by a weighted composite of real usage data across multiple platforms.",
+        "sources": [
+          "ClawHub Downloads — 30%",
+          "GitHub Stars — 20%",
+          "npm Weekly Downloads — 15%",
+          "PyPI Weekly Downloads — 15%",
+          "Docker Hub Pulls — 10%",
+          "Product Hunt Upvotes — 10%"
+        ]
+      },
+      "hardware": {
+        "title": "Hardware Scoring Methodology",
+        "description": "Hardware is ranked by a weighted composite of performance benchmarks, user reviews, and market data.",
+        "sources": [
+          "Geekbench Multi-Core — 25%",
+          "Amazon Review Count — 20%",
+          "Amazon Rating — 15%",
+          "Amazon Best Sellers Rank (inverted) — 15%",
+          "Media Score (aggregated reviews) — 15%",
+          "Product Hunt Upvotes — 10%"
+        ]
+      }
     }
   },
   "footer": {
