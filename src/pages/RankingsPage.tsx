@@ -7,8 +7,9 @@ import hardwareData from '../../data/rankings-hardware.json'
 
 type Tab = 'skills' | 'hardware' | 'models'
 type View = 'global' | 'community'
-type SkillSort = 'popularity' | 'stars' | 'npm' | 'pypi' | 'name'
-type HardwareSort = 'geekbench' | 'rating' | 'mediaScore' | 'price'
+type SkillSort = 'popularity' | 'clawhub' | 'github' | 'newest' | 'price'
+type HardwareSort = 'popularity' | 'performance' | 'rating' | 'newest' | 'price'
+type PriceDir = 'asc' | 'desc'
 
 interface SkillItem {
   name: string
@@ -44,17 +45,19 @@ interface HardwareItem {
   amazonReviewCount: number | null
   amazonBSR: number | null
   mediaScore: number | null
+  productHuntUpvotes?: number | null
   pricing: string
   pricingNote: string
   keySpec: string
   canflySlug: string | null
   website: string | null
+  updatedAt?: string
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
   'ai-framework': 'AI Framework',
-  tts: 'Voice / TTS',
   'tts-stt': 'Voice / TTS',
+  tts: 'Voice / TTS',
   video: 'Video',
   email: 'Email',
   web3: 'Web3',
@@ -75,79 +78,225 @@ function parsePriceNum(pricing: string): number {
   return parseInt(match[0].replace(/[$,]/g, ''), 10)
 }
 
+// Percentile normalization: rank items by a metric, return 0-100 score
+function computePercentiles(items: { value: number | null }[]): (number | null)[] {
+  const validValues = items
+    .map((item, i) => ({ value: item.value, index: i }))
+    .filter((x) => x.value !== null && x.value !== undefined)
+    .sort((a, b) => (a.value as number) - (b.value as number))
+
+  const scores: (number | null)[] = new Array(items.length).fill(null)
+  const n = validValues.length
+  if (n === 0) return scores
+
+  validValues.forEach((item, rank) => {
+    scores[item.index] = n === 1 ? 100 : (rank / (n - 1)) * 100
+  })
+
+  return scores
+}
+
+// Skills popularity: ClawHub 30%, GitHub 20%, npm 15%, PyPI 15%, Docker 10%, PH 10%
+function computeSkillPopularity(items: SkillItem[]): number[] {
+  const weights = [
+    { key: 'clawhubDownloads' as const, weight: 0.3 },
+    { key: 'githubStars' as const, weight: 0.2 },
+    { key: 'npmWeekly' as const, weight: 0.15 },
+    { key: 'pypiWeekly' as const, weight: 0.15 },
+    { key: 'dockerPulls' as const, weight: 0.1 },
+    { key: 'productHuntUpvotes' as const, weight: 0.1 },
+  ]
+
+  const percentilesByMetric = weights.map(({ key }) =>
+    computePercentiles(items.map((item) => ({ value: (item[key] as number | null | undefined) ?? null })))
+  )
+
+  return items.map((_, i) => {
+    let totalWeight = 0
+    let weightedSum = 0
+
+    weights.forEach(({ weight }, mi) => {
+      const pctile = percentilesByMetric[mi][i]
+      if (pctile !== null) {
+        totalWeight += weight
+        weightedSum += pctile * weight
+      }
+    })
+
+    if (totalWeight === 0) return 0
+    return weightedSum / totalWeight
+  })
+}
+
+// Hardware popularity: Geekbench 25%, Amazon Reviews 20%, Rating 15%, BSR 15%, Media 15%, PH 10%
+function computeHardwarePopularity(items: HardwareItem[]): number[] {
+  const weights: { key: string; weight: number; invert?: boolean }[] = [
+    { key: 'geekbenchMultiCore', weight: 0.25 },
+    { key: 'amazonReviewCount', weight: 0.2 },
+    { key: 'amazonRating', weight: 0.15 },
+    { key: 'amazonBSR', weight: 0.15, invert: true },
+    { key: 'mediaScore', weight: 0.15 },
+    { key: 'productHuntUpvotes', weight: 0.1 },
+  ]
+
+  const percentilesByMetric = weights.map(({ key, invert }) => {
+    const pctiles = computePercentiles(
+      items.map((item) => ({ value: (item[key as keyof HardwareItem] as number | null) ?? null }))
+    )
+    if (invert) {
+      return pctiles.map((p) => (p !== null ? 100 - p : null))
+    }
+    return pctiles
+  })
+
+  return items.map((_, i) => {
+    let totalWeight = 0
+    let weightedSum = 0
+
+    weights.forEach(({ weight }, mi) => {
+      const pctile = percentilesByMetric[mi][i]
+      if (pctile !== null) {
+        totalWeight += weight
+        weightedSum += pctile * weight
+      }
+    })
+
+    if (totalWeight === 0) return 0
+    return weightedSum / totalWeight
+  })
+}
+
 export default function RankingsPage() {
   const { t } = useTranslation()
   const [tab, setTab] = useState<Tab>('skills')
   const [view, setView] = useState<View>('global')
   const [skillSort, setSkillSort] = useState<SkillSort>('popularity')
-  const [hardwareSort, setHardwareSort] = useState<HardwareSort>('geekbench')
+  const [hardwareSort, setHardwareSort] = useState<HardwareSort>('popularity')
+  const [skillPriceDir, setSkillPriceDir] = useState<PriceDir>('asc')
+  const [hwPriceDir, setHwPriceDir] = useState<PriceDir>('asc')
   const [search, setSearch] = useState('')
   const [showAllSkills, setShowAllSkills] = useState(false)
 
   const skills = useMemo(() => {
-    let items = (skillsData as SkillItem[]).filter(
+    const items = (skillsData as SkillItem[]).filter(
       (s) =>
         !search ||
         s.name.toLowerCase().includes(search.toLowerCase()) ||
         s.brand.toLowerCase().includes(search.toLowerCase()) ||
         s.category.toLowerCase().includes(search.toLowerCase())
     )
-    
-    // Separate in-site apps from external-only items
-    const inSiteApps = items.filter(item => item.canflySlug)
-    const externalOnly = items.filter(item => !item.canflySlug)
-    
-    // Sort each group separately
+
+    const popularityScores = computeSkillPopularity(items)
+    const inSiteApps = items.filter((item) => item.canflySlug)
+    const externalOnly = items.filter((item) => !item.canflySlug)
+    const popMap = new Map(items.map((item, i) => [item.name, popularityScores[i]]))
+
     const sortFn = (a: SkillItem, b: SkillItem) => {
-      if (skillSort === 'popularity') {
-        const aScore = (a.githubStars ?? 0) + (a.npmWeekly ?? 0) + (a.pypiWeekly ?? 0) + ((a.dockerPulls ?? 0) / 1000) + ((a.clawhubDownloads ?? 0) * 2) + ((a.productHuntUpvotes ?? 0) * 10)
-        const bScore = (b.githubStars ?? 0) + (b.npmWeekly ?? 0) + (b.pypiWeekly ?? 0) + ((b.dockerPulls ?? 0) / 1000) + ((b.clawhubDownloads ?? 0) * 2) + ((b.productHuntUpvotes ?? 0) * 10)
-        return bScore - aScore
+      if (skillSort === 'popularity') return (popMap.get(b.name) ?? 0) - (popMap.get(a.name) ?? 0)
+      if (skillSort === 'clawhub') return (b.clawhubDownloads ?? 0) - (a.clawhubDownloads ?? 0)
+      if (skillSort === 'github') return (b.githubStars ?? 0) - (a.githubStars ?? 0)
+      if (skillSort === 'newest') return (b.updatedAt ?? '').localeCompare(a.updatedAt ?? '')
+      if (skillSort === 'price') {
+        const diff = parsePriceNum(a.pricing) - parsePriceNum(b.pricing)
+        return skillPriceDir === 'asc' ? diff : -diff
       }
-      if (skillSort === 'stars') return (b.githubStars ?? 0) - (a.githubStars ?? 0)
-      if (skillSort === 'npm') return (b.npmWeekly ?? 0) - (a.npmWeekly ?? 0)
-      if (skillSort === 'pypi') return (b.pypiWeekly ?? 0) - (a.pypiWeekly ?? 0)
-      if (skillSort === 'name') return a.name.localeCompare(b.name)
       return 0
     }
-    
+
     const sortedInSite = [...inSiteApps].sort(sortFn)
     const sortedExternal = [...externalOnly].sort(sortFn)
-    
-    // Return in-site apps first, then external-only
-    return { inSiteApps: sortedInSite, externalApps: sortedExternal, all: [...sortedInSite, ...sortedExternal] }
-  }, [skillSort, search])
+
+    return {
+      inSiteApps: sortedInSite,
+      externalApps: sortedExternal,
+      all: [...sortedInSite, ...sortedExternal],
+      popMap,
+    }
+  }, [skillSort, skillPriceDir, search])
 
   const hardware = useMemo(() => {
-    let items = (hardwareData as HardwareItem[]).filter(
+    const items = (hardwareData as HardwareItem[]).filter(
       (h) =>
         !search ||
         h.name.toLowerCase().includes(search.toLowerCase()) ||
         h.brand.toLowerCase().includes(search.toLowerCase()) ||
         h.category.toLowerCase().includes(search.toLowerCase())
     )
-    items = [...items].sort((a, b) => {
-      if (hardwareSort === 'geekbench')
-        return (b.geekbenchMultiCore ?? 0) - (a.geekbenchMultiCore ?? 0)
-      if (hardwareSort === 'rating')
-        return (b.amazonRating ?? 0) - (a.amazonRating ?? 0)
-      if (hardwareSort === 'mediaScore')
-        return (b.mediaScore ?? 0) - (a.mediaScore ?? 0)
-      if (hardwareSort === 'price')
-        return parsePriceNum(a.pricing) - parsePriceNum(b.pricing)
+
+    const popularityScores = computeHardwarePopularity(items)
+    const popMap = new Map(items.map((item, i) => [item.name, popularityScores[i]]))
+
+    const sorted = [...items].sort((a, b) => {
+      if (hardwareSort === 'popularity') return (popMap.get(b.name) ?? 0) - (popMap.get(a.name) ?? 0)
+      if (hardwareSort === 'performance') return (b.geekbenchMultiCore ?? 0) - (a.geekbenchMultiCore ?? 0)
+      if (hardwareSort === 'rating') return (b.amazonRating ?? 0) - (a.amazonRating ?? 0)
+      if (hardwareSort === 'newest') return (b.updatedAt ?? '').localeCompare(a.updatedAt ?? '')
+      if (hardwareSort === 'price') {
+        const diff = parsePriceNum(a.pricing) - parsePriceNum(b.pricing)
+        return hwPriceDir === 'asc' ? diff : -diff
+      }
       return 0
     })
-    return items
-  }, [hardwareSort, search])
+    return { items: sorted, popMap }
+  }, [hardwareSort, hwPriceDir, search])
 
   const tabs: { key: Tab; label: string }[] = [
-    { key: 'skills', label: `🛠️ ${t('rankings.tabs.skills')}` },
-    { key: 'hardware', label: `🏠 ${t('rankings.tabs.hardware')}` },
-    { key: 'models', label: `🧠 ${t('rankings.tabs.models')}` },
+    { key: 'skills', label: '\uD83D\uDEE0\uFE0F ' + t('rankings.tabs.skills') },
+    { key: 'hardware', label: '\uD83C\uDFE0 ' + t('rankings.tabs.hardware') },
+    { key: 'models', label: '\uD83E\uDDE0 ' + t('rankings.tabs.models') },
+  ]
+
+  const skillSortTabs: { key: SkillSort; label: string }[] = [
+    { key: 'popularity', label: '\uD83D\uDD25 ' + t('rankings.skills.sortBy.popularity') },
+    { key: 'clawhub', label: '\uD83D\uDCE6 ' + t('rankings.skills.sortBy.clawhub') },
+    { key: 'github', label: '\u2B50 ' + t('rankings.skills.sortBy.github') },
+    { key: 'newest', label: '\uD83C\uDD95 ' + t('rankings.skills.sortBy.newest') },
+    { key: 'price', label: '\uD83D\uDCB0 ' + t('rankings.skills.sortBy.price') + (skillSort === 'price' ? (skillPriceDir === 'asc' ? '\u25B2' : '\u25BC') : '') },
+  ]
+
+  const hwSortTabs: { key: HardwareSort; label: string }[] = [
+    { key: 'popularity', label: '\uD83D\uDD25 ' + t('rankings.hardware.sortBy.popularity') },
+    { key: 'performance', label: '\uD83C\uDFC6 ' + t('rankings.hardware.sortBy.performance') },
+    { key: 'rating', label: '\u2B50 ' + t('rankings.hardware.sortBy.rating') },
+    { key: 'newest', label: '\uD83C\uDD95 ' + t('rankings.hardware.sortBy.newest') },
+    { key: 'price', label: '\uD83D\uDCB0 ' + t('rankings.hardware.sortBy.price') + (hardwareSort === 'price' ? (hwPriceDir === 'asc' ? '\u25B2' : '\u25BC') : '') },
   ]
 
   const brandSlug = (brand: string) =>
     brand.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+
+  const handleSkillSortClick = (key: SkillSort) => {
+    if (key === 'price' && skillSort === 'price') {
+      setSkillPriceDir((d) => (d === 'asc' ? 'desc' : 'asc'))
+    } else {
+      setSkillSort(key)
+      if (key === 'price') setSkillPriceDir('asc')
+    }
+  }
+
+  const handleHwSortClick = (key: HardwareSort) => {
+    if (key === 'price' && hardwareSort === 'price') {
+      setHwPriceDir((d) => (d === 'asc' ? 'desc' : 'asc'))
+    } else {
+      setHardwareSort(key)
+      if (key === 'price') setHwPriceDir('asc')
+    }
+  }
+
+  const getSkillBarVal = (skill: SkillItem) => {
+    if (skillSort === 'popularity') return skills.popMap.get(skill.name) ?? 0
+    if (skillSort === 'clawhub') return skill.clawhubDownloads ?? 0
+    if (skillSort === 'github') return skill.githubStars ?? 0
+    if (skillSort === 'price') return parsePriceNum(skill.pricing)
+    return 0
+  }
+
+  const formatBarVal = (val: number) => {
+    if (skillSort === 'popularity') return val.toFixed(0)
+    if (val >= 1000000) return `${(val / 1000000).toFixed(1)}M`
+    if (val >= 1000) return `${(val / 1000).toFixed(1)}k`
+    return String(val)
+  }
 
   return (
     <>
@@ -232,9 +381,9 @@ export default function RankingsPage() {
             </div>
           ) : tab === 'skills' ? (
             <>
-              {/* Leaderboard Section — OpenRouter-style */}
+              {/* Leaderboard Section */}
               <div className="mb-12">
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
                   <div>
                     <h2 className="text-xl font-bold text-white flex items-center gap-2">
                       📊 {t('rankings.skills.leaderboard.title')}
@@ -243,18 +392,13 @@ export default function RankingsPage() {
                       {t('rankings.skills.leaderboard.description')}
                     </p>
                   </div>
-                  <div className="flex gap-1 bg-gray-900 rounded-lg p-1">
-                    {([
-                      ['popularity', `🔥 ${t('rankings.skills.sortBy.popular')}`],
-                      ['stars', `⭐ ${t('rankings.skills.sortBy.stars')}`],
-                      ['npm', `📦 ${t('rankings.skills.sortBy.npm')}`],
-                      ['pypi', `🐍 ${t('rankings.skills.sortBy.pypi')}`],
-                    ] as [SkillSort, string][]).map(([s, label]) => (
+                  <div className="flex flex-wrap gap-1 bg-gray-900 rounded-lg p-1">
+                    {skillSortTabs.map(({ key, label }) => (
                       <button
-                        key={s}
-                        onClick={() => setSkillSort(s)}
+                        key={key}
+                        onClick={() => handleSkillSortClick(key)}
                         className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
-                          skillSort === s
+                          skillSort === key
                             ? 'bg-gray-700 text-white'
                             : 'text-gray-400 hover:text-white'
                         }`}
@@ -265,24 +409,19 @@ export default function RankingsPage() {
                   </div>
                 </div>
 
-                {/* Bar Chart — top 10 */}
-                {(() => {
+                {/* Bar Chart — top 10 (not for newest) */}
+                {skillSort !== 'newest' && (() => {
                   const top10 = skills.all.slice(0, 10)
-                  const getVal = (s: SkillItem) => {
-                    if (skillSort === 'stars') return s.githubStars ?? 0
-                    if (skillSort === 'npm') return s.npmWeekly ?? 0
-                    if (skillSort === 'pypi') return s.pypiWeekly ?? 0
-                    return (s.githubStars ?? 0) + (s.npmWeekly ?? 0) + (s.pypiWeekly ?? 0) + ((s.dockerPulls ?? 0) / 1000) + ((s.clawhubDownloads ?? 0) * 2) + ((s.productHuntUpvotes ?? 0) * 10)
-                  }
-                  const maxVal = Math.max(...top10.map(getVal), 1)
-                  const barColor = skillSort === 'stars' ? 'bg-yellow-500/60' :
-                    skillSort === 'npm' ? 'bg-green-500/60' :
-                    skillSort === 'pypi' ? 'bg-blue-500/60' : 'bg-gradient-to-r from-blue-500/60 via-green-500/60 to-yellow-500/60'
+                  const maxVal = Math.max(...top10.map(getSkillBarVal), 1)
+                  const barColor = skillSort === 'github' ? 'bg-yellow-500/60' :
+                    skillSort === 'clawhub' ? 'bg-orange-500/60' :
+                    skillSort === 'price' ? 'bg-emerald-500/60' :
+                    'bg-gradient-to-r from-blue-500/60 via-green-500/60 to-yellow-500/60'
                   return (
                     <div className="bg-gray-900/50 rounded-xl border border-gray-800 p-4 sm:p-6 mb-8">
                       <div className="space-y-3">
                         {top10.map((skill, i) => {
-                          const val = getVal(skill)
+                          const val = getSkillBarVal(skill)
                           const pct = (val / maxVal) * 100
                           return (
                             <div key={skill.name} className="flex items-center gap-3 group">
@@ -312,8 +451,7 @@ export default function RankingsPage() {
                                     </span>
                                   </div>
                                   <span className="text-gray-300 text-sm font-mono shrink-0 ml-2">
-                                    {val >= 1000000 ? `${(val / 1000000).toFixed(1)}M` :
-                                     val >= 1000 ? `${(val / 1000).toFixed(1)}k` : val}
+                                    {skillSort === 'price' ? skill.pricing : formatBarVal(val)}
                                   </span>
                                 </div>
                                 <div className="w-full bg-gray-800 rounded-full h-2 overflow-hidden">
@@ -330,6 +468,40 @@ export default function RankingsPage() {
                     </div>
                   )
                 })()}
+
+                {/* Newest view: simple list with dates */}
+                {skillSort === 'newest' && (
+                  <div className="bg-gray-900/50 rounded-xl border border-gray-800 p-4 sm:p-6 mb-8">
+                    <div className="space-y-2">
+                      {skills.all.slice(0, 10).map((skill, i) => (
+                        <div key={skill.name} className="flex items-center justify-between py-1.5">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <span className="text-gray-500 font-mono text-sm w-6 text-right shrink-0">{i + 1}.</span>
+                            {skill.canflySlug ? (
+                              <Link
+                                to={`/apps/${skill.canflySlug}`}
+                                className="text-white text-sm font-medium hover:text-blue-400 transition-colors truncate"
+                              >
+                                {skill.name}
+                              </Link>
+                            ) : (
+                              <a
+                                href={skill.website}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-white text-sm font-medium hover:text-blue-400 transition-colors truncate"
+                              >
+                                {skill.name}
+                              </a>
+                            )}
+                            <span className="text-gray-600 text-xs hidden sm:inline">by {skill.brand}</span>
+                          </div>
+                          <span className="text-gray-400 text-xs font-mono shrink-0">{skill.updatedAt ?? '—'}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Show more toggle */}
                 {showAllSkills ? null : skills.all.length > 10 && (
@@ -365,141 +537,129 @@ export default function RankingsPage() {
                 </div>
               </div>
 
-              {/* Full List (if expanded or on mobile) */}
+              {/* Full List (if expanded) */}
               {showAllSkills && (
                 <>
-                  {/* In-Site Apps Section */}
                   {skills.inSiteApps.length > 0 && (
                     <div className="mb-8">
                       <h2 className="text-xl font-bold text-white mb-4">{t('rankings.skills.allSkills.inSiteApps')}</h2>
                       <div className="space-y-2">
-                        {skills.inSiteApps.map((skill, i) => {
-                      const mainVal = skillSort === 'stars' ? skill.githubStars :
-                        skillSort === 'npm' ? skill.npmWeekly :
-                        skillSort === 'pypi' ? skill.pypiWeekly : null
-                      return (
-                        <div key={skill.name} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gray-900/50 transition-colors border-b border-gray-800/30">
-                          <div className="flex items-center gap-3 min-w-0">
-                            <span className="text-gray-600 font-mono text-sm w-7 text-right shrink-0">{i + 1}.</span>
-                            <div className="min-w-0">
+                        {skills.inSiteApps.map((skill, i) => (
+                          <div key={skill.name} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gray-900/50 transition-colors border-b border-gray-800/30">
+                            <div className="flex items-center gap-3 min-w-0">
+                              <span className="text-gray-600 font-mono text-sm w-7 text-right shrink-0">{i + 1}.</span>
+                              <div className="min-w-0">
+                                <Link
+                                  to={`/apps/${skill.canflySlug}`}
+                                  className="text-white text-sm font-medium hover:text-blue-400 transition-colors"
+                                >
+                                  {skill.name}
+                                </Link>
+                                <span className="text-gray-600 text-xs ml-2">
+                                  {skill.brand}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-4 shrink-0">
+                              <span className="text-xs px-2 py-0.5 rounded-full bg-gray-800 text-gray-400 hidden sm:inline-block">
+                                {CATEGORY_LABELS[skill.category] || skill.category}
+                              </span>
+                              <div className="flex gap-3 text-xs font-mono">
+                                {skill.githubStars ? (
+                                  <span className="text-yellow-400/70">
+                                    ⭐ {skill.githubStars >= 1000 ? `${(skill.githubStars / 1000).toFixed(0)}k` : skill.githubStars}
+                                  </span>
+                                ) : null}
+                                {skill.npmWeekly ? (
+                                  <span className="text-green-400/70 hidden md:inline">
+                                    📦 {skill.npmWeekly >= 1000000 ? `${(skill.npmWeekly / 1000000).toFixed(1)}M` : `${(skill.npmWeekly / 1000).toFixed(0)}k`}
+                                  </span>
+                                ) : null}
+                                {skill.pypiWeekly ? (
+                                  <span className="text-blue-400/70 hidden md:inline">
+                                    🐍 {skill.pypiWeekly >= 1000000 ? `${(skill.pypiWeekly / 1000000).toFixed(1)}M` : `${(skill.pypiWeekly / 1000).toFixed(0)}k`}
+                                  </span>
+                                ) : null}
+                                {skill.clawhubDownloads ? (
+                                  <span className="text-orange-400/70 hidden lg:inline">
+                                    🦞 {skill.clawhubDownloads >= 1000 ? `${(skill.clawhubDownloads / 1000).toFixed(1)}k` : skill.clawhubDownloads}
+                                  </span>
+                                ) : null}
+                                {skill.productHuntUpvotes ? (
+                                  <span className="text-red-400/70 hidden lg:inline">
+                                    🔺 {skill.productHuntUpvotes >= 1000 ? `${(skill.productHuntUpvotes / 1000).toFixed(1)}k` : skill.productHuntUpvotes}
+                                  </span>
+                                ) : null}
+                              </div>
                               <Link
                                 to={`/apps/${skill.canflySlug}`}
-                                className="text-white text-sm font-medium hover:text-blue-400 transition-colors"
+                                className="text-xs px-2 py-0.5 rounded-full bg-green-600/20 text-green-400 border border-green-600/40 hover:bg-green-600/30 transition-colors"
                               >
-                                {skill.name}
+                                {t('rankings.skills.allSkills.tutorialButton')}
                               </Link>
-                              <span className="text-gray-600 text-xs ml-2">
-                                {skill.brand}
-                              </span>
                             </div>
                           </div>
-                          <div className="flex items-center gap-4 shrink-0">
-                            <span className="text-xs px-2 py-0.5 rounded-full bg-gray-800 text-gray-400 hidden sm:inline-block">
-                              {CATEGORY_LABELS[skill.category] || skill.category}
-                            </span>
-                            <div className="flex gap-3 text-xs font-mono">
-                              {skill.githubStars ? (
-                                <span className="text-yellow-400/70">
-                                  ⭐ {skill.githubStars >= 1000 ? `${(skill.githubStars / 1000).toFixed(0)}k` : skill.githubStars}
-                                </span>
-                              ) : null}
-                              {skill.npmWeekly ? (
-                                <span className="text-green-400/70 hidden md:inline">
-                                  📦 {skill.npmWeekly >= 1000000 ? `${(skill.npmWeekly / 1000000).toFixed(1)}M` : `${(skill.npmWeekly / 1000).toFixed(0)}k`}
-                                </span>
-                              ) : null}
-                              {skill.pypiWeekly ? (
-                                <span className="text-blue-400/70 hidden md:inline">
-                                  🐍 {skill.pypiWeekly >= 1000000 ? `${(skill.pypiWeekly / 1000000).toFixed(1)}M` : `${(skill.pypiWeekly / 1000).toFixed(0)}k`}
-                                </span>
-                              ) : null}
-                              {skill.clawhubDownloads ? (
-                                <span className="text-orange-400/70 hidden lg:inline">
-                                  🦞 {skill.clawhubDownloads >= 1000 ? `${(skill.clawhubDownloads / 1000).toFixed(1)}k` : skill.clawhubDownloads}
-                                </span>
-                              ) : null}
-                              {skill.productHuntUpvotes ? (
-                                <span className="text-red-400/70 hidden lg:inline">
-                                  🔺 {skill.productHuntUpvotes >= 1000 ? `${(skill.productHuntUpvotes / 1000).toFixed(1)}k` : skill.productHuntUpvotes}
-                                </span>
-                              ) : null}
-                            </div>
-                            <Link
-                              to={`/apps/${skill.canflySlug}`}
-                              className="text-xs px-2 py-0.5 rounded-full bg-green-600/20 text-green-400 border border-green-600/40 hover:bg-green-600/30 transition-colors"
-                            >
-                              {t('rankings.skills.allSkills.tutorialButton')}
-                            </Link>
-                          </div>
-                        </div>
-                      )
-                        })}
+                        ))}
                       </div>
                     </div>
                   )}
 
-                  {/* External Tools Section */}
                   {skills.externalApps.length > 0 && (
                     <div className="mb-8">
                       <h2 className="text-xl font-bold text-white mb-4">{t('rankings.skills.allSkills.moreTools')}</h2>
                       <div className="space-y-2">
-                        {skills.externalApps.map((skill, i) => {
-                          const mainVal = skillSort === 'stars' ? skill.githubStars :
-                            skillSort === 'npm' ? skill.npmWeekly :
-                            skillSort === 'pypi' ? skill.pypiWeekly : null
-                          return (
-                            <div key={skill.name} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gray-900/50 transition-colors border-b border-gray-800/30">
-                              <div className="flex items-center gap-3 min-w-0">
-                                <span className="text-gray-600 font-mono text-sm w-7 text-right shrink-0">{i + 1}.</span>
-                                <div className="min-w-0">
-                                  <a
-                                    href={skill.website}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-white text-sm font-medium hover:text-blue-400 transition-colors"
-                                  >
-                                    {skill.name}
-                                  </a>
-                                  <span className="text-gray-600 text-xs ml-2">
-                                    {skill.brand}
-                                  </span>
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-4 shrink-0">
-                                <span className="text-xs px-2 py-0.5 rounded-full bg-gray-800 text-gray-400 hidden sm:inline-block">
-                                  {CATEGORY_LABELS[skill.category] || skill.category}
+                        {skills.externalApps.map((skill, i) => (
+                          <div key={skill.name} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gray-900/50 transition-colors border-b border-gray-800/30">
+                            <div className="flex items-center gap-3 min-w-0">
+                              <span className="text-gray-600 font-mono text-sm w-7 text-right shrink-0">{i + 1}.</span>
+                              <div className="min-w-0">
+                                <a
+                                  href={skill.website}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-white text-sm font-medium hover:text-blue-400 transition-colors"
+                                >
+                                  {skill.name}
+                                </a>
+                                <span className="text-gray-600 text-xs ml-2">
+                                  {skill.brand}
                                 </span>
-                                <div className="flex gap-3 text-xs font-mono">
-                                  {skill.githubStars ? (
-                                    <span className="text-yellow-400/70">
-                                      ⭐ {skill.githubStars >= 1000 ? `${(skill.githubStars / 1000).toFixed(0)}k` : skill.githubStars}
-                                    </span>
-                                  ) : null}
-                                  {skill.npmWeekly ? (
-                                    <span className="text-green-400/70 hidden md:inline">
-                                      📦 {skill.npmWeekly >= 1000000 ? `${(skill.npmWeekly / 1000000).toFixed(1)}M` : `${(skill.npmWeekly / 1000).toFixed(0)}k`}
-                                    </span>
-                                  ) : null}
-                                  {skill.pypiWeekly ? (
-                                    <span className="text-blue-400/70 hidden md:inline">
-                                      🐍 {skill.pypiWeekly >= 1000000 ? `${(skill.pypiWeekly / 1000000).toFixed(1)}M` : `${(skill.pypiWeekly / 1000).toFixed(0)}k`}
-                                    </span>
-                                  ) : null}
-                                  {skill.clawhubDownloads ? (
-                                    <span className="text-orange-400/70 hidden lg:inline">
-                                      🦞 {skill.clawhubDownloads >= 1000 ? `${(skill.clawhubDownloads / 1000).toFixed(1)}k` : skill.clawhubDownloads}
-                                    </span>
-                                  ) : null}
-                                  {skill.productHuntUpvotes ? (
-                                    <span className="text-red-400/70 hidden lg:inline">
-                                      🔺 {skill.productHuntUpvotes >= 1000 ? `${(skill.productHuntUpvotes / 1000).toFixed(1)}k` : skill.productHuntUpvotes}
-                                    </span>
-                                  ) : null}
-                                </div>
                               </div>
                             </div>
-                          )
-                        })}
+                            <div className="flex items-center gap-4 shrink-0">
+                              <span className="text-xs px-2 py-0.5 rounded-full bg-gray-800 text-gray-400 hidden sm:inline-block">
+                                {CATEGORY_LABELS[skill.category] || skill.category}
+                              </span>
+                              <div className="flex gap-3 text-xs font-mono">
+                                {skill.githubStars ? (
+                                  <span className="text-yellow-400/70">
+                                    ⭐ {skill.githubStars >= 1000 ? `${(skill.githubStars / 1000).toFixed(0)}k` : skill.githubStars}
+                                  </span>
+                                ) : null}
+                                {skill.npmWeekly ? (
+                                  <span className="text-green-400/70 hidden md:inline">
+                                    📦 {skill.npmWeekly >= 1000000 ? `${(skill.npmWeekly / 1000000).toFixed(1)}M` : `${(skill.npmWeekly / 1000).toFixed(0)}k`}
+                                  </span>
+                                ) : null}
+                                {skill.pypiWeekly ? (
+                                  <span className="text-blue-400/70 hidden md:inline">
+                                    🐍 {skill.pypiWeekly >= 1000000 ? `${(skill.pypiWeekly / 1000000).toFixed(1)}M` : `${(skill.pypiWeekly / 1000).toFixed(0)}k`}
+                                  </span>
+                                ) : null}
+                                {skill.clawhubDownloads ? (
+                                  <span className="text-orange-400/70 hidden lg:inline">
+                                    🦞 {skill.clawhubDownloads >= 1000 ? `${(skill.clawhubDownloads / 1000).toFixed(1)}k` : skill.clawhubDownloads}
+                                  </span>
+                                ) : null}
+                                {skill.productHuntUpvotes ? (
+                                  <span className="text-red-400/70 hidden lg:inline">
+                                    🔺 {skill.productHuntUpvotes >= 1000 ? `${(skill.productHuntUpvotes / 1000).toFixed(1)}k` : skill.productHuntUpvotes}
+                                  </span>
+                                ) : null}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   )}
@@ -513,19 +673,12 @@ export default function RankingsPage() {
           ) : (
             <>
               {/* Hardware sort controls */}
-              <div className="flex items-center gap-2 mb-4 text-sm text-gray-400">
+              <div className="flex flex-wrap items-center gap-2 mb-4 text-sm text-gray-400">
                 <span>{t('rankings.hardware.sortBy.label')}:</span>
-                {(
-                  [
-                    ['geekbench', t('rankings.hardware.sortBy.geekbench')],
-                    ['rating', t('rankings.hardware.sortBy.rating')],
-                    ['mediaScore', t('rankings.hardware.sortBy.mediaScore')],
-                    ['price', t('rankings.hardware.sortBy.price')],
-                  ] as [HardwareSort, string][]
-                ).map(([key, label]) => (
+                {hwSortTabs.map(({ key, label }) => (
                   <button
                     key={key}
-                    onClick={() => setHardwareSort(key)}
+                    onClick={() => handleHwSortClick(key)}
                     className={`px-2 py-1 rounded transition-colors ${
                       hardwareSort === key
                         ? 'bg-blue-600/20 text-blue-400 border border-blue-600/40'
@@ -544,6 +697,11 @@ export default function RankingsPage() {
                     <tr className="border-b border-gray-800 text-gray-400">
                       <th className="py-3 pr-3 w-10">#</th>
                       <th className="py-3 pr-3">{t('rankings.hardware.table.name')}</th>
+                      {hardwareSort === 'popularity' && (
+                        <th className="py-3 pr-3 hidden sm:table-cell">
+                          🔥 {t('rankings.hardware.sortBy.popularity')}
+                        </th>
+                      )}
                       <th className="py-3 pr-3 hidden sm:table-cell">
                         🏆 {t('rankings.hardware.table.geekbench')}
                       </th>
@@ -561,7 +719,7 @@ export default function RankingsPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {hardware.map((hw, i) => (
+                    {hardware.items.map((hw, i) => (
                       <tr
                         key={hw.name}
                         className="border-b border-gray-800/50 hover:bg-gray-900/50 transition-colors"
@@ -599,6 +757,21 @@ export default function RankingsPage() {
                             </div>
                           </div>
                         </td>
+                        {hardwareSort === 'popularity' && (
+                          <td className="py-3 pr-3 hidden sm:table-cell">
+                            <div className="flex items-center gap-2">
+                              <div className="w-16 bg-gray-800 rounded-full h-2 overflow-hidden">
+                                <div
+                                  className="h-full rounded-full bg-gradient-to-r from-blue-500/60 to-yellow-500/60"
+                                  style={{ width: `${Math.max(hardware.popMap.get(hw.name) ?? 0, 2)}%` }}
+                                />
+                              </div>
+                              <span className="text-gray-300 text-xs font-mono">
+                                {(hardware.popMap.get(hw.name) ?? 0).toFixed(0)}
+                              </span>
+                            </div>
+                          </td>
+                        )}
                         <td className="py-3 pr-3 hidden sm:table-cell">
                           {hw.geekbenchSingleCore ? (
                             <div className="text-xs">
@@ -684,7 +857,7 @@ export default function RankingsPage() {
                 </table>
               </div>
               <p className="text-gray-500 text-xs mt-4">
-                {t('rankings.hardware.itemsListed', { count: hardware.length })}
+                {t('rankings.hardware.itemsListed', { count: hardware.items.length })}
               </p>
             </>
           )}

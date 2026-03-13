@@ -145,10 +145,11 @@
         "description": "依實際使用數據比較最熱門的 AI 技能"
       },
       "sortBy": {
-        "popular": "熱門",
-        "stars": "星數",
-        "npm": "npm",
-        "pypi": "PyPI"
+        "popularity": "綜合熱度",
+        "clawhub": "ClawHub",
+        "github": "GitHub",
+        "newest": "最新",
+        "price": "價格"
       },
       "showMore": "顯示更多",
       "byCategory": {
@@ -164,9 +165,10 @@
     "hardware": {
       "sortBy": {
         "label": "排序方式",
-        "geekbench": "Geekbench",
+        "popularity": "綜合熱度",
+        "performance": "效能",
         "rating": "評分",
-        "mediaScore": "媒體",
+        "newest": "最新",
         "price": "價格"
       },
       "table": {

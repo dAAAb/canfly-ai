@@ -145,10 +145,11 @@
         "description": "Compare the most popular AI skills by real usage data"
       },
       "sortBy": {
-        "popular": "Popular",
-        "stars": "Stars",
-        "npm": "npm",
-        "pypi": "PyPI"
+        "popularity": "Popularity",
+        "clawhub": "ClawHub",
+        "github": "GitHub",
+        "newest": "Newest",
+        "price": "Price"
       },
       "showMore": "Show more",
       "byCategory": {
@@ -164,9 +165,10 @@
     "hardware": {
       "sortBy": {
         "label": "Sort by",
-        "geekbench": "Geekbench",
+        "popularity": "Popularity",
+        "performance": "Performance",
         "rating": "Rating",
-        "mediaScore": "Media",
+        "newest": "Newest",
         "price": "Price"
       },
       "table": {

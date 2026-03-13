@@ -145,10 +145,11 @@
         "description": "依实际使用数据比较最热门的 AI 技能"
       },
       "sortBy": {
-        "popular": "热门",
-        "stars": "星数",
-        "npm": "npm",
-        "pypi": "PyPI"
+        "popularity": "综合热度",
+        "clawhub": "ClawHub",
+        "github": "GitHub",
+        "newest": "最新",
+        "price": "价格"
       },
       "showMore": "显示更多",
       "byCategory": {
@@ -164,9 +165,10 @@
     "hardware": {
       "sortBy": {
         "label": "排序方式",
-        "geekbench": "Geekbench",
+        "popularity": "综合热度",
+        "performance": "性能",
         "rating": "评分",
-        "mediaScore": "媒体",
+        "newest": "最新",
         "price": "价格"
       },
       "table": {
