@@ -115,6 +115,69 @@
     "ctaButton": "Get Started Free",
     "followX": "Follow @dAAAb"
   },
+  "rankings": {
+    "title": "Rankings",
+    "description": "AI Skills & Hardware ranked by the community",
+    "searchPlaceholder": "Search rankings...",
+    "tabs": {
+      "skills": "Skills",
+      "hardware": "Hardware",
+      "models": "Models"
+    },
+    "views": {
+      "global": "Global",
+      "community": "Community"
+    },
+    "comingSoon": "Coming Soon",
+    "community": {
+      "title": "Community Rankings",
+      "description": "Community members will vote and rank their favorite tools"
+    },
+    "models": {
+      "title": "Model Rankings",
+      "description": "Open-source and commercial model benchmarks"
+    },
+    "skills": {
+      "leaderboard": {
+        "title": "Skill Leaderboard",
+        "description": "Compare the most popular AI skills by real usage data"
+      },
+      "sortBy": {
+        "popular": "Popular",
+        "stars": "Stars",
+        "npm": "npm",
+        "pypi": "PyPI"
+      },
+      "showMore": "Show more",
+      "byCategory": {
+        "title": "By Category",
+        "skillsLabel": "skills"
+      },
+      "allSkills": {
+        "inSiteApps": "All Skills",
+        "moreTools": "More Tools",
+        "tutorialButton": "Tutorial"
+      }
+    },
+    "hardware": {
+      "sortBy": {
+        "label": "Sort by",
+        "geekbench": "Geekbench",
+        "rating": "Rating",
+        "price": "Price"
+      },
+      "table": {
+        "name": "Name",
+        "geekbench": "Geekbench",
+        "ram": "RAM",
+        "rating": "Rating",
+        "price": "Price",
+        "viewButton": "View",
+        "amazonButton": "Amazon"
+      },
+      "itemsListed": "{{count}} items listed"
+    }
+  },
   "footer": {
     "copyright": "© 2026 Canfly",
     "tagline": "With OpenClaw AI Lobster, you can fly too"

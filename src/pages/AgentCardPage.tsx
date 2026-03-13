@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
+import { useQueryLang } from '../hooks/useLanguage'
 import Navbar from '../components/Navbar'
 import PillBadge from '../components/PillBadge'
 import { walletGradient } from '../utils/walletGradient'
@@ -36,6 +37,7 @@ interface AgentData {
 
 export default function AgentCardPage({ free }: { free?: boolean }) {
   const { username, agentName } = useParams<{ username?: string; agentName: string }>()
+  const { currentLang, switchLang } = useQueryLang()
   const [agent, setAgent] = useState<AgentData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)

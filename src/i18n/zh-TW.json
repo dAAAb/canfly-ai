@@ -115,6 +115,69 @@
     "ctaButton": "免費立即開始",
     "followX": "Follow @dAAAb"
   },
+  "rankings": {
+    "title": "排行榜",
+    "description": "由社群排名的 AI 技能與硬體",
+    "searchPlaceholder": "搜尋排行榜...",
+    "tabs": {
+      "skills": "技能",
+      "hardware": "硬體",
+      "models": "模型"
+    },
+    "views": {
+      "global": "全球",
+      "community": "社群"
+    },
+    "comingSoon": "即將推出",
+    "community": {
+      "title": "社群排行榜",
+      "description": "社群成員將投票並為他們最愛的工具排名"
+    },
+    "models": {
+      "title": "模型排行榜",
+      "description": "開源和商業模型基準測試"
+    },
+    "skills": {
+      "leaderboard": {
+        "title": "技能排行榜",
+        "description": "依實際使用數據比較最熱門的 AI 技能"
+      },
+      "sortBy": {
+        "popular": "熱門",
+        "stars": "星數",
+        "npm": "npm",
+        "pypi": "PyPI"
+      },
+      "showMore": "顯示更多",
+      "byCategory": {
+        "title": "依分類",
+        "skillsLabel": "技能"
+      },
+      "allSkills": {
+        "inSiteApps": "所有技能",
+        "moreTools": "更多工具",
+        "tutorialButton": "教學"
+      }
+    },
+    "hardware": {
+      "sortBy": {
+        "label": "排序方式",
+        "geekbench": "Geekbench",
+        "rating": "評分",
+        "price": "價格"
+      },
+      "table": {
+        "name": "名稱",
+        "geekbench": "Geekbench",
+        "ram": "記憶體",
+        "rating": "評分",
+        "price": "價格",
+        "viewButton": "查看",
+        "amazonButton": "Amazon"
+      },
+      "itemsListed": "已列出 {{count}} 項目"
+    }
+  },
   "footer": {
     "copyright": "© 2026 Canfly",
     "tagline": "有了 OpenClaw 小龍蝦 AI，你也能飛"

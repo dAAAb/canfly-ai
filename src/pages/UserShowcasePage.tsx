@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
+import { useQueryLang } from '../hooks/useLanguage'
 import Navbar from '../components/Navbar'
 import PillBadge from '../components/PillBadge'
 import { walletGradient } from '../utils/walletGradient'
@@ -75,6 +76,7 @@ function formatDate(iso: string): string {
 
 export default function UserShowcasePage() {
   const { username } = useParams<{ username: string }>()
+  const { currentLang, switchLang } = useQueryLang()
   const [user, setUser] = useState<UserData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

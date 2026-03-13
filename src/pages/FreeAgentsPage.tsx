@@ -1,6 +1,8 @@
 import Navbar from '../components/Navbar'
+import { useQueryLang } from '../hooks/useLanguage'
 
 export default function FreeAgentsPage() {
+  const { currentLang, switchLang } = useQueryLang()
   return (
     <>
       <Navbar />

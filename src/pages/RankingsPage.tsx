@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import Navbar from '../components/Navbar'
 import skillsData from '../../data/rankings-skills.json'
 import hardwareData from '../../data/rankings-hardware.json'
@@ -70,6 +71,7 @@ function parsePriceNum(pricing: string): number {
 }
 
 export default function RankingsPage() {
+  const { t } = useTranslation()
   const [tab, setTab] = useState<Tab>('skills')
   const [view, setView] = useState<View>('global')
   const [skillSort, setSkillSort] = useState<SkillSort>('popularity')
@@ -85,7 +87,13 @@ export default function RankingsPage() {
         s.brand.toLowerCase().includes(search.toLowerCase()) ||
         s.category.toLowerCase().includes(search.toLowerCase())
     )
-    items = [...items].sort((a, b) => {
+    
+    // Separate in-site apps from external-only items
+    const inSiteApps = items.filter(item => item.canflySlug)
+    const externalOnly = items.filter(item => !item.canflySlug)
+    
+    // Sort each group separately
+    const sortFn = (a: SkillItem, b: SkillItem) => {
       if (skillSort === 'popularity') {
         const aScore = (a.githubStars ?? 0) + (a.npmWeekly ?? 0) + (a.pypiWeekly ?? 0) + (a.dockerPulls ?? 0) / 1000
         const bScore = (b.githubStars ?? 0) + (b.npmWeekly ?? 0) + (b.pypiWeekly ?? 0) + (b.dockerPulls ?? 0) / 1000
@@ -96,8 +104,13 @@ export default function RankingsPage() {
       if (skillSort === 'pypi') return (b.pypiWeekly ?? 0) - (a.pypiWeekly ?? 0)
       if (skillSort === 'name') return a.name.localeCompare(b.name)
       return 0
-    })
-    return items
+    }
+    
+    const sortedInSite = [...inSiteApps].sort(sortFn)
+    const sortedExternal = [...externalOnly].sort(sortFn)
+    
+    // Return in-site apps first, then external-only
+    return { inSiteApps: sortedInSite, externalApps: sortedExternal, all: [...sortedInSite, ...sortedExternal] }
   }, [skillSort, search])
 
   const hardware = useMemo(() => {
@@ -121,9 +134,9 @@ export default function RankingsPage() {
   }, [hardwareSort, search])
 
   const tabs: { key: Tab; label: string }[] = [
-    { key: 'skills', label: '🛠️ Skills' },
-    { key: 'hardware', label: '🏠 Hardware' },
-    { key: 'models', label: '🧠 Models' },
+    { key: 'skills', label: `🛠️ ${t('rankings.tabs.skills')}` },
+    { key: 'hardware', label: `🏠 ${t('rankings.tabs.hardware')}` },
+    { key: 'models', label: `🧠 ${t('rankings.tabs.models')}` },
   ]
 
   const brandSlug = (brand: string) =>
@@ -132,17 +145,17 @@ export default function RankingsPage() {
   return (
     <>
       <Navbar
-        search={{ value: search, onChange: setSearch, placeholder: 'Search rankings...' }}
+        search={{ value: search, onChange: setSearch, placeholder: t('rankings.searchPlaceholder') }}
       />
       <main className="min-h-screen bg-black page-enter">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 md:py-12">
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-              Rankings
+              {t('rankings.title')}
             </h1>
             <p className="text-gray-400">
-              AI Skills & Hardware ranked by the community
+              {t('rankings.description')}
             </p>
           </div>
 
@@ -172,7 +185,7 @@ export default function RankingsPage() {
                     : 'text-gray-400 hover:text-white'
                 }`}
               >
-                🌍 Global
+                🌍 {t('rankings.views.global')}
               </button>
               <button
                 onClick={() => setView('community')}
@@ -182,7 +195,7 @@ export default function RankingsPage() {
                     : 'text-gray-400 hover:text-white'
                 }`}
               >
-                🦞 Community
+                🦞 {t('rankings.views.community')}
               </button>
             </div>
           </div>
@@ -192,22 +205,22 @@ export default function RankingsPage() {
             <div className="text-center py-24">
               <p className="text-5xl mb-4">🦞</p>
               <h2 className="text-2xl font-bold text-white mb-2">
-                Community Rankings
+                {t('rankings.community.title')}
               </h2>
-              <p className="text-gray-400">Coming Soon</p>
+              <p className="text-gray-400">{t('rankings.comingSoon')}</p>
               <p className="text-gray-500 text-sm mt-2">
-                Community members will vote and rank their favorite tools
+                {t('rankings.community.description')}
               </p>
             </div>
           ) : tab === 'models' ? (
             <div className="text-center py-24">
               <p className="text-5xl mb-4">🧠</p>
               <h2 className="text-2xl font-bold text-white mb-2">
-                Model Rankings
+                {t('rankings.models.title')}
               </h2>
-              <p className="text-gray-400">Coming Soon</p>
+              <p className="text-gray-400">{t('rankings.comingSoon')}</p>
               <p className="text-gray-500 text-sm mt-2">
-                Open-source and commercial model benchmarks
+                {t('rankings.models.description')}
               </p>
             </div>
           ) : tab === 'skills' ? (
@@ -217,18 +230,18 @@ export default function RankingsPage() {
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                      📊 Skill Leaderboard
+                      📊 {t('rankings.skills.leaderboard.title')}
                     </h2>
                     <p className="text-gray-500 text-sm mt-1">
-                      Compare the most popular AI skills by real usage data
+                      {t('rankings.skills.leaderboard.description')}
                     </p>
                   </div>
                   <div className="flex gap-1 bg-gray-900 rounded-lg p-1">
                     {([
-                      ['popularity', '🔥 Popular'],
-                      ['stars', '⭐ Stars'],
-                      ['npm', '📦 npm'],
-                      ['pypi', '🐍 PyPI'],
+                      ['popularity', `🔥 ${t('rankings.skills.sortBy.popular')}`],
+                      ['stars', `⭐ ${t('rankings.skills.sortBy.stars')}`],
+                      ['npm', `📦 ${t('rankings.skills.sortBy.npm')}`],
+                      ['pypi', `🐍 ${t('rankings.skills.sortBy.pypi')}`],
                     ] as [SkillSort, string][]).map(([s, label]) => (
                       <button
                         key={s}
@@ -247,7 +260,7 @@ export default function RankingsPage() {
 
                 {/* Bar Chart — top 10 */}
                 {(() => {
-                  const top10 = skills.slice(0, 10)
+                  const top10 = skills.all.slice(0, 10)
                   const getVal = (s: SkillItem) => {
                     if (skillSort === 'stars') return s.githubStars ?? 0
                     if (skillSort === 'npm') return s.npmWeekly ?? 0
@@ -270,14 +283,23 @@ export default function RankingsPage() {
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between mb-1">
                                   <div className="flex items-center gap-2 min-w-0">
-                                    <a
-                                      href={skill.website}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-white text-sm font-medium hover:text-blue-400 transition-colors truncate"
-                                    >
-                                      {skill.name}
-                                    </a>
+                                    {skill.canflySlug ? (
+                                      <Link
+                                        to={`/apps/${skill.canflySlug}`}
+                                        className="text-white text-sm font-medium hover:text-blue-400 transition-colors truncate"
+                                      >
+                                        {skill.name}
+                                      </Link>
+                                    ) : (
+                                      <a
+                                        href={skill.website}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-white text-sm font-medium hover:text-blue-400 transition-colors truncate"
+                                      >
+                                        {skill.name}
+                                      </a>
+                                    )}
                                     <span className="text-gray-600 text-xs hidden sm:inline">
                                       by {skill.brand}
                                     </span>
@@ -303,13 +325,13 @@ export default function RankingsPage() {
                 })()}
 
                 {/* Show more toggle */}
-                {showAllSkills ? null : skills.length > 10 && (
+                {showAllSkills ? null : skills.all.length > 10 && (
                   <div className="text-center mb-8">
                     <button
                       onClick={() => setShowAllSkills(true)}
                       className="text-gray-400 hover:text-white text-sm transition-colors"
                     >
-                      Show more ↓
+                      {t('rankings.skills.showMore')} ↓
                     </button>
                   </div>
                 )}
@@ -318,11 +340,11 @@ export default function RankingsPage() {
               {/* Category Breakdown */}
               <div className="mb-12">
                 <h2 className="text-xl font-bold text-white flex items-center gap-2 mb-4">
-                  🏷️ By Category
+                  🏷️ {t('rankings.skills.byCategory.title')}
                 </h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                   {Object.entries(
-                    skills.reduce<Record<string, number>>((acc, s) => {
+                    skills.all.reduce<Record<string, number>>((acc, s) => {
                       acc[s.category] = (acc[s.category] || 0) + 1
                       return acc
                     }, {})
@@ -330,7 +352,7 @@ export default function RankingsPage() {
                     <div key={cat} className="bg-gray-900/50 rounded-lg border border-gray-800 p-3 hover:border-gray-700 transition-colors">
                       <div className="text-xs text-gray-400">{CATEGORY_LABELS[cat] || cat}</div>
                       <div className="text-white font-bold text-lg">{count}</div>
-                      <div className="text-gray-500 text-xs">skills</div>
+                      <div className="text-gray-500 text-xs">{t('rankings.skills.byCategory.skillsLabel')}</div>
                     </div>
                   ))}
                 </div>
@@ -338,10 +360,13 @@ export default function RankingsPage() {
 
               {/* Full List (if expanded or on mobile) */}
               {showAllSkills && (
-                <div className="mb-8">
-                  <h2 className="text-xl font-bold text-white mb-4">All Skills</h2>
-                  <div className="space-y-2">
-                    {skills.map((skill, i) => {
+                <>
+                  {/* In-Site Apps Section */}
+                  {skills.inSiteApps.length > 0 && (
+                    <div className="mb-8">
+                      <h2 className="text-xl font-bold text-white mb-4">{t('rankings.skills.allSkills.inSiteApps')}</h2>
+                      <div className="space-y-2">
+                        {skills.inSiteApps.map((skill, i) => {
                       const mainVal = skillSort === 'stars' ? skill.githubStars :
                         skillSort === 'npm' ? skill.npmWeekly :
                         skillSort === 'pypi' ? skill.pypiWeekly : null
@@ -350,14 +375,12 @@ export default function RankingsPage() {
                           <div className="flex items-center gap-3 min-w-0">
                             <span className="text-gray-600 font-mono text-sm w-7 text-right shrink-0">{i + 1}.</span>
                             <div className="min-w-0">
-                              <a
-                                href={skill.website}
-                                target="_blank"
-                                rel="noopener noreferrer"
+                              <Link
+                                to={`/apps/${skill.canflySlug}`}
                                 className="text-white text-sm font-medium hover:text-blue-400 transition-colors"
                               >
                                 {skill.name}
-                              </a>
+                              </Link>
                               <span className="text-gray-600 text-xs ml-2">
                                 {skill.brand}
                               </span>
@@ -384,36 +407,92 @@ export default function RankingsPage() {
                                 </span>
                               ) : null}
                             </div>
-                            {skill.canflySlug && (
-                              <Link
-                                to={`/apps/${skill.canflySlug}`}
-                                className="text-xs px-2 py-0.5 rounded-full bg-green-600/20 text-green-400 border border-green-600/40 hover:bg-green-600/30 transition-colors"
-                              >
-                                Tutorial
-                              </Link>
-                            )}
+                            <Link
+                              to={`/apps/${skill.canflySlug}`}
+                              className="text-xs px-2 py-0.5 rounded-full bg-green-600/20 text-green-400 border border-green-600/40 hover:bg-green-600/30 transition-colors"
+                            >
+                              {t('rankings.skills.allSkills.tutorialButton')}
+                            </Link>
                           </div>
                         </div>
                       )
-                    })}
-                  </div>
-                </div>
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* External Tools Section */}
+                  {skills.externalApps.length > 0 && (
+                    <div className="mb-8">
+                      <h2 className="text-xl font-bold text-white mb-4">{t('rankings.skills.allSkills.moreTools')}</h2>
+                      <div className="space-y-2">
+                        {skills.externalApps.map((skill, i) => {
+                          const mainVal = skillSort === 'stars' ? skill.githubStars :
+                            skillSort === 'npm' ? skill.npmWeekly :
+                            skillSort === 'pypi' ? skill.pypiWeekly : null
+                          return (
+                            <div key={skill.name} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gray-900/50 transition-colors border-b border-gray-800/30">
+                              <div className="flex items-center gap-3 min-w-0">
+                                <span className="text-gray-600 font-mono text-sm w-7 text-right shrink-0">{i + 1}.</span>
+                                <div className="min-w-0">
+                                  <a
+                                    href={skill.website}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-white text-sm font-medium hover:text-blue-400 transition-colors"
+                                  >
+                                    {skill.name}
+                                  </a>
+                                  <span className="text-gray-600 text-xs ml-2">
+                                    {skill.brand}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-4 shrink-0">
+                                <span className="text-xs px-2 py-0.5 rounded-full bg-gray-800 text-gray-400 hidden sm:inline-block">
+                                  {CATEGORY_LABELS[skill.category] || skill.category}
+                                </span>
+                                <div className="flex gap-3 text-xs font-mono">
+                                  {skill.githubStars ? (
+                                    <span className="text-yellow-400/70">
+                                      ⭐ {skill.githubStars >= 1000 ? `${(skill.githubStars / 1000).toFixed(0)}k` : skill.githubStars}
+                                    </span>
+                                  ) : null}
+                                  {skill.npmWeekly ? (
+                                    <span className="text-green-400/70 hidden md:inline">
+                                      📦 {skill.npmWeekly >= 1000000 ? `${(skill.npmWeekly / 1000000).toFixed(1)}M` : `${(skill.npmWeekly / 1000).toFixed(0)}k`}
+                                    </span>
+                                  ) : null}
+                                  {skill.pypiWeekly ? (
+                                    <span className="text-blue-400/70 hidden md:inline">
+                                      🐍 {skill.pypiWeekly >= 1000000 ? `${(skill.pypiWeekly / 1000000).toFixed(1)}M` : `${(skill.pypiWeekly / 1000).toFixed(0)}k`}
+                                    </span>
+                                  ) : null}
+                                </div>
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
 
               <p className="text-gray-500 text-xs">
-                Data from GitHub, npm, PyPI, Docker Hub • Updated {skills[0]?.updatedAt || 'recently'}
+                Data from GitHub, npm, PyPI, Docker Hub • Updated {skills.all[0]?.updatedAt || 'recently'}
               </p>
             </>
           ) : (
             <>
               {/* Hardware sort controls */}
               <div className="flex items-center gap-2 mb-4 text-sm text-gray-400">
-                <span>Sort by:</span>
+                <span>{t('rankings.hardware.sortBy.label')}:</span>
                 {(
                   [
-                    ['geekbench', 'Geekbench'],
-                    ['rating', 'Rating'],
-                    ['price', 'Price'],
+                    ['geekbench', t('rankings.hardware.sortBy.geekbench')],
+                    ['rating', t('rankings.hardware.sortBy.rating')],
+                    ['price', t('rankings.hardware.sortBy.price')],
                   ] as [HardwareSort, string][]
                 ).map(([key, label]) => (
                   <button
@@ -436,17 +515,17 @@ export default function RankingsPage() {
                   <thead>
                     <tr className="border-b border-gray-800 text-gray-400">
                       <th className="py-3 pr-3 w-10">#</th>
-                      <th className="py-3 pr-3">Name</th>
+                      <th className="py-3 pr-3">{t('rankings.hardware.table.name')}</th>
                       <th className="py-3 pr-3 hidden sm:table-cell">
-                        🏆 Geekbench
+                        🏆 {t('rankings.hardware.table.geekbench')}
                       </th>
                       <th className="py-3 pr-3 hidden md:table-cell">
-                        RAM
+                        {t('rankings.hardware.table.ram')}
                       </th>
                       <th className="py-3 pr-3 hidden sm:table-cell">
-                        ⭐ Rating
+                        ⭐ {t('rankings.hardware.table.rating')}
                       </th>
-                      <th className="py-3 pr-3">💰 Price</th>
+                      <th className="py-3 pr-3">💰 {t('rankings.hardware.table.price')}</th>
                       <th className="py-3 w-20"></th>
                     </tr>
                   </thead>
@@ -537,7 +616,7 @@ export default function RankingsPage() {
                               to={`/apps/hardware/${hw.canflySlug}`}
                               className="text-xs px-2.5 py-1 rounded-full bg-green-600/20 text-green-400 border border-green-600/40 hover:bg-green-600/30 transition-colors"
                             >
-                              View
+                              {t('rankings.hardware.table.viewButton')}
                             </Link>
                           ) : hw.amazonUrl ? (
                             <a
@@ -546,7 +625,7 @@ export default function RankingsPage() {
                               rel="noopener noreferrer"
                               className="text-xs px-2.5 py-1 rounded-full bg-yellow-600/20 text-yellow-400 border border-yellow-600/40 hover:bg-yellow-600/30 transition-colors"
                             >
-                              Amazon
+                              {t('rankings.hardware.table.amazonButton')}
                             </a>
                           ) : null}
                         </td>
@@ -556,7 +635,7 @@ export default function RankingsPage() {
                 </table>
               </div>
               <p className="text-gray-500 text-xs mt-4">
-                {hardware.length} items listed
+                {t('rankings.hardware.itemsListed', { count: hardware.length })}
               </p>
             </>
           )}
