@@ -149,7 +149,9 @@
         "clawhub": "ClawHub",
         "github": "GitHub",
         "newest": "最新",
-        "price": "價格"
+        "price": "價格",
+        "popular": "熱門",
+        "stars": "星數"
       },
       "showMore": "顯示更多",
       "byCategory": {
@@ -170,7 +172,8 @@
         "rating": "評分",
         "newest": "最新",
         "price": "價格",
-        "popular": "熱門"
+        "popular": "熱門",
+        "geekbench": "效能"
       },
       "table": {
         "name": "名稱",

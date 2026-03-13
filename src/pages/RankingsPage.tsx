@@ -90,7 +90,8 @@ function computePercentiles<T>(items: T[], getter: (item: T) => number | null | 
   if (withValues.length === 0) return result
   withValues.sort((a, b) => a.val - b.val)
   for (let i = 0; i < withValues.length; i++) {
-    const pct = withValues.length === 1 ? 100 : (i / (withValues.length - 1)) * 100
+    // Use (i+1)/(n+1) so the lowest is never 0 and the highest is never exactly 100
+    const pct = withValues.length === 1 ? 100 : Math.round(((i + 1) / (withValues.length + 1)) * 100)
     result.set(withValues[i].item, pct)
   }
   return result

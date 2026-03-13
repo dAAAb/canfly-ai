@@ -20,9 +20,7 @@
     "website": "https://www.apple.com/mac-mini/",
     "productHuntUpvotes": null,
     "updatedAt": "2026-03-13",
-    "price": 599,
-    "geekbenchScore": 16800,
-    "amazonReviews": 3200
+    "price": 599
   },
   {
     "name": "MacBook Neo",
@@ -30,7 +28,7 @@
     "category": "mac",
     "description": "Most affordable MacBook ever — A18 Pro chip for lightweight AI tasks and OpenClaw setup",
     "geekbenchSingleCore": null,
-    "geekbenchMultiCore": null,
+    "geekbenchMultiCore": 14200,
     "maxMemoryGB": 8,
     "memoryBandwidthGBs": null,
     "amazonUrl": "https://www.amazon.com/dp/B0GR6F79MT?tag=juchunko-20",
@@ -45,9 +43,7 @@
     "website": "https://www.apple.com/macbook-neo/",
     "productHuntUpvotes": null,
     "updatedAt": "2026-03-13",
-    "price": 1099,
-    "geekbenchScore": 14200,
-    "amazonReviews": 850
+    "price": 1099
   },
   {
     "name": "Zeabur",
@@ -93,9 +89,7 @@
     "website": "https://www.geekom.com",
     "productHuntUpvotes": null,
     "updatedAt": "2026-03-13",
-    "price": 459,
-    "geekbenchScore": 11500,
-    "amazonReviews": 420
+    "price": 459
   },
   {
     "name": "Beelink SER5 MAX",
@@ -118,9 +112,7 @@
     "website": "https://www.bee-link.com",
     "productHuntUpvotes": null,
     "updatedAt": "2026-03-13",
-    "price": 309,
-    "geekbenchScore": 8200,
-    "amazonReviews": 1800
+    "price": 309
   },
   {
     "name": "Raspberry Pi 5 (8GB)",
@@ -143,9 +135,7 @@
     "website": "https://www.raspberrypi.com/products/raspberry-pi-5/",
     "productHuntUpvotes": null,
     "updatedAt": "2026-03-13",
-    "price": 80,
-    "geekbenchScore": 2700,
-    "amazonReviews": 950
+    "price": 80
   },
   {
     "name": "EVanlak 8K HDMI Dummy Plug",
@@ -168,8 +158,7 @@
     "website": null,
     "productHuntUpvotes": null,
     "updatedAt": "2026-03-13",
-    "price": 10,
-    "amazonReviews": 5200
+    "price": 10
   },
   {
     "name": "Elgato Stream Deck MK.2",
@@ -192,8 +181,7 @@
     "website": "https://www.elgato.com/stream-deck",
     "productHuntUpvotes": null,
     "updatedAt": "2026-03-13",
-    "price": 150,
-    "amazonReviews": 4100
+    "price": 150
   },
   {
     "name": "Fifine AM8 Microphone",
@@ -216,8 +204,7 @@
     "website": "https://www.fifinemicrophone.com",
     "productHuntUpvotes": null,
     "updatedAt": "2026-03-13",
-    "price": 55,
-    "amazonReviews": 2300
+    "price": 55
   },
   {
     "name": "Umbrel",
@@ -253,7 +240,7 @@
     "memoryBandwidthGBs": null,
     "amazonUrl": null,
     "amazonRating": 4.1,
-    "amazonReviewCount": null,
+    "amazonReviewCount": 280,
     "amazonBSR": 95,
     "mediaScore": null,
     "pricing": "TBD",
@@ -263,7 +250,6 @@
     "website": "https://www.switch-bot.com",
     "productHuntUpvotes": null,
     "updatedAt": "2026-03-13",
-    "price": 80,
-    "amazonReviews": 280
+    "price": 80
   }
 ]

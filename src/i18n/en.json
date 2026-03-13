@@ -149,7 +149,9 @@
         "clawhub": "ClawHub",
         "github": "GitHub",
         "newest": "Newest",
-        "price": "Price"
+        "price": "Price",
+        "popular": "Popular",
+        "stars": "Stars"
       },
       "showMore": "Show more",
       "byCategory": {
@@ -170,7 +172,8 @@
         "rating": "Rating",
         "newest": "Newest",
         "price": "Price",
-        "popular": "Popular"
+        "popular": "Popular",
+        "geekbench": "Performance"
       },
       "table": {
         "name": "Name",
