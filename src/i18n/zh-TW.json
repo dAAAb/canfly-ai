@@ -1,7 +1,9 @@
 {
   "nav": {
     "browseApps": "瀏覽應用",
-    "startFree": "免費開始"
+    "startFree": "免費開始",
+    "rankings": "排行榜",
+    "community": "社群"
   },
   "auth": {
     "joinCommunity": "加入 Flight 社群",

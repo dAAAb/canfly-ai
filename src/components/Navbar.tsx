@@ -57,6 +57,12 @@ export default function Navbar({ search, children }: NavbarProps) {
           <Link to={localePath('/apps')} className="text-sm text-gray-400 hover:text-white transition-colors">
             {t('nav.browseApps')}
           </Link>
+          <Link to={localePath('/rankings')} className="text-sm text-gray-400 hover:text-white transition-colors">
+            {t('nav.rankings')}
+          </Link>
+          <Link to={localePath('/community')} className="text-sm text-gray-400 hover:text-white transition-colors">
+            {t('nav.community')}
+          </Link>
           <LanguageSwitcher />
           <Link
             to={localePath('/apps/free/ollama')}
@@ -106,6 +112,20 @@ export default function Navbar({ search, children }: NavbarProps) {
             className="block text-sm text-gray-400 hover:text-white transition-colors"
           >
             {t('nav.browseApps')}
+          </Link>
+          <Link
+            to={localePath('/rankings')}
+            onClick={() => setMobileOpen(false)}
+            className="block text-sm text-gray-400 hover:text-white transition-colors"
+          >
+            {t('nav.rankings')}
+          </Link>
+          <Link
+            to={localePath('/community')}
+            onClick={() => setMobileOpen(false)}
+            className="block text-sm text-gray-400 hover:text-white transition-colors"
+          >
+            {t('nav.community')}
           </Link>
           <LanguageSwitcher />
           <Link

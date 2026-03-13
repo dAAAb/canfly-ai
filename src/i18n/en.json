@@ -1,7 +1,9 @@
 {
   "nav": {
     "browseApps": "Browse Apps",
-    "startFree": "Start Free"
+    "startFree": "Start Free",
+    "rankings": "Rankings",
+    "community": "Community"
   },
   "auth": {
     "joinCommunity": "Join Flight Community",
