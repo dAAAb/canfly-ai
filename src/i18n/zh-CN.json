@@ -549,7 +549,8 @@
           "🧠 智能前缀缓存，告别重复等待",
           "⚡ 多 Agent 并发支持，工作效率飞跃",
           "🔄 无缝替换 LM Studio，零学习成本",
-          "💾 SSD 冷存储技术，内存占用极低"
+          "💾 SSD 冷存储技术，内存占用极低",
+          "基于 Apple MLX 框架（仅限 M1-M4）"
         ],
         "cta": {
           "primary": "开始免费教程",
@@ -3516,17 +3517,23 @@
           "estimatedTime": "2 分钟",
           "content": "## 苹果的秘密武器\n\nMLX 是苹果公司开源的机器学习框架，专门为 Apple Silicon 的**统一内存架构**设计。与传统的 NVIDIA GPU 不同，Mac 的 CPU 和 GPU 共享同一块内存，这意味着：\n\n- 🔄 **零数据搬移**：不需要在 CPU 和 GPU 之间来回复制数据\n- ⚡ **极速访问**：内存带宽高达 400GB/s（M3 Max）\n- 💡 **智能调度**：自动在 CPU 和 GPU 之间分配计算任务\n\n想象一下，如果你的电脑是一个厨房，传统的 GPU 就像把食材放在另一个房间，每次做菜都要跑来跑去。而 Apple Silicon 就像把所有食材都放在触手可及的地方，效率自然翻倍！\n\n### 📹 真实案例\n我们在 YouTube 上测试发现：**一台丐版 Mac Mini 16GB，问 3 个问题从 5 分钟降到几乎秒回**。这就是统一内存架构的魔力。",
           "tips": [
-            {
-              "type": "info",
-              "content": "💡 **小贴士**：MLX 利用 Apple 的 Metal Performance Shaders，这是苹果专门为自家芯片优化的计算库。"
-            }
+            "检查芯片：Apple 菜单 > 关于本机 → 查看是否有 'M1'、'M2'、'M3' 或 'M4'",
+            "16GB 内存可运行大部分模型；32GB 以上适合大型模型和多个 Agent",
+            "MLX 模型与普通 PyTorch 模型不同（但 oMLX 会自动处理转换）"
           ],
-          "troubleshooting": [
-            {
-              "issue": "为什么我的 Intel Mac 不支持？",
-              "solution": "MLX 需要 Apple Silicon 的统一内存架构。Intel Mac 使用传统的分离式内存设计，无法发挥 MLX 的优势。"
-            }
-          ],
+          "troubleshooting": {
+            "title": "常见问题",
+            "items": [
+              {
+                "q": "我的 Mac 是 Intel 处理器 — 可以用 oMLX 吗？",
+                "a": "不行。oMLX 需要 Apple Silicon（M1/M2/M3/M4），无法在 Intel Mac 上运行。Intel Mac 建议改用 Ollama。"
+              },
+              {
+                "q": "我的 Mac 只有 8GB 内存 — 能用吗？",
+                "a": "不建议。8GB 内存难以顺利运行现代 LLM。建议使用 Ollama 的云端模型，或升级到 16GB 以上。"
+              }
+            ]
+          },
           "requirements": {
             "title": "⚠️ 系统要求（必读）",
             "items": [
@@ -3548,17 +3555,27 @@
             "brew services start omlx"
           ],
           "tips": [
-            {
-              "type": "success",
-              "content": "🎉 **安装成功标志**：终端显示版本号，或者在应用程序文件夹中看到 oMLX 图标。"
-            }
+            "DMG 版本内置自动更新机制",
+            "Homebrew 版本可自动作为后台服务运行",
+            "oMLX 默认使用 8000 端口（兼容 OpenAI 接口）"
           ],
-          "troubleshooting": [
-            {
-              "issue": "提示「无法打开，因为无法验证开发者」",
-              "solution": "右键点击 oMLX → 选择「打开」→ 在弹窗中点击「打开」。或者在「系统偏好设置 > 隐私与安全性」中点击「仍要打开」。"
-            }
-          ],
+          "troubleshooting": {
+            "title": "安装问题",
+            "items": [
+              {
+                "q": "无法打开 oMLX.app — 出现「未识别的开发者」错误",
+                "a": "前往「系统设置」→「隐私与安全性」，向下滚动，在 oMLX 警告旁点击「仍要打开」。"
+              },
+              {
+                "q": "端口 8000 已被占用",
+                "a": "其他服务正在使用端口 8000。用 `lsof -ti:8000 | xargs kill` 终止它，或设置 oMLX 使用其他端口。"
+              },
+              {
+                "q": "Homebrew 安装失败",
+                "a": "请确认已安装 Command Line Tools：`xcode-select --install`，然后重试安装。"
+              }
+            ]
+          },
           "expectedResult": "oMLX 出现在应用程序文件夹，或 `brew services info omlx` 显示运行中"
         },
         {
@@ -3571,21 +3588,27 @@
             "omlx serve --model-dir ~/models"
           ],
           "tips": [
-            {
-              "type": "info",
-              "content": "💡 **下载速度慢？** 可以使用国内镜像：`export HF_ENDPOINT=https://hf-mirror.com` 然后重新下载。"
-            },
-            {
-              "type": "warning",
-              "content": "⚠️ **内存不够？** 如果运行时出现内存不足，尝试更小的模型如 Qwen2.5-3B 或者关闭其他应用。"
-            }
+            "先从小模型开始测试，确认一切正常后再下载大模型",
+            "模型下载需要联网，但下载后完全离线运行",
+            "oMLX 首次加载时会自动将模型转换为 MLX 格式"
           ],
-          "troubleshooting": [
-            {
-              "issue": "下载中断或失败",
-              "solution": "检查网络连接，或者使用 `omlx download --resume` 恢复下载。"
-            }
-          ],
+          "troubleshooting": {
+            "title": "模型下载问题",
+            "items": [
+              {
+                "q": "模型下载很慢",
+                "a": "大型模型需要时间下载。请确保网络连接稳定，建议先从较小的 4GB 模型开始。"
+              },
+              {
+                "q": "模型无法加载",
+                "a": "请检查内存使用量 — 模型需要足够内存。尝试使用较小的量化版本（4bit 而非 8bit）。"
+              },
+              {
+                "q": "找不到已下载的模型",
+                "a": "请检查 oMLX 中的模型目录设置。默认为 ~/models，模型按名称存放在子目录中。"
+              }
+            ]
+          },
           "modelTable": {
             "models": [
               {
@@ -3704,12 +3727,29 @@
             ]
           },
           "tips": [
-            {
-              "type": "success",
-              "content": "🚀 **Pro Tip**：定期查看管理面板，根据使用情况调整缓存和并发设置。"
-            }
+            "将冷缓存设为可用 SSD 空间 — 重启后仍然保留",
+            "固定您的主要 OpenClaw 模型，使其始终保留在热缓存中",
+            "从 2 个并行 Agent 开始，根据内存和模型大小逐步增加",
+            "监控内存使用量 — 如果开始使用 swap，请减少缓存大小或使用较小的模型"
           ],
-          "expectedResult": "管理面板显示缓存统计和实时性能指标"
+          "expectedResult": "管理面板显示缓存统计和实时性能指标",
+          "troubleshooting": {
+            "title": "性能问题",
+            "items": [
+              {
+                "q": "缓存一直被清除",
+                "a": "在管理面板中增加热缓存大小。如果内存有限，使用较小的量化模型（4bit 而非 8bit）。"
+              },
+              {
+                "q": "多个 Agent 运行缓慢",
+                "a": "在管理面板中检查并行请求上限。建议从 2-4 个并行请求开始，根据性能调整。"
+              },
+              {
+                "q": "SSD 缓存未持久保存",
+                "a": "确认缓存目录的写入权限。检查磁盘空间 — oMLX 需要空间来写入缓存文件。"
+              }
+            ]
+          }
         },
         {
           "step": 5,
@@ -3741,33 +3781,32 @@
             }
           ],
           "tips": [
-            {
-              "type": "celebration",
-              "content": "🎊 **你做到了！** 现在你拥有了一个性能强劲的本地 AI 助手，无需担心 API 费用或网络问题。"
-            }
+            "运行基准测试命令来找到最佳并行设置",
+            "尝试视觉语言模型（VLM）来进行图像分析任务",
+            "尝试不同量化级别（4bit vs 8bit）以在速度和质量之间取得平衡"
           ]
         }
       ],
       "faq": [
         {
-          "question": "oMLX 和 LM Studio 有什么区别？",
-          "answer": "**核心差异在于架构优化：**\n\n**oMLX**：\n- ✅ 专为 Apple Silicon 原生优化\n- ✅ 统一内存架构，零数据搬移\n- ✅ 智能前缀缓存，避免重复计算\n- ✅ 更低的内存占用和功耗\n\n**LM Studio**：\n- ❌ 通用设计，未针对 Mac 特别优化\n- ❌ 传统的内存管理方式\n- ❌ 每次查询都要重新计算\n- ❌ 资源占用相对较高\n\n**简单来说**：如果你用的是 Apple Silicon Mac，oMLX 就像是为你的电脑量身定制的跑车，而 LM Studio 更像是通用的家用轿车。"
+          "q": "oMLX 和 LM Studio 有什么区别？",
+          "a": "LM Studio 是通用 LLM 界面，而 oMLX 专为 AI Agent 优化。主要区别：oMLX 有前缀缓存（跨调用共享系统提示词）、分层内存管理（热 RAM + 冷 SSD）和并行 Agent 支持。对于 OpenClaw，oMLX 由于缓存系统提示词处理，速度提升 10 倍以上。"
         },
         {
-          "question": "Intel Mac 能用吗？",
-          "answer": "**很遗憾，不可以。** oMLX 专门为 Apple Silicon 的统一内存架构设计，需要以下硬件特性：\n\n- 🔒 **统一内存**：CPU 和 GPU 共享同一块内存\n- ⚡ **Metal Performance Shaders**：苹果的专用计算库\n- 🧠 **Neural Engine**：苹果的机器学习芯片\n\nIntel Mac 使用传统的分离式架构，无法发挥 MLX 的优势。\n\n**替代方案**：\n- Intel Mac 用户建议使用 **Ollama** 或 **LM Studio**\n- 考虑升级到搭载 Apple Silicon 的新 Mac（性价比最高的是 Mac mini）"
+          "q": "Intel Mac 可以使用 oMLX 吗？",
+          "a": "不行。oMLX 需要 Apple Silicon（M1、M2、M3 或 M4 芯片）和 macOS 15.0+（Sequoia）。它基于 Apple 的 MLX 框架，仅支持 Apple Silicon。Intel Mac 用户建议使用 Ollama 或云端模型。"
         },
         {
-          "question": "需要多少内存？",
-          "answer": "**内存需求取决于你想运行的模型：**\n\n### 📊 内存需求表\n\n| Mac 内存 | 推荐模型 | 实际使用 | 体验等级 |\n|---------|---------|---------|----------|\n| **8GB** | Qwen2.5-3B | ~4GB | 🟡 基础对话 |\n| **16GB** | Qwen2.5-7B | ~6GB | 🟢 日常工作 |\n| **32GB** | Llama-3.1-8B | ~8GB | 🔵 专业使用 |\n| **64GB+** | Qwen2.5-32B | ~20GB | 🚀 极致性能 |\n\n### 💡 内存优化建议\n\n- **SSD 冷存储**：将不常用的权重存储到 SSD\n- **模型量化**：使用 4-bit 量化模型节省内存\n- **智能缓存**：让系统自动管理内存分配\n\n**底线**：8GB 能用，16GB 舒服，32GB+ 起飞！"
+          "q": "oMLX 需要多少内存？",
+          "a": "最低 16GB 可运行小模型，建议 32GB 以上用于生产环境。与传统推理不同，oMLX 的缓存意味着您需要内存来存放：模型权重 + KV 缓存 + 系统内存。经验法则：最佳缓存性能需要模型大小 2 倍的内存。"
         },
         {
-          "question": "可以同时跑多个 OpenClaw agent 吗？",
-          "answer": "**当然可以！这正是 oMLX 的强项之一。**\n\n### 🔄 并发支持详情\n\n**同时运行多个 Agent 的好处**：\n- 🎯 **专业分工**：代码 Agent + 写作 Agent + 分析 Agent\n- ⚡ **提升效率**：无需等待，同时处理多个任务\n- 🧠 **智能调度**：oMLX 自动管理计算资源\n\n### ⚙️ 配置建议\n\n```bash\n# 启动支持 4 个并发的服务\nomlx serve --max-concurrent 4 --port 8000\n```\n\n**内存需求**：\n- **16GB Mac**：建议最多 2-3 个轻量 Agent\n- **32GB Mac**：可以舒服运行 4-6 个 Agent\n- **64GB+ Mac**：随便跑，天空才是极限\n\n**实际案例**：我们测试过在 32GB Mac Studio 上同时运行 5 个不同的 OpenClaw Agent，响应速度依然丝滑！"
+          "q": "可以用 oMLX 同时运行多个 OpenClaw Agent 吗？",
+          "a": "可以！这是 oMLX 的关键优势之一。多个 Agent 可以共享同一个缓存的系统提示词，使并行执行非常高效。建议从 2-4 个并行 Agent 开始，根据内存和模型大小调整。"
         },
         {
-          "question": "oMLX 可以配合 Claude Code 用吗？",
-          "answer": "**完全可以！而且效果惊人。**\n\n### 🤝 完美搭配的理由\n\n**本地 + 云端的最佳组合**：\n- 🏠 **oMLX（本地）**：处理频繁的工具调用、代码补全、快速查询\n- ☁️ **Claude Code（云端）**：处理复杂推理、创意写作、专业分析\n\n### ⚙️ 配置方案\n\n```json\n{\n  \"models\": {\n    \"fast\": \"omlx/qwen2.5-7b-instruct\",  // 本地快速响应\n    \"smart\": \"anthropic/claude-3.5-sonnet\", // 云端强大推理\n    \"routing\": {\n      \"tool_calls\": \"fast\",\n      \"complex_reasoning\": \"smart\",\n      \"code_generation\": \"fast\",\n      \"creative_writing\": \"smart\"\n    }\n  }\n}\n```\n\n### 🎯 使用场景\n\n- **日常编程**：oMLX 处理代码补全和简单查询\n- **复杂项目**：Claude 处理架构设计和算法优化\n- **学习研究**：本地快速验证 + 云端深度分析\n\n**结果**：既有本地的隐私和速度，又有云端的强大能力！"
+          "q": "oMLX 支持 Claude Code 和其他 AI 编程 Agent 吗？",
+          "a": "完全支持。oMLX 提供兼容 OpenAI 的 API，因此支持任何使用 OpenAI API 格式的工具。包括 Claude Code、Codex、Aider 和数十种其他 AI 编程工具。速度提升在频繁调用工具的编程 Agent 中尤为明显。"
         }
       ]
     },

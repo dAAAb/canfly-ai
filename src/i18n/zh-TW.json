@@ -3524,12 +3524,19 @@
             "建議至少 16GB RAM 才能發揮最佳效能",
             "確認 macOS 版本已更新到 15.0 以上"
           ],
-          "troubleshooting": [
-            {
-              "question": "我是 Intel Mac 怎麼辦？",
-              "answer": "oMLX 和 MLX 框架僅支援 Apple Silicon，Intel Mac 無法使用。建議改用 Ollama 搭配雲端模型，或考慮升級到 M 系列 Mac。"
-            }
-          ]
+          "troubleshooting": {
+            "title": "常見問題",
+            "items": [
+              {
+                "q": "我的 Mac 是 Intel 處理器 — 可以用 oMLX 嗎？",
+                "a": "不行。oMLX 需要 Apple Silicon（M1/M2/M3/M4），無法在 Intel Mac 上執行。Intel Mac 建議改用 Ollama。"
+              },
+              {
+                "q": "我的 Mac 只有 8GB RAM — 能用嗎？",
+                "a": "不建議。8GB 記憶體難以順利運行現代 LLM。建議使用 Ollama 的雲端模型，或升級到 16GB 以上。"
+              }
+            ]
+          }
         },
         {
           "id": 1,
@@ -3546,7 +3553,24 @@
             "Homebrew 版本可用 `brew services start omlx` 設定開機自啟",
             "兩種安裝方式功能完全相同，選擇你習慣的即可"
           ],
-          "expectedResult": "oMLX 出現在應用程式資料夾，或 `brew services info omlx` 顯示運行中"
+          "expectedResult": "oMLX 出現在應用程式資料夾，或 `brew services info omlx` 顯示運行中",
+          "troubleshooting": {
+            "title": "安裝問題",
+            "items": [
+              {
+                "q": "無法開啟 oMLX.app — 出現「未識別的開發者」錯誤",
+                "a": "前往「系統設定」→「隱私與安全性」，向下捲動，在 oMLX 警告旁點擊「仍要打開」。"
+              },
+              {
+                "q": "Port 8000 已被佔用",
+                "a": "其他服務正在使用 port 8000。用 `lsof -ti:8000 | xargs kill` 終止它，或設定 oMLX 使用其他 port。"
+              },
+              {
+                "q": "Homebrew 安裝失敗",
+                "a": "請確認已安裝 Command Line Tools：`xcode-select --install`，然後重試安裝。"
+              }
+            ]
+          }
         },
         {
           "id": 2,
@@ -3590,7 +3614,24 @@
               }
             ]
           },
-          "expectedResult": "模型出現在 oMLX 面板中，可以開始使用"
+          "expectedResult": "模型出現在 oMLX 面板中，可以開始使用",
+          "troubleshooting": {
+            "title": "模型下載問題",
+            "items": [
+              {
+                "q": "模型下載很慢",
+                "a": "大型模型需要時間下載。請確保網路連線穩定，建議先從較小的 4GB 模型開始。"
+              },
+              {
+                "q": "模型無法載入",
+                "a": "請檢查 RAM 使用量 — 模型需要足夠記憶體。嘗試使用較小的量化版本（4bit 而非 8bit）。"
+              },
+              {
+                "q": "找不到已下載的模型",
+                "a": "請檢查 oMLX 中的模型目錄設定。預設為 ~/models，模型按名稱存放在子目錄中。"
+              }
+            ]
+          }
         },
         {
           "title": "連接 Claude Code",
@@ -3668,12 +3709,30 @@
           "tips": [
             "第一次執行任務時會建立快取，後續速度會大幅提升",
             "可以在管理介面調整快取大小和並發數量",
-            "SSD 快取檔案位於 ~/.omlx/cache，可手動清除"
+            "SSD 快取檔案位於 ~/.omlx/cache，可手動清除",
+            "監控記憶體使用量 — 如果開始使用 swap，請減少快取大小或使用較小的模型"
           ],
           "commands": [
             "open http://localhost:8000/admin"
           ],
-          "expectedResult": "管理面板顯示快取統計和即時效能指標"
+          "expectedResult": "管理面板顯示快取統計和即時效能指標",
+          "troubleshooting": {
+            "title": "效能問題",
+            "items": [
+              {
+                "q": "快取一直被清除",
+                "a": "在管理面板中增加熱快取大小。如果 RAM 有限，使用較小的量化模型（4bit 而非 8bit）。"
+              },
+              {
+                "q": "多個 Agent 運行緩慢",
+                "a": "在管理面板中檢查並行請求上限。建議從 2-4 個並行請求開始，依效能調整。"
+              },
+              {
+                "q": "SSD 快取未持久保存",
+                "a": "確認快取目錄的寫入權限。檢查磁碟空間 — oMLX 需要空間來寫入快取檔案。"
+              }
+            ]
+          }
         },
         {
           "id": 5,
