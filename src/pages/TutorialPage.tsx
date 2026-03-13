@@ -1901,6 +1901,22 @@ export default function TutorialPage() {
           })}
         </div>
 
+        {/* FAQ Section */}
+        {tutorial.faq && tutorial.faq.length > 0 && (
+          <div className="mt-12">
+            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+              <span>❓</span> FAQ
+            </h2>
+            <div className="space-y-3">
+              {tutorial.faq.map((item: FaqItem, index: number) => (
+                <Collapsible key={index} title={item.q}>
+                  <p className="text-gray-400 text-sm whitespace-pre-line">{item.a}</p>
+                </Collapsible>
+              ))}
+            </div>
+          </div>
+        )}
+
         {completedSteps.length === totalSteps && (
           <div className="mt-8 text-center bg-gradient-to-r from-green-900/20 to-emerald-900/20 border border-green-700/30 rounded-xl p-8">
             <div className="text-4xl mb-3">🎉</div>
