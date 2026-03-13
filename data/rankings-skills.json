@@ -36,22 +36,6 @@
     "updatedAt": "2026-03-13"
   },
   {
-    "name": "MLX",
-    "brand": "Apple",
-    "category": "ai-framework",
-    "description": "Array framework for Apple Silicon machine learning",
-    "githubRepo": "ml-explore/mlx",
-    "githubStars": 24361,
-    "pypiPackage": "mlx",
-    "pypiWeekly": 219140,
-    "clawhubDownloads": 15780,
-    "productHuntUpvotes": null,
-    "pricing": "Free / Open Source",
-    "website": "https://ml-explore.github.io/mlx/",
-    "canflySlug": "omlx",
-    "updatedAt": "2026-03-13"
-  },
-  {
     "name": "oMLX",
     "brand": "OpenClaw",
     "category": "ai-framework",
@@ -76,20 +60,6 @@
     "pypiWeekly": 1511793,
     "clawhubDownloads": 6340,
     "productHuntUpvotes": 2750,
-    "pricing": "Free tier / Pro $5/mo",
-    "website": "https://elevenlabs.io",
-    "canflySlug": "elevenlabs",
-    "updatedAt": "2026-03-13"
-  },
-  {
-    "name": "ElevenLabs JS",
-    "brand": "ElevenLabs",
-    "category": "tts-stt",
-    "description": "ElevenLabs JavaScript/TypeScript SDK",
-    "npmPackage": "@elevenlabs/elevenlabs-js",
-    "npmWeekly": 335918,
-    "clawhubDownloads": null,
-    "productHuntUpvotes": null,
     "pricing": "Free tier / Pro $5/mo",
     "website": "https://elevenlabs.io",
     "canflySlug": "elevenlabs",

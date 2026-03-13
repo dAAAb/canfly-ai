@@ -169,7 +169,8 @@
         "performance": "性能",
         "rating": "评分",
         "newest": "最新",
-        "price": "价格"
+        "price": "价格",
+        "popular": "热门"
       },
       "table": {
         "name": "名称",

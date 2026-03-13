@@ -7,9 +7,8 @@ import hardwareData from '../../data/rankings-hardware.json'
 
 type Tab = 'skills' | 'hardware' | 'models'
 type View = 'global' | 'community'
-type SkillSort = 'popularity' | 'clawhub' | 'github' | 'newest' | 'price'
-type HardwareSort = 'popularity' | 'performance' | 'rating' | 'newest' | 'price'
-type PriceDir = 'asc' | 'desc'
+type SkillSort = 'popularity' | 'clawhub' | 'stars' | 'newest' | 'price'
+type HardwareSort = 'popularity' | 'geekbench' | 'rating' | 'newest' | 'price'
 
 interface SkillItem {
   name: string
@@ -45,19 +44,17 @@ interface HardwareItem {
   amazonReviewCount: number | null
   amazonBSR: number | null
   mediaScore: number | null
-  productHuntUpvotes?: number | null
   pricing: string
   pricingNote: string
   keySpec: string
   canflySlug: string | null
   website: string | null
-  updatedAt?: string
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
   'ai-framework': 'AI Framework',
-  'tts-stt': 'Voice / TTS',
   tts: 'Voice / TTS',
+  'tts-stt': 'Voice / TTS',
   video: 'Video',
   email: 'Email',
   web3: 'Web3',
@@ -78,92 +75,48 @@ function parsePriceNum(pricing: string): number {
   return parseInt(match[0].replace(/[$,]/g, ''), 10)
 }
 
-// Percentile normalization: rank items by a metric, return 0-100 score
-function computePercentiles(items: { value: number | null }[]): (number | null)[] {
-  const validValues = items
-    .map((item, i) => ({ value: item.value, index: i }))
-    .filter((x) => x.value !== null && x.value !== undefined)
-    .sort((a, b) => (a.value as number) - (b.value as number))
-
-  const scores: (number | null)[] = new Array(items.length).fill(null)
-  const n = validValues.length
-  if (n === 0) return scores
-
-  validValues.forEach((item, rank) => {
-    scores[item.index] = n === 1 ? 100 : (rank / (n - 1)) * 100
-  })
-
-  return scores
-}
-
-// Skills popularity: ClawHub 30%, GitHub 20%, npm 15%, PyPI 15%, Docker 10%, PH 10%
-function computeSkillPopularity(items: SkillItem[]): number[] {
-  const weights = [
-    { key: 'clawhubDownloads' as const, weight: 0.3 },
-    { key: 'githubStars' as const, weight: 0.2 },
-    { key: 'npmWeekly' as const, weight: 0.15 },
-    { key: 'pypiWeekly' as const, weight: 0.15 },
-    { key: 'dockerPulls' as const, weight: 0.1 },
-    { key: 'productHuntUpvotes' as const, weight: 0.1 },
-  ]
-
-  const percentilesByMetric = weights.map(({ key }) =>
-    computePercentiles(items.map((item) => ({ value: (item[key] as number | null | undefined) ?? null })))
-  )
-
-  return items.map((_, i) => {
-    let totalWeight = 0
-    let weightedSum = 0
-
-    weights.forEach(({ weight }, mi) => {
-      const pctile = percentilesByMetric[mi][i]
-      if (pctile !== null) {
-        totalWeight += weight
-        weightedSum += pctile * weight
-      }
-    })
-
-    if (totalWeight === 0) return 0
-    return weightedSum / totalWeight
-  })
-}
-
-// Hardware popularity: Geekbench 25%, Amazon Reviews 20%, Rating 15%, BSR 15%, Media 15%, PH 10%
-function computeHardwarePopularity(items: HardwareItem[]): number[] {
-  const weights: { key: string; weight: number; invert?: boolean }[] = [
-    { key: 'geekbenchMultiCore', weight: 0.25 },
-    { key: 'amazonReviewCount', weight: 0.2 },
-    { key: 'amazonRating', weight: 0.15 },
-    { key: 'amazonBSR', weight: 0.15, invert: true },
-    { key: 'mediaScore', weight: 0.15 },
-    { key: 'productHuntUpvotes', weight: 0.1 },
-  ]
-
-  const percentilesByMetric = weights.map(({ key, invert }) => {
-    const pctiles = computePercentiles(
-      items.map((item) => ({ value: (item[key as keyof HardwareItem] as number | null) ?? null }))
-    )
-    if (invert) {
-      return pctiles.map((p) => (p !== null ? 100 - p : null))
+/** Convert raw values to percentile ranks (0-100). Items with null/0 get null. */
+function computePercentiles<T>(items: T[], getter: (item: T) => number | null | undefined): Map<T, number | null> {
+  const result = new Map<T, number | null>()
+  const withValues: { item: T; val: number }[] = []
+  for (const item of items) {
+    const v = getter(item)
+    if (v != null && v > 0) {
+      withValues.push({ item, val: v })
+    } else {
+      result.set(item, null)
     }
-    return pctiles
-  })
+  }
+  if (withValues.length === 0) return result
+  withValues.sort((a, b) => a.val - b.val)
+  for (let i = 0; i < withValues.length; i++) {
+    const pct = withValues.length === 1 ? 100 : (i / (withValues.length - 1)) * 100
+    result.set(withValues[i].item, pct)
+  }
+  return result
+}
 
-  return items.map((_, i) => {
-    let totalWeight = 0
-    let weightedSum = 0
+/** Compute weighted popularity from percentile maps. Missing metrics get zeroed and remaining weights rescale. */
+function weightedPopularity<T>(
+  item: T,
+  metrics: { pctMap: Map<T, number | null>; weight: number }[]
+): number {
+  let totalWeight = 0
+  let score = 0
+  for (const { pctMap, weight } of metrics) {
+    const pct = pctMap.get(item)
+    if (pct != null) {
+      totalWeight += weight
+      score += pct * weight
+    }
+  }
+  return totalWeight > 0 ? score / totalWeight : 0
+}
 
-    weights.forEach(({ weight }, mi) => {
-      const pctile = percentilesByMetric[mi][i]
-      if (pctile !== null) {
-        totalWeight += weight
-        weightedSum += pctile * weight
-      }
-    })
-
-    if (totalWeight === 0) return 0
-    return weightedSum / totalWeight
-  })
+function formatNum(val: number): string {
+  if (val >= 1_000_000) return `${(val / 1_000_000).toFixed(1)}M`
+  if (val >= 1_000) return `${(val / 1_000).toFixed(1)}k`
+  return String(val)
 }
 
 export default function RankingsPage() {
@@ -171,14 +124,37 @@ export default function RankingsPage() {
   const [tab, setTab] = useState<Tab>('skills')
   const [view, setView] = useState<View>('global')
   const [skillSort, setSkillSort] = useState<SkillSort>('popularity')
+  const [skillPriceAsc, setSkillPriceAsc] = useState(true)
   const [hardwareSort, setHardwareSort] = useState<HardwareSort>('popularity')
-  const [skillPriceDir, setSkillPriceDir] = useState<PriceDir>('asc')
-  const [hwPriceDir, setHwPriceDir] = useState<PriceDir>('asc')
+  const [hardwarePriceAsc, setHardwarePriceAsc] = useState(true)
   const [search, setSearch] = useState('')
   const [showAllSkills, setShowAllSkills] = useState(false)
 
   const skills = useMemo(() => {
-    const items = (skillsData as SkillItem[]).filter(
+    const allItems = skillsData as SkillItem[]
+
+    // Compute percentiles across ALL items (before filtering)
+    const clawhubPct = computePercentiles(allItems, s => s.clawhubDownloads)
+    const githubPct = computePercentiles(allItems, s => s.githubStars)
+    const npmPct = computePercentiles(allItems, s => s.npmWeekly)
+    const pypiPct = computePercentiles(allItems, s => s.pypiWeekly)
+    const dockerPct = computePercentiles(allItems, s => s.dockerPulls)
+    const phPct = computePercentiles(allItems, s => s.productHuntUpvotes)
+
+    const popularityScores = new Map<SkillItem, number>()
+    for (const item of allItems) {
+      popularityScores.set(item, weightedPopularity(item, [
+        { pctMap: clawhubPct, weight: 0.30 },
+        { pctMap: githubPct, weight: 0.20 },
+        { pctMap: npmPct, weight: 0.15 },
+        { pctMap: pypiPct, weight: 0.15 },
+        { pctMap: dockerPct, weight: 0.10 },
+        { pctMap: phPct, weight: 0.10 },
+      ]))
+    }
+
+    // Filter by search
+    let items = allItems.filter(
       (s) =>
         !search ||
         s.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -186,19 +162,18 @@ export default function RankingsPage() {
         s.category.toLowerCase().includes(search.toLowerCase())
     )
 
-    const popularityScores = computeSkillPopularity(items)
-    const inSiteApps = items.filter((item) => item.canflySlug)
-    const externalOnly = items.filter((item) => !item.canflySlug)
-    const popMap = new Map(items.map((item, i) => [item.name, popularityScores[i]]))
+    // Separate in-site apps from external-only items
+    const inSiteApps = items.filter(item => item.canflySlug)
+    const externalOnly = items.filter(item => !item.canflySlug)
 
     const sortFn = (a: SkillItem, b: SkillItem) => {
-      if (skillSort === 'popularity') return (popMap.get(b.name) ?? 0) - (popMap.get(a.name) ?? 0)
+      if (skillSort === 'popularity') return (popularityScores.get(b) ?? 0) - (popularityScores.get(a) ?? 0)
       if (skillSort === 'clawhub') return (b.clawhubDownloads ?? 0) - (a.clawhubDownloads ?? 0)
-      if (skillSort === 'github') return (b.githubStars ?? 0) - (a.githubStars ?? 0)
+      if (skillSort === 'stars') return (b.githubStars ?? 0) - (a.githubStars ?? 0)
       if (skillSort === 'newest') return (b.updatedAt ?? '').localeCompare(a.updatedAt ?? '')
       if (skillSort === 'price') {
         const diff = parsePriceNum(a.pricing) - parsePriceNum(b.pricing)
-        return skillPriceDir === 'asc' ? diff : -diff
+        return skillPriceAsc ? diff : -diff
       }
       return 0
     }
@@ -210,12 +185,35 @@ export default function RankingsPage() {
       inSiteApps: sortedInSite,
       externalApps: sortedExternal,
       all: [...sortedInSite, ...sortedExternal],
-      popMap,
+      popularityScores,
     }
-  }, [skillSort, skillPriceDir, search])
+  }, [skillSort, skillPriceAsc, search])
 
   const hardware = useMemo(() => {
-    const items = (hardwareData as HardwareItem[]).filter(
+    const allItems = hardwareData as HardwareItem[]
+
+    // Compute percentiles across ALL items
+    const geekPct = computePercentiles(allItems, h => h.geekbenchMultiCore)
+    const reviewCountPct = computePercentiles(allItems, h => h.amazonReviewCount)
+    const ratingPct = computePercentiles(allItems, h => h.amazonRating)
+    // BSR is inverted — lower BSR is better
+    const bsrPct = computePercentiles(allItems, h => h.amazonBSR ? (1000 - h.amazonBSR) : null)
+    const mediaPct = computePercentiles(allItems, h => h.mediaScore)
+    const phPct = computePercentiles(allItems, () => null) // no PH data in hardware
+
+    const popularityScores = new Map<HardwareItem, number>()
+    for (const item of allItems) {
+      popularityScores.set(item, weightedPopularity(item, [
+        { pctMap: geekPct, weight: 0.25 },
+        { pctMap: reviewCountPct, weight: 0.20 },
+        { pctMap: ratingPct, weight: 0.15 },
+        { pctMap: bsrPct, weight: 0.15 },
+        { pctMap: mediaPct, weight: 0.15 },
+        { pctMap: phPct, weight: 0.10 },
+      ]))
+    }
+
+    let items = allItems.filter(
       (h) =>
         !search ||
         h.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -223,80 +221,62 @@ export default function RankingsPage() {
         h.category.toLowerCase().includes(search.toLowerCase())
     )
 
-    const popularityScores = computeHardwarePopularity(items)
-    const popMap = new Map(items.map((item, i) => [item.name, popularityScores[i]]))
-
-    const sorted = [...items].sort((a, b) => {
-      if (hardwareSort === 'popularity') return (popMap.get(b.name) ?? 0) - (popMap.get(a.name) ?? 0)
-      if (hardwareSort === 'performance') return (b.geekbenchMultiCore ?? 0) - (a.geekbenchMultiCore ?? 0)
+    items = [...items].sort((a, b) => {
+      if (hardwareSort === 'popularity') return (popularityScores.get(b) ?? 0) - (popularityScores.get(a) ?? 0)
+      if (hardwareSort === 'geekbench') return (b.geekbenchMultiCore ?? 0) - (a.geekbenchMultiCore ?? 0)
       if (hardwareSort === 'rating') return (b.amazonRating ?? 0) - (a.amazonRating ?? 0)
-      if (hardwareSort === 'newest') return (b.updatedAt ?? '').localeCompare(a.updatedAt ?? '')
+      if (hardwareSort === 'newest') return 0 // no date field in hardware, keep original order
       if (hardwareSort === 'price') {
         const diff = parsePriceNum(a.pricing) - parsePriceNum(b.pricing)
-        return hwPriceDir === 'asc' ? diff : -diff
+        return hardwarePriceAsc ? diff : -diff
       }
       return 0
     })
-    return { items: sorted, popMap }
-  }, [hardwareSort, hwPriceDir, search])
+    return { items, popularityScores }
+  }, [hardwareSort, hardwarePriceAsc, search])
 
   const tabs: { key: Tab; label: string }[] = [
-    { key: 'skills', label: '\uD83D\uDEE0\uFE0F ' + t('rankings.tabs.skills') },
-    { key: 'hardware', label: '\uD83C\uDFE0 ' + t('rankings.tabs.hardware') },
-    { key: 'models', label: '\uD83E\uDDE0 ' + t('rankings.tabs.models') },
-  ]
-
-  const skillSortTabs: { key: SkillSort; label: string }[] = [
-    { key: 'popularity', label: '\uD83D\uDD25 ' + t('rankings.skills.sortBy.popularity') },
-    { key: 'clawhub', label: '\uD83D\uDCE6 ' + t('rankings.skills.sortBy.clawhub') },
-    { key: 'github', label: '\u2B50 ' + t('rankings.skills.sortBy.github') },
-    { key: 'newest', label: '\uD83C\uDD95 ' + t('rankings.skills.sortBy.newest') },
-    { key: 'price', label: '\uD83D\uDCB0 ' + t('rankings.skills.sortBy.price') + (skillSort === 'price' ? (skillPriceDir === 'asc' ? '\u25B2' : '\u25BC') : '') },
-  ]
-
-  const hwSortTabs: { key: HardwareSort; label: string }[] = [
-    { key: 'popularity', label: '\uD83D\uDD25 ' + t('rankings.hardware.sortBy.popularity') },
-    { key: 'performance', label: '\uD83C\uDFC6 ' + t('rankings.hardware.sortBy.performance') },
-    { key: 'rating', label: '\u2B50 ' + t('rankings.hardware.sortBy.rating') },
-    { key: 'newest', label: '\uD83C\uDD95 ' + t('rankings.hardware.sortBy.newest') },
-    { key: 'price', label: '\uD83D\uDCB0 ' + t('rankings.hardware.sortBy.price') + (hardwareSort === 'price' ? (hwPriceDir === 'asc' ? '\u25B2' : '\u25BC') : '') },
+    { key: 'skills', label: `🛠️ ${t('rankings.tabs.skills')}` },
+    { key: 'hardware', label: `🏠 ${t('rankings.tabs.hardware')}` },
+    { key: 'models', label: `🧠 ${t('rankings.tabs.models')}` },
   ]
 
   const brandSlug = (brand: string) =>
     brand.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 
-  const handleSkillSortClick = (key: SkillSort) => {
-    if (key === 'price' && skillSort === 'price') {
-      setSkillPriceDir((d) => (d === 'asc' ? 'desc' : 'asc'))
+  const handleSkillPriceToggle = () => {
+    if (skillSort === 'price') {
+      setSkillPriceAsc(prev => !prev)
     } else {
-      setSkillSort(key)
-      if (key === 'price') setSkillPriceDir('asc')
+      setSkillSort('price')
+      setSkillPriceAsc(true)
     }
   }
 
-  const handleHwSortClick = (key: HardwareSort) => {
-    if (key === 'price' && hardwareSort === 'price') {
-      setHwPriceDir((d) => (d === 'asc' ? 'desc' : 'asc'))
+  const handleHardwarePriceToggle = () => {
+    if (hardwareSort === 'price') {
+      setHardwarePriceAsc(prev => !prev)
     } else {
-      setHardwareSort(key)
-      if (key === 'price') setHwPriceDir('asc')
+      setHardwareSort('price')
+      setHardwarePriceAsc(true)
     }
   }
 
-  const getSkillBarVal = (skill: SkillItem) => {
-    if (skillSort === 'popularity') return skills.popMap.get(skill.name) ?? 0
-    if (skillSort === 'clawhub') return skill.clawhubDownloads ?? 0
-    if (skillSort === 'github') return skill.githubStars ?? 0
-    if (skillSort === 'price') return parsePriceNum(skill.pricing)
-    return 0
-  }
+  const skillSortButtons: { key: SkillSort; label: string; isPrice?: boolean }[] = [
+    { key: 'popularity', label: `🔥 ${t('rankings.skills.sortBy.popular')}` },
+    { key: 'clawhub', label: `📦 ${t('rankings.skills.sortBy.clawhub')}` },
+    { key: 'stars', label: `⭐ ${t('rankings.skills.sortBy.stars')}` },
+    { key: 'newest', label: `🆕 ${t('rankings.skills.sortBy.newest')}` },
+    { key: 'price', label: `💰 ${t('rankings.skills.sortBy.price')}${skillSort === 'price' ? (skillPriceAsc ? '▲' : '▼') : ''}`, isPrice: true },
+  ]
 
-  const formatBarVal = (val: number) => {
-    if (skillSort === 'popularity') return val.toFixed(0)
-    if (val >= 1000000) return `${(val / 1000000).toFixed(1)}M`
-    if (val >= 1000) return `${(val / 1000).toFixed(1)}k`
-    return String(val)
-  }
+  const hardwareSortButtons: { key: HardwareSort; label: string; isPrice?: boolean }[] = [
+    { key: 'popularity', label: `🔥 ${t('rankings.hardware.sortBy.popular')}` },
+    { key: 'geekbench', label: `🏆 ${t('rankings.hardware.sortBy.geekbench')}` },
+    { key: 'rating', label: `⭐ ${t('rankings.hardware.sortBy.rating')}` },
+    { key: 'newest', label: `🆕 ${t('rankings.hardware.sortBy.newest')}` },
+    { key: 'price', label: `💰 ${t('rankings.hardware.sortBy.price')}${hardwareSort === 'price' ? (hardwarePriceAsc ? '▲' : '▼') : ''}`, isPrice: true },
+  ]
 
   return (
     <>
@@ -383,7 +363,7 @@ export default function RankingsPage() {
             <>
               {/* Leaderboard Section */}
               <div className="mb-12">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
                   <div>
                     <h2 className="text-xl font-bold text-white flex items-center gap-2">
                       📊 {t('rankings.skills.leaderboard.title')}
@@ -393,10 +373,10 @@ export default function RankingsPage() {
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-1 bg-gray-900 rounded-lg p-1">
-                    {skillSortTabs.map(({ key, label }) => (
+                    {skillSortButtons.map(({ key, label, isPrice }) => (
                       <button
                         key={key}
-                        onClick={() => handleSkillSortClick(key)}
+                        onClick={() => isPrice ? handleSkillPriceToggle() : setSkillSort(key)}
                         className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
                           skillSort === key
                             ? 'bg-gray-700 text-white'
@@ -409,20 +389,36 @@ export default function RankingsPage() {
                   </div>
                 </div>
 
-                {/* Bar Chart — top 10 (not for newest) */}
-                {skillSort !== 'newest' && (() => {
+                {/* Bar Chart — top 10 */}
+                {(() => {
                   const top10 = skills.all.slice(0, 10)
-                  const maxVal = Math.max(...top10.map(getSkillBarVal), 1)
-                  const barColor = skillSort === 'github' ? 'bg-yellow-500/60' :
+                  const getVal = (s: SkillItem): number => {
+                    if (skillSort === 'clawhub') return s.clawhubDownloads ?? 0
+                    if (skillSort === 'stars') return s.githubStars ?? 0
+                    if (skillSort === 'newest') return 0
+                    if (skillSort === 'price') return parsePriceNum(s.pricing)
+                    return skills.popularityScores.get(s) ?? 0
+                  }
+                  const getLabel = (s: SkillItem): string => {
+                    if (skillSort === 'popularity') {
+                      const score = skills.popularityScores.get(s) ?? 0
+                      return score.toFixed(0)
+                    }
+                    const val = getVal(s)
+                    if (skillSort === 'price') return s.pricing
+                    return formatNum(val)
+                  }
+                  const maxVal = Math.max(...top10.map(getVal), 1)
+                  const barColor = skillSort === 'stars' ? 'bg-yellow-500/60' :
                     skillSort === 'clawhub' ? 'bg-orange-500/60' :
                     skillSort === 'price' ? 'bg-emerald-500/60' :
-                    'bg-gradient-to-r from-blue-500/60 via-green-500/60 to-yellow-500/60'
+                    'bg-gradient-to-r from-orange-500/60 via-blue-500/60 to-yellow-500/60'
                   return (
                     <div className="bg-gray-900/50 rounded-xl border border-gray-800 p-4 sm:p-6 mb-8">
                       <div className="space-y-3">
                         {top10.map((skill, i) => {
-                          const val = getSkillBarVal(skill)
-                          const pct = (val / maxVal) * 100
+                          const val = getVal(skill)
+                          const pct = maxVal > 0 ? (val / maxVal) * 100 : 0
                           return (
                             <div key={skill.name} className="flex items-center gap-3 group">
                               <span className="text-gray-500 font-mono text-sm w-6 text-right shrink-0">{i + 1}.</span>
@@ -451,7 +447,7 @@ export default function RankingsPage() {
                                     </span>
                                   </div>
                                   <span className="text-gray-300 text-sm font-mono shrink-0 ml-2">
-                                    {skillSort === 'price' ? skill.pricing : formatBarVal(val)}
+                                    {getLabel(skill)}
                                   </span>
                                 </div>
                                 <div className="w-full bg-gray-800 rounded-full h-2 overflow-hidden">
@@ -468,40 +464,6 @@ export default function RankingsPage() {
                     </div>
                   )
                 })()}
-
-                {/* Newest view: simple list with dates */}
-                {skillSort === 'newest' && (
-                  <div className="bg-gray-900/50 rounded-xl border border-gray-800 p-4 sm:p-6 mb-8">
-                    <div className="space-y-2">
-                      {skills.all.slice(0, 10).map((skill, i) => (
-                        <div key={skill.name} className="flex items-center justify-between py-1.5">
-                          <div className="flex items-center gap-3 min-w-0">
-                            <span className="text-gray-500 font-mono text-sm w-6 text-right shrink-0">{i + 1}.</span>
-                            {skill.canflySlug ? (
-                              <Link
-                                to={`/apps/${skill.canflySlug}`}
-                                className="text-white text-sm font-medium hover:text-blue-400 transition-colors truncate"
-                              >
-                                {skill.name}
-                              </Link>
-                            ) : (
-                              <a
-                                href={skill.website}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-white text-sm font-medium hover:text-blue-400 transition-colors truncate"
-                              >
-                                {skill.name}
-                              </a>
-                            )}
-                            <span className="text-gray-600 text-xs hidden sm:inline">by {skill.brand}</span>
-                          </div>
-                          <span className="text-gray-400 text-xs font-mono shrink-0">{skill.updatedAt ?? '—'}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
 
                 {/* Show more toggle */}
                 {showAllSkills ? null : skills.all.length > 10 && (
@@ -540,6 +502,7 @@ export default function RankingsPage() {
               {/* Full List (if expanded) */}
               {showAllSkills && (
                 <>
+                  {/* In-Site Apps Section */}
                   {skills.inSiteApps.length > 0 && (
                     <div className="mb-8">
                       <h2 className="text-xl font-bold text-white mb-4">{t('rankings.skills.allSkills.inSiteApps')}</h2>
@@ -604,6 +567,7 @@ export default function RankingsPage() {
                     </div>
                   )}
 
+                  {/* External Tools Section */}
                   {skills.externalApps.length > 0 && (
                     <div className="mb-8">
                       <h2 className="text-xl font-bold text-white mb-4">{t('rankings.skills.allSkills.moreTools')}</h2>
@@ -675,10 +639,10 @@ export default function RankingsPage() {
               {/* Hardware sort controls */}
               <div className="flex flex-wrap items-center gap-2 mb-4 text-sm text-gray-400">
                 <span>{t('rankings.hardware.sortBy.label')}:</span>
-                {hwSortTabs.map(({ key, label }) => (
+                {hardwareSortButtons.map(({ key, label, isPrice }) => (
                   <button
                     key={key}
-                    onClick={() => handleHwSortClick(key)}
+                    onClick={() => isPrice ? handleHardwarePriceToggle() : setHardwareSort(key)}
                     className={`px-2 py-1 rounded transition-colors ${
                       hardwareSort === key
                         ? 'bg-blue-600/20 text-blue-400 border border-blue-600/40'
@@ -697,11 +661,6 @@ export default function RankingsPage() {
                     <tr className="border-b border-gray-800 text-gray-400">
                       <th className="py-3 pr-3 w-10">#</th>
                       <th className="py-3 pr-3">{t('rankings.hardware.table.name')}</th>
-                      {hardwareSort === 'popularity' && (
-                        <th className="py-3 pr-3 hidden sm:table-cell">
-                          🔥 {t('rankings.hardware.sortBy.popularity')}
-                        </th>
-                      )}
                       <th className="py-3 pr-3 hidden sm:table-cell">
                         🏆 {t('rankings.hardware.table.geekbench')}
                       </th>
@@ -757,21 +716,6 @@ export default function RankingsPage() {
                             </div>
                           </div>
                         </td>
-                        {hardwareSort === 'popularity' && (
-                          <td className="py-3 pr-3 hidden sm:table-cell">
-                            <div className="flex items-center gap-2">
-                              <div className="w-16 bg-gray-800 rounded-full h-2 overflow-hidden">
-                                <div
-                                  className="h-full rounded-full bg-gradient-to-r from-blue-500/60 to-yellow-500/60"
-                                  style={{ width: `${Math.max(hardware.popMap.get(hw.name) ?? 0, 2)}%` }}
-                                />
-                              </div>
-                              <span className="text-gray-300 text-xs font-mono">
-                                {(hardware.popMap.get(hw.name) ?? 0).toFixed(0)}
-                              </span>
-                            </div>
-                          </td>
-                        )}
                         <td className="py-3 pr-3 hidden sm:table-cell">
                           {hw.geekbenchSingleCore ? (
                             <div className="text-xs">

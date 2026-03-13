@@ -169,7 +169,8 @@
         "performance": "Performance",
         "rating": "Rating",
         "newest": "Newest",
-        "price": "Price"
+        "price": "Price",
+        "popular": "Popular"
       },
       "table": {
         "name": "Name",

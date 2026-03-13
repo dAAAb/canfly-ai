@@ -169,7 +169,8 @@
         "performance": "效能",
         "rating": "評分",
         "newest": "最新",
-        "price": "價格"
+        "price": "價格",
+        "popular": "熱門"
       },
       "table": {
         "name": "名稱",
