@@ -8,7 +8,7 @@ import hardwareData from '../../data/rankings-hardware.json'
 type Tab = 'skills' | 'hardware' | 'models'
 type View = 'global' | 'community'
 type SkillSort = 'popularity' | 'stars' | 'npm' | 'pypi' | 'name'
-type HardwareSort = 'geekbench' | 'rating' | 'price'
+type HardwareSort = 'geekbench' | 'rating' | 'mediaScore' | 'price'
 
 interface SkillItem {
   name: string
@@ -23,6 +23,8 @@ interface SkillItem {
   pypiWeekly?: number | null
   dockerImage?: string | null
   dockerPulls?: number | null
+  clawhubDownloads?: number | null
+  productHuntUpvotes?: number | null
   pricing: string
   website: string
   canflySlug?: string | null
@@ -40,6 +42,8 @@ interface HardwareItem {
   amazonUrl: string | null
   amazonRating: number | null
   amazonReviewCount: number | null
+  amazonBSR: number | null
+  mediaScore: number | null
   pricing: string
   pricingNote: string
   keySpec: string
@@ -50,6 +54,7 @@ interface HardwareItem {
 const CATEGORY_LABELS: Record<string, string> = {
   'ai-framework': 'AI Framework',
   tts: 'Voice / TTS',
+  'tts-stt': 'Voice / TTS',
   video: 'Video',
   email: 'Email',
   web3: 'Web3',
@@ -95,8 +100,8 @@ export default function RankingsPage() {
     // Sort each group separately
     const sortFn = (a: SkillItem, b: SkillItem) => {
       if (skillSort === 'popularity') {
-        const aScore = (a.githubStars ?? 0) + (a.npmWeekly ?? 0) + (a.pypiWeekly ?? 0) + (a.dockerPulls ?? 0) / 1000
-        const bScore = (b.githubStars ?? 0) + (b.npmWeekly ?? 0) + (b.pypiWeekly ?? 0) + (b.dockerPulls ?? 0) / 1000
+        const aScore = (a.githubStars ?? 0) + (a.npmWeekly ?? 0) + (a.pypiWeekly ?? 0) + ((a.dockerPulls ?? 0) / 1000) + ((a.clawhubDownloads ?? 0) * 2) + ((a.productHuntUpvotes ?? 0) * 10)
+        const bScore = (b.githubStars ?? 0) + (b.npmWeekly ?? 0) + (b.pypiWeekly ?? 0) + ((b.dockerPulls ?? 0) / 1000) + ((b.clawhubDownloads ?? 0) * 2) + ((b.productHuntUpvotes ?? 0) * 10)
         return bScore - aScore
       }
       if (skillSort === 'stars') return (b.githubStars ?? 0) - (a.githubStars ?? 0)
@@ -126,6 +131,8 @@ export default function RankingsPage() {
         return (b.geekbenchMultiCore ?? 0) - (a.geekbenchMultiCore ?? 0)
       if (hardwareSort === 'rating')
         return (b.amazonRating ?? 0) - (a.amazonRating ?? 0)
+      if (hardwareSort === 'mediaScore')
+        return (b.mediaScore ?? 0) - (a.mediaScore ?? 0)
       if (hardwareSort === 'price')
         return parsePriceNum(a.pricing) - parsePriceNum(b.pricing)
       return 0
@@ -265,7 +272,7 @@ export default function RankingsPage() {
                     if (skillSort === 'stars') return s.githubStars ?? 0
                     if (skillSort === 'npm') return s.npmWeekly ?? 0
                     if (skillSort === 'pypi') return s.pypiWeekly ?? 0
-                    return (s.githubStars ?? 0) + (s.npmWeekly ?? 0) + (s.pypiWeekly ?? 0) + ((s.dockerPulls ?? 0) / 1000)
+                    return (s.githubStars ?? 0) + (s.npmWeekly ?? 0) + (s.pypiWeekly ?? 0) + ((s.dockerPulls ?? 0) / 1000) + ((s.clawhubDownloads ?? 0) * 2) + ((s.productHuntUpvotes ?? 0) * 10)
                   }
                   const maxVal = Math.max(...top10.map(getVal), 1)
                   const barColor = skillSort === 'stars' ? 'bg-yellow-500/60' :
@@ -406,6 +413,16 @@ export default function RankingsPage() {
                                   🐍 {skill.pypiWeekly >= 1000000 ? `${(skill.pypiWeekly / 1000000).toFixed(1)}M` : `${(skill.pypiWeekly / 1000).toFixed(0)}k`}
                                 </span>
                               ) : null}
+                              {skill.clawhubDownloads ? (
+                                <span className="text-orange-400/70 hidden lg:inline">
+                                  🦞 {skill.clawhubDownloads >= 1000 ? `${(skill.clawhubDownloads / 1000).toFixed(1)}k` : skill.clawhubDownloads}
+                                </span>
+                              ) : null}
+                              {skill.productHuntUpvotes ? (
+                                <span className="text-red-400/70 hidden lg:inline">
+                                  🔺 {skill.productHuntUpvotes >= 1000 ? `${(skill.productHuntUpvotes / 1000).toFixed(1)}k` : skill.productHuntUpvotes}
+                                </span>
+                              ) : null}
                             </div>
                             <Link
                               to={`/apps/${skill.canflySlug}`}
@@ -468,6 +485,16 @@ export default function RankingsPage() {
                                       🐍 {skill.pypiWeekly >= 1000000 ? `${(skill.pypiWeekly / 1000000).toFixed(1)}M` : `${(skill.pypiWeekly / 1000).toFixed(0)}k`}
                                     </span>
                                   ) : null}
+                                  {skill.clawhubDownloads ? (
+                                    <span className="text-orange-400/70 hidden lg:inline">
+                                      🦞 {skill.clawhubDownloads >= 1000 ? `${(skill.clawhubDownloads / 1000).toFixed(1)}k` : skill.clawhubDownloads}
+                                    </span>
+                                  ) : null}
+                                  {skill.productHuntUpvotes ? (
+                                    <span className="text-red-400/70 hidden lg:inline">
+                                      🔺 {skill.productHuntUpvotes >= 1000 ? `${(skill.productHuntUpvotes / 1000).toFixed(1)}k` : skill.productHuntUpvotes}
+                                    </span>
+                                  ) : null}
                                 </div>
                               </div>
                             </div>
@@ -480,7 +507,7 @@ export default function RankingsPage() {
               )}
 
               <p className="text-gray-500 text-xs">
-                Data from GitHub, npm, PyPI, Docker Hub • Updated {skills.all[0]?.updatedAt || 'recently'}
+                Data from GitHub, npm, PyPI, Docker Hub, ClawHub, Product Hunt • Updated {skills.all[0]?.updatedAt || 'recently'}
               </p>
             </>
           ) : (
@@ -492,6 +519,7 @@ export default function RankingsPage() {
                   [
                     ['geekbench', t('rankings.hardware.sortBy.geekbench')],
                     ['rating', t('rankings.hardware.sortBy.rating')],
+                    ['mediaScore', t('rankings.hardware.sortBy.mediaScore')],
                     ['price', t('rankings.hardware.sortBy.price')],
                   ] as [HardwareSort, string][]
                 ).map(([key, label]) => (
@@ -524,6 +552,9 @@ export default function RankingsPage() {
                       </th>
                       <th className="py-3 pr-3 hidden sm:table-cell">
                         ⭐ {t('rankings.hardware.table.rating')}
+                      </th>
+                      <th className="py-3 pr-3 hidden lg:table-cell">
+                        📰 {t('rankings.hardware.table.mediaScore')}
                       </th>
                       <th className="py-3 pr-3">💰 {t('rankings.hardware.table.price')}</th>
                       <th className="py-3 w-20"></th>
@@ -597,7 +628,25 @@ export default function RankingsPage() {
                               <span className="text-gray-500 ml-1">
                                 ({hw.amazonReviewCount?.toLocaleString()})
                               </span>
+                              {hw.amazonBSR ? (
+                                <div className="text-gray-500 mt-0.5">
+                                  BSR #{hw.amazonBSR}
+                                </div>
+                              ) : null}
                             </div>
+                          ) : (
+                            <span className="text-gray-600">—</span>
+                          )}
+                        </td>
+                        <td className="py-3 pr-3 hidden lg:table-cell">
+                          {hw.mediaScore ? (
+                            <span className={`text-sm font-mono ${
+                              hw.mediaScore >= 90 ? 'text-green-400' :
+                              hw.mediaScore >= 80 ? 'text-yellow-400' :
+                              'text-gray-400'
+                            }`}>
+                              {hw.mediaScore}/100
+                            </span>
                           ) : (
                             <span className="text-gray-600">—</span>
                           )}

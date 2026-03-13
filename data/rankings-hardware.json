@@ -11,11 +11,15 @@
     "amazonUrl": "https://www.amazon.com/dp/B0DLBTPDCS?tag=juchunko-20",
     "amazonRating": 4.8,
     "amazonReviewCount": 2100,
+    "amazonBSR": 3,
+    "mediaScore": 92,
     "pricing": "$599",
     "pricingNote": "16GB / 256GB SSD base",
     "keySpec": "M4 10-core CPU, up to 32GB unified memory",
     "canflySlug": "mac-mini-m4",
-    "website": "https://www.apple.com/mac-mini/"
+    "website": "https://www.apple.com/mac-mini/",
+    "productHuntUpvotes": null,
+    "updatedAt": "2026-03-13"
   },
   {
     "name": "Mac Mini M4 Pro",
@@ -29,11 +33,15 @@
     "amazonUrl": null,
     "amazonRating": null,
     "amazonReviewCount": null,
+    "amazonBSR": null,
+    "mediaScore": 90,
     "pricing": "$1,399",
     "pricingNote": "24GB / 512GB SSD base, up to $2,799 maxed",
     "keySpec": "M4 Pro 14-core CPU, up to 64GB unified memory",
     "canflySlug": null,
-    "website": "https://www.apple.com/shop/buy-mac/mac-mini"
+    "website": "https://www.apple.com/shop/buy-mac/mac-mini",
+    "productHuntUpvotes": null,
+    "updatedAt": "2026-03-13"
   },
   {
     "name": "MacBook Pro 14\" M4 Pro",
@@ -47,11 +55,15 @@
     "amazonUrl": "https://www.amazon.com/dp/B0DLHY2BJ6?tag=juchunko-20",
     "amazonRating": 4.7,
     "amazonReviewCount": 850,
+    "amazonBSR": 12,
+    "mediaScore": 91,
     "pricing": "$1,999",
     "pricingNote": "24GB / 512GB SSD base",
     "keySpec": "M4 Pro, up to 48GB unified memory, 22hr battery",
     "canflySlug": null,
-    "website": "https://www.apple.com/macbook-pro/"
+    "website": "https://www.apple.com/macbook-pro/",
+    "productHuntUpvotes": null,
+    "updatedAt": "2026-03-13"
   },
   {
     "name": "MacBook Pro 16\" M4 Max",
@@ -65,11 +77,15 @@
     "amazonUrl": null,
     "amazonRating": null,
     "amazonReviewCount": null,
+    "amazonBSR": null,
+    "mediaScore": 93,
     "pricing": "$3,499",
     "pricingNote": "36GB / 1TB SSD base, up to 128GB configurable",
     "keySpec": "M4 Max 16-core CPU, up to 128GB unified memory",
     "canflySlug": null,
-    "website": "https://www.apple.com/macbook-pro/"
+    "website": "https://www.apple.com/macbook-pro/",
+    "productHuntUpvotes": null,
+    "updatedAt": "2026-03-13"
   },
   {
     "name": "Mac Studio M4 Max",
@@ -83,11 +99,15 @@
     "amazonUrl": null,
     "amazonRating": null,
     "amazonReviewCount": null,
+    "amazonBSR": null,
+    "mediaScore": 89,
     "pricing": "$1,999",
     "pricingNote": "36GB / 512GB SSD base",
     "keySpec": "M4 Max 16-core CPU, up to 128GB unified memory, active cooling",
     "canflySlug": null,
-    "website": "https://www.apple.com/mac-studio/"
+    "website": "https://www.apple.com/mac-studio/",
+    "productHuntUpvotes": null,
+    "updatedAt": "2026-03-13"
   },
   {
     "name": "MacBook Neo",
@@ -101,11 +121,15 @@
     "amazonUrl": "https://www.amazon.com/dp/B0GR6F79MT?tag=juchunko-20",
     "amazonRating": 4.6,
     "amazonReviewCount": 320,
+    "amazonBSR": 8,
+    "mediaScore": 78,
     "pricing": "$599",
     "pricingNote": "8GB / 256GB SSD",
     "keySpec": "A18 Pro, 8GB memory, 13\" display, ultra-portable 2.7 lbs",
     "canflySlug": "macbook-neo",
-    "website": "https://www.apple.com/macbook-neo/"
+    "website": "https://www.apple.com/macbook-neo/",
+    "productHuntUpvotes": null,
+    "updatedAt": "2026-03-13"
   },
   {
     "name": "Zeabur",
@@ -119,11 +143,15 @@
     "amazonUrl": null,
     "amazonRating": null,
     "amazonReviewCount": null,
+    "amazonBSR": null,
+    "mediaScore": null,
     "pricing": "Free — $5/mo",
     "pricingNote": "Free $5 credit, Developer $5/mo, Team $80/mo",
     "keySpec": "Pay-per-minute, up to 4 vCPU / 8GB per container",
     "canflySlug": "zeabur",
-    "website": "https://zeabur.com"
+    "website": "https://zeabur.com",
+    "productHuntUpvotes": null,
+    "updatedAt": "2026-03-13"
   },
   {
     "name": "AWS EC2 (GPU)",
@@ -137,11 +165,15 @@
     "amazonUrl": null,
     "amazonRating": null,
     "amazonReviewCount": null,
+    "amazonBSR": null,
+    "mediaScore": null,
     "pricing": "$0.53/hr+",
     "pricingNote": "g5.xlarge $1.006/hr (A10G), p5.48xlarge $98.32/hr (8×H100)",
     "keySpec": "NVIDIA A10G / H100 GPUs, scalable on demand",
     "canflySlug": null,
-    "website": "https://aws.amazon.com/ec2/instance-types/"
+    "website": "https://aws.amazon.com/ec2/instance-types/",
+    "productHuntUpvotes": null,
+    "updatedAt": "2026-03-13"
   },
   {
     "name": "GEEKOM A8 Mini PC",
@@ -155,11 +187,15 @@
     "amazonUrl": "https://www.amazon.com/dp/B0D22PDDFN?tag=juchunko-20",
     "amazonRating": 4.5,
     "amazonReviewCount": 180,
+    "amazonBSR": 45,
+    "mediaScore": 82,
     "pricing": "$529",
     "pricingNote": "32GB DDR5 / 1TB SSD",
     "keySpec": "AMD Ryzen 7 8745HS, 32GB DDR5, Radeon 780M GPU",
     "canflySlug": "geekom-a8",
-    "website": "https://www.geekom.com"
+    "website": "https://www.geekom.com",
+    "productHuntUpvotes": null,
+    "updatedAt": "2026-03-13"
   },
   {
     "name": "Beelink SER5 MAX",
@@ -173,11 +209,15 @@
     "amazonUrl": "https://www.amazon.com/dp/B0C2X5ZJ5S?tag=juchunko-20",
     "amazonRating": 4.4,
     "amazonReviewCount": 620,
+    "amazonBSR": 28,
+    "mediaScore": 76,
     "pricing": "$439",
     "pricingNote": "24GB DDR4 / 1TB SSD",
     "keySpec": "AMD Ryzen 7 5800H, 24GB DDR4, best value for local AI",
     "canflySlug": "beelink-ser5-max",
-    "website": "https://www.bee-link.com"
+    "website": "https://www.bee-link.com",
+    "productHuntUpvotes": null,
+    "updatedAt": "2026-03-13"
   },
   {
     "name": "Raspberry Pi 5 (8GB)",
@@ -191,11 +231,15 @@
     "amazonUrl": "https://www.amazon.com/dp/B0CL3B4R4H?tag=juchunko-20",
     "amazonRating": 4.6,
     "amazonReviewCount": 1400,
+    "amazonBSR": 15,
+    "mediaScore": 85,
     "pricing": "$80",
     "pricingNote": "8GB model, board only",
     "keySpec": "BCM2712 quad-core ARM, 8GB LPDDR4X, GPIO for IoT",
     "canflySlug": "raspberry-pi-5",
-    "website": "https://www.raspberrypi.com/products/raspberry-pi-5/"
+    "website": "https://www.raspberrypi.com/products/raspberry-pi-5/",
+    "productHuntUpvotes": null,
+    "updatedAt": "2026-03-13"
   },
   {
     "name": "EVanlak 8K HDMI Dummy Plug",
@@ -209,11 +253,15 @@
     "amazonUrl": "https://www.amazon.com/dp/B0CL21JLB1?tag=juchunko-20",
     "amazonRating": 4.5,
     "amazonReviewCount": 3200,
+    "amazonBSR": 6,
+    "mediaScore": null,
     "pricing": "$9",
     "pricingNote": "Single plug",
     "keySpec": "8K@30Hz / 4K@120Hz, world's smallest HDMI dummy plug",
     "canflySlug": "hdmi-dummy-plug",
-    "website": null
+    "website": null,
+    "productHuntUpvotes": null,
+    "updatedAt": "2026-03-13"
   },
   {
     "name": "Elgato Stream Deck MK.2",
@@ -227,10 +275,80 @@
     "amazonUrl": "https://www.amazon.com/dp/B09738CV2Q?tag=juchunko-20",
     "amazonRating": 4.7,
     "amazonReviewCount": 5400,
+    "amazonBSR": 2,
+    "mediaScore": 88,
     "pricing": "$150",
     "pricingNote": "15-key model",
     "keySpec": "15 customizable LCD keys, USB-C, plugin ecosystem",
     "canflySlug": "elgato-stream-deck",
-    "website": "https://www.elgato.com/stream-deck"
+    "website": "https://www.elgato.com/stream-deck",
+    "productHuntUpvotes": null,
+    "updatedAt": "2026-03-13"
+  },
+  {
+    "name": "Fifine AM8 Microphone",
+    "brand": "Fifine",
+    "category": "accessory",
+    "description": "AI voice input made easy — dynamic USB microphone with noise cancellation for voice commands and dictation",
+    "geekbenchSingleCore": null,
+    "geekbenchMultiCore": null,
+    "maxMemoryGB": null,
+    "memoryBandwidthGBs": null,
+    "amazonUrl": "https://www.amazon.com/dp/B0C5NRQKDS?tag=juchunko-20",
+    "amazonRating": 4.6,
+    "amazonReviewCount": 2800,
+    "amazonBSR": 18,
+    "mediaScore": null,
+    "pricing": "$50",
+    "pricingNote": "USB + XLR, shock mount included",
+    "keySpec": "Dynamic cardioid, USB+XLR, noise cancellation, RGB",
+    "canflySlug": "fifine-am8",
+    "website": "https://www.fifinemicrophone.com",
+    "productHuntUpvotes": null,
+    "updatedAt": "2026-03-13"
+  },
+  {
+    "name": "Umbrel",
+    "brand": "Umbrel",
+    "category": "accessory",
+    "description": "Self-hosted home server OS — run your own AI, apps, and services with complete data sovereignty",
+    "geekbenchSingleCore": null,
+    "geekbenchMultiCore": null,
+    "maxMemoryGB": null,
+    "memoryBandwidthGBs": null,
+    "amazonUrl": null,
+    "amazonRating": null,
+    "amazonReviewCount": null,
+    "amazonBSR": null,
+    "mediaScore": 84,
+    "pricing": "$299",
+    "pricingNote": "Home server hardware, or free OS install",
+    "keySpec": "Self-hosted app store, privacy-focused, no subscription",
+    "canflySlug": "umbrel",
+    "website": "https://umbrel.com",
+    "productHuntUpvotes": null,
+    "updatedAt": "2026-03-13"
+  },
+  {
+    "name": "SwitchBot AI Hub",
+    "brand": "SwitchBot",
+    "category": "accessory",
+    "description": "Smart home meets AI — bridge IoT hardware with intelligent automation and agent-controlled environments",
+    "geekbenchSingleCore": null,
+    "geekbenchMultiCore": null,
+    "maxMemoryGB": null,
+    "memoryBandwidthGBs": null,
+    "amazonUrl": null,
+    "amazonRating": null,
+    "amazonReviewCount": null,
+    "amazonBSR": null,
+    "mediaScore": null,
+    "pricing": "TBD",
+    "pricingNote": "Coming soon",
+    "keySpec": "Matter/Thread support, AI-powered automation, 100+ device compatibility",
+    "canflySlug": "switchbot-ai-hub",
+    "website": "https://www.switch-bot.com",
+    "productHuntUpvotes": null,
+    "updatedAt": "2026-03-13"
   }
 ]
