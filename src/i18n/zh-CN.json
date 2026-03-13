@@ -3246,7 +3246,7 @@
           "title": "选择免费云端模型",
           "titleEn": "Choose a Free Cloud Model",
           "estimatedTime": "30 秒",
-          "content": "免费云端模型让你立即体验 AI — 不需要 GPU。但首先，你需要**登录** Ollama 账号才能使用云端模型。\n\n**重要：**云端模型需要先执行 `ollama signin`，这会打开浏览器进行认证。",
+          "content": "免费云端模型让你立即体验 AI — 不需要 GPU。但首先，你需要**登录** Ollama 账号才能使用云端模型。\n\n**重要：**云端模型需要先执行 `ollama signin`，这会打开浏览器进行认证。\n\n💡 **想用本地模型？** 如果你的电脑有 16GB 以上内存，也可以选择本地模型如 `qwen3:8b`。本地模型完全离线运行，不需要网络，但需要足够的内存。详见下方 FAQ「本地模型需要多少内存？」",
           "commands": [
             "# 第一步：登录 Ollama（会打开浏览器）",
             "ollama signin",
@@ -3314,7 +3314,7 @@
           "title": "下一步",
           "titleEn": "What's Next",
           "estimatedTime": "探索时间！",
-          "content": "你已经零成本跑起一个完整的 AI agent！以下是升级的方式：",
+          "content": "你已经零成本跑起一个完整的 AI agent！以下是升级的方式：\n\n### 🖥️ 尝试本地模型\n在 `ollama launch` 菜单中，按 `→` 可以切换模型。选择 `qwen3:8b`（需要 16GB+ 内存）体验完全离线的 AI。本地模型的优势：完全隐私、不需要网络、永远免费。",
           "tips": [
             "免费云端额度很适合入门",
             "云端模型不需要 GPU",
@@ -3377,6 +3377,14 @@
         {
           "q": "我输入 'glm5' 但显示 'file does not exist'？",
           "a": "云端模型名称包含连字符和 :cloud 后缀。要用 `glm-5:cloud`（不是 `glm5`）。同样地，用 `kimi-k2.5:cloud` 和 `minimax-m2.5:cloud`。"
+        },
+        {
+          "q": "本地模型需要多少内存？",
+          "a": "qwen3:8b (8B 参数): 需要约 11GB 内存，建议 12-16GB；glm-4.7-flash (更大): 需要 25GB+ 内存。经验法则：模型文件大小 × 1.5-2倍 = 所需内存。如果你的电脑只有 8GB 内存，请使用云端模型（glm-5:cloud, minimax-m2.5:cloud）— 免费且不需要本地内存。如果有 16GB+ 内存，可以舒适运行 qwen3:8b 本地模型。内存不足的征象：响应极慢（简单问候需要数分钟）、系统无响应、高 swap 使用量。"
+        },
+        {
+          "q": "切换模型后 OpenClaw 还是用旧的模型？",
+          "a": "这是常见问题！三步骤修复：1. 停止旧模型：`ollama stop <旧模型名称>`（例如 `ollama stop glm-5:cloud`）2. 重启 OpenClaw gateway：关闭 OpenClaw（Ctrl+C 两次），然后用 `ollama launch openclaw` 重新启动 3. 如果还是卡住，关闭所有终端窗口重新开始。根本原因：OpenClaw 的 gateway 会缓存模型，而 Ollama 会将旧模型保留在内存中。两者都需要清除。"
         }
       ],
       "screenshots": {

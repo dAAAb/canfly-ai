@@ -3247,7 +3247,7 @@
           "title": "Choose a Free Cloud Model",
           "titleEn": "Choose a Free Cloud Model",
           "estimatedTime": "30 sec",
-          "content": "Free cloud models let you experience AI instantly — no GPU needed. But first, you need to **sign in** to your Ollama account to use cloud models.\n\n**Important:** Cloud models require `ollama signin` first. This opens your browser for authentication.",
+          "content": "Free cloud models let you experience AI instantly — no GPU needed. But first, you need to **sign in** to your Ollama account to use cloud models.\n\n**Important:** Cloud models require `ollama signin` first. This opens your browser for authentication.\n\n💡 **Want to use a local model?** If your machine has 16GB+ RAM, you can also choose a local model like `qwen3:8b`. Local models run completely offline — no internet needed — but require sufficient memory. See the FAQ below: \"How much RAM do local models need?\"",
           "commands": [
             "# Step 1: Sign in to Ollama (opens browser)",
             "ollama signin",
@@ -3315,7 +3315,7 @@
           "title": "What's Next?",
           "titleEn": "What's Next",
           "estimatedTime": "Explore!",
-          "content": "You're running a full AI agent with zero cost! Here's how to level up:",
+          "content": "You're running a full AI agent with zero cost! Here's how to level up:\n\n### 🖥️ Try a Local Model\nIn the `ollama launch` menu, press `→` to switch models. Choose `qwen3:8b` (requires 16GB+ RAM) to experience fully offline AI. Benefits of local models: complete privacy, no internet needed, forever free.",
           "tips": [
             "Free cloud quota is great for getting started",
             "No GPU needed for cloud models",
@@ -3378,6 +3378,14 @@
         {
           "q": "I typed 'glm5' but got 'file does not exist'?",
           "a": "Cloud model names include a hyphen and the :cloud suffix. Use `glm-5:cloud` (not `glm5`). Similarly, use `kimi-k2.5:cloud` and `minimax-m2.5:cloud`."
+        },
+        {
+          "q": "How much RAM do local models need?",
+          "a": "qwen3:8b (8B params): needs ~11GB RAM, recommended 12-16GB; glm-4.7-flash (larger): needs ~25GB+ RAM. Rule of thumb: model file size × 1.5-2x = required RAM. If your machine has 8GB RAM, stick with cloud models (glm-5:cloud, minimax-m2.5:cloud) — they're free and need zero local memory. If 16GB+ RAM, you can comfortably run qwen3:8b locally. Signs of insufficient memory: extremely slow responses (minutes for a simple \"Hi\"), system becomes unresponsive, high swap usage."
+        },
+        {
+          "q": "After switching models, OpenClaw still uses the old one?",
+          "a": "This is a common issue! Three steps to fix: 1. Stop the old model: `ollama stop <old-model-name>` (e.g. `ollama stop glm-5:cloud`) 2. Restart OpenClaw gateway: exit OpenClaw (Ctrl+C twice), then relaunch with `ollama launch openclaw` 3. If still stuck, close ALL Terminal windows and start fresh. The root cause: OpenClaw's gateway caches the model, and Ollama keeps the old model loaded in memory. Both need to be cleared."
         }
       ],
       "screenshots": {
