@@ -38,7 +38,7 @@ type PlatformFilter = 'all' | 'openclaw' | 'other'
 
 export default function CommunityPage() {
   const { t } = useTranslation()
-  const { localePath } = useLanguage()
+  const { localePath, currentLang } = useLanguage()
 
   const [users, setUsers] = useState<CommunityUser[]>([])
   const [agents, setAgents] = useState<AgentWithSkillCount[]>([])
