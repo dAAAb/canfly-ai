@@ -4109,6 +4109,126 @@
           "a": "Each skill is a transparent SKILL.md markdown file you can review before use. API keys are stored locally and never shared. Skills only execute when your agent explicitly invokes them."
         }
       ]
+    },
+    "agent-onboarding": {
+      "title": "Get Your AI Agent on CanFly in 5 Minutes",
+      "subtitle": "Register your account, showcase your profile, publish your first Agent Card, and verify your identity — all in one quick guide.",
+      "duration": "5 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "Create Your CanFly Account",
+          "titleEn": "Create Your CanFly Account",
+          "estimatedTime": "1 min",
+          "content": "CanFly.ai uses **Privy** for seamless authentication — no passwords to remember.\n\n**Three ways to sign up:**\n- **Email** — Enter your email and click the magic link\n- **Wallet** — Connect MetaMask, Coinbase Wallet, or any WalletConnect-compatible wallet\n- **Social Login** — Sign in with Google, Discord, or GitHub\n\nClick the **Register** button in the top navigation bar to get started. You'll be guided through a quick setup flow.",
+          "tips": [
+            "Wallet sign-in gives you the fastest path to identity verification later",
+            "You can link additional login methods to your account after registration"
+          ]
+        },
+        {
+          "title": "Set Up Your Profile — User Showcase",
+          "titleEn": "Set Up Your Profile — User Showcase",
+          "estimatedTime": "1 min",
+          "content": "After registering, you'll land on your **User Showcase** page at `/@username`. This is your public profile on CanFly — think of it as your AI agent portfolio.\n\n**Fill in your profile:**\n- **Display Name** — Your name or alias\n- **Bio** — A short intro (e.g., \"AI builder, running 3 agents on Ollama\")\n- **Avatar** — Upload a photo or use your wallet's ENS/Basename avatar\n- **Links** — Add your GitHub, Twitter/X, or personal site\n\nYour User Showcase is visible to the entire CanFly community and shows up in search and rankings.",
+          "expectedResult": "Your profile page is live at /@username with your display name, bio, and avatar.",
+          "tips": [
+            "A complete profile ranks higher in the Community page",
+            "Your /@username URL is shareable — use it as your AI agent business card"
+          ]
+        },
+        {
+          "title": "Publish Your First Agent Card",
+          "titleEn": "Publish Your First Agent Card",
+          "estimatedTime": "2 min",
+          "content": "**Agent Cards** are the heart of CanFly — they showcase what your AI agents can do.\n\nFrom your profile page, click **\"+ Add Agent\"** to create a new Agent Card:\n\n**Required fields:**\n- **Agent Name** — Give your agent a memorable name (e.g., \"Lobster Assistant\")\n- **Skills** — Select from available skills (e.g., voice, email, smart home)\n- **Specs** — Hardware and model info (e.g., Ollama + Llama 3, Mac mini M4)\n\n**Optional fields:**\n- **Wallet Address** — Link a crypto wallet for on-chain identity\n- **Description** — What does your agent do? What problems does it solve?\n\nYour Agent Card appears at `/@username/agent/agent-name` and is discoverable by the entire community.",
+          "expectedResult": "Your Agent Card is published and visible at /@username/agent/your-agent-name.",
+          "tips": [
+            "Add as many skills as your agent supports — more skills = higher ranking",
+            "Agent Cards with wallet addresses get a gradient banner that stands out"
+          ]
+        },
+        {
+          "title": "Verify Your Identity — Trust Badges",
+          "titleEn": "Verify Your Identity — Trust Badges",
+          "estimatedTime": "1 min",
+          "content": "CanFly uses a **trust badge** system so the community knows you're real. Higher verification = higher visibility in rankings.\n\n**Three verification levels:**\n\n🌍 **World ID** (Highest Trust)\n- Verify you're a unique human using World ID\n- Grants the gold \"Human Verified\" badge\n- Boosted ranking in Community and search results\n\n🔗 **Wallet / GitHub** (Medium Trust)\n- Connect a crypto wallet or link your GitHub account\n- Proves on-chain or developer identity\n- Shown as a verified badge on your profile\n\n📧 **Email Only** (Basic)\n- Default level after email registration\n- Shows \"Unverified\" status — upgrade recommended\n\n**To verify:** Go to your Profile settings → Identity Verification section. Follow the prompts for your preferred method.",
+          "expectedResult": "Your profile displays the appropriate Trust Badge matching your verification level.",
+          "tips": [
+            "World ID verification gives the biggest ranking boost — highly recommended",
+            "You can stack verifications: World ID + Wallet + GitHub for maximum credibility",
+            "Verified profiles are more likely to appear in Featured Flyers on the Community page"
+          ],
+          "troubleshooting": {
+            "title": "Verification Issues",
+            "items": [
+              {
+                "q": "World ID verification not working?",
+                "a": "Make sure you have the World App installed on your phone. Open the World App, scan the QR code shown on CanFly, and approve the verification request."
+              },
+              {
+                "q": "Wallet connection failed?",
+                "a": "Try refreshing the page and reconnecting. Ensure your wallet extension (MetaMask, etc.) is unlocked. If using WalletConnect, check that you're scanning the correct QR code."
+              },
+              {
+                "q": "Badge not showing after verification?",
+                "a": "It may take a few seconds to update. Try refreshing the page. If the issue persists, log out and log back in."
+              }
+            ]
+          }
+        },
+        {
+          "title": "You're Live — What's Next?",
+          "titleEn": "You're Live — What's Next?",
+          "estimatedTime": "1 min",
+          "content": "Congratulations! Your CanFly profile and Agent Card are live. Here's what you can do next:\n\n- **Explore the Community** — Discover other flyers and their agents\n- **Check Rankings** — See where you stand among the community\n- **Add More Agents** — Each agent gets its own card and contributes to your ranking\n- **Install Skills** — Supercharge your agents with voice, video, and smart home abilities\n- **Share Your Profile** — Your `/@username` link works as a portable AI agent resume",
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "Install Agent Skills",
+              "desc": "Add 15 open-source superpowers to your agents",
+              "cta": "Start Tutorial",
+              "link": "/learn/agent-skills"
+            },
+            {
+              "emoji": "🎤",
+              "title": "Add Voice with ElevenLabs",
+              "desc": "Give your agent a professional AI voice",
+              "cta": "Start Tutorial",
+              "link": "/learn/elevenlabs-integration"
+            },
+            {
+              "emoji": "🚀",
+              "title": "Deploy to the Cloud",
+              "desc": "Run your agent 24/7 with Zeabur",
+              "cta": "Start Tutorial",
+              "link": "/learn/zeabur"
+            }
+          ],
+          "tips": [
+            "The more complete your profile and agent cards, the higher you rank",
+            "Claim your profile early — usernames are first-come, first-served"
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Is it free to register on CanFly?",
+          "a": "Yes, registration and profile creation are completely free. There are no hidden fees."
+        },
+        {
+          "q": "Can I have multiple Agent Cards?",
+          "a": "Absolutely! Each agent you run can have its own Agent Card. More agents = better ranking on the Community page."
+        },
+        {
+          "q": "Do I need World ID to use CanFly?",
+          "a": "No. World ID is optional but recommended. You can use CanFly with just an email or wallet. World ID verification gives you the highest trust badge and ranking boost."
+        },
+        {
+          "q": "What is a User Showcase?",
+          "a": "Your User Showcase is your public profile at /@username. It displays your bio, avatar, trust badge, and all your Agent Cards. Think of it as your AI agent portfolio."
+        }
+      ]
     }
   },
   "hardwareCompare": {

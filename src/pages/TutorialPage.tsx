@@ -1406,6 +1406,70 @@ function createAgentSkillsTutorial(t: any): TutorialData {
   }
 }
 
+function createAgentOnboardingTutorial(t: any): TutorialData {
+  return {
+    id: 'agent-onboarding',
+    title: t('tutorial.agent-onboarding.title'),
+    subtitle: t('tutorial.agent-onboarding.subtitle'),
+    duration: t('tutorial.agent-onboarding.duration'),
+    difficulty: t('tutorial.agent-onboarding.difficulty'),
+    faq: t('tutorial.agent-onboarding.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Users,
+        title: t('tutorial.agent-onboarding.steps.0.title'),
+        titleEn: t('tutorial.agent-onboarding.steps.0.titleEn'),
+        estimatedTime: t('tutorial.agent-onboarding.steps.0.estimatedTime'),
+        content: t('tutorial.agent-onboarding.steps.0.content'),
+        tips: t('tutorial.agent-onboarding.steps.0.tips', { returnObjects: true }),
+      },
+      {
+        icon: Globe,
+        title: t('tutorial.agent-onboarding.steps.1.title'),
+        titleEn: t('tutorial.agent-onboarding.steps.1.titleEn'),
+        estimatedTime: t('tutorial.agent-onboarding.steps.1.estimatedTime'),
+        content: t('tutorial.agent-onboarding.steps.1.content'),
+        expectedResult: t('tutorial.agent-onboarding.steps.1.expectedResult'),
+        tips: t('tutorial.agent-onboarding.steps.1.tips', { returnObjects: true }),
+      },
+      {
+        icon: Cpu,
+        title: t('tutorial.agent-onboarding.steps.2.title'),
+        titleEn: t('tutorial.agent-onboarding.steps.2.titleEn'),
+        estimatedTime: t('tutorial.agent-onboarding.steps.2.estimatedTime'),
+        content: t('tutorial.agent-onboarding.steps.2.content'),
+        expectedResult: t('tutorial.agent-onboarding.steps.2.expectedResult'),
+        tips: t('tutorial.agent-onboarding.steps.2.tips', { returnObjects: true }),
+      },
+      {
+        icon: Shield,
+        title: t('tutorial.agent-onboarding.steps.3.title'),
+        titleEn: t('tutorial.agent-onboarding.steps.3.titleEn'),
+        estimatedTime: t('tutorial.agent-onboarding.steps.3.estimatedTime'),
+        content: t('tutorial.agent-onboarding.steps.3.content'),
+        expectedResult: t('tutorial.agent-onboarding.steps.3.expectedResult'),
+        tips: t('tutorial.agent-onboarding.steps.3.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.agent-onboarding.steps.3.troubleshooting.title'),
+          items: t('tutorial.agent-onboarding.steps.3.troubleshooting.items', { returnObjects: true }),
+        },
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.agent-onboarding.steps.4.title'),
+        titleEn: t('tutorial.agent-onboarding.steps.4.titleEn'),
+        estimatedTime: t('tutorial.agent-onboarding.steps.4.estimatedTime'),
+        content: t('tutorial.agent-onboarding.steps.4.content'),
+        nextStepCards: (t('tutorial.agent-onboarding.steps.4.nextStepCards', { returnObjects: true }) || []).map((card: NextStepCard) => ({
+          ...card,
+          link: card.link || '#',
+        })),
+        tips: t('tutorial.agent-onboarding.steps.4.tips', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
 function getTutorials(t: any): Record<string, TutorialData> {
   return {
     ollama: createOllamaTutorial(t),
@@ -1424,6 +1488,7 @@ function getTutorials(t: any): Record<string, TutorialData> {
     'virtual-buddy-ollama': createVirtualBuddyOllamaTutorial(t),
     'openclaw-troubleshooting': createOpenclawTroubleshootingTutorial(t),
     'agent-skills': createAgentSkillsTutorial(t),
+    'agent-onboarding': createAgentOnboardingTutorial(t),
   }
 }
 

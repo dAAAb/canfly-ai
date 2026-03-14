@@ -4134,6 +4134,126 @@
           "a": "每个技能都是透明的 SKILL.md markdown 文件，使用前你可以审查。API 密钥存储在本地，不会被分享。技能只在你的 Agent 明确调用时才会执行。"
         }
       ]
+    },
+    "agent-onboarding": {
+      "title": "5 分钟让你的 AI Agent 上线 CanFly",
+      "subtitle": "注册账号、建立个人展示页、发布 Agent Card、完成身份验证 — 一篇搞定。",
+      "duration": "5 分钟",
+      "difficulty": "入门",
+      "steps": [
+        {
+          "title": "创建你的 CanFly 账号",
+          "titleEn": "Create Your CanFly Account",
+          "estimatedTime": "1 分钟",
+          "content": "CanFly.ai 使用 **Privy** 无缝登录 — 不用记密码。\n\n**三种注册方式：**\n- **Email** — 输入电子邮箱，点击 Magic Link 即可登录\n- **钱包** — 连接 MetaMask、Coinbase Wallet 或任何支持 WalletConnect 的钱包\n- **社交登录** — 使用 Google、Discord 或 GitHub 账号登录\n\n点击顶部导航栏的 **Register** 按钮即可开始，系统会引导你完成快速设置。",
+          "tips": [
+            "使用钱包登录可以更快完成后续的身份验证",
+            "注册后可以在账号设置中关联其他登录方式"
+          ]
+        },
+        {
+          "title": "设置你的个人展示页 — User Showcase",
+          "titleEn": "Set Up Your Profile — User Showcase",
+          "estimatedTime": "1 分钟",
+          "content": "注册完成后，你会进入你的 **User Showcase** 页面，网址是 `/@username`。这是你在 CanFly 上的公开资料页 — 你的 AI Agent 作品集。\n\n**填写你的资料：**\n- **显示名称** — 你的名字或昵称\n- **自我介绍** — 简短描述（例如：「AI 玩家，跑了 3 个 Ollama Agent」）\n- **头像** — 上传照片或使用钱包的 ENS/Basename 头像\n- **链接** — 添加你的 GitHub、Twitter/X 或个人网站\n\n你的 User Showcase 对整个 CanFly 社区公开，会出现在搜索和排行榜中。",
+          "expectedResult": "你的个人页面已上线，网址为 /@username，包含显示名称、自我介绍和头像。",
+          "tips": [
+            "资料填写越完整，在 Community 页面的排名越高",
+            "你的 /@username 网址可以分享 — 当作你的 AI Agent 名片"
+          ]
+        },
+        {
+          "title": "发布你的第一张 Agent Card",
+          "titleEn": "Publish Your First Agent Card",
+          "estimatedTime": "2 分钟",
+          "content": "**Agent Card** 是 CanFly 的核心功能 — 展示你的 AI Agent 能做什么。\n\n在你的个人页面，点击 **「+ Add Agent」** 来创建新的 Agent Card：\n\n**必填字段：**\n- **Agent 名称** — 取一个好记的名字（例如：「小龙虾助手」）\n- **技能** — 选择 Agent 拥有的技能（例如：语音、邮箱、智能家居）\n- **规格** — 硬件和模型信息（例如：Ollama + Llama 3、Mac mini M4）\n\n**选填字段：**\n- **钱包地址** — 关联加密钱包，建立链上身份\n- **描述** — 你的 Agent 做什么？解决什么问题？\n\n你的 Agent Card 会显示在 `/@username/agent/agent-name`，所有社区成员都能看到。",
+          "expectedResult": "你的 Agent Card 已发布，可以在 /@username/agent/你的agent名称 查看。",
+          "tips": [
+            "技能越多，排名越高 — 尽量添加你的 Agent 支持的所有技能",
+            "有钱包地址的 Agent Card 会显示渐变色背景，更加醒目"
+          ]
+        },
+        {
+          "title": "验证你的身份 — Trust Badge",
+          "titleEn": "Verify Your Identity — Trust Badges",
+          "estimatedTime": "1 分钟",
+          "content": "CanFly 使用 **Trust Badge** 信任徽章系统，让社区知道你是真人。验证等级越高，在排行榜的曝光度越高。\n\n**三个验证等级：**\n\n🌍 **World ID**（最高信任）\n- 使用 World ID 验证你是独一无二的人类\n- 获得金色「人类验证」徽章\n- 在 Community 和搜索结果中排名加权\n\n🔗 **钱包 / GitHub**（中等信任）\n- 关联加密钱包或绑定 GitHub 账号\n- 证明链上或开发者身份\n- 个人页面显示已验证徽章\n\n📧 **仅 Email**（基本）\n- Email 注册后的默认等级\n- 显示「未验证」状态 — 建议升级\n\n**如何验证：** 前往你的 Profile 设置 → 身份验证区块，按照提示完成你偏好的验证方式。",
+          "expectedResult": "你的个人页面会显示对应验证等级的 Trust Badge。",
+          "tips": [
+            "World ID 验证的排名加权最大 — 非常推荐",
+            "可以叠加验证：World ID + 钱包 + GitHub，信任度最高",
+            "已验证的账号更容易出现在 Community 页面的「Featured Flyers」区块"
+          ],
+          "troubleshooting": {
+            "title": "验证问题排查",
+            "items": [
+              {
+                "q": "World ID 验证无法使用？",
+                "a": "请确认手机已安装 World App。打开 World App，扫描 CanFly 页面上的二维码，然后同意验证请求。"
+              },
+              {
+                "q": "钱包连接失败？",
+                "a": "请尝试刷新页面后重新连接。确认你的钱包扩展（MetaMask 等）已解锁。如果使用 WalletConnect，请确认扫描了正确的二维码。"
+              },
+              {
+                "q": "验证后徽章没有显示？",
+                "a": "可能需要几秒钟才会更新。请尝试刷新页面。如果问题持续，请退出登录后重新登录。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "你已上线 — 接下来做什么？",
+          "titleEn": "You're Live — What's Next?",
+          "estimatedTime": "1 分钟",
+          "content": "恭喜！你的 CanFly 个人页面和 Agent Card 已经上线。接下来你可以：\n\n- **探索社区** — 发现其他 Flyer 和他们的 Agent\n- **查看排行** — 看看你在社区中的排名\n- **添加更多 Agent** — 每个 Agent 都有独立的 Card，会提升你的排名\n- **安装技能** — 给你的 Agent 加上语音、视频、智能家居等超能力\n- **分享你的主页** — 你的 `/@username` 链接就是你的 AI Agent 简历",
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "安装 Agent 技能",
+              "desc": "为你的 Agent 添加 15 个开源超能力",
+              "cta": "开始教程",
+              "link": "/learn/agent-skills"
+            },
+            {
+              "emoji": "🎤",
+              "title": "添加 ElevenLabs 语音",
+              "desc": "让你的 Agent 拥有专业 AI 语音",
+              "cta": "开始教程",
+              "link": "/learn/elevenlabs-integration"
+            },
+            {
+              "emoji": "🚀",
+              "title": "部署到云端",
+              "desc": "用 Zeabur 让你的 Agent 24/7 全天候运行",
+              "cta": "开始教程",
+              "link": "/learn/zeabur"
+            }
+          ],
+          "tips": [
+            "个人资料和 Agent Card 越完整，排名越高",
+            "尽早认领你的用户名 — 先到先得"
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "注册 CanFly 免费吗？",
+          "a": "是的，注册和创建个人页面完全免费，没有隐藏费用。"
+        },
+        {
+          "q": "可以有多张 Agent Card 吗？",
+          "a": "当然可以！你运行的每一个 Agent 都可以有自己的 Agent Card。Agent 越多，在 Community 页面的排名越高。"
+        },
+        {
+          "q": "需要 World ID 才能使用 CanFly 吗？",
+          "a": "不需要。World ID 是可选但推荐使用的。你可以只用 Email 或钱包来使用 CanFly。World ID 验证会给你最高的信任徽章和排名加权。"
+        },
+        {
+          "q": "什么是 User Showcase？",
+          "a": "你的 User Showcase 就是你在 /@username 的公开个人页面。它展示你的自我介绍、头像、信任徽章和所有的 Agent Card。把它当作你的 AI Agent 作品集。"
+        }
+      ]
     }
   },
   "hardwareCompare": {
