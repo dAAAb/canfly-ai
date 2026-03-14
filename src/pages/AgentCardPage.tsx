@@ -4,7 +4,7 @@ import { useQueryLang } from '../hooks/useLanguage'
 import Navbar from '../components/Navbar'
 import PillBadge from '../components/PillBadge'
 import { walletGradient } from '../utils/walletGradient'
-import { Cpu, Globe, Wallet, ExternalLink, Sparkles, Video } from 'lucide-react'
+import { Cpu, Globe, Wallet, ExternalLink, Sparkles, Video, MessageCircle, Mail } from 'lucide-react'
 
 interface Skill {
   name: string
@@ -19,6 +19,12 @@ interface Owner {
   avatar_url: string | null
 }
 
+interface AgentCapabilities {
+  videoCall?: boolean
+  chat?: boolean
+  email?: string | boolean
+}
+
 interface AgentData {
   name: string
   owner_username: string | null
@@ -29,8 +35,10 @@ interface AgentData {
   bio: string | null
   model: string | null
   hosting: string | null
-  capabilities: Record<string, boolean>
+  capabilities: AgentCapabilities
   erc8004_url: string | null
+  basemail?: string | null
+  nadmail?: string | null
   skills: Skill[]
   owner: Owner | null
 }
@@ -89,7 +97,13 @@ export default function AgentCardPage({ free }: { free?: boolean }) {
     <>
       <Navbar />
       <main className="min-h-screen bg-black page-enter">
-        <div className="max-w-4xl mx-auto px-6 py-16 md:py-24">
+        {/* Wallet Gradient Banner */}
+        <div
+          className="h-32 md:h-40 w-full"
+          style={{ background: walletGradient(agent.wallet_address), opacity: 0.8 }}
+        />
+
+        <div className="max-w-4xl mx-auto px-6 -mt-16 pb-16 md:pb-24">
 
           {/* Agent Header */}
           <div className="text-center mb-12">
@@ -98,11 +112,11 @@ export default function AgentCardPage({ free }: { free?: boolean }) {
               <img
                 src={agent.avatar_url}
                 alt={agent.name}
-                className="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-gray-700 object-cover"
+                className="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-black object-cover ring-2 ring-gray-700"
               />
             ) : (
               <div
-                className="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl"
+                className="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl border-4 border-black ring-2 ring-gray-700"
                 style={{ background: walletGradient(agent.wallet_address) }}
               >
                 {platformEmoji}
@@ -122,7 +136,12 @@ export default function AgentCardPage({ free }: { free?: boolean }) {
 
             {/* Basename */}
             {agent.basename && (
-              <p className="text-sm text-cyan-400 font-mono mb-2">{agent.basename}</p>
+              <p className="text-sm text-cyan-400 font-mono mb-1">{agent.basename}</p>
+            )}
+
+            {/* Email */}
+            {agent.basemail && (
+              <p className="text-sm text-gray-400 font-mono mb-2">{agent.basemail}</p>
             )}
 
             {/* Free Agent badge */}
@@ -135,7 +154,7 @@ export default function AgentCardPage({ free }: { free?: boolean }) {
             {/* Owner */}
             {agent.owner && (
               <div className="flex items-center justify-center gap-2 mb-4">
-                <span className="text-gray-500 text-sm">by</span>
+                <span className="text-gray-500 text-sm">owned by</span>
                 <PillBadge
                   name={agent.owner.display_name || agent.owner.username}
                   walletAddress={agent.owner.wallet_address}
@@ -143,6 +162,27 @@ export default function AgentCardPage({ free }: { free?: boolean }) {
                   href={`/u/${agent.owner.username}`}
                   size="sm"
                 />
+              </div>
+            )}
+
+            {/* Capability indicators */}
+            {(agent.capabilities?.videoCall || agent.capabilities?.chat || agent.capabilities?.email) && (
+              <div className="flex items-center justify-center gap-3 mb-4">
+                {agent.capabilities.videoCall && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-cyan-600/15 text-cyan-400 text-xs border border-cyan-600/30">
+                    <Video className="w-3 h-3" /> Video
+                  </span>
+                )}
+                {agent.capabilities.chat && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-purple-600/15 text-purple-400 text-xs border border-purple-600/30">
+                    <MessageCircle className="w-3 h-3" /> Chat
+                  </span>
+                )}
+                {agent.capabilities.email && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-600/15 text-blue-400 text-xs border border-blue-600/30">
+                    <Mail className="w-3 h-3" /> Email
+                  </span>
+                )}
               </div>
             )}
 
@@ -224,11 +264,11 @@ export default function AgentCardPage({ free }: { free?: boolean }) {
           )}
 
           {/* Tech Specs */}
-          {(agent.model || agent.hosting) && (
+          {(agent.model || agent.hosting || agent.platform) && (
             <section className="mb-12">
               <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                 <Cpu className="w-5 h-5 text-purple-400" />
-                Tech Specs
+                Specs
               </h2>
               <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 space-y-3">
                 {agent.model && (
@@ -243,12 +283,18 @@ export default function AgentCardPage({ free }: { free?: boolean }) {
                     <span className="text-white text-sm font-mono">{agent.hosting}</span>
                   </div>
                 )}
+                <div className="flex items-center gap-3">
+                  <span className="text-gray-500 text-sm w-20">Platform</span>
+                  <span className="text-white text-sm font-mono flex items-center gap-1.5">
+                    {platformEmoji} {agent.platform === 'openclaw' ? 'OpenClaw' : agent.platform}
+                  </span>
+                </div>
               </div>
             </section>
           )}
 
           {/* Identity */}
-          {(agent.wallet_address || agent.basename || agent.erc8004_url) && (
+          {(agent.wallet_address || agent.basename || agent.basemail || agent.nadmail || agent.erc8004_url) && (
             <section className="mb-12">
               <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                 <Wallet className="w-5 h-5 text-blue-400" />
@@ -272,6 +318,18 @@ export default function AgentCardPage({ free }: { free?: boolean }) {
                   <div className="flex items-center gap-3">
                     <span className="text-gray-500 text-sm w-20">Basename</span>
                     <span className="text-cyan-400 text-sm font-mono">{agent.basename}</span>
+                  </div>
+                )}
+                {agent.basemail && (
+                  <div className="flex items-center gap-3">
+                    <span className="text-gray-500 text-sm w-20">BaseMail</span>
+                    <span className="text-blue-400 text-sm font-mono">{agent.basemail}</span>
+                  </div>
+                )}
+                {agent.nadmail && (
+                  <div className="flex items-center gap-3">
+                    <span className="text-gray-500 text-sm w-20">NadMail</span>
+                    <span className="text-blue-400 text-sm font-mono">{agent.nadmail}</span>
                   </div>
                 )}
                 {agent.erc8004_url && (
