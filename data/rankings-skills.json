@@ -188,6 +188,22 @@
     "updatedAt": "2026-03-13"
   },
   {
+    "name": "Whisper",
+    "brand": "OpenAI",
+    "category": "tts-stt",
+    "description": "Open-source speech-to-text — runs locally in 99 languages",
+    "githubRepo": "openai/whisper",
+    "githubStars": 76500,
+    "pypiPackage": "openai-whisper",
+    "pypiWeekly": 485000,
+    "clawhubDownloads": 12800,
+    "productHuntUpvotes": null,
+    "pricing": "Free / Open Source",
+    "website": "https://github.com/openai/whisper",
+    "canflySlug": "whisper",
+    "updatedAt": "2026-03-14"
+  },
+  {
     "name": "Virtual Buddy",
     "brand": "Guilherme Rambo",
     "category": "ai-framework",

@@ -286,53 +286,61 @@
         "ctaSecondary": "一鍵安裝 OpenClaw"
       },
       "zeabur": {
-        "tagline": "一鍵雲端部署",
-        "description": "零設定將你的 OpenClaw agents 部署到雲端。透過我們的合作夥伴關係，幾分鐘內即可上線。",
+        "tagline": "一鍵雲端部署 — 零 DevOps 門檻",
+        "description": "60 秒內將 OpenClaw 代理人部署到雲端 — 不需要 Docker、Kubernetes 或 DevOps 知識。Zeabur 自動偵測技術堆疊、配置 HTTPS 並全球擴展。連接 GitHub 儲存庫，每次推送自動部署。從本地代理人到全天候雲端服務的最簡單方式。",
         "features": [
-          "一鍵部署",
-          "自動 HTTPS",
-          "全球 CDN",
-          "24/7 監控",
-          "OpenClaw 最佳化範本"
+          "從 GitHub 一鍵部署 — 自動偵測技術堆疊",
+          "免費 HTTPS + 自訂網域",
+          "橫跨 10+ 區域的全球邊緣網路",
+          "自動擴展：閒置時休眠，收到請求時喚醒",
+          "內建 PostgreSQL、Redis、MongoDB 附加元件",
+          "OpenClaw 專屬模板 — 一鍵部署代理人",
+          "按用量計費，從 $0 起"
         ],
-        "ctaPrimary": "立即部署（9 折優惠）",
+        "ctaPrimary": "立即部署 (9折優惠)",
         "ctaSecondary": "查看教學"
       },
       "elevenlabs": {
-        "tagline": "AI 語音合成",
-        "description": "為你的 OpenClaw agents 添加逼真的語音功能。高品質文字轉語音，多種聲音選擇。",
+        "tagline": "最擬真 AI 語音合成 — 支援 32 種語言",
+        "description": "市場上最擬真的文字轉語音 API。以不到一秒的延遲產生 32 種語言的自然語音。僅需 30 秒音檔即可複製你的聲音。為 OpenClaw 代理人加入語音功能的最佳選擇 — 朗讀文件、錄製教學旁白，或打造語音驅動工作流程。",
         "features": [
-          "自然語音",
-          "多語言支援",
-          "語音複製",
-          "API 整合",
-          "OpenClaw 技能"
+          "超擬真語音 — 幾乎無法與真人區分",
+          "32 種語言，原生口音支援",
+          "30 秒音檔即可即時複製語音",
+          "串流延遲低於一秒，適合即時應用",
+          "語音庫：1000+ 社群語音",
+          "OpenClaw 技能：代理人工作流程中的文字轉語音",
+          "REST API + Python/Node SDK"
         ],
-        "ctaPrimary": "免費開始使用",
+        "ctaPrimary": "免費開始",
         "ctaSecondary": "查看教學"
       },
       "heygen": {
-        "tagline": "AI 影片生成",
-        "description": "使用數位分身製作專業的 AI 影片。最適合內容創作、行銷和教學素材。",
+        "tagline": "AI 影片生成 — 175+ 語言數位分身",
+        "description": "幾分鐘內製作專業級 AI 影片。從 200+ 擬真數位分身中選擇，或訓練你自己的分身，以 175+ 語言產生影片並自動對嘴。適合產品展示、新人訓練和多語系行銷 — 無需攝影機或團隊。",
         "features": [
-          "AI 數位人影片",
-          "100+ 種語言",
-          "API 整合",
-          "自訂分身訓練",
-          "與 OpenClaw 相容"
+          "200+ 擬真 AI 分身，具自然手勢",
+          "175+ 語言，自動對嘴",
+          "僅需 2 分鐘影片即可訓練專屬分身",
+          "一鍵影片翻譯，拓展全球市場",
+          "API 整合，打造自動化影片流程",
+          "批次產生，大規模行銷",
+          "OpenClaw 技能：從代理人工作流程產生影片"
         ],
         "ctaPrimary": "免費試用",
         "ctaSecondary": "查看教學"
       },
       "umbrel": {
-        "tagline": "自架家庭伺服器",
-        "description": "在家中運行你自己的個人雲端伺服器。託管 AI 模型、應用程式和服務，完全掌控資料主權。",
+        "tagline": "你的個人家庭雲 — 掌握自己的資料",
+        "description": "將任何電腦變成強大的個人伺服器，搭配精美的網頁儀表板。Umbrel 提供 200+ 應用程式的自建應用商店 — 執行 Ollama、Nextcloud、Home Assistant、比特幣節點等。完全的資料主權：你的硬體、你的資料，永遠不需要月費。",
         "features": [
-          "自架家庭伺服器",
-          "隱私優先",
-          "應用程式商店生態系",
-          "運行你自己的 AI",
-          "無需訂閱"
+          "200+ 自建應用程式，一鍵安裝",
+          "精美網頁儀表板 — 從任何裝置管理",
+          "在自己的硬體上執行 Ollama + OpenClaw",
+          "完全的資料主權 — 零雲端依賴",
+          "支援 Raspberry Pi、Mac Mini 或任何 Linux 電腦",
+          "無訂閱費 — 一次購買，永久擁有",
+          "活躍社群，定期更新應用程式"
         ],
         "ctaPrimary": "前往 Umbrel",
         "ctaSecondary": "查看教學"
@@ -346,14 +354,16 @@
         "description": "在 Mac 上建立 Linux 虛擬機器最簡單的方式。"
       },
       "perplexity": {
-        "tagline": "AI 智慧搜尋引擎",
-        "description": "AI 驅動的搜尋引擎，幫你讀遍全網並附上來源給出直接答案。適合研究、學習和掌握最新資訊。提供 OpenAI 相容 API。",
+        "tagline": "AI 搜尋引擎 — 即時引用來源的答案",
+        "description": "提出任何問題，獲得附有即時網路引用的深度研究答案 — 如同擁有一位讀遍整個網路的研究助理。Pro 模式執行多步驟深度研究。OpenAI 相容 API 讓你的 OpenClaw 代理人智慧搜尋網路。",
         "features": [
-          "AI 彙整答案附帶來源引用",
-          "Pro Search 深度研究功能",
-          "OpenAI 相容 API",
-          "收藏集與頁面分享功能",
-          "多種聚焦模式（學術、寫作等）"
+          "AI 合成答案，附內嵌來源引用",
+          "Pro 搜尋：多步驟深度研究與追問",
+          "OpenAI 相容 API，可整合至代理人",
+          "收藏集 & 頁面，輕鬆分享研究",
+          "專注模式：學術、寫作、數學、影片",
+          "即時網路存取 — 資訊永遠最新",
+          "免費方案：無限基本搜尋"
         ],
         "ctaPrimary": "免費試用 Perplexity",
         "ctaSecondary": "查看教學"
@@ -502,14 +512,16 @@
         "ctaSecondary": "前往 Pinata"
       },
       "switchbot-ai-hub": {
-        "tagline": "智慧家庭遇見 AI",
-        "description": "將智慧家庭裝置與 AI 功能連接。SwitchBot AI Hub 橋接 IoT 硬體和智慧自動化，支援語音和 AI 代理控制的家居環境。",
+        "tagline": "智慧家庭 × AI 代理人 — 語音與 LLM 控制",
+        "description": "全球首款內建 LLM 的智慧家庭中樞。透過自然語言或 OpenClaw 代理人控制 100+ SwitchBot 裝置。理解情境（「我離開時關掉所有東西」）並學習你的日常習慣。支援 Matter/Thread 協定，可搭配 Apple Home、Google Home 和 Alexa。",
         "features": [
-          "AI 驅動的家庭自動化",
-          "語音助手整合",
-          "Matter/Thread 支援",
-          "透過 API 由代理控制",
-          "相容 100+ SwitchBot 裝置"
+          "內建 LLM，自然語言控制家電",
+          "OpenClaw 代理人透過 REST API 整合",
+          "控制 100+ SwitchBot 裝置（門鎖、窗簾、感測器）",
+          "支援 Matter 與 Thread 協定",
+          "相容 Apple Home、Google Home、Alexa",
+          "情境感知自動化（「天黑了就開燈」）",
+          "本地處理 — 基本指令無需雲端"
         ],
         "ctaPrimary": "通知我",
         "ctaSecondary": "前往 SwitchBot"
@@ -559,6 +571,36 @@
           "primary": "開始免費教學",
           "secondary": "下載 oMLX"
         }
+      },
+      "openclaw": {
+        "tagline": "你的個人 AI 代理人 — 你的 AI，你的規則",
+        "description": "擁有 300K+ GitHub 星星的開源個人 AI 代理人平台。一行指令安裝，自由搭配技能、工具和整合。在本地或雲端執行。你的資料永遠屬於你 — 無廠商綁定、無訂閱費、無限制。",
+        "features": [
+          "一行指令安裝：ollama launch openclaw",
+          "300K+ GitHub 星星 — 最大 AI 代理人社群",
+          "技能市集：180K+ 社群技能",
+          "支援任何 LLM：本地 (Ollama) 或雲端 (GPT, Claude)",
+          "完全隱私：100% 在你的硬體上執行",
+          "Python & Node.js SDK 打造自訂工具",
+          "活躍開發，每週更新"
+        ],
+        "ctaPrimary": "安裝 OpenClaw",
+        "ctaSecondary": "前往 openclaw.ai"
+      },
+      "whisper": {
+        "tagline": "免費語音轉文字 — 在你的 Mac 上本地執行",
+        "description": "OpenAI 的開源語音辨識模型，100% 在本地執行。以最先進的準確度轉錄 99 種語言的音訊和影片。不需要 API 金鑰、不需要雲端、完全免費。搭配 Ollama 打造完全離線的語音轉 AI 流程 — 與你的 OpenClaw 代理人對話，不會傳送任何資料到雲端。",
+        "features": [
+          "最先進的語音辨識準確度",
+          "99 種語言，自動偵測語言",
+          "100% 本地執行 — 零雲端依賴",
+          "多種模型大小：tiny (39M) 到 large (1.5B)",
+          "使用 whisper.cpp 即時轉錄",
+          "搭配 Ollama 打造離線語音轉 AI 流程",
+          "免費且開源 (MIT 授權)"
+        ],
+        "ctaPrimary": "開始免費教學",
+        "ctaSecondary": "在 GitHub 上查看"
       }
     },
     "comingSoon": "即將推出",

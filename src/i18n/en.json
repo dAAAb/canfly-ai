@@ -286,53 +286,61 @@
         "ctaSecondary": "One-Click OpenClaw Install"
       },
       "zeabur": {
-        "tagline": "One-click cloud deployment",
-        "description": "Deploy your OpenClaw agents to the cloud with zero configuration. Get started in minutes with our affiliate partnership.",
+        "tagline": "One-click cloud deployment — zero DevOps needed",
+        "description": "Deploy OpenClaw agents to the cloud in under 60 seconds — no Docker, no Kubernetes, no DevOps. Zeabur auto-detects your stack, provisions HTTPS, and scales globally. Connect your GitHub repo and every push deploys automatically. The easiest way to go from local agent to always-on cloud service.",
         "features": [
-          "One-click deployment",
-          "Automatic HTTPS",
-          "Global CDN",
-          "24/7 monitoring",
-          "OpenClaw optimized templates"
+          "One-click deploy from GitHub — auto-detects stack",
+          "Free HTTPS + custom domain support",
+          "Global edge network across 10+ regions",
+          "Auto-scaling: sleep on idle, wake on request",
+          "Built-in PostgreSQL, Redis, MongoDB add-ons",
+          "OpenClaw optimized templates — deploy agents instantly",
+          "Pay-as-you-go billing from $0"
         ],
         "ctaPrimary": "Deploy Now (10% off)",
         "ctaSecondary": "View Tutorial"
       },
       "elevenlabs": {
-        "tagline": "AI voice synthesis",
-        "description": "Add realistic voice capabilities to your OpenClaw agents. High-quality text-to-speech with multiple voice options.",
+        "tagline": "Most realistic AI voice synthesis — 32 languages",
+        "description": "The most realistic text-to-speech API on the market. Generate natural-sounding voices in 32 languages with sub-second latency. Clone your own voice with just 30 seconds of audio. Perfect for adding voice accessibility to OpenClaw agents — read documents aloud, narrate tutorials, or build voice-driven workflows.",
         "features": [
-          "Natural voices",
-          "Multi-language",
-          "Voice cloning",
-          "API",
-          "OpenClaw skill"
+          "Hyper-realistic voices — indistinguishable from human",
+          "32 languages with native accent support",
+          "Instant voice cloning from 30s of audio",
+          "Sub-second streaming latency for real-time apps",
+          "Voice library: 1000+ community voices",
+          "OpenClaw skill: text-to-speech in agent workflows",
+          "REST API + Python/Node SDKs"
         ],
         "ctaPrimary": "Get Started Free",
         "ctaSecondary": "View Tutorial"
       },
       "heygen": {
-        "tagline": "AI video generation",
-        "description": "Create professional AI-generated videos with digital avatars. Perfect for content creation, marketing, and training materials.",
+        "tagline": "AI video generation — digital avatars in 175+ languages",
+        "description": "Create studio-quality AI videos in minutes, not days. Choose from 200+ lifelike digital avatars or train your own, then generate videos in 175+ languages with lip-sync. Ideal for product demos, onboarding videos, and multilingual marketing — all without a camera or crew.",
         "features": [
-          "AI avatar videos",
-          "100+ languages",
-          "API integration",
-          "Custom avatar training",
-          "Works with OpenClaw"
+          "200+ lifelike AI avatars with natural gestures",
+          "175+ languages with automatic lip-sync",
+          "Train your own avatar from 2 minutes of footage",
+          "One-click video translation for global reach",
+          "API integration for automated video pipelines",
+          "Batch generation for marketing at scale",
+          "OpenClaw skill: generate videos from agent workflows"
         ],
         "ctaPrimary": "Start Free Trial",
         "ctaSecondary": "View Tutorial"
       },
       "umbrel": {
-        "tagline": "Self-hosted home server",
-        "description": "Run your own personal cloud server at home. Host AI models, apps, and services with complete data sovereignty.",
+        "tagline": "Your personal home cloud — own your data",
+        "description": "Turn any computer into a powerful personal server with a beautiful web dashboard. Umbrel gives you a self-hosted app store with 200+ apps — run Ollama, Nextcloud, Home Assistant, Bitcoin node, and more. Complete data sovereignty: your hardware, your data, no monthly fees ever.",
         "features": [
-          "Self-hosted home server",
-          "Privacy-focused",
-          "App store ecosystem",
-          "Run your own AI",
-          "No subscription"
+          "200+ self-hosted apps in one-click app store",
+          "Beautiful web dashboard — manage from any device",
+          "Run Ollama + OpenClaw on your own hardware",
+          "Complete data sovereignty — zero cloud dependency",
+          "Works on Raspberry Pi, Mac Mini, or any Linux PC",
+          "No subscription — buy once, own forever",
+          "Active community with regular app updates"
         ],
         "ctaPrimary": "Visit Umbrel",
         "ctaSecondary": "View Tutorial"
@@ -346,14 +354,16 @@
         "description": "The easiest way to get a Linux virtual machine on your Mac."
       },
       "perplexity": {
-        "tagline": "AI-powered search engine",
-        "description": "AI-powered search engine that reads the web and gives you direct answers with citations. Perfect for research, learning, and staying up-to-date. OpenAI-compatible API available.",
+        "tagline": "AI search engine — answers with real-time citations",
+        "description": "Ask any question and get a well-researched answer with real-time web citations — like having a research assistant that reads the entire internet. Pro mode performs multi-step research with follow-up questions. OpenAI-compatible API lets your OpenClaw agents search the web intelligently.",
         "features": [
-          "AI-synthesized answers with sources",
-          "Pro search for deep research",
-          "OpenAI-compatible API",
-          "Collections & Pages for sharing",
-          "Multiple focus modes (Academic, Writing, etc.)"
+          "AI-synthesized answers with inline source citations",
+          "Pro search: multi-step deep research with follow-ups",
+          "OpenAI-compatible API for agent integration",
+          "Collections & Pages for sharing research",
+          "Focus modes: Academic, Writing, Math, Video",
+          "Real-time web access — always up-to-date",
+          "Free tier: unlimited basic searches"
         ],
         "ctaPrimary": "Try Perplexity (Free)",
         "ctaSecondary": "View Tutorial"
@@ -502,14 +512,16 @@
         "ctaSecondary": "Visit Pinata"
       },
       "switchbot-ai-hub": {
-        "tagline": "Smart home meets AI",
-        "description": "Connect your smart home devices with AI capabilities. SwitchBot AI Hub bridges the gap between IoT hardware and intelligent automation, enabling voice and agent-controlled home environments.",
+        "tagline": "Smart home × AI agents — voice & LLM control",
+        "description": "The world's first smart home hub with built-in LLM capabilities. Control 100+ SwitchBot devices via natural language or OpenClaw agents. Understands context (\"turn off everything when I leave\") and learns your routines. Matter/Thread support means it works with Apple Home, Google Home, and Alexa too.",
         "features": [
-          "AI-powered home automation",
-          "Voice assistant integration",
-          "Matter/Thread support",
-          "Agent-controllable via API",
-          "Compatible with 100+ SwitchBot devices"
+          "Built-in LLM for natural language home control",
+          "OpenClaw agent integration via REST API",
+          "Controls 100+ SwitchBot devices (locks, blinds, sensors)",
+          "Matter & Thread protocol support",
+          "Works with Apple Home, Google Home, Alexa",
+          "Context-aware automation (\"if it's dark, turn on lights\")",
+          "Local processing — no cloud required for basic commands"
         ],
         "ctaPrimary": "Notify Me",
         "ctaSecondary": "Visit SwitchBot"
@@ -556,6 +568,36 @@
           "primary": "Start Free Tutorial",
           "secondary": "Download oMLX"
         }
+      },
+      "openclaw": {
+        "tagline": "Your personal AI agent — your AI, your rules",
+        "description": "The open-source personal AI agent platform with 300K+ GitHub stars. Install with one command, then customize with skills, tools, and integrations. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
+        "features": [
+          "One-command install: ollama launch openclaw",
+          "300K+ GitHub stars — largest AI agent community",
+          "Skill marketplace with 180K+ community skills",
+          "Works with any LLM: local (Ollama) or cloud (GPT, Claude)",
+          "Full privacy: runs 100% on your hardware",
+          "Python & Node.js SDK for custom tools",
+          "Active development with weekly releases"
+        ],
+        "ctaPrimary": "Install OpenClaw",
+        "ctaSecondary": "Visit openclaw.ai"
+      },
+      "whisper": {
+        "tagline": "Free speech-to-text — runs locally on your Mac",
+        "description": "OpenAI's open-source speech recognition model, running 100% locally. Transcribe audio and video in 99 languages with state-of-the-art accuracy. No API key, no cloud, no cost. Pair with Ollama for a fully offline voice-to-AI pipeline — speak to your OpenClaw agent without sending a single byte to the cloud.",
+        "features": [
+          "State-of-the-art speech recognition accuracy",
+          "99 languages with automatic language detection",
+          "Runs 100% locally — zero cloud dependency",
+          "Multiple model sizes: tiny (39M) to large (1.5B)",
+          "Real-time transcription with whisper.cpp",
+          "Pairs with Ollama for offline voice-to-AI pipeline",
+          "Free & open source (MIT license)"
+        ],
+        "ctaPrimary": "Start Free Tutorial",
+        "ctaSecondary": "View on GitHub"
       }
     },
     "comingSoon": "Coming Soon",
