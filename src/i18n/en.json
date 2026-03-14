@@ -117,6 +117,27 @@
     "ctaButton": "Get Started Free",
     "followX": "Follow @dAAAb"
   },
+  "brand": {
+    "titleSuffix": "AI Tools & Products",
+    "metaDesc": "tools, products, features, and tutorials on CanFly.ai",
+    "backToRankings": "Back to Rankings",
+    "visitWebsite": "Visit Website",
+    "getStarted": "Get Started",
+    "productsOnCanfly": "Products on CanFly.ai",
+    "skillsAndTools": "Skills & Tools",
+    "hardwareProducts": "Hardware Products",
+    "buyOnAmazon": "Buy on Amazon",
+    "ctaTitle": "Get started with {{brand}}",
+    "viewTutorial": "View Tutorial",
+    "affiliateNote": "CanFly.ai may earn a commission from qualifying purchases.",
+    "notFound": "No products found for this brand.",
+    "table": {
+      "name": "Name",
+      "category": "Category",
+      "pricing": "Pricing",
+      "popularity": "Popularity"
+    }
+  },
   "rankings": {
     "title": "Rankings",
     "description": "AI Skills & Hardware ranked by the community",

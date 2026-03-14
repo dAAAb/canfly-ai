@@ -452,7 +452,13 @@ export default function RankingsPage() {
                                       </a>
                                     )}
                                     <span className="text-gray-600 text-xs hidden sm:inline">
-                                      by {skill.brand}
+                                      by{' '}
+                                      <Link
+                                        to={`/rankings/brand/${brandSlug(skill.brand)}`}
+                                        className="text-gray-500 hover:text-white transition-colors"
+                                      >
+                                        {skill.brand}
+                                      </Link>
                                     </span>
                                   </div>
                                   <span className="text-gray-300 text-sm font-mono shrink-0 ml-2">

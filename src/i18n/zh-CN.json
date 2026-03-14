@@ -117,6 +117,27 @@
     "ctaButton": "免费立即开始",
     "followX": "Follow @dAAAb"
   },
+  "brand": {
+    "titleSuffix": "AI 工具与产品",
+    "metaDesc": "工具、产品、功能介绍与教程，尽在 CanFly.ai",
+    "backToRankings": "返回排行榜",
+    "visitWebsite": "前往官网",
+    "getStarted": "立即开始",
+    "productsOnCanfly": "CanFly.ai 上的产品",
+    "skillsAndTools": "技能与工具",
+    "hardwareProducts": "硬件产品",
+    "buyOnAmazon": "在 Amazon 购买",
+    "ctaTitle": "开始使用 {{brand}}",
+    "viewTutorial": "查看教程",
+    "affiliateNote": "CanFly.ai 可能通过符合条件的购买获得佣金。",
+    "notFound": "找不到此品牌的产品。",
+    "table": {
+      "name": "名称",
+      "category": "类别",
+      "pricing": "价格",
+      "popularity": "热门度"
+    }
+  },
   "rankings": {
     "title": "排行榜",
     "description": "由社区排名的 AI 技能与硬件",
