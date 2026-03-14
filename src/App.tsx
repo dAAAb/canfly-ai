@@ -26,6 +26,7 @@ const RankingsPage = lazy(() => import('./pages/RankingsPage'))
 const BrandPage = lazy(() => import('./pages/BrandPage'))
 const RegisterPage = lazy(() => import('./pages/RegisterPage'))
 const ProfileEditPage = lazy(() => import('./pages/ProfileEditPage'))
+const AgentRegisterPage = lazy(() => import('./pages/AgentRegisterPage'))
 
 /** Strip /:lang prefix and redirect to the unprefixed community path */
 function StripLangRedirect() {
@@ -134,6 +135,7 @@ function App() {
 
               {/* Community routes — no lang prefix, auto-detect from cookie/browser */}
               {/* Community routes: /u/:username (no @ — React Router v6 can't handle it) */}
+              <Route path="/u/:username/agents/new" element={<AutoLangSync><AgentRegisterPage /></AutoLangSync>} />
               <Route path="/u/:username/agent/:agentName" element={<AutoLangSync><AgentCardPage /></AutoLangSync>} />
               <Route path="/u/:username/edit" element={<AutoLangSync><ProfileEditPage /></AutoLangSync>} />
               <Route path="/u/:username" element={<AutoLangSync><UserShowcasePage /></AutoLangSync>} />
