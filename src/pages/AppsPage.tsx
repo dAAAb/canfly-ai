@@ -293,13 +293,13 @@ export default function AppsPage() {
                       ) : (
                         <div className="text-6xl text-gray-700/40 font-bold select-none">{product.name[0]}</div>
                       )}
-                      {/* App icon — centered overlay */}
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-16 h-16 rounded-xl bg-gray-900/80 border border-gray-700/50 flex items-center justify-center overflow-hidden backdrop-blur-sm shadow-lg">
+                      {/* App icon — bottom-left overlay */}
+                      <div className="absolute bottom-3 left-4">
+                        <div className="w-14 h-14 rounded-xl bg-gray-900/80 border border-gray-700/50 flex items-center justify-center overflow-hidden backdrop-blur-sm shadow-lg">
                           <img
                             src={product.icon}
                             alt={product.name}
-                            className="w-11 h-11 object-contain"
+                            className="w-10 h-10 object-contain"
                             loading="lazy"
                             decoding="async"
                             onError={(e) => {
