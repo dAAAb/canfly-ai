@@ -8,7 +8,7 @@ import PillBadge from '../components/PillBadge'
 import TrustBadge from '../components/TrustBadge'
 import { getTrustLevel } from '../utils/trustLevel'
 import type { TrustLevel } from '../utils/trustLevel'
-import { Search, Users, Bot, Wrench } from 'lucide-react'
+import { Search, Users, Bot, Wrench, Star, Flame, ArrowUpDown } from 'lucide-react'
 
 interface CommunityUser {
   username: string
@@ -17,6 +17,10 @@ interface CommunityUser {
   avatar_url: string | null
   bio: string | null
   links: Record<string, string>
+  claimed: number
+  claimed_at: string | null
+  verification_level: string | null
+  agent_count: number
   created_at: string
 }
 
@@ -34,7 +38,26 @@ interface AgentWithSkillCount extends CommunityAgent {
   skillCount?: number
 }
 
-type PlatformFilter = 'all' | 'openclaw' | 'other'
+type ViewMode = 'sections' | 'sort'
+type SortMode = 'trending' | 'shrimp' | 'newest' | 'az'
+
+/** World ID verified users get a 2x weight boost in trending score */
+function verificationWeight(user: CommunityUser): number {
+  const vl = user.verification_level
+  if (vl === 'orb' || vl === 'world' || vl === 'device') return 2
+  if (vl === 'wallet') return 1.5
+  return 1
+}
+
+/** Trending score: activity (agent_count) with time decay, boosted by World ID */
+function trendingScore(user: CommunityUser): number {
+  const agentScore = (user.agent_count || 0) + 1
+  const refDate = user.claimed_at || user.created_at
+  const ageMs = Date.now() - new Date(refDate).getTime()
+  const ageDays = Math.max(ageMs / (1000 * 60 * 60 * 24), 0.5)
+  const decay = 1 / Math.log2(ageDays + 2)
+  return agentScore * decay * verificationWeight(user)
+}
 
 export default function CommunityPage() {
   const { t } = useTranslation()
@@ -44,8 +67,8 @@ export default function CommunityPage() {
   const [agents, setAgents] = useState<AgentWithSkillCount[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
-  const [platformFilter, setPlatformFilter] = useState<PlatformFilter>('all')
-  const [freeOnly, setFreeOnly] = useState(false)
+  const [viewMode, setViewMode] = useState<ViewMode>('sections')
+  const [sortMode, setSortMode] = useState<SortMode>('trending')
 
   useHead({
     title: t('meta.community.title'),
@@ -58,8 +81,8 @@ export default function CommunityPage() {
     async function fetchData() {
       try {
         const [usersRes, agentsRes] = await Promise.all([
-          fetch('/api/community/users'),
-          fetch('/api/community/agents'),
+          fetch('/api/community/users?limit=100'),
+          fetch('/api/community/agents?limit=100'),
         ])
         if (usersRes.ok) {
           const data = await usersRes.json()
@@ -78,6 +101,7 @@ export default function CommunityPage() {
     fetchData()
   }, [])
 
+  // Search filter
   const filteredUsers = useMemo(() => {
     if (!searchQuery) return users
     const q = searchQuery.toLowerCase()
@@ -89,30 +113,58 @@ export default function CommunityPage() {
     )
   }, [users, searchQuery])
 
-  const filteredAgents = useMemo(() => {
-    let result = agents
+  // Section-based grouping
+  const sections = useMemo(() => {
+    const claimed = filteredUsers.filter((u) => u.claimed === 1)
+    const unclaimed = filteredUsers.filter((u) => u.claimed === 0)
 
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase()
-      result = result.filter(
-        (a) =>
-          a.name.toLowerCase().includes(q) ||
-          a.bio?.toLowerCase().includes(q)
-      )
+    const featured = claimed
+      .filter((u) => {
+        const vl = u.verification_level
+        return vl === 'orb' || vl === 'world' || vl === 'device' || vl === 'wallet'
+      })
+      .sort((a, b) => (b.agent_count || 0) - (a.agent_count || 0))
+
+    const featuredSet = new Set(featured.map((u) => u.username))
+
+    const recentlyClaimed = claimed
+      .filter((u) => u.claimed_at && !featuredSet.has(u.username))
+      .sort((a, b) => new Date(b.claimed_at!).getTime() - new Date(a.claimed_at!).getTime())
+      .slice(0, 20)
+
+    const topShrimp = claimed
+      .filter((u) => (u.agent_count || 0) > 0)
+      .sort((a, b) => (b.agent_count || 0) - (a.agent_count || 0))
+      .slice(0, 20)
+
+    const discoveries = unclaimed
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+
+    return { featured, recentlyClaimed, topShrimp, discoveries }
+  }, [filteredUsers])
+
+  // Sort-based flat list
+  const sortedUsers = useMemo(() => {
+    const list = [...filteredUsers]
+    switch (sortMode) {
+      case 'trending':
+        return list.sort((a, b) => trendingScore(b) - trendingScore(a))
+      case 'shrimp':
+        return list.sort((a, b) => {
+          const diff = (b.agent_count || 0) - (a.agent_count || 0)
+          if (diff !== 0) return diff
+          return verificationWeight(b) - verificationWeight(a)
+        })
+      case 'newest':
+        return list.sort(
+          (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        )
+      case 'az':
+        return list.sort((a, b) =>
+          (a.display_name || a.username).localeCompare(b.display_name || b.username)
+        )
     }
-
-    if (platformFilter === 'openclaw') {
-      result = result.filter((a) => a.platform === 'openclaw')
-    } else if (platformFilter === 'other') {
-      result = result.filter((a) => a.platform !== 'openclaw')
-    }
-
-    if (freeOnly) {
-      result = result.filter((a) => a.owner_username === null)
-    }
-
-    return result
-  }, [agents, searchQuery, platformFilter, freeOnly])
+  }, [filteredUsers, sortMode])
 
   const stats = useMemo(
     () => ({
@@ -128,15 +180,84 @@ export default function CommunityPage() {
   }
 
   function getAgentHref(agent: CommunityAgent): string {
-    const basePath = agent.owner_username 
+    const basePath = agent.owner_username
       ? `/u/${agent.owner_username}/agent/${agent.name}`
       : `/free/agent/${agent.name}`
-    
-    if (currentLang !== 'en') {
-      return `${basePath}?lang=${currentLang}`
-    }
+    if (currentLang !== 'en') return `${basePath}?lang=${currentLang}`
     return basePath
   }
+
+  function userHref(username: string): string {
+    return currentLang !== 'en' ? `/u/${username}?lang=${currentLang}` : `/u/${username}`
+  }
+
+  function renderUserPill(user: CommunityUser) {
+    return (
+      <div key={user.username} className="flex items-center gap-2">
+        <PillBadge
+          name={user.display_name || user.username}
+          walletAddress={user.wallet_address}
+          type="user"
+          href={userHref(user.username)}
+        />
+        <TrustBadge level={getTrustLevel(user)} size="sm" />
+        {user.agent_count > 0 && (
+          <span className="text-xs text-gray-500" title={t('community.sort.shrimp')}>
+            🦞{user.agent_count}
+          </span>
+        )}
+      </div>
+    )
+  }
+
+  function renderUserSection(
+    title: string,
+    icon: React.ReactNode,
+    userList: CommunityUser[],
+    showClaimHint?: boolean
+  ) {
+    if (userList.length === 0) return null
+    return (
+      <section className="mb-10">
+        <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+          {icon}
+          {title}
+          <span className="text-gray-500 text-sm font-normal">({userList.length})</span>
+        </h2>
+        <div className="flex flex-wrap gap-3">
+          {userList.map((user) => (
+            <div key={user.username} className="flex items-center gap-2">
+              <PillBadge
+                name={user.display_name || user.username}
+                walletAddress={user.wallet_address}
+                type="user"
+                href={userHref(user.username)}
+              />
+              <TrustBadge level={getTrustLevel(user)} size="sm" />
+              {user.agent_count > 0 && (
+                <span className="text-xs text-gray-500">🦞{user.agent_count}</span>
+              )}
+              {showClaimHint && (
+                <Link
+                  to={userHref(user.username)}
+                  className="text-xs px-2 py-0.5 rounded-full bg-purple-600/20 text-purple-400 hover:bg-purple-600/40 transition-colors"
+                >
+                  {t('community.claim', 'Claim')}
+                </Link>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  const sortButtons: { key: SortMode; icon: string; labelKey: string }[] = [
+    { key: 'trending', icon: '🔥', labelKey: 'community.sort.trending' },
+    { key: 'shrimp', icon: '🦞', labelKey: 'community.sort.shrimp' },
+    { key: 'newest', icon: '🆕', labelKey: 'community.sort.newest' },
+    { key: 'az', icon: '🔤', labelKey: 'community.sort.az' },
+  ]
 
   return (
     <>
@@ -163,66 +284,80 @@ export default function CommunityPage() {
                 <Bot className="w-4 h-4 text-red-400" />
                 <span className="text-2xl font-bold text-white">{stats.agents}</span>
               </div>
-              <p className="text-gray-400 text-sm">{t('community.stats.agents', 'agents registered')}</p>
+              <p className="text-gray-400 text-sm">{t('community.stats.agents')}</p>
             </div>
             <div className="rounded-xl border border-gray-800 bg-gray-900/40 p-4 text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Users className="w-4 h-4 text-blue-400" />
                 <span className="text-2xl font-bold text-white">{stats.users}</span>
               </div>
-              <p className="text-gray-400 text-sm">{t('community.stats.flyers', 'flyers joined')}</p>
+              <p className="text-gray-400 text-sm">{t('community.stats.flyers')}</p>
             </div>
             <div className="rounded-xl border border-gray-800 bg-gray-900/40 p-4 text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Wrench className="w-4 h-4 text-green-400" />
                 <span className="text-2xl font-bold text-white">{stats.skills}</span>
               </div>
-              <p className="text-gray-400 text-sm">{t('community.stats.skills', 'skills in use')}</p>
+              <p className="text-gray-400 text-sm">{t('community.stats.skills')}</p>
             </div>
           </div>
 
-          {/* Search + Filters */}
-          <div className="flex flex-col sm:flex-row gap-3 mb-10">
+          {/* Search + View Toggle */}
+          <div className="flex flex-col sm:flex-row gap-3 mb-6">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t('community.search', 'Search name, bio...')}
+                placeholder={t('community.search')}
                 className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors"
               />
             </div>
             <div className="flex gap-2">
-              {(['all', 'openclaw', 'other'] as PlatformFilter[]).map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setPlatformFilter(p)}
-                  className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                    platformFilter === p
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-gray-900 border border-gray-700 text-gray-400 hover:text-white'
-                  }`}
-                >
-                  {p === 'all'
-                    ? t('community.filter.all', 'All')
-                    : p === 'openclaw'
-                      ? '🦞 OpenClaw'
-                      : '🤖 Other'}
-                </button>
-              ))}
               <button
-                onClick={() => setFreeOnly(!freeOnly)}
-                className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                  freeOnly
+                onClick={() => setViewMode('sections')}
+                className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                  viewMode === 'sections'
                     ? 'bg-purple-600 text-white'
                     : 'bg-gray-900 border border-gray-700 text-gray-400 hover:text-white'
                 }`}
               >
-                {t('community.filter.free', 'Free Agents')}
+                <Star className="w-3.5 h-3.5" />
+                {t('community.view.sections')}
+              </button>
+              <button
+                onClick={() => setViewMode('sort')}
+                className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                  viewMode === 'sort'
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-gray-900 border border-gray-700 text-gray-400 hover:text-white'
+                }`}
+              >
+                <ArrowUpDown className="w-3.5 h-3.5" />
+                {t('community.view.sorted')}
               </button>
             </div>
           </div>
+
+          {/* Sort mode bar (visible when sort view active) */}
+          {viewMode === 'sort' && (
+            <div className="flex gap-2 mb-8 flex-wrap">
+              {sortButtons.map(({ key, icon, labelKey }) => (
+                <button
+                  key={key}
+                  onClick={() => setSortMode(key)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    sortMode === key
+                      ? 'bg-purple-600 text-white'
+                      : 'bg-gray-900 border border-gray-700 text-gray-400 hover:text-white'
+                  }`}
+                >
+                  {icon} {t(labelKey)}
+                </button>
+              ))}
+            </div>
+          )}
 
           {loading ? (
             <div className="text-center py-20">
@@ -230,41 +365,64 @@ export default function CommunityPage() {
             </div>
           ) : (
             <>
-              {/* Users Section */}
-              {filteredUsers.length > 0 && (
-                <section className="mb-12">
-                  <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-                    <Users className="w-5 h-5 text-blue-400" />
-                    {t('community.sections.users', 'Flyers')}
-                  </h2>
-                  <div className="flex flex-wrap gap-3">
-                    {filteredUsers.map((user) => (
-                      <div key={user.username} className="flex items-center gap-2">
-                        <PillBadge
-                          name={user.username}
-                          walletAddress={user.wallet_address}
-                          type="user"
-                          href={currentLang !== 'en' ? `/u/${user.username}?lang=${currentLang}` : `/u/${user.username}`}
-                        />
-                        <TrustBadge
-                          level={getTrustLevel(user)}
-                          size="sm"
-                        />
-                      </div>
-                    ))}
-                  </div>
+              {viewMode === 'sections' ? (
+                <>
+                  {/* 🌟 Featured Flyers */}
+                  {renderUserSection(
+                    t('community.sections.featured'),
+                    <Star className="w-5 h-5 text-yellow-400" />,
+                    sections.featured
+                  )}
+
+                  {/* 🔥 Recently Claimed */}
+                  {renderUserSection(
+                    t('community.sections.recentlyClaimed'),
+                    <Flame className="w-5 h-5 text-orange-400" />,
+                    sections.recentlyClaimed
+                  )}
+
+                  {/* 🦞 Top Shrimp Farmers */}
+                  {renderUserSection(
+                    t('community.sections.topShrimp'),
+                    <span className="text-lg">🦞</span>,
+                    sections.topShrimp
+                  )}
+
+                  {/* 🆕 New Discoveries */}
+                  {renderUserSection(
+                    t('community.sections.discoveries'),
+                    <span className="text-lg">🆕</span>,
+                    sections.discoveries,
+                    true
+                  )}
+                </>
+              ) : (
+                /* Sorted flat list */
+                <section className="mb-10">
+                  {sortedUsers.length > 0 ? (
+                    <div className="flex flex-wrap gap-3">
+                      {sortedUsers.map(renderUserPill)}
+                    </div>
+                  ) : (
+                    <div className="text-center py-16 text-gray-500">
+                      {searchQuery
+                        ? t('community.noResults')
+                        : t('community.empty')}
+                    </div>
+                  )}
                 </section>
               )}
 
-              {/* Agents Section */}
-              {filteredAgents.length > 0 && (
+              {/* Agents Section (always shown below) */}
+              {agents.length > 0 && (
                 <section className="mb-12">
-                  <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                  <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                     <Bot className="w-5 h-5 text-red-400" />
-                    {t('community.sections.agents', 'Agents')}
+                    {t('community.sections.agents')}
+                    <span className="text-gray-500 text-sm font-normal">({agents.length})</span>
                   </h2>
                   <div className="flex flex-wrap gap-3">
-                    {filteredAgents.map((agent) => (
+                    {agents.map((agent) => (
                       <div key={agent.name} className="flex items-center gap-2">
                         <PillBadge
                           name={agent.name}
@@ -283,11 +441,11 @@ export default function CommunityPage() {
               )}
 
               {/* Empty state */}
-              {filteredUsers.length === 0 && filteredAgents.length === 0 && (
+              {filteredUsers.length === 0 && agents.length === 0 && (
                 <div className="text-center py-16 text-gray-500">
                   {searchQuery
-                    ? t('community.noResults', 'No results found.')
-                    : t('community.empty', 'No community members yet.')}
+                    ? t('community.noResults')
+                    : t('community.empty')}
                 </div>
               )}
             </>

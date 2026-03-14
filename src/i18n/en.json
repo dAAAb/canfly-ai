@@ -4474,7 +4474,22 @@
       "all": "All",
       "free": "Free Agents"
     },
+    "view": {
+      "sections": "Sections",
+      "sorted": "Sort"
+    },
+    "sort": {
+      "trending": "Trending",
+      "shrimp": "Shrimp Count",
+      "newest": "Newest",
+      "az": "A-Z"
+    },
+    "claim": "Claim",
     "sections": {
+      "featured": "Featured Flyers",
+      "recentlyClaimed": "Recently Claimed",
+      "topShrimp": "Top Shrimp Farmers",
+      "discoveries": "New Discoveries",
       "users": "Flyers",
       "agents": "Agents"
     },

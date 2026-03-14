@@ -4482,7 +4482,22 @@
       "all": "全部",
       "free": "免費 Agents"
     },
+    "view": {
+      "sections": "分區",
+      "sorted": "排序"
+    },
+    "sort": {
+      "trending": "熱門",
+      "shrimp": "蝦數量",
+      "newest": "最新",
+      "az": "A-Z"
+    },
+    "claim": "認領",
     "sections": {
+      "featured": "精選 Flyers",
+      "recentlyClaimed": "最近認領",
+      "topShrimp": "頂級養蝦達人",
+      "discoveries": "新發現",
       "users": "Flyers",
       "agents": "Agents"
     },

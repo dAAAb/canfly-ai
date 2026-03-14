@@ -23,7 +23,9 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request }) => {
 
   let sql = `
     SELECT u.username, u.display_name, u.wallet_address, u.avatar_url,
-           u.bio, u.links, u.is_public, u.created_at
+           u.bio, u.links, u.is_public, u.external_ids, u.source, u.claimed,
+           u.claimed_at, u.verification_level, u.created_at,
+           (SELECT COUNT(*) FROM agents a WHERE a.owner_username = u.username AND a.is_public = 1) AS agent_count
     FROM users u
     WHERE u.is_public = 1
   `
@@ -57,6 +59,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request }) => {
   const users = result.results.map((row: Record<string, unknown>) => ({
     ...row,
     links: JSON.parse((row.links as string) || '{}'),
+    external_ids: JSON.parse((row.external_ids as string) || '{}'),
     isPublic: row.is_public === 1,
   }))
 
@@ -71,6 +74,11 @@ interface CreateUserBody {
   avatarUrl?: string
   bio?: string
   links?: Record<string, string>
+  // Scraper fields (optional — used by scrape-community script)
+  source?: 'seed' | 'scraped' | 'registered'
+  claimed?: 0 | 1
+  scrapeRef?: string
+  externalIds?: Record<string, string>
 }
 
 export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
@@ -79,7 +87,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     return errorResponse('username is required', 400)
   }
 
-  const { username, displayName, walletAddress, avatarUrl, bio, links } = body
+  const { username, displayName, walletAddress, avatarUrl, bio, links,
+          source, claimed, scrapeRef, externalIds } = body
 
   if (!isValidUsername(username)) {
     return errorResponse(
@@ -97,10 +106,13 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
   }
 
   const editToken = generateEditToken()
+  const now = new Date().toISOString()
+  const isScraped = source === 'scraped'
 
   await env.DB.prepare(
-    `INSERT INTO users (username, display_name, wallet_address, avatar_url, bio, links, edit_token)
-     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)`
+    `INSERT INTO users (username, display_name, wallet_address, avatar_url, bio, links, edit_token,
+                        source, claimed, scraped_at, scrape_ref, external_ids)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)`
   )
     .bind(
       username,
@@ -109,15 +121,21 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
       avatarUrl || null,
       bio || null,
       JSON.stringify(links || {}),
-      editToken
+      editToken,
+      source || 'registered',
+      claimed ?? 1,
+      isScraped ? now : null,
+      scrapeRef || null,
+      JSON.stringify(externalIds || {})
     )
     .run()
 
   // Log activity
+  const action = isScraped ? 'discovered' : 'joined'
   await env.DB.prepare(
-    `INSERT INTO activity_log (entity_type, entity_id, action) VALUES ('user', ?1, 'joined')`
+    `INSERT INTO activity_log (entity_type, entity_id, action, metadata) VALUES ('user', ?1, ?2, ?3)`
   )
-    .bind(username)
+    .bind(username, action, isScraped ? JSON.stringify({ source: scrapeRef }) : null)
     .run()
 
   return json({ username, editToken }, 201)
