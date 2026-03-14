@@ -280,23 +280,35 @@ export default function AppsPage() {
                     to={localePath(`/apps/${product.category}/${product.id}`)}
                     className="bg-gray-900/60 border border-gray-800 rounded-xl overflow-hidden hover:border-gray-600 transition-all hover:scale-[1.02] group card-hover"
                   >
-                    {/* Gradient area with icon */}
+                    {/* Gradient area with hero image + centered icon */}
                     <div className="aspect-video bg-gradient-to-br from-gray-800 to-gray-900 relative flex items-center justify-center">
-                      <div className="text-6xl text-gray-700/40 font-bold select-none">{product.name[0]}</div>
-                      {/* App icon — bottom-left overlay */}
-                      <div className="absolute bottom-3 left-4 w-14 h-14 rounded-xl bg-gray-900/80 border border-gray-700/50 flex items-center justify-center overflow-hidden backdrop-blur-sm shadow-lg">
+                      {product.heroImage ? (
                         <img
-                          src={product.icon}
+                          src={product.heroImage}
                           alt={product.name}
-                          className="w-10 h-10 object-contain"
+                          className="absolute inset-0 w-full h-full object-cover"
                           loading="lazy"
                           decoding="async"
-                          onError={(e) => {
-                            const el = e.target as HTMLImageElement
-                            el.style.display = 'none'
-                            el.parentElement!.innerHTML = `<span class="text-xl text-gray-400 font-bold">${product.name[0]}</span>`
-                          }}
                         />
+                      ) : (
+                        <div className="text-6xl text-gray-700/40 font-bold select-none">{product.name[0]}</div>
+                      )}
+                      {/* App icon — centered overlay */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-16 h-16 rounded-xl bg-gray-900/80 border border-gray-700/50 flex items-center justify-center overflow-hidden backdrop-blur-sm shadow-lg">
+                          <img
+                            src={product.icon}
+                            alt={product.name}
+                            className="w-11 h-11 object-contain"
+                            loading="lazy"
+                            decoding="async"
+                            onError={(e) => {
+                              const el = e.target as HTMLImageElement
+                              el.style.display = 'none'
+                              el.parentElement!.innerHTML = `<span class="text-xl text-gray-400 font-bold">${product.name[0]}</span>`
+                            }}
+                          />
+                        </div>
                       </div>
                     </div>
 
