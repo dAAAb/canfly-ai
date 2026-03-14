@@ -46,6 +46,7 @@ export const products: Product[] = [
       'Works with OpenClaw agents',
     ],
     screenshots: [
+      '/images/products/ollama/screenshot-1.png',
       '/images/tutorial/ollama-mac-installer.png',
       '/images/tutorial/ollama-pull-model.png',
       '/images/tutorial/ollama-chat-session.png',
@@ -82,7 +83,9 @@ export const products: Product[] = [
       'Built on Apple MLX framework',
     ],
     screenshots: [
-      '/images/icons/omlx-dashboard.png',
+      '/images/products/omlx/screenshot-1.png',
+      '/images/products/omlx/screenshot-2.png',
+      '/images/products/omlx/screenshot-3.png',
     ],
     reviewVideo: '/videos/reviews/omlx-review.mp4',
     tutorial: '/learn/omlx',
@@ -112,7 +115,9 @@ export const products: Product[] = [
       'Python & Node.js SDK for custom tools',
       'Active development with weekly releases',
     ],
-    screenshots: [],
+    screenshots: [
+      '/images/products/openclaw/screenshot-1.png',
+    ],
     tutorial: '/learn/ollama-openclaw',
     cta: {
       primary: 'Install OpenClaw',
@@ -143,7 +148,9 @@ export const products: Product[] = [
       'OpenClaw optimized templates — deploy agents instantly',
       'Pay-as-you-go billing from $0',
     ],
-    screenshots: [],
+    screenshots: [
+      '/images/products/zeabur/screenshot-1.png',
+    ],
     reviewVideo: '/videos/reviews/zeabur-review.mp4',
     tutorial: '/learn/zeabur',
     cta: {
@@ -174,7 +181,9 @@ export const products: Product[] = [
       'OpenClaw skill: text-to-speech in agent workflows',
       'REST API + Python/Node SDKs',
     ],
-    screenshots: [],
+    screenshots: [
+      '/images/products/elevenlabs/screenshot-1.png',
+    ],
     reviewVideo: '/videos/reviews/elevenlabs-review.mp4',
     tutorial: '/learn/elevenlabs-integration',
     cta: {
@@ -205,7 +214,9 @@ export const products: Product[] = [
       'Batch generation for marketing at scale',
       'OpenClaw skill: generate videos from agent workflows',
     ],
-    screenshots: [],
+    screenshots: [
+      '/images/products/heygen/screenshot-1.png',
+    ],
     reviewVideo: '/videos/reviews/heygen-review.mp4',
     tutorial: '/learn/heygen-video',
     cta: {
@@ -272,7 +283,9 @@ export const products: Product[] = [
       'No subscription — buy once, own forever',
       'Active community with regular app updates',
     ],
-    screenshots: [],
+    screenshots: [
+      '/images/products/umbrel/screenshot-1.jpg',
+    ],
     reviewVideo: '/videos/reviews/umbrel-review.mp4',
     tutorial: '/learn/umbrel-setup',
     cta: {
@@ -299,7 +312,9 @@ export const products: Product[] = [
       'Dedicated IPFS gateways',
       'API & SDK access',
     ],
-    screenshots: [],
+    screenshots: [
+      '/images/products/pinata/screenshot-1.png',
+    ],
     tutorial: '',
     cta: {
       primary: 'Notify Me',
@@ -414,7 +429,9 @@ export const products: Product[] = [
       'Pairs with Ollama for offline voice-to-AI pipeline',
       'Free & open source (MIT license)',
     ],
-    screenshots: [],
+    screenshots: [
+      '/images/products/whisper/screenshot-1.png',
+    ],
     tutorial: '/learn/whisper',
     cta: {
       primary: 'Start Free Tutorial',
@@ -440,7 +457,10 @@ export const products: Product[] = [
       'News, Images & Videos endpoints',
       'No credit card required',
     ],
-    screenshots: [],
+    screenshots: [
+      '/images/products/brave-search/screenshot-1.png',
+      '/images/products/brave-search/screenshot-2.png',
+    ],
     reviewVideo: '/videos/reviews/brave-search-review.mp4',
     tutorial: '/learn/brave-search',
     cta: {
@@ -469,7 +489,9 @@ export const products: Product[] = [
       'Basename integration for human-readable addresses',
       'Built on Base L2 — low gas fees',
     ],
-    screenshots: [],
+    screenshots: [
+      '/images/products/basemail/screenshot-1.webp',
+    ],
     tutorial: '/learn/basemail',
     cta: {
       primary: 'Try BaseMail',
@@ -523,7 +545,10 @@ export const products: Product[] = [
       'Prepaid — no credit risk',
       'Currently in Beta',
     ],
-    screenshots: [],
+    screenshots: [
+      '/images/products/agentcard/screenshot-1.png',
+      '/images/products/agentcard/screenshot-2.png',
+    ],
     tutorial: '/learn/agentcard',
     cta: {
       primary: 'Join Beta',
@@ -549,7 +574,11 @@ export const products: Product[] = [
       'Easy snapshot & restore',
       'Apple Silicon optimized',
     ],
-    screenshots: [],
+    screenshots: [
+      '/images/products/utm/screenshot-1.png',
+      '/images/products/utm/screenshot-2.png',
+      '/images/products/utm/screenshot-3.png',
+    ],
     tutorial: '/learn/virtual-machine',
     cta: {
       primary: 'Free Tutorial',
