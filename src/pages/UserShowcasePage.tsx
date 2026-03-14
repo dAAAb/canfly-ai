@@ -5,6 +5,7 @@ import Navbar from '../components/Navbar'
 import PillBadge from '../components/PillBadge'
 import { walletGradient } from '../utils/walletGradient'
 import TrustBadge from '../components/TrustBadge'
+import ClaimProfileButton from '../components/ClaimProfileButton'
 import { getTrustLevel } from '../utils/trustLevel'
 import {
   ExternalLink,
@@ -60,6 +61,8 @@ interface UserData {
   bio: string | null
   links: UserLinks
   isPublic: boolean
+  claimed: number
+  verification_level: string
   created_at: string
   agents: Agent[]
   hardware: Hardware[]
@@ -249,6 +252,19 @@ export default function UserShowcasePage() {
               </div>
             )}
           </div>
+
+          {/* Claim Profile — only visible on unclaimed profiles */}
+          {user.claimed === 0 && !canEdit && (
+            <section className="mb-8">
+              <ClaimProfileButton
+                username={user.username}
+                onClaimed={() => {
+                  // Reload to reflect claimed state
+                  window.location.reload()
+                }}
+              />
+            </section>
+          )}
 
           {/* My Agents */}
           {user.agents.length > 0 && (

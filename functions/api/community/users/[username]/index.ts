@@ -2,14 +2,14 @@
  * GET  /api/community/users/:username — Single user with agents array
  * PUT  /api/community/users/:username — Update user profile (requires edit token)
  */
-import { type Env, json, errorResponse, handleOptions, parseBody } from '../_helpers'
+import { type Env, json, errorResponse, handleOptions, parseBody } from '../../_helpers'
 
 export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
   const username = params.username as string
 
   const user = await env.DB.prepare(
     `SELECT username, display_name, wallet_address, avatar_url,
-            bio, links, is_public, created_at
+            bio, links, is_public, created_at, claimed, verification_level
      FROM users WHERE username = ?1`
   )
     .bind(username)
@@ -61,6 +61,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
     ...user,
     links: JSON.parse((user.links as string) || '{}'),
     isPublic: user.is_public === 1,
+    claimed: user.claimed as number,
+    verification_level: user.verification_level as string,
     agents,
     hardware: hardwareResult.results,
   })

@@ -4701,5 +4701,16 @@
     "notifyMessage": "留下你的 email，小龙虾吃饱回来会第一时间通知你！",
     "emailPlaceholder": "你的 email",
     "notify": "通知我"
+  },
+  "claim": {
+    "title": "认领这个档案",
+    "description": "这是你吗？验证身份以认领此档案的所有权。",
+    "levelWorldId": "🌍 World ID — 最高信任（人类验证）",
+    "levelWallet": "🔗 钱包 / GitHub — 中等信任",
+    "levelEmail": "📧 Email — 基本信任",
+    "claimNow": "认领档案",
+    "loginFirst": "登录以认领",
+    "claiming": "认领中...",
+    "alreadyClaimed": "此档案已被认领"
   }
 }

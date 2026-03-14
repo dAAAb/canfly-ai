@@ -4684,5 +4684,16 @@
     "notifyMessage": "留下你的 email，小龍蝦吃飽回來會第一時間通知你！",
     "emailPlaceholder": "你的 email",
     "notify": "通知我"
+  },
+  "claim": {
+    "title": "認領這個檔案",
+    "description": "這是你嗎？驗證身份以認領此檔案的所有權。",
+    "levelWorldId": "🌍 World ID — 最高信任（人類驗證）",
+    "levelWallet": "🔗 錢包 / GitHub — 中等信任",
+    "levelEmail": "📧 Email — 基本信任",
+    "claimNow": "認領檔案",
+    "loginFirst": "登入以認領",
+    "claiming": "認領中...",
+    "alreadyClaimed": "此檔案已被認領"
   }
 }

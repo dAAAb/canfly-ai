@@ -4676,5 +4676,16 @@
     "notifyMessage": "Leave your email — I'll let you know when I'm back and ready to chat!",
     "emailPlaceholder": "Your email",
     "notify": "Notify me"
+  },
+  "claim": {
+    "title": "Claim this profile",
+    "description": "Is this you? Verify your identity to claim ownership of this profile.",
+    "levelWorldId": "World ID — Highest trust (human verified)",
+    "levelWallet": "Wallet / GitHub — Medium trust",
+    "levelEmail": "Email — Basic trust",
+    "claimNow": "Claim Profile",
+    "loginFirst": "Sign in to Claim",
+    "claiming": "Claiming...",
+    "alreadyClaimed": "Profile already claimed"
   }
 }
