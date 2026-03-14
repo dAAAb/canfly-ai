@@ -29,6 +29,7 @@ export const products: Product[] = [
   {
     id: 'ollama',
     icon: '/images/icons/ollama.png',
+    heroImage: '/images/products/ollama-hero.png',
     name: 'Ollama',
     tagline: 'Free Local & Cloud AI Models × OpenClaw',
     category: 'free',
@@ -61,6 +62,7 @@ export const products: Product[] = [
   {
     id: 'omlx',
     icon: '/images/icons/omlx.svg',
+    heroImage: '/images/products/omlx-hero.png',
     name: 'oMLX',
     tagline: '10x Faster Local AI on Mac — OpenClaw Turbo Mode',
     category: 'free',
@@ -94,6 +96,7 @@ export const products: Product[] = [
   {
     id: 'openclaw',
     icon: '/images/icons/openclaw.png',
+    heroImage: '/images/products/openclaw-hero.png',
     name: 'OpenClaw',
     tagline: 'Your personal AI agent — your AI, your rules',
     category: 'free',
@@ -121,6 +124,7 @@ export const products: Product[] = [
   {
     id: 'zeabur',
     icon: '/images/icons/zeabur.png',
+    heroImage: '/images/products/zeabur-hero.png',
     name: 'Zeabur',
     tagline: 'One-click cloud deployment — zero DevOps needed',
     category: 'hosting',
@@ -152,6 +156,7 @@ export const products: Product[] = [
   {
     id: 'elevenlabs',
     icon: '/images/icons/elevenlabs.png',
+    heroImage: '/images/products/elevenlabs-hero.png',
     name: 'ElevenLabs',
     tagline: 'Most realistic AI voice synthesis — 32 languages',
     category: 'skills',
@@ -182,6 +187,7 @@ export const products: Product[] = [
   {
     id: 'heygen',
     icon: '/images/icons/heygen.png',
+    heroImage: '/images/products/heygen-hero.png',
     name: 'HeyGen',
     tagline: 'AI video generation — digital avatars in 175+ languages',
     category: 'skills',
@@ -249,6 +255,7 @@ export const products: Product[] = [
   {
     id: 'umbrel',
     icon: '/images/icons/umbrel.png',
+    heroImage: '/images/products/umbrel-hero.png',
     name: 'Umbrel',
     tagline: 'Your personal home cloud — own your data',
     category: 'hardware',
@@ -278,6 +285,7 @@ export const products: Product[] = [
   {
     id: 'pinata',
     icon: '/images/icons/pinata.png',
+    heroImage: '/images/products/pinata-hero.png',
     name: 'Pinata',
     tagline: 'IPFS & Web3 storage',
     category: 'hosting',
@@ -303,6 +311,7 @@ export const products: Product[] = [
   {
     id: 'switchbot-ai-hub',
     icon: '/images/icons/switchbot-ai-hub.png',
+    heroImage: '/images/products/switchbot-ai-hub-hero.png',
     name: 'SwitchBot AI Hub',
     tagline: 'Smart home × AI agents — voice & LLM control',
     category: 'hardware',
@@ -330,6 +339,7 @@ export const products: Product[] = [
   {
     id: 'perplexity',
     icon: '/images/icons/perplexity.png',
+    heroImage: '/images/products/perplexity-hero.png',
     name: 'Perplexity',
     tagline: 'AI search engine — answers with real-time citations',
     category: 'skills',
@@ -360,6 +370,7 @@ export const products: Product[] = [
   {
     id: 'even-g2-bridge',
     icon: '/images/icons/even-g2.png',
+    heroImage: '/images/products/even-g2-bridge-hero.png',
     name: 'Even Realities G2 Bridge',
     tagline: 'Talk to your AI through smart glasses',
     category: 'skills',
@@ -387,6 +398,7 @@ export const products: Product[] = [
   {
     id: 'whisper',
     icon: '/images/icons/whisper.png',
+    heroImage: '/images/products/whisper-hero.png',
     name: 'Whisper',
     tagline: 'Free speech-to-text — runs locally on your Mac',
     category: 'skills',
@@ -414,6 +426,7 @@ export const products: Product[] = [
   {
     id: 'brave-search',
     icon: '/images/icons/brave-search.png',
+    heroImage: '/images/products/brave-search-hero.png',
     name: 'Brave Search API',
     tagline: 'Free web search API',
     category: 'skills',
@@ -441,6 +454,7 @@ export const products: Product[] = [
   {
     id: 'basemail',
     icon: '/images/icons/basemail.png',
+    heroImage: '/images/products/basemail-hero.png',
     name: 'BaseMail',
     tagline: 'Crypto-native email for AI Agents',
     category: 'skills',
@@ -467,6 +481,7 @@ export const products: Product[] = [
   {
     id: 'agentmail',
     icon: '/images/icons/agentmail.png',
+    heroImage: '/images/products/agentmail-hero.png',
     name: 'AgentMail',
     tagline: 'Email infrastructure for AI Agents',
     category: 'skills',
@@ -493,6 +508,7 @@ export const products: Product[] = [
   {
     id: 'agentcard',
     icon: '/images/icons/agentcard.png',
+    heroImage: '/images/products/agentcard-hero.png',
     name: 'AgentCard',
     tagline: 'Virtual Visa cards for AI Agents',
     category: 'skills',
@@ -519,6 +535,7 @@ export const products: Product[] = [
   {
     id: 'utm',
     icon: '/images/icons/utm.webp',
+    heroImage: '/images/products/utm-hero.png',
     name: 'UTM',
     tagline: 'Free virtual machines for Mac',
     category: 'vm',
@@ -557,7 +574,7 @@ export const products: Product[] = [
       'Perfect for beginners',
       'macOS native app',
     ],
-    heroImage: '/images/products/virtual-buddy/showcase.jpg',
+    heroImage: '/images/products/virtual-buddy-hero.png',
     screenshots: [
       '/images/products/virtual-buddy/showcase.jpg',
       '/images/products/virtual-buddy/guest-app.jpg',
