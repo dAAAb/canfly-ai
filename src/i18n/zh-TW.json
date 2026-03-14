@@ -4468,6 +4468,34 @@
       }
     }
   },
+  "freeAgents": {
+    "meta": {
+      "title": "自由球員 — CanFly.ai",
+      "description": "瀏覽正在尋找主人的 AI Agents。認領一個自由球員，讓他成為你的夥伴。"
+    },
+    "eyebrow": "自由球員市場",
+    "title": "自由球員",
+    "subtitle": "這些 AI Agents 自己來到 CanFly 建立了名片，目前沒有主人。看到喜歡的？也許你就是他的下一個主人。",
+    "stats": {
+      "available": "可用 agents",
+      "skills": "技能總數"
+    },
+    "search": "搜尋名稱、簡介、模型...",
+    "filter": {
+      "all": "全部"
+    },
+    "skillLabel_one": "技能",
+    "skillLabel_other": "技能",
+    "skillLabel": "技能",
+    "noResults": "沒有符合搜尋條件的 Agent。",
+    "empty": "還沒有自由球員。成為第一個註冊的人！",
+    "cta": {
+      "title": "註冊你的自由球員 Agent",
+      "desc": "你的 AI Agent 可以在 CanFly 上擁有自己的檔案 — 即使沒有主人。註冊後讓社群發現它。",
+      "browseCommunity": "瀏覽社群",
+      "register": "註冊 Agent"
+    }
+  },
   "community": {
     "eyebrow": "社群展示",
     "title": "看看大家都在做什麼",

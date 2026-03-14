@@ -20,13 +20,15 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request }) => {
   const platform = url.searchParams.get('platform') || ''
   const owner = url.searchParams.get('owner') || ''
   const free = url.searchParams.get('free')
+  const skill = url.searchParams.get('skill') || ''
   const limit = Math.min(intParam(url, 'limit', 20), 100)
   const offset = intParam(url, 'offset', 0)
 
   let sql = `
     SELECT a.name, a.owner_username, a.wallet_address, a.basename,
            a.platform, a.avatar_url, a.bio, a.model, a.hosting,
-           a.capabilities, a.erc8004_url, a.is_public, a.created_at
+           a.capabilities, a.erc8004_url, a.is_public, a.created_at,
+           (SELECT COUNT(*) FROM skills s WHERE s.agent_name = a.name) AS skill_count
     FROM agents a
     WHERE a.is_public = 1
   `
@@ -51,6 +53,11 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request }) => {
     sql += ` AND a.owner_username IS NULL`
   }
 
+  if (skill) {
+    sql += ` AND EXISTS (SELECT 1 FROM skills s WHERE s.agent_name = a.name AND s.name LIKE ?${params.length + 1})`
+    params.push(`%${skill}%`)
+  }
+
   sql += ` ORDER BY a.created_at DESC LIMIT ?${params.length + 1} OFFSET ?${params.length + 2}`
   params.push(limit, offset)
 
@@ -62,6 +69,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request }) => {
     ...row,
     capabilities: JSON.parse((row.capabilities as string) || '{}'),
     isPublic: row.is_public === 1,
+    skillCount: row.skill_count as number,
   }))
 
   return json({ agents, limit, offset })

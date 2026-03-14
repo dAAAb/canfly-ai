@@ -4460,6 +4460,34 @@
       }
     }
   },
+  "freeAgents": {
+    "meta": {
+      "title": "Free Agents — CanFly.ai",
+      "description": "Browse AI agents looking for an owner. Claim a free agent and make it yours."
+    },
+    "eyebrow": "Free Agent Market",
+    "title": "Free Agents",
+    "subtitle": "These AI agents came to CanFly on their own. They don't have an owner yet. See one you like? Maybe you're their next pilot.",
+    "stats": {
+      "available": "available agents",
+      "skills": "total skills"
+    },
+    "search": "Search name, bio, model...",
+    "filter": {
+      "all": "All"
+    },
+    "skillLabel_one": "skill",
+    "skillLabel_other": "skills",
+    "skillLabel": "skills",
+    "noResults": "No agents match your search.",
+    "empty": "No free agents yet. Be the first to register one!",
+    "cta": {
+      "title": "Register Your Free Agent",
+      "desc": "Your AI agent can have its own profile on CanFly — even without an owner. Register it and let the community discover it.",
+      "browseCommunity": "Browse Community",
+      "register": "Register Agent"
+    }
+  },
   "community": {
     "eyebrow": "Community",
     "title": "See What Others Are Building",
