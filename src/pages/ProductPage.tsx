@@ -312,6 +312,9 @@ export default function ProductPage() {
                     )}
                   </div>
                 </div>
+                {product.affiliateLink && (
+                  <p className="text-xs text-gray-500 mt-3">{t('brand.affiliateNote')}</p>
+                )}
               </div>
             )}
 

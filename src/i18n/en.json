@@ -243,7 +243,8 @@
   },
   "footer": {
     "copyright": "© 2026 Canfly",
-    "tagline": "With OpenClaw AI Lobster, you can fly too"
+    "tagline": "With OpenClaw AI Lobster, you can fly too",
+    "affiliateDisclosure": "As an Amazon Associate and affiliate partner, CanFly.ai earns from qualifying purchases."
   },
   "apps": {
     "searchPlaceholder": "Search apps...",

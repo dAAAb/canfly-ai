@@ -15,6 +15,9 @@ export default function Footer() {
           {t('footer.tagline')} 🦞
         </span>
       </div>
+      <div className="text-center mt-3" style={{ maxWidth: '1024px', marginLeft: 'auto', marginRight: 'auto' }}>
+        <p style={{ fontSize: '11px', opacity: 0.3 }}>{t('footer.affiliateDisclosure')}</p>
+      </div>
     </footer>
   )
 }

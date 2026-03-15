@@ -243,7 +243,8 @@
   },
   "footer": {
     "copyright": "© 2026 Canfly",
-    "tagline": "有了 OpenClaw 小龍蝦 AI，你也能飛"
+    "tagline": "有了 OpenClaw 小龍蝦 AI，你也能飛",
+    "affiliateDisclosure": "作為 Amazon Associates 聯盟夥伴，CanFly.ai 可能透過符合條件的購買獲得佣金。"
   },
   "apps": {
     "searchPlaceholder": "搜尋應用...",
