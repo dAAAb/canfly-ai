@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useParams, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useEffect, useState, lazy, Suspense } from 'react'
+import { useEffect, lazy, Suspense } from 'react'
 import Footer from './sections/Footer'
 import ErrorBoundary from './components/ErrorBoundary'
 import { langFromPrefix, loadLanguage, detectLanguageAuto } from './i18n'
@@ -50,7 +50,6 @@ function LangSync({ children }: { children: React.ReactNode }) {
   const { i18n } = useTranslation()
 
   const resolved = langFromPrefix(lang)
-  const [ready, setReady] = useState(i18n.language === resolved)
 
   useEffect(() => {
     let cancelled = false
@@ -60,20 +59,11 @@ function LangSync({ children }: { children: React.ReactNode }) {
       if (i18n.language !== resolved) {
         await i18n.changeLanguage(resolved)
       }
-      setReady(true)
     }
-    if (i18n.language !== resolved) {
-      setReady(false)
-      sync()
-    } else {
-      setReady(true)
-    }
+    sync()
     document.documentElement.lang = resolved
     return () => { cancelled = true }
   }, [resolved, i18n])
-
-  // Show nothing briefly while loading translations (avoids English flash)
-  if (!ready) return <div className="min-h-screen" />
 
   return <>{children}</>
 }
@@ -83,7 +73,6 @@ function LangSync({ children }: { children: React.ReactNode }) {
 function AutoLangSync({ children }: { children: React.ReactNode }) {
   const { i18n } = useTranslation()
   const resolved = detectLanguageAuto()
-  const [ready, setReady] = useState(i18n.language === resolved)
 
   useEffect(() => {
     let cancelled = false
@@ -93,19 +82,11 @@ function AutoLangSync({ children }: { children: React.ReactNode }) {
       if (i18n.language !== resolved) {
         await i18n.changeLanguage(resolved)
       }
-      setReady(true)
     }
-    if (i18n.language !== resolved) {
-      setReady(false)
-      sync()
-    } else {
-      setReady(true)
-    }
+    sync()
     document.documentElement.lang = resolved
     return () => { cancelled = true }
   }, [resolved, i18n])
-
-  if (!ready) return <div className="min-h-screen" />
 
   return <>{children}</>
 }

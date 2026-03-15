@@ -18,7 +18,7 @@ const USER_DATA = {
   links: {
     x: 'dAAAb',
     website: 'juchunko.com',
-    basename: 'littl3lobst3r.base.eth',
+    basename: 'daaaaab.base.eth',
   },
 };
 
@@ -26,7 +26,7 @@ const AGENT_DATA = {
   name: 'LittleLobster',
   ownerUsername: 'dAAAb',
   walletAddress: '0x4b039112Af5b46c9BC95b66dc8d6dCe75d10E689',
-  basename: 'littl3lobst3r.base.eth',
+  basename: 'littl3lobst3rwall3t.base.eth',
   platform: 'openclaw',
   bio: '🦞 寶博的 AI 小龍蝦助理。會說寶博的聲音、做數位人影片、交易加密貨幣、寫程式。',
   model: 'Claude Opus 4.6',
