@@ -1,9 +1,6 @@
-# Cache index.html aggressively short to prevent stale JS references
-/
-  Cache-Control: public, max-age=0, must-revalidate
-
-/index.html
-  Cache-Control: public, max-age=0, must-revalidate
+# ALL HTML pages: never cache (SPA catch-all returns index.html for all routes)
+/*
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
 
 # Hashed assets can be cached forever (filename changes on rebuild)
 /assets/*
