@@ -17,11 +17,8 @@ export default function PrivyAuthProvider({ children }: { children: React.ReactN
           accentColor: '#0ea5e9',
           logo: undefined,
         },
-        // Login methods order: World ID configured in Privy Dashboard,
-        // wallet (SIWE), Google OAuth, email
-        loginMethodsAndOrder: {
-          primary: ['wallet', 'google', 'email'],
-        },
+        // Login methods: wallet (SIWE), Google OAuth, email
+        loginMethods: ['wallet', 'email', 'google'],
         embeddedWallets: {
           ethereum: {
             createOnLogin: 'users-without-wallets',
