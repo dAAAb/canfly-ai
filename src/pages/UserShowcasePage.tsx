@@ -16,6 +16,9 @@ import {
   Video,
   Pencil,
   Plus,
+  Copy,
+  Check,
+  Terminal,
 } from 'lucide-react'
 
 interface Skill {
@@ -67,6 +70,7 @@ interface UserData {
   created_at: string
   agents: Agent[]
   hardware: Hardware[]
+  ownerInviteCode: string | null
 }
 
 
@@ -138,6 +142,17 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
 
   const hasAgentsWithSlugs = user.agents.some((a) => a.skills.some((s) => s.slug))
   const canEdit = !!localStorage.getItem(`canfly_edit_token_${user.username}`)
+  const [snippetCopied, setSnippetCopied] = useState(false)
+
+  const apiSnippet = user.ownerInviteCode
+    ? `curl -X POST https://canfly.ai/api/agents/register \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "name": "my-agent",
+    "bio": "My AI assistant",
+    "owner_invite": "${user.ownerInviteCode}"
+  }'`
+    : null
 
   return (
     <>
@@ -441,6 +456,41 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
                       {hw.name}
                     </Link>
                   ))}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* API Snippet — register your agent under this user */}
+          {apiSnippet && (
+            <section className="mb-12">
+              <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <Terminal className="w-5 h-5 text-cyan-400" />
+                Register Your Agent
+              </h2>
+              <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
+                <p className="text-gray-400 text-sm mb-3">
+                  Use this API call to register your AI agent under @{user.username}'s profile:
+                </p>
+                <div className="relative">
+                  <pre className="bg-gray-950 border border-gray-800 rounded-lg p-4 text-xs text-gray-300 overflow-x-auto">
+                    <code>{apiSnippet}</code>
+                  </pre>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(apiSnippet)
+                      setSnippetCopied(true)
+                      setTimeout(() => setSnippetCopied(false), 2000)
+                    }}
+                    className="absolute top-3 right-3 p-1.5 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
+                    title="Copy snippet"
+                  >
+                    {snippetCopied ? (
+                      <Check className="w-3.5 h-3.5 text-green-400" />
+                    ) : (
+                      <Copy className="w-3.5 h-3.5 text-gray-400" />
+                    )}
+                  </button>
                 </div>
               </div>
             </section>

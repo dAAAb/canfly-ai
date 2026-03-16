@@ -9,7 +9,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
 
   const user = await env.DB.prepare(
     `SELECT username, display_name, wallet_address, avatar_url,
-            bio, links, is_public, created_at, claimed, verification_level
+            bio, links, is_public, created_at, claimed, verification_level, owner_invite_code
      FROM users WHERE username = ?1 COLLATE NOCASE`
   )
     .bind(username)
@@ -63,6 +63,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
     isPublic: user.is_public === 1,
     claimed: user.claimed as number,
     verification_level: user.verification_level as string,
+    ownerInviteCode: user.owner_invite_code || null,
     agents,
     hardware: hardwareResult.results,
   })
