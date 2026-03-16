@@ -43,8 +43,10 @@ interface AgentData {
   owner: Owner | null
 }
 
-export default function AgentCardPage({ free }: { free?: boolean }) {
-  const { username, agentName } = useParams<{ username?: string; agentName: string }>()
+export default function AgentCardPage({ free, subdomainUsername }: { free?: boolean; subdomainUsername?: string }) {
+  const params = useParams<{ username?: string; agentName: string }>()
+  const username = subdomainUsername || params.username
+  const agentName = params.agentName
   const { currentLang, switchLang } = useQueryLang()
   const [agent, setAgent] = useState<AgentData | null>(null)
   const [loading, setLoading] = useState(true)

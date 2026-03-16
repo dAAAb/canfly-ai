@@ -10,7 +10,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
   const user = await env.DB.prepare(
     `SELECT username, display_name, wallet_address, avatar_url,
             bio, links, is_public, created_at, claimed, verification_level
-     FROM users WHERE username = ?1`
+     FROM users WHERE username = ?1 COLLATE NOCASE`
   )
     .bind(username)
     .first()

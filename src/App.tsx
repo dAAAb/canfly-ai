@@ -91,7 +91,47 @@ function AutoLangSync({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
 
+/** Detect if we're on a user subdomain (e.g. dAAAb.canfly.ai) */
+function detectSubdomain(): string | null {
+  const host = window.location.hostname.toLowerCase()
+  const mainDomain = 'canfly.ai'
+  const suffix = `.${mainDomain}`
+  if (host.endsWith(suffix)) {
+    const sub = host.slice(0, -suffix.length)
+    const reserved = new Set(['www', 'api', 'mail', 'cdn', 'staging', 'dev', 'admin'])
+    if (sub && !sub.includes('.') && !reserved.has(sub)) {
+      return sub
+    }
+  }
+  return null
+}
+
+/** On subdomain, render user pages directly without /u/ prefix in URL */
+function SubdomainRouter({ subdomain }: { subdomain: string }) {
+  return (
+    <Router>
+      <ErrorBoundary>
+        <div className="bg-black text-white min-h-screen">
+          <Suspense fallback={<div className="min-h-screen" />}>
+            <Routes>
+              <Route path="/" element={<AutoLangSync><UserShowcasePage subdomainUsername={subdomain} /></AutoLangSync>} />
+              <Route path="/agent/:agentName" element={<AutoLangSync><AgentCardPage subdomainUsername={subdomain} /></AutoLangSync>} />
+              <Route path="/agents/new" element={<AutoLangSync><AgentRegisterPage subdomainUsername={subdomain} /></AutoLangSync>} />
+              <Route path="/edit" element={<AutoLangSync><ProfileEditPage subdomainUsername={subdomain} /></AutoLangSync>} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
+          <Footer />
+        </div>
+      </ErrorBoundary>
+    </Router>
+  )
+}
+
 function App() {
+  const subdomain = detectSubdomain()
+  if (subdomain) return <SubdomainRouter subdomain={subdomain} />
+
   return (
     <Router>
       <ErrorBoundary>

@@ -31,8 +31,8 @@ interface FormData {
   linksBasename: string
 }
 
-export default function ProfileEditPage() {
-  const { username } = useParams<{ username: string }>()
+export default function ProfileEditPage({ subdomainUsername }: { subdomainUsername?: string } = {}) {
+  const params = useParams<{ username: string }>(); const username = subdomainUsername || params.username
   const navigate = useNavigate()
 
   const [loading, setLoading] = useState(true)

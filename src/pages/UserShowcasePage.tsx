@@ -78,8 +78,9 @@ function formatDate(iso: string): string {
   })
 }
 
-export default function UserShowcasePage() {
-  const { username } = useParams<{ username: string }>()
+export default function UserShowcasePage({ subdomainUsername }: { subdomainUsername?: string } = {}) {
+  const params = useParams<{ username: string }>()
+  const username = subdomainUsername || params.username
   const { currentLang, switchLang } = useQueryLang()
   const [user, setUser] = useState<UserData | null>(null)
   const [loading, setLoading] = useState(true)
