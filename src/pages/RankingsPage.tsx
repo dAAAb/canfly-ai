@@ -504,9 +504,15 @@ export default function RankingsPage() {
                           <th className="py-3 pr-3 w-10">{t('rankings.models.table.rank')}</th>
                           <th className="py-3 pr-3">{t('rankings.models.table.model')}</th>
                           <th className="py-3 pr-3 hidden sm:table-cell">{t('rankings.models.table.provider')}</th>
-                          <th className="py-3 pr-3">🎯 {t('rankings.models.table.score')}</th>
-                          <th className="py-3 pr-3 hidden sm:table-cell">💰 {t('rankings.models.table.cost')}</th>
-                          <th className="py-3 pr-3 hidden md:table-cell">⚡ {t('rankings.models.table.speed')}</th>
+                          <th className="py-3 pr-3" title={t('rankings.models.tooltips.score')}>
+                            🎯 {t('rankings.models.table.score')} <span className="text-gray-600 cursor-help">ℹ</span>
+                          </th>
+                          <th className="py-3 pr-3 hidden sm:table-cell" title={t('rankings.models.tooltips.cost')}>
+                            💰 {t('rankings.models.table.cost')} <span className="text-gray-600 cursor-help">ℹ</span>
+                          </th>
+                          <th className="py-3 pr-3 hidden md:table-cell" title={t('rankings.models.tooltips.speed')}>
+                            ⚡ {t('rankings.models.table.speed')} <span className="text-gray-600 cursor-help">ℹ</span>
+                          </th>
                           <th className="py-3 pr-3 hidden lg:table-cell">{t('rankings.models.table.submissions')}</th>
                         </tr>
                       </thead>
@@ -570,18 +576,17 @@ export default function RankingsPage() {
                     </table>
                   </div>
 
-                  {/* Attribution */}
-                  <p className="text-gray-500 text-xs mt-4">
-                    {t('rankings.models.attribution')} •{' '}
+                  {/* Attribution badge */}
+                  <div className="flex items-center justify-end mt-6">
                     <a
                       href="https://pinchbench.com"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-gray-400 hover:text-white transition-colors underline"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-700/50 bg-gray-900/50 text-gray-400 hover:text-white hover:border-gray-600 transition-colors text-xs"
                     >
-                      pinchbench.com
+                      Powered by PinchBench 🦀
                     </a>
-                  </p>
+                  </div>
                 </>
               )}
             </>
