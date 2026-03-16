@@ -66,9 +66,7 @@ export default function ClaimProfileButton({ username, onClaimed }: ClaimProfile
     }
   }
 
-  if (!ready) return null
-
-  const currentLevel = isAuthenticated ? getVerificationLevel() : null
+  const currentLevel = isAuthenticated && ready ? getVerificationLevel() : null
 
   return (
     <div className="bg-gradient-to-r from-green-900/20 to-emerald-900/20 border border-green-700/40 rounded-xl p-5">
