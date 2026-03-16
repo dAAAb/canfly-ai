@@ -158,7 +158,28 @@
     },
     "models": {
       "title": "Model Rankings",
-      "description": "Open-source and commercial model benchmarks"
+      "description": "Open-source and commercial model benchmarks",
+      "subtabs": {
+        "score": "Success Rate",
+        "speed": "Speed",
+        "costEfficiency": "Cost Efficiency"
+      },
+      "table": {
+        "rank": "#",
+        "model": "Model",
+        "provider": "Provider",
+        "score": "Score",
+        "cost": "Cost",
+        "speed": "Speed",
+        "submissions": "Submissions"
+      },
+      "attribution": "Data source: PinchBench",
+      "loading": "Loading model rankings...",
+      "error": "Failed to load model rankings",
+      "retry": "Retry",
+      "noResults": "No models found",
+      "perRun": "/run",
+      "seconds": "s"
     },
     "skills": {
       "leaderboard": {

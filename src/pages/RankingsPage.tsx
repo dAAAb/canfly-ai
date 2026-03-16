@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Navbar from '../components/Navbar'
@@ -9,6 +9,39 @@ type Tab = 'skills' | 'hardware' | 'models'
 type View = 'global' | 'community'
 type SkillSort = 'popularity' | 'clawhub' | 'stars' | 'newest' | 'price'
 type HardwareSort = 'popularity' | 'geekbench' | 'rating' | 'newest' | 'price'
+type ModelSort = 'score' | 'speed' | 'cost'
+
+interface ModelEntry {
+  model: string
+  provider: string
+  best_score_percentage: number
+  average_score_percentage: number
+  average_execution_time_seconds: number
+  best_execution_time_seconds: number
+  average_cost_usd: number
+  best_cost_usd: number
+  submission_count: number
+  latest_submission: string
+  best_submission_id: string
+  weights: string
+  hf_link: string | null
+}
+
+const PROVIDER_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  anthropic: { bg: 'bg-amber-900/30', text: 'text-amber-300', border: 'border-amber-700/50' },
+  google: { bg: 'bg-blue-900/30', text: 'text-blue-300', border: 'border-blue-700/50' },
+  openai: { bg: 'bg-green-900/30', text: 'text-green-300', border: 'border-green-700/50' },
+  deepseek: { bg: 'bg-cyan-900/30', text: 'text-cyan-300', border: 'border-cyan-700/50' },
+  mistral: { bg: 'bg-orange-900/30', text: 'text-orange-300', border: 'border-orange-700/50' },
+  meta: { bg: 'bg-blue-900/30', text: 'text-blue-300', border: 'border-blue-700/50' },
+  cohere: { bg: 'bg-purple-900/30', text: 'text-purple-300', border: 'border-purple-700/50' },
+}
+
+const DEFAULT_PROVIDER_COLOR = { bg: 'bg-gray-800/50', text: 'text-gray-300', border: 'border-gray-700/50' }
+
+function getProviderColor(provider: string) {
+  return PROVIDER_COLORS[provider.toLowerCase()] || DEFAULT_PROVIDER_COLOR
+}
 
 interface SkillItem {
   name: string
@@ -131,6 +164,49 @@ export default function RankingsPage() {
   const [search, setSearch] = useState('')
   const [showAllSkills, setShowAllSkills] = useState(false)
   const [scoringInfo, setScoringInfo] = useState<'skills' | 'hardware' | null>(null)
+  const [modelSort, setModelSort] = useState<ModelSort>('score')
+  const [modelsData, setModelsData] = useState<ModelEntry[]>([])
+  const [modelsLoading, setModelsLoading] = useState(false)
+  const [modelsError, setModelsError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (tab !== 'models' || modelsData.length > 0) return
+    setModelsLoading(true)
+    setModelsError(null)
+    fetch(`/api/rankings/models?sort=score&limit=100`)
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        return res.json()
+      })
+      .then((data: { models: ModelEntry[] }) => {
+        setModelsData(data.models)
+      })
+      .catch(err => {
+        setModelsError(err instanceof Error ? err.message : 'Unknown error')
+      })
+      .finally(() => setModelsLoading(false))
+  }, [tab, modelsData.length])
+
+  const sortedModels = useMemo(() => {
+    const items = [...modelsData]
+    const q = search.toLowerCase()
+    const filtered = q
+      ? items.filter(m => m.model.toLowerCase().includes(q) || m.provider.toLowerCase().includes(q))
+      : items
+    switch (modelSort) {
+      case 'speed':
+        return filtered.sort((a, b) => a.best_execution_time_seconds - b.best_execution_time_seconds)
+      case 'cost':
+        return filtered.sort((a, b) => {
+          const ratioA = a.best_cost_usd > 0 ? a.best_score_percentage / a.best_cost_usd : Infinity
+          const ratioB = b.best_cost_usd > 0 ? b.best_score_percentage / b.best_cost_usd : Infinity
+          return ratioB - ratioA
+        })
+      case 'score':
+      default:
+        return filtered.sort((a, b) => b.best_score_percentage - a.best_score_percentage)
+    }
+  }, [modelsData, modelSort, search])
 
   const skills = useMemo(() => {
     const allItems = skillsData as SkillItem[]
@@ -351,16 +427,139 @@ export default function RankingsPage() {
               </p>
             </div>
           ) : tab === 'models' ? (
-            <div className="text-center py-24">
-              <p className="text-5xl mb-4">🧠</p>
-              <h2 className="text-2xl font-bold text-white mb-2">
-                {t('rankings.models.title')}
-              </h2>
-              <p className="text-gray-400">{t('rankings.comingSoon')}</p>
-              <p className="text-gray-500 text-sm mt-2">
-                {t('rankings.models.description')}
-              </p>
-            </div>
+            <>
+              {/* Models sub-tab bar */}
+              <div className="flex flex-wrap items-center gap-2 mb-6">
+                {([
+                  { key: 'score' as ModelSort, icon: '🎯', label: t('rankings.models.subtabs.score') },
+                  { key: 'speed' as ModelSort, icon: '⚡', label: t('rankings.models.subtabs.speed') },
+                  { key: 'cost' as ModelSort, icon: '💰', label: t('rankings.models.subtabs.costEfficiency') },
+                ] as const).map(({ key, icon, label }) => (
+                  <button
+                    key={key}
+                    onClick={() => setModelSort(key)}
+                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                      modelSort === key
+                        ? 'bg-gray-700 text-white'
+                        : 'text-gray-400 hover:text-white bg-gray-900'
+                    }`}
+                  >
+                    {icon} {label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Loading / Error / Data */}
+              {modelsLoading ? (
+                <div className="text-center py-24">
+                  <div className="inline-block w-8 h-8 border-2 border-gray-600 border-t-white rounded-full animate-spin mb-4" />
+                  <p className="text-gray-400">{t('rankings.models.loading')}</p>
+                </div>
+              ) : modelsError ? (
+                <div className="text-center py-24">
+                  <p className="text-red-400 mb-2">{t('rankings.models.error')}</p>
+                  <button
+                    onClick={() => { setModelsData([]); setModelsError(null) }}
+                    className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
+                  >
+                    {t('rankings.models.retry')}
+                  </button>
+                </div>
+              ) : sortedModels.length === 0 ? (
+                <div className="text-center py-24">
+                  <p className="text-gray-400">{t('rankings.models.noResults')}</p>
+                </div>
+              ) : (
+                <>
+                  {/* Models table */}
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-sm">
+                      <thead>
+                        <tr className="border-b border-gray-800 text-gray-400">
+                          <th className="py-3 pr-3 w-10">{t('rankings.models.table.rank')}</th>
+                          <th className="py-3 pr-3">{t('rankings.models.table.model')}</th>
+                          <th className="py-3 pr-3 hidden sm:table-cell">{t('rankings.models.table.provider')}</th>
+                          <th className="py-3 pr-3">🎯 {t('rankings.models.table.score')}</th>
+                          <th className="py-3 pr-3 hidden sm:table-cell">💰 {t('rankings.models.table.cost')}</th>
+                          <th className="py-3 pr-3 hidden md:table-cell">⚡ {t('rankings.models.table.speed')}</th>
+                          <th className="py-3 pr-3 hidden lg:table-cell">{t('rankings.models.table.submissions')}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {sortedModels.map((model, i) => {
+                          const providerColor = getProviderColor(model.provider)
+                          const costEfficiency = model.best_cost_usd > 0
+                            ? (model.best_score_percentage / model.best_cost_usd).toFixed(0)
+                            : '∞'
+                          return (
+                            <tr
+                              key={model.model}
+                              className="border-b border-gray-800/50 hover:bg-gray-900/50 transition-colors"
+                            >
+                              <td className="py-3 pr-3 text-gray-500 font-mono">{i + 1}</td>
+                              <td className="py-3 pr-3">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-white font-medium">{model.model}</span>
+                                  <span className={`text-xs px-1.5 py-0.5 rounded border sm:hidden ${providerColor.bg} ${providerColor.text} ${providerColor.border}`}>
+                                    {model.provider}
+                                  </span>
+                                </div>
+                              </td>
+                              <td className="py-3 pr-3 hidden sm:table-cell">
+                                <span className={`text-xs px-2 py-0.5 rounded border ${providerColor.bg} ${providerColor.text} ${providerColor.border}`}>
+                                  {model.provider}
+                                </span>
+                              </td>
+                              <td className="py-3 pr-3">
+                                <span className={`font-mono ${
+                                  model.best_score_percentage >= 80 ? 'text-green-400' :
+                                  model.best_score_percentage >= 60 ? 'text-yellow-400' :
+                                  'text-gray-400'
+                                }`}>
+                                  {model.best_score_percentage.toFixed(1)}%
+                                </span>
+                              </td>
+                              <td className="py-3 pr-3 hidden sm:table-cell">
+                                <div className="font-mono text-gray-300">
+                                  ${model.best_cost_usd.toFixed(3)}
+                                  <span className="text-gray-500 text-xs">{t('rankings.models.perRun')}</span>
+                                </div>
+                                {modelSort === 'cost' && (
+                                  <div className="text-xs text-gray-500">
+                                    {costEfficiency} pts/$
+                                  </div>
+                                )}
+                              </td>
+                              <td className="py-3 pr-3 hidden md:table-cell">
+                                <span className="font-mono text-gray-300">
+                                  {model.best_execution_time_seconds.toFixed(1)}{t('rankings.models.seconds')}
+                                </span>
+                              </td>
+                              <td className="py-3 pr-3 hidden lg:table-cell text-gray-400 font-mono">
+                                {model.submission_count}
+                              </td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Attribution */}
+                  <p className="text-gray-500 text-xs mt-4">
+                    {t('rankings.models.attribution')} •{' '}
+                    <a
+                      href="https://pinchbench.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-400 hover:text-white transition-colors underline"
+                    >
+                      pinchbench.com
+                    </a>
+                  </p>
+                </>
+              )}
+            </>
           ) : tab === 'skills' ? (
             <>
               {/* Leaderboard Section */}

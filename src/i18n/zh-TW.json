@@ -158,7 +158,28 @@
     },
     "models": {
       "title": "模型排行榜",
-      "description": "開源和商業模型基準測試"
+      "description": "開源和商業模型基準測試",
+      "subtabs": {
+        "score": "成功率",
+        "speed": "速度",
+        "costEfficiency": "性價比"
+      },
+      "table": {
+        "rank": "#",
+        "model": "模型",
+        "provider": "供應商",
+        "score": "分數",
+        "cost": "成本",
+        "speed": "速度",
+        "submissions": "提交數"
+      },
+      "attribution": "數據來源：PinchBench",
+      "loading": "載入模型排行榜中...",
+      "error": "無法載入模型排行榜",
+      "retry": "重試",
+      "noResults": "未找到模型",
+      "perRun": "/次",
+      "seconds": "秒"
     },
     "skills": {
       "leaderboard": {
