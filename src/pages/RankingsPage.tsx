@@ -451,13 +451,37 @@ export default function RankingsPage() {
 
               {/* Loading / Error / Data */}
               {modelsLoading ? (
-                <div className="text-center py-24">
-                  <div className="inline-block w-8 h-8 border-2 border-gray-600 border-t-white rounded-full animate-spin mb-4" />
-                  <p className="text-gray-400">{t('rankings.models.loading')}</p>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead>
+                      <tr className="border-b border-gray-800 text-gray-400">
+                        <th className="py-3 pr-3 w-10"><div className="h-3 w-4 bg-gray-800 rounded animate-pulse" /></th>
+                        <th className="py-3 pr-3"><div className="h-3 w-24 bg-gray-800 rounded animate-pulse" /></th>
+                        <th className="py-3 pr-3 hidden sm:table-cell"><div className="h-3 w-16 bg-gray-800 rounded animate-pulse" /></th>
+                        <th className="py-3 pr-3"><div className="h-3 w-12 bg-gray-800 rounded animate-pulse" /></th>
+                        <th className="py-3 pr-3 hidden sm:table-cell"><div className="h-3 w-12 bg-gray-800 rounded animate-pulse" /></th>
+                        <th className="py-3 pr-3 hidden md:table-cell"><div className="h-3 w-12 bg-gray-800 rounded animate-pulse" /></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Array.from({ length: 8 }).map((_, i) => (
+                        <tr key={i} className="border-b border-gray-800/50">
+                          <td className="py-3 pr-3"><div className="h-4 w-5 bg-gray-800/60 rounded animate-pulse" /></td>
+                          <td className="py-3 pr-3"><div className="h-4 bg-gray-800/60 rounded animate-pulse" style={{ width: `${140 - i * 8}px` }} /></td>
+                          <td className="py-3 pr-3 hidden sm:table-cell"><div className="h-5 w-16 bg-gray-800/60 rounded-full animate-pulse" /></td>
+                          <td className="py-3 pr-3"><div className="h-4 w-12 bg-gray-800/60 rounded animate-pulse" /></td>
+                          <td className="py-3 pr-3 hidden sm:table-cell"><div className="h-4 w-14 bg-gray-800/60 rounded animate-pulse" /></td>
+                          <td className="py-3 pr-3 hidden md:table-cell"><div className="h-4 w-10 bg-gray-800/60 rounded animate-pulse" /></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               ) : modelsError ? (
                 <div className="text-center py-24">
+                  <p className="text-4xl mb-4">🔌</p>
                   <p className="text-red-400 mb-2">{t('rankings.models.error')}</p>
+                  <p className="text-gray-500 text-sm mb-4">{t('rankings.models.errorHint')}</p>
                   <button
                     onClick={() => { setModelsData([]); setModelsError(null) }}
                     className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
@@ -467,6 +491,7 @@ export default function RankingsPage() {
                 </div>
               ) : sortedModels.length === 0 ? (
                 <div className="text-center py-24">
+                  <p className="text-4xl mb-4">🔍</p>
                   <p className="text-gray-400">{t('rankings.models.noResults')}</p>
                 </div>
               ) : (
