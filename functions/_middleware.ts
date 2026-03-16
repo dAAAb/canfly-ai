@@ -392,12 +392,32 @@ const LANG_URL_PREFIX: Record<string, string> = {
   'zh-CN': '/zh-cn',
 }
 
+// ── Subdomain constants ────────────────────────────────────────────────
+const MAIN_DOMAIN = 'canfly.ai'
+const RESERVED_SUBDOMAINS = new Set([
+  'www', 'api', 'mail', 'smtp', 'imap', 'pop', 'ftp',
+  'cdn', 'staging', 'dev', 'admin', 'dashboard',
+])
+
 // ── Middleware entry point ──────────────────────────────────────────────
 
 export const onRequest: PagesFunction = async (context) => {
   const url = new URL(context.request.url)
   const path = url.pathname
   const ua = context.request.headers.get('user-agent') || ''
+
+  // ── Wildcard subdomain proxy ──
+  // dAAAb.canfly.ai → rewrite to /u/dAAAb (same origin, no redirect)
+  const host = url.hostname.toLowerCase()
+  const suffix = `.${MAIN_DOMAIN}`
+  if (host.endsWith(suffix) && host !== `www.${MAIN_DOMAIN}`) {
+    const subdomain = host.slice(0, -suffix.length)
+    if (subdomain && !subdomain.includes('.') && !RESERVED_SUBDOMAINS.has(subdomain)) {
+      // Serve the SPA index.html — client-side router detects subdomain
+      // and renders the correct user/agent page
+      return context.next()
+    }
+  }
 
   // ── Language auto-redirect (before bot check) ──
   // Only for non-bot, non-static, paths WITHOUT a language prefix

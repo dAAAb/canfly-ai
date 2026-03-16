@@ -65,8 +65,8 @@ interface FormData {
 
 type NameStatus = 'idle' | 'checking' | 'available' | 'taken' | 'invalid'
 
-export default function AgentRegisterPage() {
-  const { username } = useParams<{ username: string }>()
+export default function AgentRegisterPage({ subdomainUsername }: { subdomainUsername?: string } = {}) {
+  const params = useParams<{ username: string }>(); const username = subdomainUsername || params.username
   const { isAuthenticated, ready, login, walletAddress: authWallet } = useAuth()
   const navigate = useNavigate()
 
