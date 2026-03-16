@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import { walletGradient } from '../utils/walletGradient'
-import { AlertCircle, Loader2, User, Save } from 'lucide-react'
+import { AlertCircle, Loader2, User, Save, Copy, Check, X, Link2, Sparkles } from 'lucide-react'
 
 interface UserLinks {
   x?: string
@@ -31,6 +31,17 @@ interface FormData {
   linksBasename: string
 }
 
+interface PendingAgent {
+  bindingId: number
+  name: string
+  avatarUrl: string | null
+  bio: string | null
+  model: string | null
+  platform: string
+  skills: { name: string; slug: string | null; description: string }[]
+  createdAt: string
+}
+
 export default function ProfileEditPage({ subdomainUsername }: { subdomainUsername?: string } = {}) {
   const params = useParams<{ username: string }>(); const username = subdomainUsername || params.username
   const navigate = useNavigate()
@@ -48,6 +59,17 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
   })
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Agent binding state
+  const [pendingAgents, setPendingAgents] = useState<PendingAgent[]>([])
+  const [inviteCode, setInviteCode] = useState<string | null>(null)
+  const [inviteCodeLoading, setInviteCodeLoading] = useState(false)
+  const [pairingCode, setPairingCode] = useState('')
+  const [pairingStatus, setPairingStatus] = useState<string | null>(null)
+  const [pairingSubmitting, setPairingSubmitting] = useState(false)
+  const [copied, setCopied] = useState(false)
+  const [confirmingId, setConfirmingId] = useState<number | null>(null)
+  const [rejectingId, setRejectingId] = useState<number | null>(null)
 
   const editToken = username ? localStorage.getItem(`canfly_edit_token_${username}`) : null
 
@@ -74,6 +96,31 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
       .catch(() => setError('User not found'))
       .finally(() => setLoading(false))
   }, [username])
+
+  // Load pending agents and invite code
+  const loadAgentData = useCallback(() => {
+    if (!username || !editToken) return
+
+    const headers = { 'X-Edit-Token': editToken }
+
+    fetch(`/api/community/users/${username}/pending-agents`, { headers })
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data) setPendingAgents((data as { pendingAgents: PendingAgent[] }).pendingAgents)
+      })
+      .catch(() => {})
+
+    fetch(`/api/community/users/${username}/invite-code`, { headers })
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data) setInviteCode((data as { inviteCode: string }).inviteCode)
+      })
+      .catch(() => {})
+  }, [username, editToken])
+
+  useEffect(() => {
+    loadAgentData()
+  }, [loadAgentData])
 
   const updateField = (field: keyof FormData, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }))
@@ -121,6 +168,82 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
     }
   }
 
+  const handleConfirmAgent = async (bindingId: number) => {
+    if (!username || !editToken) return
+    setConfirmingId(bindingId)
+    try {
+      const res = await fetch(`/api/community/users/${username}/confirm-agent`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Edit-Token': editToken },
+        body: JSON.stringify({ bindingId }),
+      })
+      if (res.ok) {
+        setPendingAgents((prev) => prev.filter((a) => a.bindingId !== bindingId))
+      }
+    } catch {}
+    setConfirmingId(null)
+  }
+
+  const handleRejectAgent = async (bindingId: number) => {
+    if (!username || !editToken) return
+    setRejectingId(bindingId)
+    try {
+      const res = await fetch(`/api/community/users/${username}/reject-agent`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Edit-Token': editToken },
+        body: JSON.stringify({ bindingId }),
+      })
+      if (res.ok) {
+        setPendingAgents((prev) => prev.filter((a) => a.bindingId !== bindingId))
+      }
+    } catch {}
+    setRejectingId(null)
+  }
+
+  const handlePairAgent = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!username || !editToken || !pairingCode.trim()) return
+
+    setPairingSubmitting(true)
+    setPairingStatus(null)
+    try {
+      const res = await fetch(`/api/community/users/${username}/pair-agent`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Edit-Token': editToken },
+        body: JSON.stringify({ pairingCode: pairingCode.trim() }),
+      })
+      const data = await res.json() as { paired?: boolean; agentName?: string; error?: string }
+      if (res.ok && data.paired) {
+        setPairingStatus(`Agent "${data.agentName}" paired successfully!`)
+        setPairingCode('')
+      } else {
+        setPairingStatus(data.error || 'Pairing failed')
+      }
+    } catch {
+      setPairingStatus('Network error')
+    }
+    setPairingSubmitting(false)
+  }
+
+  const handleGenerateInviteCode = async () => {
+    if (!username || !editToken) return
+    setInviteCodeLoading(true)
+    try {
+      const res = await fetch(`/api/community/users/${username}/invite-code`, {
+        headers: { 'X-Edit-Token': editToken },
+      })
+      const data = await res.json() as { inviteCode: string }
+      if (res.ok) setInviteCode(data.inviteCode)
+    } catch {}
+    setInviteCodeLoading(false)
+  }
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
   if (loading) {
     return (
       <>
@@ -164,6 +287,16 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
       </>
     )
   }
+
+  const apiSnippet = inviteCode
+    ? `curl -X POST https://canfly.ai/api/agents/register \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "name": "my-agent",
+    "bio": "My AI assistant",
+    "owner_invite": "${inviteCode}"
+  }'`
+    : null
 
   return (
     <>
@@ -322,6 +455,170 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
               )}
             </button>
           </form>
+
+          {/* ── Agent Binding Section ── */}
+          <div className="mt-12 border-t border-gray-800 pt-10 space-y-10">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-yellow-400" />
+              Agent Binding
+            </h2>
+
+            {/* 1. Pending Agents */}
+            {pendingAgents.length > 0 && (
+              <section>
+                <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-4">
+                  Pending Confirmation ({pendingAgents.length})
+                </h3>
+                <div className="space-y-3">
+                  {pendingAgents.map((agent) => (
+                    <div
+                      key={agent.bindingId}
+                      className="bg-gray-900/50 border border-yellow-800/40 rounded-xl p-4 flex items-start gap-4"
+                    >
+                      <div
+                        className="w-10 h-10 rounded-full flex items-center justify-center text-lg shrink-0 bg-gray-800"
+                      >
+                        {agent.avatarUrl ? (
+                          <img src={agent.avatarUrl} alt={agent.name} className="w-full h-full rounded-full object-cover" />
+                        ) : (
+                          agent.platform === 'openclaw' ? '\uD83E\uDD9E' : '\uD83E\uDD16'
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-white font-medium">{agent.name}</p>
+                        {agent.bio && <p className="text-gray-400 text-sm mt-0.5 line-clamp-1">{agent.bio}</p>}
+                        {agent.skills.length > 0 && (
+                          <p className="text-gray-500 text-xs mt-1">
+                            {agent.skills.map((s) => s.name).join(', ')}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          onClick={() => handleConfirmAgent(agent.bindingId)}
+                          disabled={confirmingId === agent.bindingId}
+                          className="px-3 py-1.5 bg-green-600 hover:bg-green-500 disabled:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-1"
+                        >
+                          {confirmingId === agent.bindingId ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <Check className="w-3.5 h-3.5" />
+                          )}
+                          Confirm
+                        </button>
+                        <button
+                          onClick={() => handleRejectAgent(agent.bindingId)}
+                          disabled={rejectingId === agent.bindingId}
+                          className="px-3 py-1.5 bg-red-900/50 hover:bg-red-800/50 border border-red-800/50 disabled:bg-gray-700 text-red-300 text-sm font-medium rounded-lg transition-colors flex items-center gap-1"
+                        >
+                          {rejectingId === agent.bindingId ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <X className="w-3.5 h-3.5" />
+                          )}
+                          Reject
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* 2. Pairing Code */}
+            <section>
+              <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-3">
+                Pair with Code
+              </h3>
+              <p className="text-gray-500 text-sm mb-3">
+                Enter your agent's pairing code to bind it to your profile.
+              </p>
+              <form onSubmit={handlePairAgent} className="flex gap-3">
+                <input
+                  type="text"
+                  value={pairingCode}
+                  onChange={(e) => {
+                    setPairingCode(e.target.value.toUpperCase())
+                    setPairingStatus(null)
+                  }}
+                  placeholder="CLAW-XXXX-XXXX"
+                  maxLength={14}
+                  className="flex-1 px-4 py-2.5 bg-gray-900 border border-gray-700 text-white placeholder-gray-500 rounded-xl focus:outline-none focus:border-cyan-500 transition-colors font-mono text-sm tracking-wider"
+                />
+                <button
+                  type="submit"
+                  disabled={pairingSubmitting || !pairingCode.trim()}
+                  className="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-500 disabled:bg-gray-700 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-colors flex items-center gap-2 text-sm"
+                >
+                  {pairingSubmitting ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Link2 className="w-4 h-4" />
+                  )}
+                  Pair
+                </button>
+              </form>
+              {pairingStatus && (
+                <p className={`mt-2 text-sm ${pairingStatus.includes('successfully') ? 'text-green-400' : 'text-red-400'}`}>
+                  {pairingStatus}
+                </p>
+              )}
+            </section>
+
+            {/* 3. Invite Code */}
+            <section>
+              <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-3">
+                Your Invite Code
+              </h3>
+              <p className="text-gray-500 text-sm mb-3">
+                Share this code with your AI agent so it can register under your profile.
+              </p>
+              {inviteCode ? (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <code className="flex-1 px-4 py-3 bg-gray-900 border border-gray-700 text-cyan-400 rounded-xl font-mono text-sm tracking-wider">
+                      {inviteCode}
+                    </code>
+                    <button
+                      onClick={() => copyToClipboard(inviteCode)}
+                      className="px-4 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl transition-colors"
+                      title="Copy invite code"
+                    >
+                      {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
+                    </button>
+                  </div>
+                  {apiSnippet && (
+                    <div className="relative">
+                      <p className="text-gray-500 text-xs mb-2">API snippet for your agent:</p>
+                      <pre className="bg-gray-950 border border-gray-800 rounded-xl p-4 text-xs text-gray-300 overflow-x-auto">
+                        <code>{apiSnippet}</code>
+                      </pre>
+                      <button
+                        onClick={() => copyToClipboard(apiSnippet)}
+                        className="absolute top-8 right-3 p-1.5 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
+                        title="Copy snippet"
+                      >
+                        <Copy className="w-3.5 h-3.5 text-gray-400" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <button
+                  onClick={handleGenerateInviteCode}
+                  disabled={inviteCodeLoading}
+                  className="px-5 py-2.5 bg-gray-800 hover:bg-gray-700 disabled:bg-gray-800 text-white font-medium rounded-xl transition-colors flex items-center gap-2 text-sm"
+                >
+                  {inviteCodeLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Sparkles className="w-4 h-4 text-yellow-400" />
+                  )}
+                  Generate Invite Code
+                </button>
+              )}
+            </section>
+          </div>
         </div>
       </main>
     </>
