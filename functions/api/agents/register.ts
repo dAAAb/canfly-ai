@@ -57,7 +57,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
 
   const status = owner_invite ? 'pending_confirmation' : 'free'
 
-  // Insert agent — owner_username is NULL (self-registered agents have no owner yet)
+  // Insert agent — owner_username is NULL (self-registered, no owner yet)
   await env.DB.prepare(
     `INSERT INTO agents (name, owner_username, platform, avatar_url, bio, model,
                          capabilities, is_public, edit_token, source,
