@@ -173,9 +173,15 @@
         "speed": "Speed",
         "submissions": "Submissions"
       },
+      "tooltips": {
+        "score": "Best score achieved across all submissions (higher is better)",
+        "cost": "Lowest cost per benchmark run in USD",
+        "speed": "Fastest execution time across all submissions"
+      },
       "attribution": "Data source: PinchBench",
       "loading": "Loading model rankings...",
       "error": "Failed to load model rankings",
+      "errorHint": "The benchmark API may be temporarily unavailable. Try again in a moment.",
       "retry": "Retry",
       "noResults": "No models found",
       "perRun": "/run",

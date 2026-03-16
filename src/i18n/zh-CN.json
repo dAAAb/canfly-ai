@@ -173,9 +173,15 @@
         "speed": "速度",
         "submissions": "提交数"
       },
+      "tooltips": {
+        "score": "所有提交中的最佳分数（越高越好）",
+        "cost": "每次基准测试运行的最低成本（美元）",
+        "speed": "所有提交中的最快执行时间"
+      },
       "attribution": "数据来源：PinchBench",
       "loading": "加载模型排行榜中...",
       "error": "无法加载模型排行榜",
+      "errorHint": "基准测试 API 可能暂时无法使用，请稍后再试。",
       "retry": "重试",
       "noResults": "未找到模型",
       "perRun": "/次",

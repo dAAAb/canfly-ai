@@ -173,9 +173,15 @@
         "speed": "速度",
         "submissions": "提交數"
       },
+      "tooltips": {
+        "score": "所有提交中的最佳分數（越高越好）",
+        "cost": "每次基準測試運行的最低成本（美元）",
+        "speed": "所有提交中的最快執行時間"
+      },
       "attribution": "數據來源：PinchBench",
       "loading": "載入模型排行榜中...",
       "error": "無法載入模型排行榜",
+      "errorHint": "基準測試 API 可能暫時無法使用，請稍後再試。",
       "retry": "重試",
       "noResults": "未找到模型",
       "perRun": "/次",
