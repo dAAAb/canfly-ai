@@ -57,6 +57,24 @@ export async function parseBody<T>(request: Request): Promise<T | null> {
   }
 }
 
+/** Generate a random API key (48 hex chars, prefixed with "cfa_") */
+export function generateApiKey(): string {
+  const bytes = new Uint8Array(24)
+  crypto.getRandomValues(bytes)
+  return 'cfa_' + Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')
+}
+
+/** Generate a pairing code like CLAW-8K2M-X9F3 */
+export function generatePairingCode(): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789' // no 0/O/1/I ambiguity
+  const segment = (len: number) => {
+    const bytes = new Uint8Array(len)
+    crypto.getRandomValues(bytes)
+    return Array.from(bytes, (b) => chars[b % chars.length]).join('')
+  }
+  return `CLAW-${segment(4)}-${segment(4)}`
+}
+
 /** Parse integer query param with default */
 export function intParam(url: URL, key: string, defaultValue: number): number {
   const val = url.searchParams.get(key)
