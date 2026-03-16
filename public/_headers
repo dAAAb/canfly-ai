@@ -1,7 +1,18 @@
-# ALL HTML pages: never cache (SPA catch-all returns index.html for all routes)
-/*
+# HTML pages: no cache (SPA needs fresh HTML to get correct JS chunk refs)
+/
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+/u/*
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+/apps/*
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+/rankings
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+/community
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+/community/*
   Cache-Control: no-store, no-cache, must-revalidate, max-age=0
 
-# Hashed assets can be cached forever (filename changes on rebuild)
+# Hashed assets: cache forever (filename changes on rebuild)
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
