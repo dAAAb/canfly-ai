@@ -89,6 +89,7 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
   const [user, setUser] = useState<UserData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [snippetCopied, setSnippetCopied] = useState(false)
 
   useEffect(() => {
     if (!username) return
@@ -142,7 +143,6 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
 
   const hasAgentsWithSlugs = user.agents.some((a) => a.skills.some((s) => s.slug))
   const canEdit = !!localStorage.getItem(`canfly_edit_token_${user.username}`)
-  const [snippetCopied, setSnippetCopied] = useState(false)
 
   const apiSnippet = user.ownerInviteCode
     ? `curl -X POST https://canfly.ai/api/agents/register \\
