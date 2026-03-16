@@ -342,7 +342,10 @@ export const products: Product[] = [
       'Context-aware automation ("if it\'s dark, turn on lights")',
       'Local processing — no cloud required for basic commands',
     ],
-    screenshots: [],
+    screenshots: [
+      '/images/products/switchbot-ai-hub/screenshot-1.jpg',
+      '/images/products/switchbot-ai-hub/screenshot-2.jpg',
+    ],
     tutorial: '',
     cta: {
       primary: 'Notify Me',
@@ -372,7 +375,10 @@ export const products: Product[] = [
       'Real-time web access — always up-to-date',
       'Free tier: unlimited basic searches',
     ],
-    screenshots: [],
+    screenshots: [
+      '/images/products/perplexity/screenshot-1.png',
+      '/images/products/perplexity/screenshot-2.png',
+    ],
     reviewVideo: '/videos/reviews/perplexity-review.mp4',
     tutorial: '/learn/perplexity',
     cta: {
@@ -518,7 +524,10 @@ export const products: Product[] = [
       'MCP (Model Context Protocol) integration',
       'Y Combinator backed',
     ],
-    screenshots: [],
+    screenshots: [
+      '/images/products/agentmail/screenshot-1.png',
+      '/images/products/agentmail/screenshot-2.png',
+    ],
     tutorial: '/learn/agentmail',
     cta: {
       primary: 'Get Started Free',
