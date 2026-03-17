@@ -327,7 +327,7 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
           </div>
 
           <h1 className="text-2xl font-bold text-white mb-2">Edit Profile</h1>
-          <p className="text-gray-400 mb-8">Update your CanFly profile for @{username}.</p>
+          <p className="text-gray-400 mb-8">Update your CanFly profile for {username}.</p>
 
           {error && error !== 'User not found' && (
             <div className="mb-6 p-4 bg-red-900/30 border border-red-800 rounded-xl flex items-start gap-3">
