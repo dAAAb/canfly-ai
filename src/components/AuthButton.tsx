@@ -54,6 +54,17 @@ export default function AuthButton() {
   const badge = getBadge(worldIdLevel, walletAddress)
   const displayName = user?.google?.name || user?.email?.address?.split('@')[0] || 'User'
 
+  // Find the user's existing CanFly username from localStorage edit tokens
+  const ownUsername = (() => {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i)
+      if (key?.startsWith('canfly_edit_token_')) {
+        return key.replace('canfly_edit_token_', '')
+      }
+    }
+    return null
+  })()
+
   return (
     <div className="relative" ref={dropdownRef}>
       <button
@@ -68,7 +79,7 @@ export default function AuthButton() {
       {dropdownOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-gray-900 border border-gray-700 rounded-lg shadow-xl z-50 py-1 overflow-hidden">
           <a
-            href="/community/register"
+            href={ownUsername ? `/u/${ownUsername}` : '/community/register'}
             className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
             onClick={() => setDropdownOpen(false)}
           >

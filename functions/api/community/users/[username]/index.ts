@@ -23,14 +23,17 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
     return errorResponse('User profile is private', 403)
   }
 
+  // Use the canonical username from DB (preserves original case)
+  const canonicalUsername = user.username as string
+
   // Get user's agents with their skills
   const agentsResult = await env.DB.prepare(
     `SELECT name, wallet_address, basename, platform, avatar_url,
             bio, model, hosting, capabilities, erc8004_url, is_public, created_at
-     FROM agents WHERE owner_username = ?1 AND is_public = 1
+     FROM agents WHERE owner_username = ?1 COLLATE NOCASE AND is_public = 1
      ORDER BY created_at ASC`
   )
-    .bind(username)
+    .bind(canonicalUsername)
     .all()
 
   const agents = await Promise.all(
@@ -52,9 +55,9 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
 
   // Get user's hardware
   const hardwareResult = await env.DB.prepare(
-    `SELECT name, slug, role FROM hardware WHERE username = ?1`
+    `SELECT name, slug, role FROM hardware WHERE username = ?1 COLLATE NOCASE`
   )
-    .bind(username)
+    .bind(canonicalUsername)
     .all()
 
   return json({

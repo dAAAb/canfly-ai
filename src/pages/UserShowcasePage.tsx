@@ -144,13 +144,22 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
   const hasAgentsWithSlugs = user.agents.some((a) => a.skills.some((s) => s.slug))
   const canEdit = !!localStorage.getItem(`canfly_edit_token_${user.username}`)
 
-  const apiSnippet = user.ownerInviteCode
-    ? `curl -X POST https://canfly.ai/api/agents/register \\
+  const apiSnippet = canEdit
+    ? user.ownerInviteCode
+      ? `curl -X POST https://canfly.ai/api/agents/register \\
   -H "Content-Type: application/json" \\
   -d '{
     "name": "my-agent",
     "bio": "My AI assistant",
     "owner_invite": "${user.ownerInviteCode}"
+  }'`
+      : `# Generate an invite code first in Profile Edit,
+# or register as a free agent:
+curl -X POST https://canfly.ai/api/agents/register \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "name": "my-agent",
+    "bio": "My AI assistant"
   }'`
     : null
 
