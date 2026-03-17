@@ -22,6 +22,14 @@ export default function Navbar({ search, children }: NavbarProps) {
   const { localePath } = useLanguage()
   const [mobileOpen, setMobileOpen] = useState(false)
 
+  // On subdomains (e.g. daaab.canfly.ai), nav links should point to main domain
+  const isSubdomain = (() => {
+    const host = window.location.hostname.toLowerCase()
+    const main = 'canfly.ai'
+    return host.endsWith(`.${main}`) && host !== `www.${main}`
+  })()
+  const mainBase = isSubdomain ? 'https://canfly.ai' : ''
+
   return (
     <div className="border-b border-gray-800 bg-black/80 backdrop-blur-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6 md:px-8 py-4 flex items-center justify-between">
@@ -54,22 +62,23 @@ export default function Navbar({ search, children }: NavbarProps) {
           )}
           {children}
           <AuthButton />
-          <Link to={localePath('/apps')} className="text-sm text-gray-400 hover:text-white transition-colors">
-            {t('nav.browseApps')}
-          </Link>
-          <Link to={localePath('/rankings')} className="text-sm text-gray-400 hover:text-white transition-colors">
-            {t('nav.rankings')}
-          </Link>
-          <Link to={localePath('/community')} className="text-sm text-gray-400 hover:text-white transition-colors">
-            {t('nav.community')}
-          </Link>
-          <LanguageSwitcher />
-          <Link
-            to={localePath('/apps/free/ollama')}
-            className="text-sm bg-green-600/20 border border-green-600 px-3 py-1.5 rounded-full hover:bg-green-600/30 transition-all text-green-400 hover:shadow-[0_0_16px_rgba(34,197,94,0.3)]"
-          >
-            {t('nav.startFree')}
-          </Link>
+          {isSubdomain ? (
+            <>
+              <a href={`${mainBase}${localePath('/apps')}`} className="text-sm text-gray-400 hover:text-white transition-colors">{t('nav.browseApps')}</a>
+              <a href={`${mainBase}${localePath('/rankings')}`} className="text-sm text-gray-400 hover:text-white transition-colors">{t('nav.rankings')}</a>
+              <a href={`${mainBase}${localePath('/community')}`} className="text-sm text-gray-400 hover:text-white transition-colors">{t('nav.community')}</a>
+              <LanguageSwitcher />
+              <a href={`${mainBase}${localePath('/apps/free/ollama')}`} className="text-sm bg-green-600/20 border border-green-600 px-3 py-1.5 rounded-full hover:bg-green-600/30 transition-all text-green-400 hover:shadow-[0_0_16px_rgba(34,197,94,0.3)]">{t('nav.startFree')}</a>
+            </>
+          ) : (
+            <>
+              <Link to={localePath('/apps')} className="text-sm text-gray-400 hover:text-white transition-colors">{t('nav.browseApps')}</Link>
+              <Link to={localePath('/rankings')} className="text-sm text-gray-400 hover:text-white transition-colors">{t('nav.rankings')}</Link>
+              <Link to={localePath('/community')} className="text-sm text-gray-400 hover:text-white transition-colors">{t('nav.community')}</Link>
+              <LanguageSwitcher />
+              <Link to={localePath('/apps/free/ollama')} className="text-sm bg-green-600/20 border border-green-600 px-3 py-1.5 rounded-full hover:bg-green-600/30 transition-all text-green-400 hover:shadow-[0_0_16px_rgba(34,197,94,0.3)]">{t('nav.startFree')}</Link>
+            </>
+          )}
         </div>
 
         {/* Mobile hamburger */}
@@ -106,35 +115,23 @@ export default function Navbar({ search, children }: NavbarProps) {
           )}
           {children}
           <AuthButton />
-          <Link
-            to={localePath('/apps')}
-            onClick={() => setMobileOpen(false)}
-            className="block text-sm text-gray-400 hover:text-white transition-colors"
-          >
-            {t('nav.browseApps')}
-          </Link>
-          <Link
-            to={localePath('/rankings')}
-            onClick={() => setMobileOpen(false)}
-            className="block text-sm text-gray-400 hover:text-white transition-colors"
-          >
-            {t('nav.rankings')}
-          </Link>
-          <Link
-            to={localePath('/community')}
-            onClick={() => setMobileOpen(false)}
-            className="block text-sm text-gray-400 hover:text-white transition-colors"
-          >
-            {t('nav.community')}
-          </Link>
-          <LanguageSwitcher />
-          <Link
-            to={localePath('/apps/free/ollama')}
-            onClick={() => setMobileOpen(false)}
-            className="inline-block text-sm bg-green-600/20 border border-green-600 px-3 py-1.5 rounded-full hover:bg-green-600/30 transition-all text-green-400"
-          >
-            {t('nav.startFree')}
-          </Link>
+          {isSubdomain ? (
+            <>
+              <a href={`${mainBase}${localePath('/apps')}`} className="block text-sm text-gray-400 hover:text-white transition-colors">{t('nav.browseApps')}</a>
+              <a href={`${mainBase}${localePath('/rankings')}`} className="block text-sm text-gray-400 hover:text-white transition-colors">{t('nav.rankings')}</a>
+              <a href={`${mainBase}${localePath('/community')}`} className="block text-sm text-gray-400 hover:text-white transition-colors">{t('nav.community')}</a>
+              <LanguageSwitcher />
+              <a href={`${mainBase}${localePath('/apps/free/ollama')}`} className="inline-block text-sm bg-green-600/20 border border-green-600 px-3 py-1.5 rounded-full hover:bg-green-600/30 transition-all text-green-400">{t('nav.startFree')}</a>
+            </>
+          ) : (
+            <>
+              <Link to={localePath('/apps')} onClick={() => setMobileOpen(false)} className="block text-sm text-gray-400 hover:text-white transition-colors">{t('nav.browseApps')}</Link>
+              <Link to={localePath('/rankings')} onClick={() => setMobileOpen(false)} className="block text-sm text-gray-400 hover:text-white transition-colors">{t('nav.rankings')}</Link>
+              <Link to={localePath('/community')} onClick={() => setMobileOpen(false)} className="block text-sm text-gray-400 hover:text-white transition-colors">{t('nav.community')}</Link>
+              <LanguageSwitcher />
+              <Link to={localePath('/apps/free/ollama')} onClick={() => setMobileOpen(false)} className="inline-block text-sm bg-green-600/20 border border-green-600 px-3 py-1.5 rounded-full hover:bg-green-600/30 transition-all text-green-400">{t('nav.startFree')}</Link>
+            </>
+          )}
         </div>
       )}
     </div>
