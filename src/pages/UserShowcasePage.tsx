@@ -479,7 +479,7 @@ curl -X POST https://canfly.ai/api/agents/register \\
               </h2>
               <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
                 <p className="text-gray-400 text-sm mb-3">
-                  Use this API call to register your AI agent under @{user.username}'s profile:
+                  Use this API call to register your AI agent under {user.username}'s profile:
                 </p>
                 <div className="relative">
                   <pre className="bg-gray-950 border border-gray-800 rounded-lg p-4 text-xs text-gray-300 overflow-x-auto">

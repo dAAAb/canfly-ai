@@ -251,7 +251,7 @@ export default function AgentRegisterPage({ subdomainUsername }: { subdomainUser
             <div className="text-5xl mb-4">🔒</div>
             <h1 className="text-2xl font-bold text-white mb-2">Access Denied</h1>
             <p className="text-gray-400">
-              You don't have permission to add agents under @{username}.
+              You don't have permission to add agents under {username}.
             </p>
           </div>
         </main>
@@ -277,7 +277,7 @@ export default function AgentRegisterPage({ subdomainUsername }: { subdomainUser
 
           <h1 className="text-2xl font-bold text-white mb-2">Register New Agent</h1>
           <p className="text-gray-400 mb-8">
-            Add an AI agent to <span className="text-cyan-400">@{username}</span>'s profile.
+            Add an AI agent to <span className="text-cyan-400">{username}</span>'s profile.
           </p>
 
           {error && (
