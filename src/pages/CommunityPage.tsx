@@ -195,7 +195,7 @@ export default function CommunityPage() {
     return (
       <div key={user.username} className="flex items-center gap-2">
         <PillBadge
-          name={user.display_name || user.username}
+          name={user.username}
           walletAddress={user.wallet_address}
           type="user"
           href={userHref(user.username)}
@@ -228,7 +228,7 @@ export default function CommunityPage() {
           {userList.map((user) => (
             <div key={user.username} className="flex items-center gap-2">
               <PillBadge
-                name={user.display_name || user.username}
+                name={user.username}
                 walletAddress={user.wallet_address}
                 type="user"
                 href={userHref(user.username)}
