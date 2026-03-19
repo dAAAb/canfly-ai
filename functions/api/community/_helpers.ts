@@ -4,13 +4,14 @@
 
 export interface Env {
   DB: D1Database
+  AVATARS: R2Bucket
 }
 
 /** Standard CORS headers for cross-origin access */
 export const CORS_HEADERS: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Edit-Token',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Edit-Token, X-Wallet-Address',
 }
 
 /** Handle CORS preflight */

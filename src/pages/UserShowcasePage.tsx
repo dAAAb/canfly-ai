@@ -1,6 +1,8 @@
 import { useParams, Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { useQueryLang } from '../hooks/useLanguage'
+import { useAuth } from '../hooks/useAuth'
+import SmartAvatar from '../components/SmartAvatar'
 import Navbar from '../components/Navbar'
 import PillBadge from '../components/PillBadge'
 import { walletGradient } from '../utils/walletGradient'
@@ -19,6 +21,9 @@ import {
   Copy,
   Check,
   Terminal,
+  Loader2,
+  CheckCircle,
+  XCircle,
 } from 'lucide-react'
 
 interface Skill {
@@ -86,10 +91,26 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
   const params = useParams<{ username: string }>()
   const username = subdomainUsername || params.username
   const { currentLang, switchLang } = useQueryLang()
+  const { walletAddress } = useAuth()
   const [user, setUser] = useState<UserData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [snippetCopied, setSnippetCopied] = useState(false)
+
+  // Pending agent bindings
+  interface PendingAgent {
+    bindingId: number
+    name: string
+    avatarUrl: string | null
+    bio: string | null
+    model: string | null
+    platform: string
+    skills: Skill[]
+    createdAt: string
+  }
+  const [pendingAgents, setPendingAgents] = useState<PendingAgent[]>([])
+  const [confirmingId, setConfirmingId] = useState<number | null>(null)
+  const [rejectingId, setRejectingId] = useState<number | null>(null)
 
   useEffect(() => {
     if (!username) return
@@ -106,6 +127,68 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false))
   }, [username])
+
+  // Load pending agents when user can edit
+  useEffect(() => {
+    if (!username || !user) return
+    const editToken = localStorage.getItem(`canfly_edit_token_${username}`)
+    const isWalletMatch = walletAddress && user.wallet_address &&
+      walletAddress.toLowerCase() === user.wallet_address.toLowerCase()
+    if (!editToken && !isWalletMatch) return
+
+    const headers: Record<string, string> = {}
+    if (editToken) headers['X-Edit-Token'] = editToken
+    else if (walletAddress) headers['X-Wallet-Address'] = walletAddress
+
+    fetch(`/api/community/users/${username}/pending-agents`, { headers })
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data) setPendingAgents((data as { pendingAgents: PendingAgent[] }).pendingAgents)
+      })
+      .catch(() => {})
+  }, [username, user, walletAddress])
+
+  const handleConfirmAgent = async (bindingId: number) => {
+    if (!username) return
+    setConfirmingId(bindingId)
+    try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      const editToken = localStorage.getItem(`canfly_edit_token_${username}`)
+      if (editToken) headers['X-Edit-Token'] = editToken
+      else if (walletAddress) headers['X-Wallet-Address'] = walletAddress
+
+      const res = await fetch(`/api/community/users/${username}/confirm-agent`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ bindingId }),
+      })
+      if (res.ok) {
+        setPendingAgents((prev) => prev.filter((a) => a.bindingId !== bindingId))
+        // Reload to show the newly confirmed agent
+        window.location.reload()
+      }
+    } catch { /* ignore */ }
+    finally { setConfirmingId(null) }
+  }
+
+  const handleRejectAgent = async (bindingId: number) => {
+    if (!username) return
+    setRejectingId(bindingId)
+    try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      const editToken = localStorage.getItem(`canfly_edit_token_${username}`)
+      if (editToken) headers['X-Edit-Token'] = editToken
+      else if (walletAddress) headers['X-Wallet-Address'] = walletAddress
+
+      await fetch(`/api/community/users/${username}/reject-agent`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ bindingId }),
+      })
+      setPendingAgents((prev) => prev.filter((a) => a.bindingId !== bindingId))
+    } catch { /* ignore */ }
+    finally { setRejectingId(null) }
+  }
 
   if (loading) {
     return (
@@ -142,7 +225,15 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
   }
 
   const hasAgentsWithSlugs = user.agents.some((a) => a.skills.some((s) => s.slug))
-  const canEdit = !!localStorage.getItem(`canfly_edit_token_${user.username}`)
+  // Owner can edit if they have the edit token in localStorage,
+  // OR if they're logged in with the same wallet address as the profile
+  const hasEditToken = !!localStorage.getItem(`canfly_edit_token_${user.username}`)
+  const isWalletOwner = !!(
+    walletAddress &&
+    user.wallet_address &&
+    walletAddress.toLowerCase() === user.wallet_address.toLowerCase()
+  )
+  const canEdit = hasEditToken || isWalletOwner
 
   const apiSnippet = user.ownerInviteCode
     ? `curl -X POST https://canfly.ai/api/agents/register \\
@@ -188,20 +279,41 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
           <div className="mb-12">
             {/* Avatar */}
             <div className="mb-4">
-              {user.avatar_url ? (
-                <img
-                  src={user.avatar_url}
-                  alt={user.username}
-                  className="w-28 h-28 rounded-full border-4 border-black object-cover"
-                />
-              ) : (
-                <div
-                  className="w-28 h-28 rounded-full border-4 border-black flex items-center justify-center text-4xl"
-                  style={{ background: walletGradient(user.wallet_address) }}
-                >
-                  👤
-                </div>
-              )}
+              <SmartAvatar
+                avatarUrl={user.avatar_url}
+                walletAddress={user.wallet_address}
+                basename={user.links?.basename}
+                name={user.display_name || user.username}
+                size={112}
+                editable={canEdit}
+                onUpload={async (file) => {
+                  const form = new FormData()
+                  form.append('file', file)
+                  const headers: Record<string, string> = {}
+                  const token = localStorage.getItem(`canfly_edit_token_${user.username}`)
+                  if (token) {
+                    headers['X-Edit-Token'] = token
+                    headers['X-Username'] = user.username
+                  } else if (walletAddress) {
+                    headers['X-Wallet-Address'] = walletAddress
+                  }
+                  try {
+                    const res = await fetch(`/api/upload/avatar?for=user:${user.username}`, {
+                      method: 'POST',
+                      headers,
+                      body: form,
+                    })
+                    if (res.ok) {
+                      window.location.reload()
+                    } else {
+                      const err = await res.json() as { error?: string }
+                      alert(err.error || 'Upload failed')
+                    }
+                  } catch {
+                    alert('Upload failed')
+                  }
+                }}
+              />
             </div>
 
             {/* Name + Badge */}
@@ -288,6 +400,59 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
             </section>
           )}
 
+          {/* Pending Agent Confirmations */}
+          {pendingAgents.length > 0 && canEdit && (
+            <section className="mb-8">
+              <h2 className="text-lg font-semibold text-yellow-400 mb-4 flex items-center gap-2">
+                ⏳ Pending Confirmation ({pendingAgents.length})
+              </h2>
+              <div className="space-y-3">
+                {pendingAgents.map((agent) => (
+                  <div
+                    key={agent.bindingId}
+                    className="bg-yellow-900/10 border border-yellow-700/40 rounded-xl p-4 flex items-center justify-between gap-4"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="text-white font-medium">{agent.name}</p>
+                      {agent.bio && (
+                        <p className="text-gray-400 text-sm mt-1 line-clamp-1">{agent.bio}</p>
+                      )}
+                      <p className="text-gray-500 text-xs mt-1">
+                        {agent.platform} · {agent.model || 'Unknown model'}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        onClick={() => handleConfirmAgent(agent.bindingId)}
+                        disabled={confirmingId === agent.bindingId}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-500 disabled:bg-gray-600 text-white text-sm font-medium rounded-lg transition-colors"
+                      >
+                        {confirmingId === agent.bindingId ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <CheckCircle className="w-3.5 h-3.5" />
+                        )}
+                        Confirm
+                      </button>
+                      <button
+                        onClick={() => handleRejectAgent(agent.bindingId)}
+                        disabled={rejectingId === agent.bindingId}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-red-900/50 hover:bg-red-800/50 disabled:bg-gray-600 text-red-300 text-sm font-medium rounded-lg transition-colors border border-red-800/50"
+                      >
+                        {rejectingId === agent.bindingId ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <XCircle className="w-3.5 h-3.5" />
+                        )}
+                        Reject
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* My Agents */}
             <section className="mb-12">
               <div className="flex items-center justify-between mb-4">
@@ -319,22 +484,16 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
                     >
                       <div className="flex items-start gap-4">
                         {/* Agent avatar */}
-                        {agent.avatar_url ? (
-                          <img
-                            src={agent.avatar_url}
-                            alt={agent.name}
-                            className="w-12 h-12 rounded-full object-cover shrink-0"
-                          />
-                        ) : (
-                          <div
-                            className="w-12 h-12 rounded-full flex items-center justify-center text-xl shrink-0"
-                            style={{
-                              background: walletGradient(agent.wallet_address),
-                            }}
-                          >
-                            {agent.platform === 'openclaw' ? '🦞' : '🤖'}
-                          </div>
-                        )}
+                        <SmartAvatar
+                          avatarUrl={agent.avatar_url}
+                          walletAddress={agent.wallet_address}
+                          basename={agent.basename}
+                          name={agent.name}
+                          size={48}
+                          emoji={agent.platform === 'openclaw' ? '🦞' : '🤖'}
+                          border="border-0"
+                          className="shrink-0"
+                        />
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2 mb-1">
                             <PillBadge

@@ -4,6 +4,7 @@ import { useQueryLang } from '../hooks/useLanguage'
 import Navbar from '../components/Navbar'
 import PillBadge from '../components/PillBadge'
 import { walletGradient } from '../utils/walletGradient'
+import SmartAvatar from '../components/SmartAvatar'
 import { Cpu, Globe, Wallet, ExternalLink, Sparkles, Video, MessageCircle, Mail } from 'lucide-react'
 
 interface Skill {
@@ -110,20 +111,17 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
           {/* Agent Header */}
           <div className="text-center mb-12">
             {/* Avatar */}
-            {agent.avatar_url ? (
-              <img
-                src={agent.avatar_url}
-                alt={agent.name}
-                className="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-black object-cover ring-2 ring-gray-700"
+            <div className="mx-auto mb-4 w-24 h-24">
+              <SmartAvatar
+                avatarUrl={agent.avatar_url}
+                walletAddress={agent.wallet_address}
+                basename={agent.basename}
+                name={agent.name}
+                size={96}
+                emoji={platformEmoji}
+                border="border-4 border-black ring-2 ring-gray-700"
               />
-            ) : (
-              <div
-                className="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl border-4 border-black ring-2 ring-gray-700"
-                style={{ background: walletGradient(agent.wallet_address) }}
-              >
-                {platformEmoji}
-              </div>
-            )}
+            </div>
 
             {/* PillBadge */}
             <div className="mb-3">

@@ -12,19 +12,25 @@ interface ConfirmBody {
 export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }) => {
   const username = params.username as string
   const editToken = request.headers.get('X-Edit-Token')
+  const walletHeader = request.headers.get('X-Wallet-Address')
 
-  if (!editToken) {
-    return errorResponse('X-Edit-Token header required', 401)
+  if (!editToken && !walletHeader) {
+    return errorResponse('X-Edit-Token or X-Wallet-Address header required', 401)
   }
 
   const user = await env.DB.prepare(
-    'SELECT username, edit_token, owner_invite_code FROM users WHERE username = ?1'
+    'SELECT username, edit_token, owner_invite_code, wallet_address FROM users WHERE username = ?1'
   )
     .bind(username)
     .first()
 
   if (!user) return errorResponse('User not found', 404)
-  if (user.edit_token !== editToken) return errorResponse('Invalid edit token', 403)
+
+  const tokenOk = editToken && user.edit_token === editToken
+  const walletOk = walletHeader && user.wallet_address &&
+    walletHeader.toLowerCase() === (user.wallet_address as string).toLowerCase()
+
+  if (!tokenOk && !walletOk) return errorResponse('Unauthorized', 403)
 
   const body = await parseBody<ConfirmBody>(request)
   if (!body || !body.bindingId) {

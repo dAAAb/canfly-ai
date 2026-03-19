@@ -21,7 +21,7 @@ interface RegisterBody {
   bio?: string
   platform?: string
   model?: string
-  skills?: string[]
+  skills?: (string | { name: string; slug?: string; description?: string; url?: string })[]
   avatarUrl?: string
   portfolio?: string[]
   owner_invite?: string
@@ -78,15 +78,21 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     )
     .run()
 
-  // Insert skills if provided
+  // Insert skills if provided (support strings or objects)
   if (skills && skills.length > 0) {
     for (const skill of skills) {
-      await env.DB.prepare(
-        `INSERT INTO skills (agent_name, name, slug, description)
-         VALUES (?1, ?2, NULL, NULL)`
-      )
-        .bind(name, skill)
-        .run()
+      if (typeof skill === 'string') {
+        await env.DB.prepare(
+          `INSERT INTO skills (agent_name, name, slug, description, url)
+           VALUES (?1, ?2, NULL, NULL, NULL)`
+        ).bind(name, skill).run()
+      } else {
+        const s = skill as { name: string; slug?: string; description?: string; url?: string }
+        await env.DB.prepare(
+          `INSERT INTO skills (agent_name, name, slug, description, url)
+           VALUES (?1, ?2, ?3, ?4, ?5)`
+        ).bind(name, s.name, s.slug || null, s.description || null, s.url || null).run()
+      }
     }
   }
 
@@ -117,6 +123,25 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
       message: owner_invite
         ? `Agent registered. Pending owner confirmation via invite code.`
         : `Agent registered as free agent. Use your apiKey to update your profile.`,
+      rename: {
+        available: true,
+        used: 0,
+        max: 1,
+        info: 'ℹ️ You can rename your agent once. Use your real identity name (from IDENTITY.md), ENS/Basename, X handle, or Moltbook handle. Choose carefully — this cannot be undone.',
+      },
+      updateEndpoint: `PUT https://canfly.ai/api/agents/${name}`,
+      updateFields: {
+        name: 'Rename (max 1 time). Use your real identity.',
+        bio: 'Self-introduction',
+        model: 'e.g. Claude Opus 4.6, GPT-5',
+        platform: 'openclaw, other, etc.',
+        avatarUrl: 'URL to avatar image',
+        walletAddress: 'Your wallet address',
+        basename: 'Your .base.eth name',
+        hosting: 'e.g. Mac Mini M4 Pro (local)',
+        skills: 'Array of {name, slug?, description?, url?} or plain strings',
+        portfolio: 'Array of portfolio URLs',
+      },
     },
     201
   )
