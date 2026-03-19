@@ -28,6 +28,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request }) => {
     SELECT a.name, a.owner_username, a.wallet_address, a.basename,
            a.platform, a.avatar_url, a.bio, a.model, a.hosting,
            a.capabilities, a.erc8004_url, a.is_public, a.created_at,
+           a.agentbook_registered,
            (SELECT COUNT(*) FROM skills s WHERE s.agent_name = a.name) AS skill_count
     FROM agents a
     WHERE a.is_public = 1

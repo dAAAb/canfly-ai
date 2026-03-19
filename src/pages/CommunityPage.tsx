@@ -32,6 +32,7 @@ interface CommunityAgent {
   bio: string | null
   model: string | null
   created_at: string
+  agentbook_registered?: number
 }
 
 interface AgentWithSkillCount extends CommunityAgent {
@@ -431,7 +432,7 @@ export default function CommunityPage() {
                           href={getAgentHref(agent)}
                         />
                         <TrustBadge
-                          level={getAgentTrustLevel(agent)}
+                          level={agent.agentbook_registered === 1 ? 'agentbook' : getAgentTrustLevel(agent)}
                           size="sm"
                         />
                       </div>
