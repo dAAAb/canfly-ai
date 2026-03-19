@@ -85,12 +85,55 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     'UPDATE users SET verification_level = ?1 WHERE username = ?2'
   ).bind('worldid', username).run()
 
+  // Path B: Auto-provision BaseMail account (best-effort, non-blocking)
+  let basemailHandle: string | null = null
+  try {
+    const baseMailUrl = env.BASEMAIL_API_URL || 'https://api.basemail.me'
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    }
+    if (env.BASEMAIL_API_KEY) {
+      headers['Authorization'] = `Bearer ${env.BASEMAIL_API_KEY}`
+    }
+
+    const provisionRes = await fetch(`${baseMailUrl}/v1/provision`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        username,
+        wallet_address: user.wallet_address || undefined,
+        verification_source: 'worldid',
+      }),
+      signal: AbortSignal.timeout(8000),
+    })
+
+    if (provisionRes.ok) {
+      const provisionData = (await provisionRes.json()) as {
+        ok?: boolean; handle?: string; email?: string
+      }
+      basemailHandle = provisionData.handle || provisionData.email || null
+
+      if (basemailHandle) {
+        // Store the BaseMail handle in the verification record
+        await env.DB.prepare(
+          'UPDATE world_id_verifications SET basemail_handle = ?1 WHERE username = ?2'
+        ).bind(basemailHandle, username).run()
+      }
+    }
+  } catch {
+    // BaseMail provisioning is best-effort — don't fail the verification
+  }
+
   return json({
     ok: true,
     is_human: true,
     verification_level: verificationLevel,
     protocol_version: protocolVersion,
-    message: 'Human verified!',
+    basemail_handle: basemailHandle,
+    message: basemailHandle
+      ? `Human verified! BaseMail account: ${basemailHandle}`
+      : 'Human verified!',
   })
 }
 
