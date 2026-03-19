@@ -23,7 +23,7 @@ export function getTrustLevel(user: TrustCheckable): TrustLevel {
   const vl = user.verification_level?.toLowerCase()
 
   if (vl === 'orb') return 'orb'
-  if (vl === 'world' || vl === 'device') return 'world'
+  if (vl === 'world' || vl === 'device' || vl === 'worldid') return 'world'
   if (user.wallet_address) return 'wallet'
   return 'unverified'
 }

@@ -35,7 +35,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
   let owner = null
   if (agent.owner_username) {
     owner = await env.DB.prepare(
-      `SELECT username, display_name, wallet_address, avatar_url
+      `SELECT username, display_name, wallet_address, avatar_url, verification_level
        FROM users WHERE username = ?1`
     )
       .bind(agent.owner_username as string)
