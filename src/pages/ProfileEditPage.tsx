@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
+import WorldIdVerify from '../components/WorldIdVerify'
 import { walletGradient } from '../utils/walletGradient'
 import { AlertCircle, Loader2, User, Save, Copy, Check, X, Link2, Sparkles } from 'lucide-react'
 
@@ -455,6 +456,15 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
               )}
             </button>
           </form>
+
+          {/* ── World ID Verification Section ── */}
+          <div className="mt-12 border-t border-gray-800 pt-10">
+            <WorldIdVerify
+              username={username!}
+              editToken={editToken!}
+              walletAddress={user.wallet_address}
+            />
+          </div>
 
           {/* ── Agent Binding Section ── */}
           <div className="mt-12 border-t border-gray-800 pt-10 space-y-10">

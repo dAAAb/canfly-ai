@@ -5,6 +5,10 @@
 export interface Env {
   DB: D1Database
   AVATARS: R2Bucket
+  WORLD_ID_APP_ID?: string
+  WORLD_ID_RP_ID?: string
+  WORLD_ID_ACTION?: string
+  WORLD_ID_SIGNING_KEY?: string
 }
 
 /** Standard CORS headers for cross-origin access */
