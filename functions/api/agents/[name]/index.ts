@@ -7,7 +7,7 @@
  * Supports rename (once only), bio, model, platform, avatar, skills, portfolio.
  * Skills accept objects: { name, slug?, description?, url? }
  */
-import { type Env, json, errorResponse, handleOptions, parseBody, isValidAgentName } from '../community/_helpers'
+import { type Env, json, errorResponse, handleOptions, parseBody, isValidAgentName } from '../../community/_helpers'
 
 interface SkillEntry {
   name: string
