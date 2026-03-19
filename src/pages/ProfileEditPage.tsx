@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useAuth } from '../hooks/useAuth'
 import Navbar from '../components/Navbar'
 import WorldIdVerify from '../components/WorldIdVerify'
 import { walletGradient } from '../utils/walletGradient'
@@ -46,6 +47,7 @@ interface PendingAgent {
 export default function ProfileEditPage({ subdomainUsername }: { subdomainUsername?: string } = {}) {
   const params = useParams<{ username: string }>(); const username = subdomainUsername || params.username
   const navigate = useNavigate()
+  const { walletAddress } = useAuth()
 
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState<UserData | null>(null)
@@ -73,6 +75,12 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
   const [rejectingId, setRejectingId] = useState<number | null>(null)
 
   const editToken = username ? localStorage.getItem(`canfly_edit_token_${username}`) : null
+  const isWalletOwner = !!(
+    walletAddress &&
+    user?.wallet_address &&
+    walletAddress.toLowerCase() === user.wallet_address.toLowerCase()
+  )
+  const canEdit = !!editToken || isWalletOwner
 
   useEffect(() => {
     if (!username) return
@@ -100,9 +108,11 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
 
   // Load pending agents and invite code
   const loadAgentData = useCallback(() => {
-    if (!username || !editToken) return
+    if (!username || !canEdit) return
 
-    const headers = { 'X-Edit-Token': editToken }
+    const headers: Record<string, string> = {}
+    if (editToken) headers['X-Edit-Token'] = editToken
+    else if (walletAddress) headers['X-Wallet-Address'] = walletAddress
 
     fetch(`/api/community/users/${username}/pending-agents`, { headers })
       .then((r) => r.ok ? r.json() : null)
@@ -117,7 +127,7 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
         if (data) setInviteCode((data as { inviteCode: string }).inviteCode)
       })
       .catch(() => {})
-  }, [username, editToken])
+  }, [username, editToken, walletAddress, canEdit])
 
   useEffect(() => {
     loadAgentData()
@@ -130,7 +140,7 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!username || !editToken) return
+    if (!username || !canEdit) return
 
     setSubmitting(true)
     setError(null)
@@ -141,13 +151,14 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
     if (form.linksWebsite) links.website = form.linksWebsite
     if (form.linksBasename) links.basename = form.linksBasename
 
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    if (editToken) headers['X-Edit-Token'] = editToken
+    else if (walletAddress) headers['X-Wallet-Address'] = walletAddress
+
     try {
       const res = await fetch(`/api/community/users/${username}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Edit-Token': editToken,
-        },
+        headers,
         body: JSON.stringify({
           displayName: form.displayName || '',
           avatarUrl: form.avatarUrl || '',
@@ -170,12 +181,15 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
   }
 
   const handleConfirmAgent = async (bindingId: number) => {
-    if (!username || !editToken) return
+    if (!username || !canEdit) return
     setConfirmingId(bindingId)
     try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      if (editToken) headers['X-Edit-Token'] = editToken
+      else if (walletAddress) headers['X-Wallet-Address'] = walletAddress
       const res = await fetch(`/api/community/users/${username}/confirm-agent`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Edit-Token': editToken },
+        headers,
         body: JSON.stringify({ bindingId }),
       })
       if (res.ok) {
@@ -186,12 +200,15 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
   }
 
   const handleRejectAgent = async (bindingId: number) => {
-    if (!username || !editToken) return
+    if (!username || !canEdit) return
     setRejectingId(bindingId)
     try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      if (editToken) headers['X-Edit-Token'] = editToken
+      else if (walletAddress) headers['X-Wallet-Address'] = walletAddress
       const res = await fetch(`/api/community/users/${username}/reject-agent`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Edit-Token': editToken },
+        headers,
         body: JSON.stringify({ bindingId }),
       })
       if (res.ok) {
@@ -203,14 +220,17 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
 
   const handlePairAgent = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!username || !editToken || !pairingCode.trim()) return
+    if (!username || !canEdit || !pairingCode.trim()) return
 
     setPairingSubmitting(true)
     setPairingStatus(null)
     try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      if (editToken) headers['X-Edit-Token'] = editToken
+      else if (walletAddress) headers['X-Wallet-Address'] = walletAddress
       const res = await fetch(`/api/community/users/${username}/pair-agent`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Edit-Token': editToken },
+        headers,
         body: JSON.stringify({ pairingCode: pairingCode.trim() }),
       })
       const data = await res.json() as { paired?: boolean; agentName?: string; error?: string }
@@ -227,11 +247,14 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
   }
 
   const handleGenerateInviteCode = async () => {
-    if (!username || !editToken) return
+    if (!username || !canEdit) return
     setInviteCodeLoading(true)
     try {
+      const headers: Record<string, string> = {}
+      if (editToken) headers['X-Edit-Token'] = editToken
+      else if (walletAddress) headers['X-Wallet-Address'] = walletAddress
       const res = await fetch(`/api/community/users/${username}/invite-code`, {
-        headers: { 'X-Edit-Token': editToken },
+        headers,
       })
       const data = await res.json() as { inviteCode: string }
       if (res.ok) setInviteCode(data.inviteCode)
@@ -258,7 +281,7 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
     )
   }
 
-  if (!editToken) {
+  if (!canEdit) {
     return (
       <>
         <Navbar />
@@ -267,7 +290,7 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
             <h1 className="text-2xl font-bold text-white mb-4">Cannot Edit Profile</h1>
             <p className="text-gray-400">
               You don't have permission to edit this profile. Edit tokens are stored in your browser
-              from when you registered.
+              from when you registered, or connect the wallet linked to this profile.
             </p>
           </div>
         </main>

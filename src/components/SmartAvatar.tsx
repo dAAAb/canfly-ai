@@ -3,8 +3,7 @@
  * 1. Custom upload (avatarUrl)
  * 2. ENS/Basename avatar (via ensdata.net)
  * 3. Gravatar (via email hash)
- * 4. Effigy.im blockie (via wallet address)
- * 5. Wallet gradient with emoji
+ * 4. Wallet gradient with emoji
  */
 import { useState, useEffect, useMemo } from 'react'
 import { walletGradient } from '../utils/walletGradient'
@@ -91,18 +90,7 @@ export default function SmartAvatar({
         if (!cancelled) setTriedSources((s) => new Set(s).add('gravatar'))
       }
 
-      // 4. Effigy.im blockie
-      if (walletAddress && !triedSources.has('effigy')) {
-        const effigyUrl = `https://effigy.im/a/${walletAddress}.png`
-        const ok = await testImage(effigyUrl)
-        if (!cancelled && ok) {
-          setResolvedUrl(effigyUrl)
-          return
-        }
-        if (!cancelled) setTriedSources((s) => new Set(s).add('effigy'))
-      }
-
-      // 5. No image — will show gradient fallback
+      // 4. No image — will show gradient fallback
       if (!cancelled) setResolvedUrl(null)
     }
 

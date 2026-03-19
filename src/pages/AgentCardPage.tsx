@@ -111,7 +111,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
           {/* Agent Header */}
           <div className="text-center mb-12">
             {/* Avatar */}
-            <div className="mx-auto mb-4 w-24 h-24">
+            <div className="relative z-10 mx-auto mb-4 w-24 h-24">
               <SmartAvatar
                 avatarUrl={agent.avatar_url}
                 walletAddress={agent.wallet_address}
@@ -156,7 +156,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
               <div className="flex items-center justify-center gap-2 mb-4">
                 <span className="text-gray-500 text-sm">owned by</span>
                 <PillBadge
-                  name={agent.owner.display_name || agent.owner.username}
+                  name={agent.owner.username}
                   walletAddress={agent.owner.wallet_address}
                   type="user"
                   href={`/u/${agent.owner.username}`}
