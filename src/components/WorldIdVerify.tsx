@@ -114,32 +114,38 @@ export default function WorldIdVerify({ username, editToken, walletAddress }: Pr
     [username, editToken, error],
   )
 
-  // Manual BaseMail provision retry (if auto-provision didn't fire or failed)
-  const handleProvisionBaseMail = useCallback(async () => {
+  // Check BaseMail by wallet address (public API, no auth needed)
+  const handleCheckBaseMail = useCallback(async () => {
+    if (!walletAddress) {
+      setBasemailStatus('failed')
+      return
+    }
     setBasemailStatus('provisioning')
     try {
-      const res = await fetch('/api/basemail/provision', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Edit-Token': editToken,
-        },
-        body: JSON.stringify({ username }),
-      })
-
-      const data = (await res.json()) as {
-        ok?: boolean; basemail_handle?: string; already_provisioned?: boolean; message?: string
+      const res = await fetch(
+        `https://api.basemail.ai/api/identity/wallet/${walletAddress.toLowerCase()}`
+      )
+      if (res.ok) {
+        const data = (await res.json()) as { handle?: string; email?: string }
+        const handle = data.email || (data.handle ? `${data.handle}@basemail.ai` : null)
+        if (handle) {
+          setBasemailHandle(handle)
+          setBasemailStatus('provisioned')
+          // Persist to our DB (best-effort)
+          fetch('/api/world-id/link-basemail', {
+            method: 'POST',
+            headers: buildAuthHeaders(editToken, walletAddress),
+            body: JSON.stringify({ username, basemail_handle: handle }),
+          }).catch(() => {})
+          return
+        }
       }
-      if (data.ok && data.basemail_handle) {
-        setBasemailHandle(data.basemail_handle)
-        setBasemailStatus('provisioned')
-      } else {
-        setBasemailStatus('failed')
-      }
+      // No BaseMail account found — show sign-up link
+      setBasemailStatus('failed')
     } catch {
       setBasemailStatus('failed')
     }
-  }, [username, editToken])
+  }, [username, editToken, walletAddress])
 
   const handleSuccess = useCallback(() => {
     setStatus('verified')
@@ -210,7 +216,7 @@ export default function WorldIdVerify({ username, editToken, walletAddress }: Pr
                     Could not provision BaseMail account automatically.
                   </p>
                   <button
-                    onClick={handleProvisionBaseMail}
+                    onClick={handleCheckBaseMail}
                     className="text-blue-400 text-xs underline mt-1 hover:text-blue-300"
                   >
                     Try again
@@ -222,10 +228,10 @@ export default function WorldIdVerify({ username, editToken, walletAddress }: Pr
                     Get a free @basemail.ai email linked to your verified identity.
                   </p>
                   <button
-                    onClick={handleProvisionBaseMail}
+                    onClick={handleCheckBaseMail}
                     className="bg-blue-600 text-white px-4 py-1.5 rounded-lg text-xs font-semibold mt-2 hover:bg-blue-500 transition"
                   >
-                    Activate BaseMail
+                    Check My BaseMail
                   </button>
                 </div>
               )}

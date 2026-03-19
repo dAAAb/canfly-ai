@@ -92,44 +92,28 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     'UPDATE users SET verification_level = ?1 WHERE username = ?2'
   ).bind('worldid', username).run()
 
-  // Path B: Auto-provision BaseMail account (best-effort, non-blocking)
+  // Auto-detect existing BaseMail account by wallet address (best-effort)
   let basemailHandle: string | null = null
-  try {
-    const baseMailUrl = env.BASEMAIL_API_URL || 'https://api.basemail.me'
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    }
-    if (env.BASEMAIL_API_KEY) {
-      headers['Authorization'] = `Bearer ${env.BASEMAIL_API_KEY}`
-    }
-
-    const provisionRes = await fetch(`${baseMailUrl}/v1/provision`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        username,
-        wallet_address: user.wallet_address || undefined,
-        verification_source: 'worldid',
-      }),
-      signal: AbortSignal.timeout(8000),
-    })
-
-    if (provisionRes.ok) {
-      const provisionData = (await provisionRes.json()) as {
-        ok?: boolean; handle?: string; email?: string
+  if (user.wallet_address) {
+    try {
+      const walletLower = user.wallet_address.toLowerCase()
+      const lookupRes = await fetch(
+        `https://api.basemail.ai/api/identity/wallet/${walletLower}`,
+        { signal: AbortSignal.timeout(5000) }
+      )
+      if (lookupRes.ok) {
+        const data = (await lookupRes.json()) as { handle?: string; email?: string }
+        basemailHandle = data.email || (data.handle ? `${data.handle}@basemail.ai` : null)
       }
-      basemailHandle = provisionData.handle || provisionData.email || null
-
-      if (basemailHandle) {
-        // Store the BaseMail handle in the verification record
-        await env.DB.prepare(
-          'UPDATE world_id_verifications SET basemail_handle = ?1 WHERE username = ?2'
-        ).bind(basemailHandle, username).run()
-      }
+    } catch {
+      // BaseMail lookup is best-effort
     }
-  } catch {
-    // BaseMail provisioning is best-effort — don't fail the verification
+
+    if (basemailHandle) {
+      await env.DB.prepare(
+        'UPDATE world_id_verifications SET basemail_handle = ?1 WHERE username = ?2'
+      ).bind(basemailHandle, username).run()
+    }
   }
 
   return json({
