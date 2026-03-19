@@ -7,9 +7,10 @@ import { type Env, json, errorResponse, handleOptions, CORS_HEADERS } from '../c
 import { signRpRequest } from './_rp-sign'
 
 export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
-  // Auth: require X-Edit-Token header (user must be logged in / have claimed profile)
+  // Auth: X-Edit-Token or X-Wallet-Address
   const editToken = request.headers.get('X-Edit-Token')
-  if (!editToken) {
+  const walletHeader = request.headers.get('X-Wallet-Address')
+  if (!editToken && !walletHeader) {
     return errorResponse('Authentication required', 401)
   }
 

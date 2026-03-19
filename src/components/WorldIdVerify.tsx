@@ -9,8 +9,15 @@ const WORLD_ID_RP_ID = 'rp_2eeecd2f22517885'
 
 interface Props {
   username: string
-  editToken: string
+  editToken: string | null
   walletAddress: string | null
+}
+
+function buildAuthHeaders(editToken: string | null, walletAddress: string | null): Record<string, string> {
+  const h: Record<string, string> = { 'Content-Type': 'application/json' }
+  if (editToken) h['X-Edit-Token'] = editToken
+  else if (walletAddress) h['X-Wallet-Address'] = walletAddress
+  return h
 }
 
 export default function WorldIdVerify({ username, editToken, walletAddress }: Props) {
@@ -49,10 +56,7 @@ export default function WorldIdVerify({ username, editToken, walletAddress }: Pr
     try {
       const res = await fetch('/api/world-id/rp-signature', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Edit-Token': editToken,
-        },
+        headers: buildAuthHeaders(editToken, walletAddress),
       })
       if (!res.ok) {
         const data = (await res.json()) as { error?: string }
@@ -81,10 +85,7 @@ export default function WorldIdVerify({ username, editToken, walletAddress }: Pr
       try {
         const res = await fetch('/api/world-id/verify', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Edit-Token': editToken,
-          },
+          headers: buildAuthHeaders(editToken, walletAddress),
           body: JSON.stringify({
             username,
             idkit_result: idkitResult,

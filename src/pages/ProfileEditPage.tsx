@@ -484,7 +484,7 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
           <div className="mt-12 border-t border-gray-800 pt-10">
             <WorldIdVerify
               username={username!}
-              editToken={editToken!}
+              editToken={editToken}
               walletAddress={user.wallet_address}
             />
           </div>
