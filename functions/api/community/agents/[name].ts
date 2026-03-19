@@ -10,7 +10,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
   const agent = await env.DB.prepare(
     `SELECT name, owner_username, wallet_address, basename, platform,
             avatar_url, bio, model, hosting, capabilities, erc8004_url,
-            is_public, created_at
+            is_public, created_at, agentbook_registered
      FROM agents WHERE name = ?1`
   )
     .bind(name)

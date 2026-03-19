@@ -5,6 +5,7 @@ export type TrustLevel =
   | 'unverified'
   | 'openclaw-agent'
   | 'agent'
+  | 'agentbook'
 
 interface TrustCheckable {
   wallet_address?: string | null

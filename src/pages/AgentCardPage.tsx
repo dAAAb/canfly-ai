@@ -45,6 +45,7 @@ interface AgentData {
   nadmail?: string | null
   skills: Skill[]
   owner: Owner | null
+  agentbook_registered?: number
 }
 
 export default function AgentCardPage({ free, subdomainUsername }: { free?: boolean; subdomainUsername?: string }) {
@@ -151,6 +152,13 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
             {free && (
               <span className="inline-block px-3 py-1 rounded-full bg-green-600/20 text-green-400 text-sm border border-green-600/40 mb-3">
                 Free Agent
+              </span>
+            )}
+
+            {/* AgentBook Verified badge */}
+            {agent.agentbook_registered === 1 && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-600/20 text-emerald-400 text-sm border border-emerald-600/40 mb-3">
+                📖 AgentBook Verified
               </span>
             )}
 
