@@ -46,6 +46,12 @@ const BADGE_CONFIG: Record<
     tooltip: 'AI Agent',
     classes: 'bg-purple-600/20 text-purple-400 border-purple-600/40',
   },
+  agentbook: {
+    emoji: '📖',
+    label: 'AgentBook',
+    tooltip: 'AgentBook Verified (Human-backed)',
+    classes: 'bg-emerald-600/20 text-emerald-400 border-emerald-600/40',
+  },
 }
 
 const SIZE_CLASSES: Record<'sm' | 'md', string> = {

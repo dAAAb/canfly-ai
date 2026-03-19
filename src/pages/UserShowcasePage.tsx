@@ -9,6 +9,7 @@ import { walletGradient } from '../utils/walletGradient'
 import TrustBadge from '../components/TrustBadge'
 import ClaimProfileButton from '../components/ClaimProfileButton'
 import { getTrustLevel } from '../utils/trustLevel'
+import AgentBookRegister from '../components/AgentBookRegister'
 import {
   ExternalLink,
   Sparkles,
@@ -46,6 +47,7 @@ interface Agent {
   isPublic: boolean
   skills: Skill[]
   created_at: string
+  agentbook_registered?: number
 }
 
 interface Hardware {
@@ -234,6 +236,10 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
     walletAddress.toLowerCase() === user.wallet_address.toLowerCase()
   )
   const canEdit = hasEditToken || isWalletOwner
+  const isWorldIdVerified = !!(
+    user.verification_level &&
+    ['orb', 'device', 'worldid'].includes(user.verification_level.toLowerCase())
+  )
 
   const apiSnippet = user.ownerInviteCode
     ? `curl -X POST https://canfly.ai/api/agents/register \\
@@ -477,50 +483,76 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
                       ? ('openclaw-agent' as const)
                       : ('agent' as const)
                   return (
-                    <Link
+                    <div
                       key={agent.name}
-                      to={`/u/${user.username}/agent/${agent.name}`}
-                      className="bg-gray-900/50 border border-gray-800 rounded-xl p-5 hover:border-gray-700 transition-colors block"
+                      className="bg-gray-900/50 border border-gray-800 rounded-xl p-5 hover:border-gray-700 transition-colors"
                     >
-                      <div className="flex items-start gap-4">
-                        {/* Agent avatar */}
-                        <SmartAvatar
-                          avatarUrl={agent.avatar_url}
-                          walletAddress={agent.wallet_address}
-                          basename={agent.basename}
-                          name={agent.name}
-                          size={48}
-                          emoji={agent.platform === 'openclaw' ? '🦞' : '🤖'}
-                          border="border-0"
-                          className="shrink-0"
-                        />
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <PillBadge
-                              name={agent.name}
-                              walletAddress={agent.wallet_address}
-                              type={badgeType}
-                              href={`/u/${user.username}/agent/${agent.name}`}
-                              size="sm"
-                            />
-                            {agent.capabilities?.videoCall && (
-                              <Video className="w-4 h-4 text-cyan-400 shrink-0" />
+                      <Link
+                        to={`/u/${user.username}/agent/${agent.name}`}
+                        className="block"
+                      >
+                        <div className="flex items-start gap-4">
+                          {/* Agent avatar */}
+                          <SmartAvatar
+                            avatarUrl={agent.avatar_url}
+                            walletAddress={agent.wallet_address}
+                            basename={agent.basename}
+                            name={agent.name}
+                            size={48}
+                            emoji={agent.platform === 'openclaw' ? '🦞' : '🤖'}
+                            border="border-0"
+                            className="shrink-0"
+                          />
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <PillBadge
+                                name={agent.name}
+                                walletAddress={agent.wallet_address}
+                                type={badgeType}
+                                href={`/u/${user.username}/agent/${agent.name}`}
+                                size="sm"
+                              />
+                              {agent.capabilities?.videoCall && (
+                                <Video className="w-4 h-4 text-cyan-400 shrink-0" />
+                              )}
+                            </div>
+                            {agent.bio && (
+                              <p className="text-gray-400 text-sm line-clamp-2 mt-1">
+                                {agent.bio}
+                              </p>
+                            )}
+                            {agent.skills.length > 0 && (
+                              <p className="text-gray-500 text-xs mt-2">
+                                {agent.skills.length} skill
+                                {agent.skills.length !== 1 ? 's' : ''}
+                              </p>
                             )}
                           </div>
-                          {agent.bio && (
-                            <p className="text-gray-400 text-sm line-clamp-2 mt-1">
-                              {agent.bio}
-                            </p>
-                          )}
-                          {agent.skills.length > 0 && (
-                            <p className="text-gray-500 text-xs mt-2">
-                              {agent.skills.length} skill
-                              {agent.skills.length !== 1 ? 's' : ''}
-                            </p>
-                          )}
                         </div>
-                      </div>
-                    </Link>
+                      </Link>
+
+                      {/* AgentBook Registration */}
+                      {canEdit && isWorldIdVerified && (
+                        <div className="mt-3 pt-3 border-t border-gray-800">
+                          <AgentBookRegister
+                            agentName={agent.name}
+                            agentWalletAddress={agent.wallet_address}
+                            ownerUsername={user.username}
+                            editToken={localStorage.getItem(`canfly_edit_token_${user.username}`)}
+                            ownerWalletAddress={walletAddress}
+                          />
+                        </div>
+                      )}
+
+                      {/* AgentBook badge (read-only for non-owners) */}
+                      {!canEdit && agent.agentbook_registered === 1 && (
+                        <div className="mt-3 pt-3 border-t border-gray-800">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-600/20 text-emerald-400 text-xs border border-emerald-600/40 font-medium">
+                            📖 AgentBook Verified
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   )
                 })}
               </div>
