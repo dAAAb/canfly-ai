@@ -18,6 +18,7 @@ interface FreeAgent {
   hosting: string | null
   skillCount: number
   created_at: string
+  agentbook_registered?: number
 }
 
 type PlatformFilter = 'all' | 'openclaw' | 'other'
@@ -191,6 +192,11 @@ export default function FreeAgentsPage() {
                           type={agent.platform === 'openclaw' ? 'openclaw-agent' : 'agent'}
                           size="sm"
                         />
+                        {agent.agentbook_registered === 1 && (
+                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-emerald-600/20 text-emerald-400 text-[10px] border border-emerald-600/40 font-medium" title="AgentBook Verified (Human-backed)">
+                            📖
+                          </span>
+                        )}
                       </div>
                       {agent.model && (
                         <p className="text-xs text-gray-500 mt-0.5 font-mono truncate">{agent.model}</p>
