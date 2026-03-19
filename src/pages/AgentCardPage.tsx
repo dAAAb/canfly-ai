@@ -5,6 +5,8 @@ import Navbar from '../components/Navbar'
 import PillBadge from '../components/PillBadge'
 import { walletGradient } from '../utils/walletGradient'
 import SmartAvatar from '../components/SmartAvatar'
+import TrustBadge from '../components/TrustBadge'
+import { getTrustLevel } from '../utils/trustLevel'
 import { Cpu, Globe, Wallet, ExternalLink, Sparkles, Video, MessageCircle, Mail } from 'lucide-react'
 
 interface Skill {
@@ -18,6 +20,7 @@ interface Owner {
   display_name: string | null
   wallet_address: string | null
   avatar_url: string | null
+  verification_level: string | null
 }
 
 interface AgentCapabilities {
@@ -162,6 +165,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                   href={`/u/${agent.owner.username}`}
                   size="sm"
                 />
+                <TrustBadge level={getTrustLevel(agent.owner)} size="sm" />
               </div>
             )}
 

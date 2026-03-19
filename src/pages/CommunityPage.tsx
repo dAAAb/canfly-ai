@@ -44,7 +44,7 @@ type SortMode = 'trending' | 'shrimp' | 'newest' | 'az'
 /** World ID verified users get a 2x weight boost in trending score */
 function verificationWeight(user: CommunityUser): number {
   const vl = user.verification_level
-  if (vl === 'orb' || vl === 'world' || vl === 'device') return 2
+  if (vl === 'orb' || vl === 'world' || vl === 'device' || vl === 'worldid') return 2
   if (vl === 'wallet') return 1.5
   return 1
 }
@@ -121,7 +121,7 @@ export default function CommunityPage() {
     const featured = claimed
       .filter((u) => {
         const vl = u.verification_level
-        return vl === 'orb' || vl === 'world' || vl === 'device' || vl === 'wallet'
+        return vl === 'orb' || vl === 'world' || vl === 'device' || vl === 'worldid' || vl === 'wallet'
       })
       .sort((a, b) => (b.agent_count || 0) - (a.agent_count || 0))
 
