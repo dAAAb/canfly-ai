@@ -10,6 +10,7 @@ export interface Env {
   WORLD_ID_ACTION?: string
   WORLD_ID_SIGNING_KEY?: string
   BASEMAIL_API_URL?: string
+  BASEMAIL_API_KEY?: string
 }
 
 /** Standard CORS headers for cross-origin access */

@@ -22,6 +22,7 @@ export default function WorldIdVerify({ username, editToken, walletAddress }: Pr
   const [error, setError] = useState('')
   const [widgetOpen, setWidgetOpen] = useState(false)
   const [rpContext, setRpContext] = useState<RpContext | null>(null)
+  const [basemailStatus, setBasemailStatus] = useState<'idle' | 'provisioning' | 'provisioned' | 'failed'>('idle')
 
   // Check current status on mount
   useEffect(() => {
@@ -90,11 +91,19 @@ export default function WorldIdVerify({ username, editToken, walletAddress }: Pr
           }),
         })
 
-        const data = (await res.json()) as { ok?: boolean; error?: string; detail?: string }
+        const data = (await res.json()) as {
+          ok?: boolean; error?: string; detail?: string; basemail_handle?: string
+        }
         if (!res.ok) {
           const msg = data.detail || data.error || `Backend error ${res.status}`
           setError(msg)
           throw new Error(msg)
+        }
+
+        // Path B: capture BaseMail handle from auto-provision
+        if (data.basemail_handle) {
+          setBasemailHandle(data.basemail_handle)
+          setBasemailStatus('provisioned')
         }
       } catch (e) {
         if (!error) setError(e instanceof Error ? e.message : 'Verification failed')
@@ -103,6 +112,33 @@ export default function WorldIdVerify({ username, editToken, walletAddress }: Pr
     },
     [username, editToken, error],
   )
+
+  // Manual BaseMail provision retry (if auto-provision didn't fire or failed)
+  const handleProvisionBaseMail = useCallback(async () => {
+    setBasemailStatus('provisioning')
+    try {
+      const res = await fetch('/api/basemail/provision', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Edit-Token': editToken,
+        },
+        body: JSON.stringify({ username }),
+      })
+
+      const data = (await res.json()) as {
+        ok?: boolean; basemail_handle?: string; already_provisioned?: boolean; message?: string
+      }
+      if (data.ok && data.basemail_handle) {
+        setBasemailHandle(data.basemail_handle)
+        setBasemailStatus('provisioned')
+      } else {
+        setBasemailStatus('failed')
+      }
+    } catch {
+      setBasemailStatus('failed')
+    }
+  }, [username, editToken])
 
   const handleSuccess = useCallback(() => {
     setStatus('verified')
@@ -145,11 +181,55 @@ export default function WorldIdVerify({ username, editToken, walletAddress }: Pr
               </p>
             </div>
           </div>
-          <p className="text-gray-500 text-xs">
+          <p className="text-gray-500 text-xs mb-3">
             {verificationSource === 'basemail'
               ? 'Your account is verified as a unique human via BaseMail. This badge is visible on your public profile and boosts your trust ranking.'
               : 'Your account is verified as a unique human via World ID. This badge is visible on your public profile and boosts your trust ranking.'}
           </p>
+
+          {/* BaseMail account section */}
+          {basemailHandle ? (
+            <div className="bg-blue-900/20 border border-blue-800/50 rounded-lg p-3 mt-2">
+              <p className="text-blue-400 text-sm font-semibold">BaseMail Account</p>
+              <p className="text-white text-sm mt-1">{basemailHandle}</p>
+              <p className="text-gray-500 text-xs mt-1">
+                Your BaseMail address is active and linked to your CanFly profile.
+              </p>
+            </div>
+          ) : verificationSource !== 'basemail' ? (
+            <div className="bg-gray-800/50 border border-gray-700/50 rounded-lg p-3 mt-2">
+              <p className="text-gray-300 text-sm font-semibold">BaseMail Account</p>
+              {basemailStatus === 'provisioning' ? (
+                <p className="text-gray-400 text-xs mt-1 flex items-center gap-2">
+                  <Loader2 className="w-3 h-3 animate-spin" /> Setting up your BaseMail account...
+                </p>
+              ) : basemailStatus === 'failed' ? (
+                <div className="mt-1">
+                  <p className="text-yellow-400 text-xs">
+                    Could not provision BaseMail account automatically.
+                  </p>
+                  <button
+                    onClick={handleProvisionBaseMail}
+                    className="text-blue-400 text-xs underline mt-1 hover:text-blue-300"
+                  >
+                    Try again
+                  </button>
+                </div>
+              ) : (
+                <div className="mt-1">
+                  <p className="text-gray-400 text-xs">
+                    Get a free @basemail.ai email linked to your verified identity.
+                  </p>
+                  <button
+                    onClick={handleProvisionBaseMail}
+                    className="bg-blue-600 text-white px-4 py-1.5 rounded-lg text-xs font-semibold mt-2 hover:bg-blue-500 transition"
+                  >
+                    Activate BaseMail
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : null}
         </div>
       ) : (
         <div>
