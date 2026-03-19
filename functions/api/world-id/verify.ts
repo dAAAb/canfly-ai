@@ -23,7 +23,8 @@ interface VerifyBody {
 
 export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
   const editToken = request.headers.get('X-Edit-Token')
-  if (!editToken) {
+  const walletHeader = request.headers.get('X-Wallet-Address')
+  if (!editToken && !walletHeader) {
     return errorResponse('Authentication required', 401)
   }
 
@@ -34,13 +35,19 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
 
   const { username, idkit_result: idkit } = body
 
-  // Verify the edit token matches this user
+  // Verify auth matches this user
   const user = await env.DB.prepare(
     'SELECT username, edit_token, wallet_address FROM users WHERE username = ?1'
   ).bind(username).first<{ username: string; edit_token: string; wallet_address: string | null }>()
 
-  if (!user || user.edit_token !== editToken) {
-    return errorResponse('Invalid edit token', 403)
+  if (!user) return errorResponse('User not found', 404)
+
+  const tokenOk = editToken && user.edit_token === editToken
+  const walletOk = walletHeader && user.wallet_address &&
+    walletHeader.toLowerCase() === user.wallet_address.toLowerCase()
+
+  if (!tokenOk && !walletOk) {
+    return errorResponse('Unauthorized', 403)
   }
 
   // Extract nullifier from IDKit result
