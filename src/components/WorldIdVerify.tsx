@@ -17,6 +17,8 @@ export default function WorldIdVerify({ username, editToken, walletAddress }: Pr
   const [status, setStatus] = useState<'loading' | 'unverified' | 'verified' | 'verifying' | 'error'>('loading')
   const [verificationLevel, setVerificationLevel] = useState<string | null>(null)
   const [verifiedAt, setVerifiedAt] = useState<string | null>(null)
+  const [verificationSource, setVerificationSource] = useState<string | null>(null)
+  const [basemailHandle, setBasemailHandle] = useState<string | null>(null)
   const [error, setError] = useState('')
   const [widgetOpen, setWidgetOpen] = useState(false)
   const [rpContext, setRpContext] = useState<RpContext | null>(null)
@@ -30,6 +32,8 @@ export default function WorldIdVerify({ username, editToken, walletAddress }: Pr
           setStatus('verified')
           setVerificationLevel(data.verification_level as string)
           setVerifiedAt(data.verified_at as string)
+          setVerificationSource((data.source as string) || null)
+          setBasemailHandle((data.basemail_handle as string) || null)
         } else {
           setStatus('unverified')
         }
@@ -132,14 +136,19 @@ export default function WorldIdVerify({ username, editToken, walletAddress }: Pr
             <div>
               <p className="text-green-400 font-bold text-sm">Verified Human</p>
               <p className="text-gray-400 text-xs">
-                Level: {verificationLevel === 'orb' ? 'Orb (biometric)' : 'Device'}
+                {verificationSource === 'basemail' ? (
+                  <>Via BaseMail{basemailHandle ? ` (${basemailHandle})` : ''}</>
+                ) : (
+                  <>Level: {verificationLevel === 'orb' ? 'Orb (biometric)' : 'Device'}</>
+                )}
                 {verifiedAt && ` · ${new Date(verifiedAt).toLocaleDateString()}`}
               </p>
             </div>
           </div>
           <p className="text-gray-500 text-xs">
-            Your account is verified as a unique human via World ID. This badge is visible on your
-            public profile and boosts your trust ranking.
+            {verificationSource === 'basemail'
+              ? 'Your account is verified as a unique human via BaseMail. This badge is visible on your public profile and boosts your trust ranking.'
+              : 'Your account is verified as a unique human via World ID. This badge is visible on your public profile and boosts your trust ranking.'}
           </p>
         </div>
       ) : (
