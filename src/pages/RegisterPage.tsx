@@ -166,6 +166,23 @@ export default function RegisterPage() {
       // Store edit token for future edits
       localStorage.setItem(`canfly_edit_token_${data.username}`, data.editToken)
 
+      // Path A: If wallet is connected, check BaseMail for existing human verification
+      // This auto-upgrades to worldid level without requiring a face scan
+      if (walletAddress) {
+        try {
+          await fetch('/api/basemail/check-wallet', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Edit-Token': data.editToken,
+            },
+            body: JSON.stringify({ username: data.username }),
+          })
+        } catch {
+          // BaseMail check is best-effort — don't block registration
+        }
+      }
+
       // Add hardware entries if any
       for (const hw of form.hardware) {
         if (hw.slug || hw.name) {

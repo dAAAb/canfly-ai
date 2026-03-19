@@ -82,6 +82,37 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     .bind(username, JSON.stringify({ verificationLevel }), now)
     .run()
 
+  // Path A: If claiming with a wallet, check BaseMail for existing human verification
+  const claimWallet = body.walletAddress
+  if (claimWallet && verificationLevel !== 'worldid') {
+    try {
+      const baseMailUrl = env.BASEMAIL_API_URL || 'https://api.basemail.me'
+      const bmRes = await fetch(
+        `${baseMailUrl}/v1/status-by-wallet?address=${encodeURIComponent(claimWallet)}`,
+        { headers: { 'Accept': 'application/json' }, signal: AbortSignal.timeout(5000) }
+      )
+      if (bmRes.ok) {
+        const bmData = (await bmRes.json()) as { is_human?: boolean; handle?: string }
+        if (bmData.is_human) {
+          // Auto-upgrade to worldid level
+          await env.DB.prepare(`
+            INSERT INTO world_id_verifications
+              (username, wallet, nullifier_hash, verification_level, world_id_version, basemail_handle, verified_at)
+            VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
+          `).bind(
+            username, claimWallet, `basemail:${claimWallet.toLowerCase()}`,
+            'basemail', 'basemail-v1', bmData.handle || null, now
+          ).run()
+          await env.DB.prepare(
+            'UPDATE users SET verification_level = ?1 WHERE username = ?2'
+          ).bind('worldid', username).run()
+        }
+      }
+    } catch {
+      // BaseMail check is best-effort — don't block claim
+    }
+  }
+
   return json({ username, editToken, claimed: true }, 200)
 }
 
