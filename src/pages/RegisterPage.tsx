@@ -54,10 +54,23 @@ export default function RegisterPage() {
       setCheckingProfile(false)
       return
     }
-    // Try to find existing user by wallet - if found redirect
-    // For MVP, skip this check since we don't have a wallet→username lookup
-    setCheckingProfile(false)
-  }, [isAuthenticated, walletAddress])
+    // Wallet→username lookup: if user already registered, redirect to their profile
+    fetch(`/api/community/lookup-wallet?address=${encodeURIComponent(walletAddress)}`)
+      .then((r) => {
+        if (r.ok) return r.json()
+        return null
+      })
+      .then((data) => {
+        if (data && (data as { username?: string }).username) {
+          const username = (data as { username: string }).username
+          navigate(`/u/${username}`, { replace: true })
+        }
+      })
+      .catch(() => {
+        // lookup failed, let them register
+      })
+      .finally(() => setCheckingProfile(false))
+  }, [isAuthenticated, walletAddress, navigate])
 
   // Debounced username availability check
   const checkUsername = useCallback(async (username: string) => {

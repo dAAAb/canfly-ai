@@ -1,6 +1,6 @@
 /**
  * GET /api/community/users/:username/pending-agents — List agents pending confirmation
- * Requires X-Edit-Token header.
+ * Auth: X-Edit-Token header OR X-Wallet-Address header matching the user's wallet.
  * Returns agents that registered with this user's owner_invite_code.
  */
 import { type Env, json, errorResponse, handleOptions } from '../../_helpers'
@@ -8,19 +8,26 @@ import { type Env, json, errorResponse, handleOptions } from '../../_helpers'
 export const onRequestGet: PagesFunction<Env> = async ({ env, params, request }) => {
   const username = params.username as string
   const editToken = request.headers.get('X-Edit-Token')
+  const walletHeader = request.headers.get('X-Wallet-Address')
 
-  if (!editToken) {
-    return errorResponse('X-Edit-Token header required', 401)
+  if (!editToken && !walletHeader) {
+    return errorResponse('X-Edit-Token or X-Wallet-Address header required', 401)
   }
 
   const user = await env.DB.prepare(
-    'SELECT username, edit_token, owner_invite_code FROM users WHERE username = ?1'
+    'SELECT username, edit_token, owner_invite_code, wallet_address FROM users WHERE username = ?1'
   )
     .bind(username)
     .first()
 
   if (!user) return errorResponse('User not found', 404)
-  if (user.edit_token !== editToken) return errorResponse('Invalid edit token', 403)
+
+  // Authenticate via edit token or wallet address match
+  const tokenOk = editToken && user.edit_token === editToken
+  const walletOk = walletHeader && user.wallet_address &&
+    walletHeader.toLowerCase() === (user.wallet_address as string).toLowerCase()
+
+  if (!tokenOk && !walletOk) return errorResponse('Unauthorized', 403)
 
   const inviteCode = user.owner_invite_code as string | null
   if (!inviteCode) {
