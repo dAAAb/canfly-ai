@@ -125,11 +125,17 @@ export default function AgentBookRegister({
         signal,
       })
 
-      // 3. Get connector URI for QR code
+      // 3. Get connector URI (deep link to World App)
       const uri = worldID.getState().connectorURI
       if (!uri) throw new Error('Failed to create bridge session')
       setConnectorURI(uri)
       setStatus('waiting_scan')
+
+      // Auto-redirect on mobile (deep link opens World App directly)
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+      if (isMobile) {
+        window.location.href = uri
+      }
 
       // 4. Poll for completion (5 min timeout)
       pollingRef.current = true
@@ -243,8 +249,14 @@ export default function AgentBookRegister({
           <QRCode value={connectorURI} size={200} />
         </div>
         <p className="text-gray-400 text-xs text-center mb-2">
-          Open World App → Scan this QR code
+          Scan with World App, or tap below on mobile:
         </p>
+        <a
+          href={connectorURI}
+          className="block text-center text-sm font-medium text-white bg-purple-600 hover:bg-purple-500 rounded-lg py-2 px-4 mb-3 transition-colors"
+        >
+          Open in World App →
+        </a>
         <div className="flex items-center justify-center gap-2 text-cyan-400 text-xs">
           <Loader2 className="w-3 h-3 animate-spin" /> Waiting for verification...
         </div>
