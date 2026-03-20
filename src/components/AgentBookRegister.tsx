@@ -43,20 +43,26 @@ function buildAuthHeaders(
   return h
 }
 
-function normalizeProof(result: { proof: string }): string[] | null {
-  const rawProof = result.proof
+function normalizeProof(rawProof: string): string[] | null {
+  // Format 1: JSON array of hex strings
   if (rawProof.startsWith('[')) {
     try {
       const parsed = JSON.parse(rawProof)
       if (Array.isArray(parsed)) return parsed
     } catch { /* fall through */ }
   }
-  try {
-    const decoded = decodeAbiParameters([{ type: 'uint256[8]' }], rawProof as `0x${string}`)[0]
-    return decoded.map((v: bigint) => `0x${v.toString(16).padStart(64, '0')}`)
-  } catch {
-    return null
+  // Format 2: ABI-encoded uint256[8]
+  if (rawProof.startsWith('0x') && rawProof.length > 66) {
+    try {
+      const decoded = decodeAbiParameters([{ type: 'uint256[8]' }], rawProof as `0x${string}`)[0]
+      return decoded.map((v: bigint) => `0x${v.toString(16).padStart(64, '0')}`)
+    } catch { /* fall through */ }
   }
+  // Format 3: Raw hex string — just pass through as single element
+  if (rawProof.startsWith('0x')) {
+    return [rawProof]
+  }
+  return null
 }
 
 type Status = 'loading' | 'no_wallet' | 'already_registered' | 'ready' |
@@ -149,10 +155,11 @@ export default function AgentBookRegister({
           pollingRef.current = false
           setStatus('submitting')
 
-          const proof = normalizeProof(result as { proof: string })
-          if (!proof) throw new Error('Invalid proof format')
+          const proofResult = result as { merkle_root: string; nullifier_hash: string; proof: string }
+          console.log('[AgentBook] World ID result:', JSON.stringify(proofResult))
 
-          const proofResult = result as { merkle_root: string; nullifier_hash: string }
+          const proof = normalizeProof(proofResult.proof)
+          if (!proof) throw new Error(`Invalid proof format: ${typeof proofResult.proof}`)
 
           // Submit to our backend → relay → on-chain
           const res = await fetch('/api/agents/agentbook-register', {
