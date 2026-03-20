@@ -5,6 +5,8 @@
  * Flow: generate keypair → POST /request → build deep link → poll /response → decrypt
  */
 
+import { keccak256, toHex } from 'viem'
+
 const BRIDGE_URL = 'https://bridge.worldcoin.org'
 
 // ── Crypto helpers using Web Crypto API ──
@@ -16,6 +18,7 @@ async function generateKey(): Promise<{ key: CryptoKey; iv: Uint8Array; rawKey: 
   return { key, iv, rawKey }
 }
 
+// Standard base64 (NOT base64url) — matches IDKit's Buffer.toString('base64')
 function base64Encode(data: Uint8Array): string {
   return btoa(String.fromCharCode(...data))
 }
@@ -23,10 +26,6 @@ function base64Encode(data: Uint8Array): string {
 function base64Decode(str: string): Uint8Array {
   const binary = atob(str)
   return Uint8Array.from(binary, (c) => c.charCodeAt(0))
-}
-
-function base64UrlEncode(data: Uint8Array): string {
-  return base64Encode(data).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
 }
 
 async function encrypt(key: CryptoKey, iv: Uint8Array, plaintext: string): Promise<{ payload: string; iv: string }> {
@@ -45,20 +44,14 @@ async function decrypt(key: CryptoKey, ivB64: string, payloadB64: string): Promi
   return new TextDecoder().decode(decrypted)
 }
 
-// ── Action encoding (matches IDKit) ──
-
-function encodeAction(action: string): string {
-  // For simple string actions, just return as-is
-  // IDKit would ABI-encode complex actions, but AgentBook uses a plain string
-  return action
-}
-
-// ── Signal encoding ──
-
-async function hashSignal(signal: string): Promise<string> {
-  const encoded = new TextEncoder().encode(signal)
-  const hash = await crypto.subtle.digest('SHA-256', encoded)
-  return '0x' + Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('')
+// ── Signal hashing (must match IDKit's generateSignal / hashToField) ──
+// IDKit does: keccak256(input) >> 8n  (to fit in BN254 field)
+function hashToField(input: string): string {
+  // For hex strings (like our keccak256 output), hash the raw bytes
+  const hash = keccak256(toHex(new TextEncoder().encode(input)))
+  // Right-shift by 8 bits to fit in BN254 scalar field
+  const bigVal = BigInt(hash) >> 8n
+  return `0x${bigVal.toString(16).padStart(64, '0')}`
 }
 
 // ── Bridge API ──
@@ -84,12 +77,13 @@ export async function createBridgeSession(
 ): Promise<BridgeSession> {
   const { key, iv, rawKey } = await generateKey()
 
-  const signalHash = await hashSignal(signal)
+  // Hash signal same as IDKit: keccak256 >> 8n
+  const signalDigest = hashToField(signal)
 
   const requestBody = JSON.stringify({
     app_id: appId,
-    action: encodeAction(action),
-    signal: signalHash,
+    action,  // Simple string action, no encoding needed
+    signal: signalDigest,
     credential_types: ['orb'],
     verification_level: 'orb',
   })
@@ -106,7 +100,8 @@ export async function createBridgeSession(
 
   const { request_id } = (await res.json()) as { request_id: string }
 
-  const keyB64 = base64UrlEncode(rawKey)
+  // Key must be standard base64 (not base64url!) — matches IDKit's exportKey
+  const keyB64 = base64Encode(rawKey)
   const connectorURI = `https://world.org/verify?t=wld&i=${request_id}&k=${encodeURIComponent(keyB64)}`
 
   return { requestId: request_id, connectorURI, key }
