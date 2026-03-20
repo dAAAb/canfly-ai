@@ -99,18 +99,21 @@ export default function AgentBookRegister({
     }
   }, [editToken, ownerWalletAddress])
 
-  // Handle IDKit proof → submit to relay
+  // Handle IDKit proof → submit to relay (don't throw — let IDKit succeed)
   const handleVerify = useCallback(async (idkitResult: IDKitResult) => {
     setStatus('submitting')
+    const firstResponse = idkitResult.responses?.[0] as Record<string, unknown> | undefined
+    if (!firstResponse) {
+      setError('No proof in IDKit result')
+      return // Don't throw — IDKit will call onSuccess
+    }
+
+    const root = (firstResponse.merkle_root as string) || ''
+    const nullifierHash = (firstResponse.nullifier as string) || (firstResponse.nullifier_hash as string) || ''
+    const rawProof = (firstResponse.proof as string) || ''
+    const proof = normalizeProof(rawProof) || [rawProof]
+
     try {
-      const firstResponse = idkitResult.responses?.[0] as Record<string, unknown> | undefined
-      if (!firstResponse) throw new Error('No proof in IDKit result')
-
-      const root = (firstResponse.merkle_root as string) || ''
-      const nullifierHash = (firstResponse.nullifier as string) || (firstResponse.nullifier_hash as string) || ''
-      const rawProof = (firstResponse.proof as string) || ''
-      const proof = normalizeProof(rawProof) || [rawProof]
-
       const res = await fetch('/api/agents/agentbook-register', {
         method: 'POST',
         headers: buildAuthHeaders(editToken, ownerWalletAddress),
@@ -122,20 +125,28 @@ export default function AgentBookRegister({
       })
 
       const data = (await res.json()) as { ok?: boolean; txHash?: string; error?: string }
-      if (!res.ok) throw new Error(data.error || `Registration failed (${res.status})`)
-
-      setTxHash(data.txHash || null)
+      if (res.ok && data.ok) {
+        setTxHash(data.txHash || null)
+      } else {
+        console.error('[AgentBook] Relay error:', data.error)
+        setError(data.error || `Relay error (${res.status})`)
+      }
     } catch (e) {
+      console.error('[AgentBook] Submit error:', e)
       setError(e instanceof Error ? e.message : 'Registration failed')
-      throw e // Let IDKit show error
     }
+    // Never throw — let IDKit proceed to onSuccess
   }, [agentName, agentWalletAddress, nonce, editToken, ownerWalletAddress])
 
   const handleSuccess = useCallback(() => {
-    setStatus('done')
+    if (error) {
+      setStatus('error')
+    } else {
+      setStatus('done')
+    }
     setWidgetOpen(false)
-    onRegistered?.()
-  }, [onRegistered])
+    if (!error) onRegistered?.()
+  }, [onRegistered, error])
 
   // Generate signal for IDKit
   const signal = agentWalletAddress
