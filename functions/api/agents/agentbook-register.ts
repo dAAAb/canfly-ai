@@ -17,12 +17,13 @@
  */
 import { type Env, json, errorResponse, handleOptions, parseBody } from '../community/_helpers'
 
-const AGENTBOOK_CONTRACT = '0xE1D1D3526A6FAa37eb36bD10B933C1b77f4561a4'
 const AGENTBOOK_RELAY_URL = 'https://x402-worldchain.vercel.app/register'
 
 interface RegisterBody {
   agentName: string
   agentAddress: string
+  contract?: string
+  network?: string
   root: string
   nonce: string
   nullifierHash: string
@@ -76,7 +77,9 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     return json({ ok: true, message: 'Already registered on AgentBook', already: true })
   }
 
-  // Submit to relay API
+  // Submit to relay API (official World hosted relay)
+  const contract = body.contract || '0xE1D1D3526A6FAa37eb36bD10B933C1b77f4561a4'
+  const network = body.network || 'base'
   try {
     const relayRes = await fetch(AGENTBOOK_RELAY_URL, {
       method: 'POST',
@@ -87,8 +90,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
         nonce: body.nonce,
         nullifierHash: body.nullifierHash,
         proof: body.proof,
-        contract: AGENTBOOK_CONTRACT,
-        network: 'base',
+        contract,
+        network,
       }),
       signal: AbortSignal.timeout(30000),
     })

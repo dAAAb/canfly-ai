@@ -3,11 +3,12 @@ import { IDKitRequestWidget, orbLegacy } from '@worldcoin/idkit'
 import type { IDKitResult, RpContext } from '@worldcoin/idkit'
 import { Loader2, ExternalLink } from 'lucide-react'
 
-const WORLD_ID_APP_ID = 'app_ee5d4fa1aa655b4a3ba0641bb070ad67'
-const WORLD_ID_RP_ID = 'rp_2eeecd2f22517885'
-
-// AgentBook uses its own action identifier for agent registration
-const AGENTBOOK_ACTION = 'register-agent-agentbook'
+import {
+  AGENTBOOK_WORLD_ID_APP_ID,
+  AGENTBOOK_ACTION,
+  AGENTBOOK_CONTRACT,
+  AGENTBOOK_NETWORK,
+} from '../config/agentbook'
 
 interface Props {
   agentName: string
@@ -68,40 +69,12 @@ export default function AgentBookRegister({
       })
   }, [agentWalletAddress])
 
-  // Fetch RP signature, then open IDKit
-  const handleStartRegistration = useCallback(async () => {
+  // Open IDKit for AgentBook registration (no RP signature needed - uses AgentBook's own World ID app)
+  const handleStartRegistration = useCallback(() => {
     setError('')
     setStatus('verifying')
-    try {
-      const res = await fetch('/api/world-id/rp-signature', {
-        method: 'POST',
-        headers: buildAuthHeaders(editToken, ownerWalletAddress),
-      })
-      if (!res.ok) {
-        const data = (await res.json()) as { error?: string }
-        setError(data.error || 'Failed to get RP signature')
-        setStatus('ready')
-        return
-      }
-      const rpSig = (await res.json()) as {
-        sig: string
-        nonce: string
-        created_at: number
-        expires_at: number
-      }
-      setRpContext({
-        rp_id: WORLD_ID_RP_ID,
-        nonce: rpSig.nonce,
-        created_at: rpSig.created_at,
-        expires_at: rpSig.expires_at,
-        signature: rpSig.sig,
-      })
-      setWidgetOpen(true)
-    } catch {
-      setError('Network error')
-      setStatus('ready')
-    }
-  }, [editToken, ownerWalletAddress])
+    setWidgetOpen(true)
+  }, [])
 
   // IDKit proof received — submit to our backend relay
   const handleVerify = useCallback(
@@ -125,6 +98,8 @@ export default function AgentBookRegister({
             nonce: nonce || '0',
             nullifierHash,
             proof,
+            contract: AGENTBOOK_CONTRACT,
+            network: AGENTBOOK_NETWORK,
           }),
         })
 
@@ -204,24 +179,21 @@ export default function AgentBookRegister({
         )}
       </button>
 
-      {rpContext && (
-        <IDKitRequestWidget
-          app_id={WORLD_ID_APP_ID as `app_${string}`}
-          action={AGENTBOOK_ACTION}
-          rp_context={rpContext}
-          allow_legacy_proofs={true}
-          preset={orbLegacy({ signal: agentWalletAddress || agentName })}
-          open={widgetOpen}
-          onOpenChange={setWidgetOpen}
-          handleVerify={handleVerify}
-          onSuccess={handleSuccess}
-          onError={(err) => {
-            setError(`Verification error: ${err}`)
-            setWidgetOpen(false)
-            setStatus('ready')
-          }}
-        />
-      )}
+      <IDKitRequestWidget
+        app_id={AGENTBOOK_WORLD_ID_APP_ID as `app_${string}`}
+        action={AGENTBOOK_ACTION}
+        allow_legacy_proofs={true}
+        preset={orbLegacy({ signal: agentWalletAddress || agentName })}
+        open={widgetOpen}
+        onOpenChange={setWidgetOpen}
+        handleVerify={handleVerify}
+        onSuccess={handleSuccess}
+        onError={(err) => {
+          setError(`Verification error: ${err}`)
+          setWidgetOpen(false)
+          setStatus('ready')
+        }}
+      />
 
       {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
     </div>
