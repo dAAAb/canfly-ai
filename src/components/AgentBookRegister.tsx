@@ -1,12 +1,17 @@
 /**
- * AgentBookRegister — Uses IDKitRequestWidget (same as Real Human verify)
- * with AgentBook's World ID app but CanFly's RP signature.
+ * AgentBookRegister — Pure browser World ID bridge + relay
+ * No WASM, no IDKit widget dependency, no page redirect.
+ * Shows QR + "Open in World App" link. Browser tab stays alive for polling.
  */
-import { useState, useEffect, useCallback } from 'react'
-import { IDKitRequestWidget, orbLegacy } from '@worldcoin/idkit'
-import type { IDKitResult, RpContext } from '@worldcoin/idkit'
-import { decodeAbiParameters, encodeAbiParameters, keccak256 } from 'viem'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { decodeAbiParameters } from 'viem'
+import QRCode from 'react-qr-code'
 import { Loader2, ExternalLink, CheckCircle } from 'lucide-react'
+import {
+  createBridgeSession,
+  pollBridgeResult,
+  clearBridgeSession,
+} from '../utils/worldIdBridge'
 import {
   AGENTBOOK_WORLD_ID_APP_ID,
   AGENTBOOK_ACTION,
@@ -45,17 +50,17 @@ function normalizeProof(rawProof: string): string[] | null {
 }
 
 type Status = 'loading' | 'no_wallet' | 'already_registered' | 'ready' |
-  'preparing' | 'verifying' | 'submitting' | 'done' | 'error'
+  'creating' | 'waiting' | 'submitting' | 'done' | 'error'
 
 export default function AgentBookRegister({
   agentName, agentWalletAddress, ownerUsername, editToken, ownerWalletAddress, onRegistered,
 }: Props) {
   const [status, setStatus] = useState<Status>('loading')
   const [nonce, setNonce] = useState('0')
+  const [connectorURI, setConnectorURI] = useState<string | null>(null)
   const [txHash, setTxHash] = useState<string | null>(null)
   const [error, setError] = useState('')
-  const [widgetOpen, setWidgetOpen] = useState(false)
-  const [rpContext, setRpContext] = useState<RpContext | null>(null)
+  const cancelledRef = useRef(false)
 
   // Check status on mount
   useEffect(() => {
@@ -69,92 +74,63 @@ export default function AgentBookRegister({
       .catch(() => setStatus('ready'))
   }, [agentName, agentWalletAddress])
 
-  // Get RP signature then open widget
-  const handleStartRegistration = useCallback(async () => {
+  // Register flow: create bridge → show QR → poll → relay
+  const handleRegister = useCallback(async () => {
+    if (!agentWalletAddress) return
     setError('')
-    setStatus('preparing')
-    try {
-      // Get RP signature from our backend (same endpoint as Real Human verify)
-      const res = await fetch('/api/world-id/rp-signature', {
-        method: 'POST',
-        headers: buildAuthHeaders(editToken, ownerWalletAddress),
-      })
-      if (!res.ok) {
-        const data = (await res.json()) as { error?: string }
-        throw new Error(data.error || 'Failed to get RP signature')
-      }
-      const rpSig = (await res.json()) as { sig: string; nonce: string; created_at: number; expires_at: number }
-      setRpContext({
-        rp_id: 'rp_2eeecd2f22517885', // CanFly's RP ID
-        nonce: rpSig.nonce,
-        created_at: rpSig.created_at,
-        expires_at: rpSig.expires_at,
-        signature: rpSig.sig,
-      })
-      setWidgetOpen(true)
-      setStatus('verifying')
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to prepare')
-      setStatus('error')
-    }
-  }, [editToken, ownerWalletAddress])
-
-  // Handle IDKit proof → submit to relay (don't throw — let IDKit succeed)
-  const handleVerify = useCallback(async (idkitResult: IDKitResult) => {
-    setStatus('submitting')
-    const firstResponse = idkitResult.responses?.[0] as Record<string, unknown> | undefined
-    if (!firstResponse) {
-      setError('No proof in IDKit result')
-      return // Don't throw — IDKit will call onSuccess
-    }
-
-    const root = (firstResponse.merkle_root as string) || ''
-    const nullifierHash = (firstResponse.nullifier as string) || (firstResponse.nullifier_hash as string) || ''
-    const rawProof = (firstResponse.proof as string) || ''
-    const proof = normalizeProof(rawProof) || [rawProof]
+    setStatus('creating')
+    cancelledRef.current = false
 
     try {
+      // Create bridge session (pure Web Crypto, no WASM)
+      const session = await createBridgeSession(
+        AGENTBOOK_WORLD_ID_APP_ID,
+        AGENTBOOK_ACTION,
+        agentWalletAddress,  // signal = agent wallet address
+      )
+      setConnectorURI(session.connectorURI)
+      setStatus('waiting')
+
+      // DO NOT redirect — keep this tab alive for polling
+      // User taps "Open in World App" link manually
+
+      // Poll for result (tab stays in background while World App is open)
+      const result = await pollBridgeResult(session)
+      if (cancelledRef.current) return
+
+      clearBridgeSession()
+      setStatus('submitting')
+
+      const proof = normalizeProof(result.proof)
+      if (!proof) throw new Error(`Invalid proof format`)
+
+      // Submit to our backend → relay → on-chain
       const res = await fetch('/api/agents/agentbook-register', {
         method: 'POST',
         headers: buildAuthHeaders(editToken, ownerWalletAddress),
         body: JSON.stringify({
           agentName, agentAddress: agentWalletAddress,
-          root, nonce, nullifierHash, proof,
+          root: result.merkle_root, nonce,
+          nullifierHash: result.nullifier_hash, proof,
           contract: AGENTBOOK_CONTRACT, network: AGENTBOOK_NETWORK,
         }),
       })
 
       const data = (await res.json()) as { ok?: boolean; txHash?: string; error?: string }
-      if (res.ok && data.ok) {
-        setTxHash(data.txHash || null)
-      } else {
-        console.error('[AgentBook] Relay error:', data.error)
-        setError(data.error || `Relay error (${res.status})`)
-      }
-    } catch (e) {
-      console.error('[AgentBook] Submit error:', e)
-      setError(e instanceof Error ? e.message : 'Registration failed')
-    }
-    // Never throw — let IDKit proceed to onSuccess
-  }, [agentName, agentWalletAddress, nonce, editToken, ownerWalletAddress])
+      if (!res.ok) throw new Error(data.error || `Registration failed (${res.status})`)
 
-  const handleSuccess = useCallback(() => {
-    if (error) {
-      setStatus('error')
-    } else {
+      setTxHash(data.txHash || null)
       setStatus('done')
+      onRegistered?.()
+    } catch (e) {
+      if (!cancelledRef.current) {
+        setError(e instanceof Error ? e.message : 'Registration failed')
+        setStatus('error')
+      }
     }
-    setWidgetOpen(false)
-    if (!error) onRegistered?.()
-  }, [onRegistered, error])
+  }, [agentWalletAddress, agentName, nonce, editToken, ownerWalletAddress, onRegistered])
 
-  // Generate signal for IDKit
-  const signal = agentWalletAddress
-    ? keccak256(encodeAbiParameters(
-        [{ type: 'address' }, { type: 'uint256' }],
-        [agentWalletAddress as `0x${string}`, BigInt(nonce)]
-      ))
-    : agentName
+  useEffect(() => () => { cancelledRef.current = true }, [])
 
   // ── Render ──
 
@@ -170,37 +146,50 @@ export default function AgentBookRegister({
     </div>
   )
 
+  // QR code + link (NO auto-redirect — tab stays alive for polling)
+  if (status === 'waiting' && connectorURI) return (
+    <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-5 max-w-sm">
+      <h4 className="text-white text-sm font-semibold mb-3">📱 Verify with World App</h4>
+      <div className="bg-white p-4 rounded-xl mx-auto w-fit mb-3">
+        <QRCode value={connectorURI} size={200} />
+      </div>
+      <p className="text-gray-400 text-xs text-center mb-2">
+        Scan QR code, or tap below on mobile:
+      </p>
+      <a
+        href={connectorURI}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block text-center text-sm font-medium text-white bg-purple-600 hover:bg-purple-500 rounded-lg py-2 px-4 mb-3 transition-colors"
+      >
+        Open in World App →
+      </a>
+      <div className="flex items-center justify-center gap-2 text-cyan-400 text-xs">
+        <Loader2 className="w-3 h-3 animate-spin" /> Waiting for verification...
+      </div>
+      <p className="text-gray-600 text-xs text-center mt-2">
+        Keep this page open while verifying
+      </p>
+      <button onClick={() => { cancelledRef.current = true; setStatus('ready'); setConnectorURI(null) }}
+        className="mt-3 text-gray-500 text-xs hover:text-gray-400 w-full text-center">Cancel</button>
+    </div>
+  )
+
+  if (status === 'submitting') return (
+    <div className="flex items-center gap-2 text-cyan-400 text-xs">
+      <Loader2 className="w-3 h-3 animate-spin" /> Registering on-chain...
+    </div>
+  )
+
   return (
     <div>
-      <button onClick={handleStartRegistration}
-        disabled={status === 'preparing' || status === 'submitting'}
+      <button onClick={handleRegister} disabled={status === 'creating'}
         className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-600/40 text-emerald-400 text-xs font-medium rounded-lg transition-colors disabled:opacity-50">
-        {status === 'preparing' ? <><Loader2 className="w-3 h-3 animate-spin" /> Preparing...</>
-          : status === 'submitting' ? <><Loader2 className="w-3 h-3 animate-spin" /> Registering...</>
+        {status === 'creating' ? <><Loader2 className="w-3 h-3 animate-spin" /> Preparing...</>
           : <>📖 Register to AgentBook</>}
       </button>
-
       {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
-      {status === 'error' && <button onClick={() => setStatus('ready')} className="text-gray-500 text-xs mt-1 hover:text-gray-400">Try again</button>}
-
-      {rpContext && (
-        <IDKitRequestWidget
-          app_id={AGENTBOOK_WORLD_ID_APP_ID as `app_${string}`}
-          action={AGENTBOOK_ACTION}
-          rp_context={rpContext}
-          allow_legacy_proofs={true}
-          preset={orbLegacy({ signal })}
-          open={widgetOpen}
-          onOpenChange={setWidgetOpen}
-          handleVerify={handleVerify}
-          onSuccess={handleSuccess}
-          onError={(err) => {
-            setError(`Verification error: ${err}`)
-            setWidgetOpen(false)
-            setStatus('ready')
-          }}
-        />
-      )}
+      {status === 'error' && <button onClick={() => { setError(''); setStatus('ready') }} className="text-gray-500 text-xs mt-1 hover:text-gray-400">Try again</button>}
     </div>
   )
 }
