@@ -159,41 +159,35 @@ export default function AgentBookRegister({
     )
   }
 
+  // AgentBook registration currently requires CLI (World App QR bridge, not web widget)
+  const cliCommand = `npx @worldcoin/agentkit-cli register ${agentWalletAddress} --network base`
+
   return (
     <div>
-      <button
-        onClick={handleStartRegistration}
-        disabled={status === 'verifying' || status === 'submitting'}
-        className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-600/40 text-emerald-400 text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
-      >
-        {status === 'verifying' ? (
-          <>
-            <Loader2 className="w-3 h-3 animate-spin" /> Preparing...
-          </>
-        ) : status === 'submitting' ? (
-          <>
-            <Loader2 className="w-3 h-3 animate-spin" /> Registering...
-          </>
-        ) : (
-          <>📖 Register to AgentBook</>
-        )}
-      </button>
-
-      <IDKitRequestWidget
-        app_id={AGENTBOOK_WORLD_ID_APP_ID as `app_${string}`}
-        action={AGENTBOOK_ACTION}
-        allow_legacy_proofs={true}
-        preset={orbLegacy({ signal: agentWalletAddress || agentName })}
-        open={widgetOpen}
-        onOpenChange={setWidgetOpen}
-        handleVerify={handleVerify}
-        onSuccess={handleSuccess}
-        onError={(err) => {
-          setError(`Verification error: ${err}`)
-          setWidgetOpen(false)
-          setStatus('ready')
-        }}
-      />
+      <div className="space-y-2">
+        <p className="text-gray-400 text-xs">
+          Register this agent on-chain via AgentBook CLI:
+        </p>
+        <div className="relative">
+          <pre className="bg-gray-950 border border-gray-800 rounded-lg p-3 text-xs text-gray-300 overflow-x-auto">
+            <code>{cliCommand}</code>
+          </pre>
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(cliCommand)
+              setError('Copied!')
+              setTimeout(() => setError(''), 2000)
+            }}
+            className="absolute top-2 right-2 p-1 bg-gray-800 hover:bg-gray-700 rounded text-gray-400 text-xs"
+          >
+            📋
+          </button>
+        </div>
+        <p className="text-gray-500 text-xs">
+          Requires <a href="https://worldcoin.org/download" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300">World App</a> installed.
+          After registration, refresh this page to see the badge.
+        </p>
+      </div>
 
       {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
     </div>
