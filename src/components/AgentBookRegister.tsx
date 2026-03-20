@@ -11,6 +11,9 @@ import QRCode from 'react-qr-code'
 import {
   createBridgeSession,
   pollBridgeResult,
+  saveBridgeSession,
+  loadBridgeSession,
+  clearBridgeSession,
   type BridgeSession,
 } from '../utils/worldIdBridge'
 import {
@@ -64,16 +67,64 @@ export default function AgentBookRegister({
   const sessionRef = useRef<BridgeSession | null>(null)
   const cancelledRef = useRef(false)
 
-  // Check status on mount
+  // Check status on mount + restore pending session (survives mobile redirect)
   useEffect(() => {
     if (!agentWalletAddress) { setStatus('no_wallet'); return }
-    fetch(`/api/agents/${encodeURIComponent(agentName)}/agentbook-status`)
-      .then(r => r.json())
-      .then((d: Record<string, unknown>) => {
+
+    const init = async () => {
+      // Check if we have a pending session from before mobile redirect
+      const savedSession = await loadBridgeSession(agentName)
+      if (savedSession) {
+        console.log('[AgentBook] Restoring saved bridge session')
+        sessionRef.current = savedSession
+        setConnectorURI(savedSession.connectorURI)
+        setStatus('waiting')
+
+        // Resume polling
+        try {
+          const result = await pollBridgeResult(savedSession)
+          if (cancelledRef.current) return
+          clearBridgeSession()
+
+          setStatus('submitting')
+          const proof = normalizeProof(result.proof)
+          if (!proof) throw new Error('Invalid proof format')
+
+          const res = await fetch('/api/agents/agentbook-register', {
+            method: 'POST',
+            headers: buildAuthHeaders(editToken, ownerWalletAddress),
+            body: JSON.stringify({
+              agentName, agentAddress: agentWalletAddress,
+              root: result.merkle_root, nonce, nullifierHash: result.nullifier_hash,
+              proof, contract: AGENTBOOK_CONTRACT, network: AGENTBOOK_NETWORK,
+            }),
+          })
+          const data = (await res.json()) as { ok?: boolean; txHash?: string; error?: string }
+          if (!res.ok) throw new Error(data.error || 'Registration failed')
+
+          setTxHash(data.txHash || null)
+          setStatus('done')
+          onRegistered?.()
+        } catch (e) {
+          clearBridgeSession()
+          if (!cancelledRef.current) {
+            setError(e instanceof Error ? e.message : 'Verification failed')
+            setStatus('error')
+          }
+        }
+        return
+      }
+
+      // Normal: check registration status
+      try {
+        const r = await fetch(`/api/agents/${encodeURIComponent(agentName)}/agentbook-status`)
+        const d = (await r.json()) as Record<string, unknown>
         if (d.registered) { setStatus('already_registered'); setTxHash((d.txHash as string) || null) }
         else { setNonce((d.nonce as string) || '0'); setStatus('ready') }
-      })
-      .catch(() => setStatus('ready'))
+      } catch { setStatus('ready') }
+    }
+
+    init()
   }, [agentName, agentWalletAddress])
 
   // Register flow
@@ -96,6 +147,9 @@ export default function AgentBookRegister({
       sessionRef.current = session
       setConnectorURI(session.connectorURI)
       setStatus('waiting')
+
+      // Save session before mobile redirect (page will unload)
+      saveBridgeSession(session, agentName)
 
       // Auto-redirect on mobile
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
@@ -130,10 +184,12 @@ export default function AgentBookRegister({
       const data = (await res.json()) as { ok?: boolean; txHash?: string; error?: string }
       if (!res.ok) throw new Error(data.error || `Registration failed (${res.status})`)
 
+      clearBridgeSession()
       setTxHash(data.txHash || null)
       setStatus('done')
       onRegistered?.()
     } catch (e) {
+      clearBridgeSession()
       if (!cancelledRef.current) {
         setError(e instanceof Error ? e.message : 'Registration failed')
         setStatus('error')
@@ -169,7 +225,7 @@ export default function AgentBookRegister({
       <div className="flex items-center justify-center gap-2 text-cyan-400 text-xs">
         <Loader2 className="w-3 h-3 animate-spin" /> Waiting for verification...
       </div>
-      <button onClick={() => { cancelledRef.current = true; setStatus('ready'); setConnectorURI(null) }} className="mt-3 text-gray-500 text-xs hover:text-gray-400 w-full text-center">Cancel</button>
+      <button onClick={() => { cancelledRef.current = true; clearBridgeSession(); setStatus('ready'); setConnectorURI(null) }} className="mt-3 text-gray-500 text-xs hover:text-gray-400 w-full text-center">Cancel</button>
     </div>
   )
 
