@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom'
-import { useState, useEffect, lazy, Suspense } from 'react'
+import { useState, useEffect } from 'react'
 import { useQueryLang } from '../hooks/useLanguage'
 import { useAuth } from '../hooks/useAuth'
 import SmartAvatar from '../components/SmartAvatar'
@@ -9,7 +9,7 @@ import { walletGradient } from '../utils/walletGradient'
 import TrustBadge from '../components/TrustBadge'
 import ClaimProfileButton from '../components/ClaimProfileButton'
 import { getTrustLevel } from '../utils/trustLevel'
-const AgentBookRegister = lazy(() => import('../components/AgentBookRegister'))
+import AgentBookRegister from '../components/AgentBookRegister'
 import {
   ExternalLink,
   Sparkles,
@@ -534,15 +534,13 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
                       {/* AgentBook Registration */}
                       {canEdit && isWorldIdVerified && (
                         <div className="mt-3 pt-3 border-t border-gray-800">
-                          <Suspense fallback={<div className="text-gray-500 text-xs">Loading...</div>}>
-                            <AgentBookRegister
-                              agentName={agent.name}
-                              agentWalletAddress={agent.wallet_address}
-                              ownerUsername={user.username}
-                              editToken={localStorage.getItem(`canfly_edit_token_${user.username}`)}
-                              ownerWalletAddress={walletAddress}
-                            />
-                          </Suspense>
+                          <AgentBookRegister
+                            agentName={agent.name}
+                            agentWalletAddress={agent.wallet_address}
+                            ownerUsername={user.username}
+                            editToken={localStorage.getItem(`canfly_edit_token_${user.username}`)}
+                            ownerWalletAddress={walletAddress}
+                          />
                         </div>
                       )}
 
