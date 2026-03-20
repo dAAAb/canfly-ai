@@ -23,3 +23,11 @@ CEO 每次 heartbeat 要：
 1. 確認 idle agent 立刻 checkout 下一張 backlog ticket
 2. Review 已 done 的票是否有 deploy + verify 記錄
 3. 沒有 → reject，重新 checkout 回 Dev
+
+## 驗證腳本（每次部署後必跑！）
+
+```bash
+bash scripts/verify-production.sh
+```
+
+如果有任何 ❌ FAILED → **立即修復，不能放著不管。**
