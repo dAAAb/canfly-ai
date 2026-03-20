@@ -94,7 +94,7 @@ export default function AgentBookRegister({
       setStatus('no_wallet')
       return
     }
-    fetch(`/api/agents/${agentName}/agentbook-status`)
+    fetch(`/api/agents/${encodeURIComponent(agentName)}/agentbook-status`)
       .then((r) => r.json())
       .then((data: Record<string, unknown>) => {
         if (data.registered) {
@@ -105,7 +105,8 @@ export default function AgentBookRegister({
           setStatus('ready')
         }
       })
-      .catch(() => {
+      .catch((err) => {
+        console.warn('[AgentBook] Status check failed:', err)
         setNonce('0')
         setStatus('ready')
       })
