@@ -83,29 +83,30 @@ export function saveBridgeSession(session: BridgeSession, agentName: string): vo
     agentName,
     createdAt: Date.now(),
   }
-  sessionStorage.setItem(SESSION_KEY, JSON.stringify(stored))
+  // Use localStorage (not sessionStorage) — survives iOS Safari app switching
+  localStorage.setItem(SESSION_KEY, JSON.stringify(stored))
 }
 
 export async function loadBridgeSession(agentName: string): Promise<BridgeSession | null> {
   try {
-    const raw = sessionStorage.getItem(SESSION_KEY)
+    const raw = localStorage.getItem(SESSION_KEY)
     if (!raw) return null
     const stored = JSON.parse(raw) as StoredSession
     // Expire after 5 min
-    if (Date.now() - stored.createdAt > 300_000) { sessionStorage.removeItem(SESSION_KEY); return null }
+    if (Date.now() - stored.createdAt > 300_000) { localStorage.removeItem(SESSION_KEY); return null }
     if (stored.agentName !== agentName) return null
 
     const rawKey = base64Decode(stored.rawKey)
     const key = await crypto.subtle.importKey('raw', rawKey, { name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt'])
     return { requestId: stored.requestId, connectorURI: stored.connectorURI, key, rawKey }
   } catch {
-    sessionStorage.removeItem(SESSION_KEY)
+    localStorage.removeItem(SESSION_KEY)
     return null
   }
 }
 
 export function clearBridgeSession(): void {
-  sessionStorage.removeItem(SESSION_KEY)
+  localStorage.removeItem(SESSION_KEY)
 }
 
 export interface BridgeResult {

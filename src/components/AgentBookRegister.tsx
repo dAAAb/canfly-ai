@@ -199,6 +199,46 @@ export default function AgentBookRegister({
 
   useEffect(() => () => { cancelledRef.current = true }, [])
 
+  // Handle bfcache resume (iOS Safari resumes page without reloading)
+  useEffect(() => {
+    const handlePageShow = (e: PageTransitionEvent) => {
+      if (e.persisted && status === 'waiting') {
+        // Page was restored from bfcache — need to restart polling
+        console.log('[AgentBook] Page restored from bfcache, resuming poll')
+        loadBridgeSession(agentName).then(saved => {
+          if (saved) {
+            sessionRef.current = saved
+            pollBridgeResult(saved).then(result => {
+              if (cancelledRef.current) return
+              clearBridgeSession()
+              setStatus('submitting')
+              const proof = normalizeProof(result.proof)
+              if (!proof) { setError('Invalid proof'); setStatus('error'); return }
+              fetch('/api/agents/agentbook-register', {
+                method: 'POST',
+                headers: buildAuthHeaders(editToken, ownerWalletAddress),
+                body: JSON.stringify({
+                  agentName, agentAddress: agentWalletAddress,
+                  root: result.merkle_root, nonce, nullifierHash: result.nullifier_hash,
+                  proof, contract: AGENTBOOK_CONTRACT, network: AGENTBOOK_NETWORK,
+                }),
+              }).then(r => r.json()).then((d: Record<string, unknown>) => {
+                if (d.ok) { clearBridgeSession(); setTxHash((d.txHash as string) || null); setStatus('done'); onRegistered?.() }
+                else { setError((d.error as string) || 'Failed'); setStatus('error') }
+              }).catch(e => { setError(e instanceof Error ? e.message : 'Failed'); setStatus('error') })
+            }).catch(e => {
+              clearBridgeSession()
+              setError(e instanceof Error ? e.message : 'Poll failed')
+              setStatus('error')
+            })
+          }
+        })
+      }
+    }
+    window.addEventListener('pageshow', handlePageShow)
+    return () => window.removeEventListener('pageshow', handlePageShow)
+  }, [status, agentName, agentWalletAddress, nonce, editToken, ownerWalletAddress, onRegistered])
+
   // ── Render ──
 
   if (status === 'loading') return <div className="text-gray-500 text-xs flex items-center gap-1"><Loader2 className="w-3 h-3 animate-spin" /> Checking...</div>
