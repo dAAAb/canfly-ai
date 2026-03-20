@@ -10,10 +10,14 @@
  * 6. Record in our DB
  */
 import { useState, useEffect, useCallback, useRef } from 'react'
-// Use idkit-core v2 for bridge protocol (v4 removed createWorldBridgeStore)
-// @ts-expect-error - aliased package
-import { createWorldBridgeStore } from '@worldcoin/idkit-core-v2'
 import { decodeAbiParameters, encodeAbiParameters, keccak256 } from 'viem'
+
+// Lazy-load idkit-core v2 (uses WASM, can crash on import in some browsers)
+async function getCreateWorldBridgeStore() {
+  // @ts-expect-error - aliased package
+  const mod = await import('@worldcoin/idkit-core-v2')
+  return mod.createWorldBridgeStore as () => ReturnType<typeof import('@worldcoin/idkit-core-v2').createWorldBridgeStore>
+}
 import QRCode from 'react-qr-code'
 import { Loader2, ExternalLink, CheckCircle } from 'lucide-react'
 import {
@@ -81,7 +85,7 @@ export default function AgentBookRegister({
   const [connectorURI, setConnectorURI] = useState<string | null>(null)
   const [txHash, setTxHash] = useState<string | null>(null)
   const [error, setError] = useState('')
-  const bridgeRef = useRef<ReturnType<typeof createWorldBridgeStore> | null>(null)
+  const bridgeRef = useRef<unknown>(null)
   const pollingRef = useRef(false)
 
   // Check registration status + get nonce on mount
@@ -121,8 +125,9 @@ export default function AgentBookRegister({
       )
       const signal = keccak256(encoded)
 
-      // 2. Create World ID bridge
-      const worldID = createWorldBridgeStore()
+      // 2. Create World ID bridge (lazy-loaded)
+      const createBridge = await getCreateWorldBridgeStore()
+      const worldID = createBridge()
       bridgeRef.current = worldID
 
       await worldID.getState().createClient({
