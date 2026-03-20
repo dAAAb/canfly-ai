@@ -1,13 +1,27 @@
-import { useState, useEffect, useCallback } from 'react'
-import { IDKitRequestWidget, orbLegacy } from '@worldcoin/idkit'
-import type { IDKitResult, RpContext } from '@worldcoin/idkit'
-import { Loader2, ExternalLink } from 'lucide-react'
-
+/**
+ * AgentBookRegister — Web-based AgentBook registration using World ID bridge protocol
+ *
+ * Flow:
+ * 1. Get nonce from AgentBook contract (via our API)
+ * 2. Create World ID bridge session (same as CLI does)
+ * 3. Show QR code for World App scanning
+ * 4. Poll for completion
+ * 5. Submit proof to relay → on-chain registration
+ * 6. Record in our DB
+ */
+import { useState, useEffect, useCallback, useRef } from 'react'
+// Use idkit-core v2 for bridge protocol (v4 removed createWorldBridgeStore)
+// @ts-expect-error - aliased package
+import { createWorldBridgeStore } from '@worldcoin/idkit-core-v2'
+import { decodeAbiParameters, encodeAbiParameters, keccak256 } from 'viem'
+import QRCode from 'react-qr-code'
+import { Loader2, ExternalLink, CheckCircle } from 'lucide-react'
 import {
   AGENTBOOK_WORLD_ID_APP_ID,
   AGENTBOOK_ACTION,
   AGENTBOOK_CONTRACT,
   AGENTBOOK_NETWORK,
+  AGENTBOOK_RELAY_URL,
 } from '../config/agentbook'
 
 interface Props {
@@ -29,6 +43,25 @@ function buildAuthHeaders(
   return h
 }
 
+function normalizeProof(result: { proof: string }): string[] | null {
+  const rawProof = result.proof
+  if (rawProof.startsWith('[')) {
+    try {
+      const parsed = JSON.parse(rawProof)
+      if (Array.isArray(parsed)) return parsed
+    } catch { /* fall through */ }
+  }
+  try {
+    const decoded = decodeAbiParameters([{ type: 'uint256[8]' }], rawProof as `0x${string}`)[0]
+    return decoded.map((v: bigint) => `0x${v.toString(16).padStart(64, '0')}`)
+  } catch {
+    return null
+  }
+}
+
+type Status = 'loading' | 'no_wallet' | 'already_registered' | 'ready' |
+  'creating_bridge' | 'waiting_scan' | 'submitting' | 'done' | 'error'
+
 export default function AgentBookRegister({
   agentName,
   agentWalletAddress,
@@ -37,29 +70,28 @@ export default function AgentBookRegister({
   ownerWalletAddress,
   onRegistered,
 }: Props) {
-  const [status, setStatus] = useState<
-    'loading' | 'no_wallet' | 'already_registered' | 'ready' | 'verifying' | 'submitting' | 'done' | 'error'
-  >('loading')
-  const [nonce, setNonce] = useState<string | null>(null)
+  const [status, setStatus] = useState<Status>('loading')
+  const [nonce, setNonce] = useState<string>('0')
+  const [connectorURI, setConnectorURI] = useState<string | null>(null)
   const [txHash, setTxHash] = useState<string | null>(null)
   const [error, setError] = useState('')
-  const [widgetOpen, setWidgetOpen] = useState(false)
-  const [rpContext, setRpContext] = useState<RpContext | null>(null)
+  const bridgeRef = useRef<ReturnType<typeof createWorldBridgeStore> | null>(null)
+  const pollingRef = useRef(false)
 
-  // Check registration status on mount
+  // Check registration status + get nonce on mount
   useEffect(() => {
     if (!agentWalletAddress) {
       setStatus('no_wallet')
       return
     }
-
-    fetch(`/api/agents/agentbook-nonce?address=${agentWalletAddress}`)
+    fetch(`/api/agents/${agentName}/agentbook-status`)
       .then((r) => r.json())
-      .then((data: { nonce?: string; isRegistered?: boolean }) => {
-        if (data.isRegistered) {
+      .then((data: Record<string, unknown>) => {
+        if (data.registered) {
           setStatus('already_registered')
+          setTxHash((data.txHash as string) || null)
         } else {
-          setNonce(data.nonce || '0')
+          setNonce((data.nonce as string) || '0')
           setStatus('ready')
         }
       })
@@ -67,61 +99,102 @@ export default function AgentBookRegister({
         setNonce('0')
         setStatus('ready')
       })
-  }, [agentWalletAddress])
+  }, [agentName, agentWalletAddress])
 
-  // Open IDKit for AgentBook registration (no RP signature needed - uses AgentBook's own World ID app)
-  const handleStartRegistration = useCallback(() => {
+  // Start bridge flow
+  const handleRegister = useCallback(async () => {
+    if (!agentWalletAddress) return
     setError('')
-    setStatus('verifying')
-    setWidgetOpen(true)
-  }, [])
+    setStatus('creating_bridge')
 
-  // IDKit proof received — submit to our backend relay
-  const handleVerify = useCallback(
-    async (idkitResult: IDKitResult) => {
-      setStatus('submitting')
-      try {
-        const firstResponse = idkitResult.responses?.[0] as Record<string, unknown> | undefined
-        if (!firstResponse) throw new Error('No proof in IDKit result')
+    try {
+      // 1. Create signal hash (same as CLI: keccak256(abi.encode(address, uint256)))
+      const encoded = encodeAbiParameters(
+        [{ type: 'address' }, { type: 'uint256' }],
+        [agentWalletAddress as `0x${string}`, BigInt(nonce)]
+      )
+      const signal = keccak256(encoded)
 
-        const root = (firstResponse.merkle_root as string) || ''
-        const nullifierHash = (firstResponse.nullifier as string) || (firstResponse.nullifier_hash as string) || ''
-        const proof = (firstResponse.proof as string[]) || []
+      // 2. Create World ID bridge
+      const worldID = createWorldBridgeStore()
+      bridgeRef.current = worldID
 
-        const res = await fetch('/api/agents/agentbook-register', {
-          method: 'POST',
-          headers: buildAuthHeaders(editToken, ownerWalletAddress),
-          body: JSON.stringify({
-            agentName,
-            agentAddress: agentWalletAddress,
-            root,
-            nonce: nonce || '0',
-            nullifierHash,
-            proof,
-            contract: AGENTBOOK_CONTRACT,
-            network: AGENTBOOK_NETWORK,
-          }),
-        })
+      await worldID.getState().createClient({
+        app_id: AGENTBOOK_WORLD_ID_APP_ID,
+        action: AGENTBOOK_ACTION,
+        signal,
+      })
 
-        const data = (await res.json()) as { ok?: boolean; txHash?: string; error?: string }
-        if (!res.ok) throw new Error(data.error || 'Registration failed')
+      // 3. Get connector URI for QR code
+      const uri = worldID.getState().connectorURI
+      if (!uri) throw new Error('Failed to create bridge session')
+      setConnectorURI(uri)
+      setStatus('waiting_scan')
 
-        setTxHash(data.txHash || null)
-        setStatus('done')
-        onRegistered?.()
-      } catch (e) {
-        setError(e instanceof Error ? e.message : 'Registration failed')
-        setStatus('error')
-        throw e
+      // 4. Poll for completion (5 min timeout)
+      pollingRef.current = true
+      const deadline = Date.now() + 300_000
+      while (Date.now() < deadline && pollingRef.current) {
+        await worldID.getState().pollForUpdates()
+        const { result, errorCode } = worldID.getState()
+
+        if (result) {
+          // Success! Submit to relay
+          pollingRef.current = false
+          setStatus('submitting')
+
+          const proof = normalizeProof(result as { proof: string })
+          if (!proof) throw new Error('Invalid proof format')
+
+          const proofResult = result as { merkle_root: string; nullifier_hash: string }
+
+          // Submit to our backend → relay → on-chain
+          const res = await fetch('/api/agents/agentbook-register', {
+            method: 'POST',
+            headers: buildAuthHeaders(editToken, ownerWalletAddress),
+            body: JSON.stringify({
+              agentName,
+              agentAddress: agentWalletAddress,
+              root: proofResult.merkle_root,
+              nonce,
+              nullifierHash: proofResult.nullifier_hash,
+              proof,
+              contract: AGENTBOOK_CONTRACT,
+              network: AGENTBOOK_NETWORK,
+            }),
+          })
+
+          const data = (await res.json()) as { ok?: boolean; txHash?: string; error?: string }
+          if (!res.ok) throw new Error(data.error || 'Registration failed')
+
+          setTxHash(data.txHash || null)
+          setStatus('done')
+          onRegistered?.()
+          return
+        }
+
+        if (errorCode) {
+          pollingRef.current = false
+          throw new Error(`World ID error: ${errorCode}`)
+        }
+
+        await new Promise((r) => setTimeout(r, 1500))
       }
-    },
-    [agentName, agentWalletAddress, nonce, editToken, ownerWalletAddress, onRegistered],
-  )
 
-  const handleSuccess = useCallback(() => {
-    setWidgetOpen(false)
-    if (status !== 'done') setStatus('done')
-  }, [status])
+      if (pollingRef.current) {
+        pollingRef.current = false
+        throw new Error('Verification timed out (5 min)')
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Registration failed')
+      setStatus('error')
+    }
+  }, [agentWalletAddress, agentName, nonce, editToken, ownerWalletAddress, onRegistered])
+
+  // Cleanup polling on unmount
+  useEffect(() => {
+    return () => { pollingRef.current = false }
+  }, [])
 
   if (status === 'loading') {
     return (
@@ -143,7 +216,7 @@ export default function AgentBookRegister({
     return (
       <div className="flex items-center gap-2">
         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-600/20 text-emerald-400 text-xs border border-emerald-600/40 font-medium">
-          📖 AgentBook Verified
+          <CheckCircle className="w-3 h-3" /> AgentBook Verified
         </span>
         {txHash && (
           <a
@@ -159,37 +232,51 @@ export default function AgentBookRegister({
     )
   }
 
-  // AgentBook registration currently requires CLI (World App QR bridge, not web widget)
-  const cliCommand = `npx @worldcoin/agentkit-cli register ${agentWalletAddress} --network base`
+  // QR code scanning state
+  if (status === 'waiting_scan' && connectorURI) {
+    return (
+      <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-5 max-w-sm">
+        <h4 className="text-white text-sm font-semibold mb-3 flex items-center gap-2">
+          📱 Scan with World App
+        </h4>
+        <div className="bg-white p-4 rounded-xl mx-auto w-fit mb-3">
+          <QRCode value={connectorURI} size={200} />
+        </div>
+        <p className="text-gray-400 text-xs text-center mb-2">
+          Open World App → Scan this QR code
+        </p>
+        <div className="flex items-center justify-center gap-2 text-cyan-400 text-xs">
+          <Loader2 className="w-3 h-3 animate-spin" /> Waiting for verification...
+        </div>
+        <button
+          onClick={() => { pollingRef.current = false; setStatus('ready'); setConnectorURI(null) }}
+          className="mt-3 text-gray-500 text-xs hover:text-gray-400 w-full text-center"
+        >
+          Cancel
+        </button>
+      </div>
+    )
+  }
 
   return (
     <div>
-      <div className="space-y-2">
-        <p className="text-gray-400 text-xs">
-          Register this agent on-chain via AgentBook CLI:
-        </p>
-        <div className="relative">
-          <pre className="bg-gray-950 border border-gray-800 rounded-lg p-3 text-xs text-gray-300 overflow-x-auto">
-            <code>{cliCommand}</code>
-          </pre>
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(cliCommand)
-              setError('Copied!')
-              setTimeout(() => setError(''), 2000)
-            }}
-            className="absolute top-2 right-2 p-1 bg-gray-800 hover:bg-gray-700 rounded text-gray-400 text-xs"
-          >
-            📋
-          </button>
-        </div>
-        <p className="text-gray-500 text-xs">
-          Requires <a href="https://worldcoin.org/download" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300">World App</a> installed.
-          After registration, refresh this page to see the badge.
-        </p>
-      </div>
+      <button
+        onClick={handleRegister}
+        disabled={status === 'creating_bridge' || status === 'submitting'}
+        className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-600/40 text-emerald-400 text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
+      >
+        {status === 'creating_bridge' ? (
+          <><Loader2 className="w-3 h-3 animate-spin" /> Preparing...</>
+        ) : status === 'submitting' ? (
+          <><Loader2 className="w-3 h-3 animate-spin" /> Registering on-chain...</>
+        ) : (
+          <>📖 Register to AgentBook</>
+        )}
+      </button>
 
-      {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
+      {error && (
+        <p className="text-red-400 text-xs mt-2">{error}</p>
+      )}
     </div>
   )
 }

@@ -7,8 +7,9 @@
 export const AGENTBOOK_WORLD_ID_APP_ID = 'app_a7c3e2b6b83927251a0db5345bd7146a'
 export const AGENTBOOK_ACTION = 'agentbook-registration'
 
-// Relay URL (official hosted relay from World)
+// Relay URL (official hosted relay from World) — used by backend, exported for reference
 export const AGENTBOOK_RELAY_URL = 'https://x402-worldchain.vercel.app'
+// Note: actual relay call goes through our backend /api/agents/agentbook-register
 
 // Contract addresses per network
 export const AGENTBOOK_CONTRACTS = {
