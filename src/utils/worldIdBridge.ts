@@ -60,6 +60,52 @@ export interface BridgeSession {
   requestId: string
   connectorURI: string
   key: CryptoKey
+  rawKey: Uint8Array  // needed for sessionStorage persistence
+}
+
+// ── Session persistence (survives mobile redirect) ──
+
+const SESSION_KEY = 'canfly_agentbook_bridge'
+
+interface StoredSession {
+  requestId: string
+  connectorURI: string
+  rawKey: string  // base64
+  agentName: string
+  createdAt: number
+}
+
+export function saveBridgeSession(session: BridgeSession, agentName: string): void {
+  const stored: StoredSession = {
+    requestId: session.requestId,
+    connectorURI: session.connectorURI,
+    rawKey: base64Encode(session.rawKey),
+    agentName,
+    createdAt: Date.now(),
+  }
+  sessionStorage.setItem(SESSION_KEY, JSON.stringify(stored))
+}
+
+export async function loadBridgeSession(agentName: string): Promise<BridgeSession | null> {
+  try {
+    const raw = sessionStorage.getItem(SESSION_KEY)
+    if (!raw) return null
+    const stored = JSON.parse(raw) as StoredSession
+    // Expire after 5 min
+    if (Date.now() - stored.createdAt > 300_000) { sessionStorage.removeItem(SESSION_KEY); return null }
+    if (stored.agentName !== agentName) return null
+
+    const rawKey = base64Decode(stored.rawKey)
+    const key = await crypto.subtle.importKey('raw', rawKey, { name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt'])
+    return { requestId: stored.requestId, connectorURI: stored.connectorURI, key, rawKey }
+  } catch {
+    sessionStorage.removeItem(SESSION_KEY)
+    return null
+  }
+}
+
+export function clearBridgeSession(): void {
+  sessionStorage.removeItem(SESSION_KEY)
 }
 
 export interface BridgeResult {
@@ -104,7 +150,7 @@ export async function createBridgeSession(
   const keyB64 = base64Encode(rawKey)
   const connectorURI = `https://world.org/verify?t=wld&i=${request_id}&k=${encodeURIComponent(keyB64)}`
 
-  return { requestId: request_id, connectorURI, key }
+  return { requestId: request_id, connectorURI, key, rawKey }
 }
 
 export async function pollBridgeResult(
@@ -115,23 +161,32 @@ export async function pollBridgeResult(
   const deadline = Date.now() + timeoutMs
 
   while (Date.now() < deadline) {
-    const res = await fetch(`${BRIDGE_URL}/response/${session.requestId}`)
+    try {
+      const res = await fetch(`${BRIDGE_URL}/response/${session.requestId}`)
+      console.log(`[WorldID Bridge] poll status=${res.status}`)
 
-    if (res.ok) {
-      const data = (await res.json()) as { iv: string; payload: string }
-      if (data.iv && data.payload) {
-        const decrypted = await decrypt(session.key, data.iv, data.payload)
-        const result = JSON.parse(decrypted)
+      if (res.status === 200) {
+        const data = (await res.json()) as { iv: string; payload: string }
+        console.log(`[WorldID Bridge] response has iv=${!!data.iv} payload=${!!data.payload}`)
 
-        if ('error_code' in result) {
-          throw new Error(`World ID error: ${result.error_code}`)
+        if (data.iv && data.payload) {
+          const decrypted = await decrypt(session.key, data.iv, data.payload)
+          console.log(`[WorldID Bridge] decrypted:`, decrypted.substring(0, 200))
+          const result = JSON.parse(decrypted)
+
+          if ('error_code' in result) {
+            throw new Error(`World ID error: ${result.error_code}`)
+          }
+
+          return result as BridgeResult
         }
-
-        return result as BridgeResult
       }
+    } catch (e) {
+      // If it's our own error, rethrow
+      if (e instanceof Error && e.message.startsWith('World ID error:')) throw e
+      console.warn('[WorldID Bridge] poll error:', e)
     }
 
-    // 204 = still waiting
     await new Promise((r) => setTimeout(r, intervalMs))
   }
 
