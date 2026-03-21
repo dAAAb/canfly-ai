@@ -19,6 +19,8 @@
     "scrape:prod": "npx tsx scripts/scrape-community.ts https://canfly.ai",
     "scrape:base": "npx tsx scripts/scrape-base-chain.ts",
     "scrape:base:prod": "npx tsx scripts/scrape-base-chain.ts https://canfly.ai",
+    "scrape:discord": "npx tsx scripts/scrape-discord.ts",
+    "scrape:discord:prod": "npx tsx scripts/scrape-discord.ts https://canfly.ai",
     "db:rollback:local": "wrangler d1 execute canfly-community --local --file=migrations/rollback/0001_initial_down.sql",
     "db:tables:local": "wrangler d1 execute canfly-community --local --command \"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name\""
   },
