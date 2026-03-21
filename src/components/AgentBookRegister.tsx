@@ -1,7 +1,8 @@
 /**
- * AgentBookRegister — Pure browser World ID bridge + relay
- * No WASM, no IDKit widget dependency, no page redirect.
- * Shows QR + "Open in World App" link. Browser tab stays alive for polling.
+ * AgentBookRegister — World ID verification for AgentBook on-chain registration.
+ *
+ * Uses the bridge.worldcoin.org protocol (no WASM needed).
+ * Key fix: uses visibilitychange to resume polling after mobile app switch.
  */
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { decodeAbiParameters } from 'viem'
@@ -10,7 +11,11 @@ import { Loader2, ExternalLink, CheckCircle } from 'lucide-react'
 import {
   createBridgeSession,
   pollBridgeResult,
+  saveBridgeSession,
+  loadBridgeSession,
   clearBridgeSession,
+  type BridgeSession,
+  type BridgeResult,
 } from '../utils/worldIdBridge'
 import {
   AGENTBOOK_WORLD_ID_APP_ID,
@@ -61,20 +66,121 @@ export default function AgentBookRegister({
   const [txHash, setTxHash] = useState<string | null>(null)
   const [error, setError] = useState('')
   const cancelledRef = useRef(false)
+  const sessionRef = useRef<BridgeSession | null>(null)
+  const pollingRef = useRef(false)
 
-  // Check status on mount
+  // Submit proof to backend relay
+  const submitProof = useCallback(async (result: BridgeResult) => {
+    if (!agentWalletAddress) return
+    setStatus('submitting')
+
+    const proof = normalizeProof(result.proof)
+    if (!proof) throw new Error('Invalid proof format')
+
+    const res = await fetch('/api/agents/agentbook-register', {
+      method: 'POST',
+      headers: buildAuthHeaders(editToken, ownerWalletAddress),
+      body: JSON.stringify({
+        agentName, agentAddress: agentWalletAddress,
+        root: result.merkle_root, nonce,
+        nullifierHash: result.nullifier_hash, proof,
+        contract: AGENTBOOK_CONTRACT, network: AGENTBOOK_NETWORK,
+      }),
+    })
+
+    const data = (await res.json()) as { ok?: boolean; txHash?: string; error?: string }
+    if (!res.ok) throw new Error(data.error || `Registration failed (${res.status})`)
+
+    clearBridgeSession()
+    setTxHash(data.txHash || null)
+    setStatus('done')
+    onRegistered?.()
+  }, [agentWalletAddress, agentName, nonce, editToken, ownerWalletAddress, onRegistered])
+
+  // Start polling for bridge response (can be called multiple times safely)
+  const startPolling = useCallback(async (session: BridgeSession) => {
+    if (pollingRef.current || cancelledRef.current) return
+    pollingRef.current = true
+
+    try {
+      console.log('[AgentBook] Starting/resuming poll for request:', session.requestId)
+      const result = await pollBridgeResult(session, 300000, 2000)
+      if (cancelledRef.current) return
+
+      clearBridgeSession()
+      await submitProof(result)
+    } catch (e) {
+      if (!cancelledRef.current) {
+        setError(e instanceof Error ? e.message : 'Registration failed')
+        setStatus('error')
+      }
+    } finally {
+      pollingRef.current = false
+    }
+  }, [submitProof])
+
+  // Handle visibilitychange — resume polling when user comes back from World App
+  useEffect(() => {
+    const handler = () => {
+      if (document.visibilityState === 'visible' && sessionRef.current && !pollingRef.current && !cancelledRef.current) {
+        console.log('[AgentBook] Page became visible, resuming poll')
+        startPolling(sessionRef.current)
+      }
+    }
+
+    // Also handle bfcache (iOS Safari)
+    const pageshowHandler = (e: PageTransitionEvent) => {
+      if (e.persisted && sessionRef.current && !pollingRef.current && !cancelledRef.current) {
+        console.log('[AgentBook] Page restored from bfcache, resuming poll')
+        startPolling(sessionRef.current)
+      }
+    }
+
+    document.addEventListener('visibilitychange', handler)
+    window.addEventListener('pageshow', pageshowHandler)
+    return () => {
+      document.removeEventListener('visibilitychange', handler)
+      window.removeEventListener('pageshow', pageshowHandler)
+    }
+  }, [startPolling])
+
+  // Check status on mount + try to resume a saved session
   useEffect(() => {
     if (!agentWalletAddress) { setStatus('no_wallet'); return }
-    fetch(`/api/agents/${encodeURIComponent(agentName)}/agentbook-status`)
-      .then(r => r.json())
-      .then((d: Record<string, unknown>) => {
-        if (d.registered) { setStatus('already_registered'); setTxHash((d.txHash as string) || null) }
-        else { setNonce((d.nonce as string) || '0'); setStatus('ready') }
-      })
-      .catch(() => setStatus('ready'))
-  }, [agentName, agentWalletAddress])
 
-  // Register flow: create bridge → show QR → poll → relay
+    const init = async () => {
+      // Check if already registered
+      try {
+        const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/agentbook-status`)
+        const d = (await res.json()) as Record<string, unknown>
+        if (d.registered) {
+          setStatus('already_registered')
+          setTxHash((d.txHash as string) || null)
+          return
+        }
+        setNonce((d.nonce as string) || '0')
+      } catch {
+        // continue
+      }
+
+      // Try to resume a saved bridge session (e.g. user just came back from World App)
+      const saved = await loadBridgeSession(agentName)
+      if (saved) {
+        console.log('[AgentBook] Found saved bridge session, resuming...')
+        sessionRef.current = saved
+        setConnectorURI(saved.connectorURI)
+        setStatus('waiting')
+        startPolling(saved)
+        return
+      }
+
+      setStatus('ready')
+    }
+
+    init()
+  }, [agentName, agentWalletAddress, startPolling])
+
+  // Register flow: create bridge → show QR → poll
   const handleRegister = useCallback(async () => {
     if (!agentWalletAddress) return
     setError('')
@@ -82,53 +188,36 @@ export default function AgentBookRegister({
     cancelledRef.current = false
 
     try {
-      // Create bridge session (pure Web Crypto, no WASM)
       const session = await createBridgeSession(
         AGENTBOOK_WORLD_ID_APP_ID,
         AGENTBOOK_ACTION,
-        agentWalletAddress,  // signal = agent wallet address
+        agentWalletAddress,
       )
+
+      // Persist session so it survives app switching
+      saveBridgeSession(session, agentName)
+      sessionRef.current = session
+
       setConnectorURI(session.connectorURI)
       setStatus('waiting')
 
-      // DO NOT redirect — keep this tab alive for polling
-      // User taps "Open in World App" link manually
-
-      // Poll for result (tab stays in background while World App is open)
-      const result = await pollBridgeResult(session)
-      if (cancelledRef.current) return
-
-      clearBridgeSession()
-      setStatus('submitting')
-
-      const proof = normalizeProof(result.proof)
-      if (!proof) throw new Error(`Invalid proof format`)
-
-      // Submit to our backend → relay → on-chain
-      const res = await fetch('/api/agents/agentbook-register', {
-        method: 'POST',
-        headers: buildAuthHeaders(editToken, ownerWalletAddress),
-        body: JSON.stringify({
-          agentName, agentAddress: agentWalletAddress,
-          root: result.merkle_root, nonce,
-          nullifierHash: result.nullifier_hash, proof,
-          contract: AGENTBOOK_CONTRACT, network: AGENTBOOK_NETWORK,
-        }),
-      })
-
-      const data = (await res.json()) as { ok?: boolean; txHash?: string; error?: string }
-      if (!res.ok) throw new Error(data.error || `Registration failed (${res.status})`)
-
-      setTxHash(data.txHash || null)
-      setStatus('done')
-      onRegistered?.()
+      // Start polling
+      startPolling(session)
     } catch (e) {
       if (!cancelledRef.current) {
         setError(e instanceof Error ? e.message : 'Registration failed')
         setStatus('error')
       }
     }
-  }, [agentWalletAddress, agentName, nonce, editToken, ownerWalletAddress, onRegistered])
+  }, [agentWalletAddress, agentName, startPolling])
+
+  const handleCancel = useCallback(() => {
+    cancelledRef.current = true
+    sessionRef.current = null
+    clearBridgeSession()
+    setStatus('ready')
+    setConnectorURI(null)
+  }, [])
 
   useEffect(() => () => { cancelledRef.current = true }, [])
 
@@ -146,7 +235,7 @@ export default function AgentBookRegister({
     </div>
   )
 
-  // QR code + link (NO auto-redirect — tab stays alive for polling)
+  // QR code + link
   if (status === 'waiting' && connectorURI) return (
     <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-5 max-w-sm">
       <h4 className="text-white text-sm font-semibold mb-3">📱 Verify with World App</h4>
@@ -154,7 +243,7 @@ export default function AgentBookRegister({
         <QRCode value={connectorURI} size={200} />
       </div>
       <p className="text-gray-400 text-xs text-center mb-2">
-        Scan QR code, or tap below on mobile:
+        Scan QR code with World App, or tap below on mobile:
       </p>
       <a
         href={connectorURI}
@@ -168,9 +257,10 @@ export default function AgentBookRegister({
         <Loader2 className="w-3 h-3 animate-spin" /> Waiting for verification...
       </div>
       <p className="text-gray-600 text-xs text-center mt-2">
-        Keep this page open while verifying
+        After verifying in World App, come back to this page.
+        <br />It will automatically detect your verification.
       </p>
-      <button onClick={() => { cancelledRef.current = true; setStatus('ready'); setConnectorURI(null) }}
+      <button onClick={handleCancel}
         className="mt-3 text-gray-500 text-xs hover:text-gray-400 w-full text-center">Cancel</button>
     </div>
   )

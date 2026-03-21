@@ -154,6 +154,36 @@ export async function createBridgeSession(
   return { requestId: request_id, connectorURI, key, rawKey }
 }
 
+/**
+ * Single poll attempt — returns result if available, null if not yet.
+ * Exported so callers can do one-shot checks (e.g. on visibilitychange).
+ */
+export async function pollBridgeOnce(session: BridgeSession): Promise<BridgeResult | null> {
+  try {
+    const res = await fetch(`${BRIDGE_URL}/response/${session.requestId}`)
+    console.log(`[WorldID Bridge] poll status=${res.status}`)
+
+    if (res.status === 200) {
+      const data = (await res.json()) as { iv: string; payload: string }
+      if (data.iv && data.payload) {
+        const decrypted = await decrypt(session.key, data.iv, data.payload)
+        console.log(`[WorldID Bridge] decrypted:`, decrypted.substring(0, 200))
+        const result = JSON.parse(decrypted)
+
+        if ('error_code' in result) {
+          throw new Error(`World ID error: ${result.error_code}`)
+        }
+
+        return result as BridgeResult
+      }
+    }
+  } catch (e) {
+    if (e instanceof Error && e.message.startsWith('World ID error:')) throw e
+    console.warn('[WorldID Bridge] poll error:', e)
+  }
+  return null
+}
+
 export async function pollBridgeResult(
   session: BridgeSession,
   timeoutMs = 300000,
@@ -161,34 +191,15 @@ export async function pollBridgeResult(
 ): Promise<BridgeResult> {
   const deadline = Date.now() + timeoutMs
 
+  // Immediate first check (no delay)
+  const immediate = await pollBridgeOnce(session)
+  if (immediate) return immediate
+
   while (Date.now() < deadline) {
-    try {
-      const res = await fetch(`${BRIDGE_URL}/response/${session.requestId}`)
-      console.log(`[WorldID Bridge] poll status=${res.status}`)
-
-      if (res.status === 200) {
-        const data = (await res.json()) as { iv: string; payload: string }
-        console.log(`[WorldID Bridge] response has iv=${!!data.iv} payload=${!!data.payload}`)
-
-        if (data.iv && data.payload) {
-          const decrypted = await decrypt(session.key, data.iv, data.payload)
-          console.log(`[WorldID Bridge] decrypted:`, decrypted.substring(0, 200))
-          const result = JSON.parse(decrypted)
-
-          if ('error_code' in result) {
-            throw new Error(`World ID error: ${result.error_code}`)
-          }
-
-          return result as BridgeResult
-        }
-      }
-    } catch (e) {
-      // If it's our own error, rethrow
-      if (e instanceof Error && e.message.startsWith('World ID error:')) throw e
-      console.warn('[WorldID Bridge] poll error:', e)
-    }
-
     await new Promise((r) => setTimeout(r, intervalMs))
+
+    const result = await pollBridgeOnce(session)
+    if (result) return result
   }
 
   throw new Error('Verification timed out')
