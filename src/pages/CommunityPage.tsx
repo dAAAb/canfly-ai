@@ -8,7 +8,7 @@ import PillBadge from '../components/PillBadge'
 import TrustBadge from '../components/TrustBadge'
 import { getTrustLevel } from '../utils/trustLevel'
 import type { TrustLevel } from '../utils/trustLevel'
-import { Search, Users, Bot, Wrench, Star, Flame, ArrowUpDown } from 'lucide-react'
+import { Search, Users, Bot, Wrench, Star, Flame, ArrowUpDown, Shield, Wallet, X } from 'lucide-react'
 
 interface CommunityUser {
   username: string
@@ -41,6 +41,7 @@ interface AgentWithSkillCount extends CommunityAgent {
 
 type ViewMode = 'sections' | 'sort'
 type SortMode = 'trending' | 'shrimp' | 'newest' | 'az'
+type VerificationFilter = 'worldid' | 'wallet' | 'unverified'
 
 /** World ID verified users get a 2x weight boost in trending score */
 function verificationWeight(user: CommunityUser): number {
@@ -68,8 +69,11 @@ export default function CommunityPage() {
   const [agents, setAgents] = useState<AgentWithSkillCount[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
+  const [debouncedQuery, setDebouncedQuery] = useState('')
   const [viewMode, setViewMode] = useState<ViewMode>('sections')
   const [sortMode, setSortMode] = useState<SortMode>('trending')
+  const [selectedVerifications, setSelectedVerifications] = useState<Set<VerificationFilter>>(new Set())
+  const [selectedPlatforms, setSelectedPlatforms] = useState<Set<string>>(new Set())
 
   useHead({
     title: t('meta.community.title'),
@@ -102,17 +106,75 @@ export default function CommunityPage() {
     fetchData()
   }, [])
 
-  // Search filter
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedQuery(searchQuery), 200)
+    return () => clearTimeout(timer)
+  }, [searchQuery])
+
+  // Build user→agents lookup for search
+  const userAgentMap = useMemo(() => {
+    const map = new Map<string, CommunityAgent[]>()
+    for (const agent of agents) {
+      if (agent.owner_username) {
+        const existing = map.get(agent.owner_username) || []
+        existing.push(agent)
+        map.set(agent.owner_username, existing)
+      }
+    }
+    return map
+  }, [agents])
+
+  // Extract available platforms for pill filter
+  const availablePlatforms = useMemo(() => {
+    const platforms = new Set<string>()
+    for (const agent of agents) {
+      platforms.add(agent.platform)
+    }
+    return Array.from(platforms).sort()
+  }, [agents])
+
+  // Get user verification category
+  function getUserVerificationCategory(user: CommunityUser): VerificationFilter {
+    const vl = user.verification_level
+    if (vl === 'orb' || vl === 'world' || vl === 'device' || vl === 'worldid') return 'worldid'
+    if (vl === 'wallet') return 'wallet'
+    return 'unverified'
+  }
+
+  // Combined search + filter
   const filteredUsers = useMemo(() => {
-    if (!searchQuery) return users
-    const q = searchQuery.toLowerCase()
-    return users.filter(
-      (u) =>
-        u.username.toLowerCase().includes(q) ||
-        u.display_name?.toLowerCase().includes(q) ||
-        u.bio?.toLowerCase().includes(q)
-    )
-  }, [users, searchQuery])
+    let result = users
+
+    // Text search (debounced)
+    if (debouncedQuery) {
+      const q = debouncedQuery.toLowerCase()
+      result = result.filter((u) => {
+        if (u.username.toLowerCase().includes(q)) return true
+        if (u.display_name?.toLowerCase().includes(q)) return true
+        if (u.bio?.toLowerCase().includes(q)) return true
+        // Search agent names owned by this user
+        const userAgents = userAgentMap.get(u.username)
+        if (userAgents?.some((a) => a.name.toLowerCase().includes(q))) return true
+        return false
+      })
+    }
+
+    // Verification level filter
+    if (selectedVerifications.size > 0) {
+      result = result.filter((u) => selectedVerifications.has(getUserVerificationCategory(u)))
+    }
+
+    // Platform filter (users who own agents on selected platforms)
+    if (selectedPlatforms.size > 0) {
+      result = result.filter((u) => {
+        const userAgents = userAgentMap.get(u.username)
+        return userAgents?.some((a) => selectedPlatforms.has(a.platform))
+      })
+    }
+
+    return result
+  }, [users, debouncedQuery, selectedVerifications, selectedPlatforms, userAgentMap])
 
   // Section-based grouping
   const sections = useMemo(() => {
@@ -167,6 +229,24 @@ export default function CommunityPage() {
     }
   }, [filteredUsers, sortMode])
 
+  // Filter agents by search and platform
+  const filteredAgents = useMemo(() => {
+    let result = agents
+    if (debouncedQuery) {
+      const q = debouncedQuery.toLowerCase()
+      result = result.filter(
+        (a) =>
+          a.name.toLowerCase().includes(q) ||
+          a.bio?.toLowerCase().includes(q) ||
+          a.owner_username?.toLowerCase().includes(q)
+      )
+    }
+    if (selectedPlatforms.size > 0) {
+      result = result.filter((a) => selectedPlatforms.has(a.platform))
+    }
+    return result
+  }, [agents, debouncedQuery, selectedPlatforms])
+
   const stats = useMemo(
     () => ({
       agents: agents.length,
@@ -175,6 +255,32 @@ export default function CommunityPage() {
     }),
     [agents, users]
   )
+
+  function toggleVerification(v: VerificationFilter) {
+    setSelectedVerifications((prev) => {
+      const next = new Set(prev)
+      if (next.has(v)) next.delete(v)
+      else next.add(v)
+      return next
+    })
+  }
+
+  function togglePlatform(p: string) {
+    setSelectedPlatforms((prev) => {
+      const next = new Set(prev)
+      if (next.has(p)) next.delete(p)
+      else next.add(p)
+      return next
+    })
+  }
+
+  function clearAllFilters() {
+    setSearchQuery('')
+    setSelectedVerifications(new Set())
+    setSelectedPlatforms(new Set())
+  }
+
+  const hasActiveFilters = selectedVerifications.size > 0 || selectedPlatforms.size > 0
 
   function getAgentTrustLevel(agent: CommunityAgent): TrustLevel {
     return agent.platform === 'openclaw' ? 'openclaw-agent' : 'agent'
@@ -200,6 +306,7 @@ export default function CommunityPage() {
           walletAddress={user.wallet_address}
           type="user"
           href={userHref(user.username)}
+          highlightText={debouncedQuery || undefined}
         />
         <TrustBadge level={getTrustLevel(user)} size="sm" />
         {user.agent_count > 0 && (
@@ -233,6 +340,7 @@ export default function CommunityPage() {
                 walletAddress={user.wallet_address}
                 type="user"
                 href={userHref(user.username)}
+                highlightText={debouncedQuery || undefined}
               />
               <TrustBadge level={getTrustLevel(user)} size="sm" />
               {user.agent_count > 0 && (
@@ -341,6 +449,61 @@ export default function CommunityPage() {
             </div>
           </div>
 
+          {/* Filter pills */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            {/* Verification level filters */}
+            <span className="text-xs text-gray-500 self-center mr-1">{t('community.filter.verification')}:</span>
+            {([
+              { key: 'worldid' as VerificationFilter, icon: <Shield className="w-3 h-3" />, label: t('community.filter.worldid') },
+              { key: 'wallet' as VerificationFilter, icon: <Wallet className="w-3 h-3" />, label: t('community.filter.wallet') },
+              { key: 'unverified' as VerificationFilter, label: t('community.filter.unverified') },
+            ]).map(({ key, icon, label }) => (
+              <button
+                key={key}
+                onClick={() => toggleVerification(key)}
+                className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                  selectedVerifications.has(key)
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-gray-800 border border-gray-700 text-gray-400 hover:text-white hover:border-gray-500'
+                }`}
+              >
+                {icon}
+                {label}
+              </button>
+            ))}
+
+            {/* Platform filters */}
+            {availablePlatforms.length > 0 && (
+              <>
+                <span className="text-xs text-gray-500 self-center ml-3 mr-1">{t('community.filter.platform')}:</span>
+                {availablePlatforms.map((pf) => (
+                  <button
+                    key={pf}
+                    onClick={() => togglePlatform(pf)}
+                    className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                      selectedPlatforms.has(pf)
+                        ? 'bg-purple-600 text-white'
+                        : 'bg-gray-800 border border-gray-700 text-gray-400 hover:text-white hover:border-gray-500'
+                    }`}
+                  >
+                    {pf === 'openclaw' ? '🦞' : '🤖'} {pf}
+                  </button>
+                ))}
+              </>
+            )}
+
+            {/* Clear all button */}
+            {hasActiveFilters && (
+              <button
+                onClick={clearAllFilters}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium bg-red-900/30 text-red-400 hover:bg-red-900/50 transition-colors"
+              >
+                <X className="w-3 h-3" />
+                {t('community.filter.clear')}
+              </button>
+            )}
+          </div>
+
           {/* Sort mode bar (visible when sort view active) */}
           {viewMode === 'sort' && (
             <div className="flex gap-2 mb-8 flex-wrap">
@@ -415,21 +578,22 @@ export default function CommunityPage() {
               )}
 
               {/* Agents Section (always shown below) */}
-              {agents.length > 0 && (
+              {filteredAgents.length > 0 && (
                 <section className="mb-12">
                   <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                     <Bot className="w-5 h-5 text-red-400" />
                     {t('community.sections.agents')}
-                    <span className="text-gray-500 text-sm font-normal">({agents.length})</span>
+                    <span className="text-gray-500 text-sm font-normal">({filteredAgents.length})</span>
                   </h2>
                   <div className="flex flex-wrap gap-3">
-                    {agents.map((agent) => (
+                    {filteredAgents.map((agent) => (
                       <div key={agent.name} className="flex items-center gap-2">
                         <PillBadge
                           name={agent.name}
                           walletAddress={agent.wallet_address}
                           type={agent.platform === 'openclaw' ? 'openclaw-agent' : 'agent'}
                           href={getAgentHref(agent)}
+                          highlightText={debouncedQuery || undefined}
                         />
                         <TrustBadge
                           level={agent.agentbook_registered === 1 ? 'agentbook' : getAgentTrustLevel(agent)}
@@ -442,7 +606,7 @@ export default function CommunityPage() {
               )}
 
               {/* Empty state */}
-              {filteredUsers.length === 0 && agents.length === 0 && (
+              {filteredUsers.length === 0 && filteredAgents.length === 0 && (
                 <div className="text-center py-16 text-gray-500">
                   {searchQuery
                     ? t('community.noResults')

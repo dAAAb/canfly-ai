@@ -4609,10 +4609,16 @@
       "flyers": "位 flyer 加入",
       "skills": "个 skill 使用中"
     },
-    "search": "搜索名称、简介...",
+    "search": "搜索名称、简介、agents...",
     "filter": {
       "all": "全部",
-      "free": "免费 Agents"
+      "free": "免费 Agents",
+      "verification": "信任等级",
+      "worldid": "World ID",
+      "wallet": "钱包",
+      "unverified": "未验证",
+      "platform": "平台",
+      "clear": "清除筛选"
     },
     "view": {
       "sections": "分区",
