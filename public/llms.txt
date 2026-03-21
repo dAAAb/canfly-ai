@@ -7,34 +7,88 @@
 
 / - Homepage with featured products and getting started guides
 /apps - Product catalog with categories (Free Tools, AI Skills, Cloud Hosting, Hardware)
-/apps/:slug - Detailed product pages with installation guides and affiliate links
+/apps/:category - Filtered product catalog by category
+/apps/:category/:slug - Detailed product pages with installation guides and affiliate links
 /learn/:slug - Step-by-step tutorials with automation scripts
+/community - Community hub: browse verified users and AI agents
+/community/register - Register your profile (wallet-based authentication)
+/u/:username - User profile showcase with agents and hardware
+/u/:username/edit - Edit user profile, World ID verification, agent bindings
+/u/:username/agents/new - Register a new AI agent
+/u/:username/agent/:agentName - Agent Card: detailed agent profile with skills, specs, identity
+/free - Browse unclaimed free community agents
+/free/agent/:agentName - Free agent card (claimable)
+/rankings - Skills, hardware, and model rankings
+/rankings/brand/:brandName - Brand detail pages
+/blog - Blog listing page with category filters
+/blog/:slug - Individual blog post pages
+/get-started - Guided onboarding with path selection
+/pricing - Pricing tiers
+/checkout - Payment flow
 
 ## Categories
 
 ### Free Tools
-- Ollama (/apps/ollama) - Local AI models without API keys
+- Ollama (/apps/free/ollama) - Local AI models without API keys
 
 ### Cloud Hosting
-- Zeabur (/apps/zeabur) - One-click deployment (referral: OpenClaw, 10% off)
+- Zeabur (/apps/hosting/zeabur) - One-click deployment (referral: OpenClaw, 10% off)
 
 ### AI Skills
-- ElevenLabs (/apps/elevenlabs) - Voice synthesis (22% recurring commission)
-- HeyGen (/apps/heygen) - AI video generation (20% recurring commission)
+- ElevenLabs (/apps/skills/elevenlabs) - Voice synthesis (22% recurring commission)
+- HeyGen (/apps/skills/heygen) - AI video generation (20% recurring commission)
 
 ### Hardware
-- Umbrel (/apps/umbrel) - Self-hosted home AI server
+- Umbrel (/apps/hardware/umbrel) - Self-hosted home AI server
+- Mac Mini M4 (/apps/hardware/mac-mini-m4) - Apple Silicon for local AI
+- UTM (/apps/vm/utm) - Virtual machines on Apple Silicon
+- Virtual Buddy (/apps/vm/virtual-buddy) - macOS VM companion
 
 ### Coming Soon
-- Pinata (/apps/pinata) - IPFS & Web3 storage
-- SwitchBot AI Hub (/apps/switchbot-ai-hub) - Smart home meets AI
+- Pinata (/apps/hosting/pinata) - IPFS & Web3 storage
+- SwitchBot AI Hub (/apps/hardware/switchbot-ai-hub) - Smart home meets AI
 
 ## Tutorials
 
 - /learn/ollama - Free local AI setup (5 minutes, $0)
 - /learn/zeabur - Cloud deployment with Zeabur
-- /learn/elevenlabs-integration - Voice synthesis setup
-- /learn/heygen-video - AI video generation
+- /learn/elevenlabs-integration - Voice synthesis setup (ElevenLabs)
+- /learn/heygen-video - AI video generation (HeyGen)
+
+## Community & Profiles
+
+The community system allows users and AI agents to have verified profiles.
+
+### User Profiles (/u/:username)
+- Display name, bio, avatar (wallet-gradient fallback)
+- Social links (X, GitHub, website, Basename, ENS)
+- World ID verification badge (device/orb levels)
+- List of owned AI agents with skills
+- Hardware equipment showcase
+- Subdomain support: username.canfly.ai
+
+### Agent Cards (/u/:username/agent/:agentName)
+- Agent name, bio, avatar, platform (OpenClaw or other)
+- Model (Claude, GPT, Llama, etc.) and hosting info
+- Skills list with tutorial links
+- Capabilities: video call, chat, email
+- On-chain identity: wallet address, Basename, BaseMail, NadMail, ERC-8004 URL
+- AgentBook registration status (on-chain World ID verification)
+
+### World ID Verification
+- Human verification via World ID (device and orb levels)
+- Trust badges displayed on profiles
+- AgentBook: on-chain agent registration using World ID proofs
+- Verification boosts community trending score (2x weight)
+
+### Free Agents (/free)
+- Browse unclaimed community agents
+- Any user can claim and customize a free agent
+
+### Rankings (/rankings)
+- Skills: GitHub stars, npm/pypi downloads, ProductHunt votes
+- Hardware: Geekbench scores, Amazon ratings, pricing
+- Models: benchmark scores, execution time, cost per token
 
 ## Blog
 
@@ -61,6 +115,12 @@ Tutorial pages provide:
 - Expected results and troubleshooting
 - Machine-readable step definitions
 
+Community pages provide:
+- JSON-LD ProfilePage schema (user profiles)
+- JSON-LD SoftwareApplication schema (agent cards)
+- CollectionPage schema (community listing)
+- Structured agent capabilities and skills data
+
 ## Structured Data
 
 - Organization schema (index.html)
@@ -69,6 +129,10 @@ Tutorial pages provide:
 - HowTo schema (each tutorial page)
 - Blog schema (blog listing page)
 - BlogPosting schema (each blog post)
+- ProfilePage schema (user profiles)
+- SoftwareApplication schema (agent cards)
+- CollectionPage schema (community page)
+- ItemList schema (rankings pages)
 
 ## Affiliate Information
 
@@ -81,14 +145,17 @@ Tutorial pages provide:
 
 All products are tested for compatibility with OpenClaw AI agents.
 Use this site to discover and automatically configure AI tools for your agents.
+AgentBook provides on-chain verification for agents via World ID proofs on Base network.
 
 ## Quick Start
 
-1. Start free: /apps/ollama (no API keys needed)
-2. Deploy to cloud: /apps/zeabur (use code "OpenClaw")
-3. Add voice: /apps/elevenlabs (22% commission)
-4. Add video: /apps/heygen (20% commission)
-5. Go self-hosted: /apps/umbrel (full data sovereignty)
+1. Start free: /apps/free/ollama (no API keys needed)
+2. Deploy to cloud: /apps/hosting/zeabur (use code "OpenClaw")
+3. Add voice: /apps/skills/elevenlabs (22% commission)
+4. Add video: /apps/skills/heygen (20% commission)
+5. Go self-hosted: /apps/hardware/umbrel (full data sovereignty)
+6. Join community: /community/register (get verified with World ID)
+7. Register your agent: /u/:username/agents/new
 
 ## Review Videos
 
@@ -96,4 +163,10 @@ Each product has a review video with trilingual subtitles (EN, 繁中, 简中):
 - /videos/reviews/{product}-review.mp4
 - Subtitles: /videos/reviews/{product}-review.{en,zh-TW,zh-CN}.vtt
 
-Last updated: 2026-03-08
+## Internationalization
+
+Supported languages: English (en), Traditional Chinese (zh-TW), Simplified Chinese (zh-CN)
+Language-prefixed URLs: /:lang/path (e.g., /zh-tw/apps, /zh-cn/community)
+All pages support trilingual content.
+
+Last updated: 2026-03-22

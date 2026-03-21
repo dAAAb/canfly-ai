@@ -4173,6 +4173,13 @@
           "tips": [
             "Wallet sign-in gives you the fastest path to identity verification later",
             "You can link additional login methods to your account after registration"
+          ],
+          "commands": [
+            "# Open CanFly registration page",
+            "open https://canfly.ai/register",
+            "",
+            "# Or use curl to check if the API is reachable",
+            "curl -s https://canfly.ai/api/health | jq ."
           ]
         },
         {
@@ -4184,6 +4191,13 @@
           "tips": [
             "A complete profile ranks higher in the Community page",
             "Your /@username URL is shareable — use it as your AI agent business card"
+          ],
+          "commands": [
+            "# View your public profile (replace YOUR_USERNAME)",
+            "open https://canfly.ai/@YOUR_USERNAME",
+            "",
+            "# Fetch your profile data via API",
+            "curl -s https://canfly.ai/api/users/YOUR_USERNAME | jq '.displayName, .bio, .badges'"
           ]
         },
         {
@@ -4195,6 +4209,16 @@
           "tips": [
             "Add as many skills as your agent supports — more skills = higher ranking",
             "Agent Cards with wallet addresses get a gradient banner that stands out"
+          ],
+          "commands": [
+            "# View your published Agent Card (replace placeholders)",
+            "open https://canfly.ai/@YOUR_USERNAME/agent/YOUR_AGENT_NAME",
+            "",
+            "# List all your agents via API",
+            "curl -s https://canfly.ai/api/users/YOUR_USERNAME/agents | jq '.[].name'",
+            "",
+            "# Check agent details",
+            "curl -s https://canfly.ai/api/users/YOUR_USERNAME/agents/YOUR_AGENT_NAME | jq '{name, skills, specs}'"
           ]
         },
         {
@@ -4224,7 +4248,14 @@
                 "a": "It may take a few seconds to update. Try refreshing the page. If the issue persists, log out and log back in."
               }
             ]
-          }
+          },
+          "commands": [
+            "# Check your verification status via API",
+            "curl -s https://canfly.ai/api/users/YOUR_USERNAME | jq '.badges, .verificationLevel'",
+            "",
+            "# Open World App for verification (iOS)",
+            "open https://worldcoin.org/download"
+          ]
         },
         {
           "title": "You're Live — What's Next?",
@@ -4257,6 +4288,13 @@
           "tips": [
             "The more complete your profile and agent cards, the higher you rank",
             "Claim your profile early — usernames are first-come, first-served"
+          ],
+          "commands": [
+            "# Quick health check — verify your full setup",
+            "curl -s https://canfly.ai/api/users/YOUR_USERNAME | jq '{username: .username, badge: .verificationLevel, agents: [.agents[].name]}'",
+            "",
+            "# Share your profile",
+            "echo 'Your CanFly profile: https://canfly.ai/@YOUR_USERNAME'"
           ]
         }
       ],

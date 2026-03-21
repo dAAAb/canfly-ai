@@ -452,6 +452,48 @@ export default function CommunityPage() {
             </>
           )}
 
+          {/* JSON-LD structured data */}
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "CollectionPage",
+              "name": t('meta.community.title'),
+              "description": t('meta.community.description'),
+              "url": `https://canfly.ai${localePath('/community')}`,
+              "isPartOf": {
+                "@type": "WebSite",
+                "name": "CanFly.ai",
+                "url": "https://canfly.ai"
+              },
+              "mainEntity": {
+                "@type": "ItemList",
+                "numberOfItems": users.length + agents.length,
+                "itemListElement": [
+                  ...users.slice(0, 10).map((u, i) => ({
+                    "@type": "ListItem",
+                    "position": i + 1,
+                    "item": {
+                      "@type": "Person",
+                      "name": u.display_name || u.username,
+                      "url": `https://canfly.ai/u/${u.username}`,
+                    }
+                  })),
+                  ...agents.slice(0, 10).map((a, i) => ({
+                    "@type": "ListItem",
+                    "position": users.slice(0, 10).length + i + 1,
+                    "item": {
+                      "@type": "SoftwareApplication",
+                      "name": a.name,
+                      "url": a.owner_username
+                        ? `https://canfly.ai/u/${a.owner_username}/agent/${a.name}`
+                        : `https://canfly.ai/free/agent/${a.name}`,
+                    }
+                  })),
+                ]
+              }
+            })}
+          </script>
+
           {/* CTA */}
           <div className="text-center rounded-2xl border border-gray-800 bg-gray-900/40 p-10">
             <h2 className="text-2xl font-bold text-white mb-3">
