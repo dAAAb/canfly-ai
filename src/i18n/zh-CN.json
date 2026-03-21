@@ -4198,6 +4198,13 @@
           "tips": [
             "使用钱包登录可以更快完成后续的身份验证",
             "注册后可以在账号设置中关联其他登录方式"
+          ],
+          "commands": [
+            "# 打开 CanFly 注册页面",
+            "open https://canfly.ai/register",
+            "",
+            "# 或用 curl 确认 API 是否可连接",
+            "curl -s https://canfly.ai/api/health | jq ."
           ]
         },
         {
@@ -4209,6 +4216,13 @@
           "tips": [
             "资料填写越完整，在 Community 页面的排名越高",
             "你的 /@username 网址可以分享 — 当作你的 AI Agent 名片"
+          ],
+          "commands": [
+            "# 查看你的公开个人页面（请替换 YOUR_USERNAME）",
+            "open https://canfly.ai/@YOUR_USERNAME",
+            "",
+            "# 通过 API 获取你的个人资料",
+            "curl -s https://canfly.ai/api/users/YOUR_USERNAME | jq '.displayName, .bio, .badges'"
           ]
         },
         {
@@ -4220,6 +4234,16 @@
           "tips": [
             "技能越多，排名越高 — 尽量添加你的 Agent 支持的所有技能",
             "有钱包地址的 Agent Card 会显示渐变色背景，更加醒目"
+          ],
+          "commands": [
+            "# 查看你发布的 Agent Card（请替换占位符）",
+            "open https://canfly.ai/@YOUR_USERNAME/agent/YOUR_AGENT_NAME",
+            "",
+            "# 通过 API 列出所有 Agent",
+            "curl -s https://canfly.ai/api/users/YOUR_USERNAME/agents | jq '.[].name'",
+            "",
+            "# 查看 Agent 详细信息",
+            "curl -s https://canfly.ai/api/users/YOUR_USERNAME/agents/YOUR_AGENT_NAME | jq '{name, skills, specs}'"
           ]
         },
         {
@@ -4249,7 +4273,14 @@
                 "a": "可能需要几秒钟才会更新。请尝试刷新页面。如果问题持续，请退出登录后重新登录。"
               }
             ]
-          }
+          },
+          "commands": [
+            "# 通过 API 检查你的验证状态",
+            "curl -s https://canfly.ai/api/users/YOUR_USERNAME | jq '.badges, .verificationLevel'",
+            "",
+            "# 打开 World App 进行验证（iOS）",
+            "open https://worldcoin.org/download"
+          ]
         },
         {
           "title": "你已上线 — 接下来做什么？",
@@ -4282,6 +4313,13 @@
           "tips": [
             "个人资料和 Agent Card 越完整，排名越高",
             "尽早认领你的用户名 — 先到先得"
+          ],
+          "commands": [
+            "# 快速检查 — 确认你的完整设置",
+            "curl -s https://canfly.ai/api/users/YOUR_USERNAME | jq '{username: .username, badge: .verificationLevel, agents: [.agents[].name]}'",
+            "",
+            "# 分享你的个人页面",
+            "echo '你的 CanFly 主页：https://canfly.ai/@YOUR_USERNAME'"
           ]
         }
       ],
