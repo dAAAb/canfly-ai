@@ -23,6 +23,7 @@
   "dependencies": {
     "@paypal/react-paypal-js": "^9.0.1",
     "@privy-io/react-auth": "^3.17.0",
+    "@resvg/resvg-wasm": "^2.6.2",
     "@runwayml/avatars-react": "^0.7.2",
     "@runwayml/sdk": "^3.15.0",
     "@worldcoin/idkit": "^4.0.10",
@@ -36,6 +37,7 @@
     "react-markdown": "^10.1.0",
     "react-qr-code": "^2.0.18",
     "react-router-dom": "^7.13.1",
+    "satori": "^0.26.0",
     "viem": "^2.47.5",
     "web-vitals": "^5.1.0"
   },

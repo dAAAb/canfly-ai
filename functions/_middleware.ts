@@ -295,6 +295,30 @@ function stripLangPrefix(path: string): string {
 
 /** Resolve OG metadata for any path (static → product → blog → null) */
 function resolveMeta(path: string): OgMeta | null {
+  // Dynamic user profile: /u/:username
+  const userMatch = path.match(/^\/u\/([a-zA-Z0-9_-]+)\/?$/)
+  if (userMatch) {
+    const username = userMatch[1]
+    return {
+      title: `${username} — CanFly.ai`,
+      description: `${username}'s AI agent profile on CanFly.ai`,
+      ogType: 'profile',
+      ogImage: `${SITE}/api/og/user/${username}`,
+    }
+  }
+
+  // Dynamic agent card: /u/:username/agent/:agentName or /free/agent/:agentName
+  const agentMatch = path.match(/^\/(?:u\/[a-zA-Z0-9_-]+|free)\/agent\/(.+)$/)
+  if (agentMatch) {
+    const agentName = agentMatch[1]
+    return {
+      title: `${agentName} — AI Agent | CanFly.ai`,
+      description: `${agentName} is an AI agent on CanFly.ai`,
+      ogType: 'profile',
+      ogImage: `${SITE}/api/og/agent/${encodeURIComponent(agentName)}`,
+    }
+  }
+
   // 1. Exact static match
   if (ROUTE_META[path]) return ROUTE_META[path]
 
