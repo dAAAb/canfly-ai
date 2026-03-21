@@ -4852,6 +4852,15 @@
     "emailPlaceholder": "你的 email",
     "notify": "通知我"
   },
+  "agentAvatar": {
+    "startCall": "開始視訊通話 {{emoji}}",
+    "hint": "自然說話就好 — {{name}} 聽得到，會即時回應。",
+    "quotaTitle": "{{name}} 休息中！",
+    "quotaMessage": "今天的視訊通話額度已用完，請明天再試。",
+    "errorTitle": "出了點問題",
+    "errorMessage": "無法連線到數位分身，請再試一次。",
+    "tryAgain": "再試一次"
+  },
   "claim": {
     "title": "認領這個檔案",
     "description": "這是你嗎？驗證身份以認領此檔案的所有權。",

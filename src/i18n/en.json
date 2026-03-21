@@ -4844,6 +4844,15 @@
     "emailPlaceholder": "Your email",
     "notify": "Notify me"
   },
+  "agentAvatar": {
+    "startCall": "Start Video Call with {{emoji}}",
+    "hint": "Speak naturally — {{name}} can hear and respond in real-time.",
+    "quotaTitle": "{{name}} is resting!",
+    "quotaMessage": "Video call quota reached for today. Please try again tomorrow.",
+    "errorTitle": "Something went wrong",
+    "errorMessage": "Could not connect to the avatar. Please try again.",
+    "tryAgain": "Try again"
+  },
   "claim": {
     "title": "Claim this profile",
     "description": "Is this you? Verify your identity to claim ownership of this profile.",

@@ -8,6 +8,7 @@ import { walletGradient } from '../utils/walletGradient'
 import SmartAvatar from '../components/SmartAvatar'
 import TrustBadge from '../components/TrustBadge'
 import { getTrustLevel } from '../utils/trustLevel'
+import AgentAvatarCall from '../components/AgentAvatarCall'
 import { Cpu, Globe, Wallet, ExternalLink, Sparkles, Video, MessageCircle, Mail } from 'lucide-react'
 
 interface Skill {
@@ -24,8 +25,13 @@ interface Owner {
   verification_level: string | null
 }
 
+interface VideoCallCapability {
+  avatarId: string
+  connectUrl: string
+}
+
 interface AgentCapabilities {
-  videoCall?: boolean
+  videoCall?: boolean | VideoCallCapability
   chat?: boolean
   email?: string | boolean
 }
@@ -242,40 +248,32 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
             )}
           </div>
 
-          {/* Video Call Section */}
-          {agent.capabilities?.videoCall && (
-            <section className="mb-12">
-              <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                <Video className="w-5 h-5 text-cyan-400" />
-                Video Call
-              </h2>
-              <div className="bg-gray-900/50 border border-gray-800 rounded-2xl overflow-hidden">
-                <div className="relative">
-                  <img
-                    src="/images/avatar-placeholder.jpg"
-                    alt={`Video call with ${agent.name}`}
-                    className="w-full aspect-video object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none'
-                    }}
+          {/* Interactive Video Call Section */}
+          {agent.capabilities?.videoCall && (() => {
+            const vc = agent.capabilities.videoCall
+            const hasAvatar = typeof vc === 'object' && vc.avatarId && vc.connectUrl
+            return (
+              <section className="mb-12">
+                <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <Video className="w-5 h-5 text-cyan-400" />
+                  Video Call
+                </h2>
+                {hasAvatar ? (
+                  <AgentAvatarCall
+                    agentName={agent.name}
+                    avatarId={vc.avatarId}
+                    connectUrl={vc.connectUrl}
+                    platformEmoji={platformEmoji}
                   />
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                    <Link
-                      to="/"
-                      className="inline-flex items-center gap-2 px-6 py-3 bg-cyan-600/90 hover:bg-cyan-500 text-white font-medium rounded-xl transition-all"
-                    >
-                      <Video className="w-5 h-5" />
-                      Start Video Call with {platformEmoji}
-                    </Link>
+                ) : (
+                  <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-8 text-center">
+                    <div className="text-4xl mb-3">{platformEmoji}</div>
+                    <p className="text-gray-400 text-sm">Video call coming soon.</p>
                   </div>
-                  <span className="absolute top-4 right-4 flex h-3 w-3">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500" />
-                  </span>
-                </div>
-              </div>
-            </section>
-          )}
+                )}
+              </section>
+            )
+          })()}
 
           {/* Skills Grid */}
           {agent.skills.length > 0 && (
