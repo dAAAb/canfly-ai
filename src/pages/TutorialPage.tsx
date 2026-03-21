@@ -1422,6 +1422,7 @@ function createAgentOnboardingTutorial(t: any): TutorialData {
         estimatedTime: t('tutorial.agent-onboarding.steps.0.estimatedTime'),
         content: t('tutorial.agent-onboarding.steps.0.content'),
         tips: t('tutorial.agent-onboarding.steps.0.tips', { returnObjects: true }),
+        commands: t('tutorial.agent-onboarding.steps.0.commands', { returnObjects: true }),
       },
       {
         icon: Globe,
@@ -1431,6 +1432,7 @@ function createAgentOnboardingTutorial(t: any): TutorialData {
         content: t('tutorial.agent-onboarding.steps.1.content'),
         expectedResult: t('tutorial.agent-onboarding.steps.1.expectedResult'),
         tips: t('tutorial.agent-onboarding.steps.1.tips', { returnObjects: true }),
+        commands: t('tutorial.agent-onboarding.steps.1.commands', { returnObjects: true }),
       },
       {
         icon: Cpu,
@@ -1440,6 +1442,7 @@ function createAgentOnboardingTutorial(t: any): TutorialData {
         content: t('tutorial.agent-onboarding.steps.2.content'),
         expectedResult: t('tutorial.agent-onboarding.steps.2.expectedResult'),
         tips: t('tutorial.agent-onboarding.steps.2.tips', { returnObjects: true }),
+        commands: t('tutorial.agent-onboarding.steps.2.commands', { returnObjects: true }),
       },
       {
         icon: Shield,
@@ -1449,6 +1452,7 @@ function createAgentOnboardingTutorial(t: any): TutorialData {
         content: t('tutorial.agent-onboarding.steps.3.content'),
         expectedResult: t('tutorial.agent-onboarding.steps.3.expectedResult'),
         tips: t('tutorial.agent-onboarding.steps.3.tips', { returnObjects: true }),
+        commands: t('tutorial.agent-onboarding.steps.3.commands', { returnObjects: true }),
         troubleshooting: {
           title: t('tutorial.agent-onboarding.steps.3.troubleshooting.title'),
           items: t('tutorial.agent-onboarding.steps.3.troubleshooting.items', { returnObjects: true }),
@@ -1460,6 +1464,7 @@ function createAgentOnboardingTutorial(t: any): TutorialData {
         titleEn: t('tutorial.agent-onboarding.steps.4.titleEn'),
         estimatedTime: t('tutorial.agent-onboarding.steps.4.estimatedTime'),
         content: t('tutorial.agent-onboarding.steps.4.content'),
+        commands: t('tutorial.agent-onboarding.steps.4.commands', { returnObjects: true }),
         nextStepCards: (t('tutorial.agent-onboarding.steps.4.nextStepCards', { returnObjects: true }) || []).map((card: NextStepCard) => ({
           ...card,
           link: card.link || '#',
