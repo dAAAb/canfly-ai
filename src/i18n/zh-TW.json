@@ -154,7 +154,38 @@
     "comingSoon": "即將推出",
     "community": {
       "title": "社群排行榜",
-      "description": "社群成員將投票並為他們最愛的工具排名"
+      "description": "依信任分數、Agent 數量與活躍度排名的社群成員",
+      "leaderboard": "排行榜",
+      "leaderboardDesc": "比較社群成員的信任分數與貢獻",
+      "loading": "載入社群資料中...",
+      "noResults": "找不到成員",
+      "sortBy": {
+        "trustScore": "信任分數",
+        "agents": "Agent 數",
+        "newest": "最新加入",
+        "activity": "活躍度"
+      },
+      "table": {
+        "rank": "#",
+        "member": "成員",
+        "trust": "信任",
+        "agents": "Agent",
+        "score": "分數",
+        "joined": "加入時間"
+      },
+      "trustLevels": {
+        "orb": "Orb 驗證",
+        "world": "World ID",
+        "wallet": "錢包",
+        "unverified": "未驗證"
+      },
+      "stats": {
+        "totalMembers": "總成員數",
+        "verified": "已驗證",
+        "totalAgents": "Agent 總數",
+        "avgAgents": "平均 Agent/人"
+      },
+      "viewProfile": "查看個人頁"
     },
     "models": {
       "title": "模型排行榜",

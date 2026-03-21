@@ -2,6 +2,8 @@ import { useState, useMemo, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Navbar from '../components/Navbar'
+import TrustBadge from '../components/TrustBadge'
+import { getTrustLevel } from '../utils/trustLevel'
 import skillsData from '../../data/rankings-skills.json'
 import hardwareData from '../../data/rankings-hardware.json'
 
@@ -10,6 +12,52 @@ type View = 'global' | 'community'
 type SkillSort = 'popularity' | 'clawhub' | 'stars' | 'newest' | 'price'
 type HardwareSort = 'popularity' | 'geekbench' | 'rating' | 'newest' | 'price'
 type ModelSort = 'score' | 'speed' | 'cost'
+type CommunitySort = 'trustScore' | 'agents' | 'newest' | 'activity'
+
+interface CommunityUser {
+  username: string
+  display_name: string
+  wallet_address: string | null
+  avatar_url: string | null
+  bio: string | null
+  links: Record<string, string>
+  claimed: number
+  claimed_at: string | null
+  verification_level: string | null
+  agent_count: number
+  created_at: string
+}
+
+/** Compute a composite trust score (0-100) from verification + agent activity */
+function computeTrustScore(user: CommunityUser): number {
+  const vl = user.verification_level?.toLowerCase()
+  let verificationPts = 0
+  if (vl === 'orb') verificationPts = 50
+  else if (vl === 'world' || vl === 'device' || vl === 'worldid') verificationPts = 40
+  else if (user.wallet_address) verificationPts = 20
+
+  // Agent contribution: up to 30 points (logarithmic scale)
+  const agentPts = Math.min(30, user.agent_count > 0 ? Math.log2(user.agent_count + 1) * 15 : 0)
+
+  // Account age bonus: up to 20 points (max at 30 days)
+  const refDate = user.claimed_at || user.created_at
+  const ageDays = Math.max((Date.now() - new Date(refDate).getTime()) / (1000 * 60 * 60 * 24), 0)
+  const agePts = Math.min(20, (ageDays / 30) * 20)
+
+  return Math.min(100, Math.round(verificationPts + agentPts + agePts))
+}
+
+/** Activity score: recent activity weighted by verification */
+function activityScore(user: CommunityUser): number {
+  const agentScore = (user.agent_count || 0) + 1
+  const refDate = user.claimed_at || user.created_at
+  const ageMs = Date.now() - new Date(refDate).getTime()
+  const ageDays = Math.max(ageMs / (1000 * 60 * 60 * 24), 0.5)
+  const decay = 1 / Math.log2(ageDays + 2)
+  const vl = user.verification_level?.toLowerCase()
+  const vWeight = (vl === 'orb' || vl === 'world' || vl === 'device' || vl === 'worldid') ? 2 : user.wallet_address ? 1.5 : 1
+  return agentScore * decay * vWeight
+}
 
 interface ModelEntry {
   model: string
@@ -168,6 +216,9 @@ export default function RankingsPage() {
   const [modelsData, setModelsData] = useState<ModelEntry[]>([])
   const [modelsLoading, setModelsLoading] = useState(false)
   const [modelsError, setModelsError] = useState<string | null>(null)
+  const [communitySort, setCommunitySort] = useState<CommunitySort>('trustScore')
+  const [communityUsers, setCommunityUsers] = useState<CommunityUser[]>([])
+  const [communityLoading, setCommunityLoading] = useState(false)
 
   useEffect(() => {
     if (tab !== 'models' || modelsData.length > 0) return
@@ -186,6 +237,74 @@ export default function RankingsPage() {
       })
       .finally(() => setModelsLoading(false))
   }, [tab, modelsData.length])
+
+  // Fetch community users when switching to community view
+  useEffect(() => {
+    if (view !== 'community' || communityUsers.length > 0) return
+    setCommunityLoading(true)
+    fetch('/api/community/users?limit=100')
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        return res.json()
+      })
+      .then((data: { users: CommunityUser[] }) => {
+        setCommunityUsers(data.users)
+      })
+      .catch(() => {
+        // silently fail — will show empty state
+      })
+      .finally(() => setCommunityLoading(false))
+  }, [view, communityUsers.length])
+
+  // Sorted & filtered community users
+  const communityRanked = useMemo(() => {
+    const q = search.toLowerCase()
+    let filtered = communityUsers.filter(u =>
+      !q ||
+      u.username.toLowerCase().includes(q) ||
+      (u.display_name || '').toLowerCase().includes(q)
+    )
+
+    const trustScores = new Map<CommunityUser, number>()
+    const activityScores = new Map<CommunityUser, number>()
+    for (const u of filtered) {
+      trustScores.set(u, computeTrustScore(u))
+      activityScores.set(u, activityScore(u))
+    }
+
+    switch (communitySort) {
+      case 'agents':
+        filtered = [...filtered].sort((a, b) => b.agent_count - a.agent_count)
+        break
+      case 'newest':
+        filtered = [...filtered].sort((a, b) =>
+          new Date(b.claimed_at || b.created_at).getTime() -
+          new Date(a.claimed_at || a.created_at).getTime()
+        )
+        break
+      case 'activity':
+        filtered = [...filtered].sort((a, b) => (activityScores.get(b) ?? 0) - (activityScores.get(a) ?? 0))
+        break
+      case 'trustScore':
+      default:
+        filtered = [...filtered].sort((a, b) => (trustScores.get(b) ?? 0) - (trustScores.get(a) ?? 0))
+        break
+    }
+
+    return { users: filtered, trustScores, activityScores }
+  }, [communityUsers, communitySort, search])
+
+  // Community stats
+  const communityStats = useMemo(() => {
+    const total = communityUsers.length
+    const verified = communityUsers.filter(u => {
+      const vl = u.verification_level?.toLowerCase()
+      return vl === 'orb' || vl === 'world' || vl === 'device' || vl === 'worldid'
+    }).length
+    const totalAgents = communityUsers.reduce((sum, u) => sum + u.agent_count, 0)
+    const avgAgents = total > 0 ? (totalAgents / total).toFixed(1) : '0'
+    return { total, verified, totalAgents, avgAgents }
+  }, [communityUsers])
 
   const sortedModels = useMemo(() => {
     const items = [...modelsData]
@@ -414,18 +533,230 @@ export default function RankingsPage() {
             </div>
           </div>
 
-          {/* Community Coming Soon overlay */}
+          {/* Community Rankings */}
           {view === 'community' ? (
-            <div className="text-center py-24">
-              <p className="text-5xl mb-4">🦞</p>
-              <h2 className="text-2xl font-bold text-white mb-2">
-                {t('rankings.community.title')}
-              </h2>
-              <p className="text-gray-400">{t('rankings.comingSoon')}</p>
-              <p className="text-gray-500 text-sm mt-2">
-                {t('rankings.community.description')}
-              </p>
-            </div>
+            communityLoading ? (
+              <div className="text-center py-24">
+                <div className="inline-block h-8 w-8 border-2 border-gray-600 border-t-white rounded-full animate-spin mb-4" />
+                <p className="text-gray-400">{t('rankings.community.loading')}</p>
+              </div>
+            ) : communityRanked.users.length === 0 ? (
+              <div className="text-center py-24">
+                <p className="text-4xl mb-4">🔍</p>
+                <p className="text-gray-400">{t('rankings.community.noResults')}</p>
+              </div>
+            ) : (
+              <>
+                {/* Stats row */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+                  {([
+                    { key: 'totalMembers', value: communityStats.total, icon: '👥' },
+                    { key: 'verified', value: communityStats.verified, icon: '🌍' },
+                    { key: 'totalAgents', value: communityStats.totalAgents, icon: '🤖' },
+                    { key: 'avgAgents', value: communityStats.avgAgents, icon: '📊' },
+                  ] as const).map(({ key, value, icon }) => (
+                    <div key={key} className="bg-gray-900/50 rounded-lg border border-gray-800 p-4">
+                      <div className="text-xs text-gray-400 mb-1">{icon} {t(`rankings.community.stats.${key}`)}</div>
+                      <div className="text-2xl font-bold text-white">{value}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Leaderboard header + sort buttons */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                  <div>
+                    <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                      🏆 {t('rankings.community.leaderboard')}
+                    </h2>
+                    <p className="text-gray-500 text-sm mt-1">
+                      {t('rankings.community.leaderboardDesc')}
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-1 bg-gray-900 rounded-lg p-1">
+                    {([
+                      { key: 'trustScore' as CommunitySort, icon: '🛡️', label: t('rankings.community.sortBy.trustScore') },
+                      { key: 'agents' as CommunitySort, icon: '🤖', label: t('rankings.community.sortBy.agents') },
+                      { key: 'activity' as CommunitySort, icon: '🔥', label: t('rankings.community.sortBy.activity') },
+                      { key: 'newest' as CommunitySort, icon: '🆕', label: t('rankings.community.sortBy.newest') },
+                    ] as const).map(({ key, icon, label }) => (
+                      <button
+                        key={key}
+                        onClick={() => setCommunitySort(key)}
+                        className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+                          communitySort === key
+                            ? 'bg-gray-700 text-white'
+                            : 'text-gray-400 hover:text-white'
+                        }`}
+                      >
+                        {icon} {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Bar Chart — top 10 */}
+                {(() => {
+                  const top10 = communityRanked.users.slice(0, 10)
+                  const getVal = (u: CommunityUser): number => {
+                    if (communitySort === 'agents') return u.agent_count
+                    if (communitySort === 'activity') return communityRanked.activityScores.get(u) ?? 0
+                    if (communitySort === 'newest') return new Date(u.claimed_at || u.created_at).getTime()
+                    return communityRanked.trustScores.get(u) ?? 0
+                  }
+                  const getLabel = (u: CommunityUser): string => {
+                    if (communitySort === 'agents') return String(u.agent_count)
+                    if (communitySort === 'activity') return (communityRanked.activityScores.get(u) ?? 0).toFixed(1)
+                    if (communitySort === 'newest') {
+                      const d = new Date(u.claimed_at || u.created_at)
+                      return `${d.getMonth() + 1}/${d.getDate()}`
+                    }
+                    return String(communityRanked.trustScores.get(u) ?? 0)
+                  }
+                  const maxVal = Math.max(...top10.map(getVal), 1)
+                  const barColor = communitySort === 'agents' ? 'bg-purple-500/60' :
+                    communitySort === 'activity' ? 'bg-orange-500/60' :
+                    communitySort === 'newest' ? 'bg-cyan-500/60' :
+                    'bg-gradient-to-r from-yellow-500/60 via-blue-500/60 to-green-500/60'
+
+                  return (
+                    <div className="bg-gray-900/50 rounded-xl border border-gray-800 p-4 sm:p-6 mb-8">
+                      <div className="space-y-3">
+                        {top10.map((user, i) => {
+                          const val = getVal(user)
+                          const pct = communitySort === 'newest'
+                            ? 100 - ((maxVal - val) / (maxVal - Math.min(...top10.map(getVal))) * 80)
+                            : maxVal > 0 ? (val / maxVal) * 100 : 0
+                          const trust = getTrustLevel(user)
+                          return (
+                            <div key={user.username} className="flex items-center gap-3 group">
+                              <span className="text-gray-500 font-mono text-sm w-6 text-right shrink-0">{i + 1}.</span>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between mb-1">
+                                  <div className="flex items-center gap-2 min-w-0">
+                                    {user.avatar_url && (
+                                      <img
+                                        src={user.avatar_url}
+                                        alt=""
+                                        className="w-5 h-5 rounded-full shrink-0"
+                                      />
+                                    )}
+                                    <Link
+                                      to={`/u/${user.username}`}
+                                      className="text-white text-sm font-medium hover:text-blue-400 transition-colors truncate"
+                                    >
+                                      {user.display_name || user.username}
+                                    </Link>
+                                    <TrustBadge level={trust} size="sm" />
+                                  </div>
+                                  <span className="text-gray-300 text-sm font-mono shrink-0 ml-2">
+                                    {getLabel(user)}
+                                  </span>
+                                </div>
+                                <div className="w-full bg-gray-800 rounded-full h-2 overflow-hidden">
+                                  <div
+                                    className={`h-full rounded-full transition-all duration-500 ${barColor}`}
+                                    style={{ width: `${Math.max(pct, 2)}%` }}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )
+                })()}
+
+                {/* Full leaderboard table */}
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead>
+                      <tr className="border-b border-gray-800 text-gray-400">
+                        <th className="py-3 pr-3 w-10">{t('rankings.community.table.rank')}</th>
+                        <th className="py-3 pr-3">{t('rankings.community.table.member')}</th>
+                        <th className="py-3 pr-3">{t('rankings.community.table.trust')}</th>
+                        <th className="py-3 pr-3">{t('rankings.community.table.agents')}</th>
+                        <th className="py-3 pr-3 hidden sm:table-cell">{t('rankings.community.table.score')}</th>
+                        <th className="py-3 pr-3 hidden md:table-cell">{t('rankings.community.table.joined')}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {communityRanked.users.map((user, i) => {
+                        const trust = getTrustLevel(user)
+                        const score = communityRanked.trustScores.get(user) ?? 0
+                        const joinDate = new Date(user.claimed_at || user.created_at)
+                        return (
+                          <tr
+                            key={user.username}
+                            className="border-b border-gray-800/50 hover:bg-gray-900/50 transition-colors"
+                          >
+                            <td className="py-3 pr-3 text-gray-500 font-mono">{i + 1}</td>
+                            <td className="py-3 pr-3">
+                              <div className="flex items-center gap-2">
+                                {user.avatar_url && (
+                                  <img src={user.avatar_url} alt="" className="w-6 h-6 rounded-full shrink-0" />
+                                )}
+                                <Link
+                                  to={`/u/${user.username}`}
+                                  className="text-white font-medium hover:text-blue-400 transition-colors truncate"
+                                >
+                                  {user.display_name || user.username}
+                                </Link>
+                              </div>
+                            </td>
+                            <td className="py-3 pr-3">
+                              <TrustBadge level={trust} size="sm" />
+                            </td>
+                            <td className="py-3 pr-3">
+                              <span className="font-mono text-gray-300">{user.agent_count}</span>
+                            </td>
+                            <td className="py-3 pr-3 hidden sm:table-cell">
+                              <div className="flex items-center gap-2">
+                                <span className={`font-mono ${
+                                  score >= 80 ? 'text-green-400' :
+                                  score >= 50 ? 'text-yellow-400' :
+                                  'text-gray-400'
+                                }`}>
+                                  {score}
+                                </span>
+                                <div className="w-16 bg-gray-800 rounded-full h-1.5 hidden lg:block">
+                                  <div
+                                    className={`h-full rounded-full ${
+                                      score >= 80 ? 'bg-green-500/60' :
+                                      score >= 50 ? 'bg-yellow-500/60' :
+                                      'bg-gray-600'
+                                    }`}
+                                    style={{ width: `${score}%` }}
+                                  />
+                                </div>
+                              </div>
+                            </td>
+                            <td className="py-3 pr-3 hidden md:table-cell text-gray-400 text-xs">
+                              {joinDate.toLocaleDateString()}
+                            </td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Trust Level Distribution */}
+                <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {(['orb', 'world', 'wallet', 'unverified'] as const).map(level => {
+                    const count = communityUsers.filter(u => getTrustLevel(u) === level).length
+                    const pct = communityUsers.length > 0 ? Math.round((count / communityUsers.length) * 100) : 0
+                    return (
+                      <div key={level} className="bg-gray-900/50 rounded-lg border border-gray-800 p-3">
+                        <TrustBadge level={level} size="sm" />
+                        <div className="text-white font-bold text-lg mt-2">{count}</div>
+                        <div className="text-gray-500 text-xs">{pct}%</div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </>
+            )
           ) : tab === 'models' ? (
             <>
               {/* Models sub-tab bar */}
