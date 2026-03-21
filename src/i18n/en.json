@@ -154,7 +154,38 @@
     "comingSoon": "Coming Soon",
     "community": {
       "title": "Community Rankings",
-      "description": "Community members will vote and rank their favorite tools"
+      "description": "Top community members ranked by trust, agents, and activity",
+      "leaderboard": "Leaderboard",
+      "leaderboardDesc": "Compare community members by trust score and contributions",
+      "loading": "Loading community data...",
+      "noResults": "No members found",
+      "sortBy": {
+        "trustScore": "Trust Score",
+        "agents": "Agents",
+        "newest": "Newest",
+        "activity": "Activity"
+      },
+      "table": {
+        "rank": "#",
+        "member": "Member",
+        "trust": "Trust",
+        "agents": "Agents",
+        "score": "Score",
+        "joined": "Joined"
+      },
+      "trustLevels": {
+        "orb": "Orb Verified",
+        "world": "World ID",
+        "wallet": "Wallet",
+        "unverified": "Unverified"
+      },
+      "stats": {
+        "totalMembers": "Total Members",
+        "verified": "Verified",
+        "totalAgents": "Total Agents",
+        "avgAgents": "Avg Agents/User"
+      },
+      "viewProfile": "View Profile"
     },
     "models": {
       "title": "Model Rankings",
