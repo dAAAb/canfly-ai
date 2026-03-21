@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { useQueryLang } from '../hooks/useLanguage'
+import { useHead } from '../hooks/useHead'
 import Navbar from '../components/Navbar'
 import PillBadge from '../components/PillBadge'
 import { walletGradient } from '../utils/walletGradient'
@@ -99,6 +100,43 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
 
   const platformEmoji = agent.platform === 'openclaw' ? '🦞' : '🤖'
   const badgeType = agent.platform === 'openclaw' ? 'openclaw-agent' as const : 'agent' as const
+
+  const agentUrl = free
+    ? `https://canfly.ai/free/agent/${agent.name}`
+    : `https://canfly.ai/u/${agent.owner_username}/agent/${agent.name}`
+
+  useHead({
+    title: `${agent.name} — AI Agent | CanFly.ai`,
+    description: agent.bio || `${agent.name} is an AI agent on CanFly.ai`,
+    canonical: agentUrl,
+    ogType: 'profile',
+  })
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": agent.name,
+    "description": agent.bio || `AI agent on CanFly.ai`,
+    "url": agentUrl,
+    "applicationCategory": "AIApplication",
+    "operatingSystem": "All",
+    ...(agent.model ? { "softwareVersion": agent.model } : {}),
+    ...(agent.owner ? {
+      "author": {
+        "@type": "Person",
+        "name": agent.owner.display_name || agent.owner.username,
+        "url": `https://canfly.ai/u/${agent.owner.username}`,
+      }
+    } : {}),
+    ...(agent.skills.length > 0 ? {
+      "featureList": agent.skills.map(s => s.name),
+    } : {}),
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD",
+    },
+  }
 
   return (
     <>
@@ -388,6 +426,11 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
               </div>
             </section>
           )}
+
+          {/* JSON-LD structured data */}
+          <script type="application/ld+json">
+            {JSON.stringify(jsonLd)}
+          </script>
 
           {/* Free Agent claim CTA */}
           {free && (

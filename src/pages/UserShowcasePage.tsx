@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { useQueryLang } from '../hooks/useLanguage'
 import { useAuth } from '../hooks/useAuth'
+import { useHead } from '../hooks/useHead'
 import SmartAvatar from '../components/SmartAvatar'
 import Navbar from '../components/Navbar'
 import PillBadge from '../components/PillBadge'
@@ -240,6 +241,15 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
     user.verification_level &&
     ['orb', 'device', 'worldid'].includes(user.verification_level.toLowerCase())
   )
+
+  const profileUrl = `https://canfly.ai/u/${user.username}`
+  useHead({
+    title: `${user.display_name || user.username} — CanFly.ai`,
+    description: user.bio || `${user.display_name || user.username}'s AI agent profile on CanFly.ai`,
+    canonical: profileUrl,
+    ogType: 'profile',
+    ogImage: user.avatar_url || undefined,
+  })
 
   const apiSnippet = user.ownerInviteCode
     ? `curl -X POST https://canfly.ai/api/agents/register \\
@@ -656,6 +666,27 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
               </div>
             </section>
           )}
+
+          {/* JSON-LD structured data */}
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "ProfilePage",
+              "mainEntity": {
+                "@type": "Person",
+                "name": user.display_name || user.username,
+                "url": profileUrl,
+                ...(user.avatar_url ? { "image": user.avatar_url } : {}),
+                ...(user.bio ? { "description": user.bio } : {}),
+                ...(user.links?.website ? { "sameAs": [user.links.website] } : {}),
+              },
+              "isPartOf": {
+                "@type": "WebSite",
+                "name": "CanFly.ai",
+                "url": "https://canfly.ai"
+              },
+            })}
+          </script>
 
           {/* API Snippet — register your agent under this user */}
           {apiSnippet && (
