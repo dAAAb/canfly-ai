@@ -4584,10 +4584,16 @@
       "flyers": "flyers joined",
       "skills": "skills in use"
     },
-    "search": "Search name, bio...",
+    "search": "Search name, bio, agents...",
     "filter": {
       "all": "All",
-      "free": "Free Agents"
+      "free": "Free Agents",
+      "verification": "Trust",
+      "worldid": "World ID",
+      "wallet": "Wallet",
+      "unverified": "Unverified",
+      "platform": "Platform",
+      "clear": "Clear filters"
     },
     "view": {
       "sections": "Sections",

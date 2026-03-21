@@ -4592,10 +4592,16 @@
       "flyers": "位 flyer 加入",
       "skills": "個 skill 使用中"
     },
-    "search": "搜尋名稱、簡介...",
+    "search": "搜尋名稱、簡介、agents...",
     "filter": {
       "all": "全部",
-      "free": "免費 Agents"
+      "free": "免費 Agents",
+      "verification": "信任等級",
+      "worldid": "World ID",
+      "wallet": "錢包",
+      "unverified": "未驗證",
+      "platform": "平台",
+      "clear": "清除篩選"
     },
     "view": {
       "sections": "分區",
