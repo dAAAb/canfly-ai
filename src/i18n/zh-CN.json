@@ -4869,6 +4869,15 @@
     "emailPlaceholder": "你的 email",
     "notify": "通知我"
   },
+  "agentAvatar": {
+    "startCall": "开始视频通话 {{emoji}}",
+    "hint": "自然说话就好 — {{name}} 听得到，会即时回应。",
+    "quotaTitle": "{{name}} 休息中！",
+    "quotaMessage": "今天的视频通话额度已用完，请明天再试。",
+    "errorTitle": "出了点问题",
+    "errorMessage": "无法连接到数字分身，请再试一次。",
+    "tryAgain": "再试一次"
+  },
   "claim": {
     "title": "认领这个档案",
     "description": "这是你吗？验证身份以认领此档案的所有权。",
