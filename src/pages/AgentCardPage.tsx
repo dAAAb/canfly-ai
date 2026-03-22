@@ -64,6 +64,19 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
+  // useHead must be called before any conditional returns (React Rules of Hooks)
+  const agentUrl = free && agent
+    ? `https://canfly.ai/free/agent/${agent.name}`
+    : agent
+      ? `https://canfly.ai/u/${agent.owner_username}/agent/${agent.name}`
+      : 'https://canfly.ai'
+  useHead({
+    title: agent ? `${agent.name} — AI Agent | CanFly.ai` : 'Agent | CanFly.ai',
+    description: agent?.bio || (agent ? `${agent.name} is an AI agent on CanFly.ai` : 'AI Agent on CanFly.ai'),
+    canonical: agentUrl,
+    ogType: 'profile',
+  })
+
   useEffect(() => {
     if (!agentName) return
     fetch(`/api/community/agents/${agentName}`)
@@ -106,17 +119,6 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
 
   const platformEmoji = agent.platform === 'openclaw' ? '🦞' : '🤖'
   const badgeType = agent.platform === 'openclaw' ? 'openclaw-agent' as const : 'agent' as const
-
-  const agentUrl = free
-    ? `https://canfly.ai/free/agent/${agent.name}`
-    : `https://canfly.ai/u/${agent.owner_username}/agent/${agent.name}`
-
-  useHead({
-    title: `${agent.name} — AI Agent | CanFly.ai`,
-    description: agent.bio || `${agent.name} is an AI agent on CanFly.ai`,
-    canonical: agentUrl,
-    ogType: 'profile',
-  })
 
   const jsonLd = {
     "@context": "https://schema.org",
