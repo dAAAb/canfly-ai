@@ -46,7 +46,7 @@ async function decrypt(key: CryptoKey, ivB64: string, payloadB64: string): Promi
 
 // ── Signal hashing (must match IDKit's generateSignal / hashToField) ──
 // IDKit does: keccak256(input) >> 8n  (to fit in BN254 field)
-function hashToField(input: string): string {
+export function hashToField(input: string): string {
   // For hex strings (like our keccak256 output), hash the raw bytes
   const hash = keccak256(toHex(new TextEncoder().encode(input)))
   // Right-shift by 8 bits to fit in BN254 scalar field
@@ -122,11 +122,15 @@ export async function createBridgeSession(
   action: string,
   signal: string,
   returnTo?: string,
+  /** Pre-computed signal hash — if provided, skips internal hashToField.
+   *  Use when the contract signal uses packed encoding (e.g. abi.encodePacked(agent, nonce)). */
+  signalHash?: string,
 ): Promise<BridgeSession> {
   const { key, iv, rawKey } = await generateKey()
 
-  // Hash signal same as IDKit: keccak256 >> 8n
-  const signalDigest = hashToField(signal)
+  // Use pre-computed hash if provided, otherwise hash the raw signal string
+  const signalDigest = signalHash || hashToField(signal)
+  console.log(`[WorldID Bridge] signal=${signal} signalDigest=${signalDigest}`)
 
   const requestBody = JSON.stringify({
     app_id: appId,
