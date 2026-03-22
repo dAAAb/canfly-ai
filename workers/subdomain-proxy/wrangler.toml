@@ -1,0 +1,13 @@
+name = "canfly-subdomain-proxy"
+main = "index.ts"
+compatibility_date = "2024-09-23"
+
+# Route: all *.canfly.ai traffic goes through this worker
+# Set up via: Cloudflare Dashboard → canfly.ai → Workers Routes
+# Pattern: *.canfly.ai/*
+# Worker: canfly-subdomain-proxy
+
+# Note: routes cannot be set via wrangler.toml for zones you don't own in Workers config.
+# Instead, add the route manually in the Cloudflare Dashboard:
+#   1. Go to canfly.ai → Workers Routes
+#   2. Add Route: *.canfly.ai/*  →  canfly-subdomain-proxy

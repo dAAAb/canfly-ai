@@ -61,7 +61,11 @@ export default function Navbar({ search, children }: NavbarProps) {
             </div>
           )}
           {children}
-          <AuthButton />
+          {isSubdomain ? (
+            <a href="https://canfly.ai" className="text-sm bg-sky-600/20 border border-sky-600 px-3 py-1.5 rounded-full hover:bg-sky-600/30 transition-all text-sky-400">{t('auth.joinCommunity', 'Join Flight Community')}</a>
+          ) : (
+            <AuthButton />
+          )}
           {isSubdomain ? (
             <>
               <a href={`${mainBase}${localePath('/apps')}`} className="text-sm text-gray-400 hover:text-white transition-colors">{t('nav.browseApps')}</a>
@@ -114,7 +118,11 @@ export default function Navbar({ search, children }: NavbarProps) {
             </div>
           )}
           {children}
-          <AuthButton />
+          {isSubdomain ? (
+            <a href="https://canfly.ai" className="text-sm bg-sky-600/20 border border-sky-600 px-3 py-1.5 rounded-full hover:bg-sky-600/30 transition-all text-sky-400">{t('auth.joinCommunity', 'Join Flight Community')}</a>
+          ) : (
+            <AuthButton />
+          )}
           {isSubdomain ? (
             <>
               <a href={`${mainBase}${localePath('/apps')}`} className="block text-sm text-gray-400 hover:text-white transition-colors">{t('nav.browseApps')}</a>
