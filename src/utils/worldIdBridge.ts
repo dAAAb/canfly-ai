@@ -166,20 +166,47 @@ export async function pollBridgeOnce(session: BridgeSession): Promise<BridgeResu
     const res = await fetch(`${BRIDGE_URL}/response/${session.requestId}`)
     console.log(`[WorldID Bridge] poll status=${res.status}`)
 
+    // Not ready yet — user hasn't verified in World App
     if (res.status === 404 || res.status === 204) {
       return null
     }
 
+    // Non-200 — retryable, don't crash
     if (res.status !== 200) {
-      throw new Error(`Unexpected bridge response status: ${res.status}`)
+      console.warn(`[WorldID Bridge] unexpected status ${res.status}, will retry`)
+      return null
     }
 
-    const data = (await res.json()) as { iv?: string; payload?: string }
+    // Safely parse response body
+    let data: { iv?: string; payload?: string }
+    try {
+      const text = await res.text()
+      console.log(`[WorldID Bridge] raw response (first 200 chars):`, text.substring(0, 200))
+      data = JSON.parse(text) as { iv?: string; payload?: string }
+    } catch (parseErr) {
+      // Non-JSON 200 response — bridge may be returning an error page or empty body
+      console.warn('[WorldID Bridge] response is not valid JSON, treating as not-ready')
+      return null
+    }
+
+    // Bridge returned 200 but without the expected encrypted payload.
+    // This can happen with stale/expired sessions — treat as not-ready and clear session.
     if (!data.iv || !data.payload) {
-      throw new Error('Malformed bridge response payload')
+      console.warn('[WorldID Bridge] 200 response missing iv/payload — session may be stale:', JSON.stringify(data).substring(0, 200))
+      clearBridgeSession()
+      return null
     }
 
-    const decrypted = await decrypt(session.key, data.iv, data.payload)
+    let decrypted: string
+    try {
+      decrypted = await decrypt(session.key, data.iv, data.payload)
+    } catch (decryptErr) {
+      // Decryption failure — wrong key (stale session) or corrupted payload
+      console.warn('[WorldID Bridge] decryption failed — session key mismatch?', decryptErr)
+      clearBridgeSession()
+      return null
+    }
+
     console.log(`[WorldID Bridge] decrypted:`, decrypted.substring(0, 200))
     const result = JSON.parse(decrypted)
 
