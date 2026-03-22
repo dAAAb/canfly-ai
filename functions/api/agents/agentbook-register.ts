@@ -87,8 +87,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
   }
 
   // Submit to relay API (official World hosted relay)
-  const contract = body.contract || '0xE1D1D3526A6FAa37eb36bD10B933C1b77f4561a4'
-  const network = body.network || 'base'
+  const contract = body.contract || '0xA23aB2712eA7BBa896930544C7d6636a96b944dA'
+  const network = body.network || 'world'
   try {
     const relayRes = await fetch(AGENTBOOK_RELAY_URL, {
       method: 'POST',

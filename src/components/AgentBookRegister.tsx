@@ -11,6 +11,7 @@ import { Loader2, ExternalLink, CheckCircle } from 'lucide-react'
 import {
   createBridgeSession,
   pollBridgeResult,
+  pollBridgeOnce,
   saveBridgeSession,
   loadBridgeSession,
   clearBridgeSession,
@@ -68,14 +69,19 @@ export default function AgentBookRegister({
   const cancelledRef = useRef(false)
   const sessionRef = useRef<BridgeSession | null>(null)
   const pollingRef = useRef(false)
+  const submittingRef = useRef(false)
 
   // Submit proof to backend relay
   const submitProof = useCallback(async (result: BridgeResult) => {
-    if (!agentWalletAddress) return
+    if (!agentWalletAddress || submittingRef.current) return
+    submittingRef.current = true
     setStatus('submitting')
 
     const proof = normalizeProof(result.proof)
-    if (!proof) throw new Error('Invalid proof format')
+    if (!proof) {
+      submittingRef.current = false
+      throw new Error('Invalid proof format')
+    }
 
     const res = await fetch('/api/agents/agentbook-register', {
       method: 'POST',
@@ -89,13 +95,23 @@ export default function AgentBookRegister({
     })
 
     const data = (await res.json()) as { ok?: boolean; txHash?: string; error?: string }
-    if (!res.ok) throw new Error(data.error || `Registration failed (${res.status})`)
+    if (!res.ok) {
+      submittingRef.current = false
+      throw new Error(data.error || `Registration failed (${res.status})`)
+    }
 
     clearBridgeSession()
+    sessionRef.current = null
+    pollingRef.current = false
     setTxHash(data.txHash || null)
     setStatus('done')
     onRegistered?.()
   }, [agentWalletAddress, agentName, nonce, editToken, ownerWalletAddress, onRegistered])
+
+  const failWithError = useCallback((message: string) => {
+    setError(message)
+    setStatus('error')
+  }, [])
 
   // Start polling for bridge response (can be called multiple times safely)
   const startPolling = useCallback(async (session: BridgeSession) => {
@@ -110,39 +126,62 @@ export default function AgentBookRegister({
       clearBridgeSession()
       await submitProof(result)
     } catch (e) {
-      if (!cancelledRef.current) {
-        setError(e instanceof Error ? e.message : 'Registration failed')
-        setStatus('error')
-      }
+      if (!cancelledRef.current) failWithError(e instanceof Error ? e.message : 'Registration failed')
     } finally {
       pollingRef.current = false
     }
-  }, [submitProof])
+  }, [submitProof, failWithError])
+
+  // Immediate one-shot check, then restart full poll if needed
+  const resumePolling = useCallback(async () => {
+    const session = sessionRef.current
+    if (!session || cancelledRef.current || submittingRef.current) return
+
+    try {
+      const result = await pollBridgeOnce(session)
+      if (result) {
+        await submitProof(result)
+        return
+      }
+    } catch (e) {
+      if (!cancelledRef.current) failWithError(e instanceof Error ? e.message : 'Registration failed')
+      return
+    }
+
+    if (!pollingRef.current) startPolling(session)
+  }, [startPolling, submitProof, failWithError])
 
   // Handle visibilitychange — resume polling when user comes back from World App
   useEffect(() => {
     const handler = () => {
-      if (document.visibilityState === 'visible' && sessionRef.current && !pollingRef.current && !cancelledRef.current) {
+      if (document.visibilityState === 'visible') {
         console.log('[AgentBook] Page became visible, resuming poll')
-        startPolling(sessionRef.current)
+        void resumePolling()
       }
     }
 
     // Also handle bfcache (iOS Safari)
     const pageshowHandler = (e: PageTransitionEvent) => {
-      if (e.persisted && sessionRef.current && !pollingRef.current && !cancelledRef.current) {
+      if (e.persisted) {
         console.log('[AgentBook] Page restored from bfcache, resuming poll')
-        startPolling(sessionRef.current)
+        void resumePolling()
       }
     }
 
     document.addEventListener('visibilitychange', handler)
     window.addEventListener('pageshow', pageshowHandler)
+    window.addEventListener('focus', handler)
+
     return () => {
       document.removeEventListener('visibilitychange', handler)
       window.removeEventListener('pageshow', pageshowHandler)
+      window.removeEventListener('focus', handler)
     }
-  }, [startPolling])
+  }, [resumePolling])
+
+  useEffect(() => {
+    if (status === 'waiting') void resumePolling()
+  }, [status, resumePolling])
 
   // Check status on mount + try to resume a saved session
   useEffect(() => {
@@ -192,6 +231,7 @@ export default function AgentBookRegister({
         AGENTBOOK_WORLD_ID_APP_ID,
         AGENTBOOK_ACTION,
         agentWalletAddress,
+        window.location.href,
       )
 
       // Persist session so it survives app switching
@@ -204,12 +244,9 @@ export default function AgentBookRegister({
       // Start polling
       startPolling(session)
     } catch (e) {
-      if (!cancelledRef.current) {
-        setError(e instanceof Error ? e.message : 'Registration failed')
-        setStatus('error')
-      }
+      if (!cancelledRef.current) failWithError(e instanceof Error ? e.message : 'Registration failed')
     }
-  }, [agentWalletAddress, agentName, startPolling])
+  }, [agentWalletAddress, agentName, startPolling, failWithError])
 
   const handleCancel = useCallback(() => {
     cancelledRef.current = true
@@ -217,6 +254,7 @@ export default function AgentBookRegister({
     clearBridgeSession()
     setStatus('ready')
     setConnectorURI(null)
+    submittingRef.current = false
   }, [])
 
   useEffect(() => () => { cancelledRef.current = true }, [])
@@ -231,7 +269,7 @@ export default function AgentBookRegister({
       <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-600/20 text-emerald-400 text-xs border border-emerald-600/40 font-medium">
         <CheckCircle className="w-3 h-3" /> AgentBook Verified
       </span>
-      {txHash && <a href={`https://basescan.org/tx/${txHash}`} target="_blank" rel="noopener noreferrer" className="text-xs text-gray-500 hover:text-gray-400 flex items-center gap-1"><ExternalLink className="w-3 h-3" /> tx</a>}
+      {txHash && <a href={`https://worldscan.org/tx/${txHash}`} target="_blank" rel="noopener noreferrer" className="text-xs text-gray-500 hover:text-gray-400 flex items-center gap-1"><ExternalLink className="w-3 h-3" /> tx</a>}
     </div>
   )
 

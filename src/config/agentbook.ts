@@ -18,8 +18,8 @@ export const AGENTBOOK_CONTRACTS = {
   'base-sepolia': '0xA23aB2712eA7BBa896930544C7d6636a96b944dA',
 } as const
 
-// Default network for CanFly (our agents are on Base)
-export const AGENTBOOK_NETWORK = 'base'
+// Default network for CanFly — Worldchain (per official Agent Kit docs)
+export const AGENTBOOK_NETWORK = 'world'
 export const AGENTBOOK_CONTRACT = AGENTBOOK_CONTRACTS[AGENTBOOK_NETWORK]
 
 // AgentBook ABI for nonce lookup

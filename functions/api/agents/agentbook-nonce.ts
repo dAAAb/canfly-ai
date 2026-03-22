@@ -6,8 +6,8 @@
  */
 import { type Env, json, errorResponse, handleOptions } from '../community/_helpers'
 
-const AGENTBOOK_ADDRESS = '0xE1D1D3526A6FAa37eb36bD10B933C1b77f4561a4'
-const BASE_RPC = 'https://mainnet.base.org'
+const AGENTBOOK_ADDRESS = '0xA23aB2712eA7BBa896930544C7d6636a96b944dA'
+const WORLDCHAIN_RPC = 'https://worldchain-mainnet.g.alchemy.com/public'
 
 // ABI-encode a function call: fn(address) → bytes
 function encodeAddressCall(fnSelector: string, address: string): string {
@@ -15,13 +15,13 @@ function encodeAddressCall(fnSelector: string, address: string): string {
   return fnSelector + addr
 }
 
-// nonces(address) selector = keccak256("nonces(address)")[:4]
-const NONCES_SELECTOR = '0x7ecebe00'
+// getNextNonce(address) selector
+const GET_NEXT_NONCE_SELECTOR = '0x90193b7c'
 // lookupHuman(address) selector
 const LOOKUP_HUMAN_SELECTOR = '0x4a4fbeec'
 
 async function ethCall(to: string, data: string): Promise<string> {
-  const res = await fetch(BASE_RPC, {
+  const res = await fetch(WORLDCHAIN_RPC, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -47,7 +47,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request }) => {
 
   try {
     const [nonceHex, humanIdHex] = await Promise.all([
-      ethCall(AGENTBOOK_ADDRESS, encodeAddressCall(NONCES_SELECTOR, address)),
+      ethCall(AGENTBOOK_ADDRESS, encodeAddressCall(GET_NEXT_NONCE_SELECTOR, address)),
       ethCall(AGENTBOOK_ADDRESS, encodeAddressCall(LOOKUP_HUMAN_SELECTOR, address)),
     ])
 
