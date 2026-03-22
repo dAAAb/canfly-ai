@@ -121,6 +121,7 @@ export async function createBridgeSession(
   appId: string,
   action: string,
   signal: string,
+  returnTo?: string,
 ): Promise<BridgeSession> {
   const { key, iv, rawKey } = await generateKey()
 
@@ -149,7 +150,9 @@ export async function createBridgeSession(
 
   // Key must be standard base64 (not base64url!) — matches IDKit's exportKey
   const keyB64 = base64Encode(rawKey)
-  const connectorURI = `https://world.org/verify?t=wld&i=${request_id}&k=${encodeURIComponent(keyB64)}`
+  const connectorURI =
+    `https://world.org/verify?t=wld&i=${request_id}&k=${encodeURIComponent(keyB64)}` +
+    (returnTo ? `&return_to=${encodeURIComponent(returnTo)}` : '')
 
   return { requestId: request_id, connectorURI, key, rawKey }
 }
@@ -163,25 +166,32 @@ export async function pollBridgeOnce(session: BridgeSession): Promise<BridgeResu
     const res = await fetch(`${BRIDGE_URL}/response/${session.requestId}`)
     console.log(`[WorldID Bridge] poll status=${res.status}`)
 
-    if (res.status === 200) {
-      const data = (await res.json()) as { iv: string; payload: string }
-      if (data.iv && data.payload) {
-        const decrypted = await decrypt(session.key, data.iv, data.payload)
-        console.log(`[WorldID Bridge] decrypted:`, decrypted.substring(0, 200))
-        const result = JSON.parse(decrypted)
-
-        if ('error_code' in result) {
-          throw new Error(`World ID error: ${result.error_code}`)
-        }
-
-        return result as BridgeResult
-      }
+    if (res.status === 404 || res.status === 204) {
+      return null
     }
+
+    if (res.status !== 200) {
+      throw new Error(`Unexpected bridge response status: ${res.status}`)
+    }
+
+    const data = (await res.json()) as { iv?: string; payload?: string }
+    if (!data.iv || !data.payload) {
+      throw new Error('Malformed bridge response payload')
+    }
+
+    const decrypted = await decrypt(session.key, data.iv, data.payload)
+    console.log(`[WorldID Bridge] decrypted:`, decrypted.substring(0, 200))
+    const result = JSON.parse(decrypted)
+
+    if ('error_code' in result) {
+      throw new Error(`World ID error: ${result.error_code}`)
+    }
+
+    return result as BridgeResult
   } catch (e) {
-    if (e instanceof Error && e.message.startsWith('World ID error:')) throw e
     console.warn('[WorldID Bridge] poll error:', e)
+    throw e instanceof Error ? e : new Error('Unknown bridge polling error')
   }
-  return null
 }
 
 export async function pollBridgeResult(

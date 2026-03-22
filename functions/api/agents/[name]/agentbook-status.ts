@@ -1,13 +1,13 @@
 /**
  * GET /api/agents/:name/agentbook-status
  *
- * Query whether an agent's wallet is registered on AgentBook (Base mainnet).
+ * Query whether an agent's wallet is registered on AgentBook (Worldchain mainnet).
  * Reads on-chain status via lookupHuman(address) and caches result in DB.
  */
 import { type Env, json, errorResponse, handleOptions } from '../../community/_helpers'
 
-const AGENTBOOK_ADDRESS = '0xE1D1D3526A6FAa37eb36bD10B933C1b77f4561a4'
-const BASE_RPC = 'https://mainnet.base.org'
+const AGENTBOOK_ADDRESS = '0xA23aB2712eA7BBa896930544C7d6636a96b944dA'
+const WORLDCHAIN_RPC = 'https://worldchain-mainnet.g.alchemy.com/public'
 
 // lookupHuman(address) selector
 const LOOKUP_HUMAN_SELECTOR = '0x4a4fbeec'
@@ -20,7 +20,7 @@ function encodeAddressCall(fnSelector: string, address: string): string {
 }
 
 async function ethCall(to: string, data: string): Promise<string> {
-  const res = await fetch(BASE_RPC, {
+  const res = await fetch(WORLDCHAIN_RPC, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
