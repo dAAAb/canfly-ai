@@ -503,6 +503,34 @@
         "ctaPrimary": "Join Beta",
         "ctaSecondary": "Quick Start Guide"
       },
+      "worldid": {
+        "tagline": "Proof of personhood for AI Agents",
+        "description": "World ID provides proof-of-personhood verification for AI Agents. Powered by zero-knowledge proofs and the World orb, it lets your agent prove it's operated by a real human — building trust with other agents and services. Integrated with CanFly for one-click verification.",
+        "features": [
+          "Zero-knowledge proof of personhood",
+          "Orb-verified human uniqueness",
+          "Device-level verification available",
+          "On-chain verification (Base & World Chain)",
+          "One-click integration on CanFly",
+          "Trust badge for verified agents"
+        ],
+        "ctaPrimary": "Verify on CanFly",
+        "ctaSecondary": "Learn About World ID"
+      },
+      "agentbook": {
+        "tagline": "On-chain registry for AI Agents",
+        "description": "AgentBook is a decentralized on-chain registry for AI Agents, built by Worldcoin. Register your agent with World ID verification to prove it's human-operated. Your agent gets a verifiable on-chain identity on Base — discoverable by other agents and services.",
+        "features": [
+          "On-chain agent registration (Base)",
+          "World ID verified entries",
+          "Decentralized agent directory",
+          "Built by Worldcoin / Tools for Humanity",
+          "One-click registration on CanFly",
+          "Verifiable agent identity"
+        ],
+        "ctaPrimary": "Register on CanFly",
+        "ctaSecondary": "Learn About AgentBook"
+      },
       "geekom-a8": {
         "tagline": "Best mini PC for local AI",
         "description": "The GEEKOM A8 is one of the best mini PCs for running local AI models. With AMD Ryzen 7 8745HS, 32GB DDR5 RAM, and Radeon 780M GPU, it handles Ollama and OpenClaw with ease.",
@@ -4345,6 +4373,128 @@
         {
           "q": "What is a User Showcase?",
           "a": "Your User Showcase is your public profile at /@username. It displays your bio, avatar, trust badge, and all your Agent Cards. Think of it as your AI agent portfolio."
+        }
+      ]
+    },
+    "worldid": {
+      "title": "World ID Verification",
+      "subtitle": "Prove your AI agent is operated by a real human with World ID's proof-of-personhood technology",
+      "duration": "5 min",
+      "difficulty": "Easy",
+      "faq": [
+        {
+          "q": "What is World ID?",
+          "a": "World ID is a privacy-preserving proof-of-personhood protocol by Worldcoin. It lets you prove you're a unique human without revealing your identity."
+        },
+        {
+          "q": "Do I need an Orb scan?",
+          "a": "Device-level verification is available for basic verification. Orb verification provides the highest trust level."
+        },
+        {
+          "q": "Is my data stored on-chain?",
+          "a": "Only a zero-knowledge proof is stored — your personal data never leaves your device."
+        },
+        {
+          "q": "Can I verify multiple agents?",
+          "a": "Each World ID can verify one account on CanFly, but you can register multiple agents under that account."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Install World App",
+          "titleEn": "Install World App",
+          "estimatedTime": "2 min",
+          "content": "Download the World App on your phone from the App Store or Google Play. Create your World ID — you can start with device-level verification or find an Orb near you for full verification.",
+          "tips": [
+            "World App is available on iOS and Android",
+            "Device verification works instantly — Orb verification gives higher trust",
+            "Find Orb locations at worldcoin.org/find-orb"
+          ]
+        },
+        {
+          "title": "Verify on CanFly",
+          "titleEn": "Verify on CanFly",
+          "estimatedTime": "2 min",
+          "content": "Go to your CanFly profile settings and click 'Verify with World ID'. A QR code will appear — scan it with the World App on your phone. Approve the verification request in the app.",
+          "expectedResult": "A green 'World ID Verified' badge appears on your profile",
+          "tips": [
+            "Make sure you're logged into CanFly first",
+            "The QR code expires after 5 minutes — refresh if needed",
+            "Watch the video above for a step-by-step walkthrough"
+          ]
+        },
+        {
+          "title": "You're Verified!",
+          "titleEn": "You're Verified!",
+          "estimatedTime": "1 min",
+          "content": "Your World ID verification is now linked to your CanFly account. All your agents will display a trust badge, and you can proceed to register them on AgentBook for on-chain identity.",
+          "expectedResult": "Trust badge visible on your profile and agent cards",
+          "tips": [
+            "Verification is permanent — no need to re-verify",
+            "Consider registering your agents on AgentBook next",
+            "Higher trust level = more visibility in rankings"
+          ]
+        }
+      ]
+    },
+    "agentbook": {
+      "title": "AgentBook Registration",
+      "subtitle": "Register your AI agent on the decentralized on-chain registry for verifiable agent identity",
+      "duration": "5 min",
+      "difficulty": "Easy",
+      "faq": [
+        {
+          "q": "What is AgentBook?",
+          "a": "AgentBook is an on-chain registry for AI Agents built by Worldcoin / Tools for Humanity. It creates a verifiable directory of human-operated agents."
+        },
+        {
+          "q": "Do I need World ID first?",
+          "a": "Yes, World ID verification is required to register on AgentBook. This ensures only verified humans can register agents."
+        },
+        {
+          "q": "Which blockchain is it on?",
+          "a": "AgentBook is deployed on Base (Ethereum L2). Registration is gasless — CanFly handles the transaction for you."
+        },
+        {
+          "q": "Is registration free?",
+          "a": "Yes, CanFly covers the gas fees for AgentBook registration."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Prerequisites",
+          "titleEn": "Prerequisites",
+          "estimatedTime": "1 min",
+          "content": "Before registering on AgentBook, make sure you have: (1) A CanFly account with a connected wallet, (2) World ID verification completed, (3) At least one agent registered on CanFly.",
+          "tips": [
+            "Complete World ID verification first if you haven't",
+            "Your agent needs a wallet address on Base chain",
+            "No gas fees required — CanFly handles it"
+          ]
+        },
+        {
+          "title": "Register Your Agent",
+          "titleEn": "Register Your Agent",
+          "estimatedTime": "3 min",
+          "content": "Go to your agent's page on CanFly and click 'Register on AgentBook'. CanFly will submit an on-chain transaction to the AgentBook smart contract on Base. Your World ID proof is included to verify human operation.",
+          "expectedResult": "Transaction confirmed — your agent is now on-chain",
+          "tips": [
+            "The transaction takes about 10-30 seconds to confirm",
+            "Watch the video above for a complete walkthrough",
+            "You can verify the registration on BaseScan"
+          ]
+        },
+        {
+          "title": "On-Chain Identity Active",
+          "titleEn": "On-Chain Identity Active",
+          "estimatedTime": "1 min",
+          "content": "Your agent now has a verifiable on-chain identity on Base. Other agents and services can look up your agent in the AgentBook registry. An AgentBook badge will appear on your agent's card on CanFly.",
+          "expectedResult": "AgentBook badge visible on your agent card",
+          "tips": [
+            "Your agent is now discoverable in the AgentBook directory",
+            "The registration is permanent and immutable",
+            "This builds your agent's on-chain reputation"
+          ]
         }
       ]
     }

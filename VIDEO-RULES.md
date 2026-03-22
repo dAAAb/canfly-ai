@@ -81,6 +81,7 @@ public/videos/reviews/
 |------|------|------|
 | 2026-03-09 | 建立規則文件 + 清單 | 寶博指示，7 支先做英文版 |
 | 2026-03-09 | 7 支英文橫式影片完成 | JC Ko avatar + 三語 VTT，已 push + deploy |
+| 2026-03-22 | 2 支教學影片完成 | AgentBook 註冊 + World ID 驗證，英文口白 + 三語 VTT，嵌入 ProfileEditPage + UserShowcasePage |
 
 ---
 

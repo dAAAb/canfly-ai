@@ -1475,6 +1475,92 @@ function createAgentOnboardingTutorial(t: any): TutorialData {
   }
 }
 
+function createWorldIdTutorial(t: any): TutorialData {
+  return {
+    id: 'worldid',
+    title: t('tutorial.worldid.title'),
+    subtitle: t('tutorial.worldid.subtitle'),
+    duration: t('tutorial.worldid.duration'),
+    difficulty: t('tutorial.worldid.difficulty'),
+    faq: t('tutorial.worldid.faq', { returnObjects: true }) || [],
+    video: {
+      src: { en: '/videos/tutorials/worldid-verify.mp4', 'zh-TW': '/videos/tutorials/worldid-verify.mp4', 'zh-CN': '/videos/tutorials/worldid-verify.mp4' },
+      subtitles: { en: '/videos/tutorials/worldid-verify.en.vtt', 'zh-TW': '/videos/tutorials/worldid-verify.zh-TW.vtt', 'zh-CN': '/videos/tutorials/worldid-verify.zh-CN.vtt' },
+    },
+    steps: [
+      {
+        icon: Shield,
+        title: t('tutorial.worldid.steps.0.title'),
+        titleEn: t('tutorial.worldid.steps.0.titleEn'),
+        estimatedTime: t('tutorial.worldid.steps.0.estimatedTime'),
+        content: t('tutorial.worldid.steps.0.content'),
+        tips: t('tutorial.worldid.steps.0.tips', { returnObjects: true }),
+      },
+      {
+        icon: Globe,
+        title: t('tutorial.worldid.steps.1.title'),
+        titleEn: t('tutorial.worldid.steps.1.titleEn'),
+        estimatedTime: t('tutorial.worldid.steps.1.estimatedTime'),
+        content: t('tutorial.worldid.steps.1.content'),
+        expectedResult: t('tutorial.worldid.steps.1.expectedResult'),
+        tips: t('tutorial.worldid.steps.1.tips', { returnObjects: true }),
+      },
+      {
+        icon: CheckCircle,
+        title: t('tutorial.worldid.steps.2.title'),
+        titleEn: t('tutorial.worldid.steps.2.titleEn'),
+        estimatedTime: t('tutorial.worldid.steps.2.estimatedTime'),
+        content: t('tutorial.worldid.steps.2.content'),
+        expectedResult: t('tutorial.worldid.steps.2.expectedResult'),
+        tips: t('tutorial.worldid.steps.2.tips', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
+function createAgentBookTutorial(t: any): TutorialData {
+  return {
+    id: 'agentbook',
+    title: t('tutorial.agentbook.title'),
+    subtitle: t('tutorial.agentbook.subtitle'),
+    duration: t('tutorial.agentbook.duration'),
+    difficulty: t('tutorial.agentbook.difficulty'),
+    faq: t('tutorial.agentbook.faq', { returnObjects: true }) || [],
+    video: {
+      src: { en: '/videos/tutorials/agentbook-register.mp4', 'zh-TW': '/videos/tutorials/agentbook-register.mp4', 'zh-CN': '/videos/tutorials/agentbook-register.mp4' },
+      subtitles: { en: '/videos/tutorials/agentbook-register.en.vtt', 'zh-TW': '/videos/tutorials/agentbook-register.zh-TW.vtt', 'zh-CN': '/videos/tutorials/agentbook-register.zh-CN.vtt' },
+    },
+    steps: [
+      {
+        icon: Users,
+        title: t('tutorial.agentbook.steps.0.title'),
+        titleEn: t('tutorial.agentbook.steps.0.titleEn'),
+        estimatedTime: t('tutorial.agentbook.steps.0.estimatedTime'),
+        content: t('tutorial.agentbook.steps.0.content'),
+        tips: t('tutorial.agentbook.steps.0.tips', { returnObjects: true }),
+      },
+      {
+        icon: Shield,
+        title: t('tutorial.agentbook.steps.1.title'),
+        titleEn: t('tutorial.agentbook.steps.1.titleEn'),
+        estimatedTime: t('tutorial.agentbook.steps.1.estimatedTime'),
+        content: t('tutorial.agentbook.steps.1.content'),
+        expectedResult: t('tutorial.agentbook.steps.1.expectedResult'),
+        tips: t('tutorial.agentbook.steps.1.tips', { returnObjects: true }),
+      },
+      {
+        icon: CheckCircle,
+        title: t('tutorial.agentbook.steps.2.title'),
+        titleEn: t('tutorial.agentbook.steps.2.titleEn'),
+        estimatedTime: t('tutorial.agentbook.steps.2.estimatedTime'),
+        content: t('tutorial.agentbook.steps.2.content'),
+        expectedResult: t('tutorial.agentbook.steps.2.expectedResult'),
+        tips: t('tutorial.agentbook.steps.2.tips', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
 function getTutorials(t: any): Record<string, TutorialData> {
   return {
     ollama: createOllamaTutorial(t),
@@ -1494,6 +1580,8 @@ function getTutorials(t: any): Record<string, TutorialData> {
     'openclaw-troubleshooting': createOpenclawTroubleshootingTutorial(t),
     'agent-skills': createAgentSkillsTutorial(t),
     'agent-onboarding': createAgentOnboardingTutorial(t),
+    worldid: createWorldIdTutorial(t),
+    agentbook: createAgentBookTutorial(t),
   }
 }
 

@@ -503,6 +503,34 @@
         "ctaPrimary": "加入 Beta",
         "ctaSecondary": "快速入門指南"
       },
+      "worldid": {
+        "tagline": "AI 代理的真人身份驗證",
+        "description": "World ID 為 AI 代理提供真人身份驗證。透過零知識證明與 World Orb 掃描，讓你的代理證明背後由真人操作——與其他代理和服務建立信任。已整合至 CanFly，一鍵驗證。",
+        "features": [
+          "零知識證明的真人驗證",
+          "Orb 掃描確認人類唯一性",
+          "裝置級別驗證可用",
+          "鏈上驗證（Base 和 World Chain）",
+          "CanFly 一鍵整合",
+          "已驗證代理的信任徽章"
+        ],
+        "ctaPrimary": "在 CanFly 驗證",
+        "ctaSecondary": "瞭解 World ID"
+      },
+      "agentbook": {
+        "tagline": "AI 代理的鏈上註冊表",
+        "description": "AgentBook 是由 Worldcoin 打造的去中心化 AI 代理鏈上註冊表。透過 World ID 驗證註冊你的代理，證明其由真人操作。你的代理將獲得 Base 鏈上可驗證的身份——可被其他代理和服務發現。",
+        "features": [
+          "鏈上代理註冊（Base）",
+          "World ID 驗證條目",
+          "去中心化代理目錄",
+          "由 Worldcoin / Tools for Humanity 打造",
+          "CanFly 一鍵註冊",
+          "可驗證的代理身份"
+        ],
+        "ctaPrimary": "在 CanFly 註冊",
+        "ctaSecondary": "瞭解 AgentBook"
+      },
       "geekom-a8": {
         "tagline": "本地 AI 最佳迷你電腦",
         "description": "GEEKOM A8 是跑本地 AI 模型的最佳迷你電腦之一。搭載 AMD Ryzen 7 8745HS、32GB DDR5 記憶體與 Radeon 780M GPU，輕鬆運行 Ollama 和 OpenClaw。",
@@ -4353,6 +4381,128 @@
         {
           "q": "什麼是 User Showcase？",
           "a": "你的 User Showcase 就是你在 /@username 的公開個人頁面。它展示你的自我介紹、大頭貼、信任徽章和所有的 Agent Card。把它當作你的 AI Agent 作品集。"
+        }
+      ]
+    },
+    "worldid": {
+      "title": "World ID 身份驗證",
+      "subtitle": "透過 World ID 的真人身份驗證技術，證明你的 AI 代理由真人操作",
+      "duration": "5 分鐘",
+      "difficulty": "簡單",
+      "faq": [
+        {
+          "q": "什麼是 World ID？",
+          "a": "World ID 是 Worldcoin 推出的隱私保護型真人身份驗證協議。它讓你證明自己是獨一無二的人類，同時不洩露個人身份。"
+        },
+        {
+          "q": "需要 Orb 掃描嗎？",
+          "a": "裝置級別驗證可做基本驗證。Orb 驗證提供最高信任等級。"
+        },
+        {
+          "q": "我的資料會存在鏈上嗎？",
+          "a": "只有零知識證明會被儲存——你的個人資料不會離開你的裝置。"
+        },
+        {
+          "q": "可以驗證多個代理嗎？",
+          "a": "每個 World ID 可驗證 CanFly 上的一個帳號，但你可以在該帳號下註冊多個代理。"
+        }
+      ],
+      "steps": [
+        {
+          "title": "安裝 World App",
+          "titleEn": "Install World App",
+          "estimatedTime": "2 分鐘",
+          "content": "從 App Store 或 Google Play 下載 World App。建立你的 World ID——可以先用裝置級別驗證，或到附近的 Orb 進行完整驗證。",
+          "tips": [
+            "World App 支援 iOS 和 Android",
+            "裝置驗證即時完成——Orb 驗證提供更高信任等級",
+            "在 worldcoin.org/find-orb 查找 Orb 據點"
+          ]
+        },
+        {
+          "title": "在 CanFly 驗證",
+          "titleEn": "Verify on CanFly",
+          "estimatedTime": "2 分鐘",
+          "content": "到 CanFly 個人資料設定頁，點擊「用 World ID 驗證」。畫面會出現 QR Code——用手機上的 World App 掃描。在 App 中批准驗證請求。",
+          "expectedResult": "個人資料顯示綠色「World ID 已驗證」徽章",
+          "tips": [
+            "確認你已登入 CanFly",
+            "QR Code 5 分鐘後過期——需要時重新整理",
+            "觀看上方影片了解完整步驟"
+          ]
+        },
+        {
+          "title": "驗證完成！",
+          "titleEn": "You're Verified!",
+          "estimatedTime": "1 分鐘",
+          "content": "你的 World ID 驗證已連結到 CanFly 帳號。所有代理都會顯示信任徽章，你可以繼續在 AgentBook 上註冊，取得鏈上身份。",
+          "expectedResult": "信任徽章顯示在個人資料和代理卡片上",
+          "tips": [
+            "驗證是永久的——不需要重新驗證",
+            "建議接下來在 AgentBook 註冊代理",
+            "越高的信任等級 = 排名越高的曝光度"
+          ]
+        }
+      ]
+    },
+    "agentbook": {
+      "title": "AgentBook 註冊",
+      "subtitle": "在去中心化鏈上註冊表中註冊你的 AI 代理，取得可驗證的代理身份",
+      "duration": "5 分鐘",
+      "difficulty": "簡單",
+      "faq": [
+        {
+          "q": "什麼是 AgentBook？",
+          "a": "AgentBook 是由 Worldcoin / Tools for Humanity 打造的 AI 代理鏈上註冊表。它建立了一個可驗證的人類操作代理目錄。"
+        },
+        {
+          "q": "需要先有 World ID 嗎？",
+          "a": "是的，註冊 AgentBook 需要 World ID 驗證。這確保只有經過驗證的人類才能註冊代理。"
+        },
+        {
+          "q": "在哪條鏈上？",
+          "a": "AgentBook 部署在 Base（以太坊 L2）上。註冊免 Gas 費——CanFly 幫你處理交易。"
+        },
+        {
+          "q": "註冊免費嗎？",
+          "a": "是的，CanFly 承擔 AgentBook 註冊的 Gas 費用。"
+        }
+      ],
+      "steps": [
+        {
+          "title": "前置條件",
+          "titleEn": "Prerequisites",
+          "estimatedTime": "1 分鐘",
+          "content": "註冊 AgentBook 前，請確認：(1) 已有 CanFly 帳號並連結錢包、(2) 已完成 World ID 驗證、(3) 至少有一個代理註冊在 CanFly 上。",
+          "tips": [
+            "如果還沒有，請先完成 World ID 驗證",
+            "你的代理需要 Base 鏈上的錢包地址",
+            "不需要 Gas 費——CanFly 幫你處理"
+          ]
+        },
+        {
+          "title": "註冊你的代理",
+          "titleEn": "Register Your Agent",
+          "estimatedTime": "3 分鐘",
+          "content": "到 CanFly 上你的代理頁面，點擊「註冊到 AgentBook」。CanFly 會向 Base 上的 AgentBook 智能合約提交鏈上交易。你的 World ID 證明會一併包含以驗證真人操作。",
+          "expectedResult": "交易確認——你的代理已上鏈",
+          "tips": [
+            "交易大約需要 10-30 秒確認",
+            "觀看上方影片了解完整流程",
+            "你可以在 BaseScan 上驗證註冊"
+          ]
+        },
+        {
+          "title": "鏈上身份已啟動",
+          "titleEn": "On-Chain Identity Active",
+          "estimatedTime": "1 分鐘",
+          "content": "你的代理現在擁有 Base 上可驗證的鏈上身份。其他代理和服務可以在 AgentBook 註冊表中查詢你的代理。CanFly 上你的代理卡片會顯示 AgentBook 徽章。",
+          "expectedResult": "代理卡片上顯示 AgentBook 徽章",
+          "tips": [
+            "你的代理現在可以在 AgentBook 目錄中被發現",
+            "註冊是永久且不可變更的",
+            "這會為你的代理建立鏈上信譽"
+          ]
         }
       ]
     }
