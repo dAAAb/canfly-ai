@@ -89,28 +89,39 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
   // Submit to relay API (official World hosted relay)
   const contract = body.contract || '0xA23aB2712eA7BBa896930544C7d6636a96b944dA'
   const network = body.network || 'world'
+  const relayPayload = {
+    agent: body.agentAddress,
+    root: body.root,
+    nonce: body.nonce,
+    nullifierHash: body.nullifierHash,
+    proof: body.proof,
+    contract,
+    network,
+  }
+  console.log('[AgentBook] Sending to relay:', JSON.stringify(relayPayload).substring(0, 500))
+
   try {
     const relayRes = await fetch(AGENTBOOK_RELAY_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        agent: body.agentAddress,
-        root: body.root,
-        nonce: body.nonce,
-        nullifierHash: body.nullifierHash,
-        proof: body.proof,
-        contract,
-        network,
-      }),
+      body: JSON.stringify(relayPayload),
       signal: AbortSignal.timeout(30000),
     })
 
+    const relayText = await relayRes.text()
+    console.log(`[AgentBook] Relay response status=${relayRes.status} body=${relayText.substring(0, 500)}`)
+
     if (!relayRes.ok) {
-      const err = await relayRes.text()
-      return errorResponse(`Relay error: ${err}`, 502)
+      // Use 500 instead of 502 to avoid Cloudflare intercepting and returning HTML
+      return errorResponse(`Relay error (${relayRes.status}): ${relayText}`, 500)
     }
 
-    const relayData = (await relayRes.json()) as { txHash?: string }
+    let relayData: { txHash?: string }
+    try {
+      relayData = JSON.parse(relayText)
+    } catch {
+      return errorResponse(`Relay returned non-JSON: ${relayText.substring(0, 200)}`, 500)
+    }
     const txHash = relayData.txHash || null
 
     // Record registration

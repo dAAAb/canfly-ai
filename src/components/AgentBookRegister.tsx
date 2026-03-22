@@ -94,7 +94,17 @@ export default function AgentBookRegister({
       }),
     })
 
-    const data = (await res.json()) as { ok?: boolean; txHash?: string; error?: string }
+    // Safely parse response — Cloudflare may return HTML error pages for 502/503
+    let data: { ok?: boolean; txHash?: string; error?: string }
+    const responseText = await res.text()
+    try {
+      data = JSON.parse(responseText)
+    } catch {
+      submittingRef.current = false
+      console.error('[AgentBook] Non-JSON response from register API:', responseText.substring(0, 200))
+      throw new Error(`Registration failed (${res.status}): server returned non-JSON response`)
+    }
+
     if (!res.ok) {
       submittingRef.current = false
       throw new Error(data.error || `Registration failed (${res.status})`)
