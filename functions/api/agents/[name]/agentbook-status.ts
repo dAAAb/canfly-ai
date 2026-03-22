@@ -11,6 +11,8 @@ const BASE_RPC = 'https://mainnet.base.org'
 
 // lookupHuman(address) selector
 const LOOKUP_HUMAN_SELECTOR = '0x4a4fbeec'
+// getNextNonce(address) selector
+const GET_NEXT_NONCE_SELECTOR = '0x90193b7c'
 
 function encodeAddressCall(fnSelector: string, address: string): string {
   const addr = address.toLowerCase().replace('0x', '').padStart(64, '0')
@@ -60,6 +62,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
       registered: false,
       humanId: null,
       txHash: null,
+      nonce: null,
       registeredAt: null,
       source: 'no_wallet',
     })
@@ -71,7 +74,12 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
       AGENTBOOK_ADDRESS,
       encodeAddressCall(LOOKUP_HUMAN_SELECTOR, agent.wallet_address),
     )
+    const nonceHex = await ethCall(
+      AGENTBOOK_ADDRESS,
+      encodeAddressCall(GET_NEXT_NONCE_SELECTOR, agent.wallet_address),
+    )
     const humanId = BigInt(humanIdHex)
+    const nonce = BigInt(nonceHex)
     const isRegistered = humanId !== 0n
 
     // Sync DB cache if on-chain status differs
@@ -98,6 +106,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
       registered: isRegistered,
       humanId: isRegistered ? humanId.toString() : null,
       txHash: agent.agentbook_tx_hash,
+      nonce: nonce.toString(),
       registeredAt: agent.agentbook_registered_at,
       source: 'on_chain',
     })
@@ -109,6 +118,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
       registered: !!agent.agentbook_registered,
       humanId: agent.agentbook_human_id,
       txHash: agent.agentbook_tx_hash,
+      nonce: null,
       registeredAt: agent.agentbook_registered_at,
       source: 'cache',
       warning: `On-chain query failed: ${err instanceof Error ? err.message : 'Unknown'}`,

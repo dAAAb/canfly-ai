@@ -59,12 +59,21 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
   }>()
 
   if (!agent) return errorResponse('Agent not found', 404)
+  if (!agent.wallet_address) return errorResponse('Agent wallet address is required', 400)
 
   // Auth check
   const tokenOk = editToken && agent.edit_token === editToken
   const walletOk = walletHeader && agent.user_wallet &&
     walletHeader.toLowerCase() === agent.user_wallet.toLowerCase()
   if (!tokenOk && !walletOk) return errorResponse('Unauthorized', 403)
+
+  // Prevent client-side spoofing: the submitted address must match the agent's stored wallet
+  if (agent.wallet_address.toLowerCase() !== body.agentAddress.toLowerCase()) {
+    return errorResponse(
+      'Submitted agentAddress does not match the wallet address stored for this agent',
+      400
+    )
+  }
 
   // Check owner has World ID verification
   const verification = await env.DB.prepare(
