@@ -178,30 +178,73 @@ export async function pollBridgeOnce(session: BridgeSession): Promise<BridgeResu
     }
 
     // Safely parse response body
-    let data: { iv?: string; payload?: string }
+    // Bridge returns nested format: { status: "initialized"|"retrieved"|"completed", response: null | {iv, payload} }
+    let data: { status?: string; response?: { iv?: string; payload?: string } | null; iv?: string; payload?: string }
     try {
       const text = await res.text()
-      console.log(`[WorldID Bridge] raw response (first 200 chars):`, text.substring(0, 200))
-      data = JSON.parse(text) as { iv?: string; payload?: string }
-    } catch (parseErr) {
-      // Non-JSON 200 response — bridge may be returning an error page or empty body
+      console.log(`[WorldID Bridge] raw response (first 300 chars):`, text.substring(0, 300))
+      data = JSON.parse(text)
+    } catch {
       console.warn('[WorldID Bridge] response is not valid JSON, treating as not-ready')
       return null
     }
 
-    // Bridge returned 200 but without the expected encrypted payload.
-    // This can happen with stale/expired sessions — treat as not-ready and clear session.
-    if (!data.iv || !data.payload) {
-      console.warn('[WorldID Bridge] 200 response missing iv/payload — session may be stale:', JSON.stringify(data).substring(0, 200))
+    // Handle nested bridge format: { status, response }
+    // status "initialized" = request created, waiting for World App to scan
+    // status "retrieved"   = World App scanned QR, user verifying
+    // status "completed"   = verification done, encrypted payload in response
+    if (data.status) {
+      console.log(`[WorldID Bridge] bridge status: ${data.status}`)
+
+      if (data.status === 'initialized' || data.status === 'retrieved') {
+        // Not done yet — keep polling
+        return null
+      }
+
+      if (data.status === 'completed') {
+        const inner = data.response
+        if (!inner || !inner.iv || !inner.payload) {
+          console.warn('[WorldID Bridge] completed but response missing iv/payload:', JSON.stringify(data).substring(0, 300))
+          return null
+        }
+
+        let decrypted: string
+        try {
+          decrypted = await decrypt(session.key, inner.iv, inner.payload)
+        } catch (decryptErr) {
+          console.warn('[WorldID Bridge] decryption failed — session key mismatch?', decryptErr)
+          clearBridgeSession()
+          return null
+        }
+
+        console.log(`[WorldID Bridge] decrypted:`, decrypted.substring(0, 200))
+        const result = JSON.parse(decrypted)
+
+        if ('error_code' in result) {
+          throw new Error(`World ID error: ${result.error_code}`)
+        }
+
+        return result as BridgeResult
+      }
+
+      // Unknown status — log and keep polling
+      console.warn(`[WorldID Bridge] unknown bridge status: ${data.status}`)
+      return null
+    }
+
+    // Fallback: flat format { iv, payload } (legacy or direct bridge format)
+    const iv = data.iv
+    const payload = data.payload
+    if (!iv || !payload) {
+      console.warn('[WorldID Bridge] 200 response has no status and no iv/payload:', JSON.stringify(data).substring(0, 200))
       clearBridgeSession()
       return null
     }
 
     let decrypted: string
     try {
-      decrypted = await decrypt(session.key, data.iv, data.payload)
+      decrypted = await decrypt(session.key, iv, payload)
     } catch (decryptErr) {
-      // Decryption failure — wrong key (stale session) or corrupted payload
       console.warn('[WorldID Bridge] decryption failed — session key mismatch?', decryptErr)
       clearBridgeSession()
       return null
