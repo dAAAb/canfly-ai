@@ -11,6 +11,7 @@ import TrustBadge from '../components/TrustBadge'
 import ClaimProfileButton from '../components/ClaimProfileButton'
 import { getTrustLevel } from '../utils/trustLevel'
 import AgentBookRegister from '../components/AgentBookRegister'
+import ReviewVideoPlayer from '../components/ReviewVideoPlayer'
 import {
   ExternalLink,
   Sparkles,
@@ -485,6 +486,19 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
                   </Link>
                 )}
               </div>
+              {canEdit && isWorldIdVerified && user.agents.length > 0 && (
+                <div className="mb-6">
+                  <h3 className="text-sm font-medium text-gray-400 mb-3">How to register on AgentBook</h3>
+                  <ReviewVideoPlayer
+                    src="/videos/tutorials/agentbook-register.mp4"
+                    subtitles={[
+                      { label: 'English', srclang: 'en', src: '/videos/tutorials/agentbook-register.en.vtt' },
+                      { label: '繁體中文', srclang: 'zh-TW', src: '/videos/tutorials/agentbook-register.zh-TW.vtt' },
+                      { label: '简体中文', srclang: 'zh-CN', src: '/videos/tutorials/agentbook-register.zh-CN.vtt' },
+                    ]}
+                  />
+                </div>
+              )}
               {user.agents.length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {user.agents.map((agent) => {

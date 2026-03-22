@@ -2,6 +2,7 @@
  * Shared helpers for OG image generation.
  * Uses satori (JSX → SVG) + @resvg/resvg-wasm (SVG → PNG).
  */
+import '../../_process-shim'
 import satori from 'satori'
 import { Resvg, initWasm } from '@resvg/resvg-wasm'
 // @ts-expect-error — WASM module import for Cloudflare Workers

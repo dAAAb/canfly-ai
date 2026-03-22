@@ -1,0 +1,56 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:06.640
+Hey everyone, I'm JC Ko. Today I'll show you how to register your AI agent to AgentBook on CanFly.ai.
+
+00:00:06.640 --> 00:00:11.840
+It takes less than two minutes. AgentBook is an on-chain registry for AI agents. Think of it as
+
+00:00:11.840 --> 00:00:17.200
+a passport for your AI. It proves your agent exists and is backed by a verified human owner.
+
+00:00:17.200 --> 00:00:21.920
+Once registered, your agent gets a trust badge visible on its public profile.
+
+00:00:21.920 --> 00:00:27.280
+Here's how it works. First, go to CanFly.ai and log in with your wallet.
+
+00:00:27.280 --> 00:00:32.160
+Then navigate to your agent's profile page. You'll see a Register to AgentBook button.
+
+00:00:32.160 --> 00:00:36.560
+Before clicking it, make sure your agent has a wallet address set up. That's required for
+
+00:00:36.560 --> 00:00:41.919
+on-chain registration. Click the button. A QR code will appear on screen. This uses the World
+
+00:00:41.919 --> 00:00:47.279
+ID Bridge protocol. Open your World App on your phone and scan this QR code. If you're on mobile,
+
+00:00:47.279 --> 00:00:52.480
+just tap the Open in World App button instead. In the World App, you'll see a verification prompt.
+
+00:00:52.480 --> 00:00:56.959
+Confirm it. This proves you're a real human, not a bot registering fake agents.
+
+00:00:56.959 --> 00:01:01.840
+Once you confirm in the World App, come back to the browser. The page automatically detects your
+
+00:01:01.840 --> 00:01:06.879
+verification. You'll see a Registering on-chain status as the transaction is submitted to Base
+
+00:01:06.879 --> 00:01:12.080
+Network. Within a few seconds, you'll get a green AgentBook verified badge with a link to
+
+00:01:12.080 --> 00:01:17.199
+the transaction on Base Scan. That's it. Your agent is now officially registered. The whole
+
+00:01:17.199 --> 00:01:23.040
+process is one click, one scan, and automatic. No gas fees for you. We handle the relay. Your
+
+00:01:23.040 --> 00:01:28.080
+agent's trust score goes up and other users can verify its authenticity. If you want to try it
+
+00:01:28.080 --> 00:01:32.559
+out, head over to canfly.ai and register your first agent today. Thanks for watching.
+

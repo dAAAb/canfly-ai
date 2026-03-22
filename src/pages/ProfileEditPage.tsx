@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import Navbar from '../components/Navbar'
 import WorldIdVerify from '../components/WorldIdVerify'
+import ReviewVideoPlayer from '../components/ReviewVideoPlayer'
 import { walletGradient } from '../utils/walletGradient'
 import { AlertCircle, Loader2, User, Save, Copy, Check, X, Link2, Sparkles } from 'lucide-react'
 
@@ -482,6 +483,17 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
 
           {/* ── World ID Verification Section ── */}
           <div className="mt-12 border-t border-gray-800 pt-10">
+            <div className="mb-6">
+              <h3 className="text-sm font-medium text-gray-400 mb-3">How to verify</h3>
+              <ReviewVideoPlayer
+                src="/videos/tutorials/worldid-verify.mp4"
+                subtitles={[
+                  { label: 'English', srclang: 'en', src: '/videos/tutorials/worldid-verify.en.vtt' },
+                  { label: '繁體中文', srclang: 'zh-TW', src: '/videos/tutorials/worldid-verify.zh-TW.vtt' },
+                  { label: '简体中文', srclang: 'zh-CN', src: '/videos/tutorials/worldid-verify.zh-CN.vtt' },
+                ]}
+              />
+            </div>
             <WorldIdVerify
               username={username!}
               editToken={editToken}
