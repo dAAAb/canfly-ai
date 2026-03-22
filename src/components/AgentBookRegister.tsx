@@ -5,7 +5,7 @@
  * Key fix: uses visibilitychange to resume polling after mobile app switch.
  */
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { decodeAbiParameters } from 'viem'
+import { decodeAbiParameters, keccak256, encodePacked } from 'viem'
 import QRCode from 'react-qr-code'
 import { Loader2, ExternalLink, CheckCircle } from 'lucide-react'
 import {
@@ -237,11 +237,22 @@ export default function AgentBookRegister({
     cancelledRef.current = false
 
     try {
+      // Compute signal hash matching the contract's abi.encodePacked(agent, nonce).hashToField()
+      // The contract does: keccak256(abi.encodePacked(address, uint256)) >> 8
+      const packedSignal = encodePacked(
+        ['address', 'uint256'],
+        [agentWalletAddress as `0x${string}`, BigInt(nonce)]
+      )
+      const signalKeccak = keccak256(packedSignal)
+      const signalHash = `0x${(BigInt(signalKeccak) >> 8n).toString(16).padStart(64, '0')}`
+      console.log(`[AgentBook] signal: agent=${agentWalletAddress} nonce=${nonce} hash=${signalHash}`)
+
       const session = await createBridgeSession(
         AGENTBOOK_WORLD_ID_APP_ID,
         AGENTBOOK_ACTION,
         agentWalletAddress,
         window.location.href,
+        signalHash,  // pre-computed signal hash matching contract
       )
 
       // Persist session so it survives app switching
