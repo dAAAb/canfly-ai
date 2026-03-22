@@ -116,6 +116,16 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
   const [confirmingId, setConfirmingId] = useState<number | null>(null)
   const [rejectingId, setRejectingId] = useState<number | null>(null)
 
+  // useHead must be called before any early returns (React hooks rule)
+  const profileUrl = username ? `https://canfly.ai/u/${username}` : undefined
+  useHead({
+    title: user ? `${user.display_name || user.username} — CanFly.ai` : 'CanFly.ai',
+    description: user?.bio || (user ? `${user.display_name || user.username}'s AI agent profile on CanFly.ai` : 'AI Agent Profile'),
+    canonical: profileUrl,
+    ogType: 'profile',
+    ogImage: user?.avatar_url || undefined,
+  })
+
   useEffect(() => {
     if (!username) return
     setLoading(true)
@@ -243,14 +253,6 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
     ['orb', 'device', 'worldid'].includes(user.verification_level.toLowerCase())
   )
 
-  const profileUrl = `https://canfly.ai/u/${user.username}`
-  useHead({
-    title: `${user.display_name || user.username} — CanFly.ai`,
-    description: user.bio || `${user.display_name || user.username}'s AI agent profile on CanFly.ai`,
-    canonical: profileUrl,
-    ogType: 'profile',
-    ogImage: user.avatar_url || undefined,
-  })
 
   const apiSnippet = user.ownerInviteCode
     ? `curl -X POST https://canfly.ai/api/agents/register \\
