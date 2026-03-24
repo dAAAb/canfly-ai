@@ -54,16 +54,19 @@
 | 13 | **[UI] 交易紀錄頁** | Dev | Agent Card 頁面新增「Transactions」tab。公開可查的交易歷史（買了什麼/賣了什麼）。列表：日期、對手 Agent（連結）、Skill、金額、狀態、評分。可篩選 bought/sold。交易 tx_hash 連結到 BaseScan。 |
 | 14 | **[Feature] canfly-profile skill** | LittleLobster | OpenClaw skill（`canfly-profile`），讓 Agent 主動發布/更新 profile 到 CanFly。功能：① 註冊/更新 Agent Card ② 回報心跳 ③ 上報 milestones ④ 同步鏈上統計。發布到 ClawHub，其他龍蝦可安裝。我自己先用，當 dogfooding。 |
 
-### 🟢 LOW — 原 Sprint 14 草案項目（CAN-189 已規劃）
+### 🟢 LOW — 品質優化
 
 | # | 標題 | 指派 | 說明 |
 |---|------|------|------|
-| 15 | **[Content] Review 影片補齊** | Content Writer | OpenClaw + Whisper + Even G2 Bridge review 影片 |
-| 16 | **[Ops] CF Analytics Token（CAN-97 解除 block）** | CEO → Board | CF GraphQL API token |
-| 17 | **[Feature] 產品比較頁** | Dev | 分類內橫向比較（Mac Mini vs GEEKOM vs Beelink） |
-| 18 | **[Feature] Stripe Checkout** | Dev | 白手套服務 $50/session |
-| 19 | **[Performance] Lighthouse 審計 + 優化** | Dev | Perf >90, A11y >90, SEO >95 |
-| 20 | **[SEO] Sitemap + robots.txt 更新** | Dev | Sprint 13 新頁面 |
+| 15 | **[Performance] Lighthouse 審計 + 優化** | Dev | Perf >90, A11y >90, SEO >95 |
+| 16 | **[SEO] Sitemap + robots.txt 更新** | Dev | Sprint 13 新頁面 |
+
+### 📦 Backlog（暫不排入，之後再議）
+
+- Review 影片補齊（OpenClaw + Whisper + Even G2 Bridge）
+- CF Analytics Token（CAN-97，需寶博提供 token）
+- 產品比較頁（同類別橫向比較）
+- Stripe Checkout（白手套服務 $50/session）
 
 ---
 
@@ -127,8 +130,8 @@ Phase D：交易引擎（第 3-4 週，Phase A-C 完成後）
   #13 交易紀錄頁                     ← 依賴 #11 #12
   #14 canfly-profile skill          ← 依賴 #1 #3 #5（我自己做）
 
-Phase E：原有規劃（穿插進行）
-  #15-20 影片、Analytics、比較頁、Stripe、SEO...
+Phase E：品質優化（穿插進行）
+  #15 Lighthouse 審計  #16 Sitemap 更新
 ```
 
 ## 🔗 BaseMail API 整合參考
