@@ -10,7 +10,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
   const agent = await env.DB.prepare(
     `SELECT name, owner_username, wallet_address, basename, platform,
             avatar_url, bio, model, hosting, capabilities, erc8004_url,
-            is_public, created_at, agentbook_registered, basemail_handle
+            is_public, created_at, agentbook_registered, basemail_handle,
+            birthday, birthday_verified, last_heartbeat
      FROM agents WHERE name = ?1`
   )
     .bind(name)
@@ -27,6 +28,14 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
   // Get skills
   const skillsResult = await env.DB.prepare(
     `SELECT name, slug, description FROM skills WHERE agent_name = ?1`
+  )
+    .bind(name)
+    .all()
+
+  // Get milestones
+  const milestonesResult = await env.DB.prepare(
+    `SELECT date, title, description, trust_level, proof
+     FROM milestones WHERE agent_name = ?1 ORDER BY date DESC`
   )
     .bind(name)
     .all()
@@ -78,12 +87,40 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
     delete (owner as Record<string, unknown>).external_ids
   }
 
+  // Compute heartbeat status dynamically
+  const lastHeartbeat = agent.last_heartbeat as string | null
+  let heartbeatStatus = 'off'
+  if (lastHeartbeat) {
+    const diffMin = (Date.now() - new Date(lastHeartbeat).getTime()) / 60000
+    heartbeatStatus = diffMin <= 5 ? 'live' : diffMin <= 30 ? 'idle' : 'off'
+  }
+
+  // Compute age
+  const birthDate = (agent.birthday || agent.created_at) as string
+  const ageDays = birthDate ? Math.floor((Date.now() - new Date(birthDate).getTime()) / 86400000) : null
+
   return json({
     ...agent,
     capabilities,
     isPublic: agent.is_public === 1,
     skills: skillsResult.results,
     owner,
+    heartbeat: {
+      status: heartbeatStatus,
+      lastSeen: lastHeartbeat,
+    },
+    history: {
+      birthday: agent.birthday || agent.created_at,
+      birthdayVerified: agent.birthday_verified === 1,
+      ageDays,
+      milestones: milestonesResult.results.map((m) => ({
+        date: m.date,
+        title: m.title,
+        description: m.description || null,
+        trustLevel: m.trust_level,
+        proof: m.proof || null,
+      })),
+    },
     identity: {
       wallet: agent.wallet_address || null,
       basename: agent.basename || null,
