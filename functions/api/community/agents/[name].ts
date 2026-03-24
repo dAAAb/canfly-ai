@@ -25,9 +25,10 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
     return errorResponse('Agent profile is private', 403)
   }
 
-  // Get skills
+  // Get skills (with pricing from migration 0007)
   const skillsResult = await env.DB.prepare(
-    `SELECT name, slug, description FROM skills WHERE agent_name = ?1`
+    `SELECT name, slug, description, type, price, currency, payment_methods, sla
+     FROM skills WHERE agent_name = ?1`
   )
     .bind(name)
     .all()
