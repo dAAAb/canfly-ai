@@ -19,7 +19,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
     `SELECT name, owner_username, wallet_address, basename, platform,
             avatar_url, bio, model, hosting, capabilities, erc8004_url,
             is_public, created_at, agentbook_registered,
-            birthday, birthday_verified, last_heartbeat, heartbeat_status
+            birthday, birthday_verified, last_heartbeat, heartbeat_status,
+            agent_card_override
      FROM agents WHERE name = ?1`
   )
     .bind(name)
@@ -142,6 +143,34 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
   for (const m of milestones) {
     for (const key of Object.keys(m)) {
       if (m[key] === undefined) delete m[key]
+    }
+  }
+
+  // ── Layer 3 override: if agent uploaded a full A2A card, merge it ──
+  // Layer 3 fields take priority, but _extensions are always CanFly-managed
+  if (agent.agent_card_override) {
+    try {
+      const override = JSON.parse(agent.agent_card_override as string) as Record<string, unknown>
+      // Preserve CanFly-managed fields that should not be overridden
+      const canflyExtensions = agentCard._extensions
+      // Merge override into agentCard (Layer 3 wins for A2A standard fields)
+      for (const key of Object.keys(override)) {
+        if (key === '_extensions') continue // CanFly manages _extensions
+        agentCard[key] = override[key]
+      }
+      // Merge any user _extensions with CanFly _extensions (CanFly wins on conflicts)
+      if (override._extensions && typeof override._extensions === 'object') {
+        const userExt = override._extensions as Record<string, unknown>
+        const mergedExt = canflyExtensions as Record<string, unknown>
+        for (const key of Object.keys(userExt)) {
+          if (!(key in mergedExt)) {
+            mergedExt[key] = userExt[key]
+          }
+        }
+      }
+      agentCard._extensions = canflyExtensions
+    } catch {
+      // Invalid JSON in override — fall back to auto-generated card
     }
   }
 
