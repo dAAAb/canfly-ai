@@ -114,10 +114,14 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
       birthdayVerified: agent.birthday_verified === 1,
       canflyUrl: agentUrl,
       ...(ownerUsername ? { owner: ownerUsername } : {}),
-      heartbeat: {
-        status: agent.heartbeat_status || 'off',
-        lastSeen: agent.last_heartbeat || null,
-      },
+      heartbeat: (() => {
+        const lastSeen = agent.last_heartbeat as string | null
+        if (!lastSeen) return { status: 'off', lastSeen: null }
+        const diffMs = Date.now() - new Date(lastSeen).getTime()
+        const diffMin = diffMs / 60000
+        const status = diffMin <= 5 ? 'live' : diffMin <= 30 ? 'idle' : 'off'
+        return { status, lastSeen }
+      })(),
       milestones: milestonesResult.results.map((m) => ({
         date: m.date,
         title: m.title,
