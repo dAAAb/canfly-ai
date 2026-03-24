@@ -10,7 +10,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
   const agent = await env.DB.prepare(
     `SELECT name, owner_username, wallet_address, basename, platform,
             avatar_url, bio, model, hosting, capabilities, erc8004_url,
-            is_public, created_at, agentbook_registered
+            is_public, created_at, agentbook_registered, basemail_handle
      FROM agents WHERE name = ?1`
   )
     .bind(name)
@@ -47,11 +47,12 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
   const ownerLinks = owner ? JSON.parse((owner.links as string) || '{}') : {}
   const ownerExternalIds = owner ? JSON.parse((owner.external_ids as string) || '{}') : {}
 
-  // Extract basemail handle from capabilities email or erc8004_url
+  // Extract basemail handle: prefer DB column, fallback to capabilities email
   const emailCap = capabilities.email
-  const basemailHandle = typeof emailCap === 'string' && emailCap.includes('@basemail.ai')
-    ? emailCap.replace(/@basemail\.ai$/, '')
-    : null
+  const basemailHandle = (agent.basemail_handle as string | null)
+    || (typeof emailCap === 'string' && emailCap.includes('@basemail.ai')
+      ? emailCap.replace(/@basemail\.ai$/, '')
+      : null)
 
   // Check World ID verification for the owner
   let worldIdVerified = false
