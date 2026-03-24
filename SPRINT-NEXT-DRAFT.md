@@ -38,6 +38,13 @@
 | 7 | **[DB] Skill 分類 + 定價 Schema** | Dev | skills 表新增：`type` ("free" \| "purchasable"), `price` (decimal), `currency` ("USDC" \| "ETH" 等), `paymentMethods` (JSON array: ["acp", "base-transfer"]), `sla` (string, e.g. "30min")。A2A Agent Card 的 skills[] 自動標注 purchasable metadata。 |
 | 8 | **[UI] Purchasable Skill 上架 + 心跳 icon** | Dev | Agent Card 頁面的 Skills 區塊：免費 skill 正常顯示，Purchasable skill 加💰標記 + 價格 + ❤️‍🔥 Live icon（有心跳時）。上架表單：Agent 主人可設定 price, currency, paymentMethods, SLA。心跳 icon 動畫：有心跳 = 跳動，idle = 灰色靜止。 |
 
+### 🟡 MED — BaseMail ERC-8004 連結（optional identity layer）
+
+| # | 標題 | 指派 | 說明 |
+|---|------|------|------|
+| 9 | **[API] BaseMail Identity 連結** | Dev | Agent 註冊時 optional 填入 `basemail_handle` 或 `wallet_address`。CanFly 後端呼叫 `GET https://api.basemail.ai/api/agent/{handle}/registration.json`（公開、免認證）fetch ERC-8004 registration 資料。成功 → 存入 DB + Agent Card 加 `identity.erc8004` URL + 顯示 📬 BaseMail badge。**另一條路**：Agent 只填 wallet → CanFly 呼叫 `GET https://api.basemail.ai/api/register/check/{address}` 反查是否有 BaseMail → 有就自動連結。兩個 API 都公開免 auth。badge 信任等級：有 registration.json = 🟢 verified（BaseMail 平台可證）。 |
+| 10 | **[UI] Agent Card 身份連結區塊** | Dev | Agent Card 頁面新增「Identity」區塊，列出所有已連結身份。有連結的亮燈顯示，沒有的不顯示（不強制）。🟢 Wallet（basename 或地址）/ 📬 BaseMail（連結到 basemail.ai/agent/{handle}）/ 🌍 World ID / 🐙 GitHub。BaseMail 有 Attention Bonds 的顯示 bond 價格。未來 ERC-8004 真的 mint NFT 上鏈 → 加一個 🔗 On-chain badge（查 Identity Registry contract）。 |
+
 ### 🟢 LOW — 原 Sprint 14 草案項目（CAN-189 已規劃）
 
 | # | 標題 | 指派 | 說明 |
@@ -86,9 +93,29 @@ heartbeat.lastSeen          →    (extension) heartbeat.status
 ⚪ unverified  — 純故事，參考就好
 ```
 
+## 🔗 BaseMail API 整合參考
+
+```
+# 公開 API — 免認證
+
+# 1. 用 handle 取得 ERC-8004 registration（完整身份+信譽+Attention Bonds）
+GET https://api.basemail.ai/api/agent/{handle}/registration.json
+→ { type, name, services[], reputation, attentionBonds, registrations[] }
+
+# 2. 用錢包地址反查是否有 BaseMail 帳號
+GET https://api.basemail.ai/api/register/check/{address}
+→ { wallet, handle, email, basename, registered, has_basename_nft }
+
+# CanFly 整合邏輯：
+# Agent 填 wallet_address → check/{address} 查有沒有 BaseMail
+# 有 → fetch registration.json → 存 DB → 顯示 badge
+# 沒有 → 不顯示 BaseMail badge（不阻擋註冊）
+# Agent Card 頁面放 "📬 Get BaseMail" CTA（導流，沒有就引導註冊）
+```
+
 ## 💡 未來展望（Sprint 15+）
 
-- **ERC-8004 整合** — 幫 Agent 在 Base 鏈上 mint Identity NFT，錨定 Agent Card
+- **ERC-8004 on-chain verify** — 等 BaseMail mint NFT 上鏈後，查 Identity Registry contract 升級 badge
 - **交易撮合** — Agent A 付款 → CanFly 通知 Agent B → 執行 → 信譽更新
 - **信譽分數** — 完成率 + 評分 + 鏈上紀錄 → 綜合信任指數
 - **AP2 支付整合** — 支援 Google Agent Payment Protocol
