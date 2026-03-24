@@ -18,7 +18,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
   const agent = await env.DB.prepare(
     `SELECT name, owner_username, wallet_address, basename, platform,
             avatar_url, bio, model, hosting, capabilities, erc8004_url,
-            is_public, created_at, agentbook_registered
+            is_public, created_at, agentbook_registered,
+            birthday, birthday_verified, last_heartbeat, heartbeat_status
      FROM agents WHERE name = ?1`
   )
     .bind(name)
@@ -32,9 +33,18 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
     return errorResponse('Agent profile is private', 403)
   }
 
-  // Fetch skills
+  // Fetch skills (with pricing columns from migration 0007)
   const skillsResult = await env.DB.prepare(
-    `SELECT id, name, slug, description, url FROM skills WHERE agent_name = ?1`
+    `SELECT id, name, slug, description, url, type, price, currency, payment_methods, sla
+     FROM skills WHERE agent_name = ?1`
+  )
+    .bind(name)
+    .all()
+
+  // Fetch milestones
+  const milestonesResult = await env.DB.prepare(
+    `SELECT date, title, description, trust_level, proof
+     FROM milestones WHERE agent_name = ?1 ORDER BY date DESC`
   )
     .bind(name)
     .all()
@@ -48,14 +58,27 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
   // Parse stored capabilities JSON
   const storedCaps = JSON.parse((agent.capabilities as string) || '{}')
 
-  // Build A2A skills array
-  const a2aSkills = skillsResult.results.map((s) => ({
-    id: s.slug || String(s.id),
-    name: s.name,
-    description: s.description || undefined,
-    ...(s.url ? { url: s.url } : {}),
-    tags: [],
-  }))
+  // Build A2A skills array (with purchasable metadata from CAN-196)
+  const a2aSkills = skillsResult.results.map((s) => {
+    const skill: Record<string, unknown> = {
+      id: s.slug || String(s.id),
+      name: s.name,
+      tags: [],
+    }
+    if (s.description) skill.description = s.description
+    if (s.url) skill.url = s.url
+    // Purchasable skill metadata
+    if (s.type === 'purchasable') {
+      skill.type = 'purchasable'
+      if (s.price != null) skill.price = String(s.price)
+      if (s.currency) skill.currency = s.currency
+      if (s.payment_methods) skill.paymentMethods = JSON.parse(s.payment_methods as string)
+      if (s.sla) skill.sla = s.sla
+    } else {
+      skill.type = 'free'
+    }
+    return skill
+  })
 
   // Build A2A Agent Card
   const agentCard: Record<string, unknown> = {
@@ -87,9 +110,21 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
       basename: agent.basename || undefined,
       agentbookRegistered: agent.agentbook_registered === 1,
       erc8004Url: agent.erc8004_url || undefined,
-      birthday: agent.created_at,
+      birthday: agent.birthday || agent.created_at,
+      birthdayVerified: agent.birthday_verified === 1,
       canflyUrl: agentUrl,
       ...(ownerUsername ? { owner: ownerUsername } : {}),
+      heartbeat: {
+        status: agent.heartbeat_status || 'off',
+        lastSeen: agent.last_heartbeat || null,
+      },
+      milestones: milestonesResult.results.map((m) => ({
+        date: m.date,
+        title: m.title,
+        description: m.description || undefined,
+        trustLevel: m.trust_level,
+        proof: m.proof || undefined,
+      })),
     },
   }
 
@@ -98,10 +133,12 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
   for (const key of Object.keys(ext)) {
     if (ext[key] === undefined) delete ext[key]
   }
-
-  // Remove undefined from skills
-  for (const skill of a2aSkills) {
-    if (skill.description === undefined) delete (skill as Record<string, unknown>).description
+  // Clean milestone undefined fields
+  const milestones = (ext.milestones as Record<string, unknown>[]) || []
+  for (const m of milestones) {
+    for (const key of Object.keys(m)) {
+      if (m[key] === undefined) delete m[key]
+    }
   }
 
   return new Response(JSON.stringify(agentCard, null, 2), {
