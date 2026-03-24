@@ -15,6 +15,11 @@ interface Skill {
   name: string
   slug: string | null
   description: string
+  type?: string          // 'free' | 'purchasable'
+  price?: number | null
+  currency?: string | null
+  payment_methods?: string | null  // JSON string
+  sla?: string | null
 }
 
 interface Owner {
@@ -192,7 +197,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
 
           {/* Agent Header */}
           <div className="text-center mb-12">
-            {/* Avatar */}
+            {/* Avatar + Heartbeat */}
             <div className="relative z-10 mx-auto mb-4 w-24 h-24">
               <SmartAvatar
                 avatarUrl={agent.avatar_url}
@@ -203,6 +208,17 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                 emoji={platformEmoji}
                 border="border-4 border-black ring-2 ring-gray-700"
               />
+              {/* Heartbeat indicator */}
+              {agent.heartbeat && agent.heartbeat.status !== 'off' && (
+                <span
+                  className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-black ${
+                    agent.heartbeat.status === 'live'
+                      ? 'bg-green-400 animate-pulse'
+                      : 'bg-gray-500'
+                  }`}
+                  title={agent.heartbeat.status === 'live' ? 'Live' : 'Idle'}
+                />
+              )}
             </div>
 
             {/* PillBadge */}
@@ -317,30 +333,55 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                 Skills ({agent.skills.length})
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {agent.skills.map((skill) => (
-                  <div
-                    key={skill.name}
-                    className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 hover:border-gray-700 transition-colors"
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="min-w-0">
-                        <h3 className="text-sm font-medium text-white truncate">{skill.name}</h3>
-                        {skill.description && (
-                          <p className="text-xs text-gray-400 mt-1 line-clamp-2">{skill.description}</p>
+                {agent.skills.map((skill) => {
+                  const isPurchasable = skill.type === 'purchasable'
+                  return (
+                    <div
+                      key={skill.name}
+                      className={`bg-gray-900/50 border rounded-xl p-4 hover:border-gray-700 transition-colors ${
+                        isPurchasable ? 'border-yellow-800/40' : 'border-gray-800'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <h3 className="text-sm font-medium text-white truncate flex items-center gap-1.5">
+                            {skill.name}
+                            {isPurchasable && (
+                              <span className="text-yellow-400 text-xs" title="Purchasable">💰</span>
+                            )}
+                            {/* Live indicator on skill if agent has heartbeat */}
+                            {isPurchasable && agent.heartbeat?.status === 'live' && (
+                              <span className="inline-block w-2 h-2 rounded-full bg-green-400 animate-pulse" title="Live" />
+                            )}
+                          </h3>
+                          {skill.description && (
+                            <p className="text-xs text-gray-400 mt-1 line-clamp-2">{skill.description}</p>
+                          )}
+                          {/* Pricing info */}
+                          {isPurchasable && skill.price != null && (
+                            <div className="flex items-center gap-2 mt-2">
+                              <span className="text-xs font-mono text-yellow-400">
+                                {skill.price} {skill.currency || 'USD'}
+                              </span>
+                              {skill.sla && (
+                                <span className="text-xs text-gray-500">SLA: {skill.sla}</span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                        {skill.slug && (
+                          <Link
+                            to={`/learn/${skill.slug}-integration`}
+                            className="shrink-0 text-cyan-400 hover:text-cyan-300 transition-colors"
+                            title="View tutorial"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                          </Link>
                         )}
                       </div>
-                      {skill.slug && (
-                        <Link
-                          to={`/learn/${skill.slug}-integration`}
-                          className="shrink-0 text-cyan-400 hover:text-cyan-300 transition-colors"
-                          title="View tutorial"
-                        >
-                          <ExternalLink className="w-4 h-4" />
-                        </Link>
-                      )}
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </section>
           )}
