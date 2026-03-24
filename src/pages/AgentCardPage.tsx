@@ -9,7 +9,7 @@ import SmartAvatar from '../components/SmartAvatar'
 import TrustBadge from '../components/TrustBadge'
 import { getTrustLevel } from '../utils/trustLevel'
 import AgentAvatarCall from '../components/AgentAvatarCall'
-import { Cpu, Globe, Wallet, ExternalLink, Sparkles, Video, MessageCircle, Mail, Github, Shield, Fingerprint } from 'lucide-react'
+import { Cpu, Globe, Wallet, ExternalLink, Sparkles, Video, MessageCircle, Mail, Github, Shield, Fingerprint, Clock, Calendar, CheckCircle, Circle, AlertCircle } from 'lucide-react'
 
 interface Skill {
   name: string
@@ -47,6 +47,26 @@ interface IdentityData {
   github: string | null
 }
 
+interface Milestone {
+  date: string
+  title: string
+  description: string | null
+  trustLevel: string  // 'verified' | 'claimed' | 'unverified'
+  proof: string | null
+}
+
+interface HistoryData {
+  birthday: string | null
+  birthdayVerified: boolean
+  ageDays: number | null
+  milestones: Milestone[]
+}
+
+interface HeartbeatData {
+  status: string  // 'live' | 'idle' | 'off'
+  lastSeen: string | null
+}
+
 interface AgentData {
   name: string
   owner_username: string | null
@@ -63,6 +83,8 @@ interface AgentData {
   owner: Owner | null
   agentbook_registered?: number
   identity?: IdentityData
+  history?: HistoryData
+  heartbeat?: HeartbeatData
 }
 
 export default function AgentCardPage({ free, subdomainUsername }: { free?: boolean; subdomainUsername?: string }) {
@@ -458,6 +480,103 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
               </section>
             )
           })()}
+
+          {/* History Timeline */}
+          {agent.history && (agent.history.birthday || agent.history.milestones.length > 0) && (
+            <section className="mb-12">
+              <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <Clock className="w-5 h-5 text-orange-400" />
+                History
+              </h2>
+              <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
+                {/* Birthday + Age */}
+                {agent.history.birthday && (
+                  <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-800">
+                    <Calendar className="w-4 h-4 text-orange-400 shrink-0" />
+                    <div>
+                      <span className="text-sm text-gray-300">
+                        Born {new Date(agent.history.birthday).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                      </span>
+                      {agent.history.ageDays != null && (
+                        <span className="text-sm text-gray-500 ml-2">
+                          ({agent.history.ageDays} days old)
+                        </span>
+                      )}
+                      {agent.history.birthdayVerified && (
+                        <span className="ml-2 px-1.5 py-0.5 bg-green-600/20 text-green-400 text-xs rounded border border-green-600/30">
+                          verified
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Milestone Timeline */}
+                {agent.history.milestones.length > 0 ? (
+                  <div className="relative pl-6">
+                    {/* Timeline line */}
+                    <div className="absolute left-2 top-1 bottom-1 w-px bg-gray-700" />
+
+                    {agent.history.milestones.map((milestone, idx) => {
+                      const TrustIcon = milestone.trustLevel === 'verified' ? CheckCircle
+                        : milestone.trustLevel === 'claimed' ? Circle
+                        : AlertCircle
+                      const trustColor = milestone.trustLevel === 'verified' ? 'text-green-400'
+                        : milestone.trustLevel === 'claimed' ? 'text-yellow-400'
+                        : 'text-gray-500'
+
+                      return (
+                        <div key={idx} className="relative mb-4 last:mb-0">
+                          {/* Timeline dot */}
+                          <div className={`absolute -left-4 top-1 ${trustColor}`}>
+                            <TrustIcon className="w-3.5 h-3.5" />
+                          </div>
+
+                          <div>
+                            <div className="flex items-center gap-2 mb-0.5">
+                              <span className="text-xs text-gray-500 font-mono">
+                                {new Date(milestone.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                              </span>
+                              <span className={`px-1.5 py-0.5 text-xs rounded border ${
+                                milestone.trustLevel === 'verified'
+                                  ? 'bg-green-600/20 text-green-400 border-green-600/30'
+                                  : milestone.trustLevel === 'claimed'
+                                    ? 'bg-yellow-600/20 text-yellow-400 border-yellow-600/30'
+                                    : 'bg-gray-600/20 text-gray-400 border-gray-600/30'
+                              }`}>
+                                {milestone.trustLevel}
+                              </span>
+                            </div>
+                            <h4 className="text-sm font-medium text-white">{milestone.title}</h4>
+                            {milestone.description && (
+                              <p className="text-xs text-gray-400 mt-0.5">{milestone.description}</p>
+                            )}
+                            {milestone.proof && (
+                              <a
+                                href={milestone.proof.startsWith('0x')
+                                  ? `https://basescan.org/tx/${milestone.proof}`
+                                  : milestone.proof}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-xs text-cyan-400 hover:text-cyan-300 mt-1 transition-colors"
+                              >
+                                <ExternalLink className="w-3 h-3" />
+                                {milestone.proof.startsWith('0x')
+                                  ? `${milestone.proof.slice(0, 10)}…${milestone.proof.slice(-6)}`
+                                  : 'View proof'}
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-500">No milestones recorded yet.</p>
+                )}
+              </div>
+            </section>
+          )}
 
           {/* CTA — "I want this agent's setup" */}
           {agent.skills.some((s) => s.slug) && (
