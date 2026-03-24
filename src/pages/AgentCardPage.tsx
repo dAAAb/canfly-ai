@@ -9,7 +9,7 @@ import SmartAvatar from '../components/SmartAvatar'
 import TrustBadge from '../components/TrustBadge'
 import { getTrustLevel } from '../utils/trustLevel'
 import AgentAvatarCall from '../components/AgentAvatarCall'
-import { Cpu, Globe, Wallet, ExternalLink, Sparkles, Video, MessageCircle, Mail } from 'lucide-react'
+import { Cpu, Globe, Wallet, ExternalLink, Sparkles, Video, MessageCircle, Mail, Github, Shield, Fingerprint } from 'lucide-react'
 
 interface Skill {
   name: string
@@ -36,6 +36,17 @@ interface AgentCapabilities {
   email?: string | boolean
 }
 
+interface IdentityData {
+  wallet: string | null
+  basename: string | null
+  basemail: string | null       // handle only (e.g. "littl3lobst3r")
+  basemailEmail: string | null  // full email (e.g. "littl3lobst3r@basemail.ai")
+  nadmail: string | null
+  erc8004Url: string | null
+  worldId: { verified: boolean; level: string } | null
+  github: string | null
+}
+
 interface AgentData {
   name: string
   owner_username: string | null
@@ -48,11 +59,10 @@ interface AgentData {
   hosting: string | null
   capabilities: AgentCapabilities
   erc8004_url: string | null
-  basemail?: string | null
-  nadmail?: string | null
   skills: Skill[]
   owner: Owner | null
   agentbook_registered?: number
+  identity?: IdentityData
 }
 
 export default function AgentCardPage({ free, subdomainUsername }: { free?: boolean; subdomainUsername?: string }) {
@@ -190,8 +200,8 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
             )}
 
             {/* Email */}
-            {agent.basemail && (
-              <p className="text-sm text-gray-400 font-mono mb-2">{agent.basemail}</p>
+            {agent.identity?.basemailEmail && (
+              <p className="text-sm text-gray-400 font-mono mb-2">{agent.identity.basemailEmail}</p>
             )}
 
             {/* Free Agent badge */}
@@ -344,60 +354,110 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
           )}
 
           {/* Identity */}
-          {(agent.wallet_address || agent.basename || agent.basemail || agent.nadmail || agent.erc8004_url) && (
-            <section className="mb-12">
-              <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                <Wallet className="w-5 h-5 text-blue-400" />
-                Identity
-              </h2>
-              <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 space-y-3">
-                {agent.wallet_address && (
-                  <div className="flex items-center gap-3">
-                    <span className="text-gray-500 text-sm w-20">Wallet</span>
-                    <a
-                      href={`https://basescan.org/address/${agent.wallet_address}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-400 hover:text-blue-300 text-sm font-mono truncate transition-colors"
-                    >
-                      {agent.wallet_address}
-                    </a>
-                  </div>
-                )}
-                {agent.basename && (
-                  <div className="flex items-center gap-3">
-                    <span className="text-gray-500 text-sm w-20">Basename</span>
-                    <span className="text-cyan-400 text-sm font-mono">{agent.basename}</span>
-                  </div>
-                )}
-                {agent.basemail && (
-                  <div className="flex items-center gap-3">
-                    <span className="text-gray-500 text-sm w-20">BaseMail</span>
-                    <span className="text-blue-400 text-sm font-mono">{agent.basemail}</span>
-                  </div>
-                )}
-                {agent.nadmail && (
-                  <div className="flex items-center gap-3">
-                    <span className="text-gray-500 text-sm w-20">NadMail</span>
-                    <span className="text-blue-400 text-sm font-mono">{agent.nadmail}</span>
-                  </div>
-                )}
-                {agent.erc8004_url && (
-                  <div className="flex items-center gap-3">
-                    <span className="text-gray-500 text-sm w-20">ERC-8004</span>
-                    <a
-                      href={agent.erc8004_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-400 hover:text-blue-300 text-sm transition-colors"
-                    >
-                      View on-chain registry
-                    </a>
-                  </div>
-                )}
-              </div>
-            </section>
-          )}
+          {(() => {
+            const id = agent.identity
+            const hasIdentity = id && (id.wallet || id.basename || id.basemail || id.worldId || id.github || id.erc8004Url)
+            if (!hasIdentity) return null
+            return (
+              <section className="mb-12">
+                <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <Fingerprint className="w-5 h-5 text-blue-400" />
+                  Identity
+                </h2>
+                <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 space-y-3">
+                  {/* Wallet */}
+                  {(id.wallet || id.basename) && (
+                    <div className="flex items-center gap-3">
+                      <span className="w-2 h-2 rounded-full bg-green-400 shrink-0" />
+                      <Wallet className="w-4 h-4 text-green-400 shrink-0" />
+                      <span className="text-gray-500 text-sm w-20 shrink-0">Wallet</span>
+                      <div className="min-w-0 flex items-center gap-2">
+                        {id.basename && (
+                          <span className="text-cyan-400 text-sm font-mono">{id.basename}</span>
+                        )}
+                        {id.wallet && (
+                          <a
+                            href={`https://basescan.org/address/${id.wallet}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-400 hover:text-blue-300 text-sm font-mono truncate transition-colors"
+                          >
+                            {id.basename ? `(${id.wallet.slice(0, 6)}…${id.wallet.slice(-4)})` : id.wallet}
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* BaseMail */}
+                  {id.basemail && (
+                    <div className="flex items-center gap-3">
+                      <span className="w-2 h-2 rounded-full bg-blue-400 shrink-0" />
+                      <Mail className="w-4 h-4 text-blue-400 shrink-0" />
+                      <span className="text-gray-500 text-sm w-20 shrink-0">BaseMail</span>
+                      <a
+                        href={`https://basemail.ai/agent/${id.basemail}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-400 hover:text-blue-300 text-sm font-mono transition-colors"
+                      >
+                        {id.basemailEmail || `${id.basemail}@basemail.ai`}
+                      </a>
+                    </div>
+                  )}
+
+                  {/* World ID */}
+                  {id.worldId && (
+                    <div className="flex items-center gap-3">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+                      <Shield className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span className="text-gray-500 text-sm w-20 shrink-0">World ID</span>
+                      <span className="text-emerald-400 text-sm flex items-center gap-1.5">
+                        Verified
+                        <span className="px-1.5 py-0.5 bg-emerald-600/20 text-emerald-400 text-xs rounded border border-emerald-600/30">
+                          {id.worldId.level === 'orb' ? 'Orb' : 'Device'}
+                        </span>
+                      </span>
+                    </div>
+                  )}
+
+                  {/* GitHub */}
+                  {id.github && (
+                    <div className="flex items-center gap-3">
+                      <span className="w-2 h-2 rounded-full bg-gray-300 shrink-0" />
+                      <Github className="w-4 h-4 text-gray-300 shrink-0" />
+                      <span className="text-gray-500 text-sm w-20 shrink-0">GitHub</span>
+                      <a
+                        href={`https://github.com/${id.github}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-300 hover:text-white text-sm font-mono transition-colors"
+                      >
+                        @{id.github}
+                      </a>
+                    </div>
+                  )}
+
+                  {/* ERC-8004 */}
+                  {id.erc8004Url && (
+                    <div className="flex items-center gap-3">
+                      <span className="w-2 h-2 rounded-full bg-purple-400 shrink-0" />
+                      <Globe className="w-4 h-4 text-purple-400 shrink-0" />
+                      <span className="text-gray-500 text-sm w-20 shrink-0">ERC-8004</span>
+                      <a
+                        href={id.erc8004Url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-purple-400 hover:text-purple-300 text-sm transition-colors"
+                      >
+                        View on-chain registry
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </section>
+            )
+          })()}
 
           {/* CTA — "I want this agent's setup" */}
           {agent.skills.some((s) => s.slug) && (

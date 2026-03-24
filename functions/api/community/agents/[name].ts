@@ -35,19 +35,64 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
   let owner = null
   if (agent.owner_username) {
     owner = await env.DB.prepare(
-      `SELECT username, display_name, wallet_address, avatar_url, verification_level
+      `SELECT username, display_name, wallet_address, avatar_url, verification_level, links, external_ids
        FROM users WHERE username = ?1`
     )
       .bind(agent.owner_username as string)
       .first()
   }
 
+  // Build identity object from various sources
+  const capabilities = JSON.parse((agent.capabilities as string) || '{}')
+  const ownerLinks = owner ? JSON.parse((owner.links as string) || '{}') : {}
+  const ownerExternalIds = owner ? JSON.parse((owner.external_ids as string) || '{}') : {}
+
+  // Extract basemail handle from capabilities email or erc8004_url
+  const emailCap = capabilities.email
+  const basemailHandle = typeof emailCap === 'string' && emailCap.includes('@basemail.ai')
+    ? emailCap.replace(/@basemail\.ai$/, '')
+    : null
+
+  // Check World ID verification for the owner
+  let worldIdVerified = false
+  let worldIdLevel: string | null = null
+  if (agent.owner_username) {
+    const worldId = await env.DB.prepare(
+      `SELECT verification_level FROM world_id_verifications WHERE username = ?1 LIMIT 1`
+    )
+      .bind(agent.owner_username as string)
+      .first()
+    if (worldId) {
+      worldIdVerified = true
+      worldIdLevel = worldId.verification_level as string
+    }
+  }
+
+  // GitHub from owner links or external_ids
+  const github = ownerExternalIds.github || ownerLinks.github || null
+
+  // Strip links/external_ids from owner response (internal data)
+  if (owner) {
+    delete (owner as Record<string, unknown>).links
+    delete (owner as Record<string, unknown>).external_ids
+  }
+
   return json({
     ...agent,
-    capabilities: JSON.parse((agent.capabilities as string) || '{}'),
+    capabilities,
     isPublic: agent.is_public === 1,
     skills: skillsResult.results,
     owner,
+    identity: {
+      wallet: agent.wallet_address || null,
+      basename: agent.basename || null,
+      basemail: basemailHandle,
+      basemailEmail: typeof emailCap === 'string' ? emailCap : null,
+      nadmail: typeof capabilities.nadmail === 'string' ? capabilities.nadmail : null,
+      erc8004Url: agent.erc8004_url || null,
+      worldId: worldIdVerified ? { verified: true, level: worldIdLevel } : null,
+      github,
+    },
   })
 }
 
