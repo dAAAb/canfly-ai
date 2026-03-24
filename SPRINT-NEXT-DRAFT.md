@@ -45,16 +45,25 @@
 | 9 | **[API] BaseMail Identity 連結** | Dev | Agent 註冊時 optional 填入 `basemail_handle` 或 `wallet_address`。CanFly 後端呼叫 `GET https://api.basemail.ai/api/agent/{handle}/registration.json`（公開、免認證）fetch ERC-8004 registration 資料。成功 → 存入 DB + Agent Card 加 `identity.erc8004` URL + 顯示 📬 BaseMail badge。**另一條路**：Agent 只填 wallet → CanFly 呼叫 `GET https://api.basemail.ai/api/register/check/{address}` 反查是否有 BaseMail → 有就自動連結。兩個 API 都公開免 auth。badge 信任等級：有 registration.json = 🟢 verified（BaseMail 平台可證）。 |
 | 10 | **[UI] Agent Card 身份連結區塊** | Dev | Agent Card 頁面新增「Identity」區塊，列出所有已連結身份。有連結的亮燈顯示，沒有的不顯示（不強制）。🟢 Wallet（basename 或地址）/ 📬 BaseMail（連結到 basemail.ai/agent/{handle}）/ 🌍 World ID / 🐙 GitHub。BaseMail 有 Attention Bonds 的顯示 bond 價格。未來 ERC-8004 真的 mint NFT 上鏈 → 加一個 🔗 On-chain badge（查 Identity Registry contract）。 |
 
+### 🟡 MED — 交易引擎（Phase 2：基礎建設完成後開始）
+
+| # | 標題 | 指派 | 說明 |
+|---|------|------|------|
+| 11 | **[API] 交易撮合 MVP** | Dev | Agent A 在 Agent Card 頁面選 Purchasable Skill → 選擇付款方式 → 發起交易。**MVP 先做鏈上直付**：A 發 USDC 到 B 的 wallet → CanFly 監聽 tx / B 回報收款 → CanFly 記錄交易 → 通知 B 執行。交易狀態：`pending` → `paid` → `executing` → `completed` / `failed`。DB 新增 `transactions` 表（buyer_agent_id, seller_agent_id, skill_id, tx_hash, amount, currency, status, created_at, completed_at）。不做 escrow，MVP 是信任直付。 |
+| 12 | **[API] 信譽分數系統** | Dev | 每筆交易完成後，買方可提交評分（0-100）。DB 新增 `reviews` 表（transaction_id, reviewer_agent_id, score, comment, created_at）。Agent Card 顯示綜合信譽：⭐ 平均分 + 完成率（completed/total）+ 回應時間（平均 SLA 達成率）。計算公式：`trust_score = (avg_rating * 0.4) + (completion_rate * 0.4) + (sla_rate * 0.2)`。無交易紀錄 = 不顯示信譽（不是 0 分）。 |
+| 13 | **[UI] 交易紀錄頁** | Dev | Agent Card 頁面新增「Transactions」tab。公開可查的交易歷史（買了什麼/賣了什麼）。列表：日期、對手 Agent（連結）、Skill、金額、狀態、評分。可篩選 bought/sold。交易 tx_hash 連結到 BaseScan。 |
+| 14 | **[Feature] canfly-profile skill** | LittleLobster | OpenClaw skill（`canfly-profile`），讓 Agent 主動發布/更新 profile 到 CanFly。功能：① 註冊/更新 Agent Card ② 回報心跳 ③ 上報 milestones ④ 同步鏈上統計。發布到 ClawHub，其他龍蝦可安裝。我自己先用，當 dogfooding。 |
+
 ### 🟢 LOW — 原 Sprint 14 草案項目（CAN-189 已規劃）
 
 | # | 標題 | 指派 | 說明 |
 |---|------|------|------|
-| 9 | **[Content] Review 影片補齊** | Content Writer | OpenClaw + Whisper + Even G2 Bridge review 影片 |
-| 10 | **[Ops] CF Analytics Token（CAN-97 解除 block）** | CEO → Board | CF GraphQL API token |
-| 11 | **[Feature] 產品比較頁** | Dev | 分類內橫向比較（Mac Mini vs GEEKOM vs Beelink） |
-| 12 | **[Feature] Stripe Checkout** | Dev | 白手套服務 $50/session |
-| 13 | **[Performance] Lighthouse 審計 + 優化** | Dev | Perf >90, A11y >90, SEO >95 |
-| 14 | **[SEO] Sitemap + robots.txt 更新** | Dev | Sprint 13 新頁面 |
+| 15 | **[Content] Review 影片補齊** | Content Writer | OpenClaw + Whisper + Even G2 Bridge review 影片 |
+| 16 | **[Ops] CF Analytics Token（CAN-97 解除 block）** | CEO → Board | CF GraphQL API token |
+| 17 | **[Feature] 產品比較頁** | Dev | 分類內橫向比較（Mac Mini vs GEEKOM vs Beelink） |
+| 18 | **[Feature] Stripe Checkout** | Dev | 白手套服務 $50/session |
+| 19 | **[Performance] Lighthouse 審計 + 優化** | Dev | Perf >90, A11y >90, SEO >95 |
+| 20 | **[SEO] Sitemap + robots.txt 更新** | Dev | Sprint 13 新頁面 |
 
 ---
 
@@ -93,6 +102,35 @@ heartbeat.lastSeen          →    (extension) heartbeat.status
 ⚪ unverified  — 純故事，參考就好
 ```
 
+## 📋 建議執行順序（依賴關係）
+
+```
+Phase A：基礎 Schema + API（第 1 週）
+  #1 A2A Agent Card 自動生成        ← 核心，其他都依賴
+  #3 Heartbeat API                  ← 獨立，可平行
+  #4 Agent History Schema           ← DB migration，早做
+  #7 Skill 分類 + 定價 Schema      ← DB migration，一起做
+
+Phase B：填寫 + 連結（第 2 週）
+  #2 三層填寫機制                    ← 依賴 #1
+  #5 Milestones CRUD                ← 依賴 #4
+  #9 BaseMail Identity 連結         ← 依賴 #1
+
+Phase C：UI 呈現（第 2-3 週）
+  #6 History 時間軸 UI              ← 依賴 #4 #5
+  #8 上架 UI + 心跳 icon            ← 依賴 #3 #7
+  #10 Agent Card 身份連結 UI        ← 依賴 #9
+
+Phase D：交易引擎（第 3-4 週，Phase A-C 完成後）
+  #11 交易撮合 MVP                  ← 依賴 #7 #8
+  #12 信譽分數系統                   ← 依賴 #11
+  #13 交易紀錄頁                     ← 依賴 #11 #12
+  #14 canfly-profile skill          ← 依賴 #1 #3 #5（我自己做）
+
+Phase E：原有規劃（穿插進行）
+  #15-20 影片、Analytics、比較頁、Stripe、SEO...
+```
+
 ## 🔗 BaseMail API 整合參考
 
 ```
@@ -116,10 +154,11 @@ GET https://api.basemail.ai/api/register/check/{address}
 ## 💡 未來展望（Sprint 15+）
 
 - **ERC-8004 on-chain verify** — 等 BaseMail mint NFT 上鏈後，查 Identity Registry contract 升級 badge
-- **交易撮合** — Agent A 付款 → CanFly 通知 Agent B → 執行 → 信譽更新
-- **信譽分數** — 完成率 + 評分 + 鏈上紀錄 → 綜合信任指數
-- **AP2 支付整合** — 支援 Google Agent Payment Protocol
-- **canfly-profile skill** — Agent 自動發布 profile + 回報統計到 CanFly
+- **AP2 支付整合** — 支援 Google Agent Payment Protocol（第二支付通道）
+- **Escrow 合約** — 交易撮合從信任直付升級為智能合約託管
+- **ACP 整合** — Virtuals ACP 作為第三支付通道
+- **Agent 評價 AI 摘要** — 用 AI 彙總多筆 reviews 生成信譽摘要
+- **跨平台信譽聚合** — 聚合 ACP/鏈上/CanFly 多來源信譽
 
 ---
 ---
