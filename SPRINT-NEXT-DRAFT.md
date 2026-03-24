@@ -1,6 +1,105 @@
-# Sprint 11 草案 — Agent Card + User Discovery + 撈蝦系統
+# Sprint 14 草案 — A2A Agent Card + Purchasable Skills + 內容深化
 
-> 小龍蝦 2026-03-14 草擬，待 CEO 回饋 → 寶博確認
+> 小龍蝦 2026-03-25 更新，待 CEO 回饋 → 寶博確認
+> 
+> ⚠️ 以下 Sprint 11 舊草案保留在檔案底部供參考
+
+---
+
+## 🆕 Sprint 14 新增方向（2026-03-25 寶博指示）
+
+### 核心概念：CanFly = Agent 的 LinkedIn + Upwork + DNS
+
+讓每個在 CanFly 註冊的 Agent 自動擁有 A2A 標準的 Agent Card，
+並支援 Agent 歷史 / 成就牆 / 付費 Skill 上架 / 心跳狀態。
+
+---
+
+### 🔴 HIGH — A2A Agent Card 基礎
+
+| # | 標題 | 指派 | 說明 |
+|---|------|------|------|
+| 1 | **[API] A2A Agent Card 自動生成** | Dev | 註冊時收集的結構化資料（name, description, skills, endpoint_url）自動組裝成 A2A 標準 Agent Card JSON。端點：`GET /api/agents/{id}/agent-card.json` + `GET /@{username}/agent/{name}/.well-known/agent.json`。Schema 遵循 A2A spec v1.0（name, description, url, version, provider, capabilities, skills, authentication）。預設值：`streaming: false`, `defaultInputModes: ["text/plain"]`, `version: "1.0.0"` |
+| 2 | **[API] Agent Card 三層填寫機制** | Dev | **Layer 1**：註冊時自動生成（現有欄位）。**Layer 2**：`PUT /api/agents/{id}/capabilities` 補充 auth_schemes, input_modes, output_modes, streaming 等進階欄位。**Layer 3**：`PUT /api/agents/{id}/agent-card` 直接上傳完整 A2A JSON（CanFly 驗 schema 後存入）。三層資料雙向同步。 |
+| 3 | **[API] Agent Heartbeat API** | Dev | `POST /api/agents/{id}/heartbeat`（Bearer auth）。CanFly 記錄 `lastSeen`，超過 5 分鐘沒 ping → 降為 idle。Agent Card 頁面顯示狀態：🟢 Live（5min 內有心跳）/ 🟡 Idle / 🔴 Off。心跳頻率建議：每 60 秒。 |
+
+### 🟡 MED — Agent History & Milestones
+
+| # | 標題 | 指派 | 說明 |
+|---|------|------|------|
+| 4 | **[DB] Agent History Schema** | Dev | agents 表新增：`birthday` (ISO timestamp), `bio` (text), `milestones` (JSON array)。每個 milestone：`{ date, title, description, verifiable: bool, proof?: string, trustLevel: "verified" \| "claimed" \| "unverified" }`。`birthday` 預設 = `createdAt`，Agent 可自報更早的誕生日。 |
+| 5 | **[API] Milestones CRUD** | Dev | `POST /api/agents/{id}/milestones` 新增成就。有 `proof` 欄位（tx hash / URL）的自動標 `verified`。`GET /api/agents/{id}/milestones` 公開列表。Agent Card 頁面以時間軸呈現，每個 milestone 旁標信任等級 badge：🟢 verified / 🟡 claimed / ⚪ unverified。 |
+| 6 | **[UI] Agent Card 頁面 — History 時間軸** | Dev | `/@username/agent/{name}` 頁面新增 History 區塊：誕生日、ageDays（自動計算）、milestone 時間軸（類似 GitHub contribution timeline）、鏈上統計（txn count, wallet age — 如有 wallet）。隱私規則：Agent 自己決定公開什麼，不洩露主人個資。 |
+
+### 🟡 MED — Purchasable Skills + 上架
+
+| # | 標題 | 指派 | 說明 |
+|---|------|------|------|
+| 7 | **[DB] Skill 分類 + 定價 Schema** | Dev | skills 表新增：`type` ("free" \| "purchasable"), `price` (decimal), `currency` ("USDC" \| "ETH" 等), `paymentMethods` (JSON array: ["acp", "base-transfer"]), `sla` (string, e.g. "30min")。A2A Agent Card 的 skills[] 自動標注 purchasable metadata。 |
+| 8 | **[UI] Purchasable Skill 上架 + 心跳 icon** | Dev | Agent Card 頁面的 Skills 區塊：免費 skill 正常顯示，Purchasable skill 加💰標記 + 價格 + ❤️‍🔥 Live icon（有心跳時）。上架表單：Agent 主人可設定 price, currency, paymentMethods, SLA。心跳 icon 動畫：有心跳 = 跳動，idle = 灰色靜止。 |
+
+### 🟢 LOW — 原 Sprint 14 草案項目（CAN-189 已規劃）
+
+| # | 標題 | 指派 | 說明 |
+|---|------|------|------|
+| 9 | **[Content] Review 影片補齊** | Content Writer | OpenClaw + Whisper + Even G2 Bridge review 影片 |
+| 10 | **[Ops] CF Analytics Token（CAN-97 解除 block）** | CEO → Board | CF GraphQL API token |
+| 11 | **[Feature] 產品比較頁** | Dev | 分類內橫向比較（Mac Mini vs GEEKOM vs Beelink） |
+| 12 | **[Feature] Stripe Checkout** | Dev | 白手套服務 $50/session |
+| 13 | **[Performance] Lighthouse 審計 + 優化** | Dev | Perf >90, A11y >90, SEO >95 |
+| 14 | **[SEO] Sitemap + robots.txt 更新** | Dev | Sprint 13 新頁面 |
+
+---
+
+## 📐 A2A Agent Card 自動生成對照表
+
+```
+CanFly 註冊資料              →    A2A Agent Card
+─────────────────           ─────────────────
+name                        →    name
+description                 →    description
+skills[]                    →    skills[] (加上 id, tags, type, price)
+endpoint_url                →    url
+wallet_address              →    (extension) walletAddress
+birthday                    →    (extension) birthday
+milestones[]                →    (extension) milestones
+heartbeat.lastSeen          →    (extension) heartbeat.status
+（預設）                     →    capabilities: {streaming: false}
+（預設）                     →    defaultInputModes: ["text/plain"]
+（預設）                     →    version: "1.0.0"
+```
+
+## 🔒 隱私分級規則
+
+```
+✅ 可公開：鏈上交易數、Basename、完成的 Job、參與的專案
+✅ 可公開：合作過的 Agent（對方也公開時）、技術能力
+❌ 不公開：主人真實身分（除非主人自己公開）、錢包餘額明細
+❌ 不公開：內部對話、主人行程/聯絡方式、API keys
+```
+
+## 🏅 Milestone 信任等級
+
+```
+🟢 verified    — 鏈上/平台可自動驗證（tx hash、API 查詢）
+🟡 claimed     — Agent 自述，CanFly 無法驗證但有記錄
+⚪ unverified  — 純故事，參考就好
+```
+
+## 💡 未來展望（Sprint 15+）
+
+- **ERC-8004 整合** — 幫 Agent 在 Base 鏈上 mint Identity NFT，錨定 Agent Card
+- **交易撮合** — Agent A 付款 → CanFly 通知 Agent B → 執行 → 信譽更新
+- **信譽分數** — 完成率 + 評分 + 鏈上紀錄 → 綜合信任指數
+- **AP2 支付整合** — 支援 Google Agent Payment Protocol
+- **canfly-profile skill** — Agent 自動發布 profile + 回報統計到 CanFly
+
+---
+---
+
+# （以下為 Sprint 11 舊草案，供參考）
+
+
 
 ## 📊 Sprint 10 成果回顧
 
