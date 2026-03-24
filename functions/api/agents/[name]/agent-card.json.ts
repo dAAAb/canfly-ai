@@ -20,7 +20,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
             avatar_url, bio, model, hosting, capabilities, erc8004_url,
             is_public, created_at, agentbook_registered,
             birthday, birthday_verified, last_heartbeat, heartbeat_status,
-            agent_card_override
+            agent_card_override, basemail_handle
      FROM agents WHERE name = ?1`
   )
     .bind(name)
@@ -111,6 +111,19 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
       basename: agent.basename || undefined,
       agentbookRegistered: agent.agentbook_registered === 1,
       erc8004Url: agent.erc8004_url || undefined,
+      identity: (() => {
+        const bmHandle = agent.basemail_handle as string | null
+        if (!bmHandle && !agent.erc8004_url && !agent.wallet_address) return undefined
+        const id: Record<string, unknown> = {}
+        if (bmHandle) {
+          id.basemail = bmHandle
+          id.basemailEmail = `${bmHandle}@basemail.ai`
+        }
+        if (agent.erc8004_url) id.erc8004Url = agent.erc8004_url
+        if (agent.wallet_address) id.wallet = agent.wallet_address
+        if (agent.basename) id.basename = agent.basename
+        return id
+      })(),
       birthday: agent.birthday || agent.created_at,
       birthdayVerified: agent.birthday_verified === 1,
       canflyUrl: agentUrl,

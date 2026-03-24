@@ -27,6 +27,7 @@ interface UpdateBody {
   walletAddress?: string | null
   basename?: string | null
   hosting?: string | null
+  basemailHandle?: string | null
 }
 
 export const onRequestPut: PagesFunction<Env> = async ({ env, params, request }) => {
@@ -174,6 +175,11 @@ export const onRequestPut: PagesFunction<Env> = async ({ env, params, request })
   if (body.hosting !== undefined) {
     updates.push(`hosting = ?${paramIdx}`)
     values.push(body.hosting || null)
+    paramIdx++
+  }
+  if (body.basemailHandle !== undefined) {
+    updates.push(`basemail_handle = ?${paramIdx}`)
+    values.push(body.basemailHandle || null)
     paramIdx++
   }
   if (body.portfolio !== undefined) {
