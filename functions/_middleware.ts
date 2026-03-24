@@ -430,6 +430,15 @@ export const onRequest: PagesFunction = async (context) => {
   const path = url.pathname
   const ua = context.request.headers.get('user-agent') || ''
 
+  // ── A2A .well-known/agent.json rewrite ──
+  // /@{username}/agent/{name}/.well-known/agent.json → rewrite to /api/agents/{name}/agent-card.json
+  const wellKnownMatch = path.match(/^\/@([^/]+)\/agent\/([^/]+)\/\.well-known\/agent\.json$/)
+  if (wellKnownMatch) {
+    const agentName = wellKnownMatch[2]
+    const rewriteUrl = new URL(`/api/agents/${agentName}/agent-card.json`, url.origin)
+    return fetch(new Request(rewriteUrl.toString(), { headers: context.request.headers }))
+  }
+
   // ── Wildcard subdomain proxy ──
   // dAAAb.canfly.ai → rewrite to /u/dAAAb (same origin, no redirect)
   const host = url.hostname.toLowerCase()
@@ -437,6 +446,13 @@ export const onRequest: PagesFunction = async (context) => {
   if (host.endsWith(suffix) && host !== `www.${MAIN_DOMAIN}`) {
     const subdomain = host.slice(0, -suffix.length)
     if (subdomain && !subdomain.includes('.') && !RESERVED_SUBDOMAINS.has(subdomain)) {
+      // Handle .well-known/agent.json on subdomain
+      const subWellKnown = path.match(/^\/agent\/([^/]+)\/\.well-known\/agent\.json$/)
+      if (subWellKnown) {
+        const agentName = subWellKnown[1]
+        const rewriteUrl = new URL(`/api/agents/${agentName}/agent-card.json`, url.origin)
+        return fetch(new Request(rewriteUrl.toString(), { headers: context.request.headers }))
+      }
       // Serve the SPA index.html — client-side router detects subdomain
       // and renders the correct user/agent page
       return context.next()
