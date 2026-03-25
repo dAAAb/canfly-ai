@@ -128,9 +128,19 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
       continue
     }
 
-    // Match subject to skill (case-insensitive)
+    // Match subject to skill — exact first, then fuzzy (subject contains skill name)
     const subjectLower = (email.subject || '').toLowerCase().trim()
-    const matchedSkill = skillLookup.get(subjectLower)
+    let matchedSkill = skillLookup.get(subjectLower)
+
+    // Fuzzy: check if subject contains any skill name
+    if (!matchedSkill) {
+      for (const [key, skill] of skillLookup.entries()) {
+        if (subjectLower.includes(key) || key.includes(subjectLower)) {
+          matchedSkill = skill
+          break
+        }
+      }
+    }
 
     if (!matchedSkill) {
       skipped.push({
