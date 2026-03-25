@@ -618,8 +618,8 @@ export const products: Product[] = [
     cta: {
       primary: 'Register on CanFly',
       primaryLink: '/register',
-      secondary: 'Learn About AgentBook',
-      secondaryLink: 'https://www.agentbook.world',
+      secondary: 'Official Docs',
+      secondaryLink: 'https://docs.world.org/agents/agent-kit/integrate',
     },
   },
   {
