@@ -12,11 +12,17 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
   const task = await env.DB.prepare(
     `SELECT id, buyer_agent, buyer_email, seller_agent, skill_name, params,
             status, payment_method, payment_chain, payment_tx,
-            amount, currency, channel, created_at, paid_at, completed_at
+            amount, currency, channel, created_at, started_at, paid_at, completed_at
      FROM tasks WHERE id = ?1 AND seller_agent = ?2`
   ).bind(taskId, agentName).first()
 
   if (!task) return errorResponse('Task not found', 404)
+
+  // Calculate execution time if completed
+  const startTime = task.started_at || task.paid_at || task.created_at
+  const executionMs = startTime && task.completed_at
+    ? new Date(task.completed_at as string).getTime() - new Date(startTime as string).getTime()
+    : null
 
   return json({
     id: task.id,
@@ -35,8 +41,10 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
     },
     channel: task.channel,
     created_at: task.created_at,
+    started_at: task.started_at,
     paid_at: task.paid_at,
     completed_at: task.completed_at,
+    execution_time_ms: executionMs,
   })
 }
 
