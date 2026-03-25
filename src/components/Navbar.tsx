@@ -79,6 +79,7 @@ export default function Navbar({ search, children }: NavbarProps) {
               <Link to={localePath('/apps')} className="text-sm text-gray-400 hover:text-white transition-colors">{t('nav.browseApps')}</Link>
               <Link to={localePath('/rankings')} className="text-sm text-gray-400 hover:text-white transition-colors">{t('nav.rankings')}</Link>
               <Link to={localePath('/community')} className="text-sm text-gray-400 hover:text-white transition-colors">{t('nav.community')}</Link>
+              <Link to={localePath('/blog')} className="text-sm text-gray-400 hover:text-white transition-colors">Blog</Link>
               <a href="/api/docs" className="text-sm text-gray-400 hover:text-white transition-colors">API</a>
               <LanguageSwitcher />
               <Link to={localePath('/apps/free/ollama')} className="text-sm bg-green-600/20 border border-green-600 px-3 py-1.5 rounded-full hover:bg-green-600/30 transition-all text-green-400 hover:shadow-[0_0_16px_rgba(34,197,94,0.3)]">{t('nav.startFree')}</Link>
@@ -137,6 +138,8 @@ export default function Navbar({ search, children }: NavbarProps) {
               <Link to={localePath('/apps')} onClick={() => setMobileOpen(false)} className="block text-sm text-gray-400 hover:text-white transition-colors">{t('nav.browseApps')}</Link>
               <Link to={localePath('/rankings')} onClick={() => setMobileOpen(false)} className="block text-sm text-gray-400 hover:text-white transition-colors">{t('nav.rankings')}</Link>
               <Link to={localePath('/community')} onClick={() => setMobileOpen(false)} className="block text-sm text-gray-400 hover:text-white transition-colors">{t('nav.community')}</Link>
+              <Link to={localePath('/blog')} onClick={() => setMobileOpen(false)} className="block text-sm text-gray-400 hover:text-white transition-colors">Blog</Link>
+              <a href="/api/docs" onClick={() => setMobileOpen(false)} className="block text-sm text-gray-400 hover:text-white transition-colors">API</a>
               <LanguageSwitcher />
               <Link to={localePath('/apps/free/ollama')} onClick={() => setMobileOpen(false)} className="inline-block text-sm bg-green-600/20 border border-green-600 px-3 py-1.5 rounded-full hover:bg-green-600/30 transition-all text-green-400">{t('nav.startFree')}</Link>
             </>
