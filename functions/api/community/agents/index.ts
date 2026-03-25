@@ -115,14 +115,29 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     return errorResponse('Agent name already taken', 409)
   }
 
-  // If ownerUsername provided, verify user exists
+  // If ownerUsername provided, authenticate caller and verify user exists
   if (ownerUsername) {
-    const user = await env.DB.prepare('SELECT username FROM users WHERE username = ?1')
+    const editToken = request.headers.get('X-Edit-Token')
+    const walletHeader = request.headers.get('X-Wallet-Address')
+
+    if (!editToken && !walletHeader) {
+      return errorResponse('X-Edit-Token or X-Wallet-Address header required when setting ownerUsername', 401)
+    }
+
+    const user = await env.DB.prepare(
+      'SELECT username, edit_token, wallet_address FROM users WHERE username = ?1'
+    )
       .bind(ownerUsername)
       .first()
     if (!user) {
       return errorResponse('Owner user not found', 404)
     }
+
+    const tokenOk = editToken && user.edit_token === editToken
+    const walletOk = walletHeader && user.wallet_address &&
+      walletHeader.toLowerCase() === (user.wallet_address as string).toLowerCase()
+
+    if (!tokenOk && !walletOk) return errorResponse('Unauthorized', 403)
   }
 
   const editToken = generateEditToken()
