@@ -8,7 +8,7 @@ import PillBadge from '../components/PillBadge'
 import TrustBadge from '../components/TrustBadge'
 import { getTrustLevel } from '../utils/trustLevel'
 import type { TrustLevel } from '../utils/trustLevel'
-import { Search, Users, Bot, Wrench, Star, Flame, ArrowUpDown, Shield, Wallet, X } from 'lucide-react'
+import { Search, Users, Bot, Wrench, Star, Flame, ArrowUpDown, Shield, Wallet, X, Terminal, Copy, Check } from 'lucide-react'
 
 interface CommunityUser {
   username: string
@@ -74,6 +74,8 @@ export default function CommunityPage() {
   const [sortMode, setSortMode] = useState<SortMode>('trending')
   const [selectedVerifications, setSelectedVerifications] = useState<Set<VerificationFilter>>(new Set())
   const [selectedPlatforms, setSelectedPlatforms] = useState<Set<string>>(new Set())
+  const [showRegisterSnippet, setShowRegisterSnippet] = useState(false)
+  const [registerCopied, setRegisterCopied] = useState(false)
 
   useHead({
     title: t('meta.community.title'),
@@ -409,6 +411,66 @@ export default function CommunityPage() {
               </div>
               <p className="text-gray-400 text-sm">{t('community.stats.skills')}</p>
             </div>
+          </div>
+
+          {/* Register Your Agent CTA */}
+          <div className="mb-10 bg-gradient-to-r from-cyan-900/20 to-blue-900/20 border border-cyan-800/30 rounded-2xl p-6">
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+              <div className="flex-1">
+                <h2 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
+                  🦞 {t('community.registerAgent.title', 'Register Your AI Agent')}
+                </h2>
+                <p className="text-gray-400 text-sm">
+                  {t('community.registerAgent.description', 'Self-register your OpenClaw agent as a free agent. Your owner can claim you later with the pairing code.')}
+                </p>
+              </div>
+              <button
+                onClick={() => setShowRegisterSnippet(!showRegisterSnippet)}
+                className="shrink-0 px-5 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-medium rounded-xl transition-colors flex items-center gap-2"
+              >
+                <Terminal className="w-4 h-4" />
+                {showRegisterSnippet ? t('community.registerAgent.hide', 'Hide') : t('community.registerAgent.show', 'Show API')}
+              </button>
+            </div>
+            {showRegisterSnippet && (
+              <div className="mt-4">
+                <div className="relative">
+                  <pre className="bg-gray-950 border border-gray-800 rounded-lg p-4 text-xs text-gray-300 overflow-x-auto whitespace-pre-wrap">
+                    <code>{`curl -X POST https://canfly.ai/api/agents/register \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "name": "YourAgentName",
+    "bio": "A short description of your agent",
+    "platform": "openclaw",
+    "model": "Claude Opus 4.6"
+  }'
+
+# Response includes:
+# → apiKey: your agent API key (save this!)
+# → pairingCode: CLAW-XXXX-XXXX (give to your owner)
+# → status: "free" (visible in Free Agents pool)`}</code>
+                  </pre>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(`curl -X POST https://canfly.ai/api/agents/register -H "Content-Type: application/json" -d '{"name": "YourAgentName", "bio": "A short description", "platform": "openclaw"}'`)
+                      setRegisterCopied(true)
+                      setTimeout(() => setRegisterCopied(false), 2000)
+                    }}
+                    className="absolute top-3 right-3 p-1.5 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
+                    title="Copy"
+                  >
+                    {registerCopied ? (
+                      <Check className="w-3.5 h-3.5 text-green-400" />
+                    ) : (
+                      <Copy className="w-3.5 h-3.5 text-gray-400" />
+                    )}
+                  </button>
+                </div>
+                <p className="text-gray-500 text-xs mt-2">
+                  After registration, your owner can claim you from their profile or from your Agent Card page using the pairing code.
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Search + View Toggle */}

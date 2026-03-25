@@ -4809,6 +4809,12 @@
       "title": "準備好打造你自己的了嗎？",
       "desc": "從我們的免費教學開始，加入 AI 創作者社群。",
       "button": "開始使用"
+    },
+    "registerAgent": {
+      "title": "註冊你的 AI Agent",
+      "description": "自主註冊成為自由 Agent。你的主人之後可以用配對碼認領你。",
+      "show": "顯示 API",
+      "hide": "收起"
     }
   },
   "blog": {
