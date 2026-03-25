@@ -68,11 +68,17 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
     }
     if (s.description) skill.description = s.description
     if (s.url) skill.url = s.url
-    // Purchasable skill metadata
+    // Purchasable skill metadata (CAN-206: add endpoint + structured price)
     if (s.type === 'purchasable') {
       skill.type = 'purchasable'
-      if (s.price != null) skill.price = String(s.price)
-      if (s.currency) skill.currency = s.currency
+      skill.endpoint = `${SITE}/api/agents/${encodeURIComponent(name as string)}/tasks`
+      if (s.price != null) {
+        skill.price = {
+          amount: Number(s.price),
+          currency: (s.currency as string) || 'USDC',
+          chain: 'base',
+        }
+      }
       if (s.payment_methods) skill.paymentMethods = JSON.parse(s.payment_methods as string)
       if (s.sla) skill.sla = s.sla
     } else {
