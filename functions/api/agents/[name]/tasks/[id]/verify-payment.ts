@@ -1,10 +1,12 @@
 /**
  * POST /api/agents/:name/tasks/:id/verify-payment — Verify USDC payment on Base
  *
- * Accepts { tx_hash } and verifies the on-chain USDC Transfer event matches
- * the task's expected amount and seller wallet address.
+ * Supports two verification modes:
+ * 1. Escrow deposit: verifies TaskEscrow contract Deposited event (CAN-221)
+ * 2. Direct transfer: verifies USDC Transfer event to seller wallet (CAN-205)
  *
- * CAN-205: USDC payment verification (Base chain)
+ * If the task has escrow_tx or body includes escrow_tx, uses escrow verification.
+ * Otherwise falls back to direct transfer verification (backward compatible).
  */
 import { type Env, json, errorResponse, handleOptions, parseBody } from '../../../../community/_helpers'
 
@@ -13,11 +15,15 @@ const BASE_RPC_DEFAULT = 'https://mainnet.base.org'
 const REQUIRED_CONFIRMATIONS = 3
 // ERC-20 Transfer(address,address,uint256) event signature
 const TRANSFER_TOPIC = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
+// TaskEscrow Deposited(bytes32 indexed taskId, address indexed depositor, uint256 amount) event signature
+// keccak256("Deposited(bytes32,address,uint256)")
+const DEPOSITED_TOPIC = '0xe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c'
 // USDC has 6 decimals
 const USDC_DECIMALS = 6
 
 interface VerifyBody {
   tx_hash: string
+  escrow_tx?: boolean  // flag to indicate this is an escrow deposit tx
 }
 
 async function rpcCall(rpcUrl: string, method: string, params: unknown[]): Promise<unknown> {
@@ -43,7 +49,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
 
   // Get task
   const task = await env.DB.prepare(
-    `SELECT id, seller_agent, amount, currency, status, payment_tx
+    `SELECT id, seller_agent, amount, currency, status, payment_tx, escrow_tx, escrow_status
      FROM tasks WHERE id = ?1 AND seller_agent = ?2`
   ).bind(taskId, agentName).first()
 
@@ -62,6 +68,10 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   const sellerWallet = (agent.wallet_address as string).toLowerCase()
   const expectedAmount = task.amount as number
   const rpcUrl = (env as unknown as Record<string, string>).BASE_RPC_URL || BASE_RPC_DEFAULT
+  const escrowContract = ((env as unknown as Record<string, string>).TASK_ESCROW_CONTRACT || '').toLowerCase()
+
+  // Determine verification mode: escrow if flagged in body, task has escrow_tx, or contract is configured
+  const isEscrowMode = !!(body.escrow_tx || task.escrow_tx || (escrowContract && task.escrow_status !== 'none'))
 
   try {
     // Get transaction receipt
@@ -89,49 +99,98 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
       }, 202)
     }
 
-    // Find USDC Transfer event to seller
-    const transferLog = receipt.logs.find((log) => {
-      if (log.address.toLowerCase() !== USDC_CONTRACT.toLowerCase()) return false
-      if (log.topics[0] !== TRANSFER_TOPIC) return false
-      // topics[2] is the 'to' address (zero-padded)
-      const toAddress = '0x' + (log.topics[2] || '').slice(26).toLowerCase()
-      return toAddress === sellerWallet
-    })
+    let transferredAmount: number
 
-    if (!transferLog) {
-      return errorResponse('No USDC transfer to seller wallet found in transaction', 400)
+    if (isEscrowMode && escrowContract) {
+      // --- Escrow mode: verify Deposited event from TaskEscrow contract ---
+      const depositLog = receipt.logs.find((log) => {
+        if (log.address.toLowerCase() !== escrowContract) return false
+        if (log.topics[0] !== DEPOSITED_TOPIC) return false
+        return true
+      })
+
+      if (!depositLog) {
+        return errorResponse('No Deposited event from TaskEscrow contract found in transaction', 400)
+      }
+
+      // Verify amount from event data
+      const depositedRaw = BigInt(depositLog.data)
+      transferredAmount = Number(depositedRaw) / Math.pow(10, USDC_DECIMALS)
+
+      if (expectedAmount != null && transferredAmount < expectedAmount) {
+        return errorResponse(
+          `Insufficient escrow deposit: ${transferredAmount} USDC, expected ${expectedAmount} USDC`,
+          400,
+        )
+      }
+
+      // Escrow deposit verified — update task with escrow fields
+      await env.DB.prepare(
+        `UPDATE tasks SET status = 'paid', payment_tx = ?1, escrow_tx = ?1,
+         escrow_status = 'deposited', paid_at = datetime('now'),
+         started_at = datetime('now')
+         WHERE id = ?2`
+      ).bind(txHash, taskId).run()
+
+      return json({
+        id: task.id,
+        status: 'paid',
+        escrow: {
+          tx: txHash,
+          status: 'deposited',
+          contract: escrowContract,
+          amount: transferredAmount,
+          currency: 'USDC',
+          chain: 'base',
+          confirmations,
+        },
+        message: 'Escrow deposit verified. USDC locked in contract.',
+      })
+    } else {
+      // --- Direct transfer mode (backward compatible) ---
+      const transferLog = receipt.logs.find((log) => {
+        if (log.address.toLowerCase() !== USDC_CONTRACT.toLowerCase()) return false
+        if (log.topics[0] !== TRANSFER_TOPIC) return false
+        // topics[2] is the 'to' address (zero-padded)
+        const toAddress = '0x' + (log.topics[2] || '').slice(26).toLowerCase()
+        return toAddress === sellerWallet
+      })
+
+      if (!transferLog) {
+        return errorResponse('No USDC transfer to seller wallet found in transaction', 400)
+      }
+
+      // Verify amount (data field contains uint256 amount)
+      const transferredRaw = BigInt(transferLog.data)
+      transferredAmount = Number(transferredRaw) / Math.pow(10, USDC_DECIMALS)
+
+      if (expectedAmount != null && transferredAmount < expectedAmount) {
+        return errorResponse(
+          `Insufficient payment: received ${transferredAmount} USDC, expected ${expectedAmount} USDC`,
+          400,
+        )
+      }
+
+      // Payment verified — update task status and mark execution start
+      await env.DB.prepare(
+        `UPDATE tasks SET status = 'paid', payment_tx = ?1, paid_at = datetime('now'),
+         started_at = datetime('now')
+         WHERE id = ?2`
+      ).bind(txHash, taskId).run()
+
+      return json({
+        id: task.id,
+        status: 'paid',
+        payment: {
+          tx: txHash,
+          amount: transferredAmount,
+          currency: 'USDC',
+          chain: 'base',
+          confirmations,
+        },
+        message: 'Payment verified successfully.',
+      })
     }
-
-    // Verify amount (data field contains uint256 amount)
-    const transferredRaw = BigInt(transferLog.data)
-    const transferredAmount = Number(transferredRaw) / Math.pow(10, USDC_DECIMALS)
-
-    if (expectedAmount != null && transferredAmount < expectedAmount) {
-      return errorResponse(
-        `Insufficient payment: received ${transferredAmount} USDC, expected ${expectedAmount} USDC`,
-        400,
-      )
-    }
-
-    // Payment verified — update task status and mark execution start
-    await env.DB.prepare(
-      `UPDATE tasks SET status = 'paid', payment_tx = ?1, paid_at = datetime('now'),
-       started_at = datetime('now')
-       WHERE id = ?2`
-    ).bind(txHash, taskId).run()
-
-    return json({
-      id: task.id,
-      status: 'paid',
-      payment: {
-        tx: txHash,
-        amount: transferredAmount,
-        currency: 'USDC',
-        chain: 'base',
-        confirmations,
-      },
-      message: 'Payment verified successfully.',
-    })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'RPC call failed'
     return errorResponse(`Payment verification failed: ${message}`, 502)

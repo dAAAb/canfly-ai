@@ -13,6 +13,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
     `SELECT id, buyer_agent, buyer_email, seller_agent, skill_name, params,
             status, payment_method, payment_chain, payment_tx,
             amount, currency, channel, result_url, result_data,
+            escrow_tx, escrow_status, sla_deadline, confirmed_at, rejected_at, reject_reason,
             created_at, started_at, paid_at, completed_at
      FROM tasks WHERE id = ?1 AND seller_agent = ?2`
   ).bind(taskId, agentName).first()
@@ -24,6 +25,17 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
   const executionMs = startTime && task.completed_at
     ? new Date(task.completed_at as string).getTime() - new Date(startTime as string).getTime()
     : null
+
+  const escrowInfo = task.escrow_tx ? {
+    escrow: {
+      tx: task.escrow_tx,
+      status: task.escrow_status || 'none',
+      sla_deadline: task.sla_deadline || null,
+      confirmed_at: task.confirmed_at || null,
+      rejected_at: task.rejected_at || null,
+      reject_reason: task.reject_reason || null,
+    },
+  } : {}
 
   return json({
     id: task.id,
@@ -40,6 +52,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
       amount: task.amount,
       currency: task.currency,
     },
+    ...escrowInfo,
     channel: task.channel,
     created_at: task.created_at,
     started_at: task.started_at,
