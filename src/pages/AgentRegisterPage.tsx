@@ -87,9 +87,21 @@ export default function AgentRegisterPage({ subdomainUsername }: { subdomainUser
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Verify the user has edit token for this username
+  // Verify the user has edit token or wallet match for this username
   const editToken = username ? localStorage.getItem(`canfly_edit_token_${username}`) : null
-  const canAdd = !!editToken
+  const [ownerWallet, setOwnerWallet] = useState<string | null>(null)
+  useEffect(() => {
+    if (username && authWallet) {
+      fetch(`/api/community/users/${username}`)
+        .then(r => r.json())
+        .then((data: { wallet_address?: string }) => {
+          if (data.wallet_address) setOwnerWallet(data.wallet_address.toLowerCase())
+        })
+        .catch(() => {})
+    }
+  }, [username, authWallet])
+  const isWalletOwner = !!(authWallet && ownerWallet && authWallet.toLowerCase() === ownerWallet)
+  const canAdd = !!editToken || isWalletOwner
 
   // Auto-fill wallet address from auth
   useEffect(() => {
@@ -163,9 +175,13 @@ export default function AgentRegisterPage({ subdomainUsername }: { subdomainUser
     })
 
     try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      if (editToken) headers['X-Edit-Token'] = editToken
+      if (authWallet) headers['X-Wallet-Address'] = authWallet
+
       const res = await fetch('/api/community/agents', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           name: form.name,
           ownerUsername: username,
