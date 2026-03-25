@@ -61,18 +61,11 @@ export default function SmartAvatar({
         return
       }
 
-      // 2. ENS/Basename avatar
-      if (basename && !triedSources.has('ens')) {
-        try {
-          const ensUrl = `https://ensdata.net/media/avatar/${basename}`
-          const res = await fetch(ensUrl, { method: 'HEAD' })
-          if (!cancelled && res.ok) {
-            setResolvedUrl(ensUrl)
-            return
-          }
-        } catch { /* CORS or network error — skip silently */ }
-        if (!cancelled) setTriedSources((s) => new Set(s).add('ens'))
-      }
+      // 2. ENS/Basename avatar — only use if already known to exist
+      //    (Probing ensdata.net causes console 404 errors for most agents
+      //     who don't have an ENS avatar set. Skip probing; if an agent has
+      //     an ENS avatar, they should set avatarUrl via the API instead.)
+      // Skipped — relies on avatarUrl upload or wallet gradient fallback.
 
       // 3. Gravatar
       if (email && !triedSources.has('gravatar')) {
