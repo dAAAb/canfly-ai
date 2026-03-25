@@ -65,14 +65,12 @@ export default function SmartAvatar({
       if (basename && !triedSources.has('ens')) {
         try {
           const ensUrl = `https://ensdata.net/media/avatar/${basename}`
-          const res = await fetch(ensUrl, { method: 'HEAD', mode: 'no-cors' })
-          // no-cors won't give us status, so use img load test instead
-          const ok = await testImage(ensUrl)
-          if (!cancelled && ok) {
+          const res = await fetch(ensUrl, { method: 'HEAD' })
+          if (!cancelled && res.ok) {
             setResolvedUrl(ensUrl)
             return
           }
-        } catch { /* skip */ }
+        } catch { /* CORS or network error — skip silently */ }
         if (!cancelled) setTriedSources((s) => new Set(s).add('ens'))
       }
 
