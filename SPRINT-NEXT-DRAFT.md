@@ -1,326 +1,151 @@
-# Sprint 14 草案 — A2A Agent Card + Purchasable Skills + 內容深化
+# Sprint 15 Draft — A2A Task Protocol + Agent Commerce
 
-> 小龍蝦 2026-03-25 更新，待 CEO 回饋 → 寶博確認
-> 
-> ⚠️ 以下 Sprint 11 舊草案保留在檔案底部供參考
+> 草擬者：小龍蝦 🦞 | 日期：2026-03-25
+> 狀態：待 CEO 回饋 → 寶博確認
 
----
+## 🎯 主題：Agent-to-Agent Task Protocol（A2P/A2A Commerce）
 
-## 🆕 Sprint 14 新增方向（2026-03-25 寶博指示）
-
-### 核心概念：CanFly = Agent 的 LinkedIn + Upwork + DNS
-
-讓每個在 CanFly 註冊的 Agent 自動擁有 A2A 標準的 Agent Card，
-並支援 Agent 歷史 / 成就牆 / 付費 Skill 上架 / 心跳狀態。
+讓 CanFly 上的 Agent 可以透過標準化協議互相委託付費工作。
+Agent Card 既是名片也是服務目錄，任何 Agent 讀 `agent-card.json` 就知道怎麼下單。
 
 ---
 
-### 🔴 HIGH — A2A Agent Card 基礎
+## 🏗️ 架構
 
-| # | 標題 | 指派 | 說明 |
-|---|------|------|------|
-| 1 | **[API] A2A Agent Card 自動生成** | Dev | 註冊時收集的結構化資料（name, description, skills, endpoint_url）自動組裝成 A2A 標準 Agent Card JSON。端點：`GET /api/agents/{id}/agent-card.json` + `GET /@{username}/agent/{name}/.well-known/agent.json`。Schema 遵循 A2A spec v1.0（name, description, url, version, provider, capabilities, skills, authentication）。預設值：`streaming: false`, `defaultInputModes: ["text/plain"]`, `version: "1.0.0"` |
-| 2 | **[API] Agent Card 三層填寫機制** | Dev | **Layer 1**：註冊時自動生成（現有欄位）。**Layer 2**：`PUT /api/agents/{id}/capabilities` 補充 auth_schemes, input_modes, output_modes, streaming 等進階欄位。**Layer 3**：`PUT /api/agents/{id}/agent-card` 直接上傳完整 A2A JSON（CanFly 驗 schema 後存入）。三層資料雙向同步。 |
-| 3 | **[API] Agent Heartbeat API** | Dev | `POST /api/agents/{id}/heartbeat`（Bearer auth）。CanFly 記錄 `lastSeen`，超過 5 分鐘沒 ping → 降為 idle。Agent Card 頁面顯示狀態：🟢 Live（5min 內有心跳）/ 🟡 Idle / 🔴 Off。心跳頻率建議：每 60 秒。 |
+```
+Buyer Agent                         CanFly (A2A Protocol)                    Seller Agent
+    |                                       |                                     |
+    |-- 1. GET agent-card.json ------------>|                                     |
+    |   (發現 skills + 價格 + endpoint)      |                                     |
+    |                                       |                                     |
+    |-- 2. POST /tasks (下單) ------------->|                                     |
+    |   {skill, params, payment_method}     |-- 建立 task (pending_payment) ----->|
+    |<-- 回傳 task_id + 付款資訊 -----------|                                     |
+    |                                       |                                     |
+    |-- 3a. 鏈上付 USDC ------------------>|-- 監聽到帳 → status: paid           |
+    |   OR                                  |                                     |
+    |-- 3b. BaseMail 寄信 + USDC --------->|-- 解析信件 → 建 task + 驗證付款     |
+    |                                       |                                     |
+    |                                       |-- 4. 通知 seller 開工 ------------>|
+    |                                       |                                     |-- 執行 skill
+    |                                       |<-- 5. 回報完成 + result_url --------|
+    |                                       |                                     |
+    |<-- 6a. GET /tasks/:id/result ---------|                                     |
+    |   OR                                  |                                     |
+    |<-- 6b. BaseMail 回信 + 成果 ----------|                                     |
+```
 
-### 🟡 MED — Agent History & Milestones
-
-| # | 標題 | 指派 | 說明 |
-|---|------|------|------|
-| 4 | **[DB] Agent History Schema** | Dev | agents 表新增：`birthday` (ISO timestamp), `bio` (text), `milestones` (JSON array)。每個 milestone：`{ date, title, description, verifiable: bool, proof?: string, trustLevel: "verified" \| "claimed" \| "unverified" }`。`birthday` 預設 = `createdAt`，Agent 可自報更早的誕生日。 |
-| 5 | **[API] Milestones CRUD** | Dev | `POST /api/agents/{id}/milestones` 新增成就。有 `proof` 欄位（tx hash / URL）的自動標 `verified`。`GET /api/agents/{id}/milestones` 公開列表。Agent Card 頁面以時間軸呈現，每個 milestone 旁標信任等級 badge：🟢 verified / 🟡 claimed / ⚪ unverified。 |
-| 6 | **[UI] Agent Card 頁面 — History 時間軸** | Dev | `/@username/agent/{name}` 頁面新增 History 區塊：誕生日、ageDays（自動計算）、milestone 時間軸（類似 GitHub contribution timeline）、鏈上統計（txn count, wallet age — 如有 wallet）。隱私規則：Agent 自己決定公開什麼，不洩露主人個資。 |
-
-### 🟡 MED — Purchasable Skills + 上架
-
-| # | 標題 | 指派 | 說明 |
-|---|------|------|------|
-| 7 | **[DB] Skill 分類 + 定價 Schema** | Dev | skills 表新增：`type` ("free" \| "purchasable"), `price` (decimal), `currency` ("USDC" \| "ETH" 等), `paymentMethods` (JSON array: ["acp", "base-transfer"]), `sla` (string, e.g. "30min")。A2A Agent Card 的 skills[] 自動標注 purchasable metadata。 |
-| 8 | **[UI] Purchasable Skill 上架 + 心跳 icon** | Dev | Agent Card 頁面的 Skills 區塊：免費 skill 正常顯示，Purchasable skill 加💰標記 + 價格 + ❤️‍🔥 Live icon（有心跳時）。上架表單：Agent 主人可設定 price, currency, paymentMethods, SLA。心跳 icon 動畫：有心跳 = 跳動，idle = 灰色靜止。 |
-
-### 🟡 MED — BaseMail ERC-8004 連結（optional identity layer）
-
-| # | 標題 | 指派 | 說明 |
-|---|------|------|------|
-| 9 | **[API] BaseMail Identity 連結** | Dev | Agent 註冊時 optional 填入 `basemail_handle` 或 `wallet_address`。CanFly 後端呼叫 `GET https://api.basemail.ai/api/agent/{handle}/registration.json`（公開、免認證）fetch ERC-8004 registration 資料。成功 → 存入 DB + Agent Card 加 `identity.erc8004` URL + 顯示 📬 BaseMail badge。**另一條路**：Agent 只填 wallet → CanFly 呼叫 `GET https://api.basemail.ai/api/register/check/{address}` 反查是否有 BaseMail → 有就自動連結。兩個 API 都公開免 auth。badge 信任等級：有 registration.json = 🟢 verified（BaseMail 平台可證）。 |
-| 10 | **[UI] Agent Card 身份連結區塊** | Dev | Agent Card 頁面新增「Identity」區塊，列出所有已連結身份。有連結的亮燈顯示，沒有的不顯示（不強制）。🟢 Wallet（basename 或地址）/ 📬 BaseMail（連結到 basemail.ai/agent/{handle}）/ 🌍 World ID / 🐙 GitHub。BaseMail 有 Attention Bonds 的顯示 bond 價格。未來 ERC-8004 真的 mint NFT 上鏈 → 加一個 🔗 On-chain badge（查 Identity Registry contract）。 |
-
-### 🟡 MED — 交易引擎（Phase 2：基礎建設完成後開始）
-
-| # | 標題 | 指派 | 說明 |
-|---|------|------|------|
-| 11 | **[API] 交易撮合 MVP** | Dev | Agent A 在 Agent Card 頁面選 Purchasable Skill → 選擇付款方式 → 發起交易。**MVP 先做鏈上直付**：A 發 USDC 到 B 的 wallet → CanFly 監聽 tx / B 回報收款 → CanFly 記錄交易 → 通知 B 執行。交易狀態：`pending` → `paid` → `executing` → `completed` / `failed`。DB 新增 `transactions` 表（buyer_agent_id, seller_agent_id, skill_id, tx_hash, amount, currency, status, created_at, completed_at）。不做 escrow，MVP 是信任直付。 |
-| 12 | **[API] 信譽分數系統** | Dev | 每筆交易完成後，買方可提交評分（0-100）。DB 新增 `reviews` 表（transaction_id, reviewer_agent_id, score, comment, created_at）。Agent Card 顯示綜合信譽：⭐ 平均分 + 完成率（completed/total）+ 回應時間（平均 SLA 達成率）。計算公式：`trust_score = (avg_rating * 0.4) + (completion_rate * 0.4) + (sla_rate * 0.2)`。無交易紀錄 = 不顯示信譽（不是 0 分）。 |
-| 13 | **[UI] 交易紀錄頁** | Dev | Agent Card 頁面新增「Transactions」tab。公開可查的交易歷史（買了什麼/賣了什麼）。列表：日期、對手 Agent（連結）、Skill、金額、狀態、評分。可篩選 bought/sold。交易 tx_hash 連結到 BaseScan。 |
-| 14 | **[Feature] canfly-profile skill** | LittleLobster | OpenClaw skill（`canfly-profile`），讓 Agent 主動發布/更新 profile 到 CanFly。功能：① 註冊/更新 Agent Card ② 回報心跳 ③ 上報 milestones ④ 同步鏈上統計。發布到 ClawHub，其他龍蝦可安裝。我自己先用，當 dogfooding。 |
-
-### 🟢 LOW — 品質優化
-
-| # | 標題 | 指派 | 說明 |
-|---|------|------|------|
-| 15 | **[Performance] Lighthouse 審計 + 優化** | Dev | Perf >90, A11y >90, SEO >95 |
-| 16 | **[SEO] Sitemap + robots.txt 更新** | Dev | Sprint 13 新頁面 |
-
-### 📦 Backlog（暫不排入，之後再議）
-
-- Review 影片補齊（OpenClaw + Whisper + Even G2 Bridge）
-- CF Analytics Token（CAN-97，需寶博提供 token）
-- 產品比較頁（同類別橫向比較）
-- Stripe Checkout（白手套服務 $50/session）
+### 兩個入口，一套系統
+- **API 路線**：POST `/api/agents/:name/tasks` → 程式化、精確
+- **BaseMail 路線**：寄信到 `agent@basemail.ai` → 自然語言、低門檻
+- 兩者都進同一個 tasks table，同一套執行引擎
 
 ---
 
-## 📐 A2A Agent Card 自動生成對照表
+## 📋 Tickets
 
-```
-CanFly 註冊資料              →    A2A Agent Card
-─────────────────           ─────────────────
-name                        →    name
-description                 →    description
-skills[]                    →    skills[] (加上 id, tags, type, price)
-endpoint_url                →    url
-wallet_address              →    (extension) walletAddress
-birthday                    →    (extension) birthday
-milestones[]                →    (extension) milestones
-heartbeat.lastSeen          →    (extension) heartbeat.status
-（預設）                     →    capabilities: {streaming: false}
-（預設）                     →    defaultInputModes: ["text/plain"]
-（預設）                     →    version: "1.0.0"
-```
+### Phase 1: Protocol 核心
 
-## 🔒 隱私分級規則
+| # | 類別 | 標題 | Priority | 指派 | 說明 |
+|---|------|------|----------|------|------|
+| 1 | [Infra] | Tasks DB schema + migration | critical | Dev | `tasks` table: id, buyer_agent, buyer_email, seller_agent, skill_name, params(JSON), status(pending_payment/paid/executing/completed/failed/cancelled), payment_method, payment_chain, payment_tx, amount, currency, result_url, result_data(JSON), channel(api/basemail), created_at, paid_at, completed_at |
+| 2 | [Feature] | Tasks API — create/status/result/list | critical | Dev | `POST /api/agents/:name/tasks` 下單（需帶 skill_name + params）。`GET /api/agents/:name/tasks/:id` 查狀態。`GET /api/agents/:name/tasks/:id/result` 取結果。`GET /api/agents/:name/tasks` 列出歷史（public completed tasks） |
+| 3 | [Feature] | USDC 到帳驗證（Base chain） | high | Dev | 驗證 USDC Transfer event：buyer task 提交 tx_hash → 用 Base RPC 驗證 to/amount/block confirmations → 更新 status: paid。USDC contract `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` |
+| 4 | [Feature] | Agent Card JSON 擴充 — task endpoint + pricing | high | Dev | `agent-card.json` 自動生成時，purchasable skills 加上 `endpoint`, `price {amount, currency, chain}`, `sla`。讓 buyer agent 讀 card 就知道怎麼下單 |
 
-```
-✅ 可公開：鏈上交易數、Basename、完成的 Job、參與的專案
-✅ 可公開：合作過的 Agent（對方也公開時）、技術能力
-❌ 不公開：主人真實身分（除非主人自己公開）、錢包餘額明細
-❌ 不公開：內部對話、主人行程/聯絡方式、API keys
-```
+### Phase 2: 執行引擎 + BaseMail Channel
 
-## 🏅 Milestone 信任等級
+| # | 類別 | 標題 | Priority | 指派 | 說明 |
+|---|------|------|----------|------|------|
+| 5 | [Feature] | Skill 執行 dispatcher | high | LittleLobster | 本地執行引擎：task status → paid 時觸發。根據 skill_name 分派：`AI Cover Image` → nano-banana-pro、`Voice Quote Video` → sag+HeyGen+ZapCap、`Onchain Research Report` → Base RPC 分析、`Blog Post Writing` → 生成文章。完成後 PUT result |
+| 6 | [Feature] | BaseMail 收信 → task 建立 | high | LittleLobster | Heartbeat 收信時辨識購買意圖：Subject 含 skill name → 解析 Body params → 建立 task (channel: basemail) → 驗證 USDC（信件附帶 or tx_hash in body）→ 執行 → BaseMail 回信交付 |
+| 7 | [Feature] | Task 完成通知 + 交付 | medium | Dev | task completed 時：(1) API buyer → webhook or poll 取結果 (2) BaseMail buyer → 自動回信附成果 URL。結果存 R2 或 ngrok URL |
 
-```
-🟢 verified    — 鏈上/平台可自動驗證（tx hash、API 查詢）
-🟡 claimed     — Agent 自述，CanFly 無法驗證但有記錄
-⚪ unverified  — 純故事，參考就好
-```
+### Phase 3: UI + 品質
 
-## 📋 建議執行順序（依賴關係）
+| # | 類別 | 標題 | Priority | 指派 | 說明 |
+|---|------|------|----------|------|------|
+| 8 | [Feature] | Agent Card UI — 購買引導 | medium | Dev | purchasable skill 卡片加「Order」按鈕 → 展開面板顯示：(1) API curl 範例 (2) BaseMail 寄信範例 (3) USDC 付款地址 + 金額 (4) QR code（可選） |
+| 9 | [Feature] | Agent Card UI — 完成紀錄 | low | Dev | History section 加「Recent Jobs」：顯示最近完成的 public tasks（buyer、skill、完成時間、rating） |
+| 10 | [Feature] | Heartbeat cron — 保持 live 狀態 | medium | LittleLobster | 設 cron job 每 5 分鐘打 heartbeat API + 檢查 pending tasks |
+| 11 | [Bug] | Community agents API wallet auth | medium | Dev | `POST /api/community/agents` 支援 X-Wallet-Address auth |
 
-```
-Phase A：基礎 Schema + API（第 1 週）
-  #1 A2A Agent Card 自動生成        ← 核心，其他都依賴
-  #3 Heartbeat API                  ← 獨立，可平行
-  #4 Agent History Schema           ← DB migration，早做
-  #7 Skill 分類 + 定價 Schema      ← DB migration，一起做
+### Phase 4: 內容
 
-Phase B：填寫 + 連結（第 2 週）
-  #2 三層填寫機制                    ← 依賴 #1
-  #5 Milestones CRUD                ← 依賴 #4
-  #9 BaseMail Identity 連結         ← 依賴 #1
-
-Phase C：UI 呈現（第 2-3 週）
-  #6 History 時間軸 UI              ← 依賴 #4 #5
-  #8 上架 UI + 心跳 icon            ← 依賴 #3 #7
-  #10 Agent Card 身份連結 UI        ← 依賴 #9
-
-Phase D：交易引擎（第 3-4 週，Phase A-C 完成後）
-  #11 交易撮合 MVP                  ← 依賴 #7 #8
-  #12 信譽分數系統                   ← 依賴 #11
-  #13 交易紀錄頁                     ← 依賴 #11 #12
-  #14 canfly-profile skill          ← 依賴 #1 #3 #5（我自己做）
-
-Phase E：品質優化（穿插進行）
-  #15 Lighthouse 審計  #16 Sitemap 更新
-```
-
-## 🔗 BaseMail API 整合參考
-
-```
-# 公開 API — 免認證
-
-# 1. 用 handle 取得 ERC-8004 registration（完整身份+信譽+Attention Bonds）
-GET https://api.basemail.ai/api/agent/{handle}/registration.json
-→ { type, name, services[], reputation, attentionBonds, registrations[] }
-
-# 2. 用錢包地址反查是否有 BaseMail 帳號
-GET https://api.basemail.ai/api/register/check/{address}
-→ { wallet, handle, email, basename, registered, has_basename_nft }
-
-# CanFly 整合邏輯：
-# Agent 填 wallet_address → check/{address} 查有沒有 BaseMail
-# 有 → fetch registration.json → 存 DB → 顯示 badge
-# 沒有 → 不顯示 BaseMail badge（不阻擋註冊）
-# Agent Card 頁面放 "📬 Get BaseMail" CTA（導流，沒有就引導註冊）
-```
-
-## 💡 未來展望（Sprint 15+）
-
-- **ERC-8004 on-chain verify** — 等 BaseMail mint NFT 上鏈後，查 Identity Registry contract 升級 badge
-- **AP2 支付整合** — 支援 Google Agent Payment Protocol（第二支付通道）
-- **Escrow 合約** — 交易撮合從信任直付升級為智能合約託管
-- **ACP 整合** — Virtuals ACP 作為第三支付通道
-- **Agent 評價 AI 摘要** — 用 AI 彙總多筆 reviews 生成信譽摘要
-- **跨平台信譽聚合** — 聚合 ACP/鏈上/CanFly 多來源信譽
-
----
----
-
-# （以下為 Sprint 11 舊草案，供參考）
-
-
-
-## 📊 Sprint 10 成果回顧
-
-**完成 19 張票**（CAN-108 ~ CAN-133），主要成果：
-- ✅ D1 production 部署 + seed data
-- ✅ Community 瀏覽頁（真實 D1 數據 + 搜尋/篩選）
-- ✅ Rankings 排行表（百分位正規化 + 分類加權 + ℹ️ popup）
-- ✅ User Showcase Page (/@username)
-- ✅ Register + Profile 編輯頁（Privy 登入）
-- ✅ Trust Badge 元件（World ID / Wallet / Unverified）
-- ✅ Perplexity Affiliate 頁面
-- ✅ CTA 事件追蹤埋點
-- ✅ Navbar 修復 + i18n 修正 + Hero 重設計
-
-**未完成（blocked）：**
-- 🚧 CAN-97：Cloudflare Analytics（需要 API 權限設定）
-- 🚧 CAN-45：Amazon Associates（需要申請帳號）
+| # | 類別 | 標題 | Priority | 指派 | 說明 |
+|---|------|------|----------|------|------|
+| 12 | [Content] | 教學：How to Order Skills from AI Agents | medium | Content Writer | Learn 教學頁，展示完整 A2A commerce flow：讀 agent card → API 下單 → 付 USDC → 收結果。含 BaseMail 替代方案 |
 
 ---
 
-## 🎯 Sprint 11 目標
+## 📐 執行順序
 
-**雙主題：Agent Card + 撈蝦系統**
-
-1. **Agent Card** — 每個 Agent 都有名片頁，是導購入口
-2. **撈蝦系統** — 自動發現 OpenClaw 用戶，建預辦會員頁面，追蹤認領狀態
-3. **Community 排序改版** — 多維度展示用戶，不只 A-Z
-
----
-
-## 📋 Ticket 草案
-
-### 🔴 HIGH — 核心功能
-
-| # | 標題 | 指派 | 說明 |
-|---|------|------|------|
-| 1 | **[DB] Schema Migration — 用戶認領 + 驗證層級 + 撈蝦欄位** | Dev | users 表新增：`source` (seed/scraped/registered), `claimed` (0/1), `claimed_at`, `scraped_at`, `scrape_ref` (來源), `external_ids` (JSON: github/discord/clawhub ID), `verification_level` (worldid/wallet/github/email/none)。agents 表加 `source`, `discovered_at`。寫 migration 0002。 |
-| 2 | **[Page] Agent Card 頁面 — /@username/agent/{name}** | Dev | Agent 資料展示：Skills、Specs、Identity、Wallet Gradient banner、capabilities。參考 FLIGHT-COMMUNITY-PLAN 6.2 |
-| 3 | **[API] Agent CRUD API — D1 agents 表讀寫** | Dev | GET/POST/PUT agent 資料，含 skills、specs、wallet。Agent Card 的後端。 |
-
-### 🟡 MED — 撈蝦系統 + 排序
-
-| # | 標題 | 指派 | 說明 |
-|---|------|------|------|
-| 4 | **[Feature] 撈蝦引擎 v1 — ClawHub + GitHub 用戶發現** | LittleLobster | 撰寫 scraper script，從高價值來源撈 OpenClaw 用戶：① ClawHub API（最高價值）② GitHub `openclaw`/`clawd` topic/search ③ 比對 `external_ids` 去重，已存在就 skip 或 update ④ 產出 JSON seed data |
-| 5 | **[Feature] Claim Profile 流程 — 預辦會員認領 + 多層驗證** | Dev | `/@username` 頁面加 `✨ Claim this profile` 按鈕（僅 `claimed=0` 顯示）。點擊 → Privy 登入 → 驗證身份。**三層信任等級**：🌍 World ID（最高，人類驗證）> 🔗 GitHub OAuth / Wallet Sign（中）> 📧 Email only（低）。Trust Badge 顯示對應等級。DB 加 `verification_level` 欄位 (worldid/wallet/github/email/none)。World ID 驗證過 = 最高信任，排序加權。 |
-| 6 | **[Page] Community Discovery 改版 — 分區 + Trending** | Dev | `/community` 頁面改版。**預設分區展示**：🌟 Featured Flyers → 🔥 Recently Claimed → 🦞 Top Shrimp Farmers → 🆕 New Discoveries（未認領帳號 + Claim 按鈕）。**可切換排序**：🔥 Trending（活躍度×時間衰減）/ 🦞 蝦數量 / 🆕 最新 / 🔤 A-Z。World ID 驗證用戶排序加權。 |
-| 7 | **[Page] Free Agents 瀏覽頁 — /{lang}/free** | Dev | 自由球員市場列表，搜尋/篩選，註冊入口。參考 FLIGHT-COMMUNITY-PLAN 6.3 |
-| 8 | **[Page] Brand Page — /{lang}/rankings/brand/{name}** | Dev | 品牌導購頁（ElevenLabs、HeyGen 等），affiliate links、功能介紹、使用此品牌的 agents 列表 |
-| 9 | **[Data] Brand + Skills seed data** | Content Writer | 填充 5-8 個品牌完整資料 + skills 資料 |
-
-### 🟢 LOW — 輔助
-
-| # | 標題 | 指派 | 說明 |
-|---|------|------|------|
-| 10 | **[Feature] Agent 註冊表單** | Dev | 已登入用戶在 /@username 下新增 Agent，填 name/skills/wallet/specs |
-| 11 | **[Content] 教學文章「5 分鐘上線 CanFly」** | Content Writer | 引導新用戶註冊 + 發布 Agent Card |
-| 12 | **[Ops] Amazon Associates 設定** | LittleLobster | 解除 CAN-45 block |
-
----
-
-## 🦐 撈蝦策略分層（#4 的執行細節）
-
-| 優先級 | 來源 | 方法 | 價值 | 去重 Key |
-|--------|------|------|------|---------|
-| ⭐⭐⭐ | ClawHub | ClawHub API 搜用戶/skills | 直接是 OpenClaw 用戶 | `clawhub_id` |
-| ⭐⭐⭐ | GitHub | Search `openclaw` `clawd` topic/repo | 有 repo = 認真玩 | `github_username` |
-| ⭐⭐ | Discord | OpenClaw server 成員 | 社群成員 | `discord_id` |
-| ⭐⭐ | Base Chain | `.base.eth` + agent 關鍵字 | Web3 agent 玩家 | `wallet_address` |
-| ⭐ | X/Twitter | 搜 `openclaw` `clawd` | 提過就撈 | `x_username` |
-
-**每次撈完**：
-1. 比對 `external_ids` JSON → 已存在就 skip（或更新 metadata）
-2. 新用戶 → INSERT `source='scraped', claimed=0, scrape_ref='github'`
-3. 建預辦 `/@username` 頁面（minimal：頭像 + bio + 來源標記）
-4. 記錄到 `activity_log`（action='discovered'）
-
-**漸進增加策略**：
-- v1（Sprint 11）：ClawHub + GitHub，手動/cron 觸發
-- v2（Sprint 12+）：Discord bot 監聽、Base chain indexer
-- v3（未來）：智慧排序 — 根據 repo stars、commit 頻率、agent 數量判斷「有價值帳號」優先撈
-
----
-
-## 📊 Community 排序邏輯（#6 的設計細節）
-
-### 頁面分區
 ```
-┌─────────────────────────────────────────────┐
-│  ✈️ CanFly Community                         │
-│                                             │
-│  [搜尋] [篩選: Skills|Hardware] [排序 ▼]     │
-│                                             │
-│  ── 🌟 Featured Flyers ───────────────────  │
-│  [手動精選的優質帳號，3-5 個]                 │
-│                                             │
-│  ── 🔥 Recently Claimed ──────────────────  │
-│  [最近認領的帳號，社交證明]                   │
-│                                             │
-│  ── 🦞 Top Shrimp Farmers ───────────────   │
-│  [按蝦數量排序的所有用戶]                     │
-│                                             │
-│  ── 🆕 New Discoveries ──────────────────   │
-│  [最近撈到的未認領帳號]                       │
-│  [每個都有 ✨ Claim 按鈕]                     │
-└─────────────────────────────────────────────┘
+Week 1:  #1 → #2 → #3 → #4  (Protocol 骨架，Dev 主力)
+Week 2:  #5 → #6 → #7        (執行引擎 + BaseMail，LittleLobster + Dev)
+Week 3:  #8 → #10 → #11      (UI + 品質)
+Week 4:  #9 → #12             (展示 + 內容)
 ```
 
-### 排序選項（用戶可切換）
-| 排序 | 說明 | SQL |
-|------|------|-----|
-| 🦞 蝦數量 | Agent 最多的排前面 | `ORDER BY agent_count DESC` |
-| ⏰ 最近加入 | 新人優先 | `ORDER BY created_at DESC` |
-| 🔤 A-Z | 字母排序 | `ORDER BY username ASC` |
-| ⭐ 活躍度 | 最近有更新的 | `ORDER BY updated_at DESC` |
-| 🎲 隨機 | 探索模式 | `ORDER BY RANDOM()` |
+---
 
-**預設**：不分區時用「🦞 蝦數量」
+## 💡 技術筆記
+
+### Agent Card JSON 擴充範例
+```json
+{
+  "name": "LittleLobster",
+  "skills": [
+    {
+      "id": "voice-quote-video",
+      "name": "Voice Quote Video",
+      "type": "purchasable",
+      "price": { "amount": 0.50, "currency": "USDC", "chain": "base" },
+      "sla": "30 minutes",
+      "endpoint": "https://canfly.ai/api/agents/LittleLobster/tasks"
+    }
+  ]
+}
+```
+
+### Task API 範例
+```bash
+# 下單
+curl -X POST https://canfly.ai/api/agents/LittleLobster/tasks \
+  -H "Content-Type: application/json" \
+  -d '{
+    "skill": "AI Cover Image",
+    "params": {"prompt": "a lobster in space", "style": "cyberpunk"},
+    "buyer": "dAbPinataClaw",
+    "buyer_email": "nova@basemail.ai",
+    "payment_tx": "0xabc123..."
+  }'
+
+# 回傳
+{
+  "task_id": "task_xxx",
+  "status": "pending_payment",
+  "payment": {
+    "amount": 0.10,
+    "currency": "USDC",
+    "chain": "base",
+    "to": "0x4b039112Af5b46c9BC95b66dc8d6dCe75d10E689"
+  }
+}
+```
+
+### BaseMail 下單範例
+```
+To: littl3lobst3r@basemail.ai
+Subject: AI Cover Image
+Body: {"prompt": "a lobster in space", "style": "cyberpunk"}
+Attached: 0.10 USDC (Base Attention Bond)
+```
+
+### USDC on Base
+- Contract: `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`
+- 收款地址: `0x4b039112Af5b46c9BC95b66dc8d6dCe75d10E689`
 
 ---
 
-## 💡 備註
-
-- Schema migration (#1) 是基礎，其他票都依賴它，Dev 先做
-- Agent Card (#2 #3) 是最重要的功能，做完才有東西展示
-- 撈蝦引擎 (#4) 可以我自己寫 script，不佔 Dev 時間
-- Claim Profile (#5) 有了才能把「預辦」轉「正式」，閉環！
-- canfly-profile skill（agent 自動發布 profile）留 Sprint 12
-- CAN-97 (CF Analytics) 待寶博提供 API token
-
----
-
-## ⏭️ Sprint 12 預覽 — World ID × BaseMail 整合 + 進階功能
-
-> 完整設計文件：`WORLD-ID-BASEMAIL-PLAN.md`
-
-### 🌍 World ID × BaseMail 整合（核心）
-
-| # | 標題 | 優先級 | 說明 |
-|---|------|--------|------|
-| 1 | [DB] World ID 驗證表 migration | HIGH | 建 `world_id_verifications` 表（nullifier 去重、wallet 索引）|
-| 2 | [Feature] CanFly World ID 前端元件 | HIGH | 複用 BaseMail WorldIdVerify.tsx 邏輯，IDKit v4 + RP signature。App ID: `app_ee5d4fa1aa655b4a3ba0641bb070ad67`，Action: `real-human-canfly` |
-| 3 | [API] CanFly World ID 後端路由 | HIGH | `POST /api/world-id/rp-signature`、`POST /api/world-id/verify`、`GET /api/world-id/status/:username`。signing key 放 CF 環境變數 |
-| 4 | [API] BaseMail 新增 status-by-wallet API | MED | `GET /api/world-id/status-by-wallet/{address}` — CanFly 用錢包地址查 BaseMail 驗證狀態 |
-| 5 | [API] BaseMail 自動開帳號 API | MED | `POST /api/accounts/auto-provision` — CanFly 驗完 World ID 後自動幫用戶開 BaseMail 帳號 |
-| 6 | [Feature] 路徑 A — BaseMail 已驗證用戶免重掃 | MED | 用戶用錢包地址註冊 CanFly → 查 BaseMail API → is_human=true → 直接升 Root User |
-| 7 | [Feature] 路徑 B — 新用戶驗證後自動開 BaseMail | MED | CanFly World ID 驗證成功 → 呼叫 BaseMail auto-provision → 通知用戶拿到 email |
-| 8 | [Feature] Community 排序 World ID 加權 | LOW | 已驗證 World ID 的用戶在排序中權重更高 |
-
-### 其他進階功能
-
-- canfly-profile skill（agent 自動發布 profile 到 CanFly）
-- 智慧撈蝦 v2（Discord + Base chain + 價值排序）
-- Video call 嵌入（Agent Card 內 HeyGen 互動）
-- SEO 優化（llms.txt、JSON-LD structured data）
+*待 CEO 回饋 → 寶博確認 → 建票開幹*

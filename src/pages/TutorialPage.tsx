@@ -1,7 +1,7 @@
 import ReactMarkdown from 'react-markdown'
 import ReviewVideoPlayer from '../components/ReviewVideoPlayer'
 import { useParams, Link } from 'react-router-dom'
-import { Clock, CheckCircle, Copy, ExternalLink, ChevronDown, ChevronRight, Terminal, Download, Monitor, MessageSquare, Rocket, HelpCircle, Cpu, Sparkles, Search, Globe, Key, Shield, Users, HardDrive, Zap } from 'lucide-react'
+import { Clock, CheckCircle, Copy, ExternalLink, ChevronDown, ChevronRight, Terminal, Download, Monitor, MessageSquare, Rocket, HelpCircle, Cpu, Sparkles, Search, Globe, Key, Shield, Users, HardDrive, Zap, Wallet } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import Navbar from '../components/Navbar'
@@ -1561,6 +1561,75 @@ function createAgentBookTutorial(t: any): TutorialData {
   }
 }
 
+function createOrderSkillsTutorial(t: any): TutorialData {
+  return {
+    id: 'order-skills',
+    title: t('tutorial.order-skills.title'),
+    subtitle: t('tutorial.order-skills.subtitle'),
+    duration: t('tutorial.order-skills.duration'),
+    difficulty: t('tutorial.order-skills.difficulty'),
+    faq: t('tutorial.order-skills.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Search,
+        title: t('tutorial.order-skills.steps.0.title'),
+        titleEn: t('tutorial.order-skills.steps.0.titleEn'),
+        estimatedTime: t('tutorial.order-skills.steps.0.estimatedTime'),
+        content: t('tutorial.order-skills.steps.0.content'),
+        commands: t('tutorial.order-skills.steps.0.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.order-skills.steps.0.expectedResult'),
+        tips: t('tutorial.order-skills.steps.0.tips', { returnObjects: true }),
+      },
+      {
+        icon: Terminal,
+        title: t('tutorial.order-skills.steps.1.title'),
+        titleEn: t('tutorial.order-skills.steps.1.titleEn'),
+        estimatedTime: t('tutorial.order-skills.steps.1.estimatedTime'),
+        content: t('tutorial.order-skills.steps.1.content'),
+        commands: t('tutorial.order-skills.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.order-skills.steps.1.expectedResult'),
+        tips: t('tutorial.order-skills.steps.1.tips', { returnObjects: true }),
+      },
+      {
+        icon: Wallet,
+        title: t('tutorial.order-skills.steps.2.title'),
+        titleEn: t('tutorial.order-skills.steps.2.titleEn'),
+        estimatedTime: t('tutorial.order-skills.steps.2.estimatedTime'),
+        content: t('tutorial.order-skills.steps.2.content'),
+        commands: t('tutorial.order-skills.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.order-skills.steps.2.expectedResult'),
+        tips: t('tutorial.order-skills.steps.2.tips', { returnObjects: true }),
+      },
+      {
+        icon: Globe,
+        title: t('tutorial.order-skills.steps.3.title'),
+        titleEn: t('tutorial.order-skills.steps.3.titleEn'),
+        estimatedTime: t('tutorial.order-skills.steps.3.estimatedTime'),
+        content: t('tutorial.order-skills.steps.3.content'),
+        commands: t('tutorial.order-skills.steps.3.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.order-skills.steps.3.expectedResult'),
+        tips: t('tutorial.order-skills.steps.3.tips', { returnObjects: true }),
+        troubleshooting: {
+          title: t('tutorial.order-skills.steps.3.troubleshooting.title'),
+          items: t('tutorial.order-skills.steps.3.troubleshooting.items', { returnObjects: true })
+        }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.order-skills.steps.4.title'),
+        titleEn: t('tutorial.order-skills.steps.4.titleEn'),
+        estimatedTime: t('tutorial.order-skills.steps.4.estimatedTime'),
+        content: t('tutorial.order-skills.steps.4.content'),
+        nextStepCards: (t('tutorial.order-skills.steps.4.nextStepCards', { returnObjects: true }) || []).map((card: NextStepCard) => ({
+          ...card,
+          link: card.link || '#',
+        })),
+        tips: t('tutorial.order-skills.steps.4.tips', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
 function getTutorials(t: any): Record<string, TutorialData> {
   return {
     ollama: createOllamaTutorial(t),
@@ -1582,6 +1651,7 @@ function getTutorials(t: any): Record<string, TutorialData> {
     'agent-onboarding': createAgentOnboardingTutorial(t),
     worldid: createWorldIdTutorial(t),
     agentbook: createAgentBookTutorial(t),
+    'order-skills': createOrderSkillsTutorial(t),
   }
 }
 
