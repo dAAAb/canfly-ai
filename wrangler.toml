@@ -16,3 +16,7 @@ migrations_dir = "migrations"
 [[r2_buckets]]
 binding = "AVATARS"
 bucket_name = "canfly-avatars"
+
+[[r2_buckets]]
+binding = "TASK_RESULTS"
+bucket_name = "canfly-task-results"

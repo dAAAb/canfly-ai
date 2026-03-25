@@ -5,6 +5,7 @@
 export interface Env {
   DB: D1Database
   AVATARS: R2Bucket
+  TASK_RESULTS: R2Bucket
   WORLD_ID_APP_ID?: string
   WORLD_ID_RP_ID?: string
   WORLD_ID_ACTION?: string

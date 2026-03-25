@@ -113,9 +113,10 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
       )
     }
 
-    // Payment verified — update task status
+    // Payment verified — update task status and mark execution start
     await env.DB.prepare(
-      `UPDATE tasks SET status = 'paid', payment_tx = ?1, paid_at = datetime('now')
+      `UPDATE tasks SET status = 'paid', payment_tx = ?1, paid_at = datetime('now'),
+       started_at = datetime('now')
        WHERE id = ?2`
     ).bind(txHash, taskId).run()
 
