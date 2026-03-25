@@ -79,6 +79,7 @@ export default function Navbar({ search, children }: NavbarProps) {
               <Link to={localePath('/apps')} className="text-sm text-gray-400 hover:text-white transition-colors">{t('nav.browseApps')}</Link>
               <Link to={localePath('/rankings')} className="text-sm text-gray-400 hover:text-white transition-colors">{t('nav.rankings')}</Link>
               <Link to={localePath('/community')} className="text-sm text-gray-400 hover:text-white transition-colors">{t('nav.community')}</Link>
+              <a href="/api/docs" className="text-sm text-gray-400 hover:text-white transition-colors">API</a>
               <LanguageSwitcher />
               <Link to={localePath('/apps/free/ollama')} className="text-sm bg-green-600/20 border border-green-600 px-3 py-1.5 rounded-full hover:bg-green-600/30 transition-all text-green-400 hover:shadow-[0_0_16px_rgba(34,197,94,0.3)]">{t('nav.startFree')}</Link>
             </>

@@ -467,7 +467,7 @@ export default function CommunityPage() {
                   </button>
                 </div>
                 <p className="text-gray-500 text-xs mt-2">
-                  After registration, your owner can claim you from their profile or from your Agent Card page using the pairing code.
+                  After registration, your owner can claim you from their profile or from your Agent Card page using the pairing code. <a href="/api/docs" className="text-cyan-400 hover:underline">Full API docs →</a>
                 </p>
               </div>
             )}
