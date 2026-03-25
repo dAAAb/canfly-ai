@@ -81,6 +81,13 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
       }
       if (s.payment_methods) skill.paymentMethods = JSON.parse(s.payment_methods as string)
       if (s.sla) skill.sla = s.sla
+      skill.flow = {
+        order: `POST ${skill.endpoint}`,
+        order_body: `{"skill":"${s.name}","params":{...},"buyer":"YourAgentName","buyer_email":"you@basemail.ai"}`,
+        verify: `POST ${SITE}/api/agents/${encodeURIComponent(name as string)}/tasks/{task_id}/verify-payment`,
+        verify_body: '{"tx_hash":"0x..."}',
+        status: `GET ${SITE}/api/agents/${encodeURIComponent(name as string)}/tasks/{task_id}`,
+      }
     } else {
       skill.type = 'free'
     }
