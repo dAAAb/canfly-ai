@@ -100,6 +100,9 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [snippetCopied, setSnippetCopied] = useState(false)
+  const [pairingCode, setPairingCode] = useState('')
+  const [pairingStatus, setPairingStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [pairingMessage, setPairingMessage] = useState('')
 
   // Pending agent bindings
   interface PendingAgent {
@@ -253,6 +256,38 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
     ['orb', 'device', 'worldid'].includes(user.verification_level.toLowerCase())
   )
 
+
+  const handlePairAgent = async () => {
+    if (!pairingCode.trim()) return
+    setPairingStatus('loading')
+    setPairingMessage('')
+    try {
+      const editToken = localStorage.getItem(`canfly_edit_token_${user.username}`)
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      if (editToken) headers['X-Edit-Token'] = editToken
+      if (walletAddress) headers['X-Wallet-Address'] = walletAddress
+
+      const res = await fetch(`/api/community/users/${user.username}/pair-agent`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ pairingCode: pairingCode.trim().toUpperCase() }),
+      })
+      const data = await res.json()
+      if (res.ok && data.paired) {
+        setPairingStatus('success')
+        setPairingMessage(`✅ ${data.agentName} is now yours!`)
+        setPairingCode('')
+        // Refresh page to show new agent
+        setTimeout(() => window.location.reload(), 1500)
+      } else {
+        setPairingStatus('error')
+        setPairingMessage(data.error || 'Pairing failed')
+      }
+    } catch {
+      setPairingStatus('error')
+      setPairingMessage('Network error')
+    }
+  }
 
   const apiSnippet = user.ownerInviteCode
     ? `curl -X POST https://canfly.ai/api/agents/register \\
@@ -703,6 +738,51 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
               },
             })}
           </script>
+
+          {/* Pair Agent via code — owner only */}
+          {canEdit && (
+            <section className="mb-12">
+              <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <Plus className="w-5 h-5 text-green-400" />
+                Claim a Free Agent
+              </h2>
+              <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
+                <p className="text-gray-400 text-sm mb-3">
+                  Enter the pairing code from a free agent to claim ownership:
+                </p>
+                <div className="flex gap-3">
+                  <input
+                    type="text"
+                    value={pairingCode}
+                    onChange={(e) => {
+                      setPairingCode(e.target.value.toUpperCase())
+                      setPairingStatus('idle')
+                    }}
+                    placeholder="CLAW-XXXX-XXXX"
+                    className="flex-1 bg-gray-950 border border-gray-700 rounded-lg px-4 py-2.5 text-white text-sm font-mono placeholder-gray-600 focus:outline-none focus:border-cyan-500 transition-colors"
+                    maxLength={14}
+                  />
+                  <button
+                    onClick={handlePairAgent}
+                    disabled={pairingStatus === 'loading' || !pairingCode.trim()}
+                    className="px-5 py-2.5 bg-green-600 hover:bg-green-500 disabled:bg-gray-700 disabled:text-gray-500 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                  >
+                    {pairingStatus === 'loading' ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <CheckCircle className="w-4 h-4" />
+                    )}
+                    Claim
+                  </button>
+                </div>
+                {pairingMessage && (
+                  <p className={`mt-3 text-sm ${pairingStatus === 'success' ? 'text-green-400' : 'text-red-400'}`}>
+                    {pairingMessage}
+                  </p>
+                )}
+              </div>
+            </section>
+          )}
 
           {/* API Snippet — register your agent under this user (owner only) */}
           {canEdit && apiSnippet && (

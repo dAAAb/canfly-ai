@@ -9,7 +9,8 @@ import SmartAvatar from '../components/SmartAvatar'
 import TrustBadge from '../components/TrustBadge'
 import { getTrustLevel } from '../utils/trustLevel'
 import AgentAvatarCall from '../components/AgentAvatarCall'
-import { Cpu, Globe, Wallet, ExternalLink, Sparkles, Video, MessageCircle, Mail, Github, Shield, Fingerprint, Clock, Calendar, CheckCircle, Circle, AlertCircle } from 'lucide-react'
+import { useAuth } from '../hooks/useAuth'
+import { Cpu, Globe, Wallet, ExternalLink, Sparkles, Video, MessageCircle, Mail, Github, Shield, Fingerprint, Clock, Calendar, CheckCircle, Circle, AlertCircle, Loader2, Copy, Check } from 'lucide-react'
 
 interface Skill {
   name: string
@@ -97,9 +98,14 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
   const username = subdomainUsername || params.username
   const agentName = params.agentName
   const { currentLang, switchLang } = useQueryLang()
+  const { walletAddress } = useAuth()
   const [agent, setAgent] = useState<AgentData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
+  const [claimCode, setClaimCode] = useState('')
+  const [claimStatus, setClaimStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [claimMessage, setClaimMessage] = useState('')
+  const [codeCopied, setCodeCopied] = useState(false)
 
   // useHead must be called before any conditional returns (React Rules of Hooks)
   const agentUrl = free && agent
@@ -113,6 +119,43 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
     canonical: agentUrl,
     ogType: 'profile',
   })
+
+  const handleClaimAgent = async () => {
+    if (!claimCode.trim() || !walletAddress) return
+    setClaimStatus('loading')
+    setClaimMessage('')
+    try {
+      // Look up user by wallet
+      const lookupRes = await fetch(`/api/community/lookup-wallet?wallet=${walletAddress}`)
+      const lookupData = await lookupRes.json() as { username?: string; edit_token?: string }
+      if (!lookupRes.ok || !lookupData.username) {
+        setClaimStatus('error')
+        setClaimMessage('No CanFly profile found for your wallet. Register first.')
+        return
+      }
+      const res = await fetch(`/api/community/users/${lookupData.username}/pair-agent`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Wallet-Address': walletAddress,
+        },
+        body: JSON.stringify({ pairingCode: claimCode.trim().toUpperCase() }),
+      })
+      const data = await res.json() as { paired?: boolean; agentName?: string; error?: string }
+      if (res.ok && data.paired) {
+        setClaimStatus('success')
+        setClaimMessage(`✅ ${data.agentName} is now yours!`)
+        setClaimCode('')
+        setTimeout(() => window.location.href = `/u/${lookupData.username}/agent/${data.agentName}`, 1500)
+      } else {
+        setClaimStatus('error')
+        setClaimMessage(data.error || 'Pairing failed')
+      }
+    } catch {
+      setClaimStatus('error')
+      setClaimMessage('Network error')
+    }
+  }
 
   useEffect(() => {
     if (!agentName) return
@@ -655,17 +698,59 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
           {/* Free Agent claim CTA */}
           {free && (
             <section className="mb-12">
-              <div className="bg-gradient-to-r from-green-900/20 to-emerald-900/20 border border-green-800/30 rounded-2xl p-6 text-center">
-                <h3 className="text-lg font-bold text-white mb-2">Claim This Agent</h3>
-                <p className="text-gray-400 text-sm mb-4">
-                  This is a free community agent. Register to claim ownership and customize it.
+              <div className="bg-gradient-to-r from-green-900/20 to-emerald-900/20 border border-green-800/30 rounded-2xl p-6">
+                <h3 className="text-lg font-bold text-white mb-2 text-center">🦞 Claim This Agent</h3>
+                <p className="text-gray-400 text-sm mb-4 text-center">
+                  This is a free community agent. Enter the pairing code to claim ownership.
                 </p>
-                <Link
-                  to="/community/register"
-                  className="inline-block px-6 py-2.5 bg-green-600 hover:bg-green-500 text-white font-medium rounded-xl transition-colors"
-                >
-                  Register & Claim
-                </Link>
+                {walletAddress ? (
+                  <div>
+                    <div className="flex gap-3 max-w-md mx-auto">
+                      <input
+                        type="text"
+                        value={claimCode}
+                        onChange={(e) => {
+                          setClaimCode(e.target.value.toUpperCase())
+                          setClaimStatus('idle')
+                        }}
+                        placeholder="CLAW-XXXX-XXXX"
+                        className="flex-1 bg-gray-950 border border-gray-700 rounded-lg px-4 py-2.5 text-white text-sm font-mono placeholder-gray-600 focus:outline-none focus:border-green-500 transition-colors"
+                        maxLength={14}
+                        onKeyDown={(e) => e.key === 'Enter' && claimCode.trim() && handleClaimAgent()}
+                      />
+                      <button
+                        onClick={handleClaimAgent}
+                        disabled={claimStatus === 'loading' || !claimCode.trim()}
+                        className="px-5 py-2.5 bg-green-600 hover:bg-green-500 disabled:bg-gray-700 disabled:text-gray-500 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                      >
+                        {claimStatus === 'loading' ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <CheckCircle className="w-4 h-4" />
+                        )}
+                        Claim
+                      </button>
+                    </div>
+                    {claimMessage && (
+                      <p className={`mt-3 text-sm text-center ${claimStatus === 'success' ? 'text-green-400' : 'text-red-400'}`}>
+                        {claimMessage}
+                      </p>
+                    )}
+                    <p className="text-gray-600 text-xs mt-3 text-center">
+                      Don't have the code? Ask the agent's creator, or find it in the registration API response.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="text-center">
+                    <p className="text-gray-500 text-sm mb-3">Connect your wallet to claim this agent</p>
+                    <Link
+                      to="/community/register"
+                      className="inline-block px-6 py-2.5 bg-green-600 hover:bg-green-500 text-white font-medium rounded-xl transition-colors"
+                    >
+                      Register & Claim
+                    </Link>
+                  </div>
+                )}
               </div>
             </section>
           )}
