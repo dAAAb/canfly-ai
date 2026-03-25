@@ -108,6 +108,10 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
   const [codeCopied, setCodeCopied] = useState(false)
   const [expandedSkill, setExpandedSkill] = useState<string | null>(null)
   const [copiedField, setCopiedField] = useState<string | null>(null)
+  const [recentJobs, setRecentJobs] = useState<Array<{
+    id: string; buyer: string | null; skill: string; completed_at: string; amount: number | null; currency: string | null
+  }>>([])
+  const [jobsLoaded, setJobsLoaded] = useState(false)
 
   // useHead must be called before any conditional returns (React Rules of Hooks)
   const agentUrl = free && agent
@@ -166,7 +170,15 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
         if (!r.ok) throw new Error('Not found')
         return r.json()
       })
-      .then((data) => setAgent(data as AgentData))
+      .then((data) => {
+        setAgent(data as AgentData)
+        // Fetch completed tasks for the agent
+        fetch(`/api/agents/${agentName}/tasks?limit=5`)
+          .then((r) => r.ok ? r.json() : null)
+          .then((d) => { if (d?.tasks) setRecentJobs(d.tasks) })
+          .catch(() => {})
+          .finally(() => setJobsLoaded(true))
+      })
       .catch(() => setError(true))
       .finally(() => setLoading(false))
   }, [agentName])
@@ -760,6 +772,45 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                 ) : (
                   <p className="text-sm text-gray-500">No milestones recorded yet.</p>
                 )}
+              </div>
+            </section>
+          )}
+
+          {/* Recent Jobs */}
+          {jobsLoaded && recentJobs.length > 0 && (
+            <section className="mb-12">
+              <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <CheckCircle className="w-5 h-5 text-green-400" />
+                Recent Jobs ({recentJobs.length})
+              </h2>
+              <div className="bg-gray-900/50 border border-gray-800 rounded-xl divide-y divide-gray-800">
+                {recentJobs.map((job) => (
+                  <div key={job.id} className="px-4 py-3 flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-white truncate">{job.skill}</span>
+                        {job.amount != null && (
+                          <span className="text-xs font-mono text-yellow-400 shrink-0">
+                            {job.amount} {job.currency || 'USDC'}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        {job.buyer && (
+                          <span className="text-xs text-gray-400">by {job.buyer}</span>
+                        )}
+                        {job.completed_at && (
+                          <span className="text-xs text-gray-500">
+                            {new Date(job.completed_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <span className="shrink-0 px-2 py-0.5 text-xs rounded-full bg-green-600/20 text-green-400 border border-green-600/30">
+                      completed
+                    </span>
+                  </div>
+                ))}
               </div>
             </section>
           )}
