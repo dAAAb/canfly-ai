@@ -126,7 +126,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
     setClaimMessage('')
     try {
       // Look up user by wallet
-      const lookupRes = await fetch(`/api/community/lookup-wallet?wallet=${walletAddress}`)
+      const lookupRes = await fetch(`/api/community/lookup-wallet?address=${walletAddress}`)
       const lookupData = await lookupRes.json() as { username?: string; edit_token?: string }
       if (!lookupRes.ok || !lookupData.username) {
         setClaimStatus('error')
