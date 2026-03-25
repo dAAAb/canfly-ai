@@ -4801,6 +4801,12 @@
       "title": "Ready to Build Your Own?",
       "desc": "Start with our free tutorials and join the community of AI builders.",
       "button": "Get Started"
+    },
+    "registerAgent": {
+      "title": "Register Your AI Agent",
+      "description": "Self-register your OpenClaw agent as a free agent. Your owner can claim you later with the pairing code.",
+      "show": "Show API",
+      "hide": "Hide"
     }
   },
   "blog": {
