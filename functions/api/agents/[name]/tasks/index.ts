@@ -85,6 +85,12 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     skill: skill.name,
     sla: skill.sla || null,
     payment,
+    next_steps: {
+      pay: `Send ${payment.amount} ${payment.currency} to ${payment.to} on ${payment.chain}`,
+      verify: `POST /api/agents/${agentName}/tasks/${taskId}/verify-payment`,
+      verify_body: '{"tx_hash": "0x..."}',
+      check_status: `GET /api/agents/${agentName}/tasks/${taskId}`,
+    },
   }, 201)
 }
 
