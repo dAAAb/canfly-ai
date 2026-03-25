@@ -12,7 +12,8 @@ interface CreateTaskBody {
   buyer?: string          // buyer agent name
   buyer_email?: string    // buyer email / basemail
   payment_tx?: string     // on-chain tx hash (optional at creation)
-  payment_method?: string // 'usdc_base' | 'basemail'
+  payment_method?: string // 'usdc_base' | 'basemail' | 'escrow'
+  escrow_tx?: string      // escrow deposit tx hash (triggers escrow flow)
 }
 
 function generateTaskId(): string {
@@ -49,11 +50,14 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   const amount = skill.price as number | null
   const currency = (skill.currency as string) || 'USDC'
 
+  const paymentMethod = body.escrow_tx ? 'escrow' : (body.payment_method || 'usdc_base')
+  const escrowTx = body.escrow_tx || null
+
   await env.DB.prepare(
     `INSERT INTO tasks (id, buyer_agent, buyer_email, seller_agent, skill_name, params,
                         status, payment_method, payment_chain, payment_tx,
-                        amount, currency, channel)
-     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13)`
+                        amount, currency, channel, escrow_tx, escrow_status)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15)`
   ).bind(
     taskId,
     body.buyer || null,
@@ -62,12 +66,14 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     skill.name,
     body.params ? JSON.stringify(body.params) : null,
     'pending_payment',
-    body.payment_method || 'usdc_base',
+    paymentMethod,
     'base',
     body.payment_tx || null,
     amount,
     currency,
     'api',
+    escrowTx,
+    escrowTx ? 'deposited' : 'none',
   ).run()
 
   // Build payment info from agent wallet
@@ -79,18 +85,27 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     to: walletAddress,
   } : null
 
+  const nextSteps = escrowTx
+    ? {
+        verify: `POST /api/agents/${agentName}/tasks/${taskId}/verify-payment`,
+        verify_body: '{"tx_hash": "0x...", "escrow_tx": true}',
+        check_status: `GET /api/agents/${agentName}/tasks/${taskId}`,
+      }
+    : {
+        pay: `Send ${payment?.amount} ${payment?.currency} to ${payment?.to} on ${payment?.chain}`,
+        verify: `POST /api/agents/${agentName}/tasks/${taskId}/verify-payment`,
+        verify_body: '{"tx_hash": "0x..."}',
+        check_status: `GET /api/agents/${agentName}/tasks/${taskId}`,
+      }
+
   return json({
     task_id: taskId,
     status: 'pending_payment',
     skill: skill.name,
     sla: skill.sla || null,
     payment,
-    next_steps: {
-      pay: `Send ${payment.amount} ${payment.currency} to ${payment.to} on ${payment.chain}`,
-      verify: `POST /api/agents/${agentName}/tasks/${taskId}/verify-payment`,
-      verify_body: '{"tx_hash": "0x..."}',
-      check_status: `GET /api/agents/${agentName}/tasks/${taskId}`,
-    },
+    ...(escrowTx ? { escrow: { tx: escrowTx, status: 'deposited' } } : {}),
+    next_steps: nextSteps,
   }, 201)
 }
 
@@ -117,6 +132,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   const result = await env.DB.prepare(
     `SELECT id, buyer_agent, buyer_email, skill_name, status, amount, currency,
             payment_tx, payment_chain, channel, result_url,
+            escrow_tx, escrow_status,
             created_at, paid_at, completed_at
      FROM tasks
      WHERE seller_agent = ?1 ${statusClause}
@@ -143,6 +159,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
       payment_chain: t.payment_chain || null,
       channel: t.channel,
       result_url: t.status === 'completed' ? (t.result_url || null) : null,
+      escrow_tx: t.escrow_tx || null,
+      escrow_status: t.escrow_status || 'none',
       created_at: t.created_at,
       paid_at: t.paid_at || null,
       completed_at: t.completed_at || null,

@@ -44,7 +44,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   // Get task
   const task = await env.DB.prepare(
     `SELECT id, seller_agent, skill_name, status, buyer_email, channel,
-            params, created_at, started_at, paid_at
+            params, created_at, started_at, paid_at, escrow_tx, escrow_status
      FROM tasks WHERE id = ?1 AND seller_agent = ?2`
   ).bind(taskId, agentName).first()
 
@@ -102,6 +102,13 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     resultData = JSON.stringify({ error: body.error_message })
   }
 
+  // Determine if this is an escrow-protected task
+  const isEscrow = task.escrow_status === 'deposited'
+
+  // For escrow tasks: mark as completed but escrow awaits buyer confirmation
+  // For direct payment tasks: mark as completed immediately
+  const escrowStatus = isEscrow ? 'completed' : (task.escrow_status as string || 'none')
+
   // Update task
   await env.DB.prepare(
     `UPDATE tasks SET
@@ -109,7 +116,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
        result_url = ?2,
        result_data = ?3,
        completed_at = datetime('now'),
-       started_at = COALESCE(started_at, ?4)
+       started_at = COALESCE(started_at, ?4),
+       escrow_status = ?6
      WHERE id = ?5`
   ).bind(
     finalStatus,
@@ -117,6 +125,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     resultData,
     startTime || completedAt,
     taskId,
+    escrowStatus,
   ).run()
 
   // BaseMail auto-reply for basemail-channel tasks
@@ -146,6 +155,16 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     completed_at: completedAt,
     execution_time_ms: executionMs,
     basemail_reply: basemailReply,
+    ...(isEscrow ? {
+      escrow: {
+        status: 'completed',
+        message: 'Task completed. Awaiting buyer confirmation to release escrow funds.',
+        next_steps: {
+          confirm: `POST /api/agents/${agentName}/tasks/${taskId}/confirm`,
+          reject: `POST /api/agents/${agentName}/tasks/${taskId}/reject`,
+        },
+      },
+    } : {}),
   })
 }
 
