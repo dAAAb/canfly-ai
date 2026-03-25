@@ -704,8 +704,8 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
             })}
           </script>
 
-          {/* API Snippet — register your agent under this user */}
-          {apiSnippet && (
+          {/* API Snippet — register your agent under this user (owner only) */}
+          {canEdit && apiSnippet && (
             <section className="mb-12">
               <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                 <Terminal className="w-5 h-5 text-cyan-400" />
