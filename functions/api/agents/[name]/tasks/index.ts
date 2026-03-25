@@ -108,31 +108,45 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   if (!agent) return errorResponse('Agent not found', 404)
   if (agent.is_public === 0) return errorResponse('Agent profile is private', 403)
 
-  // List completed public tasks
+  // List all tasks (public transaction history)
+  const statusFilter = url.searchParams.get('status') // optional filter: completed, paid, pending_payment, all
+  const statusClause = statusFilter && statusFilter !== 'all'
+    ? `AND status = '${statusFilter.replace(/[^a-z_]/g, '')}'`
+    : ''
+
   const result = await env.DB.prepare(
-    `SELECT id, buyer_agent, skill_name, status, amount, currency,
-            created_at, completed_at
+    `SELECT id, buyer_agent, buyer_email, skill_name, status, amount, currency,
+            payment_tx, payment_chain, channel, result_url,
+            created_at, paid_at, completed_at
      FROM tasks
-     WHERE seller_agent = ?1 AND status = 'completed'
-     ORDER BY completed_at DESC
+     WHERE seller_agent = ?1 ${statusClause}
+     ORDER BY created_at DESC
      LIMIT ?2 OFFSET ?3`
   ).bind(agentName, limit, offset).all()
 
   const countResult = await env.DB.prepare(
     `SELECT COUNT(*) as total FROM tasks
-     WHERE seller_agent = ?1 AND status = 'completed'`
+     WHERE seller_agent = ?1 ${statusClause}`
   ).bind(agentName).first()
 
   return json({
+    agent: agentName,
     tasks: result.results.map((t) => ({
       id: t.id,
-      buyer: t.buyer_agent,
+      buyer: t.buyer_agent || null,
+      buyer_email: t.buyer_email || null,
       skill: t.skill_name,
       status: t.status,
       amount: t.amount,
       currency: t.currency,
+      payment_tx: t.payment_tx || null,
+      payment_chain: t.payment_chain || null,
+      channel: t.channel,
+      result_url: t.status === 'completed' ? (t.result_url || null) : null,
       created_at: t.created_at,
-      completed_at: t.completed_at,
+      paid_at: t.paid_at || null,
+      completed_at: t.completed_at || null,
+      basescan_url: t.payment_tx ? `https://basescan.org/tx/${t.payment_tx}` : null,
     })),
     total: (countResult?.total as number) || 0,
     limit,
