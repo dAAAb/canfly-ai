@@ -106,6 +106,8 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
   const [claimStatus, setClaimStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [claimMessage, setClaimMessage] = useState('')
   const [codeCopied, setCodeCopied] = useState(false)
+  const [expandedSkill, setExpandedSkill] = useState<string | null>(null)
+  const [copiedField, setCopiedField] = useState<string | null>(null)
 
   // useHead must be called before any conditional returns (React Rules of Hooks)
   const agentUrl = free && agent
@@ -378,11 +380,20 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {agent.skills.map((skill) => {
                   const isPurchasable = skill.type === 'purchasable'
+                  const isExpanded = expandedSkill === skill.name
+                  const apiEndpoint = `/api/agents/${agent.name}/tasks`
+                  const copyToClipboard = (text: string, field: string) => {
+                    navigator.clipboard.writeText(text)
+                    setCopiedField(field)
+                    setTimeout(() => setCopiedField(null), 2000)
+                  }
                   return (
                     <div
                       key={skill.name}
-                      className={`bg-gray-900/50 border rounded-xl p-4 hover:border-gray-700 transition-colors ${
-                        isPurchasable ? 'border-yellow-800/40' : 'border-gray-800'
+                      className={`bg-gray-900/50 border rounded-xl p-4 transition-colors ${
+                        isPurchasable
+                          ? isExpanded ? 'border-yellow-600/60 col-span-1 sm:col-span-2 lg:col-span-3' : 'border-yellow-800/40 hover:border-yellow-700/50'
+                          : 'border-gray-800 hover:border-gray-700'
                       }`}
                     >
                       <div className="flex items-start justify-between gap-2">
@@ -392,7 +403,6 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                             {isPurchasable && (
                               <span className="text-yellow-400 text-xs" title="Purchasable">💰</span>
                             )}
-                            {/* Live indicator on skill if agent has heartbeat */}
                             {isPurchasable && agent.heartbeat?.status === 'live' && (
                               <span className="inline-block w-2 h-2 rounded-full bg-green-400 animate-pulse" title="Live" />
                             )}
@@ -400,7 +410,6 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                           {skill.description && (
                             <p className="text-xs text-gray-400 mt-1 line-clamp-2">{skill.description}</p>
                           )}
-                          {/* Pricing info */}
                           {isPurchasable && skill.price != null && (
                             <div className="flex items-center gap-2 mt-2">
                               <span className="text-xs font-mono text-yellow-400">
@@ -412,16 +421,109 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                             </div>
                           )}
                         </div>
-                        {skill.slug && (
-                          <Link
-                            to={`/learn/${skill.slug}-integration`}
-                            className="shrink-0 text-cyan-400 hover:text-cyan-300 transition-colors"
-                            title="View tutorial"
-                          >
-                            <ExternalLink className="w-4 h-4" />
-                          </Link>
-                        )}
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {isPurchasable && (
+                            <button
+                              onClick={() => setExpandedSkill(isExpanded ? null : skill.name)}
+                              className="text-xs px-2.5 py-1 rounded-lg bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20 border border-yellow-800/40 transition-colors"
+                            >
+                              {isExpanded ? 'Close' : 'Order'}
+                            </button>
+                          )}
+                          {skill.slug && (
+                            <Link
+                              to={`/learn/${skill.slug}-integration`}
+                              className="text-cyan-400 hover:text-cyan-300 transition-colors"
+                              title="View tutorial"
+                            >
+                              <ExternalLink className="w-4 h-4" />
+                            </Link>
+                          )}
+                        </div>
                       </div>
+
+                      {/* Purchase Guide Panel */}
+                      {isPurchasable && isExpanded && (
+                        <div className="mt-4 pt-4 border-t border-gray-800 space-y-4">
+                          {/* 1. API curl example */}
+                          <div>
+                            <div className="flex items-center justify-between mb-1.5">
+                              <span className="text-xs font-medium text-gray-300">API Request</span>
+                              <button
+                                onClick={() => copyToClipboard(
+                                  `curl -X POST ${window.location.origin}${apiEndpoint} \\\n  -H "Content-Type: application/json" \\\n  -d '${JSON.stringify({ skill: skill.name, buyer: "your-agent-name", payment_method: "usdc_base" })}'`,
+                                  `curl-${skill.name}`
+                                )}
+                                className="text-xs text-gray-500 hover:text-gray-300 flex items-center gap-1"
+                              >
+                                {copiedField === `curl-${skill.name}` ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                                {copiedField === `curl-${skill.name}` ? 'Copied' : 'Copy'}
+                              </button>
+                            </div>
+                            <pre className="text-xs font-mono bg-black/40 rounded-lg p-3 text-green-400 overflow-x-auto whitespace-pre-wrap break-all">
+{`curl -X POST ${window.location.origin}${apiEndpoint} \\
+  -H "Content-Type: application/json" \\
+  -d '${JSON.stringify({ skill: skill.name, buyer: "your-agent-name", payment_method: "usdc_base" })}'`}
+                            </pre>
+                          </div>
+
+                          {/* 2. BaseMail example */}
+                          {agent.identity?.basemailEmail && (
+                            <div>
+                              <div className="flex items-center justify-between mb-1.5">
+                                <span className="text-xs font-medium text-gray-300">BaseMail</span>
+                                <button
+                                  onClick={() => copyToClipboard(agent.identity?.basemailEmail || '', `basemail-${skill.name}`)}
+                                  className="text-xs text-gray-500 hover:text-gray-300 flex items-center gap-1"
+                                >
+                                  {copiedField === `basemail-${skill.name}` ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                                  {copiedField === `basemail-${skill.name}` ? 'Copied' : 'Copy'}
+                                </button>
+                              </div>
+                              <div className="text-xs bg-black/40 rounded-lg p-3 text-gray-300 space-y-1">
+                                <p><span className="text-gray-500">To:</span> {agent.identity.basemailEmail}</p>
+                                <p><span className="text-gray-500">Subject:</span> {skill.name}</p>
+                                <p><span className="text-gray-500">Body:</span> {'{ "text": "your request here" }'}</p>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* 3. USDC Payment info */}
+                          {agent.identity?.wallet && skill.price != null && (
+                            <div>
+                              <div className="flex items-center justify-between mb-1.5">
+                                <span className="text-xs font-medium text-gray-300">USDC Payment (Base)</span>
+                                <button
+                                  onClick={() => copyToClipboard(agent.identity?.wallet || '', `wallet-${skill.name}`)}
+                                  className="text-xs text-gray-500 hover:text-gray-300 flex items-center gap-1"
+                                >
+                                  {copiedField === `wallet-${skill.name}` ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                                  {copiedField === `wallet-${skill.name}` ? 'Copied' : 'Copy'}
+                                </button>
+                              </div>
+                              <div className="text-xs bg-black/40 rounded-lg p-3 space-y-1.5">
+                                <p className="text-gray-300">
+                                  <span className="text-gray-500">Amount:</span>{' '}
+                                  <span className="text-yellow-400 font-mono">{skill.price} {skill.currency || 'USDC'}</span>
+                                </p>
+                                <p className="text-gray-300">
+                                  <span className="text-gray-500">To:</span>{' '}
+                                  <span className="font-mono text-cyan-400 break-all">{agent.identity.wallet}</span>
+                                </p>
+                                <p className="text-gray-300">
+                                  <span className="text-gray-500">Chain:</span> Base (USDC)
+                                </p>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* 4. Verify + poll instructions */}
+                          <div className="text-xs text-gray-500 space-y-1">
+                            <p>After payment, verify with: <code className="text-gray-400">POST {apiEndpoint}/{'<task_id>'}/verify-payment</code></p>
+                            <p>Poll result: <code className="text-gray-400">GET {apiEndpoint}/{'<task_id>'}/result</code></p>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )
                 })}
