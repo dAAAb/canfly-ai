@@ -14,6 +14,11 @@ interface SkillEntry {
   slug?: string | null
   description?: string | null
   url?: string | null
+  type?: string              // 'free' | 'purchasable'
+  price?: number | null
+  currency?: string | null
+  payment_methods?: string | string[] | null
+  sla?: string | null
 }
 
 interface UpdateBody {
@@ -223,14 +228,19 @@ export const onRequestPut: PagesFunction<Env> = async ({ env, params, request })
           ).bind(finalName, skill).run()
         } else {
           await env.DB.prepare(
-            `INSERT INTO skills (agent_name, name, slug, description, url)
-             VALUES (?1, ?2, ?3, ?4, ?5)`
+            `INSERT INTO skills (agent_name, name, slug, description, url, type, price, currency, payment_methods, sla)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)`
           ).bind(
             finalName,
             skill.name,
             skill.slug || null,
             skill.description || null,
             skill.url || null,
+            skill.type || 'free',
+            skill.price ?? null,
+            skill.currency || null,
+            skill.payment_methods ? (typeof skill.payment_methods === 'string' ? skill.payment_methods : JSON.stringify(skill.payment_methods)) : null,
+            skill.sla || null,
           ).run()
         }
       }
