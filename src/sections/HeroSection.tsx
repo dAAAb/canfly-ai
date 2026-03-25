@@ -35,10 +35,22 @@ export default function HeroSection() {
           <span className="font-bold text-xl tracking-tight">Canfly</span>
         </Link>
         {/* Desktop nav */}
-        <div className="hidden sm:flex items-center gap-6">
+        <div className="hidden sm:flex items-center gap-5">
           <Link to={localePath('/apps')} className="text-sm text-gray-300 hover:text-white transition-colors">
             {t('nav.browseApps')}
           </Link>
+          <Link to={localePath('/rankings')} className="text-sm text-gray-300 hover:text-white transition-colors">
+            {t('nav.rankings')}
+          </Link>
+          <Link to={localePath('/community')} className="text-sm text-gray-300 hover:text-white transition-colors">
+            {t('nav.community')}
+          </Link>
+          <Link to={localePath('/blog')} className="text-sm text-gray-300 hover:text-white transition-colors">
+            Blog
+          </Link>
+          <a href="/api/docs" className="text-sm text-gray-300 hover:text-white transition-colors">
+            API
+          </a>
           <LanguageSwitcher />
           <Link
             to={localePath('/apps/free/ollama')}
@@ -62,6 +74,18 @@ export default function HeroSection() {
           <Link to={localePath('/apps')} onClick={() => setMobileNavOpen(false)} className="block text-sm text-gray-300 hover:text-white transition-colors">
             {t('nav.browseApps')}
           </Link>
+          <Link to={localePath('/rankings')} onClick={() => setMobileNavOpen(false)} className="block text-sm text-gray-300 hover:text-white transition-colors">
+            {t('nav.rankings')}
+          </Link>
+          <Link to={localePath('/community')} onClick={() => setMobileNavOpen(false)} className="block text-sm text-gray-300 hover:text-white transition-colors">
+            {t('nav.community')}
+          </Link>
+          <Link to={localePath('/blog')} onClick={() => setMobileNavOpen(false)} className="block text-sm text-gray-300 hover:text-white transition-colors">
+            Blog
+          </Link>
+          <a href="/api/docs" onClick={() => setMobileNavOpen(false)} className="block text-sm text-gray-300 hover:text-white transition-colors">
+            API
+          </a>
           <LanguageSwitcher />
           <Link
             to={localePath('/apps/free/ollama')}
