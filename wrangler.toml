@@ -24,3 +24,8 @@ bucket_name = "canfly-task-results"
 # SLA timeout cron — call POST /api/cron/sla-timeout every 10 minutes
 # Set CRON_SECRET in dashboard secrets; pass as Authorization: Bearer <secret>
 # Use Cloudflare Worker cron trigger or external scheduler (e.g. cron-job.org)
+
+# Heartbeat sweep cron — call POST /api/cron/heartbeat-sweep every 5 minutes
+# Picks up paid tasks that weren't executed (webhook failure fallback)
+# Requires GEMINI_API_KEY and/or OPENAI_API_KEY for AI Cover Image execution
+# Protected by same CRON_SECRET as sla-timeout

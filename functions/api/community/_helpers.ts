@@ -13,6 +13,8 @@ export interface Env {
   BASEMAIL_API_URL?: string
   BASEMAIL_API_KEY?: string
   CRON_SECRET?: string
+  GEMINI_API_KEY?: string
+  OPENAI_API_KEY?: string
 }
 
 /** Standard CORS headers for cross-origin access */
