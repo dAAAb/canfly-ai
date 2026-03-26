@@ -281,6 +281,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     ? `AND status = '${statusFilter.replace(/[^a-z_]/g, '')}'`
     : ''
 
+  // CAN-236: Use rowid as tiebreaker — created_at has second precision only
   const result = await env.DB.prepare(
     `SELECT id, buyer_agent, buyer_email, skill_name, status, amount, currency,
             payment_tx, payment_chain, channel, result_url,
@@ -288,7 +289,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
             created_at, paid_at, completed_at
      FROM tasks
      WHERE seller_agent = ?1 ${statusClause}
-     ORDER BY created_at DESC
+     ORDER BY created_at DESC, rowid DESC
      LIMIT ?2 OFFSET ?3`
   ).bind(agentName, limit, offset).all()
 
