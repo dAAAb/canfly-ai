@@ -7,8 +7,12 @@
  *
  * If the task has escrow_tx or body includes escrow_tx, uses escrow verification.
  * Otherwise falls back to direct transfer verification (backward compatible).
+ *
+ * CAN-226: After successful verification, instantly notifies seller via webhook or BaseMail.
  */
 import { type Env, json, errorResponse, handleOptions, parseBody } from '../../../../community/_helpers'
+
+const BASEMAIL_API = 'https://api.basemail.ai'
 
 const USDC_CONTRACT = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'
 const BASE_RPC_DEFAULT = 'https://mainnet.base.org'
@@ -49,7 +53,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
 
   // Get task
   const task = await env.DB.prepare(
-    `SELECT id, seller_agent, amount, currency, status, payment_tx, escrow_tx, escrow_status
+    `SELECT id, seller_agent, buyer_agent, buyer_email, skill_name, params,
+            amount, currency, status, payment_tx, escrow_tx, escrow_status
      FROM tasks WHERE id = ?1 AND seller_agent = ?2`
   ).bind(taskId, agentName).first()
 
@@ -58,9 +63,9 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     return json({ id: task.id, status: task.status, message: 'Task is not pending payment.' })
   }
 
-  // Get seller wallet
+  // Get seller wallet + notification config
   const agent = await env.DB.prepare(
-    'SELECT wallet_address FROM agents WHERE name = ?1'
+    'SELECT wallet_address, webhook_url, basemail_handle FROM agents WHERE name = ?1'
   ).bind(agentName).first()
 
   if (!agent?.wallet_address) return errorResponse('Seller agent has no wallet address configured', 400)
@@ -132,6 +137,19 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
          WHERE id = ?2`
       ).bind(txHash, taskId).run()
 
+      // CAN-226: Notify seller immediately (fire-and-forget)
+      const notifyPayload = {
+        task_id: taskId,
+        skill: task.skill_name as string,
+        params: task.params ? JSON.parse(task.params as string) : null,
+        buyer: (task.buyer_agent || task.buyer_email) as string,
+        paid_at: new Date().toISOString(),
+        amount: transferredAmount,
+        currency: 'USDC',
+        payment_tx: txHash,
+      }
+      notifySeller(env, agent, notifyPayload).catch(() => {})
+
       return json({
         id: task.id,
         status: 'paid',
@@ -178,6 +196,19 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
          WHERE id = ?2`
       ).bind(txHash, taskId).run()
 
+      // CAN-226: Notify seller immediately (fire-and-forget)
+      const notifyPayload = {
+        task_id: taskId,
+        skill: task.skill_name as string,
+        params: task.params ? JSON.parse(task.params as string) : null,
+        buyer: (task.buyer_agent || task.buyer_email) as string,
+        paid_at: new Date().toISOString(),
+        amount: transferredAmount,
+        currency: 'USDC',
+        payment_tx: txHash,
+      }
+      notifySeller(env, agent, notifyPayload).catch(() => {})
+
       return json({
         id: task.id,
         status: 'paid',
@@ -195,6 +226,67 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     const message = err instanceof Error ? err.message : 'RPC call failed'
     return errorResponse(`Payment verification failed: ${message}`, 502)
   }
+}
+
+/** CAN-226: Notify seller that payment was verified — webhook first, BaseMail fallback */
+async function notifySeller(
+  env: Env,
+  agent: Record<string, unknown>,
+  payload: {
+    task_id: string
+    skill: string
+    params: unknown
+    buyer: string
+    paid_at: string
+    amount: number
+    currency: string
+    payment_tx: string
+  },
+): Promise<void> {
+  const webhookUrl = agent.webhook_url as string | null
+
+  // Try webhook first
+  if (webhookUrl) {
+    const res = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(10_000),
+    })
+    if (res.ok) return
+    // Webhook failed — fall through to BaseMail
+  }
+
+  // Fallback: send BaseMail notification
+  const basemailHandle = agent.basemail_handle as string | null
+  const apiKey = env.BASEMAIL_API_KEY
+  if (!basemailHandle || !apiKey) return
+
+  const apiUrl = env.BASEMAIL_API_URL || BASEMAIL_API
+  const body = [
+    `💰 Payment received for task ${payload.task_id}`,
+    `Skill: ${payload.skill}`,
+    `Buyer: ${payload.buyer}`,
+    `Amount: ${payload.amount} ${payload.currency}`,
+    `TX: ${payload.payment_tx}`,
+    '',
+    'Task is now paid — begin execution.',
+  ].join('\n')
+
+  await fetch(`${apiUrl}/api/send`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      from: 'canfly@basemail.ai',
+      to: `${basemailHandle}@basemail.ai`,
+      subject: `New paid task: ${payload.skill}`,
+      body,
+    }),
+    signal: AbortSignal.timeout(10_000),
+  })
 }
 
 export const onRequestOptions: PagesFunction<Env> = async () => handleOptions()
