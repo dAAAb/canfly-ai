@@ -907,7 +907,7 @@ export const products: Product[] = [
     heroImage: '/images/products/google-gemini-hero.png',
     name: 'Google Gemini',
     tagline: 'Free AI assistant with 2M token context — Google ecosystem integrated',
-    category: 'free',
+    category: 'models',
     price: 'Free — $19.99/mo Pro',
     status: 'available',
     description: 'Google\'s next-generation AI assistant, replacing Google Assistant. Free multimodal AI that understands text, images, and video. 2M token context window and 1-hour video analysis built in. Deep integration with Gmail, Calendar, YouTube, and Drive. Upgrade to Pro ($19.99/mo) for Gems, NotebookLM Plus, and Veo video generation. Gemini API works with OpenClaw via OpenRouter.',
@@ -934,8 +934,8 @@ export const products: Product[] = [
   // === Free Models ===
   {
     id: 'nemotron-3-super',
-    icon: '/images/icons/nvidia.png',
-    heroImage: '/images/products/nemotron-3-super-hero.png',
+    icon: '/images/icons/nemotron.png',
+    heroImage: '/images/products/nemotron-hero.png',
     name: 'NVIDIA Nemotron 3 Super',
     tagline: 'Free 120B open-source LLM — runs like a 12B model',
     category: 'models',
