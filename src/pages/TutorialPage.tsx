@@ -1630,6 +1630,69 @@ function createOrderSkillsTutorial(t: any): TutorialData {
   }
 }
 
+function createEscrowTutorial(t: any): TutorialData {
+  return {
+    id: 'escrow',
+    title: t('tutorial.escrow.title'),
+    subtitle: t('tutorial.escrow.subtitle'),
+    duration: t('tutorial.escrow.duration'),
+    difficulty: t('tutorial.escrow.difficulty'),
+    faq: t('tutorial.escrow.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Shield,
+        title: t('tutorial.escrow.steps.0.title'),
+        titleEn: t('tutorial.escrow.steps.0.titleEn'),
+        estimatedTime: t('tutorial.escrow.steps.0.estimatedTime'),
+        content: t('tutorial.escrow.steps.0.content'),
+        expectedResult: t('tutorial.escrow.steps.0.expectedResult'),
+        tips: t('tutorial.escrow.steps.0.tips', { returnObjects: true }),
+      },
+      {
+        icon: Wallet,
+        title: t('tutorial.escrow.steps.1.title'),
+        titleEn: t('tutorial.escrow.steps.1.titleEn'),
+        estimatedTime: t('tutorial.escrow.steps.1.estimatedTime'),
+        content: t('tutorial.escrow.steps.1.content'),
+        commands: t('tutorial.escrow.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.escrow.steps.1.expectedResult'),
+        tips: t('tutorial.escrow.steps.1.tips', { returnObjects: true }),
+      },
+      {
+        icon: Clock,
+        title: t('tutorial.escrow.steps.2.title'),
+        titleEn: t('tutorial.escrow.steps.2.titleEn'),
+        estimatedTime: t('tutorial.escrow.steps.2.estimatedTime'),
+        content: t('tutorial.escrow.steps.2.content'),
+        expectedResult: t('tutorial.escrow.steps.2.expectedResult'),
+        tips: t('tutorial.escrow.steps.2.tips', { returnObjects: true }),
+      },
+      {
+        icon: Users,
+        title: t('tutorial.escrow.steps.3.title'),
+        titleEn: t('tutorial.escrow.steps.3.titleEn'),
+        estimatedTime: t('tutorial.escrow.steps.3.estimatedTime'),
+        content: t('tutorial.escrow.steps.3.content'),
+        commands: t('tutorial.escrow.steps.3.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.escrow.steps.3.expectedResult'),
+        tips: t('tutorial.escrow.steps.3.tips', { returnObjects: true }),
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.escrow.steps.4.title'),
+        titleEn: t('tutorial.escrow.steps.4.titleEn'),
+        estimatedTime: t('tutorial.escrow.steps.4.estimatedTime'),
+        content: t('tutorial.escrow.steps.4.content'),
+        nextStepCards: (t('tutorial.escrow.steps.4.nextStepCards', { returnObjects: true }) || []).map((card: NextStepCard) => ({
+          ...card,
+          link: card.link || '#',
+        })),
+        tips: t('tutorial.escrow.steps.4.tips', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
 function getTutorials(t: any): Record<string, TutorialData> {
   return {
     ollama: createOllamaTutorial(t),
@@ -1652,6 +1715,7 @@ function getTutorials(t: any): Record<string, TutorialData> {
     worldid: createWorldIdTutorial(t),
     agentbook: createAgentBookTutorial(t),
     'order-skills': createOrderSkillsTutorial(t),
+    escrow: createEscrowTutorial(t),
   }
 }
 
