@@ -1,5 +1,12 @@
 /**
+ * @deprecated Use POST /api/agents/:name/tasks with tx_hash instead (CAN-232).
+ *
  * POST /api/agents/:name/tasks/:id/verify-payment — Verify USDC payment on Base
+ *
+ * DEPRECATED: As of CAN-232, POST /tasks requires tx_hash and verifies payment
+ * atomically before creating the task. This endpoint is retained for backward
+ * compatibility with tasks created before CAN-232 (still in pending_payment state)
+ * but should not be used for new integrations.
  *
  * Supports two verification modes:
  * 1. Escrow deposit: verifies TaskEscrow contract Deposited event (CAN-221)
