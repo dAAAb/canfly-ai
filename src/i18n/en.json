@@ -332,14 +332,16 @@
       "skills": "AI Skills",
       "hosting": "Cloud Hosting",
       "hardware": "Hardware",
-      "vm": "Virtual Machines"
+      "vm": "Virtual Machines",
+      "models": "Free Models"
     },
     "categoryInfoTooltip": "About this category",
     "categoryInfo": {
       "vm": "A virtual machine (VM) is like a computer inside your computer — a safe, isolated environment to experiment with AI tools without any risk to your main system. Perfect for beginners who want to try before committing.",
       "hardware": "Recommended Mac and PC hardware for running local AI models. Apple Silicon (M-series) chips offer the best performance-per-dollar for AI workloads.",
       "skills": "Premium AI capabilities — voice synthesis, video generation, and intelligent search — that integrate with your local AI setup to unlock professional-grade workflows.",
-      "hosting": "Deploy your AI stack to the cloud for 24/7 availability, team access, and scaling beyond what your local hardware can handle."
+      "hosting": "Deploy your AI stack to the cloud for 24/7 availability, team access, and scaling beyond what your local hardware can handle.",
+      "models": "Open-source AI models you can run for free — locally or via cloud APIs like OpenRouter. No GPU required for cloud inference. Perfect for powering your OpenClaw agents."
     }
   },
   "product": {
@@ -721,6 +723,21 @@
         ],
         "ctaPrimary": "Start Free Tutorial",
         "ctaSecondary": "View on GitHub"
+      },
+      "nemotron-3-super": {
+        "tagline": "Free 120B open-source LLM — runs like a 12B model",
+        "description": "NVIDIA's open-source 120B parameter LLM that uses Mixture-of-Experts (MoE) architecture to run with just 12B active parameters per inference. Scores 85.6% on PinchBench — the highest among open-source models in its class. Supports 1M token context window. Free to use via OpenRouter, fully open under the NVIDIA Open License. Ideal for OpenClaw AI Agent deployment.",
+        "features": [
+          "120B total parameters, only 12B active (MoE architecture)",
+          "PinchBench 85.6% — best-in-class open-source accuracy",
+          "1M token context window for long documents",
+          "Free via OpenRouter — no API key cost",
+          "NVIDIA Open License — fully open source",
+          "Optimized for AI agent workflows",
+          "Works with OpenClaw for autonomous tasks"
+        ],
+        "ctaPrimary": "Try Free on OpenRouter",
+        "ctaSecondary": "View Tutorial"
       }
     },
     "comingSoon": "Coming Soon",
