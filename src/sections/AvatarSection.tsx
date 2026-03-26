@@ -154,7 +154,7 @@ export default function AvatarSection() {
             {/* Placeholder image — looks like a video call waiting screen */}
             <div className="rounded-2xl overflow-hidden shadow-2xl shadow-cyan-900/20">
               <img
-                src="/images/avatar-placeholder.jpg"
+                src="/images/avatar-placeholder.webp"
                 alt="LittleLobster video call"
                 className="w-full aspect-video object-cover group-hover:brightness-110 transition-all duration-300"
               />

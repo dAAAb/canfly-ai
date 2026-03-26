@@ -137,7 +137,7 @@ export default function BrandPage() {
     title: `${brandDisplayName} — ${t('brand.titleSuffix')} | CanFly.ai`,
     description: `${brandDisplayName} ${t('brand.metaDesc')}`,
     canonical: `https://canfly.ai${localePath(`/rankings/brand/${slug}`)}`,
-    ogImage: 'https://canfly.ai/og-image.png',
+    ogImage: 'https://canfly.ai/og-image.webp',
     ogType: 'website',
   })
 

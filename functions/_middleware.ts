@@ -11,7 +11,7 @@
  */
 
 const SITE = 'https://canfly.ai'
-const DEFAULT_OG_IMAGE = `${SITE}/og-image.png`
+const DEFAULT_OG_IMAGE = `${SITE}/og-image.webp`
 
 const BOT_UA =
   /facebookexternalhit|Facebot|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|TelegramBot|Applebot|Pinterest|Embedly|Quora Link Preview|vkShare|W3C_Validator/i
@@ -126,61 +126,61 @@ const PRODUCT_META: Record<string, OgMeta> = {
     title: 'Ollama — Free Local AI Models | CanFly',
     description:
       'Run powerful AI models locally without API keys or internet. Privacy-focused, free, and easy.',
-    ogImage: `${SITE}/images/icons/ollama.png`,
+    ogImage: `${SITE}/images/icons/ollama.webp`,
   },
   zeabur: {
     title: 'Zeabur — One-Click Cloud Deployment | CanFly',
     description:
       'Deploy AI agents to the cloud with zero configuration. Get started in minutes.',
-    ogImage: `${SITE}/images/icons/zeabur.png`,
+    ogImage: `${SITE}/images/icons/zeabur.webp`,
   },
   elevenlabs: {
     title: 'ElevenLabs — AI Voice Synthesis | CanFly',
     description:
       'Add realistic voice capabilities to your AI agents with high-quality text-to-speech.',
-    ogImage: `${SITE}/images/icons/elevenlabs.png`,
+    ogImage: `${SITE}/images/icons/elevenlabs.webp`,
   },
   heygen: {
     title: 'HeyGen — AI Video Generation | CanFly',
     description:
       'Create professional AI-generated videos with digital avatars for content and marketing.',
-    ogImage: `${SITE}/images/icons/heygen.png`,
+    ogImage: `${SITE}/images/icons/heygen.webp`,
   },
   umbrel: {
     title: 'Umbrel — Self-Hosted Home Server | CanFly',
     description:
       'Run your own personal cloud server at home with complete data sovereignty.',
-    ogImage: `${SITE}/images/icons/umbrel.png`,
+    ogImage: `${SITE}/images/icons/umbrel.webp`,
   },
   pinata: {
     title: 'Pinata — IPFS & Web3 Storage | CanFly',
     description:
       'Decentralised file storage powered by IPFS. Perfect for Web3 apps and permanent data.',
-    ogImage: `${SITE}/images/icons/pinata.png`,
+    ogImage: `${SITE}/images/icons/pinata.webp`,
   },
   'switchbot-ai-hub': {
     title: 'SwitchBot AI Hub — Smart Home Meets AI | CanFly',
     description:
       'Connect smart home devices with AI. Voice and agent-controlled home automation.',
-    ogImage: `${SITE}/images/icons/switchbot-ai-hub.png`,
+    ogImage: `${SITE}/images/icons/switchbot-ai-hub.webp`,
   },
   perplexity: {
     title: 'Perplexity — AI-Powered Search | CanFly',
     description:
       'AI search engine with direct answers and citations. Free tier available.',
-    ogImage: `${SITE}/images/icons/perplexity.png`,
+    ogImage: `${SITE}/images/icons/perplexity.webp`,
   },
   'even-g2-bridge': {
     title: 'Even Realities G2 Bridge — Smart Glasses AI | CanFly',
     description:
       'Talk to your AI through smart glasses. Voice-to-AI via Cloudflare Worker.',
-    ogImage: `${SITE}/images/icons/even-g2.png`,
+    ogImage: `${SITE}/images/icons/even-g2.webp`,
   },
   'brave-search': {
     title: 'Brave Search API — Free Web Search | CanFly',
     description:
       'Privacy-focused web search API with 2,000 free queries/month. No credit card required.',
-    ogImage: `${SITE}/images/icons/brave-search.png`,
+    ogImage: `${SITE}/images/icons/brave-search.webp`,
   },
   utm: {
     title: 'UTM — Free Virtual Machines for Mac | CanFly',
@@ -192,73 +192,73 @@ const PRODUCT_META: Record<string, OgMeta> = {
     title: 'Virtual Buddy — One-Click Linux VM | CanFly',
     description:
       'The easiest way to get Linux on your Mac. One click and you have a full environment.',
-    ogImage: `${SITE}/images/icons/virtual-buddy.png`,
+    ogImage: `${SITE}/images/icons/virtual-buddy.webp`,
   },
   'mac-mini-m4': {
     title: 'Apple Mac Mini M4 — Compact AI Powerhouse | CanFly',
     description:
       'M4 chip, 16GB unified memory, Thunderbolt 5 — your palm-sized AI workstation.',
-    ogImage: `${SITE}/images/products/mac-mini-m4.jpg`,
+    ogImage: `${SITE}/images/products/mac-mini-m4.webp`,
   },
   'macbook-neo': {
     title: 'Apple MacBook Neo — Most Affordable MacBook | CanFly',
     description:
       "Apple's most affordable laptop. A18 Pro chip, 13\" Liquid Retina — AI-ready out of the box.",
-    ogImage: `${SITE}/images/products/macbook-neo.jpg`,
+    ogImage: `${SITE}/images/products/macbook-neo.webp`,
   },
   'hdmi-dummy-plug': {
     title: 'HDMI Dummy Plug — Unlock Full Resolution on Headless Servers | CanFly',
     description:
       'No monitor? No problem. Plug in and unlock full GPU acceleration + crisp remote desktop on your Mac Mini or AI server. Under $10.',
-    ogImage: `${SITE}/images/products/hdmi-dummy-plug.jpg`,
+    ogImage: `${SITE}/images/products/hdmi-dummy-plug.webp`,
   },
   'geekom-a8': {
     title: 'GEEKOM A8 Mini PC — Best for Local AI | CanFly',
     description:
       'AMD Ryzen 7, 32GB DDR5 — handles Ollama and OpenClaw with ease. Compact and quiet.',
-    ogImage: `${SITE}/images/products/geekom-a8.jpg`,
+    ogImage: `${SITE}/images/products/geekom-a8.webp`,
   },
   'beelink-ser5-max': {
     title: 'Beelink SER5 MAX — High Value AI Mini PC | CanFly',
     description:
       'AMD Ryzen 7 5800H, 24GB RAM, 1TB SSD — unbeatable price for dedicated AI hardware.',
-    ogImage: `${SITE}/images/products/beelink-ser5-max.jpg`,
+    ogImage: `${SITE}/images/products/beelink-ser5-max.webp`,
   },
   'raspberry-pi-5': {
     title: 'Raspberry Pi 5 — Budget AI Learning Kit | CanFly',
     description:
       'The most affordable way to start local AI. Sub-$100 setup with Ollama.',
-    ogImage: `${SITE}/images/products/raspberry-pi-5.jpg`,
+    ogImage: `${SITE}/images/products/raspberry-pi-5.webp`,
   },
   'elgato-stream-deck': {
     title: 'Elgato Stream Deck MK.2 — AI Control Panel | CanFly',
     description:
       '15 programmable LCD keys to trigger AI agents and workflows with one tap.',
-    ogImage: `${SITE}/images/products/elgato-stream-deck.jpg`,
+    ogImage: `${SITE}/images/products/elgato-stream-deck.webp`,
   },
   'fifine-am8': {
     title: 'Fifine AM8 Microphone — AI Voice Input | CanFly',
     description:
       'Crystal-clear USB microphone with noise cancellation for AI voice commands.',
-    ogImage: `${SITE}/images/products/fifine-am8.jpg`,
+    ogImage: `${SITE}/images/products/fifine-am8.webp`,
   },
   basemail: {
     title: 'BaseMail — Crypto-Native Email for AI Agents | CanFly',
     description:
       'Wallet-based email with SIWE auth, ERC-8004 identity, and $ATTN economy. Your wallet is your identity.',
-    ogImage: `${SITE}/images/icons/basemail.png`,
+    ogImage: `${SITE}/images/icons/basemail.webp`,
   },
   agentmail: {
     title: 'AgentMail — Email Infrastructure for AI Agents | CanFly',
     description:
       'Y Combinator-backed. Create inboxes on the fly, Python/Node SDKs, webhooks, semantic search.',
-    ogImage: `${SITE}/images/icons/agentmail.png`,
+    ogImage: `${SITE}/images/icons/agentmail.webp`,
   },
   agentcard: {
     title: 'AgentCard — Virtual Visa Cards for AI Agents | CanFly',
     description:
       'Prepaid virtual Visa cards with MCP-native integration. Let your agents make purchases autonomously.',
-    ogImage: `${SITE}/images/icons/agentcard.png`,
+    ogImage: `${SITE}/images/icons/agentcard.webp`,
   },
 }
 

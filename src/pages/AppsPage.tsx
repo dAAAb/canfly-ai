@@ -77,7 +77,7 @@ export default function AppsPage() {
     title: t('meta.apps.title'),
     description: t('meta.apps.description'),
     canonical: `https://canfly.ai${localePath(selectedCategory === 'all' ? '/apps' : `/apps/${selectedCategory}`)}`,
-    ogImage: 'https://canfly.ai/og-image.png',
+    ogImage: 'https://canfly.ai/og-image.webp',
     ogType: 'website',
   })
 

@@ -75,7 +75,7 @@ export default function AgentAvatarCall({ agentName, avatarId, connectUrl, platf
       >
         <div className="relative">
           <img
-            src="/images/avatar-placeholder.jpg"
+            src="/images/avatar-placeholder.webp"
             alt={`Video call with ${agentName}`}
             className="w-full aspect-video object-cover group-hover:brightness-110 transition-all duration-300"
             onError={(e) => {
