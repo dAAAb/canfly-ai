@@ -10,6 +10,7 @@ import TrustBadge from '../components/TrustBadge'
 import { getTrustLevel } from '../utils/trustLevel'
 import AgentAvatarCall from '../components/AgentAvatarCall'
 import { useAuth } from '../hooks/useAuth'
+import { useEscrowPayment, type PaymentStep } from '../hooks/useEscrowPayment'
 import { Cpu, Globe, Wallet, ExternalLink, Sparkles, Video, MessageCircle, Mail, Github, Shield, Fingerprint, Clock, Calendar, CheckCircle, Circle, AlertCircle, Loader2, Copy, Check, Star, TrendingUp, Package, ShieldCheck } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
@@ -150,6 +151,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
   const [pingStatus, setPingStatus] = useState<'idle' | 'pinging' | 'online' | 'away'>('idle')
   const [pingSla, setPingSla] = useState<string | null>(null)
   const [pingSkill, setPingSkill] = useState<string | null>(null)
+  const escrow = useEscrowPayment()
 
   // useHead must be called before any conditional returns (React Rules of Hooks)
   const agentUrl = free && agent
@@ -650,13 +652,60 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                       {/* Purchase Guide Panel */}
                       {isPurchasable && isExpanded && (
                         <div className="mt-4 pt-4 border-t border-gray-800 space-y-4">
+                          {/* CAN-234: One-click Pay & Order */}
+                          {agent.identity?.wallet && skill.price != null && (
+                            <div className="rounded-xl bg-gradient-to-r from-yellow-900/30 to-yellow-800/10 border border-yellow-700/40 p-4">
+                              <div className="flex items-center justify-between mb-3">
+                                <span className="text-sm font-medium text-yellow-300 flex items-center gap-2">
+                                  <Wallet className="w-4 h-4" />
+                                  Pay & Order
+                                </span>
+                                <span className="text-xs font-mono text-yellow-400">
+                                  {skill.price} {skill.currency || 'USDC'}
+                                </span>
+                              </div>
+
+                              {escrow.step === 'done' && escrow.result ? (
+                                <div className="rounded-lg bg-green-900/30 border border-green-700/40 p-3 text-sm text-green-300 space-y-1">
+                                  <p className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4" /> Order placed!</p>
+                                  <p className="text-xs text-green-400/70 font-mono break-all">Task: {escrow.result.taskId}</p>
+                                  <button onClick={escrow.reset} className="text-xs text-green-400 hover:text-green-300 mt-1">Order another</button>
+                                </div>
+                              ) : escrow.step === 'error' ? (
+                                <div className="rounded-lg bg-red-900/30 border border-red-700/40 p-3 text-sm text-red-300 space-y-1">
+                                  <p className="flex items-center gap-1.5"><AlertCircle className="w-4 h-4" /> {escrow.error}</p>
+                                  <button onClick={escrow.reset} className="text-xs text-red-400 hover:text-red-300 mt-1">Try again</button>
+                                </div>
+                              ) : escrow.step !== 'idle' ? (
+                                <div className="flex items-center gap-2 text-sm text-yellow-300">
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                  {({ generating: 'Generating task ID...', approving: 'Approve USDC in your wallet...', depositing: 'Depositing to escrow...', confirming: 'Creating order...' } as Record<string, string>)[escrow.step] || 'Processing...'}
+                                </div>
+                              ) : (
+                                <button
+                                  onClick={() => escrow.pay({
+                                    agentName: agent.name,
+                                    sellerWallet: agent.identity!.wallet!,
+                                    skillName: skill.name,
+                                    price: skill.price!,
+                                    currency: skill.currency || 'USDC',
+                                  })}
+                                  disabled={!escrow.hasWallet}
+                                  className="w-full py-2.5 rounded-lg bg-yellow-500/20 text-yellow-300 hover:bg-yellow-500/30 border border-yellow-600/50 font-medium text-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                                >
+                                  {escrow.hasWallet ? `Pay ${skill.price} ${skill.currency || 'USDC'} & Order` : 'Connect wallet to pay'}
+                                </button>
+                              )}
+                            </div>
+                          )}
+
                           {/* 1. API curl example */}
                           <div>
                             <div className="flex items-center justify-between mb-1.5">
                               <span className="text-xs font-medium text-gray-300">API Request</span>
                               <button
                                 onClick={() => copyToClipboard(
-                                  `curl -X POST ${window.location.origin}${apiEndpoint} \\\n  -H "Content-Type: application/json" \\\n  -d '${JSON.stringify({ skill: skill.name, buyer: "your-agent-name", payment_method: "usdc_base" })}'`,
+                                  `curl -X POST ${window.location.origin}${apiEndpoint} \\\n  -H "Content-Type: application/json" \\\n  -d '${JSON.stringify({ skill: skill.name, tx_hash: "0x...", payment_method: "escrow", buyer: "your-agent-name" })}'`,
                                   `curl-${skill.name}`
                                 )}
                                 className="text-xs text-gray-500 hover:text-gray-300 flex items-center gap-1"
@@ -668,7 +717,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                             <pre className="text-xs font-mono bg-black/40 rounded-lg p-3 text-green-400 overflow-x-auto whitespace-pre-wrap break-all">
 {`curl -X POST ${window.location.origin}${apiEndpoint} \\
   -H "Content-Type: application/json" \\
-  -d '${JSON.stringify({ skill: skill.name, buyer: "your-agent-name", payment_method: "usdc_base" })}'`}
+  -d '${JSON.stringify({ skill: skill.name, tx_hash: "0x...", payment_method: "escrow", buyer: "your-agent-name" })}'`}
                             </pre>
                           </div>
 
@@ -722,10 +771,10 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                             </div>
                           )}
 
-                          {/* 4. Verify + poll instructions */}
+                          {/* 4. Status + result polling instructions */}
                           <div className="text-xs text-gray-500 space-y-1">
-                            <p>After payment, verify with: <code className="text-gray-400">POST {apiEndpoint}/{'<task_id>'}/verify-payment</code></p>
-                            <p>Poll result: <code className="text-gray-400">GET {apiEndpoint}/{'<task_id>'}/result</code></p>
+                            <p>Check status: <code className="text-gray-400">GET {apiEndpoint}/{'<task_id>'}</code></p>
+                            <p>Get result: <code className="text-gray-400">GET {apiEndpoint}/{'<task_id>'}/result</code></p>
                           </div>
                         </div>
                       )}
