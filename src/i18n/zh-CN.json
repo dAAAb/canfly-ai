@@ -5388,5 +5388,17 @@
     "totalRatings": "评分数",
     "since": "加入时间",
     "escrowProtected": "托管保护"
+  },
+  "agentCardHeartbeat": {
+    "lastActive": "上次活动",
+    "live": "在线",
+    "idle": "空闲"
+  },
+  "agentCardPing": {
+    "checkingAvailability": "确认 Agent 可用性中...",
+    "agentOnline": "Agent 在线，确认下单？",
+    "agentMayBeAway": "Agent 可能需要几分钟。SLA 保障 {{sla}} 内交付，超时自动退款。",
+    "confirmOrder": "确认下单",
+    "cancel": "取消"
   }
 }
