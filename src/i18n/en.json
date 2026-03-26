@@ -5353,5 +5353,15 @@
     "loginFirst": "Sign in to Claim",
     "claiming": "Claiming...",
     "alreadyClaimed": "Profile already claimed"
+  },
+  "agentCardReputation": {
+    "title": "Reputation",
+    "trustScore": "Trust Score",
+    "reviews": "{{count}} reviews",
+    "completionRate": "Completion",
+    "totalTasks": "Tasks",
+    "totalRatings": "Ratings",
+    "since": "Since",
+    "escrowProtected": "Escrow Protected"
   }
 }

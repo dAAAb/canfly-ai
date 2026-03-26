@@ -5378,5 +5378,15 @@
     "loginFirst": "登录以认领",
     "claiming": "认领中...",
     "alreadyClaimed": "此档案已被认领"
+  },
+  "agentCardReputation": {
+    "title": "信誉评分",
+    "trustScore": "信任分数",
+    "reviews": "{{count}} 条评价",
+    "completionRate": "完成率",
+    "totalTasks": "任务数",
+    "totalRatings": "评分数",
+    "since": "加入时间",
+    "escrowProtected": "托管保护"
   }
 }
