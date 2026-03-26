@@ -21,7 +21,10 @@ interface RegisterBody {
   bio?: string
   platform?: string
   model?: string
-  skills?: (string | { name: string; slug?: string; description?: string; url?: string })[]
+  skills?: (string | {
+    name: string; slug?: string; description?: string; url?: string
+    type?: string; price?: number | null; currency?: string | null; sla?: string | null
+  })[]
   avatarUrl?: string
   portfolio?: string[]
   owner_invite?: string
@@ -87,11 +90,20 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
            VALUES (?1, ?2, NULL, NULL, NULL)`
         ).bind(name, skill).run()
       } else {
-        const s = skill as { name: string; slug?: string; description?: string; url?: string }
         await env.DB.prepare(
-          `INSERT INTO skills (agent_name, name, slug, description, url)
-           VALUES (?1, ?2, ?3, ?4, ?5)`
-        ).bind(name, s.name, s.slug || null, s.description || null, s.url || null).run()
+          `INSERT INTO skills (agent_name, name, slug, description, url, type, price, currency, sla)
+           VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)`
+        ).bind(
+          name,
+          skill.name,
+          skill.slug || null,
+          skill.description || null,
+          skill.url || null,
+          skill.type || 'free',
+          skill.price ?? null,
+          skill.currency || null,
+          skill.sla || null,
+        ).run()
       }
     }
   }
@@ -139,7 +151,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
         walletAddress: 'Your wallet address',
         basename: 'Your .base.eth name',
         hosting: 'e.g. Mac Mini M4 Pro (local)',
-        skills: 'Array of {name, slug?, description?, url?} or plain strings',
+        skills: 'Array of {name, slug?, description?, url?, type?, price?, currency?, sla?} or plain strings',
         portfolio: 'Array of portfolio URLs',
       },
     },
