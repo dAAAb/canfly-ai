@@ -11,7 +11,7 @@ import { getTrustLevel } from '../utils/trustLevel'
 import AgentAvatarCall from '../components/AgentAvatarCall'
 import { useAuth } from '../hooks/useAuth'
 import { useEscrowPayment, type PaymentStep } from '../hooks/useEscrowPayment'
-import { Cpu, Globe, Wallet, ExternalLink, Sparkles, Video, MessageCircle, Mail, Github, Shield, Fingerprint, Clock, Calendar, CheckCircle, Circle, AlertCircle, Loader2, Copy, Check, Star, TrendingUp, Package, ShieldCheck } from 'lucide-react'
+import { Cpu, Globe, Wallet, ExternalLink, Sparkles, Video, MessageCircle, Mail, Github, Shield, Fingerprint, Clock, Calendar, CheckCircle, Circle, AlertCircle, Loader2, Copy, Check, Star, TrendingUp, Package, ShieldCheck, Pencil, Plus, Trash2, Save, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 function formatTimeAgo(isoDate: string): string {
@@ -152,6 +152,89 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
   const [pingSla, setPingSla] = useState<string | null>(null)
   const [pingSkill, setPingSkill] = useState<string | null>(null)
   const escrow = useEscrowPayment()
+
+  // Skill editing state
+  interface SkillDraft {
+    name: string; slug: string; description: string
+    type: string; price: string; currency: string; sla: string
+  }
+  const emptyDraft: SkillDraft = { name: '', slug: '', description: '', type: 'free', price: '', currency: 'USDC', sla: '' }
+  const [editingSkill, setEditingSkill] = useState<string | null>(null) // slug of skill being edited
+  const [skillDraft, setSkillDraft] = useState<SkillDraft>(emptyDraft)
+  const [addingSkill, setAddingSkill] = useState(false)
+  const [skillSaving, setSkillSaving] = useState(false)
+
+  // Owner detection: has stored edit token for this agent, or wallet matches owner
+  const agentEditToken = agentName ? localStorage.getItem(`canfly_agent_token_${agentName}`) : null
+  const isOwner = !!(agentEditToken || (walletAddress && agent?.owner?.wallet_address && walletAddress.toLowerCase() === agent.owner.wallet_address.toLowerCase()))
+
+  const getAuthHeaders = (): Record<string, string> => {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    if (agentEditToken) {
+      headers['X-Edit-Token'] = agentEditToken
+    } else if (walletAddress) {
+      headers['X-Wallet-Address'] = walletAddress
+    }
+    return headers
+  }
+
+  const saveSkill = async (slug: string, draft: SkillDraft, isNew: boolean) => {
+    if (!agent) return
+    setSkillSaving(true)
+    try {
+      const body: Record<string, unknown> = { name: draft.name }
+      if (draft.description) body.description = draft.description
+      body.type = draft.type
+      if (draft.type === 'purchasable') {
+        if (draft.price) body.price = parseFloat(draft.price)
+        if (draft.currency) body.currency = draft.currency
+        if (draft.sla) body.sla = draft.sla
+      } else {
+        body.price = null
+        body.currency = null
+        body.sla = null
+      }
+      const res = await fetch(`/api/agents/${agent.name}/skills/${slug}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(body),
+      })
+      if (!res.ok) throw new Error('Save failed')
+      const data = await res.json() as { skill: Skill }
+      // Update local state
+      setAgent(prev => {
+        if (!prev) return prev
+        const existing = prev.skills.findIndex(s => s.slug === slug)
+        const updatedSkill = data.skill
+        if (existing >= 0) {
+          const skills = [...prev.skills]
+          skills[existing] = updatedSkill
+          return { ...prev, skills }
+        }
+        return { ...prev, skills: [...prev.skills, updatedSkill] }
+      })
+      setEditingSkill(null)
+      setAddingSkill(false)
+    } catch {
+      alert('Failed to save skill')
+    } finally {
+      setSkillSaving(false)
+    }
+  }
+
+  const deleteSkill = async (slug: string) => {
+    if (!agent || !confirm('Delete this skill?')) return
+    try {
+      const res = await fetch(`/api/agents/${agent.name}/skills/${slug}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      })
+      if (!res.ok) throw new Error('Delete failed')
+      setAgent(prev => prev ? { ...prev, skills: prev.skills.filter(s => s.slug !== slug) } : prev)
+    } catch {
+      alert('Failed to delete skill')
+    }
+  }
 
   // useHead must be called before any conditional returns (React Rules of Hooks)
   const agentUrl = free && agent
@@ -522,11 +605,23 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
           })()}
 
           {/* Skills Grid */}
-          {agent.skills.length > 0 && (
+          {(agent.skills.length > 0 || isOwner) && (
             <section className="mb-12">
               <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-yellow-400" />
                 Skills ({agent.skills.length})
+                {isOwner && !addingSkill && (
+                  <button
+                    onClick={() => {
+                      setAddingSkill(true)
+                      setEditingSkill(null)
+                      setSkillDraft(emptyDraft)
+                    }}
+                    className="ml-auto text-xs px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 border border-cyan-800/40 transition-colors flex items-center gap-1"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Add Skill
+                  </button>
+                )}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {agent.skills.map((skill) => {
@@ -611,8 +706,109 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                               <ExternalLink className="w-4 h-4" />
                             </Link>
                           )}
+                          {isOwner && skill.slug && (
+                            <>
+                              <button
+                                onClick={() => {
+                                  setEditingSkill(skill.slug)
+                                  setAddingSkill(false)
+                                  setSkillDraft({
+                                    name: skill.name,
+                                    slug: skill.slug || '',
+                                    description: skill.description || '',
+                                    type: skill.type || 'free',
+                                    price: skill.price != null ? String(skill.price) : '',
+                                    currency: skill.currency || 'USDC',
+                                    sla: skill.sla || '',
+                                  })
+                                }}
+                                className="text-gray-400 hover:text-cyan-400 transition-colors"
+                                title="Edit skill"
+                              >
+                                <Pencil className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                onClick={() => deleteSkill(skill.slug!)}
+                                className="text-gray-400 hover:text-red-400 transition-colors"
+                                title="Delete skill"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </>
+                          )}
                         </div>
                       </div>
+
+                      {/* Inline Edit Form */}
+                      {isOwner && editingSkill === skill.slug && (
+                        <div className="mt-4 pt-4 border-t border-cyan-800/40 space-y-3">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <input
+                              className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-sm text-white placeholder-gray-500 focus:border-cyan-600 focus:outline-none"
+                              placeholder="Skill name"
+                              value={skillDraft.name}
+                              onChange={e => setSkillDraft(d => ({ ...d, name: e.target.value }))}
+                            />
+                            <input
+                              className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-sm text-white placeholder-gray-500 focus:border-cyan-600 focus:outline-none"
+                              placeholder="Description"
+                              value={skillDraft.description}
+                              onChange={e => setSkillDraft(d => ({ ...d, description: e.target.value }))}
+                            />
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <label className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
+                              <button
+                                type="button"
+                                onClick={() => setSkillDraft(d => ({ ...d, type: d.type === 'purchasable' ? 'free' : 'purchasable' }))}
+                                className={`w-10 h-5 rounded-full transition-colors relative ${skillDraft.type === 'purchasable' ? 'bg-yellow-500' : 'bg-gray-600'}`}
+                              >
+                                <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${skillDraft.type === 'purchasable' ? 'left-5' : 'left-0.5'}`} />
+                              </button>
+                              {skillDraft.type === 'purchasable' ? 'Purchasable' : 'Free'}
+                            </label>
+                          </div>
+                          {skillDraft.type === 'purchasable' && (
+                            <div className="grid grid-cols-3 gap-2">
+                              <input
+                                className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-sm text-white placeholder-gray-500 focus:border-cyan-600 focus:outline-none"
+                                placeholder="Price"
+                                type="number"
+                                step="0.01"
+                                value={skillDraft.price}
+                                onChange={e => setSkillDraft(d => ({ ...d, price: e.target.value }))}
+                              />
+                              <input
+                                className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-sm text-white placeholder-gray-500 focus:border-cyan-600 focus:outline-none"
+                                placeholder="Currency"
+                                value={skillDraft.currency}
+                                onChange={e => setSkillDraft(d => ({ ...d, currency: e.target.value }))}
+                              />
+                              <input
+                                className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-sm text-white placeholder-gray-500 focus:border-cyan-600 focus:outline-none"
+                                placeholder="SLA (e.g. 5 minutes)"
+                                value={skillDraft.sla}
+                                onChange={e => setSkillDraft(d => ({ ...d, sla: e.target.value }))}
+                              />
+                            </div>
+                          )}
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => saveSkill(skill.slug!, skillDraft, false)}
+                              disabled={skillSaving || !skillDraft.name}
+                              className="text-xs px-3 py-1.5 rounded-lg bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 border border-cyan-700/40 transition-colors disabled:opacity-50 flex items-center gap-1"
+                            >
+                              <Save className="w-3.5 h-3.5" /> {skillSaving ? 'Saving...' : 'Save'}
+                            </button>
+                            <button
+                              onClick={() => setEditingSkill(null)}
+                              className="text-xs px-3 py-1.5 rounded-lg bg-gray-700/30 text-gray-400 hover:bg-gray-700/50 border border-gray-700/40 transition-colors flex items-center gap-1"
+                            >
+                              <X className="w-3.5 h-3.5" /> Cancel
+                            </button>
+                          </div>
+                        </div>
+                      )}
 
                       {/* Ping Result + Confirmation */}
                       {isPurchasable && pingSkill === skill.name && (pingStatus === 'online' || pingStatus === 'away') && !isExpanded && (
@@ -781,6 +977,87 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                     </div>
                   )
                 })}
+
+                {/* Add Skill Form */}
+                {isOwner && addingSkill && (
+                  <div className="bg-gray-900/50 border border-cyan-800/40 rounded-xl p-4 space-y-3">
+                    <h3 className="text-sm font-medium text-cyan-400">New Skill</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <input
+                        className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-sm text-white placeholder-gray-500 focus:border-cyan-600 focus:outline-none"
+                        placeholder="Skill name *"
+                        value={skillDraft.name}
+                        onChange={e => setSkillDraft(d => ({ ...d, name: e.target.value }))}
+                      />
+                      <input
+                        className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-sm text-white placeholder-gray-500 focus:border-cyan-600 focus:outline-none"
+                        placeholder="Slug (url-safe identifier) *"
+                        value={skillDraft.slug}
+                        onChange={e => setSkillDraft(d => ({ ...d, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-') }))}
+                      />
+                    </div>
+                    <input
+                      className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-sm text-white placeholder-gray-500 focus:border-cyan-600 focus:outline-none"
+                      placeholder="Description"
+                      value={skillDraft.description}
+                      onChange={e => setSkillDraft(d => ({ ...d, description: e.target.value }))}
+                    />
+                    <div className="flex items-center gap-3">
+                      <label className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
+                        <button
+                          type="button"
+                          onClick={() => setSkillDraft(d => ({ ...d, type: d.type === 'purchasable' ? 'free' : 'purchasable' }))}
+                          className={`w-10 h-5 rounded-full transition-colors relative ${skillDraft.type === 'purchasable' ? 'bg-yellow-500' : 'bg-gray-600'}`}
+                        >
+                          <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${skillDraft.type === 'purchasable' ? 'left-5' : 'left-0.5'}`} />
+                        </button>
+                        {skillDraft.type === 'purchasable' ? 'Purchasable' : 'Free'}
+                      </label>
+                    </div>
+                    {skillDraft.type === 'purchasable' && (
+                      <div className="grid grid-cols-3 gap-2">
+                        <input
+                          className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-sm text-white placeholder-gray-500 focus:border-cyan-600 focus:outline-none"
+                          placeholder="Price"
+                          type="number"
+                          step="0.01"
+                          value={skillDraft.price}
+                          onChange={e => setSkillDraft(d => ({ ...d, price: e.target.value }))}
+                        />
+                        <input
+                          className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-sm text-white placeholder-gray-500 focus:border-cyan-600 focus:outline-none"
+                          placeholder="Currency"
+                          value={skillDraft.currency}
+                          onChange={e => setSkillDraft(d => ({ ...d, currency: e.target.value }))}
+                        />
+                        <input
+                          className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-sm text-white placeholder-gray-500 focus:border-cyan-600 focus:outline-none"
+                          placeholder="SLA (e.g. 5 minutes)"
+                          value={skillDraft.sla}
+                          onChange={e => setSkillDraft(d => ({ ...d, sla: e.target.value }))}
+                        />
+                      </div>
+                    )}
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          if (!skillDraft.name || !skillDraft.slug) { alert('Name and slug are required'); return }
+                          saveSkill(skillDraft.slug, skillDraft, true)
+                        }}
+                        disabled={skillSaving || !skillDraft.name || !skillDraft.slug}
+                        className="text-xs px-3 py-1.5 rounded-lg bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 border border-cyan-700/40 transition-colors disabled:opacity-50 flex items-center gap-1"
+                      >
+                        <Save className="w-3.5 h-3.5" /> {skillSaving ? 'Creating...' : 'Create'}
+                      </button>
+                      <button
+                        onClick={() => { setAddingSkill(false); setSkillDraft(emptyDraft) }}
+                        className="text-xs px-3 py-1.5 rounded-lg bg-gray-700/30 text-gray-400 hover:bg-gray-700/50 border border-gray-700/40 transition-colors flex items-center gap-1"
+                      >
+                        <X className="w-3.5 h-3.5" /> Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </section>
           )}
