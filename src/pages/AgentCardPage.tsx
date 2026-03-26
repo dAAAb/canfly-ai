@@ -625,7 +625,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                             <p className="mb-2">
                               {pingStatus === 'online'
                                 ? t('agentCardPing.agentOnline', 'Agent is online. Confirm your order?')
-                                : t('agentCardPing.agentMayBeAway', 'Agent may need a few minutes. SLA guarantees delivery within {{sla}}, with automatic refund if exceeded.', { sla: pingSla || '5 min' })}
+                                : t('agentCardPing.agentMayBeAway', 'Agent may need a few minutes. SLA guarantees delivery within {{sla}}, with automatic refund if exceeded.', { sla: skill.sla || pingSla || '5 min' })}
                             </p>
                             <div className="flex gap-2">
                               <button
