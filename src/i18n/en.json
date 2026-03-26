@@ -724,6 +724,21 @@
         "ctaPrimary": "Start Free Tutorial",
         "ctaSecondary": "View on GitHub"
       },
+      "google-gemini": {
+        "tagline": "Free AI assistant with 2M token context — Google ecosystem integrated",
+        "description": "Google's next-generation AI assistant, replacing Google Assistant. Free multimodal AI that understands text, images, and video. 2M token context window and 1-hour video analysis built in. Deep integration with Gmail, Calendar, YouTube, and Drive. Upgrade to Pro ($19.99/mo) for Gems, NotebookLM Plus, and Veo video generation. Gemini API works with OpenClaw via OpenRouter.",
+        "features": [
+          "Free multimodal AI: text, image, and video analysis",
+          "2M token context window — longest in its class",
+          "1-hour video analysis and understanding",
+          "Deep Google ecosystem: Gmail, Calendar, YouTube, Drive",
+          "Pro $19.99/mo: Gems, NotebookLM Plus, Veo video generation",
+          "Gemini API available via OpenRouter for OpenClaw agents",
+          "Available on web, Android, iOS, and Chrome"
+        ],
+        "ctaPrimary": "Try Gemini Free",
+        "ctaSecondary": "View Tutorial"
+      },
       "nemotron-3-super": {
         "tagline": "Free 120B open-source LLM — runs like a 12B model",
         "description": "NVIDIA's open-source 120B parameter LLM that uses Mixture-of-Experts (MoE) architecture to run with just 12B active parameters per inference. Scores 85.6% on PinchBench — the highest among open-source models in its class. Supports 1M token context window. Free to use via OpenRouter, fully open under the NVIDIA Open License. Ideal for OpenClaw AI Agent deployment.",

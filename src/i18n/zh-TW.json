@@ -727,6 +727,21 @@
         "ctaPrimary": "開始免費教學",
         "ctaSecondary": "在 GitHub 上查看"
       },
+      "google-gemini": {
+        "tagline": "免費 AI 助手，2M token 上下文 — 深度整合 Google 生態系",
+        "description": "Google 新一代 AI 助手，取代 Google Assistant。免費多模態 AI，能理解文字、圖片和影片。內建 200 萬 token 上下文視窗和 1 小時影片分析。深度整合 Gmail、Calendar、YouTube 和 Drive。升級 Pro（$19.99/月）可使用 Gems、NotebookLM Plus 和 Veo 影片生成。Gemini API 可透過 OpenRouter 搭配 OpenClaw 使用。",
+        "features": [
+          "免費多模態 AI：文字、圖片和影片分析",
+          "200 萬 token 上下文視窗 — 同級最長",
+          "1 小時影片分析與理解",
+          "深度整合 Google 生態系：Gmail、Calendar、YouTube、Drive",
+          "Pro $19.99/月：Gems、NotebookLM Plus、Veo 影片生成",
+          "Gemini API 可透過 OpenRouter 搭配 OpenClaw 代理使用",
+          "支援網頁、Android、iOS 和 Chrome"
+        ],
+        "ctaPrimary": "免費試用 Gemini",
+        "ctaSecondary": "查看教學"
+      },
       "nemotron-3-super": {
         "tagline": "免費 120B 開源 LLM — 運算效率如同 12B 模型",
         "description": "NVIDIA 開源 120B 參數大型語言模型，採用混合專家（MoE）架構，每次推論只需啟動 12B 參數。在 PinchBench 取得 85.6% 成績——同級開源模型最高分。支援 100 萬 tokens 上下文長度。可透過 OpenRouter 免費使用，完全開源於 NVIDIA Open License。非常適合部署 OpenClaw AI 代理。",
