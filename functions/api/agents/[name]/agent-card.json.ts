@@ -42,6 +42,12 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
     .bind(name)
     .all()
 
+  // Fetch trust score (CAN-220)
+  const trustRow = await env.DB.prepare(
+    `SELECT trust_score, completion_rate, avg_rating, total_tasks, total_ratings
+     FROM trust_scores WHERE agent_name = ?1`
+  ).bind(name).first()
+
   // Fetch milestones
   const milestonesResult = await env.DB.prepare(
     `SELECT date, title, description, trust_level, proof
@@ -156,6 +162,16 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
         trustLevel: m.trust_level,
         proof: m.proof || undefined,
       })),
+      // Trust score (CAN-220)
+      ...(trustRow ? {
+        trustScore: Number(trustRow.trust_score),
+        trustDetails: {
+          completionRate: Number(trustRow.completion_rate),
+          avgRating: Number(trustRow.avg_rating),
+          totalTasks: Number(trustRow.total_tasks),
+          totalRatings: Number(trustRow.total_ratings),
+        },
+      } : {}),
     },
   }
 
