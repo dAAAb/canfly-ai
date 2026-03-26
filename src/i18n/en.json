@@ -692,6 +692,21 @@
         "ctaPrimary": "Install OpenClaw",
         "ctaSecondary": "Visit openclaw.ai"
       },
+      "openrouter": {
+        "tagline": "One API for 200+ AI models — free tier included",
+        "description": "One unified API to access Claude, GPT-4, LLaMA, Gemini, and 200+ models from 30+ providers. Switch models with one line — no separate API keys needed. Free tier includes 50 requests/day. Works seamlessly with OpenClaw agents for smart model routing.",
+        "features": [
+          "One API key for 200+ AI models from 30+ providers",
+          "Free tier: 50 requests/day, 20/min rate limit",
+          "Smart model routing — pick the best for each task",
+          "Supports OpenAI, Anthropic, Google, Meta, NVIDIA & more",
+          "Unified billing and usage tracking",
+          "OpenAI-compatible API — drop-in replacement",
+          "Works with OpenClaw agents for multi-model workflows"
+        ],
+        "ctaPrimary": "Start Free",
+        "ctaSecondary": "View Tutorial"
+      },
       "whisper": {
         "tagline": "Free speech-to-text — runs locally on your Mac",
         "description": "OpenAI's open-source speech recognition model, running 100% locally. Transcribe audio and video in 99 languages with state-of-the-art accuracy. No API key, no cloud, no cost. Pair with Ollama for a fully offline voice-to-AI pipeline — speak to your OpenClaw agent without sending a single byte to the cloud.",

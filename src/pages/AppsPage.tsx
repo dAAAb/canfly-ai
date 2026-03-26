@@ -9,15 +9,17 @@ import { useHead } from '../hooks/useHead'
 
 const categoryFeatured: Record<string, string[]> = {
   all: ['ollama', 'zeabur'],
-  free: ['ollama'],
+  free: ['ollama', 'openrouter'],
   skills: ['heygen', 'elevenlabs'],
   hosting: ['zeabur', 'umbrel'],
   hardware: ['hdmi-dummy-plug', 'mac-mini-m4', 'macbook-neo'],
   vm: ['utm', 'virtual-buddy'],
+  models: ['nemotron-3-super'],
 }
 
 const featuredGradients: Record<string, string> = {
   ollama: 'bg-gradient-to-br from-green-950/60 to-emerald-950/40 border border-green-800/30 hover:border-green-700/50',
+  openrouter: 'bg-gradient-to-br from-sky-950/60 to-cyan-950/40 border border-sky-800/30 hover:border-sky-700/50',
   zeabur: 'bg-gradient-to-br from-blue-950/60 to-indigo-950/40 border border-blue-800/30 hover:border-blue-700/50',
   heygen: 'bg-gradient-to-br from-violet-950/60 to-purple-950/40 border border-violet-800/30 hover:border-violet-700/50',
   elevenlabs: 'bg-gradient-to-br from-pink-950/60 to-rose-950/40 border border-pink-800/30 hover:border-pink-700/50',
@@ -27,6 +29,7 @@ const featuredGradients: Record<string, string> = {
   'macbook-neo': 'bg-gradient-to-br from-gray-800/60 to-slate-900/40 border border-gray-600/30 hover:border-gray-500/50',
   utm: 'bg-gradient-to-br from-cyan-950/60 to-teal-950/40 border border-cyan-800/30 hover:border-cyan-700/50',
   'virtual-buddy': 'bg-gradient-to-br from-teal-950/60 to-emerald-950/40 border border-teal-800/30 hover:border-teal-700/50',
+  'nemotron-3-super': 'bg-gradient-to-br from-lime-950/60 to-green-950/40 border border-lime-800/30 hover:border-lime-700/50',
 }
 
 export default function AppsPage() {
