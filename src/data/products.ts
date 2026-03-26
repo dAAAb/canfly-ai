@@ -128,7 +128,7 @@ export const products: Product[] = [
   },
   {
     id: 'openrouter',
-    icon: '/images/icons/openrouter.svg',
+    icon: '/images/icons/openrouter.png',
     heroImage: '/images/products/openrouter-hero.png',
     name: 'OpenRouter',
     tagline: 'One API for 200+ AI models — free tier included',
@@ -146,8 +146,7 @@ export const products: Product[] = [
       'Works with OpenClaw agents for multi-model workflows',
     ],
     screenshots: [
-      '/images/products/openrouter/screenshot-1.png',
-    ],
+          ],
     tutorial: '/learn/openrouter',
     cta: {
       primary: 'Start Free',
@@ -921,8 +920,7 @@ export const products: Product[] = [
       'Available on web, Android, iOS, and Chrome',
     ],
     screenshots: [
-      '/images/products/google-gemini/screenshot-1.png',
-    ],
+          ],
     tutorial: '/learn/google-gemini',
     cta: {
       primary: 'Try Gemini Free',
@@ -952,8 +950,7 @@ export const products: Product[] = [
       'Works with OpenClaw for autonomous tasks',
     ],
     screenshots: [
-      '/images/products/nemotron-3-super/screenshot-1.png',
-    ],
+          ],
     tutorial: '/learn/nemotron-3-super',
     cta: {
       primary: 'Try Free on OpenRouter',
