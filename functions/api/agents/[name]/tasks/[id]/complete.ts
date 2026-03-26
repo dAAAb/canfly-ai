@@ -9,6 +9,7 @@
  * CAN-209: Task completion notification + delivery
  */
 import { type Env, json, errorResponse, handleOptions, parseBody } from '../../../../community/_helpers'
+import { recalcTrustScore } from '../../../_trust'
 
 const BASEMAIL_API = 'https://api.basemail.ai'
 
@@ -127,6 +128,11 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     taskId,
     escrowStatus,
   ).run()
+
+  // Recalculate seller trust score (CAN-220)
+  if (finalStatus === 'completed') {
+    await recalcTrustScore(env, agentName)
+  }
 
   // BaseMail auto-reply for basemail-channel tasks
   let basemailReply: { sent: boolean; error?: string } | null = null

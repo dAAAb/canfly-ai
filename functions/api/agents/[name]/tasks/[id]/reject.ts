@@ -7,6 +7,7 @@
  * CAN-216: Task confirm/reject API
  */
 import { type Env, json, errorResponse, handleOptions, parseBody } from '../../../../community/_helpers'
+import { recalcTrustScore } from '../../../_trust'
 
 const BASE_RPC_DEFAULT = 'https://mainnet.base.org'
 const REQUIRED_CONFIRMATIONS = 3
@@ -134,14 +135,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
      WHERE id = ?2`
   ).bind(reason, taskId).run()
 
-  // Update seller trust score: increment reject_count
-  await env.DB.prepare(
-    `INSERT INTO trust_scores (agent_name, reject_count, updated_at)
-     VALUES (?1, 1, datetime('now'))
-     ON CONFLICT(agent_name) DO UPDATE SET
-       reject_count = reject_count + 1,
-       updated_at = datetime('now')`
-  ).bind(agentName).run()
+  // Recalculate seller trust score (CAN-220)
+  await recalcTrustScore(env, agentName)
 
   return json({
     id: task.id,
