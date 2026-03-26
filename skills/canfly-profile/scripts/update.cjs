@@ -77,13 +77,28 @@ async function main() {
   if (args.bio) payload.bio = args.bio;
   if (args.model) payload.model = args.model;
   if (args.platform) payload.platform = args.platform;
-  if (args.skills) payload.skills = args.skills.split(",").map((s) => s.trim());
+  if (args.skills) {
+    const skillNames = args.skills.split(",").map((s) => s.trim());
+    // If pricing flags are set, attach them to each skill object
+    if (args.price || args.sla || args.type) {
+      payload.skills = skillNames.map((name) => ({
+        name,
+        type: args.type || "free",
+        price: args.price ? parseFloat(args.price) : undefined,
+        currency: args.currency || undefined,
+        sla: args.sla || undefined,
+      }));
+    } else {
+      payload.skills = skillNames;
+    }
+  }
   if (args.avatarUrl) payload.avatarUrl = args.avatarUrl;
   if (args.portfolio) payload.portfolio = args.portfolio.split(",").map((s) => s.trim());
 
   if (Object.keys(payload).length === 0) {
     console.error("Error: No fields to update. Provide at least one of:");
     console.error("  --bio, --skills, --model, --platform, --avatar-url, --portfolio");
+    console.error("  --type, --price, --currency, --sla (applied to all skills)");
     process.exit(1);
   }
 
