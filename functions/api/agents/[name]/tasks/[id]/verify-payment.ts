@@ -27,8 +27,8 @@ const REQUIRED_CONFIRMATIONS = 3
 // ERC-20 Transfer(address,address,uint256) event signature
 const TRANSFER_TOPIC = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
 // TaskEscrow Deposited(bytes32 indexed taskId, address indexed depositor, uint256 amount) event signature
-// keccak256("Deposited(bytes32,address,uint256)")
-const DEPOSITED_TOPIC = '0xe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c'
+// keccak256("Deposited(bytes32,address,address,uint256,uint256)")
+const DEPOSITED_TOPIC = '0xe3ad398758b9cbdf4196c5d060a1aebae967b4f9115c7394e937cbb46f449587'
 // USDC has 6 decimals
 const USDC_DECIMALS = 6
 
@@ -126,7 +126,9 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
       }
 
       // Verify amount from event data
-      const depositedRaw = BigInt(depositLog.data)
+      // data = abi.encode(uint256 amount, uint256 slaDeadline) — first 32 bytes = amount
+      const amountHex = '0x' + depositLog.data.slice(2, 66)
+      const depositedRaw = BigInt(amountHex)
       transferredAmount = Number(depositedRaw) / Math.pow(10, USDC_DECIMALS)
 
       if (expectedAmount != null && transferredAmount < expectedAmount) {

@@ -14,7 +14,7 @@ const USDC_CONTRACT = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'
 const BASE_RPC_DEFAULT = 'https://mainnet.base.org'
 const REQUIRED_CONFIRMATIONS = 3
 const TRANSFER_TOPIC = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
-const DEPOSITED_TOPIC = '0xe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c'
+const DEPOSITED_TOPIC = '0xe3ad398758b9cbdf4196c5d060a1aebae967b4f9115c7394e937cbb46f449587'
 const USDC_DECIMALS = 6
 const BASEMAIL_API = 'https://api.basemail.ai'
 
@@ -129,9 +129,10 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   const rpcUrl = (env as unknown as Record<string, string>).BASE_RPC_URL || BASE_RPC_DEFAULT
   const escrowContract = ((env as unknown as Record<string, string>).TASK_ESCROW_CONTRACT || '').toLowerCase()
 
-  // Determine payment method: escrow if contract is configured and method says so, else direct
-  const paymentMethod = body.payment_method === 'escrow' && escrowContract ? 'escrow' : (body.payment_method || 'usdc_base')
-  const isEscrowMode = paymentMethod === 'escrow' && !!escrowContract
+  // Determine payment method: auto-detect from tx logs, or explicit via body.payment_method
+  // If escrow contract is configured, we'll check the tx for Deposited events first (auto-detect)
+  let isEscrowMode = (body.payment_method === 'escrow' && !!escrowContract)
+  let paymentMethod = body.payment_method || 'usdc_base'
 
   // --- On-chain verification (MUST pass before task is created) ---
   try {
@@ -158,6 +159,17 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     let transferredAmount: number
     let onChainTaskId: string | null = null
 
+    // Auto-detect escrow mode: if tx has a Deposited event from our escrow contract, use escrow flow
+    if (!isEscrowMode && escrowContract) {
+      const hasDeposit = receipt.logs.some((log) =>
+        log.address.toLowerCase() === escrowContract && log.topics[0] === DEPOSITED_TOPIC
+      )
+      if (hasDeposit) {
+        isEscrowMode = true
+        paymentMethod = 'escrow'
+      }
+    }
+
     if (isEscrowMode) {
       // --- Escrow mode: verify Deposited event from TaskEscrow contract ---
       const depositLog = receipt.logs.find((log) => {
@@ -176,7 +188,9 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
         }
       }
 
-      const depositedRaw = BigInt(depositLog.data)
+      // data = abi.encode(uint256 amount, uint256 slaDeadline) — first 32 bytes = amount
+      const amountHex = '0x' + depositLog.data.slice(2, 66)
+      const depositedRaw = BigInt(amountHex)
       transferredAmount = Number(depositedRaw) / Math.pow(10, USDC_DECIMALS)
 
       if (expectedAmount != null && transferredAmount < expectedAmount) {
