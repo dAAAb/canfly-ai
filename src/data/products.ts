@@ -900,6 +900,37 @@ export const products: Product[] = [
       secondaryLink: '/learn/hardware',
     },
   },
+  // === Google Gemini (Free) ===
+  {
+    id: 'google-gemini',
+    icon: '/images/icons/google-gemini.png',
+    heroImage: '/images/products/google-gemini-hero.png',
+    name: 'Google Gemini',
+    tagline: 'Free AI assistant with 2M token context — Google ecosystem integrated',
+    category: 'free',
+    price: 'Free — $19.99/mo Pro',
+    status: 'available',
+    description: 'Google\'s next-generation AI assistant, replacing Google Assistant. Free multimodal AI that understands text, images, and video. 2M token context window and 1-hour video analysis built in. Deep integration with Gmail, Calendar, YouTube, and Drive. Upgrade to Pro ($19.99/mo) for Gems, NotebookLM Plus, and Veo video generation. Gemini API works with OpenClaw via OpenRouter.',
+    features: [
+      'Free multimodal AI: text, image, and video analysis',
+      '2M token context window — longest in its class',
+      '1-hour video analysis and understanding',
+      'Deep Google ecosystem: Gmail, Calendar, YouTube, Drive',
+      'Pro $19.99/mo: Gems, NotebookLM Plus, Veo video generation',
+      'Gemini API available via OpenRouter for OpenClaw agents',
+      'Available on web, Android, iOS, and Chrome',
+    ],
+    screenshots: [
+      '/images/products/google-gemini/screenshot-1.png',
+    ],
+    tutorial: '/learn/google-gemini',
+    cta: {
+      primary: 'Try Gemini Free',
+      primaryLink: 'https://gemini.google.com',
+      secondary: 'View Tutorial',
+      secondaryLink: '/learn/google-gemini',
+    },
+  },
   // === Free Models ===
   {
     id: 'nemotron-3-super',

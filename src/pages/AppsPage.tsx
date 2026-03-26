@@ -9,7 +9,7 @@ import { useHead } from '../hooks/useHead'
 
 const categoryFeatured: Record<string, string[]> = {
   all: ['ollama', 'zeabur'],
-  free: ['ollama', 'openrouter'],
+  free: ['ollama', 'openrouter', 'google-gemini'],
   skills: ['heygen', 'elevenlabs'],
   hosting: ['zeabur', 'umbrel'],
   hardware: ['hdmi-dummy-plug', 'mac-mini-m4', 'macbook-neo'],
@@ -29,6 +29,7 @@ const featuredGradients: Record<string, string> = {
   'macbook-neo': 'bg-gradient-to-br from-gray-800/60 to-slate-900/40 border border-gray-600/30 hover:border-gray-500/50',
   utm: 'bg-gradient-to-br from-cyan-950/60 to-teal-950/40 border border-cyan-800/30 hover:border-cyan-700/50',
   'virtual-buddy': 'bg-gradient-to-br from-teal-950/60 to-emerald-950/40 border border-teal-800/30 hover:border-teal-700/50',
+  'google-gemini': 'bg-gradient-to-br from-blue-950/60 to-sky-950/40 border border-blue-800/30 hover:border-blue-700/50',
   'nemotron-3-super': 'bg-gradient-to-br from-lime-950/60 to-green-950/40 border border-lime-800/30 hover:border-lime-700/50',
 }
 
