@@ -13,6 +13,17 @@ import { useAuth } from '../hooks/useAuth'
 import { Cpu, Globe, Wallet, ExternalLink, Sparkles, Video, MessageCircle, Mail, Github, Shield, Fingerprint, Clock, Calendar, CheckCircle, Circle, AlertCircle, Loader2, Copy, Check, Star, TrendingUp, Package, ShieldCheck } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
+function formatTimeAgo(isoDate: string): string {
+  const diffMs = Date.now() - new Date(isoDate).getTime()
+  const mins = Math.floor(diffMs / 60000)
+  if (mins < 1) return 'just now'
+  if (mins < 60) return `${mins} min ago`
+  const hrs = Math.floor(mins / 60)
+  if (hrs < 24) return `${hrs}h ago`
+  const days = Math.floor(hrs / 24)
+  return `${days}d ago`
+}
+
 interface Skill {
   name: string
   slug: string | null
@@ -136,6 +147,9 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
     id: string; buyer: string | null; skill: string; completed_at: string; amount: number | null; currency: string | null
   }>>([])
   const [jobsLoaded, setJobsLoaded] = useState(false)
+  const [pingStatus, setPingStatus] = useState<'idle' | 'pinging' | 'online' | 'away'>('idle')
+  const [pingSla, setPingSla] = useState<string | null>(null)
+  const [pingSkill, setPingSkill] = useState<string | null>(null)
 
   // useHead must be called before any conditional returns (React Rules of Hooks)
   const agentUrl = free && agent
@@ -295,7 +309,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                   className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-black ${
                     agent.heartbeat.status === 'live'
                       ? 'bg-green-400 animate-pulse'
-                      : 'bg-gray-500'
+                      : 'bg-yellow-400'
                   }`}
                   title={agent.heartbeat.status === 'live' ? 'Live' : 'Idle'}
                 />
@@ -321,6 +335,21 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
             {/* Email */}
             {agent.identity?.basemailEmail && (
               <p className="text-sm text-gray-400 font-mono mb-2">{agent.identity.basemailEmail}</p>
+            )}
+
+            {/* Last active + SLA */}
+            {agent.heartbeat && agent.heartbeat.status !== 'off' && agent.heartbeat.lastSeen && (
+              <p className="text-xs text-gray-400 mb-2 flex items-center justify-center gap-1.5">
+                <span className={agent.heartbeat.status === 'live' ? 'text-green-400' : 'text-yellow-400'}>
+                  {agent.heartbeat.status === 'live' ? '●' : '●'}
+                </span>
+                {t('agentCardHeartbeat.lastActive', 'Last active')}: {formatTimeAgo(agent.heartbeat.lastSeen)}
+                {agent.skills?.some(s => s.sla) && (
+                  <span className="text-gray-500">
+                    · ⏱ SLA: {agent.skills.find(s => s.sla)?.sla}
+                  </span>
+                )}
+              </p>
             )}
 
             {/* Free Agent badge */}
@@ -544,10 +573,31 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                         <div className="flex items-center gap-1.5 shrink-0">
                           {isPurchasable && (
                             <button
-                              onClick={() => setExpandedSkill(isExpanded ? null : skill.name)}
-                              className="text-xs px-2.5 py-1 rounded-lg bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20 border border-yellow-800/40 transition-colors"
+                              onClick={async () => {
+                                if (isExpanded) {
+                                  setExpandedSkill(null)
+                                  setPingStatus('idle')
+                                  setPingSkill(null)
+                                  return
+                                }
+                                // Ping before expanding
+                                setPingStatus('pinging')
+                                setPingSkill(skill.name)
+                                try {
+                                  const res = await fetch(`/api/agents/${agent.name}/ping`, { method: 'POST' })
+                                  const data = await res.json() as { available: boolean; sla: string | null }
+                                  setPingSla(data.sla)
+                                  setPingStatus(data.available ? 'online' : 'away')
+                                } catch {
+                                  setPingStatus('away')
+                                }
+                              }}
+                              disabled={pingStatus === 'pinging' && pingSkill === skill.name}
+                              className="text-xs px-2.5 py-1 rounded-lg bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20 border border-yellow-800/40 transition-colors disabled:opacity-50"
                             >
-                              {isExpanded ? 'Close' : 'Order'}
+                              {pingStatus === 'pinging' && pingSkill === skill.name
+                                ? t('agentCardPing.checkingAvailability', 'Checking...')
+                                : isExpanded ? 'Close' : 'Order'}
                             </button>
                           )}
                           {skill.slug && (
@@ -561,6 +611,41 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                           )}
                         </div>
                       </div>
+
+                      {/* Ping Result + Confirmation */}
+                      {isPurchasable && pingSkill === skill.name && (pingStatus === 'online' || pingStatus === 'away') && !isExpanded && (
+                        <div className="mt-4 pt-4 border-t border-gray-800">
+                          <div className={`rounded-lg p-3 text-sm ${
+                            pingStatus === 'online'
+                              ? 'bg-green-900/30 border border-green-700/40 text-green-300'
+                              : 'bg-yellow-900/30 border border-yellow-700/40 text-yellow-300'
+                          }`}>
+                            <p className="mb-2">
+                              {pingStatus === 'online'
+                                ? t('agentCardPing.agentOnline', 'Agent is online. Confirm your order?')
+                                : t('agentCardPing.agentMayBeAway', 'Agent may need a few minutes. SLA guarantees delivery within {{sla}}, with automatic refund if exceeded.', { sla: pingSla || '5 min' })}
+                            </p>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => {
+                                  setExpandedSkill(skill.name)
+                                  setPingStatus('idle')
+                                  setPingSkill(null)
+                                }}
+                                className="text-xs px-3 py-1.5 rounded-lg bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30 border border-yellow-700/40"
+                              >
+                                {t('agentCardPing.confirmOrder', 'Confirm Order')}
+                              </button>
+                              <button
+                                onClick={() => { setPingStatus('idle'); setPingSkill(null) }}
+                                className="text-xs px-3 py-1.5 rounded-lg bg-gray-700/30 text-gray-400 hover:bg-gray-700/50 border border-gray-700/40"
+                              >
+                                {t('agentCardPing.cancel', 'Cancel')}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
 
                       {/* Purchase Guide Panel */}
                       {isPurchasable && isExpanded && (

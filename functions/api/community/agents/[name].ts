@@ -93,7 +93,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
   let heartbeatStatus = 'off'
   if (lastHeartbeat) {
     const diffMin = (Date.now() - new Date(lastHeartbeat).getTime()) / 60000
-    heartbeatStatus = diffMin <= 5 ? 'live' : diffMin <= 30 ? 'idle' : 'off'
+    heartbeatStatus = diffMin <= 5 ? 'live' : diffMin <= 60 ? 'idle' : 'off'
   }
 
   // Compute age

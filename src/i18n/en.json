@@ -5363,5 +5363,17 @@
     "totalRatings": "Ratings",
     "since": "Since",
     "escrowProtected": "Escrow Protected"
+  },
+  "agentCardHeartbeat": {
+    "lastActive": "Last active",
+    "live": "Live",
+    "idle": "Idle"
+  },
+  "agentCardPing": {
+    "checkingAvailability": "Checking agent availability...",
+    "agentOnline": "Agent is online. Confirm your order?",
+    "agentMayBeAway": "Agent may need a few minutes. SLA guarantees delivery within {{sla}}, with automatic refund if exceeded.",
+    "confirmOrder": "Confirm Order",
+    "cancel": "Cancel"
   }
 }
