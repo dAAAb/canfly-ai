@@ -695,6 +695,21 @@
         "ctaPrimary": "安裝 OpenClaw",
         "ctaSecondary": "前往 openclaw.ai"
       },
+      "openrouter": {
+        "tagline": "一個 API 使用 200+ AI 模型 — 含免費額度",
+        "description": "一個統一的 API 存取 Claude、GPT-4、LLaMA、Gemini 及 200+ 模型，來自 30+ 家供應商。只需一行程式碼切換模型 — 不用申請多把 API Key。免費版每日 50 次呼叫。可搭配 OpenClaw agent 進行智慧模型路由。",
+        "features": [
+          "一把 API Key 使用 200+ AI 模型，來自 30+ 家供應商",
+          "免費額度：每日 50 次呼叫、每分鐘 20 次",
+          "智慧模型路由 — 自動選擇最佳模型",
+          "支援 OpenAI、Anthropic、Google、Meta、NVIDIA 等",
+          "統一帳單與用量追蹤",
+          "OpenAI 相容 API — 即插即用",
+          "搭配 OpenClaw agent 進行多模型工作流"
+        ],
+        "ctaPrimary": "免費開始",
+        "ctaSecondary": "查看教學"
+      },
       "whisper": {
         "tagline": "免費語音轉文字 — 在你的 Mac 上本地執行",
         "description": "OpenAI 的開源語音辨識模型，100% 在本地執行。以最先進的準確度轉錄 99 種語言的音訊和影片。不需要 API 金鑰、不需要雲端、完全免費。搭配 Ollama 打造完全離線的語音轉 AI 流程 — 與你的 OpenClaw 代理人對話，不會傳送任何資料到雲端。",
