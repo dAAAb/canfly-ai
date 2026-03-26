@@ -332,14 +332,16 @@
       "skills": "AI 技能",
       "hosting": "云端托管",
       "hardware": "硬件",
-      "vm": "虚拟机"
+      "vm": "虚拟机",
+      "models": "免费模型"
     },
     "categoryInfoTooltip": "关于此分类",
     "categoryInfo": {
       "vm": "虚拟机（VM）就像电脑里的电脑——一个安全、隔离的环境，让你无风险地实验各种 AI 工具。非常适合想先试试看的初学者。",
       "hardware": "推荐用于运行本地 AI 模型的 Mac 与 PC 硬件。Apple Silicon（M 系列）芯片在 AI 工作负载的性价比上表现最佳。",
       "skills": "高级 AI 能力——语音合成、视频生成、智能搜索——与你的本地 AI 设置集成，解锁专业级工作流程。",
-      "hosting": "将你的 AI 环境部署到云端，享受 24/7 全天候服务、团队协作，以及超越本地硬件的扩展能力。"
+      "hosting": "将你的 AI 环境部署到云端，享受 24/7 全天候服务、团队协作，以及超越本地硬件的扩展能力。",
+      "models": "免费开源 AI 模型，可在本地或通过 OpenRouter 等云端 API 运行。云端推理无需 GPU。非常适合驱动你的 OpenClaw AI 代理。"
     }
   },
   "product": {
@@ -721,6 +723,21 @@
         ],
         "ctaPrimary": "开始免费教程",
         "ctaSecondary": "在 GitHub 上查看"
+      },
+      "nemotron-3-super": {
+        "tagline": "免费 120B 开源 LLM — 运算效率如同 12B 模型",
+        "description": "NVIDIA 开源 120B 参数大型语言模型，采用混合专家（MoE）架构，每次推理只需激活 12B 参数。在 PinchBench 取得 85.6% 成绩——同级开源模型最高分。支持 100 万 tokens 上下文长度。可通过 OpenRouter 免费使用，完全开源于 NVIDIA Open License。非常适合部署 OpenClaw AI 代理。",
+        "features": [
+          "120B 总参数，仅 12B 激活（MoE 混合专家架构）",
+          "PinchBench 85.6% — 同级开源最高准确度",
+          "100 万 tokens 上下文窗口，适合长篇文档",
+          "通过 OpenRouter 免费使用 — 无 API 密钥费用",
+          "NVIDIA Open License — 完全开源",
+          "针对 AI 代理工作流程优化",
+          "搭配 OpenClaw 执行自主任务"
+        ],
+        "ctaPrimary": "免费试用 OpenRouter",
+        "ctaSecondary": "查看教程"
       }
     },
     "comingSoon": "即将推出",
