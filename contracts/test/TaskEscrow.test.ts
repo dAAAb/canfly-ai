@@ -59,8 +59,8 @@ describe("TaskEscrow", function () {
     it("should reject amount below minimum", async function () {
       const slaDeadline = (await time.latest()) + ONE_DAY;
       await expect(
-        escrow.connect(buyer).deposit(TASK_ID, seller.address, 50_000n, slaDeadline)
-      ).to.be.revertedWith("Below minimum 0.10 USDC");
+        escrow.connect(buyer).deposit(TASK_ID, seller.address, 5_000n, slaDeadline)
+      ).to.be.revertedWith("Below minimum 0.01 USDC");
     });
 
     it("should reject expired SLA deadline", async function () {
