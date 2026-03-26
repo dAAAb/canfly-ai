@@ -1581,7 +1581,7 @@ function createOrderSkillsTutorial(t: any): TutorialData {
         tips: t('tutorial.order-skills.steps.0.tips', { returnObjects: true }),
       },
       {
-        icon: Terminal,
+        icon: Wallet,
         title: t('tutorial.order-skills.steps.1.title'),
         titleEn: t('tutorial.order-skills.steps.1.titleEn'),
         estimatedTime: t('tutorial.order-skills.steps.1.estimatedTime'),
@@ -1591,7 +1591,7 @@ function createOrderSkillsTutorial(t: any): TutorialData {
         tips: t('tutorial.order-skills.steps.1.tips', { returnObjects: true }),
       },
       {
-        icon: Wallet,
+        icon: Terminal,
         title: t('tutorial.order-skills.steps.2.title'),
         titleEn: t('tutorial.order-skills.steps.2.titleEn'),
         estimatedTime: t('tutorial.order-skills.steps.2.estimatedTime'),
