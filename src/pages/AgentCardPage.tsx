@@ -10,7 +10,8 @@ import TrustBadge from '../components/TrustBadge'
 import { getTrustLevel } from '../utils/trustLevel'
 import AgentAvatarCall from '../components/AgentAvatarCall'
 import { useAuth } from '../hooks/useAuth'
-import { Cpu, Globe, Wallet, ExternalLink, Sparkles, Video, MessageCircle, Mail, Github, Shield, Fingerprint, Clock, Calendar, CheckCircle, Circle, AlertCircle, Loader2, Copy, Check } from 'lucide-react'
+import { Cpu, Globe, Wallet, ExternalLink, Sparkles, Video, MessageCircle, Mail, Github, Shield, Fingerprint, Clock, Calendar, CheckCircle, Circle, AlertCircle, Loader2, Copy, Check, Star, TrendingUp, Package, ShieldCheck } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 interface Skill {
   name: string
@@ -73,6 +74,27 @@ interface HeartbeatData {
   lastSeen: string | null
 }
 
+interface BuyerReputation {
+  trustScore: number
+  totalPurchases: number
+  rejectCount: number
+  rejectRate: number
+  avgPaySpeedHrs: number
+}
+
+interface TrustData {
+  trustScore: number
+  completionRate: number
+  avgRating: number
+  totalTasks: number
+  totalRatings: number
+  rejectCount: number
+  timeoutCount: number
+  escrowProtected: boolean
+  updatedAt: string
+  buyerReputation?: BuyerReputation
+}
+
 interface AgentData {
   name: string
   owner_username: string | null
@@ -91,6 +113,7 @@ interface AgentData {
   identity?: IdentityData
   history?: HistoryData
   heartbeat?: HeartbeatData
+  trust?: TrustData | null
 }
 
 export default function AgentCardPage({ free, subdomainUsername }: { free?: boolean; subdomainUsername?: string }) {
@@ -99,6 +122,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
   const agentName = params.agentName
   const { currentLang, switchLang } = useQueryLang()
   const { walletAddress } = useAuth()
+  const { t } = useTranslation()
   const [agent, setAgent] = useState<AgentData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -354,6 +378,90 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
               <p className="text-gray-300 text-lg max-w-2xl mx-auto">{agent.bio}</p>
             )}
           </div>
+
+          {/* Reputation / Trust Score Section */}
+          {agent.trust && (
+            <section className="mb-12">
+              <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-yellow-400" />
+                {t('agentCardReputation.title', 'Reputation')}
+              </h2>
+              <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
+                {/* Trust Score Hero */}
+                <div className="flex items-center justify-center gap-6 mb-5 pb-5 border-b border-gray-800">
+                  <div className="text-center">
+                    <div className="text-4xl font-bold text-white">{agent.trust.trustScore}</div>
+                    <div className="text-xs text-gray-500 mt-1">{t('agentCardReputation.trustScore', 'Trust Score')}</div>
+                  </div>
+                  {agent.trust.totalRatings > 0 && (
+                    <div className="text-center">
+                      <div className="flex items-center gap-1">
+                        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                        <span className="text-2xl font-bold text-white">{agent.trust.avgRating.toFixed(1)}</span>
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">
+                        {t('agentCardReputation.reviews', '{{count}} reviews', { count: agent.trust.totalRatings })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Stats Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  {/* Completion Rate */}
+                  <div className="text-center">
+                    <div className="text-lg font-semibold text-green-400">
+                      {Math.round(agent.trust.completionRate * 100)}%
+                    </div>
+                    <div className="text-xs text-gray-500">{t('agentCardReputation.completionRate', 'Completion')}</div>
+                  </div>
+
+                  {/* Total Tasks */}
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-1">
+                      <Package className="w-4 h-4 text-blue-400" />
+                      <span className="text-lg font-semibold text-white">{agent.trust.totalTasks}</span>
+                    </div>
+                    <div className="text-xs text-gray-500">{t('agentCardReputation.totalTasks', 'Tasks')}</div>
+                  </div>
+
+                  {/* Ratings Count */}
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-1">
+                      <Star className="w-4 h-4 text-yellow-400" />
+                      <span className="text-lg font-semibold text-white">{agent.trust.totalRatings}</span>
+                    </div>
+                    <div className="text-xs text-gray-500">{t('agentCardReputation.totalRatings', 'Ratings')}</div>
+                  </div>
+
+                  {/* Account Age */}
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-1">
+                      <Clock className="w-4 h-4 text-orange-400" />
+                      <span className="text-lg font-semibold text-white">
+                        {agent.history?.ageDays != null
+                          ? agent.history.ageDays < 30
+                            ? `${agent.history.ageDays}d`
+                            : `${Math.floor(agent.history.ageDays / 30)}mo`
+                          : '—'}
+                      </span>
+                    </div>
+                    <div className="text-xs text-gray-500">{t('agentCardReputation.since', 'Since')}</div>
+                  </div>
+                </div>
+
+                {/* Escrow Protected Badge */}
+                {agent.trust.escrowProtected && (
+                  <div className="mt-4 pt-4 border-t border-gray-800 flex items-center justify-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                    <span className="text-sm text-emerald-400 font-medium">
+                      {t('agentCardReputation.escrowProtected', 'Escrow Protected')}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </section>
+          )}
 
           {/* Interactive Video Call Section */}
           {agent.capabilities?.videoCall && (() => {
@@ -811,6 +919,75 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                     </span>
                   </div>
                 ))}
+              </div>
+            </section>
+          )}
+
+          {/* Buyer Reputation (CAN-223) */}
+          {agent.trust?.buyerReputation && (
+            <section className="mb-12">
+              <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <Shield className="w-5 h-5 text-amber-400" />
+                Buyer Reputation
+              </h2>
+              <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
+                {/* Trust score bar */}
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-sm text-gray-400">Buyer Trust Score</span>
+                  <span className={`text-lg font-bold font-mono ${
+                    agent.trust.buyerReputation.trustScore >= 70 ? 'text-green-400'
+                    : agent.trust.buyerReputation.trustScore >= 40 ? 'text-yellow-400'
+                    : 'text-red-400'
+                  }`}>
+                    {agent.trust.buyerReputation.trustScore}
+                  </span>
+                </div>
+                <div className="w-full bg-gray-800 rounded-full h-2 mb-4">
+                  <div
+                    className={`h-2 rounded-full transition-all ${
+                      agent.trust.buyerReputation.trustScore >= 70 ? 'bg-green-500'
+                      : agent.trust.buyerReputation.trustScore >= 40 ? 'bg-yellow-500'
+                      : 'bg-red-500'
+                    }`}
+                    style={{ width: `${agent.trust.buyerReputation.trustScore}%` }}
+                  />
+                </div>
+                {/* Stats grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="text-center">
+                    <div className="text-xs text-gray-500 mb-1">Purchases</div>
+                    <div className="text-sm font-mono text-white">{agent.trust.buyerReputation.totalPurchases}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs text-gray-500 mb-1">Reject Rate</div>
+                    <div className={`text-sm font-mono ${
+                      agent.trust.buyerReputation.rejectRate > 0.3 ? 'text-red-400' : 'text-white'
+                    }`}>
+                      {(agent.trust.buyerReputation.rejectRate * 100).toFixed(1)}%
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs text-gray-500 mb-1">Rejections</div>
+                    <div className="text-sm font-mono text-white">{agent.trust.buyerReputation.rejectCount}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs text-gray-500 mb-1">Avg Pay Speed</div>
+                    <div className="text-sm font-mono text-white">
+                      {agent.trust.buyerReputation.avgPaySpeedHrs < 1
+                        ? `${Math.round(agent.trust.buyerReputation.avgPaySpeedHrs * 60)}m`
+                        : `${agent.trust.buyerReputation.avgPaySpeedHrs.toFixed(1)}h`}
+                    </div>
+                  </div>
+                </div>
+                {/* Warning for high reject rate */}
+                {agent.trust.buyerReputation.rejectRate > 0.3 && (
+                  <div className="mt-3 px-3 py-2 bg-red-900/20 border border-red-800/40 rounded-lg">
+                    <p className="text-xs text-red-400 flex items-center gap-1.5">
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                      High reject rate — sellers may decline orders from this buyer.
+                    </p>
+                  </div>
+                )}
               </div>
             </section>
           )}

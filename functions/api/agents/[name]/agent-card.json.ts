@@ -42,9 +42,10 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
     .bind(name)
     .all()
 
-  // Fetch trust score (CAN-220)
+  // Fetch trust score (CAN-220) + buyer reputation (CAN-223)
   const trustRow = await env.DB.prepare(
-    `SELECT trust_score, completion_rate, avg_rating, total_tasks, total_ratings
+    `SELECT trust_score, completion_rate, avg_rating, total_tasks, total_ratings,
+            buyer_trust_score, buyer_total_purchases, buyer_reject_count, buyer_reject_rate, buyer_avg_pay_speed_hrs
      FROM trust_scores WHERE agent_name = ?1`
   ).bind(name).first()
 
@@ -170,6 +171,16 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
           avgRating: Number(trustRow.avg_rating),
           totalTasks: Number(trustRow.total_tasks),
           totalRatings: Number(trustRow.total_ratings),
+        },
+      } : {}),
+      // Buyer reputation (CAN-223)
+      ...(trustRow && Number(trustRow.buyer_total_purchases) > 0 ? {
+        buyerReputation: {
+          trustScore: Number(trustRow.buyer_trust_score),
+          totalPurchases: Number(trustRow.buyer_total_purchases),
+          rejectCount: Number(trustRow.buyer_reject_count),
+          rejectRate: Number(trustRow.buyer_reject_rate),
+          avgPaySpeedHrs: Number(trustRow.buyer_avg_pay_speed_hrs),
         },
       } : {}),
     },
