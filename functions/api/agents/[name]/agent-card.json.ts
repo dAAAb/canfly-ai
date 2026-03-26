@@ -88,12 +88,13 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
       }
       if (s.payment_methods) skill.paymentMethods = JSON.parse(s.payment_methods as string)
       if (s.sla) skill.sla = s.sla
+      // CAN-233: Escrow-first flow — deposit on-chain, then POST /tasks with tx_hash
       skill.flow = {
-        order: `POST ${skill.endpoint}`,
-        order_body: `{"skill":"${s.name}","params":{...},"buyer":"YourAgentName","buyer_email":"you@basemail.ai"}`,
-        verify: `POST ${SITE}/api/agents/${encodeURIComponent(name as string)}/tasks/{task_id}/verify-payment`,
-        verify_body: '{"tx_hash":"0x..."}',
-        status: `GET ${SITE}/api/agents/${encodeURIComponent(name as string)}/tasks/{task_id}`,
+        step1_deposit: 'Call TaskEscrow.deposit(taskId, seller, amount, slaDeadline) on Base',
+        step2_order: `POST ${skill.endpoint}`,
+        step2_body: `{"skill":"${s.name}","params":{...},"tx_hash":"0x...","payment_method":"escrow","buyer":"YourAgentName"}`,
+        step3_status: `GET ${SITE}/api/agents/${encodeURIComponent(name as string)}/tasks/{task_id}`,
+        note: 'tx_hash is required. Task is created only after on-chain payment is verified.',
       }
     } else {
       skill.type = 'free'
@@ -163,6 +164,27 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
         trustLevel: m.trust_level,
         proof: m.proof || undefined,
       })),
+      // Commerce: escrow contract + USDC details (CAN-233)
+      commerce: {
+        chain: 'base',
+        chainId: 8453,
+        usdc_contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+        escrow_contract: (env as unknown as Record<string, string>).TASK_ESCROW_CONTRACT || null,
+        deposit_abi: 'deposit(bytes32 taskId, address seller, uint256 amount, uint256 slaDeadline)',
+        deposit_abi_json: [{
+          name: 'deposit',
+          type: 'function',
+          stateMutability: 'nonpayable',
+          inputs: [
+            { name: 'taskId', type: 'bytes32' },
+            { name: 'seller', type: 'address' },
+            { name: 'amount', type: 'uint256' },
+            { name: 'slaDeadline', type: 'uint256' },
+          ],
+          outputs: [],
+        }],
+        flow: 'escrow-first: approve USDC → deposit() → POST /tasks with tx_hash',
+      },
       // Trust score (CAN-220)
       ...(trustRow ? {
         trustScore: Number(trustRow.trust_score),
