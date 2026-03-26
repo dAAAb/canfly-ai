@@ -26,7 +26,7 @@ contract TaskEscrow {
     IERC20 public immutable usdc;
     address public owner;
 
-    uint256 public constant MIN_AMOUNT = 100_000; // 0.10 USDC (6 decimals)
+    uint256 public constant MIN_AMOUNT = 10_000; // 0.01 USDC (6 decimals)
     uint256 public constant DEFAULT_DISPUTE_WINDOW = 24 hours;
 
     enum Status {
@@ -95,7 +95,7 @@ contract TaskEscrow {
         uint256 slaDeadline,
         uint256 disputeWindow
     ) public {
-        require(amount >= MIN_AMOUNT, "Below minimum 0.10 USDC");
+        require(amount >= MIN_AMOUNT, "Below minimum 0.01 USDC");
         require(slaDeadline > block.timestamp, "SLA deadline must be in the future");
         require(seller != address(0), "Zero seller address");
         require(seller != msg.sender, "Buyer cannot be seller");
