@@ -28,8 +28,8 @@ export interface Product {
 export const products: Product[] = [
   {
     id: 'ollama',
-    icon: '/images/icons/ollama.png',
-    heroImage: '/images/products/ollama-hero.png',
+    icon: '/images/icons/ollama.webp',
+    heroImage: '/images/products/ollama-hero.webp',
     name: 'Ollama',
     tagline: 'Free Local & Cloud AI Models × OpenClaw',
     category: 'free',
@@ -46,10 +46,10 @@ export const products: Product[] = [
       'Works with OpenClaw agents',
     ],
     screenshots: [
-      '/images/products/ollama/screenshot-1.png',
-      '/images/tutorial/ollama-mac-installer.png',
-      '/images/tutorial/ollama-pull-model.png',
-      '/images/tutorial/ollama-chat-session.png',
+      '/images/products/ollama/screenshot-1.webp',
+      '/images/tutorial/ollama-mac-installer.webp',
+      '/images/tutorial/ollama-pull-model.webp',
+      '/images/tutorial/ollama-chat-session.webp',
     ],
     reviewVideo: '/videos/reviews/ollama-review.mp4',
     tutorial: '/learn/ollama',
@@ -63,7 +63,7 @@ export const products: Product[] = [
   {
     id: 'omlx',
     icon: '/images/icons/omlx.svg',
-    heroImage: '/images/products/omlx-hero.png',
+    heroImage: '/images/products/omlx-hero.webp',
     name: 'oMLX',
     tagline: '10x Faster Local AI on Mac — OpenClaw Turbo Mode',
     category: 'free',
@@ -83,9 +83,9 @@ export const products: Product[] = [
       'Built on Apple MLX framework',
     ],
     screenshots: [
-      '/images/products/omlx/screenshot-1.png',
-      '/images/products/omlx/screenshot-2.png',
-      '/images/products/omlx/screenshot-3.png',
+      '/images/products/omlx/screenshot-1.webp',
+      '/images/products/omlx/screenshot-2.webp',
+      '/images/products/omlx/screenshot-3.webp',
     ],
     reviewVideo: '/videos/reviews/omlx-review.mp4',
     tutorial: '/learn/omlx',
@@ -98,8 +98,8 @@ export const products: Product[] = [
   },
   {
     id: 'openclaw',
-    icon: '/images/icons/openclaw.png',
-    heroImage: '/images/products/openclaw-hero.png',
+    icon: '/images/icons/openclaw.webp',
+    heroImage: '/images/products/openclaw-hero.webp',
     name: 'OpenClaw',
     tagline: 'Your personal AI agent — your AI, your rules',
     category: 'free',
@@ -116,7 +116,7 @@ export const products: Product[] = [
       'Active development with weekly releases',
     ],
     screenshots: [
-      '/images/products/openclaw/screenshot-1.png',
+      '/images/products/openclaw/screenshot-1.webp',
     ],
     tutorial: '/learn/ollama-openclaw',
     cta: {
@@ -128,8 +128,8 @@ export const products: Product[] = [
   },
   {
     id: 'openrouter',
-    icon: '/images/icons/openrouter.png',
-    heroImage: '/images/products/openrouter-hero.png',
+    icon: '/images/icons/openrouter.webp',
+    heroImage: '/images/products/openrouter-hero.webp',
     name: 'OpenRouter',
     tagline: 'One API for 200+ AI models — free tier included',
     category: 'free',
@@ -157,8 +157,8 @@ export const products: Product[] = [
   },
   {
     id: 'zeabur',
-    icon: '/images/icons/zeabur.png',
-    heroImage: '/images/products/zeabur-hero.png',
+    icon: '/images/icons/zeabur.webp',
+    heroImage: '/images/products/zeabur-hero.webp',
     name: 'Zeabur',
     tagline: 'One-click cloud deployment — zero DevOps needed',
     category: 'hosting',
@@ -178,7 +178,7 @@ export const products: Product[] = [
       'Pay-as-you-go billing from $0',
     ],
     screenshots: [
-      '/images/products/zeabur/screenshot-1.png',
+      '/images/products/zeabur/screenshot-1.webp',
     ],
     reviewVideo: '/videos/reviews/zeabur-review.mp4',
     tutorial: '/learn/zeabur',
@@ -191,8 +191,8 @@ export const products: Product[] = [
   },
   {
     id: 'elevenlabs',
-    icon: '/images/icons/elevenlabs.png',
-    heroImage: '/images/products/elevenlabs-hero.png',
+    icon: '/images/icons/elevenlabs.webp',
+    heroImage: '/images/products/elevenlabs-hero.webp',
     name: 'ElevenLabs',
     tagline: 'Most realistic AI voice synthesis — 32 languages',
     category: 'skills',
@@ -211,7 +211,7 @@ export const products: Product[] = [
       'REST API + Python/Node SDKs',
     ],
     screenshots: [
-      '/images/products/elevenlabs/screenshot-1.png',
+      '/images/products/elevenlabs/screenshot-1.webp',
     ],
     reviewVideo: '/videos/reviews/elevenlabs-review.mp4',
     tutorial: '/learn/elevenlabs-integration',
@@ -224,8 +224,8 @@ export const products: Product[] = [
   },
   {
     id: 'heygen',
-    icon: '/images/icons/heygen.png',
-    heroImage: '/images/products/heygen-hero.png',
+    icon: '/images/icons/heygen.webp',
+    heroImage: '/images/products/heygen-hero.webp',
     name: 'HeyGen',
     tagline: 'AI video generation — digital avatars in 175+ languages',
     category: 'skills',
@@ -244,7 +244,7 @@ export const products: Product[] = [
       'OpenClaw skill: generate videos from agent workflows',
     ],
     screenshots: [
-      '/images/products/heygen/screenshot-1.png',
+      '/images/products/heygen/screenshot-1.webp',
     ],
     reviewVideo: '/videos/reviews/heygen-review.mp4',
     tutorial: '/learn/heygen-video',
@@ -258,9 +258,9 @@ export const products: Product[] = [
   // === Budget Essential ===
   {
     id: 'hdmi-dummy-plug',
-    icon: '/images/products/hdmi-dummy-plug/logo-icon.jpg',
-    heroImage: '/images/products/hdmi-dummy-plug.jpg',
-    ogImage: '/images/products/hdmi-dummy-plug/og-image.jpg',
+    icon: '/images/products/hdmi-dummy-plug/logo-icon.webp',
+    heroImage: '/images/products/hdmi-dummy-plug.webp',
+    ogImage: '/images/products/hdmi-dummy-plug/og-image.webp',
     name: 'EVanlak 8K HDMI Dummy Plug',
     tagline: 'Headless server essential — unlock full resolution',
     category: 'hardware',
@@ -276,10 +276,10 @@ export const products: Product[] = [
       'Plug and play — no drivers, works with any computer',
     ],
     screenshots: [
-      '/images/products/hdmi-dummy-plug/product-front.jpg',
-      '/images/products/hdmi-dummy-plug/mac-mini-setup.jpg',
-      '/images/products/hdmi-dummy-plug/headless-diagram.jpg',
-      '/images/products/hdmi-dummy-plug/connector-detail.jpg',
+      '/images/products/hdmi-dummy-plug/product-front.webp',
+      '/images/products/hdmi-dummy-plug/mac-mini-setup.webp',
+      '/images/products/hdmi-dummy-plug/headless-diagram.webp',
+      '/images/products/hdmi-dummy-plug/connector-detail.webp',
     ],
     tutorial: '/learn/always-on-mac',
     affiliateLink: 'https://www.amazon.com/dp/B0CL21JLB1?tag=juchunko-20',
@@ -294,8 +294,8 @@ export const products: Product[] = [
   },
   {
     id: 'umbrel',
-    icon: '/images/icons/umbrel.png',
-    heroImage: '/images/products/umbrel-hero.png',
+    icon: '/images/icons/umbrel.webp',
+    heroImage: '/images/products/umbrel-hero.webp',
     name: 'Umbrel',
     tagline: 'Your personal home cloud — own your data',
     category: 'hardware',
@@ -313,7 +313,7 @@ export const products: Product[] = [
       'Active community with regular app updates',
     ],
     screenshots: [
-      '/images/products/umbrel/screenshot-1.jpg',
+      '/images/products/umbrel/screenshot-1.webp',
     ],
     reviewVideo: '/videos/reviews/umbrel-review.mp4',
     tutorial: '/learn/umbrel-setup',
@@ -326,8 +326,8 @@ export const products: Product[] = [
   },
   {
     id: 'pinata',
-    icon: '/images/icons/pinata.png',
-    heroImage: '/images/products/pinata-hero.png',
+    icon: '/images/icons/pinata.webp',
+    heroImage: '/images/products/pinata-hero.webp',
     name: 'Pinata',
     tagline: 'IPFS & Web3 storage',
     category: 'hosting',
@@ -342,7 +342,7 @@ export const products: Product[] = [
       'API & SDK access',
     ],
     screenshots: [
-      '/images/products/pinata/screenshot-1.png',
+      '/images/products/pinata/screenshot-1.webp',
     ],
     tutorial: '',
     cta: {
@@ -354,8 +354,8 @@ export const products: Product[] = [
   },
   {
     id: 'switchbot-ai-hub',
-    icon: '/images/icons/switchbot-ai-hub.png',
-    heroImage: '/images/products/switchbot-ai-hub-hero.png',
+    icon: '/images/icons/switchbot-ai-hub.webp',
+    heroImage: '/images/products/switchbot-ai-hub-hero.webp',
     name: 'SwitchBot AI Hub',
     tagline: 'Smart home × AI agents — voice & LLM control',
     category: 'hardware',
@@ -372,8 +372,8 @@ export const products: Product[] = [
       'Local processing — no cloud required for basic commands',
     ],
     screenshots: [
-      '/images/products/switchbot-ai-hub/screenshot-1.jpg',
-      '/images/products/switchbot-ai-hub/screenshot-2.jpg',
+      '/images/products/switchbot-ai-hub/screenshot-1.webp',
+      '/images/products/switchbot-ai-hub/screenshot-2.webp',
     ],
     tutorial: '',
     cta: {
@@ -385,8 +385,8 @@ export const products: Product[] = [
   },
   {
     id: 'perplexity',
-    icon: '/images/icons/perplexity.png',
-    heroImage: '/images/products/perplexity-hero.png',
+    icon: '/images/icons/perplexity.webp',
+    heroImage: '/images/products/perplexity-hero.webp',
     name: 'Perplexity',
     tagline: 'AI search engine — answers with real-time citations',
     category: 'skills',
@@ -405,8 +405,8 @@ export const products: Product[] = [
       'Free tier: unlimited basic searches',
     ],
     screenshots: [
-      '/images/products/perplexity/screenshot-1.png',
-      '/images/products/perplexity/screenshot-2.png',
+      '/images/products/perplexity/screenshot-1.webp',
+      '/images/products/perplexity/screenshot-2.webp',
     ],
     reviewVideo: '/videos/reviews/perplexity-review.mp4',
     tutorial: '/learn/perplexity',
@@ -419,8 +419,8 @@ export const products: Product[] = [
   },
   {
     id: 'even-g2-bridge',
-    icon: '/images/icons/even-g2.png',
-    heroImage: '/images/products/even-g2-bridge-hero.png',
+    icon: '/images/icons/even-g2.webp',
+    heroImage: '/images/products/even-g2-bridge-hero.webp',
     name: 'Even Realities G2 Bridge',
     tagline: 'Talk to your AI through smart glasses',
     category: 'skills',
@@ -447,8 +447,8 @@ export const products: Product[] = [
   },
   {
     id: 'whisper',
-    icon: '/images/icons/whisper.png',
-    heroImage: '/images/products/whisper-hero.png',
+    icon: '/images/icons/whisper.webp',
+    heroImage: '/images/products/whisper-hero.webp',
     name: 'Whisper',
     tagline: 'Free speech-to-text — runs locally on your Mac',
     category: 'skills',
@@ -465,7 +465,7 @@ export const products: Product[] = [
       'Free & open source (MIT license)',
     ],
     screenshots: [
-      '/images/products/whisper/screenshot-1.png',
+      '/images/products/whisper/screenshot-1.webp',
     ],
     tutorial: '/learn/whisper',
     cta: {
@@ -477,8 +477,8 @@ export const products: Product[] = [
   },
   {
     id: 'brave-search',
-    icon: '/images/icons/brave-search.png',
-    heroImage: '/images/products/brave-search-hero.png',
+    icon: '/images/icons/brave-search.webp',
+    heroImage: '/images/products/brave-search-hero.webp',
     name: 'Brave Search API',
     tagline: 'Free web search API',
     category: 'skills',
@@ -493,8 +493,8 @@ export const products: Product[] = [
       'No credit card required',
     ],
     screenshots: [
-      '/images/products/brave-search/screenshot-1.png',
-      '/images/products/brave-search/screenshot-2.png',
+      '/images/products/brave-search/screenshot-1.webp',
+      '/images/products/brave-search/screenshot-2.webp',
     ],
     reviewVideo: '/videos/reviews/brave-search-review.mp4',
     tutorial: '/learn/brave-search',
@@ -508,8 +508,8 @@ export const products: Product[] = [
   // === AI Agent Email & Payment ===
   {
     id: 'basemail',
-    icon: '/images/icons/basemail.png',
-    heroImage: '/images/products/basemail-hero.png',
+    icon: '/images/icons/basemail.webp',
+    heroImage: '/images/products/basemail-hero.webp',
     name: 'BaseMail',
     tagline: 'Crypto-native email for AI Agents',
     category: 'skills',
@@ -537,8 +537,8 @@ export const products: Product[] = [
   },
   {
     id: 'agentmail',
-    icon: '/images/icons/agentmail.png',
-    heroImage: '/images/products/agentmail-hero.png',
+    icon: '/images/icons/agentmail.webp',
+    heroImage: '/images/products/agentmail-hero.webp',
     name: 'AgentMail',
     tagline: 'Email infrastructure for AI Agents',
     category: 'skills',
@@ -554,8 +554,8 @@ export const products: Product[] = [
       'Y Combinator backed',
     ],
     screenshots: [
-      '/images/products/agentmail/screenshot-1.png',
-      '/images/products/agentmail/screenshot-2.png',
+      '/images/products/agentmail/screenshot-1.webp',
+      '/images/products/agentmail/screenshot-2.webp',
     ],
     tutorial: '/learn/agentmail',
     cta: {
@@ -567,8 +567,8 @@ export const products: Product[] = [
   },
   {
     id: 'agentcard',
-    icon: '/images/icons/agentcard.png',
-    heroImage: '/images/products/agentcard-hero.png',
+    icon: '/images/icons/agentcard.webp',
+    heroImage: '/images/products/agentcard-hero.webp',
     name: 'AgentCard',
     tagline: 'Virtual Visa cards for AI Agents',
     category: 'skills',
@@ -584,8 +584,8 @@ export const products: Product[] = [
       'Currently in Beta',
     ],
     screenshots: [
-      '/images/products/agentcard/screenshot-1.png',
-      '/images/products/agentcard/screenshot-2.png',
+      '/images/products/agentcard/screenshot-1.webp',
+      '/images/products/agentcard/screenshot-2.webp',
     ],
     tutorial: '/learn/agentcard',
     cta: {
@@ -597,8 +597,8 @@ export const products: Product[] = [
   },
   {
     id: 'worldid',
-    icon: '/images/icons/worldid.png',
-    heroImage: '/images/products/worldid-hero.png',
+    icon: '/images/icons/worldid.webp',
+    heroImage: '/images/products/worldid-hero.webp',
     name: 'World ID',
     tagline: 'Proof of personhood for AI Agents',
     category: 'skills',
@@ -625,8 +625,8 @@ export const products: Product[] = [
   },
   {
     id: 'agentbook',
-    icon: '/images/icons/agentbook.png',
-    heroImage: '/images/products/agentbook-hero.png',
+    icon: '/images/icons/agentbook.webp',
+    heroImage: '/images/products/agentbook-hero.webp',
     name: 'AgentBook',
     tagline: 'On-chain registry for AI Agents',
     category: 'skills',
@@ -654,7 +654,7 @@ export const products: Product[] = [
   {
     id: 'utm',
     icon: '/images/icons/utm.webp',
-    heroImage: '/images/products/utm-hero.png',
+    heroImage: '/images/products/utm-hero.webp',
     name: 'UTM',
     tagline: 'Free virtual machines for Mac',
     category: 'vm',
@@ -669,9 +669,9 @@ export const products: Product[] = [
       'Apple Silicon optimized',
     ],
     screenshots: [
-      '/images/products/utm/screenshot-1.png',
-      '/images/products/utm/screenshot-2.png',
-      '/images/products/utm/screenshot-3.png',
+      '/images/products/utm/screenshot-1.webp',
+      '/images/products/utm/screenshot-2.webp',
+      '/images/products/utm/screenshot-3.webp',
     ],
     tutorial: '/learn/virtual-machine',
     cta: {
@@ -683,7 +683,7 @@ export const products: Product[] = [
   },
   {
     id: 'virtual-buddy',
-    icon: '/images/icons/virtual-buddy.png',
+    icon: '/images/icons/virtual-buddy.webp',
     name: 'Virtual Buddy',
     tagline: 'One-click Linux VM setup',
     category: 'vm',
@@ -697,11 +697,11 @@ export const products: Product[] = [
       'Perfect for beginners',
       'macOS native app',
     ],
-    heroImage: '/images/products/virtual-buddy-hero.png',
+    heroImage: '/images/products/virtual-buddy-hero.webp',
     screenshots: [
-      '/images/products/virtual-buddy/showcase.jpg',
-      '/images/products/virtual-buddy/guest-app.jpg',
-      '/images/products/virtual-buddy/device-support.png',
+      '/images/products/virtual-buddy/showcase.webp',
+      '/images/products/virtual-buddy/guest-app.webp',
+      '/images/products/virtual-buddy/device-support.webp',
     ],
     tutorial: '/learn/virtual-machine',
     cta: {
@@ -714,8 +714,8 @@ export const products: Product[] = [
   // === Apple Products (Amazon Associates 2.5%) ===
   {
     id: 'mac-mini-m4',
-    icon: '/images/icons/apple.png',
-    heroImage: '/images/products/mac-mini-m4.jpg',
+    icon: '/images/icons/apple.webp',
+    heroImage: '/images/products/mac-mini-m4.webp',
     name: 'Apple Mac Mini M4',
     tagline: 'Compact AI powerhouse',
     category: 'hardware',
@@ -745,8 +745,8 @@ export const products: Product[] = [
   },
   {
     id: 'macbook-neo',
-    icon: '/images/icons/apple.png',
-    heroImage: '/images/products/macbook-neo.jpg',
+    icon: '/images/icons/apple.webp',
+    heroImage: '/images/products/macbook-neo.webp',
     name: 'Apple MacBook Neo',
     tagline: 'Most affordable MacBook ever',
     category: 'hardware',
@@ -777,8 +777,8 @@ export const products: Product[] = [
   // === Amazon Hardware Products ===
   {
     id: 'geekom-a8',
-    icon: '/images/icons/geekom.png',
-    heroImage: '/images/products/geekom-a8.jpg',
+    icon: '/images/icons/geekom.webp',
+    heroImage: '/images/products/geekom-a8.webp',
     name: 'GEEKOM A8 Mini PC',
     tagline: 'Best mini PC for local AI',
     category: 'hardware',
@@ -808,8 +808,8 @@ export const products: Product[] = [
   },
   {
     id: 'beelink-ser5-max',
-    icon: '/images/icons/beelink.png',
-    heroImage: '/images/products/beelink-ser5-max.jpg',
+    icon: '/images/icons/beelink.webp',
+    heroImage: '/images/products/beelink-ser5-max.webp',
     name: 'Beelink SER5 MAX',
     tagline: 'High value AI mini PC',
     category: 'hardware',
@@ -839,8 +839,8 @@ export const products: Product[] = [
   },
   {
     id: 'raspberry-pi-5',
-    icon: '/images/icons/raspberry-pi.png',
-    heroImage: '/images/products/raspberry-pi-5.jpg',
+    icon: '/images/icons/raspberry-pi.webp',
+    heroImage: '/images/products/raspberry-pi-5.webp',
     name: 'Raspberry Pi 5',
     tagline: 'Budget AI learning kit',
     category: 'hardware',
@@ -870,8 +870,8 @@ export const products: Product[] = [
   },
   {
     id: 'elgato-stream-deck',
-    icon: '/images/icons/elgato.png',
-    heroImage: '/images/products/elgato-stream-deck.jpg',
+    icon: '/images/icons/elgato.webp',
+    heroImage: '/images/products/elgato-stream-deck.webp',
     name: 'Elgato Stream Deck MK.2',
     tagline: 'AI workflow control panel',
     category: 'hardware',
@@ -902,8 +902,8 @@ export const products: Product[] = [
   // === Google Gemini (Free) ===
   {
     id: 'google-gemini',
-    icon: '/images/icons/google-gemini.png',
-    heroImage: '/images/products/google-gemini-hero.png',
+    icon: '/images/icons/google-gemini.webp',
+    heroImage: '/images/products/google-gemini-hero.webp',
     name: 'Google Gemini',
     tagline: 'Free AI assistant with 2M token context — Google ecosystem integrated',
     category: 'models',
@@ -932,8 +932,8 @@ export const products: Product[] = [
   // === Free Models ===
   {
     id: 'nemotron-3-super',
-    icon: '/images/icons/nemotron.png',
-    heroImage: '/images/products/nemotron-hero.png',
+    icon: '/images/icons/nemotron.webp',
+    heroImage: '/images/products/nemotron-hero.webp',
     name: 'NVIDIA Nemotron 3 Super',
     tagline: 'Free 120B open-source LLM — runs like a 12B model',
     category: 'models',
@@ -961,8 +961,8 @@ export const products: Product[] = [
   },
   {
     id: 'fifine-am8',
-    icon: '/images/icons/fifine.png',
-    heroImage: '/images/products/fifine-am8.jpg',
+    icon: '/images/icons/fifine.webp',
+    heroImage: '/images/products/fifine-am8.webp',
     name: 'Fifine AM8 Microphone',
     tagline: 'AI voice input made easy',
     category: 'hardware',

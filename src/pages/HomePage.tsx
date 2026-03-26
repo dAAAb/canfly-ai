@@ -17,7 +17,7 @@ export default function HomePage() {
     title: t('meta.home.title'),
     description: t('meta.home.description'),
     canonical: `https://canfly.ai${localePath('/')}`,
-    ogImage: 'https://canfly.ai/og-image.png',
+    ogImage: 'https://canfly.ai/og-image.webp',
     ogType: 'website',
   })
 

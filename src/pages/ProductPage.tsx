@@ -204,7 +204,7 @@ export default function ProductPage() {
                 <h3 className="text-lg font-semibold mb-3">{t('product.review')}</h3>
                 <ReviewVideoPlayer
                   src={product.reviewVideo}
-                  poster={product.reviewVideo.replace('.mp4', '-poster.jpg')}
+                  poster={product.reviewVideo.replace('.mp4', '-poster.webp')}
                   subtitles={[
                     { label: 'English', srclang: 'en', src: product.reviewVideo.replace('.mp4', '.en.vtt') },
                     { label: '繁體中文', srclang: 'zh-TW', src: product.reviewVideo.replace('.mp4', '.zh-TW.vtt') },
