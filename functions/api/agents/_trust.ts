@@ -101,3 +101,67 @@ export async function recalcTrustScore(env: TrustEnv, agentName: string): Promis
 
   return trustScore
 }
+
+/**
+ * Buyer Trust Score Calculation (CAN-223)
+ *
+ * Tracks buyer reputation:
+ *   - reject_rate = buyer_reject_count / buyer_total_purchases
+ *   - avg_pay_speed_hrs = average hours from task created_at to confirmed_at
+ *   - buyer_trust_score = 0.5 * (1 - reject_rate) + 0.3 * pay_speed_score + 0.2 * volume_score
+ *
+ * Where:
+ *   pay_speed_score = max(0, 1 - avg_pay_speed_hrs / 72)  (0 at 72h+, 1 at instant)
+ *   volume_score    = min(log(total_purchases + 1) / log(50), 1)
+ *
+ * reject_rate > 30% → buyer reputation significantly degraded
+ *
+ * Result: 0–100 score
+ */
+export async function recalcBuyerTrustScore(env: TrustEnv, buyerAgent: string): Promise<number> {
+  // 1. Buyer task counts
+  const counts = await env.DB.prepare(
+    `SELECT
+       COUNT(*) AS total,
+       SUM(CASE WHEN escrow_status = 'rejected' THEN 1 ELSE 0 END) AS rejected,
+       SUM(CASE WHEN escrow_status = 'released' THEN 1 ELSE 0 END) AS confirmed
+     FROM tasks WHERE buyer_agent = ?1 AND status IN ('completed', 'failed', 'timeout')`
+  ).bind(buyerAgent).first()
+
+  const totalPurchases = Number(counts?.total ?? 0)
+  const rejectCount = Number(counts?.rejected ?? 0)
+  const confirmedCount = Number(counts?.confirmed ?? 0)
+
+  // 2. Average payment speed (hours from task created_at to confirmed_at)
+  const speedRow = await env.DB.prepare(
+    `SELECT AVG((julianday(confirmed_at) - julianday(created_at)) * 24) AS avg_hrs
+     FROM tasks WHERE buyer_agent = ?1 AND confirmed_at IS NOT NULL`
+  ).bind(buyerAgent).first()
+
+  const avgPaySpeedHrs = Number(speedRow?.avg_hrs ?? 0)
+
+  // 3. Calculate components
+  const rejectRate = totalPurchases > 0 ? rejectCount / totalPurchases : 0
+  const paySpeedScore = Math.max(0, 1 - avgPaySpeedHrs / 72)
+  const volumeScore = Math.min(Math.log(totalPurchases + 1) / Math.log(50), 1)
+
+  // 4. Weighted formula → 0-100
+  const buyerTrustScore = Math.round(
+    (0.5 * (1 - rejectRate) + 0.3 * paySpeedScore + 0.2 * volumeScore) * 100
+  )
+
+  // 5. Upsert trust_scores table (buyer columns)
+  await env.DB.prepare(
+    `INSERT INTO trust_scores (agent_name, buyer_total_purchases, buyer_reject_count, buyer_reject_rate, buyer_avg_pay_speed_hrs, buyer_trust_score, updated_at)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, datetime('now'))
+     ON CONFLICT(agent_name) DO UPDATE SET
+       buyer_total_purchases = ?2,
+       buyer_reject_count = ?3,
+       buyer_reject_rate = ?4,
+       buyer_avg_pay_speed_hrs = ?5,
+       buyer_trust_score = ?6,
+       updated_at = datetime('now')`
+  ).bind(buyerAgent, totalPurchases, rejectCount, rejectRate, avgPaySpeedHrs, buyerTrustScore).run()
+
+  return buyerTrustScore
+}

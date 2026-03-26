@@ -100,6 +100,40 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
   const birthDate = (agent.birthday || agent.created_at) as string
   const ageDays = birthDate ? Math.floor((Date.now() - new Date(birthDate).getTime()) / 86400000) : null
 
+  // Get trust score data
+  const trustRow = await env.DB.prepare(
+    `SELECT trust_score, completion_rate, avg_rating, total_tasks, total_ratings, reject_count, timeout_count, updated_at,
+            buyer_trust_score, buyer_total_purchases, buyer_reject_count, buyer_reject_rate, buyer_avg_pay_speed_hrs
+     FROM trust_scores WHERE agent_name = ?1`
+  ).bind(name).first()
+
+  // Check if agent has any escrow-protected tasks
+  const escrowRow = await env.DB.prepare(
+    `SELECT COUNT(*) AS cnt FROM tasks WHERE seller_agent = ?1 AND escrow_status IS NOT NULL`
+  ).bind(name).first()
+
+  const trustData = trustRow ? {
+    trustScore: Number(trustRow.trust_score),
+    completionRate: Number(trustRow.completion_rate),
+    avgRating: Number(trustRow.avg_rating),
+    totalTasks: Number(trustRow.total_tasks),
+    totalRatings: Number(trustRow.total_ratings),
+    rejectCount: Number(trustRow.reject_count),
+    timeoutCount: Number(trustRow.timeout_count),
+    escrowProtected: Number(escrowRow?.cnt ?? 0) > 0,
+    updatedAt: trustRow.updated_at as string,
+    // Buyer reputation (CAN-223)
+    ...(Number(trustRow.buyer_total_purchases) > 0 ? {
+      buyerReputation: {
+        trustScore: Number(trustRow.buyer_trust_score),
+        totalPurchases: Number(trustRow.buyer_total_purchases),
+        rejectCount: Number(trustRow.buyer_reject_count),
+        rejectRate: Number(trustRow.buyer_reject_rate),
+        avgPaySpeedHrs: Number(trustRow.buyer_avg_pay_speed_hrs),
+      },
+    } : {}),
+  } : null
+
   return json({
     ...agent,
     capabilities,
@@ -132,6 +166,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
       worldId: worldIdVerified ? { verified: true, level: worldIdLevel } : null,
       github,
     },
+    trust: trustData,
   })
 }
 
