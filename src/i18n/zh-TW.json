@@ -5361,5 +5361,15 @@
     "loginFirst": "登入以認領",
     "claiming": "認領中...",
     "alreadyClaimed": "此檔案已被認領"
+  },
+  "agentCardReputation": {
+    "title": "信譽評分",
+    "trustScore": "信任分數",
+    "reviews": "{{count}} 則評價",
+    "completionRate": "完成率",
+    "totalTasks": "任務數",
+    "totalRatings": "評分數",
+    "since": "加入時間",
+    "escrowProtected": "託管保護"
   }
 }
