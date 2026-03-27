@@ -6688,6 +6688,375 @@
           "a": "BaseMail 使用钱包认证。你的数据与你的钱包绑定，不是中心化帐号。"
         }
       ]
+    },
+    "pinata": {
+      "title": "Pinata — 託管 OpenClaw Agent",
+      "subtitle": "在隔离容器中部署、迭代和快照 OpenClaw Agent——终端优先的工作流程",
+      "duration": "10 分钟",
+      "difficulty": "中级",
+      "steps": [
+        {
+          "title": "注册 Pinata Agents",
+          "titleEn": "Sign Up for Pinata Agents",
+          "estimatedTime": "2 分钟",
+          "content": "Pinata Agents 是 OpenClaw 的託管平台。每个 Agent 运行在自己的隔离容器中，內建模板、密鑰、聊天、日誌和快照功能。",
+          "commands": [
+            "# 到 Pinata 注册",
+            "open https://agents.pinata.cloud",
+            "",
+            "# 你会获取：",
+            "#   - 每个 Agent 独立的隔离容器",
+            "#   - 內建模板和技能管理",
+            "#   - 密鑰管理（加密）",
+            "#   - 聊天界面和即时日誌",
+            "#   - Agent 快照用於版本控制"
+          ],
+          "expectedResult": "你有了 Pinata 账号，可以存取 Agent 儀表板。",
+          "tips": [
+            "有免费方案——非常适合入门",
+            "每个 Agent 有自己的隔离环境",
+            "预装：Node.js、Python 和常用 CLI 工具"
+          ],
+          "troubleshooting": {
+            "title": "账号问题",
+            "items": [
+              {
+                "q": "需要懂 Docker 吗？",
+                "a": "不需要！这就是重点。Pinata 处理所有基礎设施——容器、网络、持久化。你只需设置 Agent。"
+              },
+              {
+                "q": "支持哪些 OpenClaw 功能？",
+                "a": "全部——外掛、技能、频道、密鑰、人格。Pinata 在每个容器中运行完整的 OpenClaw。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "安装 Pinata CLI",
+          "titleEn": "Install the Pinata CLI",
+          "estimatedTime": "3 分钟",
+          "content": "Pinata CLI 是终端优先的 Agent 管理工具。创建、聊天、检查、除錯、快照和自动化——全在终端完成。",
+          "commands": [
+            "# 安装 Pinata CLI",
+            "npm install -g @pinata/cli",
+            "# 或",
+            "brew install pinata-cli",
+            "",
+            "# 登录",
+            "pinata auth login",
+            "",
+            "# 创建你的第一个 Agent",
+            "pinata agents create --name \"MyAgent\" --template starter",
+            "",
+            "# 列出你的 Agent",
+            "pinata agents list",
+            "",
+            "# 跟你的 Agent 聊天",
+            "pinata agents chat <agent-id>"
+          ],
+          "expectedResult": "CLI 已安装，你可以从终端创建和聊天 Agent。",
+          "tips": [
+            "用模板快速开始：starter、ipfs-expert 等",
+            "CLI 支持管道：echo '摘要' | pinata agents chat --text <id>",
+            "所有 Agent 狀态自动持久化和同步"
+          ],
+          "troubleshooting": {
+            "title": "CLI 问题",
+            "items": [
+              {
+                "q": "安装後找不到指令",
+                "a": "确认 npm 全域 bin 在你的 PATH 中。试试：npx @pinata/cli agents list"
+              },
+              {
+                "q": "认证 Token 过期",
+                "a": "运行：pinata auth login 重新认证。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "管理、除錯和快照",
+          "titleEn": "Manage, Debug & Snapshot",
+          "estimatedTime": "3 分钟",
+          "content": "真正的強项：检查 Agent 狀态、讀取文件、查看日誌，並将可用的设置存储为快照，随时可以还原。",
+          "commands": [
+            "# 查看 Agent 日誌",
+            "pinata agents logs <agent-id>",
+            "",
+            "# 列出已安装的技能",
+            "pinata agents skills list <agent-id>",
+            "",
+            "# 管理密鑰",
+            "pinata agents secrets list <agent-id>",
+            "pinata agents secrets set <agent-id> MY_KEY=value",
+            "",
+            "# 讀取 Agent 文件",
+            "pinata agents files read <agent-id> /path/to/file",
+            "",
+            "# 在 Agent 容器中运行指令",
+            "pinata agents exec <agent-id> ls -la",
+            "",
+            "# 快照可用的设置",
+            "pinata agents snapshots create <agent-id>",
+            "",
+            "# 从快照还原",
+            "pinata agents snapshots list <agent-id>",
+            "pinata agents snapshots reset <agent-id> <cid>"
+          ],
+          "expectedResult": "你可以从终端完全管理、除錯和版本控制你的 Agent。",
+          "tips": [
+            "快照存储一切：设置、技能、密鑰、人格",
+            "快照以內容定址（IPFS CID）——不可变且可分享",
+            "用快照作为新 Agent 的模板",
+            "检查-快照-重用循环是关鍵工作流程"
+          ],
+          "troubleshooting": {
+            "title": "除錯问题",
+            "items": [
+              {
+                "q": "Agent 沒有回应",
+                "a": "查看日誌：pinata agents logs <id>。然後重啟：pinata agents restart <id>"
+              },
+              {
+                "q": "设置改动不见了",
+                "a": "如果改动前有建快照，可以还原。否則直接检查 Agent 文件。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "1 分钟",
+          "content": "你正在用順暢的终端工作流程运行託管的 OpenClaw Agent！打造、測试、快照、重用。",
+          "tips": [
+            "用 CLI 在本地开发，远程部署以实现 24/7 运行",
+            "与團隊分享快照作为可重用模板",
+            "查看 Pinata 文件了解进階功能：频道、Webhook 等"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "📦",
+              "title": "Ollama",
+              "desc": "本地 AI 模型",
+              "link": "/learn/ollama",
+              "cta": "设置指南"
+            },
+            {
+              "emoji": "🌐",
+              "title": "OpenRouter",
+              "desc": "云端 AI 模型",
+              "link": "/learn/openrouter",
+              "cta": "获取 API 密钥"
+            },
+            {
+              "emoji": "🦞",
+              "title": "OpenClaw 技能",
+              "desc": "新增功能",
+              "link": "/learn/agent-skills",
+              "cta": "浏览技能"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Pinata vs 自架 OpenClaw？",
+          "a": "Pinata 处理基礎设施（容器、网络、持久化、擴展）。自架给你完全控制但要自己管理一切。Pinata 适合團隊和正式环境。"
+        },
+        {
+          "q": "可以用自己的模型吗？",
+          "a": "可以——在 Agent 设置中配置任何模型供应商。Ollama、OpenRouter、直接 API 密钥——全部支持。"
+        },
+        {
+          "q": "Pinata 不是 IPFS 服务吗？",
+          "a": "Pinata 起初是 IPFS 固定服务。Pinata Agents 是他們較新的 AI Agent 託管产品。快照使用 IPFS CID 实现內容定址。"
+        },
+        {
+          "q": "有免费方案吗？",
+          "a": "有——到 agents.pinata.cloud 查看目前的免费方案限制。"
+        }
+      ]
+    },
+    "switchbotAiHub": {
+      "title": "SwitchBot AI Hub — 智能家庭 × AI 设置指南",
+      "subtitle": "用本地 AI 控制你的智能家庭——VLM 处理、OpenClaw 集成、Matter 支持",
+      "duration": "15 分钟",
+      "difficulty": "入门",
+      "steps": [
+        {
+          "title": "开箱设置 AI Hub",
+          "titleEn": "Unbox & Set Up AI Hub",
+          "estimatedTime": "5 分钟",
+          "content": "SwitchBot AI Hub（$259.99）是全球第一款內建視覺语言模型（VLM）的智能家庭中樞。插上电源，通过 SwitchBot App 連线。",
+          "commands": [
+            "# 購買 SwitchBot AI Hub",
+            "open https://us.switch-bot.com/products/switchbot-ai-hub",
+            "",
+            "# 设置步驟：",
+            "# 1. 开箱連接电源 + 网络线（或 WiFi）",
+            "# 2. 下载 SwitchBot App（iOS / Android）",
+            "# 3. 在 App 中新增装置：'+' > 'AI Hub'",
+            "# 4. 按照螢幕上的设置精灵操作",
+            "# 5. 連接你现有的 SwitchBot 装置"
+          ],
+          "expectedResult": "AI Hub 上线並在 SwitchBot App 中可见。",
+          "tips": [
+            "建议用网络线連接以确保穩定",
+            "放在居中位置以获得最佳 IR/藍牙范圍",
+            "支持 100+ SwitchBot 装置：鎖、窗簾、感測器、摄影机",
+            "Matter & Thread 支持——也可搭配 Apple Home、Google Home、Alexa"
+          ],
+          "troubleshooting": {
+            "title": "设置问题",
+            "items": [
+              {
+                "q": "App 中找不到 Hub",
+                "a": "确认手机和 Hub 在同一个 WiFi 网络。试试重啟 Hub。"
+              },
+              {
+                "q": "现有装置不显示",
+                "a": "通过 SwitchBot App 重新配对装置。AI Hub 取代舊的 Hub 作为中央控制器。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "啟用 AI 功能",
+          "titleEn": "Enable AI Features",
+          "estimatedTime": "3 分钟",
+          "content": "AI Hub 內建本地視覺语言模型（VLM），在装置上处理指令和摄影机畫面。啟用 AI 功能並设置自然语言控制。",
+          "commands": [
+            "# 在 SwitchBot App 中：",
+            "# 1. 前往 AI Hub 设置",
+            "# 2. 啟用「AI 助手」",
+            "# 3. 授予摄影机权限（用於 RTSP 摄影机）",
+            "# 4. 开始免费试用（试用後 $4.99/月）",
+            "",
+            "# 试试自然语言指令：",
+            "# 「关掉所有燈」",
+            "# 「关窗簾並鎖门」",
+            "# 「臥室溫度多少？」",
+            "# 「天黑了就开客廳的燈」"
+          ],
+          "expectedResult": "你可以通过 AI Hub 用自然语言控制家裡。",
+          "tips": [
+            "本地 VLM = 指令在装置上处理，不经云端",
+            "RTSP 摄影机支持視覺理解",
+            "情境感知：理解多步驟指令",
+            "AI 功能免费试用後 $4.99/月"
+          ],
+          "troubleshooting": {
+            "title": "AI 问题",
+            "items": [
+              {
+                "q": "AI 不理解我的指令",
+                "a": "试用更簡单的说法。VLM 理解你在 SwitchBot 设置中的装置名称——用那些名称。"
+              },
+              {
+                "q": "摄影机畫面不显示",
+                "a": "检查 RTSP 摄影机设置。确认摄影机和 AI Hub 在同一个网络。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "集成 OpenClaw Agent",
+          "titleEn": "Integrate with OpenClaw",
+          "estimatedTime": "5 分钟",
+          "content": "将 SwitchBot AI Hub 連接到你的 OpenClaw Agent，实现对话式家庭自动化。使用 SwitchBot Cloud API 或 OpenClaw SwitchBot 技能。",
+          "commands": [
+            "# 获取 SwitchBot API 憑证",
+            "# 1. 打开 SwitchBot App > 个人文件 > 偏好设置",
+            "# 2. 点击「开发者选项」（連按版本号 10 次解鎖）",
+            "# 3. 复製你的 Token 和 Secret",
+            "",
+            "# 为 OpenClaw 安装 SwitchBot 技能",
+            "# 设置你的 API token：",
+            "export SWITCHBOT_TOKEN=your_token",
+            "export SWITCHBOT_SECRET=your_secret",
+            "",
+            "# 现在你的 OpenClaw Agent 可以：",
+            "#   「关掉臥室的燈」",
+            "#   「廚房濕度多少？」",
+            "#   「每晚 11 点鎖所有门」",
+            "#   「日出时打开窗簾」"
+          ],
+          "expectedResult": "你的 OpenClaw Agent 可以通过对话控制 SwitchBot 装置。",
+          "tips": [
+            "SwitchBot Cloud API 账号免费使用",
+            "OpenClaw 技能自动处理 API 认证",
+            "创建結合 AI 推理和家庭控制的自动化",
+            "与 Alexa/Google Home 並存——不会取代它們"
+          ],
+          "troubleshooting": {
+            "title": "集成问题",
+            "items": [
+              {
+                "q": "找不到开发者选项",
+                "a": "在 SwitchBot App 中：个人文件 > 偏好设置 > 連按版本号 10 次解鎖开发者模式。"
+              },
+              {
+                "q": "API 回传錯误",
+                "a": "检查 Token 和 Secret 是否正确。API 有速率限制——不要每秒发送太多请求。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "1 分钟",
+          "content": "你的智能家庭现在有 AI 加持了！探索自动化配方和更多装置。",
+          "tips": [
+            "加装更多 SwitchBot 装置打造更完整的智能家庭",
+            "用 OpenClaw Agent 邏輯创建复杂自动化",
+            "探索 Matter 集成搭配 Apple Home 和 Google Home"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "OpenClaw",
+              "desc": "打造 AI Agent 工作流程",
+              "link": "/learn/ollama-openclaw",
+              "cta": "开始教程"
+            },
+            {
+              "emoji": "🏠",
+              "title": "SwitchBot 商店",
+              "desc": "浏览更多装置",
+              "link": "https://www.switch-bot.com",
+              "cta": "立即选購",
+              "external": true
+            },
+            {
+              "emoji": "🌐",
+              "title": "OpenRouter",
+              "desc": "云端 AI 进階邏輯",
+              "link": "/learn/openrouter",
+              "cta": "设置指南"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "需要订閱吗？",
+          "a": "Hub 的基本智能家庭控制不需订閱。AI 功能（自然语言、VLM）免费试用後需要 $4.99/月。"
+        },
+        {
+          "q": "沒有网络可以用吗？",
+          "a": "可以用藍牙/IR 的基本本地指令。AI 功能和 Cloud API 需要网络。本地 VLM 在你的区域网络上持续运作。"
+        },
+        {
+          "q": "支持哪些装置？",
+          "a": "100+ SwitchBot 装置：鎖、窗簾、百葉窗、感測器、摄影机、插座、掃地机器人等。加上其他品牌的 Matter 装置。"
+        },
+        {
+          "q": "可以取代 Alexa/Google Home 吗？",
+          "a": "它是互补的。SwitchBot AI Hub 处理本地 AI + SwitchBot 装置。也通过 Matter 橋接到 Apple Home/Google Home/Alexa。"
+        }
+      ]
     }
   },
   "hardwareCompare": {

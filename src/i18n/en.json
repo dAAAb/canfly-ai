@@ -6663,6 +6663,375 @@
           "a": "No — the micro-LED is only visible to the wearer. Others see normal-looking glasses."
         }
       ]
+    },
+    "pinata": {
+      "title": "Pinata — Hosted OpenClaw Agents",
+      "subtitle": "Deploy, iterate, and snapshot OpenClaw agents in isolated containers — terminal-first workflow",
+      "duration": "10 min",
+      "difficulty": "Intermediate",
+      "steps": [
+        {
+          "title": "註冊 Pinata Agents",
+          "titleEn": "Sign Up for Pinata Agents",
+          "estimatedTime": "2 min",
+          "content": "Pinata Agents is a managed hosting platform for OpenClaw. Each agent runs in its own isolated container with built-in templates, secrets, chat, logs, and snapshots.",
+          "commands": [
+            "# Sign up at Pinata",
+            "open https://agents.pinata.cloud",
+            "",
+            "# What you get:",
+            "#   - Isolated containers per agent",
+            "#   - Built-in templates & skill management",
+            "#   - Secrets management (encrypted)",
+            "#   - Chat interface & real-time logs",
+            "#   - Agent snapshots for versioning"
+          ],
+          "expectedResult": "You have a Pinata account and can access the agent dashboard.",
+          "tips": [
+            "Free tier available — perfect for getting started",
+            "Each agent gets its own isolated environment",
+            "Pre-installed: Node.js, Python, and common CLI tools"
+          ],
+          "troubleshooting": {
+            "title": "Account Issues",
+            "items": [
+              {
+                "q": "Do I need to know Docker?",
+                "a": "No! That's the point. Pinata handles all the infrastructure — containers, networking, persistence. You just configure your agent."
+              },
+              {
+                "q": "What OpenClaw features are supported?",
+                "a": "Everything — plugins, skills, channels, secrets, personas. Pinata runs full OpenClaw in each container."
+              }
+            ]
+          }
+        },
+        {
+          "title": "安裝 Pinata CLI",
+          "titleEn": "Install the Pinata CLI",
+          "estimatedTime": "3 min",
+          "content": "The Pinata CLI is the terminal-first layer for managing agents. Create, chat, inspect, debug, snapshot, and automate — all from your terminal.",
+          "commands": [
+            "# Install the Pinata CLI",
+            "npm install -g @pinata/cli",
+            "# or",
+            "brew install pinata-cli",
+            "",
+            "# Login",
+            "pinata auth login",
+            "",
+            "# Create your first agent",
+            "pinata agents create --name \"MyAgent\" --template starter",
+            "",
+            "# List your agents",
+            "pinata agents list",
+            "",
+            "# Chat with your agent",
+            "pinata agents chat <agent-id>"
+          ],
+          "expectedResult": "CLI is installed and you can create and chat with agents from terminal.",
+          "tips": [
+            "Use templates for quick starts: starter, ipfs-expert, etc.",
+            "CLI supports piping: echo 'summarize this' | pinata agents chat --text <id>",
+            "All agent state persists and syncs automatically"
+          ],
+          "troubleshooting": {
+            "title": "CLI Issues",
+            "items": [
+              {
+                "q": "Command not found after install",
+                "a": "Make sure npm global bin is in your PATH. Try: npx @pinata/cli agents list"
+              },
+              {
+                "q": "Auth token expired",
+                "a": "Run: pinata auth login to re-authenticate."
+              }
+            ]
+          }
+        },
+        {
+          "title": "管理、除錯和快照",
+          "titleEn": "Manage, Debug & Snapshot",
+          "estimatedTime": "3 min",
+          "content": "The real power: inspect agent state, read files, view logs, and save working configurations as snapshots you can restore anytime.",
+          "commands": [
+            "# View agent logs",
+            "pinata agents logs <agent-id>",
+            "",
+            "# List installed skills",
+            "pinata agents skills list <agent-id>",
+            "",
+            "# Manage secrets",
+            "pinata agents secrets list <agent-id>",
+            "pinata agents secrets set <agent-id> MY_KEY=value",
+            "",
+            "# Read agent files",
+            "pinata agents files read <agent-id> /path/to/file",
+            "",
+            "# Execute commands in agent container",
+            "pinata agents exec <agent-id> ls -la",
+            "",
+            "# Snapshot working setup",
+            "pinata agents snapshots create <agent-id>",
+            "",
+            "# Restore from snapshot",
+            "pinata agents snapshots list <agent-id>",
+            "pinata agents snapshots reset <agent-id> <cid>"
+          ],
+          "expectedResult": "You can fully manage, debug, and version your agent from the terminal.",
+          "tips": [
+            "Snapshots save everything: config, skills, secrets, persona",
+            "Snapshots are content-addressed (IPFS CID) — immutable and shareable",
+            "Use snapshots as templates for new agents",
+            "The inspect-snapshot-reuse loop is the key workflow"
+          ],
+          "troubleshooting": {
+            "title": "Debug Issues",
+            "items": [
+              {
+                "q": "Agent isn't responding",
+                "a": "Check logs: pinata agents logs <id>. Then restart: pinata agents restart <id>"
+              },
+              {
+                "q": "Lost my config changes",
+                "a": "If you made a snapshot before changes, restore it. Otherwise check agent files directly."
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "1 min",
+          "content": "You're running hosted OpenClaw agents with a smooth terminal workflow! Build, test, snapshot, and reuse.",
+          "tips": [
+            "Develop locally with the CLI, deploy remotely for 24/7 uptime",
+            "Share snapshots with your team as reusable templates",
+            "Check Pinata docs for advanced features: channels, webhooks, etc."
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "📦",
+              "title": "Ollama",
+              "desc": "Local AI models",
+              "link": "/learn/ollama",
+              "cta": "Setup Guide"
+            },
+            {
+              "emoji": "🌐",
+              "title": "OpenRouter",
+              "desc": "Cloud AI models",
+              "link": "/learn/openrouter",
+              "cta": "Get API Key"
+            },
+            {
+              "emoji": "🦞",
+              "title": "OpenClaw Skills",
+              "desc": "Add capabilities",
+              "link": "/learn/agent-skills",
+              "cta": "Browse Skills"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Pinata vs self-hosting OpenClaw?",
+          "a": "Pinata handles infrastructure (containers, networking, persistence, scaling). Self-hosting gives you full control but you manage everything. Pinata is great for teams and production."
+        },
+        {
+          "q": "Can I use my own models?",
+          "a": "Yes — configure any model provider in your agent's config. Ollama, OpenRouter, direct API keys — all supported."
+        },
+        {
+          "q": "What about IPFS? Isn't Pinata an IPFS service?",
+          "a": "Pinata started as IPFS pinning. Pinata Agents is their newer product for hosting AI agents. Snapshots use IPFS CIDs for content-addressing."
+        },
+        {
+          "q": "Is there a free tier?",
+          "a": "Yes — check agents.pinata.cloud for current free tier limits."
+        }
+      ]
+    },
+    "switchbotAiHub": {
+      "title": "SwitchBot AI Hub — Smart Home × AI Setup",
+      "subtitle": "Control your smart home with local AI — VLM processing, OpenClaw integration, Matter support",
+      "duration": "15 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "開箱設定 AI Hub",
+          "titleEn": "Unbox & Set Up AI Hub",
+          "estimatedTime": "5 min",
+          "content": "The SwitchBot AI Hub ($259.99) is the world's first smart home hub with a built-in Vision Language Model. Plug it in and connect via the SwitchBot app.",
+          "commands": [
+            "# Purchase SwitchBot AI Hub",
+            "open https://us.switch-bot.com/products/switchbot-ai-hub",
+            "",
+            "# Setup steps:",
+            "# 1. Unbox and connect power + ethernet (or WiFi)",
+            "# 2. Download SwitchBot app (iOS / Android)",
+            "# 3. Add device in app: '+' > 'AI Hub'",
+            "# 4. Follow on-screen setup wizard",
+            "# 5. Connect your existing SwitchBot devices"
+          ],
+          "expectedResult": "AI Hub is online and visible in the SwitchBot app.",
+          "tips": [
+            "Ethernet connection recommended for stability",
+            "Place centrally for best IR/Bluetooth reach to other devices",
+            "Works with 100+ SwitchBot devices: locks, blinds, sensors, cameras",
+            "Matter & Thread support — also works with Apple Home, Google Home, Alexa"
+          ],
+          "troubleshooting": {
+            "title": "Setup Issues",
+            "items": [
+              {
+                "q": "Hub not found in app",
+                "a": "Make sure your phone and hub are on the same WiFi network. Try restarting the hub."
+              },
+              {
+                "q": "Existing devices not showing",
+                "a": "Re-pair devices via the SwitchBot app. The AI Hub replaces older hubs as the central controller."
+              }
+            ]
+          }
+        },
+        {
+          "title": "啟用 AI 功能",
+          "titleEn": "Enable AI Features",
+          "estimatedTime": "3 min",
+          "content": "The AI Hub includes a local Vision Language Model (VLM) that processes commands and camera feeds on-device. Enable the AI features and set up natural language control.",
+          "commands": [
+            "# In SwitchBot app:",
+            "# 1. Go to AI Hub settings",
+            "# 2. Enable 'AI Assistant'",
+            "# 3. Grant camera access (for RTSP cameras)",
+            "# 4. Start free trial ($4.99/mo after trial)",
+            "",
+            "# Try natural language commands:",
+            "# 'Turn off all lights'",
+            "# 'Close the curtains and lock the door'",
+            "# 'What's the temperature in the bedroom?'",
+            "# 'If it gets dark, turn on the living room lights'"
+          ],
+          "expectedResult": "You can control your home with natural language through the AI Hub.",
+          "tips": [
+            "Local VLM = commands processed on-device, not cloud",
+            "RTSP camera support for visual understanding",
+            "Context-aware: understands multi-step commands",
+            "$4.99/mo subscription after free trial for AI features"
+          ],
+          "troubleshooting": {
+            "title": "AI Issues",
+            "items": [
+              {
+                "q": "AI doesn't understand my command",
+                "a": "Try simpler phrasing. The VLM understands device names from your SwitchBot setup — use those names."
+              },
+              {
+                "q": "Camera feed not working",
+                "a": "Check RTSP camera settings. Make sure cameras are on the same network as the AI Hub."
+              }
+            ]
+          }
+        },
+        {
+          "title": "整合 OpenClaw Agent",
+          "titleEn": "Integrate with OpenClaw",
+          "estimatedTime": "5 min",
+          "content": "Connect the SwitchBot AI Hub to your OpenClaw agent for chat-based home automation. Use the SwitchBot Cloud API or the OpenClaw SwitchBot skill.",
+          "commands": [
+            "# Get SwitchBot API credentials",
+            "# 1. Open SwitchBot app > Profile > Preferences",
+            "# 2. Tap 'Developer Options' (tap version 10x to unlock)",
+            "# 3. Copy your Token and Secret",
+            "",
+            "# Install SwitchBot skill for OpenClaw",
+            "# Configure with your API token:",
+            "export SWITCHBOT_TOKEN=your_token",
+            "export SWITCHBOT_SECRET=your_secret",
+            "",
+            "# Now your OpenClaw agent can:",
+            "#   'Turn off the bedroom lights'",
+            "#   'What's the humidity in the kitchen?'",
+            "#   'Lock all doors at 11pm every night'",
+            "#   'Open curtains when sunrise'"
+          ],
+          "expectedResult": "Your OpenClaw agent can control SwitchBot devices via chat.",
+          "tips": [
+            "SwitchBot Cloud API is free with your account",
+            "OpenClaw skill handles API auth automatically",
+            "Create automations that combine AI reasoning with home control",
+            "Works alongside Alexa/Google Home — doesn't replace them"
+          ],
+          "troubleshooting": {
+            "title": "Integration Issues",
+            "items": [
+              {
+                "q": "Can't find Developer Options",
+                "a": "In SwitchBot app: Profile > Preferences > tap the version number 10 times to unlock developer mode."
+              },
+              {
+                "q": "API returns errors",
+                "a": "Check your Token and Secret are correct. API has rate limits — don't send too many requests per second."
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "1 min",
+          "content": "Your smart home is now AI-powered! Explore automation recipes and more devices.",
+          "tips": [
+            "Add more SwitchBot devices for a fuller smart home",
+            "Create complex automations with OpenClaw agent logic",
+            "Explore Matter integration with Apple Home and Google Home"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "OpenClaw",
+              "desc": "Build AI agent workflows",
+              "link": "/learn/ollama-openclaw",
+              "cta": "Get Started"
+            },
+            {
+              "emoji": "🏠",
+              "title": "SwitchBot Store",
+              "desc": "Browse more devices",
+              "link": "https://www.switch-bot.com",
+              "cta": "Shop Now",
+              "external": true
+            },
+            {
+              "emoji": "🌐",
+              "title": "OpenRouter",
+              "desc": "Cloud AI for advanced logic",
+              "link": "/learn/openrouter",
+              "cta": "Setup Guide"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Do I need a subscription?",
+          "a": "The hub works for basic smart home control without subscription. AI features (natural language, VLM) require $4.99/mo after the free trial."
+        },
+        {
+          "q": "Does it work without internet?",
+          "a": "Yes for basic local commands via Bluetooth/IR. AI features and cloud API need internet. Local VLM processing keeps working on your network."
+        },
+        {
+          "q": "What devices does it support?",
+          "a": "100+ SwitchBot devices: locks, curtains, blinds, sensors, cameras, plugs, robot vacuums, and more. Plus Matter devices from other brands."
+        },
+        {
+          "q": "Can it replace Alexa/Google Home?",
+          "a": "It complements them. SwitchBot AI Hub handles local AI + SwitchBot devices. It also bridges to Apple Home/Google Home/Alexa via Matter."
+        }
+      ]
     }
   },
   "hardwareCompare": {
