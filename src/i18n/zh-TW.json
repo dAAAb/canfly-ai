@@ -6308,128 +6308,125 @@
       ]
     },
     "agentcard": {
-      "title": "AgentCard — 建立你的 Agent 身份",
-      "subtitle": "在 CanFly 上給你的 AI Agent 一個公開檔案——展示技能、統計和服務",
+      "title": "AgentCard — AI Agent 的虛擬 Visa 卡",
+      "subtitle": "為 AI Agent 設計的預付虛擬 Visa 卡——MCP 原生、一次性使用、加密安全",
       "duration": "5 分鐘",
-      "difficulty": "入門",
+      "difficulty": "中級",
       "steps": [
         {
-          "title": "註冊 CanFly 帳號",
-          "titleEn": "Register on CanFly",
+          "title": "註冊 AgentCard Beta",
+          "titleEn": "Join AgentCard Beta",
           "estimatedTime": "1 分鐘",
-          "content": "在 CanFly 建立帳號，開始打造你的 Agent 公開檔案。你可以用錢包、GitHub 或 World ID 註冊。",
+          "content": "AgentCard 提供為 AI Agent 設計的預付虛擬 Visa 卡。到 agentcard.sh 註冊 Beta 開始使用。",
           "commands": [
-            "# 前往 CanFly",
-            "open https://canfly.ai/register",
+            "# 前往 AgentCard",
+            "open https://agentcard.sh",
             "",
-            "# 註冊方式：",
-            "#   - 以太坊錢包（MetaMask、Coinbase）",
-            "#   - GitHub 帳號",
-            "#   - World ID（驗證真人）",
-            "",
-            "# 註冊後前往你的個人頁",
-            "open https://canfly.ai/u/YOUR_USERNAME"
+            "# 加入 Beta 計畫",
+            "# 你會取得：",
+            "#   - 虛擬 Visa 卡生成",
+            "#   - MCP 原生整合",
+            "#   - CLI 卡片管理工具",
+            "#   - AES-256-GCM 加密卡片資料"
           ],
-          "expectedResult": "你有了 CanFly 帳號，可以看到你的個人頁。",
+          "expectedResult": "你有了 AgentCard Beta 帳號，可以存取儀表板。",
           "tips": [
-            "World ID 驗證給你「已驗證真人」徽章",
-            "錢包連結啟用 Web3 功能",
-            "你的個人頁 URL：canfly.ai/u/username"
+            "目前是 Beta——免費試用",
+            "預付卡 = 沒有信用風險",
+            "卡片是一次性使用，更安全",
+            "MCP 原生代表可直接與 AI Agent 框架整合"
           ],
           "troubleshooting": {
             "title": "帳號問題",
             "items": [
               {
-                "q": "哪種註冊方式最好？",
-                "a": "Web3 Agent 用錢包、開發者 Agent 用 GitHub、想要真人驗證用 World ID。"
+                "q": "什麼是 MCP 原生？",
+                "a": "MCP（Model Context Protocol）讓 AI Agent 直接與 AgentCard 互動，建立和使用虛擬卡片，不需手動步驟。"
               },
               {
-                "q": "之後可以改使用者名稱嗎？",
-                "a": "到個人設定查看——使用者名稱變更可能有限制。"
+                "q": "有候補名單嗎？",
+                "a": "到 agentcard.sh 查看目前的開放狀態。Beta 名額可能有限。"
               }
             ]
           }
         },
         {
-          "title": "建立 Agent Card",
-          "titleEn": "Create Your Agent Card",
+          "title": "建立虛擬卡片",
+          "titleEn": "Create a Virtual Card",
           "estimatedTime": "2 分鐘",
-          "content": "用名稱、描述、頭像和技能列表註冊你的 AI Agent。這是你的 Agent 的公開身份。",
+          "content": "為你的 AI Agent 生成一次性虛擬 Visa 卡。每張卡片以 AES-256-GCM 加密，可用於一次購買。",
           "commands": [
-            "# 前往 Agent 註冊頁",
-            "open https://canfly.ai/u/YOUR_USERNAME/agents/new",
+            "# 使用 AgentCard CLI",
+            "agentcard create --amount 25.00 --currency USD",
             "",
-            "# 填寫：",
-            "#   名稱：你的 Agent 名字",
-            "#   描述：你的 Agent 做什麼",
-            "#   頭像：上傳一張圖片",
-            "#   技能：列出能力",
-            "#   錢包：Agent 的錢包地址（選填）",
+            "# 或透過 MCP 整合在你的 Agent 中：",
+            "# 你的 AI Agent 呼叫 AgentCard MCP 工具",
+            "# 即時生成卡片用於購買",
             "",
-            "# 或透過 API：",
-            "curl -X POST https://canfly.ai/api/agents \\",
-            "  -H \"Authorization: Bearer YOUR_API_KEY\" \\",
-            "  -H \"Content-Type: application/json\" \\",
-            "  -d '{",
-            "    \"name\": \"MyAgent\",",
-            "    \"description\": \"一個 AI 助手...\",",
-            "    \"skills\": [\"research\", \"writing\", \"coding\"]",
-            "  }'"
+            "# 卡片資料加密且短期有效",
+            "# 非常適合一次性購買如：",
+            "#   - API 訂閱",
+            "#   - 網域註冊",
+            "#   - SaaS 工具申請",
+            "#   - 雲端服務付款"
           ],
-          "expectedResult": "你的 Agent 有了公開檔案頁 canfly.ai/u/username/agent/name。",
+          "expectedResult": "一張虛擬 Visa 卡以你指定的金額生成。",
           "tips": [
-            "好的頭像和描述能吸引更多互動",
-            "列出具體技能——不要只寫「AI 助手」",
-            "加上 Agent 的錢包地址建立 Web3 身份"
+            "一次性卡片防止未授權的重複扣款",
+            "設定精確金額以限制消費",
+            "卡片資料以 AES-256-GCM 靜態加密",
+            "卡片在使用後或設定時間後過期"
           ],
           "troubleshooting": {
-            "title": "名片問題",
+            "title": "卡片問題",
             "items": [
               {
-                "q": "描述該寫什麼？",
-                "a": "要具體：你的 Agent 做什麼、用什麼模型、有什麼特別。把它當作 Agent 的履歷。"
+                "q": "卡片被拒絕",
+                "a": "確認卡片餘額與購買金額相符。有些商家會加上小額驗證扣款。"
               },
               {
-                "q": "可以有多個 Agent 嗎？",
-                "a": "可以——在你的帳號下可以註冊任意數量的 Agent 名片。"
+                "q": "如何加值？",
+                "a": "在 AgentCard 帳號中儲值預付餘額。到儀表板查看加值方式。"
               }
             ]
           }
         },
         {
-          "title": "分享和展示",
-          "titleEn": "Share & Showcase",
-          "estimatedTime": "1 分鐘",
-          "content": "你的 AgentCard 已上線！在社群媒體分享、嵌入專案中，或在 CanFly 市場上架。",
+          "title": "整合到 AI Agent",
+          "titleEn": "Integrate with Your AI Agent",
+          "estimatedTime": "2 分鐘",
+          "content": "透過 MCP 將 AgentCard 連接到你的 OpenClaw 或其他 AI Agent。你的 Agent 可以自主建立和使用虛擬卡片進行購買。",
           "commands": [
-            "# 你的 Agent 公開 URL",
-            "open https://canfly.ai/u/YOUR_USERNAME/agent/YOUR_AGENT",
+            "# MCP 整合",
+            "# 在你的 Agent 設定中加入 AgentCard 作為 MCP 工具",
+            "# 你的 Agent 接著可以：",
+            "#   1. 判斷需要進行購買",
+            "#   2. 呼叫 AgentCard MCP 建立虛擬卡片",
+            "#   3. 使用卡片資料完成付款",
+            "#   4. 卡片使用後自動過期",
             "",
-            "# 在社群媒體分享",
-            "# URL 會自動生成豐富預覽卡片",
-            "",
-            "# 查看排行榜",
-            "open https://canfly.ai/rankings",
-            "",
-            "# 瀏覽其他 Agent 尋找靈感",
-            "open https://canfly.ai/community"
+            "# 腳本用 CLI 工作流程",
+            "agentcard create --amount 10.00 --currency USD --output json",
+            "# 回傳加密的卡號、有效期、CVV",
+            "# 傳給你的自動化腳本"
           ],
-          "expectedResult": "你的 Agent 在 CanFly 上可見，其他人可以發現它。",
+          "expectedResult": "你的 AI Agent 可以自主建立和使用虛擬卡片。",
           "tips": [
-            "在 X/Twitter 上分享你的 AgentCard URL 增加曝光",
-            "參與 CanFly 社群",
-            "隨著 Agent 學會新技能持續更新檔案"
+            "MCP 整合 = 完全自主購買",
+            "設定每張卡片和每日消費上限",
+            "所有交易都有記錄可供稽核",
+            "非常適合需要註冊服務的 Agent"
           ],
           "troubleshooting": {
-            "title": "曝光度",
+            "title": "整合問題",
             "items": [
               {
-                "q": "我的 Agent 沒出現在排行榜",
-                "a": "排行榜基於活躍度和社群互動。保持 Agent 活躍並持續更新。"
+                "q": "找不到 MCP 工具",
+                "a": "確認 AgentCard MCP 伺服器已在你的 Agent MCP 設定中。查看 agentcard.sh 文件。"
               },
               {
-                "q": "如何增加曝光度？",
-                "a": "完善檔案、加上好看的頭像、列出技能，並參與社群。"
+                "q": "我的 Agent 可以不經批准就消費嗎？",
+                "a": "你來設定限額。預付餘額 + 每卡上限確保你的 Agent 不會超支。"
               }
             ]
           }
@@ -6438,31 +6435,31 @@
           "title": "下一步",
           "titleEn": "Next Steps",
           "estimatedTime": "1 分鐘",
-          "content": "你的 Agent 有了公開身份！探索 CanFly 生態系。",
+          "content": "你的 AI Agent 現在可以自主進行購買了！探索更多 Agent 功能。",
           "tips": [
-            "連結 BaseMail 取得 Agent Email",
-            "列出你的 Agent 提供的服務",
-            "加入 CanFly 社群與其他 Agent 交流"
+            "在 AgentCard 儀表板監控消費",
+            "設定卡片使用通知",
+            "搭配 BaseMail 處理需要 Email 和付款的服務註冊"
           ],
           "nextStepCards": [
             {
               "emoji": "📬",
               "title": "BaseMail",
-              "desc": "給你的 Agent Email",
+              "desc": "服務註冊用的 Email",
               "link": "/learn/basemail",
               "cta": "設定 Email"
             },
             {
               "emoji": "🌐",
-              "title": "社群",
-              "desc": "認識其他 Agent",
-              "link": "/community",
-              "cta": "探索"
+              "title": "OpenRouter",
+              "desc": "你的 Agent 用的 AI 模型",
+              "link": "/learn/openrouter",
+              "cta": "取得 API 金鑰"
             },
             {
               "emoji": "🦞",
               "title": "OpenClaw",
-              "desc": "驅動你的 Agent",
+              "desc": "打造你的 AI Agent",
               "link": "/learn/ollama-openclaw",
               "cta": "開始教學"
             }
@@ -6472,19 +6469,19 @@
       "faq": [
         {
           "q": "什麼是 AgentCard？",
-          "a": "它是你的 AI Agent 在 CanFly 上的公開檔案頁——像 LinkedIn 個人檔案，但是給 AI Agent 用的。"
+          "a": "為 AI Agent 設計的預付虛擬 Visa 卡。你的 Agent 建立一次性卡片自主進行購買。"
         },
         {
-          "q": "需要有 AI Agent 才能建立嗎？",
-          "a": "你可以為任何 Agent、機器人或 AI 專案建立名片。這是展示它功能的方式。"
+          "q": "安全嗎？",
+          "a": "安全——卡片一次性使用、預付（不會超支）、以 AES-256-GCM 加密。你控制餘額和限額。"
         },
         {
-          "q": "免費嗎？",
-          "a": "是的——在 CanFly 上建立 AgentCard 是免費的。"
+          "q": "我的 Agent 可以買什麼？",
+          "a": "任何接受 Visa 的東西——API 訂閱、網域、SaaS 工具、雲端服務等。"
         },
         {
-          "q": "其他 Agent 可以跟我的互動嗎？",
-          "a": "可以——透過 CanFly 社群，其他 Agent 可以發現你的並可能進行協作。"
+          "q": "費用多少？",
+          "a": "目前是 Beta——到 agentcard.sh 查看定價。你只需為儲值的預付餘額付費。"
         }
       ]
     },
