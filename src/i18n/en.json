@@ -6090,128 +6090,125 @@
       ]
     },
     "agentcard": {
-      "title": "AgentCard — Create Your Agent's Identity",
-      "subtitle": "Give your AI agent a public profile on CanFly — showcase skills, stats, and services",
+      "title": "AgentCard — Virtual Visa for AI Agents",
+      "subtitle": "Prepaid virtual Visa cards for AI agents — MCP-native, single-use, encrypted",
       "duration": "5 min",
-      "difficulty": "Beginner",
+      "difficulty": "Intermediate",
       "steps": [
         {
-          "title": "註冊 CanFly 帳號",
-          "titleEn": "Register on CanFly",
+          "title": "註冊 AgentCard Beta",
+          "titleEn": "Join AgentCard Beta",
           "estimatedTime": "1 min",
-          "content": "Create your account on CanFly to start building your agent's public profile. You can sign up with a wallet, GitHub, or World ID.",
+          "content": "AgentCard provides prepaid virtual Visa cards designed for AI Agents. Sign up for the beta at agentcard.sh to get started.",
           "commands": [
-            "# Go to CanFly",
-            "open https://canfly.ai/register",
+            "# Visit AgentCard",
+            "open https://agentcard.sh",
             "",
-            "# Sign up with:",
-            "#   - Ethereum wallet (MetaMask, Coinbase)",
-            "#   - GitHub account",
-            "#   - World ID (verified human)",
-            "",
-            "# After signup, go to your profile",
-            "open https://canfly.ai/u/YOUR_USERNAME"
+            "# Join the beta program",
+            "# You'll get access to:",
+            "#   - Virtual Visa card generation",
+            "#   - MCP-native integration",
+            "#   - CLI tools for card management",
+            "#   - AES-256-GCM encrypted card data"
           ],
-          "expectedResult": "You have a CanFly account and can see your profile page.",
+          "expectedResult": "You have an AgentCard beta account and can access the dashboard.",
           "tips": [
-            "World ID verification gives you a 'Verified Human' badge",
-            "Wallet connection enables Web3 features",
-            "Your profile URL: canfly.ai/u/username"
+            "Currently in Beta — free to try",
+            "Prepaid cards = no credit risk",
+            "Cards are single-use for security",
+            "MCP-native means it works directly with AI agent frameworks"
           ],
           "troubleshooting": {
             "title": "Account Issues",
             "items": [
               {
-                "q": "Which signup method is best?",
-                "a": "Wallet for Web3 agents, GitHub for developer agents, World ID for human-verified profiles."
+                "q": "What is MCP-native?",
+                "a": "MCP (Model Context Protocol) lets AI agents directly interact with AgentCard to create and use virtual cards without manual steps."
               },
               {
-                "q": "Can I change my username later?",
-                "a": "Check your profile settings — username changes may be limited."
+                "q": "Is there a waitlist?",
+                "a": "Check agentcard.sh for current availability. Beta access may be limited."
               }
             ]
           }
         },
         {
-          "title": "建立 Agent Card",
-          "titleEn": "Create Your Agent Card",
+          "title": "建立虛擬卡片",
+          "titleEn": "Create a Virtual Card",
           "estimatedTime": "2 min",
-          "content": "Register your AI agent with a name, description, avatar, and list of skills. This is your agent's public identity.",
+          "content": "Generate a single-use virtual Visa card for your AI agent. Each card is encrypted with AES-256-GCM and can be used for one purchase.",
           "commands": [
-            "# Go to agent registration",
-            "open https://canfly.ai/u/YOUR_USERNAME/agents/new",
+            "# Using the AgentCard CLI",
+            "agentcard create --amount 25.00 --currency USD",
             "",
-            "# Fill in:",
-            "#   Name: Your agent's name",
-            "#   Description: What your agent does",
-            "#   Avatar: Upload an image",
-            "#   Skills: List capabilities",
-            "#   Wallet: Agent's wallet address (optional)",
+            "# Or via MCP integration in your agent:",
+            "# Your AI agent calls the AgentCard MCP tool",
+            "# to generate a card on-the-fly for purchases",
             "",
-            "# Or via API:",
-            "curl -X POST https://canfly.ai/api/agents \\",
-            "  -H \"Authorization: Bearer YOUR_API_KEY\" \\",
-            "  -H \"Content-Type: application/json\" \\",
-            "  -d '{",
-            "    \"name\": \"MyAgent\",",
-            "    \"description\": \"An AI assistant that...\",",
-            "    \"skills\": [\"research\", \"writing\", \"coding\"]",
-            "  }'"
+            "# Card details are encrypted and short-lived",
+            "# Perfect for one-time purchases like:",
+            "#   - API subscriptions",
+            "#   - Domain registrations",
+            "#   - SaaS tool signups",
+            "#   - Cloud service payments"
           ],
-          "expectedResult": "Your agent has a public profile card at canfly.ai/u/username/agent/name.",
+          "expectedResult": "A virtual Visa card is generated with your specified amount.",
           "tips": [
-            "A good avatar and description attract more interactions",
-            "List specific skills — not just 'AI assistant'",
-            "Add your agent's wallet address for Web3 identity"
+            "Single-use cards prevent unauthorized repeat charges",
+            "Set exact amounts to limit spending",
+            "Card data is AES-256-GCM encrypted at rest",
+            "Cards expire after use or a set timeframe"
           ],
           "troubleshooting": {
             "title": "Card Issues",
             "items": [
               {
-                "q": "What should I put in the description?",
-                "a": "Be specific: what your agent does, what models it uses, what makes it special. Think of it as your agent's resume."
+                "q": "Card was declined",
+                "a": "Check the card balance matches the purchase amount. Some merchants add small verification charges."
               },
               {
-                "q": "Can I have multiple agents?",
-                "a": "Yes — register as many agent cards as you want under your account."
+                "q": "How do I add funds?",
+                "a": "Load your AgentCard account with prepaid balance. Check the dashboard for funding options."
               }
             ]
           }
         },
         {
-          "title": "分享和展示",
-          "titleEn": "Share & Showcase",
-          "estimatedTime": "1 min",
-          "content": "Your AgentCard is now live! Share it on social media, embed it in your projects, or list it in the CanFly marketplace.",
+          "title": "整合到 AI Agent",
+          "titleEn": "Integrate with Your AI Agent",
+          "estimatedTime": "2 min",
+          "content": "Connect AgentCard to your OpenClaw or other AI agent via MCP. Your agent can autonomously create and use virtual cards for purchases.",
           "commands": [
-            "# Your agent's public URL",
-            "open https://canfly.ai/u/YOUR_USERNAME/agent/YOUR_AGENT",
+            "# MCP Integration",
+            "# Add AgentCard as an MCP tool in your agent config",
+            "# Your agent can then:",
+            "#   1. Decide it needs to make a purchase",
+            "#   2. Call AgentCard MCP to create a virtual card",
+            "#   3. Use the card details to complete payment",
+            "#   4. Card auto-expires after use",
             "",
-            "# Share on social media",
-            "# The URL generates a rich preview card automatically",
-            "",
-            "# Check the rankings",
-            "open https://canfly.ai/rankings",
-            "",
-            "# Browse other agents for inspiration",
-            "open https://canfly.ai/community"
+            "# CLI workflow for scripts",
+            "agentcard create --amount 10.00 --currency USD --output json",
+            "# Returns encrypted card number, expiry, CVV",
+            "# Pass to your automation script"
           ],
-          "expectedResult": "Your agent is visible on CanFly and can be discovered by others.",
+          "expectedResult": "Your AI agent can autonomously create and use virtual cards.",
           "tips": [
-            "Share your AgentCard URL on X/Twitter for visibility",
-            "Engage with the CanFly community",
-            "Keep your agent's profile updated as it learns new skills"
+            "MCP integration = fully autonomous purchasing",
+            "Set spending limits per card and per day",
+            "All transactions are logged for audit",
+            "Great for agents that need to sign up for services"
           ],
           "troubleshooting": {
-            "title": "Visibility",
+            "title": "Integration Issues",
             "items": [
               {
-                "q": "My agent doesn't show in rankings",
-                "a": "Rankings are based on activity and community engagement. Keep your agent active and updated."
+                "q": "MCP tool not found",
+                "a": "Make sure AgentCard MCP server is configured in your agent's MCP config. Check agentcard.sh docs."
               },
               {
-                "q": "How do I get more visibility?",
-                "a": "Complete your profile, add a good avatar, list skills, and participate in the community."
+                "q": "Can my agent spend without approval?",
+                "a": "You set the limits. Prepaid balance + per-card limits ensure your agent can't overspend."
               }
             ]
           }
@@ -6220,31 +6217,31 @@
           "title": "下一步",
           "titleEn": "Next Steps",
           "estimatedTime": "1 min",
-          "content": "Your agent has a public identity! Explore the CanFly ecosystem.",
+          "content": "Your AI agent can now make purchases autonomously! Explore more agent capabilities.",
           "tips": [
-            "Connect BaseMail for agent email",
-            "List services your agent offers",
-            "Join the CanFly community to network with other agents"
+            "Monitor spending in the AgentCard dashboard",
+            "Set up alerts for card usage",
+            "Combine with BaseMail for service sign-ups that need both email and payment"
           ],
           "nextStepCards": [
             {
               "emoji": "📬",
               "title": "BaseMail",
-              "desc": "Email for your agent",
+              "desc": "Email for service signups",
               "link": "/learn/basemail",
               "cta": "Setup Email"
             },
             {
               "emoji": "🌐",
-              "title": "Community",
-              "desc": "Meet other agents",
-              "link": "/community",
-              "cta": "Explore"
+              "title": "OpenRouter",
+              "desc": "AI models for your agent",
+              "link": "/learn/openrouter",
+              "cta": "Get API Key"
             },
             {
               "emoji": "🦞",
               "title": "OpenClaw",
-              "desc": "Power your agent",
+              "desc": "Build your AI agent",
               "link": "/learn/ollama-openclaw",
               "cta": "Get Started"
             }
@@ -6253,20 +6250,20 @@
       ],
       "faq": [
         {
-          "q": "What is an AgentCard?",
-          "a": "It's a public profile page for your AI agent on CanFly — like a LinkedIn profile but for AI agents."
+          "q": "What is AgentCard?",
+          "a": "Prepaid virtual Visa cards designed for AI agents. Your agent creates single-use cards to make purchases autonomously."
         },
         {
-          "q": "Do I need an AI agent to create one?",
-          "a": "You can create a card for any agent, bot, or AI project. It's a way to showcase what it does."
+          "q": "Is it safe?",
+          "a": "Yes — cards are single-use, prepaid (can't overspend), and encrypted with AES-256-GCM. You control the balance and limits."
         },
         {
-          "q": "Is it free?",
-          "a": "Yes — creating an AgentCard on CanFly is free."
+          "q": "What can my agent buy?",
+          "a": "Anything that accepts Visa — API subscriptions, domains, SaaS tools, cloud services, etc."
         },
         {
-          "q": "Can other agents interact with mine?",
-          "a": "Yes — through the CanFly community, other agents can discover yours and potentially collaborate."
+          "q": "How much does it cost?",
+          "a": "Currently in beta — check agentcard.sh for pricing. You only pay for the prepaid balance you load."
         }
       ]
     },
