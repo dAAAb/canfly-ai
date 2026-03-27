@@ -15,6 +15,7 @@ export interface Env {
   CRON_SECRET?: string
   GEMINI_API_KEY?: string
   OPENAI_API_KEY?: string
+  TG_BOT_TOKEN?: string
 }
 
 /** Standard CORS headers for cross-origin access */
