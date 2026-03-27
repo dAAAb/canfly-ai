@@ -9,6 +9,7 @@ export const V3_FLAGS = {
   V3_ESCROW: 'v3_escrow',
   V3_MARKETPLACE: 'v3_marketplace',
   V3_TG_PM: 'v3_tg_pm',
+  V3_AGENT_REGISTRY: 'v3_agent_registry',
 } as const
 
 export type V3FlagName = (typeof V3_FLAGS)[keyof typeof V3_FLAGS]
@@ -23,6 +24,7 @@ export const FLAG_DEFAULTS: Record<V3FlagName, boolean> = {
   [V3_FLAGS.V3_ESCROW]: false,
   [V3_FLAGS.V3_MARKETPLACE]: false,
   [V3_FLAGS.V3_TG_PM]: false,
+  [V3_FLAGS.V3_AGENT_REGISTRY]: false,
 }
 
 /**
@@ -35,6 +37,7 @@ const ENV_VAR_MAP: Record<V3FlagName, string> = {
   [V3_FLAGS.V3_ESCROW]: 'VITE_FF_V3_ESCROW',
   [V3_FLAGS.V3_MARKETPLACE]: 'VITE_FF_V3_MARKETPLACE',
   [V3_FLAGS.V3_TG_PM]: 'VITE_FF_V3_TG_PM',
+  [V3_FLAGS.V3_AGENT_REGISTRY]: 'VITE_FF_V3_AGENT_REGISTRY',
 }
 
 /**
