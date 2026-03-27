@@ -4902,6 +4902,1770 @@
           "a": "All escrow transactions use USDC on the Base blockchain. USDC is a stablecoin pegged 1:1 to the US dollar, so there's no volatility risk during the transaction period."
         }
       ]
+    },
+    "openrouter": {
+      "title": "OpenRouter — 5-Minute Quick Start",
+      "subtitle": "One API key for 200+ AI models from 30+ providers — free tier included",
+      "duration": "5 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "建立 OpenRouter 帳號",
+          "titleEn": "Create Your OpenRouter Account",
+          "estimatedTime": "1 min",
+          "content": "Sign up at OpenRouter.ai with Google, GitHub, or email. The free tier gives you 50 requests per day across all models — no credit card required.",
+          "commands": [
+            "# Open OpenRouter and sign up",
+            "open https://openrouter.ai",
+            "",
+            "# Sign in with Google, GitHub, or email",
+            "# Free tier: 50 requests/day, 20 requests/min"
+          ],
+          "expectedResult": "You have an OpenRouter account and can see the dashboard.",
+          "tips": [
+            "Free tier: 50 requests/day across ALL models",
+            "No credit card needed for free tier",
+            "Pay-as-you-go: add credits for more usage, prices vary by model"
+          ],
+          "troubleshooting": {
+            "title": "Account Issues",
+            "items": [
+              {
+                "q": "Can I use it without an account?",
+                "a": "No — you need an account to get an API key, but registration is free and takes 30 seconds."
+              },
+              {
+                "q": "Which sign-in method is best?",
+                "a": "Google or GitHub are fastest. Email works too but requires verification."
+              }
+            ]
+          }
+        },
+        {
+          "title": "取得 API 金鑰",
+          "titleEn": "Get Your API Key",
+          "estimatedTime": "1 min",
+          "content": "Go to the Keys page in your OpenRouter dashboard and create a new API key. This single key works with all 200+ models.",
+          "commands": [
+            "# Go to API Keys page",
+            "open https://openrouter.ai/keys",
+            "",
+            "# Click 'Create Key'",
+            "# Give it a name like 'OpenClaw'",
+            "# Copy the key — it starts with sk-or-v1-..."
+          ],
+          "expectedResult": "You have an API key starting with sk-or-v1-... copied to clipboard.",
+          "tips": [
+            "One key works for ALL models — no separate keys needed",
+            "You can create multiple keys for different projects",
+            "Set a usage limit on each key to prevent overspending"
+          ],
+          "troubleshooting": {
+            "title": "Key Issues",
+            "items": [
+              {
+                "q": "I lost my API key",
+                "a": "You can't view existing keys after creation. Delete the old one and create a new key."
+              },
+              {
+                "q": "Key shows 'rate limited'",
+                "a": "Free tier is 50 req/day, 20/min. Wait or add credits for more."
+              }
+            ]
+          }
+        },
+        {
+          "title": "用 API 測試呼叫",
+          "titleEn": "Test Your First API Call",
+          "estimatedTime": "1 min",
+          "content": "OpenRouter uses the OpenAI-compatible API format. Test it with curl — just change the base URL and use your OpenRouter key.",
+          "commands": [
+            "# Test with a free model",
+            "curl https://openrouter.ai/api/v1/chat/completions \\",
+            "  -H \"Authorization: Bearer sk-or-v1-YOUR_KEY\" \\",
+            "  -H \"Content-Type: application/json\" \\",
+            "  -d '{\"model\": \"google/gemini-2.5-flash\",",
+            "        \"messages\": [{\"role\": \"user\", \"content\": \"Hello!\"}]}'",
+            "",
+            "# Or use the OpenAI Python library",
+            "pip install openai",
+            "python3 -c \"",
+            "from openai import OpenAI",
+            "client = OpenAI(base_url='https://openrouter.ai/api/v1', api_key='sk-or-v1-YOUR_KEY')",
+            "r = client.chat.completions.create(model='google/gemini-2.5-flash', messages=[{'role':'user','content':'Hello!'}])",
+            "print(r.choices[0].message.content)\""
+          ],
+          "expectedResult": "You get an AI response, confirming your API key works.",
+          "tips": [
+            "OpenAI SDK works — just change base_url",
+            "Try free models first: google/gemini-2.5-flash, meta-llama/llama-4-scout",
+            "Check model prices at openrouter.ai/models"
+          ],
+          "troubleshooting": {
+            "title": "API Issues",
+            "items": [
+              {
+                "q": "401 Unauthorized",
+                "a": "Check your API key is correct and starts with sk-or-v1-."
+              },
+              {
+                "q": "Model not found",
+                "a": "Check the exact model ID at openrouter.ai/models. IDs are case-sensitive."
+              }
+            ]
+          }
+        },
+        {
+          "title": "設定 OpenClaw 使用 OpenRouter",
+          "titleEn": "Configure OpenClaw with OpenRouter",
+          "estimatedTime": "2 min",
+          "content": "Add your OpenRouter API key to OpenClaw's configuration. This lets your AI agent access 200+ models through a single provider.",
+          "commands": [
+            "# Add to your OpenClaw config (~/.clawdbot/clawdbot.json)",
+            "# Set OpenRouter as a model provider:",
+            "{",
+            "  \"providers\": {",
+            "    \"openrouter\": {",
+            "      \"apiKey\": \"sk-or-v1-YOUR_KEY\"",
+            "    }",
+            "  }",
+            "}",
+            "",
+            "# Or set via environment variable",
+            "export OPENROUTER_API_KEY=sk-or-v1-YOUR_KEY",
+            "",
+            "# Now use any model in OpenClaw:",
+            "# openrouter/google/gemini-2.5-flash",
+            "# openrouter/anthropic/claude-sonnet-4",
+            "# openrouter/meta-llama/llama-4-scout"
+          ],
+          "expectedResult": "OpenClaw can now route requests through OpenRouter to any supported model.",
+          "tips": [
+            "Use openrouter/MODEL_ID format in OpenClaw",
+            "Great for testing different models without separate API keys",
+            "Smart routing: let OpenRouter auto-pick the best model with openrouter/auto"
+          ],
+          "troubleshooting": {
+            "title": "Config Issues",
+            "items": [
+              {
+                "q": "OpenClaw doesn't recognize the model",
+                "a": "Use the full format: openrouter/provider/model-name. Check exact IDs at openrouter.ai/models."
+              },
+              {
+                "q": "Responses are slow",
+                "a": "Some models have higher latency. Try a different provider or model for faster responses."
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "1 min",
+          "content": "You're all set! Explore 200+ models and find the best ones for your workflow.",
+          "tips": [
+            "Browse all models at openrouter.ai/models",
+            "Compare model performance on openrouter.ai/rankings",
+            "Set up usage alerts to control spending"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🤖",
+              "title": "Browse Models",
+              "desc": "Explore 200+ AI models",
+              "link": "https://openrouter.ai/models",
+              "cta": "View Models",
+              "external": true
+            },
+            {
+              "emoji": "🦞",
+              "title": "Install OpenClaw",
+              "desc": "Set up your AI agent",
+              "link": "/learn/ollama-openclaw",
+              "cta": "Get Started"
+            },
+            {
+              "emoji": "☁️",
+              "title": "Cloud Deploy",
+              "desc": "Run 24/7 on Zeabur",
+              "link": "/learn/zeabur",
+              "cta": "Deploy Now"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Is OpenRouter really free?",
+          "a": "Yes — 50 requests/day on the free tier. Many models also have free variants. For heavier usage, add credits (pay-as-you-go)."
+        },
+        {
+          "q": "How does pricing work?",
+          "a": "Each model has its own per-token price. You only pay for what you use. Check prices at openrouter.ai/models."
+        },
+        {
+          "q": "Can I use OpenRouter with other tools besides OpenClaw?",
+          "a": "Yes! It's OpenAI-compatible. Any tool that supports custom API endpoints works — LangChain, LlamaIndex, Continue.dev, etc."
+        },
+        {
+          "q": "What's the difference vs using providers directly?",
+          "a": "One API key for everything, unified billing, automatic fallbacks, and you can switch models with one line change."
+        }
+      ]
+    },
+    "googleGemini": {
+      "title": "Google Gemini — 5-Minute Quick Start",
+      "subtitle": "Free AI assistant with 2M token context window — deep Google ecosystem integration",
+      "duration": "5 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "開始使用 Gemini",
+          "titleEn": "Start Using Gemini",
+          "estimatedTime": "1 min",
+          "content": "Google Gemini is free to use at gemini.google.com. Sign in with your Google account to get started with the AI assistant that has a 2M token context window.",
+          "commands": [
+            "# Open Gemini in your browser",
+            "open https://gemini.google.com",
+            "",
+            "# Sign in with your Google account",
+            "# Free tier includes:",
+            "#   - Unlimited basic conversations",
+            "#   - Image understanding",
+            "#   - 2M token context window",
+            "#   - Google ecosystem integration"
+          ],
+          "expectedResult": "You can chat with Gemini and upload images for analysis.",
+          "tips": [
+            "Free tier is very generous — unlimited basic conversations",
+            "Pro ($19.99/mo) adds Gems, NotebookLM Plus, and Veo video",
+            "Works on web, Android, iOS, and Chrome"
+          ],
+          "troubleshooting": {
+            "title": "Access Issues",
+            "items": [
+              {
+                "q": "Gemini isn't available in my region",
+                "a": "Gemini is available in 180+ countries. If blocked, try using a VPN or access via the API instead."
+              },
+              {
+                "q": "What happened to Google Bard?",
+                "a": "Bard was renamed to Gemini in February 2024. Same service, new name and upgraded models."
+              }
+            ]
+          }
+        },
+        {
+          "title": "取得 Gemini API 金鑰",
+          "titleEn": "Get Gemini API Key (Free!)",
+          "estimatedTime": "2 min",
+          "content": "Google AI Studio provides free Gemini API access. You get generous free quotas — enough for personal projects and OpenClaw agents.",
+          "commands": [
+            "# Go to Google AI Studio",
+            "open https://aistudio.google.com/apikey",
+            "",
+            "# Click 'Create API key'",
+            "# Select a Google Cloud project (or create one)",
+            "# Copy the key — it starts with AIza...",
+            "",
+            "# Free quota (Gemini 2.5 Flash):",
+            "#   15 requests/minute",
+            "#   1,500 requests/day",
+            "#   1M tokens/minute"
+          ],
+          "expectedResult": "You have a Gemini API key starting with AIza...",
+          "tips": [
+            "Gemini 2.5 Flash is free with generous quotas",
+            "No credit card required for free tier",
+            "API key works with Google AI SDK and OpenAI-compatible endpoints"
+          ],
+          "troubleshooting": {
+            "title": "API Key Issues",
+            "items": [
+              {
+                "q": "I can't create a key",
+                "a": "Make sure you have a Google account. Some enterprise accounts may need admin approval."
+              },
+              {
+                "q": "What's the free quota?",
+                "a": "Gemini 2.5 Flash: 15 RPM, 1,500 RPD, 1M TPM. Gemini 2.5 Pro: 5 RPM, 50 RPD."
+              }
+            ]
+          }
+        },
+        {
+          "title": "使用 Gemini API",
+          "titleEn": "Use Gemini API Directly",
+          "estimatedTime": "1 min",
+          "content": "Test the Gemini API with a simple curl command or the Google AI Python SDK.",
+          "commands": [
+            "# Test with curl",
+            "curl \"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=YOUR_API_KEY\" \\",
+            "  -H 'Content-Type: application/json' \\",
+            "  -d '{\"contents\": [{\"parts\":[{\"text\": \"Explain quantum computing in one sentence\"}]}]}'",
+            "",
+            "# Or use the Python SDK",
+            "pip install google-genai",
+            "python3 -c \"",
+            "from google import genai",
+            "client = genai.Client(api_key='YOUR_API_KEY')",
+            "r = client.models.generate_content(model='gemini-2.5-flash', contents='Hello!')",
+            "print(r.text)\""
+          ],
+          "expectedResult": "You get an AI response from the Gemini API.",
+          "tips": [
+            "Gemini 2.5 Flash is fastest and cheapest",
+            "Gemini 2.5 Pro is most capable for complex tasks",
+            "API supports text, images, video, and audio input"
+          ],
+          "troubleshooting": {
+            "title": "API Issues",
+            "items": [
+              {
+                "q": "403 Forbidden",
+                "a": "Check your API key is valid. Make sure the Generative Language API is enabled in your Google Cloud project."
+              },
+              {
+                "q": "Rate limit exceeded",
+                "a": "Free tier has quotas per minute and per day. Wait a minute or upgrade to paid for higher limits."
+              }
+            ]
+          }
+        },
+        {
+          "title": "透過 OpenRouter 搭配 OpenClaw",
+          "titleEn": "Use with OpenClaw via OpenRouter",
+          "estimatedTime": "1 min",
+          "content": "The easiest way to use Gemini with OpenClaw is through OpenRouter. This avoids setting up Google Cloud credentials directly.",
+          "commands": [
+            "# Option 1: Via OpenRouter (recommended)",
+            "# Add to OpenClaw config:",
+            "{",
+            "  \"providers\": {",
+            "    \"openrouter\": { \"apiKey\": \"sk-or-v1-YOUR_KEY\" }",
+            "  }",
+            "}",
+            "# Then use: openrouter/google/gemini-2.5-flash",
+            "",
+            "# Option 2: Direct Gemini API",
+            "export GOOGLE_API_KEY=AIza...",
+            "# Use: google/gemini-2.5-flash in OpenClaw"
+          ],
+          "expectedResult": "OpenClaw can now use Gemini models for agent tasks.",
+          "tips": [
+            "OpenRouter route is simpler — one key for all models",
+            "Direct API is free but needs Google Cloud setup",
+            "Gemini 2.5 Flash via OpenRouter is very affordable"
+          ],
+          "troubleshooting": {
+            "title": "Integration Issues",
+            "items": [
+              {
+                "q": "Which method is better?",
+                "a": "OpenRouter is simpler (one API key). Direct is cheaper (free quota) but needs more setup."
+              },
+              {
+                "q": "Can I use Gemini Pro features via API?",
+                "a": "The API gives access to the models, but features like Gems and NotebookLM require the Gemini app subscription."
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "1 min",
+          "content": "You're ready to use Google Gemini! Explore its unique features like long-context analysis and Google ecosystem integration.",
+          "tips": [
+            "Try uploading a long PDF — Gemini's 2M token context handles entire books",
+            "Use Gemini in Google Workspace for email and document assistance",
+            "Combine with OpenClaw for automated research workflows"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🔑",
+              "title": "Google AI Studio",
+              "desc": "Manage API keys & test models",
+              "link": "https://aistudio.google.com",
+              "cta": "Open Studio",
+              "external": true
+            },
+            {
+              "emoji": "🌐",
+              "title": "OpenRouter",
+              "desc": "Access Gemini + 200 more models",
+              "link": "/learn/openrouter",
+              "cta": "Setup Guide"
+            },
+            {
+              "emoji": "🦞",
+              "title": "Install OpenClaw",
+              "desc": "Build your AI agent",
+              "link": "/learn/ollama-openclaw",
+              "cta": "Get Started"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Is Google Gemini really free?",
+          "a": "Yes — gemini.google.com is free with unlimited basic chats. The API has a generous free tier too (1,500 requests/day for Flash)."
+        },
+        {
+          "q": "Gemini vs ChatGPT — which is better?",
+          "a": "Gemini excels at long-context tasks (2M tokens), Google integration, and multimodal analysis. ChatGPT is stronger at coding and creative writing. Both are excellent."
+        },
+        {
+          "q": "What's the 2M token context window?",
+          "a": "You can input ~1.5 million words at once — entire books, codebases, or hours of transcripts. Most other models max out at 128K-200K tokens."
+        },
+        {
+          "q": "Do I need Gemini Pro subscription?",
+          "a": "No — the free tier is enough for most users. Pro ($19.99/mo) adds Gems (custom agents), NotebookLM Plus, and Veo video generation."
+        }
+      ]
+    },
+    "nemotron": {
+      "title": "NVIDIA Nemotron 3 Super — 5-Minute Quick Start",
+      "subtitle": "Free 120B open-source LLM that runs like a 12B model — via OpenRouter or Ollama",
+      "duration": "5 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "認識 Nemotron 3 Super",
+          "titleEn": "Understanding Nemotron 3 Super",
+          "estimatedTime": "1 min",
+          "content": "NVIDIA Nemotron 3 Super is a 120B parameter open-source model using Mixture-of-Experts (MoE) — only 12B parameters are active per inference, making it fast and efficient while maintaining top-tier accuracy (85.6% on PinchBench).",
+          "commands": [
+            "# Key specs:",
+            "# - 120B total parameters, 12B active (MoE)",
+            "# - PinchBench: 85.6% (best-in-class open source)",
+            "# - 1M token context window",
+            "# - NVIDIA Open License (fully open source)",
+            "# - Free via OpenRouter"
+          ],
+          "expectedResult": "You understand what Nemotron 3 Super is and why it's special.",
+          "tips": [
+            "MoE = runs 10x smaller than it 'is' — 120B quality at 12B speed",
+            "Best open-source model in its class on benchmarks",
+            "1M context = process entire codebases or books"
+          ],
+          "troubleshooting": {
+            "title": "FAQ",
+            "items": [
+              {
+                "q": "Is it really as good as GPT-4?",
+                "a": "On many benchmarks it's competitive. It excels at reasoning and code. Try it free and judge yourself."
+              },
+              {
+                "q": "Can I run it locally?",
+                "a": "Yes with Ollama, but you need ~24GB+ RAM for the quantized version. Cloud (OpenRouter) is easier to start."
+              }
+            ]
+          }
+        },
+        {
+          "title": "透過 OpenRouter 免費使用",
+          "titleEn": "Use Free via OpenRouter",
+          "estimatedTime": "2 min",
+          "content": "The fastest way to try Nemotron is through OpenRouter. Sign up, get a key, and start using it — often with free credits.",
+          "commands": [
+            "# 1. Sign up at OpenRouter",
+            "open https://openrouter.ai",
+            "",
+            "# 2. Get your API key",
+            "open https://openrouter.ai/keys",
+            "",
+            "# 3. Test Nemotron",
+            "curl https://openrouter.ai/api/v1/chat/completions \\",
+            "  -H \"Authorization: Bearer sk-or-v1-YOUR_KEY\" \\",
+            "  -H \"Content-Type: application/json\" \\",
+            "  -d '{\"model\": \"nvidia/nemotron-3-super\",",
+            "        \"messages\": [{\"role\": \"user\", \"content\": \"Explain MoE architecture briefly\"}]}'"
+          ],
+          "expectedResult": "You get a response from Nemotron 3 Super via OpenRouter.",
+          "tips": [
+            "OpenRouter free tier: 50 requests/day",
+            "Nemotron is one of the most cost-efficient large models",
+            "Great for coding, reasoning, and analysis tasks"
+          ],
+          "troubleshooting": {
+            "title": "Issues",
+            "items": [
+              {
+                "q": "Model is slow",
+                "a": "Nemotron is a large model — expect 1-3 seconds for first token. Try shorter prompts for faster responses."
+              },
+              {
+                "q": "Out of free credits",
+                "a": "Add $5 credits to OpenRouter — Nemotron is cheap per token, $5 goes a long way."
+              }
+            ]
+          }
+        },
+        {
+          "title": "用 Ollama 本地運行",
+          "titleEn": "Run Locally with Ollama",
+          "estimatedTime": "5 min",
+          "content": "For privacy and unlimited usage, run Nemotron locally with Ollama. You'll need at least 24GB RAM for the quantized version.",
+          "commands": [
+            "# Install Ollama first (if not done)",
+            "# See: /learn/ollama",
+            "",
+            "# Pull the Nemotron model",
+            "ollama pull nemotron",
+            "",
+            "# Run it",
+            "ollama run nemotron",
+            "",
+            "# Chat with it",
+            ">>> Explain the difference between TCP and UDP",
+            "",
+            "# Check model size",
+            "ollama list | grep nemotron"
+          ],
+          "expectedResult": "Nemotron runs locally and you can chat with it in the terminal.",
+          "tips": [
+            "Requires 24GB+ RAM (48GB+ recommended)",
+            "First pull downloads ~15-25GB — be patient",
+            "Use Q4 quantization for smaller machines, Q8 for best quality",
+            "Apple Silicon Macs with 32GB+ work great"
+          ],
+          "troubleshooting": {
+            "title": "Local Issues",
+            "items": [
+              {
+                "q": "Not enough RAM",
+                "a": "Try a smaller quantization: ollama pull nemotron:q4. Or use OpenRouter cloud instead."
+              },
+              {
+                "q": "Very slow generation",
+                "a": "MoE models need fast memory bandwidth. Apple Silicon or NVIDIA GPUs work best. CPU-only will be slow."
+              }
+            ]
+          }
+        },
+        {
+          "title": "搭配 OpenClaw 使用",
+          "titleEn": "Configure with OpenClaw",
+          "estimatedTime": "1 min",
+          "content": "Connect Nemotron to your OpenClaw agent — either via OpenRouter (cloud) or Ollama (local).",
+          "commands": [
+            "# Option 1: Via OpenRouter",
+            "# In OpenClaw config:",
+            "# model: openrouter/nvidia/nemotron-3-super",
+            "",
+            "# Option 2: Via local Ollama",
+            "# Make sure Ollama is running with nemotron",
+            "ollama serve &",
+            "# In OpenClaw config:",
+            "# model: ollama/nemotron",
+            "",
+            "# Test in OpenClaw",
+            "# Your agent now uses Nemotron for reasoning!"
+          ],
+          "expectedResult": "OpenClaw uses Nemotron as its AI model for agent tasks.",
+          "tips": [
+            "Cloud (OpenRouter): easy setup, pay-per-use",
+            "Local (Ollama): free, private, but needs strong hardware",
+            "Mix both: use local for simple tasks, cloud for complex ones"
+          ],
+          "troubleshooting": {
+            "title": "Integration Issues",
+            "items": [
+              {
+                "q": "OpenClaw can't connect to Ollama",
+                "a": "Make sure Ollama is running: ollama serve. Check it's on localhost:11434."
+              },
+              {
+                "q": "Should I use cloud or local?",
+                "a": "Cloud for getting started quickly. Local if you have 32GB+ RAM and want unlimited free usage."
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "1 min",
+          "content": "You're running one of the most powerful open-source models! Explore further.",
+          "tips": [
+            "Compare with other models on OpenRouter to find your favorite",
+            "Try Nemotron for code generation — it's particularly strong",
+            "Join the NVIDIA AI community for tips and updates"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🌐",
+              "title": "OpenRouter",
+              "desc": "Try more models",
+              "link": "/learn/openrouter",
+              "cta": "Explore Models"
+            },
+            {
+              "emoji": "📦",
+              "title": "Ollama",
+              "desc": "Run more models locally",
+              "link": "/learn/ollama",
+              "cta": "Setup Guide"
+            },
+            {
+              "emoji": "🦞",
+              "title": "OpenClaw Agent",
+              "desc": "Build AI workflows",
+              "link": "/learn/ollama-openclaw",
+              "cta": "Get Started"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "What does MoE (Mixture of Experts) mean?",
+          "a": "The model has 120B parameters total, but only activates 12B for each request. This gives you big-model quality at small-model speed and cost."
+        },
+        {
+          "q": "Is it better than Llama 3?",
+          "a": "On many benchmarks, yes — especially reasoning and code. But 'better' depends on your use case. Try both!"
+        },
+        {
+          "q": "Can I fine-tune Nemotron?",
+          "a": "Yes — it's open source under NVIDIA Open License. You can fine-tune it for your specific tasks."
+        },
+        {
+          "q": "How much does it cost on OpenRouter?",
+          "a": "Check current pricing at openrouter.ai/nvidia/nemotron-3-super. Generally very cost-efficient for its capability level."
+        }
+      ]
+    },
+    "whisper": {
+      "title": "Whisper Speech-to-Text — 5-Minute Setup",
+      "subtitle": "OpenAI's free, open-source speech recognition — runs locally on your machine",
+      "duration": "5 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "安裝 Whisper",
+          "titleEn": "Install Whisper",
+          "estimatedTime": "2 min",
+          "content": "Whisper is OpenAI's open-source speech recognition model. Install it locally with pip — no API key needed, completely free.",
+          "commands": [
+            "# Install Whisper with pip",
+            "pip install openai-whisper",
+            "",
+            "# Or with pipx (isolated environment)",
+            "pipx install openai-whisper",
+            "",
+            "# Install ffmpeg (required for audio processing)",
+            "# macOS:",
+            "brew install ffmpeg",
+            "# Ubuntu:",
+            "sudo apt install ffmpeg",
+            "# Windows:",
+            "choco install ffmpeg"
+          ],
+          "expectedResult": "Whisper CLI is available: whisper --help shows usage.",
+          "tips": [
+            "Whisper runs 100% locally — no internet needed after install",
+            "Models range from 'tiny' (39M) to 'large' (1.5B)",
+            "Apple Silicon Macs get hardware acceleration automatically"
+          ],
+          "troubleshooting": {
+            "title": "Install Issues",
+            "items": [
+              {
+                "q": "pip install fails",
+                "a": "Try: pip install --upgrade pip setuptools wheel, then retry. On Mac: brew install python@3.11 first."
+              },
+              {
+                "q": "ffmpeg not found",
+                "a": "Install ffmpeg separately — Whisper needs it for audio decoding. Use your OS package manager."
+              }
+            ]
+          }
+        },
+        {
+          "title": "轉錄音訊檔案",
+          "titleEn": "Transcribe Your First Audio",
+          "estimatedTime": "2 min",
+          "content": "Transcribe any audio or video file with a single command. Whisper auto-detects the language and outputs text.",
+          "commands": [
+            "# Basic transcription",
+            "whisper audio.mp3",
+            "",
+            "# Specify language for better accuracy",
+            "whisper audio.mp3 --language zh",
+            "whisper audio.mp3 --language en",
+            "",
+            "# Choose model size (bigger = more accurate)",
+            "whisper audio.mp3 --model tiny    # Fastest, least accurate",
+            "whisper audio.mp3 --model base    # Good balance",
+            "whisper audio.mp3 --model medium  # Better accuracy",
+            "whisper audio.mp3 --model large   # Best accuracy",
+            "",
+            "# Output formats",
+            "whisper audio.mp3 --output_format srt   # Subtitles",
+            "whisper audio.mp3 --output_format json  # Structured data",
+            "whisper audio.mp3 --output_format txt   # Plain text"
+          ],
+          "expectedResult": "A .txt file with the transcription appears in the current directory.",
+          "tips": [
+            "'medium' model is the sweet spot for most use cases",
+            "'large' is best for Chinese/Japanese/multilingual content",
+            "First run downloads the model (~1-3GB) — be patient",
+            "Supports MP3, WAV, M4A, MP4, and most audio/video formats"
+          ],
+          "troubleshooting": {
+            "title": "Transcription Issues",
+            "items": [
+              {
+                "q": "Wrong language detected",
+                "a": "Use --language to specify: whisper audio.mp3 --language zh for Chinese."
+              },
+              {
+                "q": "Accuracy is poor",
+                "a": "Use a larger model: --model medium or --model large. Also check audio quality."
+              }
+            ]
+          }
+        },
+        {
+          "title": "進階用法與批量處理",
+          "titleEn": "Advanced Usage & Batch Processing",
+          "estimatedTime": "1 min",
+          "content": "Process multiple files, generate subtitles, and use Whisper with other tools.",
+          "commands": [
+            "# Batch process all MP3 files in a folder",
+            "for f in *.mp3; do whisper \"$f\" --model medium --language zh; done",
+            "",
+            "# Generate SRT subtitles for video",
+            "whisper video.mp4 --model large --output_format srt",
+            "",
+            "# Use initial_prompt to improve name accuracy",
+            "whisper audio.mp3 --model large --language zh \\",
+            "  --initial_prompt \"立法委員葛如鈞在立法院發言\"",
+            "",
+            "# Translate to English",
+            "whisper audio.mp3 --task translate"
+          ],
+          "expectedResult": "You can batch process files and customize Whisper's output.",
+          "tips": [
+            "--initial_prompt helps with proper nouns and names",
+            "--task translate outputs English regardless of input language",
+            "SRT output works directly with video editors and ZapCap",
+            "For faster processing, use whisper.cpp or faster-whisper"
+          ],
+          "troubleshooting": {
+            "title": "Advanced Issues",
+            "items": [
+              {
+                "q": "Processing is too slow",
+                "a": "Try faster-whisper (pip install faster-whisper) — 4x faster with same accuracy. Or use a smaller model."
+              },
+              {
+                "q": "Names are transcribed wrong",
+                "a": "Use --initial_prompt with correct names: --initial_prompt 'Speaker names: 葛如鈞, OpenClaw'"
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "1 min",
+          "content": "You can now transcribe any audio locally! Combine with other tools for powerful workflows.",
+          "tips": [
+            "Pair with ElevenLabs for speech-to-speech translation",
+            "Use with OpenClaw to auto-transcribe voice messages",
+            "Generate subtitles for HeyGen videos"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🎙️",
+              "title": "ElevenLabs",
+              "desc": "Text-to-speech & voice clone",
+              "link": "/learn/elevenlabs-integration",
+              "cta": "Setup Guide"
+            },
+            {
+              "emoji": "🎬",
+              "title": "HeyGen",
+              "desc": "AI video generation",
+              "link": "/learn/heygen-video",
+              "cta": "Create Videos"
+            },
+            {
+              "emoji": "🦞",
+              "title": "OpenClaw",
+              "desc": "Automate transcription workflows",
+              "link": "/learn/ollama-openclaw",
+              "cta": "Get Started"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Is Whisper completely free?",
+          "a": "Yes — it's open source (MIT license). Runs locally, no API key or subscription needed."
+        },
+        {
+          "q": "Whisper vs cloud APIs?",
+          "a": "Whisper is free and private but requires local compute. Cloud APIs (OpenAI, Google) are faster but cost money."
+        },
+        {
+          "q": "What languages does Whisper support?",
+          "a": "99 languages including Chinese, English, Japanese, Korean, Spanish, French, and many more."
+        },
+        {
+          "q": "Can it do real-time transcription?",
+          "a": "Not natively — Whisper processes complete audio files. For real-time, look at whisper-streaming or faster-whisper with VAD."
+        }
+      ]
+    },
+    "basemail": {
+      "title": "BaseMail — Web3 Email for AI Agents",
+      "subtitle": "Give your AI agent a real email address — authenticated by wallet signature, no passwords",
+      "duration": "5 min",
+      "difficulty": "Intermediate",
+      "steps": [
+        {
+          "title": "連結你的錢包",
+          "titleEn": "Connect Your Wallet",
+          "estimatedTime": "1 min",
+          "content": "BaseMail uses your Ethereum wallet as your identity. Connect at basemail.ai to get your email address — it's based on your Basename or wallet address.",
+          "commands": [
+            "# Go to BaseMail",
+            "open https://basemail.ai",
+            "",
+            "# Connect with:",
+            "#   - MetaMask",
+            "#   - Coinbase Wallet",
+            "#   - WalletConnect",
+            "#   - Or any EVM wallet",
+            "",
+            "# Your email will be:",
+            "#   yourname@basemail.ai (if you have a Basename)",
+            "#   0xABC...@basemail.ai (wallet address fallback)"
+          ],
+          "expectedResult": "You're logged in and can see your BaseMail inbox.",
+          "tips": [
+            "Get a Basename first at base.org/names for a clean email address",
+            "Wallet signature = your password — no passwords to remember",
+            "Works with any EVM-compatible wallet"
+          ],
+          "troubleshooting": {
+            "title": "Wallet Issues",
+            "items": [
+              {
+                "q": "Which wallet should I use?",
+                "a": "MetaMask or Coinbase Wallet are easiest. For AI agents, use a programmatic wallet (ethers.js or viem)."
+              },
+              {
+                "q": "I don't have a Basename",
+                "a": "You'll get a 0x...@basemail.ai address. Register a Basename at base.org/names ($5+) for a clean name."
+              }
+            ]
+          }
+        },
+        {
+          "title": "發送和接收 Email",
+          "titleEn": "Send & Receive Emails",
+          "estimatedTime": "2 min",
+          "content": "Use the BaseMail web interface or API to send and receive emails. Other BaseMail users and AI agents can reach you at your @basemail.ai address.",
+          "commands": [
+            "# Send via API (for AI agents)",
+            "# 1. Authenticate with SIWE (Sign-In with Ethereum)",
+            "curl -X POST https://basemail.ai/api/auth/start \\",
+            "  -H 'Content-Type: application/json' \\",
+            "  -d '{\"address\": \"0xYOUR_WALLET\"}'",
+            "",
+            "# 2. Sign the message with your wallet",
+            "# 3. Verify signature to get auth token",
+            "curl -X POST https://basemail.ai/api/auth/verify \\",
+            "  -H 'Content-Type: application/json' \\",
+            "  -d '{\"address\": \"0x...\", \"signature\": \"0x...\"}'",
+            "",
+            "# 4. Send email",
+            "curl -X POST https://basemail.ai/api/send \\",
+            "  -H 'Authorization: Bearer YOUR_TOKEN' \\",
+            "  -H 'Content-Type: application/json' \\",
+            "  -d '{\"to\": \"friend@basemail.ai\", \"subject\": \"Hello!\", \"body\": \"Hi from my agent!\"}'",
+            "",
+            "# 5. Check inbox",
+            "curl https://basemail.ai/api/inbox -H 'Authorization: Bearer YOUR_TOKEN'"
+          ],
+          "expectedResult": "You can send and receive emails at your @basemail.ai address.",
+          "tips": [
+            "SIWE (Sign-In with Ethereum) = passwordless auth",
+            "API is REST-based — easy to integrate with any language",
+            "Emails are stored securely and linked to your wallet"
+          ],
+          "troubleshooting": {
+            "title": "Email Issues",
+            "items": [
+              {
+                "q": "Can I email regular Gmail/Outlook addresses?",
+                "a": "BaseMail currently works within the BaseMail ecosystem. Cross-protocol email is on the roadmap."
+              },
+              {
+                "q": "How do I automate this for my AI agent?",
+                "a": "Use the BaseMail OpenClaw skill — it handles SIWE auth and email operations automatically."
+              }
+            ]
+          }
+        },
+        {
+          "title": "為 AI Agent 設定自動化",
+          "titleEn": "Set Up for AI Agents",
+          "estimatedTime": "2 min",
+          "content": "The real power of BaseMail is giving your AI agent its own email. Use the OpenClaw BaseMail skill for automated email operations.",
+          "commands": [
+            "# Install the BaseMail skill for OpenClaw",
+            "# The skill handles:",
+            "#   - Automatic SIWE authentication",
+            "#   - Inbox monitoring",
+            "#   - Sending emails programmatically",
+            "#   - Reading and replying to messages",
+            "",
+            "# Example: Check inbox from OpenClaw",
+            "# Your agent can:",
+            "#   1. Check for new emails periodically",
+            "#   2. Auto-reply to service confirmations",
+            "#   3. Register for Web3 services using email",
+            "#   4. Communicate with other AI agents"
+          ],
+          "expectedResult": "Your AI agent has its own email and can communicate autonomously.",
+          "tips": [
+            "Perfect for AI agents that need to register for services",
+            "Other AI agents can contact yours via email",
+            "Use with CanFly for agent-to-agent communication"
+          ],
+          "troubleshooting": {
+            "title": "Agent Setup",
+            "items": [
+              {
+                "q": "Does my agent need its own wallet?",
+                "a": "Yes — each agent should have its own wallet (and thus its own email). Use ethers.js to create one programmatically."
+              },
+              {
+                "q": "How is this different from regular email?",
+                "a": "No passwords, no centralized provider. Your wallet IS your identity. Perfect for autonomous AI agents."
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "1 min",
+          "content": "Your agent now has an email identity! Explore more Web3 identity tools.",
+          "tips": [
+            "Register a Basename for a clean email address",
+            "Connect with other AI agents on CanFly",
+            "Use BaseMail for service registrations"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🏷️",
+              "title": "Get a Basename",
+              "desc": "yourname.base.eth",
+              "link": "https://base.org/names",
+              "cta": "Register Name",
+              "external": true
+            },
+            {
+              "emoji": "🤖",
+              "title": "AgentCard",
+              "desc": "Create your agent's profile",
+              "link": "/learn/agentcard",
+              "cta": "Create Card"
+            },
+            {
+              "emoji": "🦞",
+              "title": "OpenClaw",
+              "desc": "Automate with AI agents",
+              "link": "/learn/ollama-openclaw",
+              "cta": "Get Started"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Is BaseMail free?",
+          "a": "Yes — connecting your wallet and getting an email is free. You just need a small amount of ETH on Base for transactions."
+        },
+        {
+          "q": "Do I need a Basename?",
+          "a": "No, but recommended. Without one, your email is 0x...@basemail.ai. With a Basename, it's yourname@basemail.ai."
+        },
+        {
+          "q": "Can other people email me?",
+          "a": "Yes — anyone with a BaseMail account can email you. It's designed for agent-to-agent and human-to-agent communication."
+        },
+        {
+          "q": "Is my email data private?",
+          "a": "BaseMail uses wallet-based authentication. Your data is linked to your wallet, not a centralized account."
+        }
+      ]
+    },
+    "agentmail": {
+      "title": "AgentMail — Email Service for AI Agents",
+      "subtitle": "Programmatic email for autonomous AI agents — REST API with instant provisioning",
+      "duration": "5 min",
+      "difficulty": "Intermediate",
+      "steps": [
+        {
+          "title": "註冊 AgentMail",
+          "titleEn": "Sign Up for AgentMail",
+          "estimatedTime": "1 min",
+          "content": "AgentMail provides instant email addresses for AI agents via a REST API. Sign up to get your API key.",
+          "commands": [
+            "# Visit AgentMail",
+            "open https://agentmail.to",
+            "",
+            "# Sign up for an API key",
+            "# Free tier includes:",
+            "#   - Instant email provisioning",
+            "#   - Send and receive emails",
+            "#   - Webhook notifications",
+            "#   - REST API access"
+          ],
+          "expectedResult": "You have an AgentMail account and API key.",
+          "tips": [
+            "Designed specifically for AI agents — not a human email client",
+            "Instant provisioning: create an email address in milliseconds",
+            "REST API makes integration easy with any language"
+          ],
+          "troubleshooting": {
+            "title": "Account Issues",
+            "items": [
+              {
+                "q": "How is AgentMail different from BaseMail?",
+                "a": "AgentMail is a traditional REST API service. BaseMail uses Web3 wallet authentication. Choose based on your tech stack."
+              },
+              {
+                "q": "Is there a free tier?",
+                "a": "Check agentmail.to for current pricing. They offer free trials for developers."
+              }
+            ]
+          }
+        },
+        {
+          "title": "建立 Email 地址",
+          "titleEn": "Create an Email Address",
+          "estimatedTime": "1 min",
+          "content": "Provision a new email address for your agent via the API. Each agent can have its own unique address.",
+          "commands": [
+            "# Create a new email address",
+            "curl -X POST https://api.agentmail.to/v1/addresses \\",
+            "  -H \"Authorization: Bearer YOUR_API_KEY\" \\",
+            "  -H \"Content-Type: application/json\" \\",
+            "  -d '{\"name\": \"my-agent\"}'",
+            "",
+            "# Response includes your new email:",
+            "# my-agent@agentmail.to"
+          ],
+          "expectedResult": "Your agent has a new email address at @agentmail.to.",
+          "tips": [
+            "Create multiple addresses for different agents or purposes",
+            "Addresses are provisioned instantly via API",
+            "Use meaningful names for easy identification"
+          ],
+          "troubleshooting": {
+            "title": "Address Issues",
+            "items": [
+              {
+                "q": "Name already taken",
+                "a": "Try a different name — add numbers or your project name as prefix."
+              },
+              {
+                "q": "Can I use a custom domain?",
+                "a": "Check AgentMail docs for custom domain support on paid plans."
+              }
+            ]
+          }
+        },
+        {
+          "title": "發送和接收 Email",
+          "titleEn": "Send & Receive Emails",
+          "estimatedTime": "2 min",
+          "content": "Use the REST API to send emails and check your inbox. Set up webhooks for real-time notifications.",
+          "commands": [
+            "# Send an email",
+            "curl -X POST https://api.agentmail.to/v1/messages \\",
+            "  -H \"Authorization: Bearer YOUR_API_KEY\" \\",
+            "  -H \"Content-Type: application/json\" \\",
+            "  -d '{",
+            "    \"from\": \"my-agent@agentmail.to\",",
+            "    \"to\": \"someone@example.com\",",
+            "    \"subject\": \"Hello from my AI agent\",",
+            "    \"body\": \"This email was sent by an autonomous AI agent!\"",
+            "  }'",
+            "",
+            "# Check inbox",
+            "curl https://api.agentmail.to/v1/messages \\",
+            "  -H \"Authorization: Bearer YOUR_API_KEY\"",
+            "",
+            "# Set up webhook for real-time notifications",
+            "curl -X POST https://api.agentmail.to/v1/webhooks \\",
+            "  -H \"Authorization: Bearer YOUR_API_KEY\" \\",
+            "  -d '{\"url\": \"https://your-server.com/webhook\", \"events\": [\"message.received\"]}'"
+          ],
+          "expectedResult": "Your agent can send and receive emails programmatically.",
+          "tips": [
+            "Webhooks are the best way to handle incoming mail in real-time",
+            "API supports HTML emails for rich formatting",
+            "Great for service registrations, confirmations, and notifications"
+          ],
+          "troubleshooting": {
+            "title": "Email Issues",
+            "items": [
+              {
+                "q": "Emails going to spam",
+                "a": "AgentMail handles SPF/DKIM for deliverability. If issues persist, check their docs for best practices."
+              },
+              {
+                "q": "Webhook not receiving events",
+                "a": "Make sure your webhook URL is publicly accessible and returns 200 OK."
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "1 min",
+          "content": "Your AI agent has email! Use it for autonomous service registration and communication.",
+          "tips": [
+            "Integrate with OpenClaw for automated email workflows",
+            "Use for sign-ups, confirmations, and notifications",
+            "Combine with other identity tools for a complete agent identity"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "📬",
+              "title": "BaseMail",
+              "desc": "Web3 email with wallet auth",
+              "link": "/learn/basemail",
+              "cta": "Compare"
+            },
+            {
+              "emoji": "🤖",
+              "title": "AgentCard",
+              "desc": "Agent identity on CanFly",
+              "link": "/learn/agentcard",
+              "cta": "Create Card"
+            },
+            {
+              "emoji": "🦞",
+              "title": "OpenClaw",
+              "desc": "Build autonomous agents",
+              "link": "/learn/ollama-openclaw",
+              "cta": "Get Started"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "AgentMail vs BaseMail?",
+          "a": "AgentMail is a traditional REST API service — easy to integrate, works with any stack. BaseMail uses Web3 wallet auth — better for blockchain-native agents."
+        },
+        {
+          "q": "Can my agent receive emails from Gmail?",
+          "a": "Yes — AgentMail addresses can receive emails from any standard email provider."
+        },
+        {
+          "q": "Is it suitable for production?",
+          "a": "Yes — AgentMail is designed for production AI agent workloads with proper deliverability and uptime."
+        },
+        {
+          "q": "How many emails can I send?",
+          "a": "Check agentmail.to for current rate limits and pricing tiers."
+        }
+      ]
+    },
+    "agentcard": {
+      "title": "AgentCard — Create Your Agent's Identity",
+      "subtitle": "Give your AI agent a public profile on CanFly — showcase skills, stats, and services",
+      "duration": "5 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "註冊 CanFly 帳號",
+          "titleEn": "Register on CanFly",
+          "estimatedTime": "1 min",
+          "content": "Create your account on CanFly to start building your agent's public profile. You can sign up with a wallet, GitHub, or World ID.",
+          "commands": [
+            "# Go to CanFly",
+            "open https://canfly.ai/register",
+            "",
+            "# Sign up with:",
+            "#   - Ethereum wallet (MetaMask, Coinbase)",
+            "#   - GitHub account",
+            "#   - World ID (verified human)",
+            "",
+            "# After signup, go to your profile",
+            "open https://canfly.ai/u/YOUR_USERNAME"
+          ],
+          "expectedResult": "You have a CanFly account and can see your profile page.",
+          "tips": [
+            "World ID verification gives you a 'Verified Human' badge",
+            "Wallet connection enables Web3 features",
+            "Your profile URL: canfly.ai/u/username"
+          ],
+          "troubleshooting": {
+            "title": "Account Issues",
+            "items": [
+              {
+                "q": "Which signup method is best?",
+                "a": "Wallet for Web3 agents, GitHub for developer agents, World ID for human-verified profiles."
+              },
+              {
+                "q": "Can I change my username later?",
+                "a": "Check your profile settings — username changes may be limited."
+              }
+            ]
+          }
+        },
+        {
+          "title": "建立 Agent Card",
+          "titleEn": "Create Your Agent Card",
+          "estimatedTime": "2 min",
+          "content": "Register your AI agent with a name, description, avatar, and list of skills. This is your agent's public identity.",
+          "commands": [
+            "# Go to agent registration",
+            "open https://canfly.ai/u/YOUR_USERNAME/agents/new",
+            "",
+            "# Fill in:",
+            "#   Name: Your agent's name",
+            "#   Description: What your agent does",
+            "#   Avatar: Upload an image",
+            "#   Skills: List capabilities",
+            "#   Wallet: Agent's wallet address (optional)",
+            "",
+            "# Or via API:",
+            "curl -X POST https://canfly.ai/api/agents \\",
+            "  -H \"Authorization: Bearer YOUR_API_KEY\" \\",
+            "  -H \"Content-Type: application/json\" \\",
+            "  -d '{",
+            "    \"name\": \"MyAgent\",",
+            "    \"description\": \"An AI assistant that...\",",
+            "    \"skills\": [\"research\", \"writing\", \"coding\"]",
+            "  }'"
+          ],
+          "expectedResult": "Your agent has a public profile card at canfly.ai/u/username/agent/name.",
+          "tips": [
+            "A good avatar and description attract more interactions",
+            "List specific skills — not just 'AI assistant'",
+            "Add your agent's wallet address for Web3 identity"
+          ],
+          "troubleshooting": {
+            "title": "Card Issues",
+            "items": [
+              {
+                "q": "What should I put in the description?",
+                "a": "Be specific: what your agent does, what models it uses, what makes it special. Think of it as your agent's resume."
+              },
+              {
+                "q": "Can I have multiple agents?",
+                "a": "Yes — register as many agent cards as you want under your account."
+              }
+            ]
+          }
+        },
+        {
+          "title": "分享和展示",
+          "titleEn": "Share & Showcase",
+          "estimatedTime": "1 min",
+          "content": "Your AgentCard is now live! Share it on social media, embed it in your projects, or list it in the CanFly marketplace.",
+          "commands": [
+            "# Your agent's public URL",
+            "open https://canfly.ai/u/YOUR_USERNAME/agent/YOUR_AGENT",
+            "",
+            "# Share on social media",
+            "# The URL generates a rich preview card automatically",
+            "",
+            "# Check the rankings",
+            "open https://canfly.ai/rankings",
+            "",
+            "# Browse other agents for inspiration",
+            "open https://canfly.ai/community"
+          ],
+          "expectedResult": "Your agent is visible on CanFly and can be discovered by others.",
+          "tips": [
+            "Share your AgentCard URL on X/Twitter for visibility",
+            "Engage with the CanFly community",
+            "Keep your agent's profile updated as it learns new skills"
+          ],
+          "troubleshooting": {
+            "title": "Visibility",
+            "items": [
+              {
+                "q": "My agent doesn't show in rankings",
+                "a": "Rankings are based on activity and community engagement. Keep your agent active and updated."
+              },
+              {
+                "q": "How do I get more visibility?",
+                "a": "Complete your profile, add a good avatar, list skills, and participate in the community."
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "1 min",
+          "content": "Your agent has a public identity! Explore the CanFly ecosystem.",
+          "tips": [
+            "Connect BaseMail for agent email",
+            "List services your agent offers",
+            "Join the CanFly community to network with other agents"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "📬",
+              "title": "BaseMail",
+              "desc": "Email for your agent",
+              "link": "/learn/basemail",
+              "cta": "Setup Email"
+            },
+            {
+              "emoji": "🌐",
+              "title": "Community",
+              "desc": "Meet other agents",
+              "link": "/community",
+              "cta": "Explore"
+            },
+            {
+              "emoji": "🦞",
+              "title": "OpenClaw",
+              "desc": "Power your agent",
+              "link": "/learn/ollama-openclaw",
+              "cta": "Get Started"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "What is an AgentCard?",
+          "a": "It's a public profile page for your AI agent on CanFly — like a LinkedIn profile but for AI agents."
+        },
+        {
+          "q": "Do I need an AI agent to create one?",
+          "a": "You can create a card for any agent, bot, or AI project. It's a way to showcase what it does."
+        },
+        {
+          "q": "Is it free?",
+          "a": "Yes — creating an AgentCard on CanFly is free."
+        },
+        {
+          "q": "Can other agents interact with mine?",
+          "a": "Yes — through the CanFly community, other agents can discover yours and potentially collaborate."
+        }
+      ]
+    },
+    "umbrel": {
+      "title": "Umbrel Home Server — AI Self-Hosting Guide",
+      "subtitle": "Run Ollama + OpenClaw on your own Umbrel home server — complete privacy and control",
+      "duration": "15 min",
+      "difficulty": "Intermediate",
+      "steps": [
+        {
+          "title": "安裝 umbrelOS",
+          "titleEn": "Install umbrelOS",
+          "estimatedTime": "5 min",
+          "content": "Umbrel is a home server OS that makes self-hosting easy. Install it on a Raspberry Pi 5, old laptop, or any x86/ARM machine.",
+          "commands": [
+            "# Option 1: Raspberry Pi 5 (recommended for beginners)",
+            "# Download umbrelOS from:",
+            "open https://umbrel.com/umbrelos",
+            "",
+            "# Flash to microSD card using Balena Etcher",
+            "# Insert into Pi 5, connect ethernet, power on",
+            "",
+            "# Option 2: Install on existing machine",
+            "curl -L https://umbrel.sh | bash",
+            "",
+            "# Option 3: Old laptop / mini PC",
+            "# Download the USB installer from umbrel.com",
+            "# Boot from USB and follow the setup wizard",
+            "",
+            "# Access at: http://umbrel.local"
+          ],
+          "expectedResult": "umbrelOS is running and accessible at http://umbrel.local.",
+          "tips": [
+            "Raspberry Pi 5 (8GB) is the easiest starter hardware",
+            "8GB+ RAM recommended for AI workloads",
+            "SSD storage recommended over SD card for performance",
+            "Umbrel auto-discovers on your local network"
+          ],
+          "troubleshooting": {
+            "title": "Install Issues",
+            "items": [
+              {
+                "q": "Can't find umbrel.local",
+                "a": "Try your router's admin page to find the IP. Or use: ping umbrel.local"
+              },
+              {
+                "q": "Which hardware should I use?",
+                "a": "Pi 5 8GB for light use. Old laptop/mini PC with 16GB+ RAM for serious AI work."
+              }
+            ]
+          }
+        },
+        {
+          "title": "安裝 Ollama App",
+          "titleEn": "Install Ollama from App Store",
+          "estimatedTime": "3 min",
+          "content": "Umbrel has a built-in app store. Install Ollama with one click to run AI models on your home server.",
+          "commands": [
+            "# In umbrelOS web interface:",
+            "# 1. Go to App Store",
+            "# 2. Search 'Ollama'",
+            "# 3. Click 'Install'",
+            "# 4. Wait for download and setup",
+            "",
+            "# After install, Ollama runs at:",
+            "# http://umbrel.local:11434",
+            "",
+            "# Pull a model via Umbrel's terminal or SSH:",
+            "ssh umbrel@umbrel.local",
+            "ollama pull llama3.2",
+            "ollama pull gemma2:9b"
+          ],
+          "expectedResult": "Ollama is running on Umbrel and you can pull AI models.",
+          "tips": [
+            "Start with smaller models (7B-9B) on limited hardware",
+            "Ollama runs as a background service automatically",
+            "Models are stored on Umbrel's storage — use SSD for speed"
+          ],
+          "troubleshooting": {
+            "title": "Ollama Issues",
+            "items": [
+              {
+                "q": "Ollama won't start",
+                "a": "Check Umbrel's app logs. Make sure you have enough disk space for models (10GB+ recommended)."
+              },
+              {
+                "q": "Models are very slow",
+                "a": "Raspberry Pi 5 is slow for large models. Use 7B models or upgrade to x86 hardware with more RAM."
+              }
+            ]
+          }
+        },
+        {
+          "title": "設定 OpenClaw",
+          "titleEn": "Set Up OpenClaw on Umbrel",
+          "estimatedTime": "5 min",
+          "content": "Install OpenClaw alongside Ollama on your Umbrel server for a fully self-hosted AI agent.",
+          "commands": [
+            "# SSH into Umbrel",
+            "ssh umbrel@umbrel.local",
+            "",
+            "# Install OpenClaw",
+            "npm install -g openclaw",
+            "",
+            "# Configure to use local Ollama",
+            "openclaw config set providers.ollama.host http://localhost:11434",
+            "",
+            "# Start OpenClaw",
+            "openclaw start",
+            "",
+            "# Or run with Ollama directly:",
+            "ollama launch openclaw"
+          ],
+          "expectedResult": "OpenClaw is running on Umbrel, connected to local Ollama.",
+          "tips": [
+            "Everything runs locally — complete data privacy",
+            "Access OpenClaw remotely via Umbrel's built-in Tor/Tailscale",
+            "Set up auto-start so OpenClaw runs on boot"
+          ],
+          "troubleshooting": {
+            "title": "Setup Issues",
+            "items": [
+              {
+                "q": "OpenClaw can't find Ollama",
+                "a": "Check Ollama is running: curl http://localhost:11434. Make sure the host config is correct."
+              },
+              {
+                "q": "How do I access remotely?",
+                "a": "Umbrel supports Tailscale VPN for secure remote access. Or use Umbrel's built-in remote access feature."
+              }
+            ]
+          }
+        },
+        {
+          "title": "遠端存取設定",
+          "titleEn": "Configure Remote Access",
+          "estimatedTime": "2 min",
+          "content": "Access your Umbrel AI server from anywhere using Tailscale or Umbrel's built-in remote access.",
+          "commands": [
+            "# Option 1: Tailscale (recommended)",
+            "# Install Tailscale app from Umbrel App Store",
+            "# Connect to your Tailscale network",
+            "# Access via Tailscale IP: http://100.x.x.x:11434",
+            "",
+            "# Option 2: Umbrel Remote Access",
+            "# Enable in Settings > Remote Access",
+            "# Get your .onion address for Tor access",
+            "",
+            "# Option 3: Cloudflare Tunnel",
+            "# Install cloudflared on Umbrel",
+            "cloudflared tunnel --url http://localhost:11434"
+          ],
+          "expectedResult": "You can access your Umbrel AI server from anywhere securely.",
+          "tips": [
+            "Tailscale is the easiest and most secure option",
+            "Don't expose Ollama directly to the internet without auth",
+            "Umbrel's Tor access works but is slower"
+          ],
+          "troubleshooting": {
+            "title": "Remote Access",
+            "items": [
+              {
+                "q": "Tailscale won't connect",
+                "a": "Make sure both your device and Umbrel are on the same Tailscale network. Check the app in Umbrel."
+              },
+              {
+                "q": "Is it safe to expose remotely?",
+                "a": "Use Tailscale (encrypted VPN) or Cloudflare Tunnel with auth. Never expose raw HTTP to the internet."
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "1 min",
+          "content": "Your home AI server is ready! You have complete privacy and control over your AI agent.",
+          "tips": [
+            "Add more Umbrel apps: Bitcoin node, Nextcloud, etc.",
+            "Upgrade hardware as needed — start small, grow later",
+            "Join the Umbrel community at community.umbrel.com"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "📦",
+              "title": "Ollama Models",
+              "desc": "Explore more models",
+              "link": "/learn/ollama",
+              "cta": "Browse Models"
+            },
+            {
+              "emoji": "💻",
+              "title": "Always-On Mac",
+              "desc": "Mac alternative to Umbrel",
+              "link": "/learn/always-on-mac",
+              "cta": "Compare Setup"
+            },
+            {
+              "emoji": "🦞",
+              "title": "OpenClaw Skills",
+              "desc": "Add capabilities",
+              "link": "/learn/agent-skills",
+              "cta": "Browse Skills"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "What hardware do I need?",
+          "a": "Minimum: Raspberry Pi 5 (8GB). Recommended: Mini PC with 16GB+ RAM and SSD. For large models: 32GB+ RAM."
+        },
+        {
+          "q": "Umbrel vs running on my Mac?",
+          "a": "Umbrel is a dedicated server — always on, low power. Mac is more powerful but you might not want it running 24/7."
+        },
+        {
+          "q": "Is it really private?",
+          "a": "Yes — everything runs on your hardware, on your network. No data leaves your home unless you choose to."
+        },
+        {
+          "q": "Can I run other apps alongside AI?",
+          "a": "Yes! Umbrel's app store has 200+ apps: Bitcoin node, Nextcloud, Pi-hole, media servers, and more."
+        }
+      ]
+    },
+    "evenG2": {
+      "title": "Even Realities G2 × AI Bridge Setup",
+      "subtitle": "Connect Even Realities G2 smart glasses to your AI agent for hands-free AI assistance",
+      "duration": "10 min",
+      "difficulty": "Intermediate",
+      "steps": [
+        {
+          "title": "取得 G2 智慧眼鏡",
+          "titleEn": "Get Your G2 Smart Glasses",
+          "estimatedTime": "1 min",
+          "content": "The Even Realities G2 are prescription-compatible smart glasses with a micro-LED display. They connect to your phone via Bluetooth and can display AI-generated text, translations, and notifications.",
+          "commands": [
+            "# Order from Even Realities",
+            "open https://www.evenrealities.com",
+            "",
+            "# G2 features:",
+            "#   - Micro-LED display in lens",
+            "#   - Prescription lens compatible",
+            "#   - Bluetooth 5.3 connection",
+            "#   - All-day battery life",
+            "#   - Looks like normal glasses"
+          ],
+          "expectedResult": "You have G2 glasses and the Even Realities app installed.",
+          "tips": [
+            "G2 looks like normal glasses — nobody knows it's smart",
+            "Works with prescription lenses",
+            "Charge via the included case"
+          ],
+          "troubleshooting": {
+            "title": "Hardware",
+            "items": [
+              {
+                "q": "Battery drains fast",
+                "a": "Turn off when not in use. Display brightness affects battery — lower it for longer life."
+              },
+              {
+                "q": "Display is hard to read",
+                "a": "Adjust brightness and text size in the Even Realities app. Fit matters — adjust nose pads."
+              }
+            ]
+          }
+        },
+        {
+          "title": "安裝 Bridge App",
+          "titleEn": "Install the Bridge App",
+          "estimatedTime": "2 min",
+          "content": "Install the Even Realities app and connect your G2 glasses via Bluetooth. The app acts as a bridge between your glasses and AI services.",
+          "commands": [
+            "# Install the Even Realities app",
+            "# iOS: App Store > 'Even Realities'",
+            "# Android: Google Play > 'Even Realities'",
+            "",
+            "# Pair your G2:",
+            "# 1. Open the app",
+            "# 2. Turn on your G2 glasses",
+            "# 3. Tap 'Connect' in the app",
+            "# 4. Select your G2 from Bluetooth list",
+            "# 5. Follow on-screen pairing instructions"
+          ],
+          "expectedResult": "G2 glasses are paired and showing content from your phone.",
+          "tips": [
+            "Keep Bluetooth enabled on your phone",
+            "The app runs in background for always-on display",
+            "Update firmware when prompted for best experience"
+          ],
+          "troubleshooting": {
+            "title": "Pairing Issues",
+            "items": [
+              {
+                "q": "G2 won't appear in Bluetooth",
+                "a": "Make sure G2 is charged and powered on (press button on temple). Reset: hold button 10 seconds."
+              },
+              {
+                "q": "Connection keeps dropping",
+                "a": "Stay within 10m range. Remove other Bluetooth devices if interfering. Update firmware."
+              }
+            ]
+          }
+        },
+        {
+          "title": "連接 AI 助手",
+          "titleEn": "Connect to AI Assistant",
+          "estimatedTime": "5 min",
+          "content": "Configure the G2 to display AI responses. You can connect it to ChatGPT, local Ollama, or your OpenClaw agent for hands-free AI assistance.",
+          "commands": [
+            "# The Even Realities app supports:",
+            "#   - Built-in AI assistant",
+            "#   - Real-time translation",
+            "#   - Teleprompter mode",
+            "#   - Notification mirroring",
+            "",
+            "# For OpenClaw integration:",
+            "# 1. Enable notification mirroring in the app",
+            "# 2. OpenClaw sends responses as notifications",
+            "# 3. Responses appear on your G2 display",
+            "",
+            "# For direct API integration:",
+            "# Use the Even Realities SDK (if available)",
+            "# Or use notification bridge approach"
+          ],
+          "expectedResult": "AI responses appear on your G2 glasses display.",
+          "tips": [
+            "Notification mirroring is the easiest integration method",
+            "Real-time translation is great for meetings and travel",
+            "Teleprompter mode works for presentations"
+          ],
+          "troubleshooting": {
+            "title": "AI Integration",
+            "items": [
+              {
+                "q": "Notifications aren't showing on glasses",
+                "a": "Check notification permissions in phone settings. Make sure the Even app has notification access."
+              },
+              {
+                "q": "Can I use voice commands?",
+                "a": "G2 has a microphone — check the app for voice input options. Pair with your phone's voice assistant."
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "1 min",
+          "content": "You have AI on your face! Explore more ways to use G2 with your AI agent.",
+          "tips": [
+            "Try real-time translation in conversations",
+            "Use teleprompter mode for presentations",
+            "Experiment with different notification styles"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "OpenClaw",
+              "desc": "Build your AI agent",
+              "link": "/learn/ollama-openclaw",
+              "cta": "Get Started"
+            },
+            {
+              "emoji": "🎙️",
+              "title": "Whisper",
+              "desc": "Speech-to-text for voice input",
+              "link": "/learn/whisper",
+              "cta": "Setup Guide"
+            },
+            {
+              "emoji": "🌐",
+              "title": "OpenRouter",
+              "desc": "Choose your AI model",
+              "link": "/learn/openrouter",
+              "cta": "Explore Models"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Do G2 glasses need a phone?",
+          "a": "Yes — G2 connects via Bluetooth to your phone. The phone does the processing, glasses display the result."
+        },
+        {
+          "q": "Can I use G2 with prescription lenses?",
+          "a": "Yes — Even Realities offers prescription lens options. Check their website for details."
+        },
+        {
+          "q": "How long does the battery last?",
+          "a": "All-day for notification display. Heavy use (translation, AI) may need a midday charge via the case."
+        },
+        {
+          "q": "Is the display visible to others?",
+          "a": "No — the micro-LED is only visible to the wearer. Others see normal-looking glasses."
+        }
+      ]
     }
   },
   "hardwareCompare": {

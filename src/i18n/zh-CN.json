@@ -4927,6 +4927,1770 @@
           "a": "所有 Escrow 交易使用 Base 区块链上的 USDC。USDC 是与美元 1:1 挂钩的稳定币，因此在交易期间没有波动风险。"
         }
       ]
+    },
+    "openrouter": {
+      "title": "OpenRouter — 5 分钟快速上手",
+      "subtitle": "一把 API 密钥通吃 200+ AI 模型，来自 30+ 供应商——免费方案可用",
+      "duration": "5 分钟",
+      "difficulty": "入门",
+      "steps": [
+        {
+          "title": "创建 OpenRouter 账号",
+          "titleEn": "Create Your OpenRouter Account",
+          "estimatedTime": "1 分钟",
+          "content": "到 OpenRouter.ai 用 Google、GitHub 或 Email 注册。免费方案每天 50 次请求，不需信用卡。",
+          "commands": [
+            "# 打开 OpenRouter 並注册",
+            "open https://openrouter.ai",
+            "",
+            "# 用 Google、GitHub 或 Email 登录",
+            "# 免费方案：每天 50 次请求、每分钟 20 次"
+          ],
+          "expectedResult": "你有了 OpenRouter 账号，可以看到儀表板。",
+          "tips": [
+            "免费方案：每天 50 次请求，所有模型通用",
+            "不需信用卡",
+            "用量付费：加值後依用量計费，各模型價格不同"
+          ],
+          "troubleshooting": {
+            "title": "账号问题",
+            "items": [
+              {
+                "q": "可以不注册就用吗？",
+                "a": "不行——你需要账号才能获取 API 密钥，但注册免费只要 30 秒。"
+              },
+              {
+                "q": "哪种登录方式最好？",
+                "a": "Google 或 GitHub 最快。Email 也行但需要验证。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "获取 API 密钥",
+          "titleEn": "Get Your API Key",
+          "estimatedTime": "1 分钟",
+          "content": "到 OpenRouter 儀表板的 Keys 页面创建新的 API 密钥。这把密钥可用於所有 200+ 模型。",
+          "commands": [
+            "# 前往 API Keys 页面",
+            "open https://openrouter.ai/keys",
+            "",
+            "# 点击 'Create Key'",
+            "# 命名为 'OpenClaw'",
+            "# 复製密钥——开头是 sk-or-v1-..."
+          ],
+          "expectedResult": "你有一把以 sk-or-v1-... 开头的 API 密钥。",
+          "tips": [
+            "一把密钥通用所有模型——不需分別申请",
+            "可创建多把密钥分配给不同专案",
+            "可为每把密钥设置用量上限避免超支"
+          ],
+          "troubleshooting": {
+            "title": "密钥问题",
+            "items": [
+              {
+                "q": "我弄丟了 API 密钥",
+                "a": "创建後无法再查看。刪掉舊的，重新创建一把新的。"
+              },
+              {
+                "q": "密钥显示「rate limited」",
+                "a": "免费方案每天 50 次、每分钟 20 次。等一下或加值获取更多额度。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "測试 API 呼叫",
+          "titleEn": "Test Your First API Call",
+          "estimatedTime": "1 分钟",
+          "content": "OpenRouter 使用与 OpenAI 相容的 API 格式。用 curl 測试——只要换 base URL 和你的 OpenRouter 密钥。",
+          "commands": [
+            "# 用免费模型測试",
+            "curl https://openrouter.ai/api/v1/chat/completions \\",
+            "  -H \"Authorization: Bearer sk-or-v1-YOUR_KEY\" \\",
+            "  -H \"Content-Type: application/json\" \\",
+            "  -d '{\"model\": \"google/gemini-2.5-flash\",",
+            "        \"messages\": [{\"role\": \"user\", \"content\": \"Hello!\"}]}'",
+            "",
+            "# 或用 OpenAI Python 套件",
+            "pip install openai",
+            "python3 -c \"",
+            "from openai import OpenAI",
+            "client = OpenAI(base_url='https://openrouter.ai/api/v1', api_key='sk-or-v1-YOUR_KEY')",
+            "r = client.chat.completions.create(model='google/gemini-2.5-flash', messages=[{'role':'user','content':'Hello!'}])",
+            "print(r.choices[0].message.content)\""
+          ],
+          "expectedResult": "你收到 AI 回应，确认 API 密钥可用。",
+          "tips": [
+            "OpenAI SDK 直接可用——只要改 base_url",
+            "先试免费模型：google/gemini-2.5-flash、meta-llama/llama-4-scout",
+            "在 openrouter.ai/models 查看模型價格"
+          ],
+          "troubleshooting": {
+            "title": "API 问题",
+            "items": [
+              {
+                "q": "401 Unauthorized",
+                "a": "检查 API 密钥是否正确，开头应为 sk-or-v1-。"
+              },
+              {
+                "q": "Model not found",
+                "a": "到 openrouter.ai/models 确认正确的模型 ID。ID 区分大小写。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "设置 OpenClaw 使用 OpenRouter",
+          "titleEn": "Configure OpenClaw with OpenRouter",
+          "estimatedTime": "2 分钟",
+          "content": "把 OpenRouter API 密钥加到 OpenClaw 设置中。这样你的 AI Agent 就能通过一个供应商存取 200+ 模型。",
+          "commands": [
+            "# 加到 OpenClaw 设置 (~/.clawdbot/clawdbot.json)",
+            "# 设置 OpenRouter 为模型供应商：",
+            "{",
+            "  \"providers\": {",
+            "    \"openrouter\": {",
+            "      \"apiKey\": \"sk-or-v1-YOUR_KEY\"",
+            "    }",
+            "  }",
+            "}",
+            "",
+            "# 或用环境变數设置",
+            "export OPENROUTER_API_KEY=sk-or-v1-YOUR_KEY",
+            "",
+            "# 在 OpenClaw 中使用任何模型：",
+            "# openrouter/google/gemini-2.5-flash",
+            "# openrouter/anthropic/claude-sonnet-4",
+            "# openrouter/meta-llama/llama-4-scout"
+          ],
+          "expectedResult": "OpenClaw 现在可以通过 OpenRouter 路由请求到任何支持的模型。",
+          "tips": [
+            "在 OpenClaw 中用 openrouter/MODEL_ID 格式",
+            "很适合測试不同模型而不需分別申请 API 密钥",
+            "智能路由：用 openrouter/auto 让 OpenRouter 自动选最佳模型"
+          ],
+          "troubleshooting": {
+            "title": "设置问题",
+            "items": [
+              {
+                "q": "OpenClaw 不認得模型",
+                "a": "用完整格式：openrouter/provider/model-name。到 openrouter.ai/models 确认正确 ID。"
+              },
+              {
+                "q": "回应很慢",
+                "a": "有些模型延遲較高。尝试不同供应商或模型以获得更快回应。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "1 分钟",
+          "content": "设置完成！探索 200+ 模型，找到最适合你工作流程的。",
+          "tips": [
+            "到 openrouter.ai/models 浏览所有模型",
+            "在 openrouter.ai/rankings 比较模型性能",
+            "设置用量警报控制支出"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🤖",
+              "title": "浏览模型",
+              "desc": "探索 200+ AI 模型",
+              "link": "https://openrouter.ai/models",
+              "cta": "查看模型",
+              "external": true
+            },
+            {
+              "emoji": "🦞",
+              "title": "安装 OpenClaw",
+              "desc": "设置你的 AI Agent",
+              "link": "/learn/ollama-openclaw",
+              "cta": "开始教程"
+            },
+            {
+              "emoji": "☁️",
+              "title": "云端部署",
+              "desc": "在 Zeabur 上 24/7 运行",
+              "link": "/learn/zeabur",
+              "cta": "立即部署"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "OpenRouter 真的免费吗？",
+          "a": "是的——免费方案每天 50 次请求。许多模型也有免费版本。需要更多用量时再加值（用量付费）。"
+        },
+        {
+          "q": "計费方式？",
+          "a": "每个模型有自己的每 token 價格。你只为使用的部分付费。在 openrouter.ai/models 查看價格。"
+        },
+        {
+          "q": "除了 OpenClaw 还能用在其他工具吗？",
+          "a": "可以！它相容 OpenAI 格式。任何支持自订 API 端点的工具都能用——LangChain、LlamaIndex、Continue.dev 等。"
+        },
+        {
+          "q": "跟直接用各家供应商有什麼差別？",
+          "a": "一把 API 密钥搞定所有模型、統一計费、自动故障切换，而且换模型只要改一行。"
+        }
+      ]
+    },
+    "googleGemini": {
+      "title": "Google Gemini — 5 分钟快速上手",
+      "subtitle": "免费 AI 助手，200 萬 token 上下文窗口——深度集成 Google 生态系",
+      "duration": "5 分钟",
+      "difficulty": "入门",
+      "steps": [
+        {
+          "title": "开始使用 Gemini",
+          "titleEn": "Start Using Gemini",
+          "estimatedTime": "1 分钟",
+          "content": "Google Gemini 在 gemini.google.com 免费使用。用你的 Google 账号登录，即可使用擁有 200 萬 token 上下文窗口的 AI 助手。",
+          "commands": [
+            "# 在浏览器中打开 Gemini",
+            "open https://gemini.google.com",
+            "",
+            "# 用 Google 账号登录",
+            "# 免费方案包含：",
+            "#   - 无限基本对话",
+            "#   - 图片理解",
+            "#   - 200 萬 token 上下文窗口",
+            "#   - Google 生态系集成"
+          ],
+          "expectedResult": "你可以与 Gemini 对话並上传图片进行分析。",
+          "tips": [
+            "免费方案非常慷慨——无限基本对话",
+            "Pro（$19.99/月）增加 Gems、NotebookLM Plus 和 Veo 影片",
+            "支持网頁版、Android、iOS 和 Chrome"
+          ],
+          "troubleshooting": {
+            "title": "存取问题",
+            "items": [
+              {
+                "q": "我的地区无法使用 Gemini",
+                "a": "Gemini 在 180+ 国家可用。若被擋可试 VPN，或改用 API 存取。"
+              },
+              {
+                "q": "Google Bard 怎麼了？",
+                "a": "Bard 在 2024 年 2 月更名为 Gemini。同服务，新名字加升级模型。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "获取 Gemini API 密钥（免费！）",
+          "titleEn": "Get Gemini API Key (Free!)",
+          "estimatedTime": "2 分钟",
+          "content": "Google AI Studio 提供免费的 Gemini API 存取。你能获取慷慨的免费额度——足夠个人专案和 OpenClaw Agent 使用。",
+          "commands": [
+            "# 前往 Google AI Studio",
+            "open https://aistudio.google.com/apikey",
+            "",
+            "# 点击 'Create API key'",
+            "# 选择或创建 Google Cloud 专案",
+            "# 复製密钥——开头是 AIza...",
+            "",
+            "# 免费额度（Gemini 2.5 Flash）：",
+            "#   每分钟 15 次请求",
+            "#   每天 1,500 次请求",
+            "#   每分钟 100 萬 token"
+          ],
+          "expectedResult": "你有一把以 AIza... 开头的 Gemini API 密钥。",
+          "tips": [
+            "Gemini 2.5 Flash 免费且额度慷慨",
+            "不需信用卡",
+            "API 密钥可搭配 Google AI SDK 和 OpenAI 相容端点使用"
+          ],
+          "troubleshooting": {
+            "title": "API 密钥问题",
+            "items": [
+              {
+                "q": "无法创建密钥",
+                "a": "确认你有 Google 账号。企業账号可能需要管理員批准。"
+              },
+              {
+                "q": "免费额度多少？",
+                "a": "Gemini 2.5 Flash：15 RPM、1,500 RPD、1M TPM。Gemini 2.5 Pro：5 RPM、50 RPD。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "使用 Gemini API",
+          "titleEn": "Use Gemini API Directly",
+          "estimatedTime": "1 分钟",
+          "content": "用簡单的 curl 指令或 Google AI Python SDK 測试 Gemini API。",
+          "commands": [
+            "# 用 curl 測试",
+            "curl \"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=YOUR_API_KEY\" \\",
+            "  -H 'Content-Type: application/json' \\",
+            "  -d '{\"contents\": [{\"parts\":[{\"text\": \"用一句话解釋量子計算\"}]}]}'",
+            "",
+            "# 或用 Python SDK",
+            "pip install google-genai",
+            "python3 -c \"",
+            "from google import genai",
+            "client = genai.Client(api_key='YOUR_API_KEY')",
+            "r = client.models.generate_content(model='gemini-2.5-flash', contents='Hello!')",
+            "print(r.text)\""
+          ],
+          "expectedResult": "你收到 Gemini API 的 AI 回应。",
+          "tips": [
+            "Gemini 2.5 Flash 最快最便宜",
+            "Gemini 2.5 Pro 在复雜任务上能力最強",
+            "API 支持文字、图片、影片和音讯输入"
+          ],
+          "troubleshooting": {
+            "title": "API 问题",
+            "items": [
+              {
+                "q": "403 Forbidden",
+                "a": "检查 API 密钥是否有效。确认 Google Cloud 专案中已啟用 Generative Language API。"
+              },
+              {
+                "q": "超出速率限制",
+                "a": "免费方案有每分钟和每日额度。等一分钟或升级付费方案获取更高限額。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "通过 OpenRouter 搭配 OpenClaw",
+          "titleEn": "Use with OpenClaw via OpenRouter",
+          "estimatedTime": "1 分钟",
+          "content": "搭配 OpenClaw 使用 Gemini 最簡单的方法是通过 OpenRouter。不用直接设置 Google Cloud 憑证。",
+          "commands": [
+            "# 方案一：通过 OpenRouter（推薦）",
+            "# 加到 OpenClaw 设置：",
+            "{",
+            "  \"providers\": {",
+            "    \"openrouter\": { \"apiKey\": \"sk-or-v1-YOUR_KEY\" }",
+            "  }",
+            "}",
+            "# 然後使用：openrouter/google/gemini-2.5-flash",
+            "",
+            "# 方案二：直接使用 Gemini API",
+            "export GOOGLE_API_KEY=AIza...",
+            "# 在 OpenClaw 中使用：google/gemini-2.5-flash"
+          ],
+          "expectedResult": "OpenClaw 现在可以使用 Gemini 模型运行 Agent 任务。",
+          "tips": [
+            "OpenRouter 路线更簡单——一把密钥搞定所有模型",
+            "直接 API 免费但需要 Google Cloud 设置",
+            "Gemini 2.5 Flash 通过 OpenRouter 非常划算"
+          ],
+          "troubleshooting": {
+            "title": "集成问题",
+            "items": [
+              {
+                "q": "哪种方法比较好？",
+                "a": "OpenRouter 較簡单（一把 API 密钥）。直接 API 更便宜（免费额度）但需要更多设置。"
+              },
+              {
+                "q": "可以通过 API 用 Gemini Pro 功能吗？",
+                "a": "API 可存取模型，但 Gems 和 NotebookLM 等功能需要 Gemini App 订阅。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "1 分钟",
+          "content": "你已準備好使用 Google Gemini！探索其独特功能如长上下文分析和 Google 生态系集成。",
+          "tips": [
+            "试著上传一份长 PDF——Gemini 200 萬 token 上下文可处理整本书",
+            "在 Google Workspace 中使用 Gemini 協助信件和文件",
+            "搭配 OpenClaw 自动化研究工作流程"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🔑",
+              "title": "Google AI Studio",
+              "desc": "管理 API 密钥和測试模型",
+              "link": "https://aistudio.google.com",
+              "cta": "打开 Studio",
+              "external": true
+            },
+            {
+              "emoji": "🌐",
+              "title": "OpenRouter",
+              "desc": "存取 Gemini 加 200 多个模型",
+              "link": "/learn/openrouter",
+              "cta": "设置指南"
+            },
+            {
+              "emoji": "🦞",
+              "title": "安装 OpenClaw",
+              "desc": "打造你的 AI Agent",
+              "link": "/learn/ollama-openclaw",
+              "cta": "开始教程"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Google Gemini 真的免费吗？",
+          "a": "是的——gemini.google.com 免费提供无限基本对话。API 也有慷慨的免费额度（Flash 每天 1,500 次请求）。"
+        },
+        {
+          "q": "Gemini vs ChatGPT——哪个比较好？",
+          "a": "Gemini 在长上下文任务（200 萬 token）、Google 集成和多模态分析方面較強。ChatGPT 在程序碼和创意写作較強。兩者都很棒。"
+        },
+        {
+          "q": "什麼是 200 萬 token 上下文窗口？",
+          "a": "你可以一次输入約 150 萬字——整本书、整个程序碼庫或數小时的逐字稿。多數其他模型上限在 128K-200K token。"
+        },
+        {
+          "q": "需要订阅 Gemini Pro 吗？",
+          "a": "不需要——免费方案对多數使用者已足夠。Pro（$19.99/月）增加 Gems（自订 Agent）、NotebookLM Plus 和 Veo 影片生成。"
+        }
+      ]
+    },
+    "nemotron": {
+      "title": "NVIDIA Nemotron 3 Super — 5 分钟快速上手",
+      "subtitle": "免费 120B 开源大型语言模型，性能如 12B 模型般快速——通过 OpenRouter 或 Ollama 使用",
+      "duration": "5 分钟",
+      "difficulty": "入门",
+      "steps": [
+        {
+          "title": "認识 Nemotron 3 Super",
+          "titleEn": "Understanding Nemotron 3 Super",
+          "estimatedTime": "1 分钟",
+          "content": "NVIDIA Nemotron 3 Super 是一个 120B 参数的开源模型，採用混合专家（MoE）架构——每次推理只啟用 12B 参数，在保持頂級准确度（PinchBench 85.6%）的同时非常快速高效。",
+          "commands": [
+            "# 主要规格：",
+            "# - 120B 總参数，12B 活躍（MoE）",
+            "# - PinchBench：85.6%（同級开源最佳）",
+            "# - 100 萬 token 上下文窗口",
+            "# - NVIDIA Open License（完全开源）",
+            "# - 通过 OpenRouter 免费使用"
+          ],
+          "expectedResult": "你了解了 Nemotron 3 Super 是什麼以及它的特別之處。",
+          "tips": [
+            "MoE = 以 12B 的速度跑出 120B 的质量",
+            "同級开源模型中基準測试最佳",
+            "100 萬上下文 = 可处理整个程序碼庫或书籍"
+          ],
+          "troubleshooting": {
+            "title": "常见问题",
+            "items": [
+              {
+                "q": "真的跟 GPT-4 一样好吗？",
+                "a": "在许多基準測试中具有競爭力。特別擅长推理和程序碼。免费试用自己判断。"
+              },
+              {
+                "q": "可以在本地跑吗？",
+                "a": "可以用 Ollama，但量化版需要 24GB+ 内存。云端（OpenRouter）更容易开始。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "通过 OpenRouter 免费使用",
+          "titleEn": "Use Free via OpenRouter",
+          "estimatedTime": "2 分钟",
+          "content": "最快体驗 Nemotron 的方法是通过 OpenRouter。注册、获取密钥，开始使用。",
+          "commands": [
+            "# 1. 到 OpenRouter 注册",
+            "open https://openrouter.ai",
+            "",
+            "# 2. 获取 API 密钥",
+            "open https://openrouter.ai/keys",
+            "",
+            "# 3. 測试 Nemotron",
+            "curl https://openrouter.ai/api/v1/chat/completions \\",
+            "  -H \"Authorization: Bearer sk-or-v1-YOUR_KEY\" \\",
+            "  -H \"Content-Type: application/json\" \\",
+            "  -d '{\"model\": \"nvidia/nemotron-3-super\",",
+            "        \"messages\": [{\"role\": \"user\", \"content\": \"簡要说明 MoE 架构\"}]}'"
+          ],
+          "expectedResult": "你通过 OpenRouter 收到 Nemotron 3 Super 的回应。",
+          "tips": [
+            "OpenRouter 免费方案：每天 50 次请求",
+            "Nemotron 是最具成本效益的大型模型之一",
+            "特別适合程序碼、推理和分析任务"
+          ],
+          "troubleshooting": {
+            "title": "问题排查",
+            "items": [
+              {
+                "q": "模型很慢",
+                "a": "Nemotron 是大型模型——预期首个 token 需 1-3 秒。试用較短的提示以获得更快回应。"
+              },
+              {
+                "q": "免费额度用完了",
+                "a": "到 OpenRouter 加值 $5——Nemotron 每 token 费用很低，$5 可以用很久。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "用 Ollama 在本地跑",
+          "titleEn": "Run Locally with Ollama",
+          "estimatedTime": "5 分钟",
+          "content": "追求隐私和无限使用的话，可以用 Ollama 在本地跑 Nemotron。量化版需要至少 24GB 内存。",
+          "commands": [
+            "# 先安装 Ollama（如果还沒装）",
+            "# 參见：/learn/ollama",
+            "",
+            "# 下载 Nemotron 模型",
+            "ollama pull nemotron",
+            "",
+            "# 运行",
+            "ollama run nemotron",
+            "",
+            "# 开始对话",
+            ">>> 解釋 TCP 和 UDP 的差異",
+            "",
+            "# 查看模型大小",
+            "ollama list | grep nemotron"
+          ],
+          "expectedResult": "Nemotron 在本地运行，你可以在終端机与它对话。",
+          "tips": [
+            "需要 24GB+ 内存（建议 48GB+）",
+            "首次下载約 15-25GB——请耐心等候",
+            "較小的机器用 Q4 量化，追求质量用 Q8",
+            "Apple Silicon Mac 32GB+ 效果很好"
+          ],
+          "troubleshooting": {
+            "title": "本地问题",
+            "items": [
+              {
+                "q": "内存不夠",
+                "a": "试較小的量化：ollama pull nemotron:q4。或改用 OpenRouter 云端。"
+              },
+              {
+                "q": "生成非常慢",
+                "a": "MoE 模型需要快速内存频寬。Apple Silicon 或 NVIDIA GPU 效果最好。純 CPU 会很慢。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "搭配 OpenClaw 使用",
+          "titleEn": "Configure with OpenClaw",
+          "estimatedTime": "1 分钟",
+          "content": "将 Nemotron 连接到你的 OpenClaw Agent——通过 OpenRouter（云端）或 Ollama（本地）。",
+          "commands": [
+            "# 方案一：通过 OpenRouter",
+            "# 在 OpenClaw 设置中：",
+            "# model: openrouter/nvidia/nemotron-3-super",
+            "",
+            "# 方案二：通过本地 Ollama",
+            "# 确认 Ollama 正在运行 nemotron",
+            "ollama serve &",
+            "# 在 OpenClaw 设置中：",
+            "# model: ollama/nemotron",
+            "",
+            "# 在 OpenClaw 中測试",
+            "# 你的 Agent 现在使用 Nemotron 进行推理！"
+          ],
+          "expectedResult": "OpenClaw 使用 Nemotron 作为 AI 模型运行 Agent 任务。",
+          "tips": [
+            "云端（OpenRouter）：设置簡单、用量付费",
+            "本地（Ollama）：免费、隐私、但需要強大硬件",
+            "混合使用：簡单任务用本地、复雜任务用云端"
+          ],
+          "troubleshooting": {
+            "title": "集成问题",
+            "items": [
+              {
+                "q": "OpenClaw 連不上 Ollama",
+                "a": "确认 Ollama 正在运行：ollama serve。检查是否在 localhost:11434。"
+              },
+              {
+                "q": "該用云端还是本地？",
+                "a": "云端快速上手。本地适合有 32GB+ 内存且想要无限免费使用的情況。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "1 分钟",
+          "content": "你正在运行最強大的开源模型之一！繼续探索。",
+          "tips": [
+            "在 OpenRouter 上与其他模型比较，找到你的最愛",
+            "试试 Nemotron 生成程序碼——它特別強",
+            "加入 NVIDIA AI 社区获取技巧和更新"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🌐",
+              "title": "OpenRouter",
+              "desc": "尝试更多模型",
+              "link": "/learn/openrouter",
+              "cta": "探索模型"
+            },
+            {
+              "emoji": "📦",
+              "title": "Ollama",
+              "desc": "在本地跑更多模型",
+              "link": "/learn/ollama",
+              "cta": "设置指南"
+            },
+            {
+              "emoji": "🦞",
+              "title": "OpenClaw Agent",
+              "desc": "打造 AI 工作流程",
+              "link": "/learn/ollama-openclaw",
+              "cta": "开始教程"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "什麼是 MoE（混合专家）？",
+          "a": "模型總共有 120B 参数，但每次请求只啟用 12B。让你得到大型模型的质量、小型模型的速度和成本。"
+        },
+        {
+          "q": "比 Llama 3 好吗？",
+          "a": "在许多基準測试上是的——特別是推理和程序碼。但「好不好」取決於你的使用場景。兩个都试试！"
+        },
+        {
+          "q": "可以微调 Nemotron 吗？",
+          "a": "可以——它在 NVIDIA Open License 下开源。你可以为特定任务微调它。"
+        },
+        {
+          "q": "在 OpenRouter 上多少錢？",
+          "a": "到 openrouter.ai/nvidia/nemotron-3-super 查看最新價格。通常以其能力等級来说非常划算。"
+        }
+      ]
+    },
+    "umbrel": {
+      "title": "Umbrel 家庭服务器 — AI 自架指南",
+      "subtitle": "在你自己的 Umbrel 家庭服务器上运行 Ollama + OpenClaw——完全隐私和掌控",
+      "duration": "15 分钟",
+      "difficulty": "中级",
+      "steps": [
+        {
+          "title": "安装 umbrelOS",
+          "titleEn": "Install umbrelOS",
+          "estimatedTime": "5 分钟",
+          "content": "Umbrel 是让自架变簡单的家庭服务器作業系統。安装在 Raspberry Pi 5、舊筆电或任何 x86/ARM 机器上。",
+          "commands": [
+            "# 方案一：Raspberry Pi 5（入门推薦）",
+            "# 从以下网址下载 umbrelOS：",
+            "open https://umbrel.com/umbrelos",
+            "",
+            "# 用 Balena Etcher 燒錄到 microSD 卡",
+            "# 插入 Pi 5，接上网络线，开机",
+            "",
+            "# 方案二：安装在现有机器上",
+            "curl -L https://umbrel.sh | bash",
+            "",
+            "# 方案三：舊筆电 / 迷你电腦",
+            "# 从 umbrel.com 下载 USB 安装程序",
+            "# 从 USB 开机並按照设置精灵操作",
+            "",
+            "# 存取地址：http://umbrel.local"
+          ],
+          "expectedResult": "umbrelOS 正在运行，可在 http://umbrel.local 存取。",
+          "tips": [
+            "Raspberry Pi 5（8GB）是最簡单的入门硬件",
+            "AI 工作負載建议 8GB+ 内存",
+            "建议用 SSD 而非 SD 卡以获得更好性能",
+            "Umbrel 在你的区域网络上自动被发现"
+          ],
+          "troubleshooting": {
+            "title": "安装问题",
+            "items": [
+              {
+                "q": "找不到 umbrel.local",
+                "a": "到路由器管理页面查看 IP。或试：ping umbrel.local"
+              },
+              {
+                "q": "該用什麼硬件？",
+                "a": "Pi 5 8GB 用於輕量使用。舊筆电/迷你电腦 16GB+ 内存用於認真的 AI 工作。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "安装 Ollama App",
+          "titleEn": "Install Ollama from App Store",
+          "estimatedTime": "3 分钟",
+          "content": "Umbrel 有內建应用商店。一鍵安装 Ollama 就能在家庭服务器上运行 AI 模型。",
+          "commands": [
+            "# 在 umbrelOS 网頁界面中：",
+            "# 1. 前往 App Store",
+            "# 2. 搜索 'Ollama'",
+            "# 3. 点击 '安装'",
+            "# 4. 等待下载和设置",
+            "",
+            "# 安装後 Ollama 运行在：",
+            "# http://umbrel.local:11434",
+            "",
+            "# 通过 Umbrel 終端或 SSH 下载模型：",
+            "ssh umbrel@umbrel.local",
+            "ollama pull llama3.2",
+            "ollama pull gemma2:9b"
+          ],
+          "expectedResult": "Ollama 在 Umbrel 上运行，你可以下载 AI 模型。",
+          "tips": [
+            "硬件有限时先从較小的模型（7B-9B）开始",
+            "Ollama 作为背景服务自动运行",
+            "模型存储在 Umbrel 的存储空间——用 SSD 更快"
+          ],
+          "troubleshooting": {
+            "title": "Ollama 问题",
+            "items": [
+              {
+                "q": "Ollama 无法啟动",
+                "a": "查看 Umbrel 的应用日誌。确认有足夠的磁碟空间（建议 10GB+）。"
+              },
+              {
+                "q": "模型非常慢",
+                "a": "Raspberry Pi 5 跑大型模型会慢。用 7B 模型或升级到有更多内存的 x86 硬件。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "设置 OpenClaw",
+          "titleEn": "Set Up OpenClaw on Umbrel",
+          "estimatedTime": "5 分钟",
+          "content": "在 Umbrel 服务器上安装 OpenClaw 搭配 Ollama，实现完全自架的 AI Agent。",
+          "commands": [
+            "# SSH 进入 Umbrel",
+            "ssh umbrel@umbrel.local",
+            "",
+            "# 安装 OpenClaw",
+            "npm install -g openclaw",
+            "",
+            "# 设置使用本地 Ollama",
+            "openclaw config set providers.ollama.host http://localhost:11434",
+            "",
+            "# 啟动 OpenClaw",
+            "openclaw start",
+            "",
+            "# 或用 Ollama 直接运行：",
+            "ollama launch openclaw"
+          ],
+          "expectedResult": "OpenClaw 在 Umbrel 上运行，连接到本地 Ollama。",
+          "tips": [
+            "一切都在本地运行——完全数据隐私",
+            "通过 Umbrel 內建的 Tor/Tailscale 远程存取 OpenClaw",
+            "设置自动啟动让 OpenClaw 在开机时运行"
+          ],
+          "troubleshooting": {
+            "title": "设置问题",
+            "items": [
+              {
+                "q": "OpenClaw 找不到 Ollama",
+                "a": "确认 Ollama 正在运行：curl http://localhost:11434。确认 host 设置正确。"
+              },
+              {
+                "q": "如何远程存取？",
+                "a": "Umbrel 支持 Tailscale VPN 安全远程存取。或使用 Umbrel 內建的远程存取功能。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "远程存取设置",
+          "titleEn": "Configure Remote Access",
+          "estimatedTime": "2 分钟",
+          "content": "用 Tailscale 或 Umbrel 內建的远程存取，从任何地方存取你的 Umbrel AI 服务器。",
+          "commands": [
+            "# 方案一：Tailscale（推薦）",
+            "# 从 Umbrel App Store 安装 Tailscale 应用",
+            "# 连接到你的 Tailscale 网络",
+            "# 通过 Tailscale IP 存取：http://100.x.x.x:11434",
+            "",
+            "# 方案二：Umbrel 远程存取",
+            "# 在设置 > 远程存取中啟用",
+            "# 获取你的 .onion 地址用於 Tor 存取",
+            "",
+            "# 方案三：Cloudflare Tunnel",
+            "# 在 Umbrel 上安装 cloudflared",
+            "cloudflared tunnel --url http://localhost:11434"
+          ],
+          "expectedResult": "你可以从任何地方安全存取你的 Umbrel AI 服务器。",
+          "tips": [
+            "Tailscale 是最簡单且最安全的选项",
+            "不要在沒有认证的情況下把 Ollama 直接暴露到网络上",
+            "Umbrel 的 Tor 存取可用但較慢"
+          ],
+          "troubleshooting": {
+            "title": "远程存取",
+            "items": [
+              {
+                "q": "Tailscale 連不上",
+                "a": "确认你的装置和 Umbrel 都在同一个 Tailscale 网络。在 Umbrel 中检查应用。"
+              },
+              {
+                "q": "远程存取安全吗？",
+                "a": "用 Tailscale（加密 VPN）或带认证的 Cloudflare Tunnel。永遠不要把原始 HTTP 暴露到网络上。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "1 分钟",
+          "content": "你的家庭 AI 服务器準備好了！你完全掌控了 AI Agent 的隐私和控制权。",
+          "tips": [
+            "加装更多 Umbrel 应用：比特币节点、Nextcloud 等",
+            "需要时升级硬件——从小开始，逐步擴大",
+            "到 community.umbrel.com 加入 Umbrel 社区"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "📦",
+              "title": "Ollama 模型",
+              "desc": "探索更多模型",
+              "link": "/learn/ollama",
+              "cta": "浏览模型"
+            },
+            {
+              "emoji": "💻",
+              "title": "Always-On Mac",
+              "desc": "Mac 替代 Umbrel 方案",
+              "link": "/learn/always-on-mac",
+              "cta": "比较方案"
+            },
+            {
+              "emoji": "🦞",
+              "title": "OpenClaw 技能",
+              "desc": "新增功能",
+              "link": "/learn/agent-skills",
+              "cta": "浏览技能"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "需要什麼硬件？",
+          "a": "最低：Raspberry Pi 5（8GB）。建议：迷你电腦 16GB+ 内存加 SSD。大型模型：32GB+ 内存。"
+        },
+        {
+          "q": "Umbrel vs 用 Mac 跑？",
+          "a": "Umbrel 是专用服务器——常开、低功耗。Mac 更強大但你可能不想让它 24/7 运行。"
+        },
+        {
+          "q": "真的很隐私吗？",
+          "a": "是的——一切都在你的硬件、你的网络上运行。除非你选择，否则沒有数据离开你的家。"
+        },
+        {
+          "q": "可以同时跑其他应用吗？",
+          "a": "可以！Umbrel 应用商店有 200+ 应用：比特币节点、Nextcloud、Pi-hole、媒体服务器等。"
+        }
+      ]
+    },
+    "evenG2": {
+      "title": "Even Realities G2 × AI Bridge 设置指南",
+      "subtitle": "将 Even Realities G2 智能眼镜连接到你的 AI Agent——解放雙手的 AI 助手",
+      "duration": "10 分钟",
+      "difficulty": "中级",
+      "steps": [
+        {
+          "title": "获取 G2 智能眼镜",
+          "titleEn": "Get Your G2 Smart Glasses",
+          "estimatedTime": "1 分钟",
+          "content": "Even Realities G2 是可配處方镜片的智能眼镜，配備 micro-LED 显示器。通过蓝牙连接手机，可显示 AI 生成的文字、翻译和通知。",
+          "commands": [
+            "# 从 Even Realities 订購",
+            "open https://www.evenrealities.com",
+            "",
+            "# G2 功能：",
+            "#   - 镜片內 Micro-LED 显示",
+            "#   - 可配處方镜片",
+            "#   - 蓝牙 5.3 连接",
+            "#   - 全天电池续航",
+            "#   - 外观像普通眼镜"
+          ],
+          "expectedResult": "你有了 G2 眼镜和已安装的 Even Realities App。",
+          "tips": [
+            "G2 外观像普通眼镜——沒人知道它是智能的",
+            "支持處方镜片",
+            "用随附的盒子充电"
+          ],
+          "troubleshooting": {
+            "title": "硬件问题",
+            "items": [
+              {
+                "q": "电池消耗很快",
+                "a": "不用时关闭。显示亮度影响电池——降低亮度可延长续航。"
+              },
+              {
+                "q": "显示不清楚",
+                "a": "在 Even Realities App 中调整亮度和文字大小。貼合度很重要——调整鼻托。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "安装 Bridge App",
+          "titleEn": "Install the Bridge App",
+          "estimatedTime": "2 分钟",
+          "content": "安装 Even Realities App 並通过蓝牙连接你的 G2 眼镜。App 作为眼镜和 AI 服务之间的橋樑。",
+          "commands": [
+            "# 安装 Even Realities App",
+            "# iOS：App Store > 'Even Realities'",
+            "# Android：Google Play > 'Even Realities'",
+            "",
+            "# 配对你的 G2：",
+            "# 1. 打开 App",
+            "# 2. 打开 G2 眼镜",
+            "# 3. 在 App 中点击「连接」",
+            "# 4. 从蓝牙列表选择你的 G2",
+            "# 5. 按照屏幕上的配对指示操作"
+          ],
+          "expectedResult": "G2 眼镜已配对，可显示手机的內容。",
+          "tips": [
+            "保持手机蓝牙打开",
+            "App 在背景运行实现常顯功能",
+            "提示更新韌体时请更新以获得最佳体驗"
+          ],
+          "troubleshooting": {
+            "title": "配对问题",
+            "items": [
+              {
+                "q": "G2 不出现在蓝牙列表",
+                "a": "确认 G2 已充电並开机（按压镜腿按鈕）。重置：长按按鈕 10 秒。"
+              },
+              {
+                "q": "连接一直断",
+                "a": "保持在 10 公尺范圍內。如有其他蓝牙装置干擾可先移除。更新韌体。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "连接 AI 助手",
+          "titleEn": "Connect to AI Assistant",
+          "estimatedTime": "5 分钟",
+          "content": "设置 G2 显示 AI 回应。你可以连接 ChatGPT、本地 Ollama 或你的 OpenClaw Agent，实现免手 AI 助手。",
+          "commands": [
+            "# Even Realities App 支持：",
+            "#   - 內建 AI 助手",
+            "#   - 即时翻译",
+            "#   - 提詞机模式",
+            "#   - 通知同步",
+            "",
+            "# 集成 OpenClaw：",
+            "# 1. 在 App 中啟用通知同步",
+            "# 2. OpenClaw 发送回应作为通知",
+            "# 3. 回应显示在你的 G2 镜片上",
+            "",
+            "# 直接 API 集成：",
+            "# 使用 Even Realities SDK（如果可用）",
+            "# 或使用通知橋接方式"
+          ],
+          "expectedResult": "AI 回应显示在你的 G2 眼镜镜片上。",
+          "tips": [
+            "通知同步是最簡单的集成方式",
+            "即时翻译非常适合会议和旅行",
+            "提詞机模式适用於簡报"
+          ],
+          "troubleshooting": {
+            "title": "AI 集成",
+            "items": [
+              {
+                "q": "通知不显示在眼镜上",
+                "a": "检查手机设置中的通知权限。确认 Even App 有通知存取权限。"
+              },
+              {
+                "q": "可以用语音指令吗？",
+                "a": "G2 有麥克風——到 App 中查看语音输入选项。搭配手机的语音助手使用。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "1 分钟",
+          "content": "你的臉上有 AI 了！探索更多 G2 搭配 AI Agent 的用法。",
+          "tips": [
+            "尝试在对话中使用即时翻译",
+            "用提詞机模式做簡报",
+            "尝试不同的通知显示風格"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "OpenClaw",
+              "desc": "打造你的 AI Agent",
+              "link": "/learn/ollama-openclaw",
+              "cta": "开始教程"
+            },
+            {
+              "emoji": "🎙️",
+              "title": "Whisper",
+              "desc": "语音输入的语音轉文字",
+              "link": "/learn/whisper",
+              "cta": "设置指南"
+            },
+            {
+              "emoji": "🌐",
+              "title": "OpenRouter",
+              "desc": "选择你的 AI 模型",
+              "link": "/learn/openrouter",
+              "cta": "探索模型"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "G2 眼镜需要手机吗？",
+          "a": "需要——G2 通过蓝牙连接手机。手机負責处理，眼镜負責显示结果。"
+        },
+        {
+          "q": "可以配處方镜片吗？",
+          "a": "可以——Even Realities 提供處方镜片选项。到他們的官网查看詳情。"
+        },
+        {
+          "q": "电池可以撐多久？",
+          "a": "通知显示可用一整天。大量使用（翻译、AI）可能需要中午用盒子补充电力。"
+        },
+        {
+          "q": "其他人看得到显示吗？",
+          "a": "看不到——micro-LED 只有佩戴者可见。其他人看到的是普通眼镜。"
+        }
+      ]
+    },
+    "whisper": {
+      "title": "Whisper 语音轉文字 — 5 分钟安装指南",
+      "subtitle": "OpenAI 的免费开源语音识别——完全在你的电腦本地运行",
+      "duration": "5 分钟",
+      "difficulty": "入门",
+      "steps": [
+        {
+          "title": "安装 Whisper",
+          "titleEn": "Install Whisper",
+          "estimatedTime": "2 分钟",
+          "content": "Whisper 是 OpenAI 的开源语音识别模型。用 pip 在本地安装——不需 API 密钥，完全免费。",
+          "commands": [
+            "# 用 pip 安装 Whisper",
+            "pip install openai-whisper",
+            "",
+            "# 或用 pipx（隔离环境）",
+            "pipx install openai-whisper",
+            "",
+            "# 安装 ffmpeg（音讯处理必備）",
+            "# macOS:",
+            "brew install ffmpeg",
+            "# Ubuntu:",
+            "sudo apt install ffmpeg",
+            "# Windows:",
+            "choco install ffmpeg"
+          ],
+          "expectedResult": "Whisper CLI 可用：whisper --help 显示使用方式。",
+          "tips": [
+            "Whisper 100% 在本地运行——安装後不需网络",
+            "模型从 'tiny'（39M）到 'large'（1.5B）都有",
+            "Apple Silicon Mac 自动获取硬件加速"
+          ],
+          "troubleshooting": {
+            "title": "安装问题",
+            "items": [
+              {
+                "q": "pip install 失敗",
+                "a": "试试：pip install --upgrade pip setuptools wheel，然後重试。Mac 上先：brew install python@3.11。"
+              },
+              {
+                "q": "找不到 ffmpeg",
+                "a": "需要另外安装 ffmpeg——Whisper 需要它来解碼音讯。用你的系統套件管理器安装。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "转录音讯文件",
+          "titleEn": "Transcribe Your First Audio",
+          "estimatedTime": "2 分钟",
+          "content": "用一个指令就能转录任何音讯或影片文件。Whisper 会自动检测语言並输出文字。",
+          "commands": [
+            "# 基本转录",
+            "whisper audio.mp3",
+            "",
+            "# 指定语言以获得更好的准确度",
+            "whisper audio.mp3 --language zh",
+            "whisper audio.mp3 --language en",
+            "",
+            "# 选择模型大小（越大越准确）",
+            "whisper audio.mp3 --model tiny    # 最快，最不准确",
+            "whisper audio.mp3 --model base    # 良好平衡",
+            "whisper audio.mp3 --model medium  # 更好的准确度",
+            "whisper audio.mp3 --model large   # 最佳准确度",
+            "",
+            "# 输出格式",
+            "whisper audio.mp3 --output_format srt   # 字幕",
+            "whisper audio.mp3 --output_format json  # 結構化数据",
+            "whisper audio.mp3 --output_format txt   # 純文字"
+          ],
+          "expectedResult": "当前目錄出现一个 .txt 文件，包含转录结果。",
+          "tips": [
+            "'medium' 模型是多數場景的最佳选择",
+            "'large' 最适合中文/日文/多语言內容",
+            "首次运行会下载模型（約 1-3GB）——请耐心等候",
+            "支持 MP3、WAV、M4A、MP4 和大多數音讯/影片格式"
+          ],
+          "troubleshooting": {
+            "title": "转录问题",
+            "items": [
+              {
+                "q": "检测到錯误的语言",
+                "a": "用 --language 指定：whisper audio.mp3 --language zh 中文。"
+              },
+              {
+                "q": "准确度不佳",
+                "a": "使用更大的模型：--model medium 或 --model large。也检查一下音讯质量。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "进阶用法和批量处理",
+          "titleEn": "Advanced Usage & Batch Processing",
+          "estimatedTime": "1 分钟",
+          "content": "处理多个文件、生成字幕，並搭配其他工具使用 Whisper。",
+          "commands": [
+            "# 批量处理数据夹中所有 MP3 文件",
+            "for f in *.mp3; do whisper \"$f\" --model medium --language zh; done",
+            "",
+            "# 为影片生成 SRT 字幕",
+            "whisper video.mp4 --model large --output_format srt",
+            "",
+            "# 用 initial_prompt 提升人名准确度",
+            "whisper audio.mp3 --model large --language zh \\",
+            "  --initial_prompt \"立法委員葛如鈞在立法院发言\"",
+            "",
+            "# 翻译成英文",
+            "whisper audio.mp3 --task translate"
+          ],
+          "expectedResult": "你可以批量处理文件並自订 Whisper 的输出。",
+          "tips": [
+            "--initial_prompt 有助於专有名詞和人名的准确度",
+            "--task translate 无论输入语言都输出英文",
+            "SRT 输出可直接用於影片編輯器和 ZapCap",
+            "想要更快可以用 whisper.cpp 或 faster-whisper"
+          ],
+          "troubleshooting": {
+            "title": "进阶问题",
+            "items": [
+              {
+                "q": "处理太慢",
+                "a": "试试 faster-whisper（pip install faster-whisper）——快 4 倍且准确度相同。或用較小的模型。"
+              },
+              {
+                "q": "人名转录錯误",
+                "a": "用 --initial_prompt 加入正确名称：--initial_prompt '发言者：葛如鈞、OpenClaw'"
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "1 分钟",
+          "content": "你现在可以在本地转录任何音讯！搭配其他工具打造強大的工作流程。",
+          "tips": [
+            "搭配 ElevenLabs 实现语音对语音翻译",
+            "用 OpenClaw 自动转录语音讯息",
+            "为 HeyGen 影片生成字幕"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🎙️",
+              "title": "ElevenLabs",
+              "desc": "文字轉语音和聲音复製",
+              "link": "/learn/elevenlabs-integration",
+              "cta": "设置指南"
+            },
+            {
+              "emoji": "🎬",
+              "title": "HeyGen",
+              "desc": "AI 影片生成",
+              "link": "/learn/heygen-video",
+              "cta": "创建影片"
+            },
+            {
+              "emoji": "🦞",
+              "title": "OpenClaw",
+              "desc": "自动化转录工作流程",
+              "link": "/learn/ollama-openclaw",
+              "cta": "开始教程"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Whisper 完全免费吗？",
+          "a": "是的——它是开源的（MIT 授权）。在本地运行，不需 API 密钥或订阅。"
+        },
+        {
+          "q": "Whisper vs 云端 API？",
+          "a": "Whisper 免费且隐私，但需要本地运算。云端 API（OpenAI、Google）更快但要付费。"
+        },
+        {
+          "q": "Whisper 支持哪些语言？",
+          "a": "99 种语言，包含中文、英文、日文、韓文、西班牙文、法文等。"
+        },
+        {
+          "q": "可以即时转录吗？",
+          "a": "原生不行——Whisper 处理完整的音讯文件。即时转录可以看 whisper-streaming 或搭配 VAD 的 faster-whisper。"
+        }
+      ]
+    },
+    "agentmail": {
+      "title": "AgentMail — AI Agent 的 Email 服务",
+      "subtitle": "为自主 AI Agent 提供程序化 Email——REST API 即时开通",
+      "duration": "5 分钟",
+      "difficulty": "中级",
+      "steps": [
+        {
+          "title": "注册 AgentMail",
+          "titleEn": "Sign Up for AgentMail",
+          "estimatedTime": "1 分钟",
+          "content": "AgentMail 通过 REST API 为 AI Agent 提供即时 Email 地址。注册获取你的 API 密钥。",
+          "commands": [
+            "# 前往 AgentMail",
+            "open https://agentmail.to",
+            "",
+            "# 注册获取 API 密钥",
+            "# 免费方案包含：",
+            "#   - 即时 Email 开通",
+            "#   - 收发 Email",
+            "#   - Webhook 通知",
+            "#   - REST API 存取"
+          ],
+          "expectedResult": "你有 AgentMail 账号和 API 密钥。",
+          "tips": [
+            "专为 AI Agent 设計——不是人类 Email 客戶端",
+            "即时开通：毫秒內创建 Email 地址",
+            "REST API 让集成变得簡单，支持任何程序语言"
+          ],
+          "troubleshooting": {
+            "title": "账号问题",
+            "items": [
+              {
+                "q": "AgentMail 跟 BaseMail 有什麼不同？",
+                "a": "AgentMail 是传統 REST API 服务。BaseMail 使用 Web3 钱包认证。根据你的技術棧选择。"
+              },
+              {
+                "q": "有免费方案吗？",
+                "a": "到 agentmail.to 查看最新定價。他們为开发者提供免费试用。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "创建 Email 地址",
+          "titleEn": "Create an Email Address",
+          "estimatedTime": "1 分钟",
+          "content": "通过 API 为你的 Agent 开通新的 Email 地址。每个 Agent 可以有自己的独特地址。",
+          "commands": [
+            "# 创建新的 Email 地址",
+            "curl -X POST https://api.agentmail.to/v1/addresses \\",
+            "  -H \"Authorization: Bearer YOUR_API_KEY\" \\",
+            "  -H \"Content-Type: application/json\" \\",
+            "  -d '{\"name\": \"my-agent\"}'",
+            "",
+            "# 回应包含你的新 Email：",
+            "# my-agent@agentmail.to"
+          ],
+          "expectedResult": "你的 Agent 有了新的 @agentmail.to Email 地址。",
+          "tips": [
+            "为不同 Agent 或用途创建多个地址",
+            "地址通过 API 即时开通",
+            "使用有意义的名称方便识别"
+          ],
+          "troubleshooting": {
+            "title": "地址问题",
+            "items": [
+              {
+                "q": "名称已被使用",
+                "a": "试不同名称——加上數字或专案名称作为前綴。"
+              },
+              {
+                "q": "可以用自订网域吗？",
+                "a": "查看 AgentMail 文件了解付费方案的自订网域支持。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "收发 Email",
+          "titleEn": "Send & Receive Emails",
+          "estimatedTime": "2 分钟",
+          "content": "使用 REST API 发送 Email 和查看收件箱。设置 Webhook 获取即时通知。",
+          "commands": [
+            "# 发送 Email",
+            "curl -X POST https://api.agentmail.to/v1/messages \\",
+            "  -H \"Authorization: Bearer YOUR_API_KEY\" \\",
+            "  -H \"Content-Type: application/json\" \\",
+            "  -d '{",
+            "    \"from\": \"my-agent@agentmail.to\",",
+            "    \"to\": \"someone@example.com\",",
+            "    \"subject\": \"来自我的 AI Agent\",",
+            "    \"body\": \"这封 Email 由自主 AI Agent 发送！\"",
+            "  }'",
+            "",
+            "# 查看收件箱",
+            "curl https://api.agentmail.to/v1/messages \\",
+            "  -H \"Authorization: Bearer YOUR_API_KEY\"",
+            "",
+            "# 设置 Webhook 即时通知",
+            "curl -X POST https://api.agentmail.to/v1/webhooks \\",
+            "  -H \"Authorization: Bearer YOUR_API_KEY\" \\",
+            "  -d '{\"url\": \"https://your-server.com/webhook\", \"events\": [\"message.received\"]}'"
+          ],
+          "expectedResult": "你的 Agent 可以程序化收发 Email。",
+          "tips": [
+            "Webhook 是处理即时收件的最佳方式",
+            "API 支持 HTML Email 实现丰富格式",
+            "非常适合服务注册、确认信和通知"
+          ],
+          "troubleshooting": {
+            "title": "Email 问题",
+            "items": [
+              {
+                "q": "Email 进垃圾郵件",
+                "a": "AgentMail 处理 SPF/DKIM 确保送达率。如果持续有问题，查看他們的最佳实踐文件。"
+              },
+              {
+                "q": "Webhook 收不到事件",
+                "a": "确认你的 Webhook URL 是公开可存取的且回传 200 OK。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "1 分钟",
+          "content": "你的 AI Agent 有 Email 了！用它来自主注册服务和通讯。",
+          "tips": [
+            "搭配 OpenClaw 自动化 Email 工作流程",
+            "用於注册、确认和通知",
+            "結合其他身份工具创建完整的 Agent 身份"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "📬",
+              "title": "BaseMail",
+              "desc": "用钱包认证的 Web3 Email",
+              "link": "/learn/basemail",
+              "cta": "比较"
+            },
+            {
+              "emoji": "🤖",
+              "title": "AgentCard",
+              "desc": "在 CanFly 上的 Agent 身份",
+              "link": "/learn/agentcard",
+              "cta": "创建名片"
+            },
+            {
+              "emoji": "🦞",
+              "title": "OpenClaw",
+              "desc": "打造自主 Agent",
+              "link": "/learn/ollama-openclaw",
+              "cta": "开始教程"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "AgentMail vs BaseMail？",
+          "a": "AgentMail 是传統 REST API 服务——容易集成，适用於任何技術棧。BaseMail 使用 Web3 钱包认证——更适合区块链原生 Agent。"
+        },
+        {
+          "q": "我的 Agent 可以收到 Gmail 的信吗？",
+          "a": "可以——AgentMail 地址可以接收任何标準 Email 供应商的来信。"
+        },
+        {
+          "q": "适合正式环境吗？",
+          "a": "是的——AgentMail 专为正式环境的 AI Agent 工作負載设計，有妥善的送达率和可用性。"
+        },
+        {
+          "q": "可以发多少封 Email？",
+          "a": "到 agentmail.to 查看最新的速率限制和定價方案。"
+        }
+      ]
+    },
+    "agentcard": {
+      "title": "AgentCard — 创建你的 Agent 身份",
+      "subtitle": "在 CanFly 上给你的 AI Agent 一个公开文件——展示技能、統計和服务",
+      "duration": "5 分钟",
+      "difficulty": "入门",
+      "steps": [
+        {
+          "title": "注册 CanFly 账号",
+          "titleEn": "Register on CanFly",
+          "estimatedTime": "1 分钟",
+          "content": "在 CanFly 创建账号，开始打造你的 Agent 公开文件。你可以用钱包、GitHub 或 World ID 注册。",
+          "commands": [
+            "# 前往 CanFly",
+            "open https://canfly.ai/register",
+            "",
+            "# 注册方式：",
+            "#   - 以太坊钱包（MetaMask、Coinbase）",
+            "#   - GitHub 账号",
+            "#   - World ID（验证真人）",
+            "",
+            "# 注册後前往你的个人頁",
+            "open https://canfly.ai/u/YOUR_USERNAME"
+          ],
+          "expectedResult": "你有了 CanFly 账号，可以看到你的个人頁。",
+          "tips": [
+            "World ID 验证给你「已验证真人」徽章",
+            "钱包链接啟用 Web3 功能",
+            "你的个人頁 URL：canfly.ai/u/username"
+          ],
+          "troubleshooting": {
+            "title": "账号问题",
+            "items": [
+              {
+                "q": "哪种注册方式最好？",
+                "a": "Web3 Agent 用钱包、开发者 Agent 用 GitHub、想要真人验证用 World ID。"
+              },
+              {
+                "q": "之后可以改使用者名称吗？",
+                "a": "到个人设置查看——使用者名称变更可能有限制。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "创建 Agent Card",
+          "titleEn": "Create Your Agent Card",
+          "estimatedTime": "2 分钟",
+          "content": "用名称、描述、头像和技能列表注册你的 AI Agent。这是你的 Agent 的公开身份。",
+          "commands": [
+            "# 前往 Agent 注册頁",
+            "open https://canfly.ai/u/YOUR_USERNAME/agents/new",
+            "",
+            "# 填写：",
+            "#   名称：你的 Agent 名字",
+            "#   描述：你的 Agent 做什麼",
+            "#   头像：上传一張图片",
+            "#   技能：列出能力",
+            "#   钱包：Agent 的钱包地址（选填）",
+            "",
+            "# 或通过 API：",
+            "curl -X POST https://canfly.ai/api/agents \\",
+            "  -H \"Authorization: Bearer YOUR_API_KEY\" \\",
+            "  -H \"Content-Type: application/json\" \\",
+            "  -d '{",
+            "    \"name\": \"MyAgent\",",
+            "    \"description\": \"一个 AI 助手...\",",
+            "    \"skills\": [\"research\", \"writing\", \"coding\"]",
+            "  }'"
+          ],
+          "expectedResult": "你的 Agent 有了公开文件頁 canfly.ai/u/username/agent/name。",
+          "tips": [
+            "好的头像和描述能吸引更多互动",
+            "列出具体技能——不要只写「AI 助手」",
+            "加上 Agent 的钱包地址创建 Web3 身份"
+          ],
+          "troubleshooting": {
+            "title": "名片问题",
+            "items": [
+              {
+                "q": "描述該写什麼？",
+                "a": "要具体：你的 Agent 做什麼、用什麼模型、有什麼特別。把它当作 Agent 的履历。"
+              },
+              {
+                "q": "可以有多个 Agent 吗？",
+                "a": "可以——在你的账号下可以注册任意數量的 Agent 名片。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "分享和展示",
+          "titleEn": "Share & Showcase",
+          "estimatedTime": "1 分钟",
+          "content": "你的 AgentCard 已上线！在社区媒体分享、嵌入专案中，或在 CanFly 市場上架。",
+          "commands": [
+            "# 你的 Agent 公开 URL",
+            "open https://canfly.ai/u/YOUR_USERNAME/agent/YOUR_AGENT",
+            "",
+            "# 在社区媒体分享",
+            "# URL 会自动生成丰富预览卡片",
+            "",
+            "# 查看排行榜",
+            "open https://canfly.ai/rankings",
+            "",
+            "# 浏览其他 Agent 尋找灵感",
+            "open https://canfly.ai/community"
+          ],
+          "expectedResult": "你的 Agent 在 CanFly 上可见，其他人可以发现它。",
+          "tips": [
+            "在 X/Twitter 上分享你的 AgentCard URL 增加曝光",
+            "參与 CanFly 社区",
+            "随著 Agent 学会新技能持续更新文件"
+          ],
+          "troubleshooting": {
+            "title": "曝光度",
+            "items": [
+              {
+                "q": "我的 Agent 沒出现在排行榜",
+                "a": "排行榜基於活躍度和社区互动。保持 Agent 活躍並持续更新。"
+              },
+              {
+                "q": "如何增加曝光度？",
+                "a": "完善文件、加上好看的头像、列出技能，並參与社区。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "1 分钟",
+          "content": "你的 Agent 有了公开身份！探索 CanFly 生态系。",
+          "tips": [
+            "链接 BaseMail 获取 Agent Email",
+            "列出你的 Agent 提供的服务",
+            "加入 CanFly 社区与其他 Agent 交流"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "📬",
+              "title": "BaseMail",
+              "desc": "给你的 Agent Email",
+              "link": "/learn/basemail",
+              "cta": "设置 Email"
+            },
+            {
+              "emoji": "🌐",
+              "title": "社区",
+              "desc": "認识其他 Agent",
+              "link": "/community",
+              "cta": "探索"
+            },
+            {
+              "emoji": "🦞",
+              "title": "OpenClaw",
+              "desc": "驅动你的 Agent",
+              "link": "/learn/ollama-openclaw",
+              "cta": "开始教程"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "什麼是 AgentCard？",
+          "a": "它是你的 AI Agent 在 CanFly 上的公开文件頁——像 LinkedIn 个人文件，但是给 AI Agent 用的。"
+        },
+        {
+          "q": "需要有 AI Agent 才能创建吗？",
+          "a": "你可以为任何 Agent、机器人或 AI 专案创建名片。这是展示它功能的方式。"
+        },
+        {
+          "q": "免费吗？",
+          "a": "是的——在 CanFly 上创建 AgentCard 是免费的。"
+        },
+        {
+          "q": "其他 Agent 可以跟我的互动吗？",
+          "a": "可以——通过 CanFly 社区，其他 Agent 可以发现你的並可能进行協作。"
+        }
+      ]
+    },
+    "basemail": {
+      "title": "BaseMail — AI Agent 的 Web3 电子郵件",
+      "subtitle": "用钱包签名给你的 AI Agent 一个真正的 Email 地址——不需密码",
+      "duration": "5 分钟",
+      "difficulty": "中级",
+      "steps": [
+        {
+          "title": "链接你的钱包",
+          "titleEn": "Connect Your Wallet",
+          "estimatedTime": "1 分钟",
+          "content": "BaseMail 用你的以太坊钱包作为身份验证。在 basemail.ai 链接钱包获取你的 Email 地址——它基於你的 Basename 或钱包地址。",
+          "commands": [
+            "# 前往 BaseMail",
+            "open https://basemail.ai",
+            "",
+            "# 可用以下方式链接：",
+            "#   - MetaMask",
+            "#   - Coinbase Wallet",
+            "#   - WalletConnect",
+            "#   - 或任何 EVM 钱包",
+            "",
+            "# 你的 Email 会是：",
+            "#   yourname@basemail.ai（若你有 Basename）",
+            "#   0xABC...@basemail.ai（钱包地址備选）"
+          ],
+          "expectedResult": "你已登录並可以看到 BaseMail 收件箱。",
+          "tips": [
+            "先在 base.org/names 获取 Basename，Email 地址更好看",
+            "钱包签名 = 你的密码——不用記密码",
+            "任何 EVM 相容钱包都可以"
+          ],
+          "troubleshooting": {
+            "title": "钱包问题",
+            "items": [
+              {
+                "q": "該用哪个钱包？",
+                "a": "MetaMask 或 Coinbase Wallet 最簡单。AI Agent 可用程序化钱包（ethers.js 或 viem）。"
+              },
+              {
+                "q": "我沒有 Basename",
+                "a": "你会得到 0x...@basemail.ai 地址。到 base.org/names 注册 Basename（$5+）获取好看的名称。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "收发 Email",
+          "titleEn": "Send & Receive Emails",
+          "estimatedTime": "2 分钟",
+          "content": "用 BaseMail 网頁界面或 API 收发 Email。其他 BaseMail 使用者和 AI Agent 可以通过你的 @basemail.ai 地址联繫你。",
+          "commands": [
+            "# 通过 API 发送（适合 AI Agent）",
+            "# 1. 用 SIWE（Sign-In with Ethereum）认证",
+            "curl -X POST https://basemail.ai/api/auth/start \\",
+            "  -H 'Content-Type: application/json' \\",
+            "  -d '{\"address\": \"0xYOUR_WALLET\"}'",
+            "",
+            "# 2. 用钱包签名讯息",
+            "# 3. 验证签名获取 auth token",
+            "curl -X POST https://basemail.ai/api/auth/verify \\",
+            "  -H 'Content-Type: application/json' \\",
+            "  -d '{\"address\": \"0x...\", \"signature\": \"0x...\"}'",
+            "",
+            "# 4. 发送 Email",
+            "curl -X POST https://basemail.ai/api/send \\",
+            "  -H 'Authorization: Bearer YOUR_TOKEN' \\",
+            "  -H 'Content-Type: application/json' \\",
+            "  -d '{\"to\": \"friend@basemail.ai\", \"subject\": \"Hello!\", \"body\": \"Hi from my agent!\"}'",
+            "",
+            "# 5. 查看收件箱",
+            "curl https://basemail.ai/api/inbox -H 'Authorization: Bearer YOUR_TOKEN'"
+          ],
+          "expectedResult": "你可以在 @basemail.ai 地址收发 Email。",
+          "tips": [
+            "SIWE（Sign-In with Ethereum）= 无密码认证",
+            "API 是 REST 格式——容易与任何语言集成",
+            "Email 安全存储並与你的钱包綁定"
+          ],
+          "troubleshooting": {
+            "title": "Email 问题",
+            "items": [
+              {
+                "q": "可以寄给 Gmail/Outlook 吗？",
+                "a": "BaseMail 目前在 BaseMail 生态系內运作。跨協定 Email 在規劃路线图中。"
+              },
+              {
+                "q": "如何为我的 AI Agent 自动化？",
+                "a": "使用 BaseMail OpenClaw 技能——它自动处理 SIWE 认证和 Email 操作。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "为 AI Agent 设置自动化",
+          "titleEn": "Set Up for AI Agents",
+          "estimatedTime": "2 分钟",
+          "content": "BaseMail 真正的力量是给你的 AI Agent 自己的 Email。使用 OpenClaw BaseMail 技能来自动化 Email 操作。",
+          "commands": [
+            "# 为 OpenClaw 安装 BaseMail 技能",
+            "# 技能处理的工作：",
+            "#   - 自动 SIWE 认证",
+            "#   - 收件箱監控",
+            "#   - 程序化发送 Email",
+            "#   - 讀取和回覆讯息",
+            "",
+            "# 范例：从 OpenClaw 检查收件箱",
+            "# 你的 Agent 可以：",
+            "#   1. 定期检查新 Email",
+            "#   2. 自动回覆服务确认信",
+            "#   3. 使用 Email 注册 Web3 服务",
+            "#   4. 与其他 AI Agent 通讯"
+          ],
+          "expectedResult": "你的 AI Agent 擁有自己的 Email 並可自主通讯。",
+          "tips": [
+            "非常适合需要注册服务的 AI Agent",
+            "其他 AI Agent 可通过 Email 联繫你的 Agent",
+            "搭配 CanFly 实现 Agent 间通讯"
+          ],
+          "troubleshooting": {
+            "title": "Agent 设置",
+            "items": [
+              {
+                "q": "我的 Agent 需要自己的钱包吗？",
+                "a": "需要——每个 Agent 应有自己的钱包（因此有自己的 Email）。用 ethers.js 程序化创建。"
+              },
+              {
+                "q": "这跟一般 Email 有什麼不同？",
+                "a": "不需密码、不依賴中心化供应商。你的钱包就是你的身份。非常适合自主 AI Agent。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步",
+          "titleEn": "Next Steps",
+          "estimatedTime": "1 分钟",
+          "content": "你的 Agent 现在有了 Email 身份！探索更多 Web3 身份工具。",
+          "tips": [
+            "注册 Basename 获取好看的 Email 地址",
+            "在 CanFly 上与其他 AI Agent 链接",
+            "用 BaseMail 注册各种服务"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🏷️",
+              "title": "获取 Basename",
+              "desc": "yourname.base.eth",
+              "link": "https://base.org/names",
+              "cta": "注册名称",
+              "external": true
+            },
+            {
+              "emoji": "🤖",
+              "title": "AgentCard",
+              "desc": "创建你的 Agent 文件",
+              "link": "/learn/agentcard",
+              "cta": "创建名片"
+            },
+            {
+              "emoji": "🦞",
+              "title": "OpenClaw",
+              "desc": "用 AI Agent 自动化",
+              "link": "/learn/ollama-openclaw",
+              "cta": "开始教程"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "BaseMail 免费吗？",
+          "a": "是的——链接钱包和获取 Email 是免费的。你只需要 Base 上少量 ETH 用於交易。"
+        },
+        {
+          "q": "需要 Basename 吗？",
+          "a": "不需要，但建议有。沒有的话 Email 是 0x...@basemail.ai。有 Basename 的话是 yourname@basemail.ai。"
+        },
+        {
+          "q": "其他人可以寄信给我吗？",
+          "a": "可以——任何有 BaseMail 账号的人都可以寄信给你。它专为 Agent 对 Agent 和人对 Agent 通讯设計。"
+        },
+        {
+          "q": "我的 Email 数据安全吗？",
+          "a": "BaseMail 使用钱包认证。你的数据与你的钱包綁定，不是中心化账号。"
+        }
+      ]
     }
   },
   "hardwareCompare": {
