@@ -423,12 +423,50 @@ const RESERVED_SUBDOMAINS = new Set([
   'cdn', 'staging', 'dev', 'admin', 'dashboard',
 ])
 
+// ── Kill-switch CORS headers ─────────────────────────────────────────
+const KILL_SWITCH_CORS: Record<string, string> = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Edit-Token, X-Wallet-Address',
+}
+
 // ── Middleware entry point ──────────────────────────────────────────────
 
-export const onRequest: PagesFunction = async (context) => {
+export const onRequest: PagesFunction<{ DB: D1Database }> = async (context) => {
   const url = new URL(context.request.url)
   const path = url.pathname
   const ua = context.request.headers.get('user-agent') || ''
+  const method = context.request.method
+
+  // ── Kill-switch circuit breaker (CAN-258) ──
+  // Block mutating API requests when kill-switch is enabled.
+  // Allow: GET/HEAD/OPTIONS, admin endpoints, non-API requests.
+  if (
+    path.startsWith('/api/') &&
+    !path.startsWith('/api/admin/') &&
+    method !== 'GET' &&
+    method !== 'HEAD' &&
+    method !== 'OPTIONS' &&
+    context.env?.DB
+  ) {
+    try {
+      const ks = await context.env.DB.prepare(
+        'SELECT enabled, reason FROM kill_switch WHERE id = 1'
+      ).first<{ enabled: number; reason: string | null }>()
+      if (ks && ks.enabled === 1) {
+        return new Response(
+          JSON.stringify({
+            error: 'v3_killed',
+            message: 'V3 features are temporarily disabled',
+            reason: ks.reason,
+          }),
+          { status: 503, headers: { 'Content-Type': 'application/json', ...KILL_SWITCH_CORS } }
+        )
+      }
+    } catch {
+      // If kill_switch table doesn't exist yet, allow request through
+    }
+  }
 
   // ── A2A .well-known/agent.json rewrite ──
   // /@{username}/agent/{name}/.well-known/agent.json → rewrite to /api/agents/{name}/agent-card.json
