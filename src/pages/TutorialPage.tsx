@@ -1693,6 +1693,545 @@ function createEscrowTutorial(t: any): TutorialData {
   }
 }
 
+function createOpenRouterTutorial(t: any): TutorialData {
+  return {
+    id: 'openrouter',
+    title: t('tutorial.openrouter.title'),
+    subtitle: t('tutorial.openrouter.subtitle'),
+    duration: t('tutorial.openrouter.duration'),
+    difficulty: t('tutorial.openrouter.difficulty'),
+    faq: t('tutorial.openrouter.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Globe,
+        title: t('tutorial.openrouter.steps.0.title'),
+        titleEn: t('tutorial.openrouter.steps.0.titleEn'),
+        estimatedTime: t('tutorial.openrouter.steps.0.estimatedTime'),
+        content: t('tutorial.openrouter.steps.0.content'),
+        commands: t('tutorial.openrouter.steps.0.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.openrouter.steps.0.expectedResult'),
+        tips: t('tutorial.openrouter.steps.0.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.openrouter.steps.0.troubleshooting.title'), items: t('tutorial.openrouter.steps.0.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Key,
+        title: t('tutorial.openrouter.steps.1.title'),
+        titleEn: t('tutorial.openrouter.steps.1.titleEn'),
+        estimatedTime: t('tutorial.openrouter.steps.1.estimatedTime'),
+        content: t('tutorial.openrouter.steps.1.content'),
+        commands: t('tutorial.openrouter.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.openrouter.steps.1.expectedResult'),
+        tips: t('tutorial.openrouter.steps.1.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.openrouter.steps.1.troubleshooting.title'), items: t('tutorial.openrouter.steps.1.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Terminal,
+        title: t('tutorial.openrouter.steps.2.title'),
+        titleEn: t('tutorial.openrouter.steps.2.titleEn'),
+        estimatedTime: t('tutorial.openrouter.steps.2.estimatedTime'),
+        content: t('tutorial.openrouter.steps.2.content'),
+        commands: t('tutorial.openrouter.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.openrouter.steps.2.expectedResult'),
+        tips: t('tutorial.openrouter.steps.2.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.openrouter.steps.2.troubleshooting.title'), items: t('tutorial.openrouter.steps.2.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Sparkles,
+        title: t('tutorial.openrouter.steps.3.title'),
+        titleEn: t('tutorial.openrouter.steps.3.titleEn'),
+        estimatedTime: t('tutorial.openrouter.steps.3.estimatedTime'),
+        content: t('tutorial.openrouter.steps.3.content'),
+        commands: t('tutorial.openrouter.steps.3.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.openrouter.steps.3.expectedResult'),
+        tips: t('tutorial.openrouter.steps.3.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.openrouter.steps.3.troubleshooting.title'), items: t('tutorial.openrouter.steps.3.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.openrouter.steps.4.title'),
+        titleEn: t('tutorial.openrouter.steps.4.titleEn'),
+        estimatedTime: t('tutorial.openrouter.steps.4.estimatedTime'),
+        content: t('tutorial.openrouter.steps.4.content'),
+        tips: t('tutorial.openrouter.steps.4.tips', { returnObjects: true }),
+        nextStepCards: t('tutorial.openrouter.steps.4.nextStepCards', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
+function createGoogleGeminiTutorial(t: any): TutorialData {
+  return {
+    id: 'google-gemini',
+    title: t('tutorial.googleGemini.title'),
+    subtitle: t('tutorial.googleGemini.subtitle'),
+    duration: t('tutorial.googleGemini.duration'),
+    difficulty: t('tutorial.googleGemini.difficulty'),
+    faq: t('tutorial.googleGemini.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Globe,
+        title: t('tutorial.googleGemini.steps.0.title'),
+        titleEn: t('tutorial.googleGemini.steps.0.titleEn'),
+        estimatedTime: t('tutorial.googleGemini.steps.0.estimatedTime'),
+        content: t('tutorial.googleGemini.steps.0.content'),
+        commands: t('tutorial.googleGemini.steps.0.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.googleGemini.steps.0.expectedResult'),
+        tips: t('tutorial.googleGemini.steps.0.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.googleGemini.steps.0.troubleshooting.title'), items: t('tutorial.googleGemini.steps.0.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Key,
+        title: t('tutorial.googleGemini.steps.1.title'),
+        titleEn: t('tutorial.googleGemini.steps.1.titleEn'),
+        estimatedTime: t('tutorial.googleGemini.steps.1.estimatedTime'),
+        content: t('tutorial.googleGemini.steps.1.content'),
+        commands: t('tutorial.googleGemini.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.googleGemini.steps.1.expectedResult'),
+        tips: t('tutorial.googleGemini.steps.1.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.googleGemini.steps.1.troubleshooting.title'), items: t('tutorial.googleGemini.steps.1.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Terminal,
+        title: t('tutorial.googleGemini.steps.2.title'),
+        titleEn: t('tutorial.googleGemini.steps.2.titleEn'),
+        estimatedTime: t('tutorial.googleGemini.steps.2.estimatedTime'),
+        content: t('tutorial.googleGemini.steps.2.content'),
+        commands: t('tutorial.googleGemini.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.googleGemini.steps.2.expectedResult'),
+        tips: t('tutorial.googleGemini.steps.2.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.googleGemini.steps.2.troubleshooting.title'), items: t('tutorial.googleGemini.steps.2.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Sparkles,
+        title: t('tutorial.googleGemini.steps.3.title'),
+        titleEn: t('tutorial.googleGemini.steps.3.titleEn'),
+        estimatedTime: t('tutorial.googleGemini.steps.3.estimatedTime'),
+        content: t('tutorial.googleGemini.steps.3.content'),
+        commands: t('tutorial.googleGemini.steps.3.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.googleGemini.steps.3.expectedResult'),
+        tips: t('tutorial.googleGemini.steps.3.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.googleGemini.steps.3.troubleshooting.title'), items: t('tutorial.googleGemini.steps.3.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.googleGemini.steps.4.title'),
+        titleEn: t('tutorial.googleGemini.steps.4.titleEn'),
+        estimatedTime: t('tutorial.googleGemini.steps.4.estimatedTime'),
+        content: t('tutorial.googleGemini.steps.4.content'),
+        tips: t('tutorial.googleGemini.steps.4.tips', { returnObjects: true }),
+        nextStepCards: t('tutorial.googleGemini.steps.4.nextStepCards', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
+function createNemotronTutorial(t: any): TutorialData {
+  return {
+    id: 'nemotron-3-super',
+    title: t('tutorial.nemotron.title'),
+    subtitle: t('tutorial.nemotron.subtitle'),
+    duration: t('tutorial.nemotron.duration'),
+    difficulty: t('tutorial.nemotron.difficulty'),
+    faq: t('tutorial.nemotron.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Globe,
+        title: t('tutorial.nemotron.steps.0.title'),
+        titleEn: t('tutorial.nemotron.steps.0.titleEn'),
+        estimatedTime: t('tutorial.nemotron.steps.0.estimatedTime'),
+        content: t('tutorial.nemotron.steps.0.content'),
+        commands: t('tutorial.nemotron.steps.0.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.nemotron.steps.0.expectedResult'),
+        tips: t('tutorial.nemotron.steps.0.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.nemotron.steps.0.troubleshooting.title'), items: t('tutorial.nemotron.steps.0.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Terminal,
+        title: t('tutorial.nemotron.steps.1.title'),
+        titleEn: t('tutorial.nemotron.steps.1.titleEn'),
+        estimatedTime: t('tutorial.nemotron.steps.1.estimatedTime'),
+        content: t('tutorial.nemotron.steps.1.content'),
+        commands: t('tutorial.nemotron.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.nemotron.steps.1.expectedResult'),
+        tips: t('tutorial.nemotron.steps.1.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.nemotron.steps.1.troubleshooting.title'), items: t('tutorial.nemotron.steps.1.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Cpu,
+        title: t('tutorial.nemotron.steps.2.title'),
+        titleEn: t('tutorial.nemotron.steps.2.titleEn'),
+        estimatedTime: t('tutorial.nemotron.steps.2.estimatedTime'),
+        content: t('tutorial.nemotron.steps.2.content'),
+        commands: t('tutorial.nemotron.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.nemotron.steps.2.expectedResult'),
+        tips: t('tutorial.nemotron.steps.2.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.nemotron.steps.2.troubleshooting.title'), items: t('tutorial.nemotron.steps.2.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Sparkles,
+        title: t('tutorial.nemotron.steps.3.title'),
+        titleEn: t('tutorial.nemotron.steps.3.titleEn'),
+        estimatedTime: t('tutorial.nemotron.steps.3.estimatedTime'),
+        content: t('tutorial.nemotron.steps.3.content'),
+        commands: t('tutorial.nemotron.steps.3.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.nemotron.steps.3.expectedResult'),
+        tips: t('tutorial.nemotron.steps.3.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.nemotron.steps.3.troubleshooting.title'), items: t('tutorial.nemotron.steps.3.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.nemotron.steps.4.title'),
+        titleEn: t('tutorial.nemotron.steps.4.titleEn'),
+        estimatedTime: t('tutorial.nemotron.steps.4.estimatedTime'),
+        content: t('tutorial.nemotron.steps.4.content'),
+        tips: t('tutorial.nemotron.steps.4.tips', { returnObjects: true }),
+        nextStepCards: t('tutorial.nemotron.steps.4.nextStepCards', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
+function createWhisperTutorial(t: any): TutorialData {
+  return {
+    id: 'whisper',
+    title: t('tutorial.whisper.title'),
+    subtitle: t('tutorial.whisper.subtitle'),
+    duration: t('tutorial.whisper.duration'),
+    difficulty: t('tutorial.whisper.difficulty'),
+    faq: t('tutorial.whisper.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Download,
+        title: t('tutorial.whisper.steps.0.title'),
+        titleEn: t('tutorial.whisper.steps.0.titleEn'),
+        estimatedTime: t('tutorial.whisper.steps.0.estimatedTime'),
+        content: t('tutorial.whisper.steps.0.content'),
+        commands: t('tutorial.whisper.steps.0.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.whisper.steps.0.expectedResult'),
+        tips: t('tutorial.whisper.steps.0.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.whisper.steps.0.troubleshooting.title'), items: t('tutorial.whisper.steps.0.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Terminal,
+        title: t('tutorial.whisper.steps.1.title'),
+        titleEn: t('tutorial.whisper.steps.1.titleEn'),
+        estimatedTime: t('tutorial.whisper.steps.1.estimatedTime'),
+        content: t('tutorial.whisper.steps.1.content'),
+        commands: t('tutorial.whisper.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.whisper.steps.1.expectedResult'),
+        tips: t('tutorial.whisper.steps.1.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.whisper.steps.1.troubleshooting.title'), items: t('tutorial.whisper.steps.1.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Sparkles,
+        title: t('tutorial.whisper.steps.2.title'),
+        titleEn: t('tutorial.whisper.steps.2.titleEn'),
+        estimatedTime: t('tutorial.whisper.steps.2.estimatedTime'),
+        content: t('tutorial.whisper.steps.2.content'),
+        commands: t('tutorial.whisper.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.whisper.steps.2.expectedResult'),
+        tips: t('tutorial.whisper.steps.2.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.whisper.steps.2.troubleshooting.title'), items: t('tutorial.whisper.steps.2.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.whisper.steps.3.title'),
+        titleEn: t('tutorial.whisper.steps.3.titleEn'),
+        estimatedTime: t('tutorial.whisper.steps.3.estimatedTime'),
+        content: t('tutorial.whisper.steps.3.content'),
+        tips: t('tutorial.whisper.steps.3.tips', { returnObjects: true }),
+        nextStepCards: t('tutorial.whisper.steps.3.nextStepCards', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
+function createBasemailTutorial(t: any): TutorialData {
+  return {
+    id: 'basemail',
+    title: t('tutorial.basemail.title'),
+    subtitle: t('tutorial.basemail.subtitle'),
+    duration: t('tutorial.basemail.duration'),
+    difficulty: t('tutorial.basemail.difficulty'),
+    faq: t('tutorial.basemail.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Wallet,
+        title: t('tutorial.basemail.steps.0.title'),
+        titleEn: t('tutorial.basemail.steps.0.titleEn'),
+        estimatedTime: t('tutorial.basemail.steps.0.estimatedTime'),
+        content: t('tutorial.basemail.steps.0.content'),
+        commands: t('tutorial.basemail.steps.0.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.basemail.steps.0.expectedResult'),
+        tips: t('tutorial.basemail.steps.0.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.basemail.steps.0.troubleshooting.title'), items: t('tutorial.basemail.steps.0.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: MessageSquare,
+        title: t('tutorial.basemail.steps.1.title'),
+        titleEn: t('tutorial.basemail.steps.1.titleEn'),
+        estimatedTime: t('tutorial.basemail.steps.1.estimatedTime'),
+        content: t('tutorial.basemail.steps.1.content'),
+        commands: t('tutorial.basemail.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.basemail.steps.1.expectedResult'),
+        tips: t('tutorial.basemail.steps.1.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.basemail.steps.1.troubleshooting.title'), items: t('tutorial.basemail.steps.1.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Shield,
+        title: t('tutorial.basemail.steps.2.title'),
+        titleEn: t('tutorial.basemail.steps.2.titleEn'),
+        estimatedTime: t('tutorial.basemail.steps.2.estimatedTime'),
+        content: t('tutorial.basemail.steps.2.content'),
+        commands: t('tutorial.basemail.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.basemail.steps.2.expectedResult'),
+        tips: t('tutorial.basemail.steps.2.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.basemail.steps.2.troubleshooting.title'), items: t('tutorial.basemail.steps.2.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.basemail.steps.3.title'),
+        titleEn: t('tutorial.basemail.steps.3.titleEn'),
+        estimatedTime: t('tutorial.basemail.steps.3.estimatedTime'),
+        content: t('tutorial.basemail.steps.3.content'),
+        tips: t('tutorial.basemail.steps.3.tips', { returnObjects: true }),
+        nextStepCards: t('tutorial.basemail.steps.3.nextStepCards', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
+function createAgentmailTutorial(t: any): TutorialData {
+  return {
+    id: 'agentmail',
+    title: t('tutorial.agentmail.title'),
+    subtitle: t('tutorial.agentmail.subtitle'),
+    duration: t('tutorial.agentmail.duration'),
+    difficulty: t('tutorial.agentmail.difficulty'),
+    faq: t('tutorial.agentmail.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Globe,
+        title: t('tutorial.agentmail.steps.0.title'),
+        titleEn: t('tutorial.agentmail.steps.0.titleEn'),
+        estimatedTime: t('tutorial.agentmail.steps.0.estimatedTime'),
+        content: t('tutorial.agentmail.steps.0.content'),
+        commands: t('tutorial.agentmail.steps.0.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.agentmail.steps.0.expectedResult'),
+        tips: t('tutorial.agentmail.steps.0.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.agentmail.steps.0.troubleshooting.title'), items: t('tutorial.agentmail.steps.0.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Key,
+        title: t('tutorial.agentmail.steps.1.title'),
+        titleEn: t('tutorial.agentmail.steps.1.titleEn'),
+        estimatedTime: t('tutorial.agentmail.steps.1.estimatedTime'),
+        content: t('tutorial.agentmail.steps.1.content'),
+        commands: t('tutorial.agentmail.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.agentmail.steps.1.expectedResult'),
+        tips: t('tutorial.agentmail.steps.1.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.agentmail.steps.1.troubleshooting.title'), items: t('tutorial.agentmail.steps.1.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: MessageSquare,
+        title: t('tutorial.agentmail.steps.2.title'),
+        titleEn: t('tutorial.agentmail.steps.2.titleEn'),
+        estimatedTime: t('tutorial.agentmail.steps.2.estimatedTime'),
+        content: t('tutorial.agentmail.steps.2.content'),
+        commands: t('tutorial.agentmail.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.agentmail.steps.2.expectedResult'),
+        tips: t('tutorial.agentmail.steps.2.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.agentmail.steps.2.troubleshooting.title'), items: t('tutorial.agentmail.steps.2.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.agentmail.steps.3.title'),
+        titleEn: t('tutorial.agentmail.steps.3.titleEn'),
+        estimatedTime: t('tutorial.agentmail.steps.3.estimatedTime'),
+        content: t('tutorial.agentmail.steps.3.content'),
+        tips: t('tutorial.agentmail.steps.3.tips', { returnObjects: true }),
+        nextStepCards: t('tutorial.agentmail.steps.3.nextStepCards', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
+function createAgentcardTutorial(t: any): TutorialData {
+  return {
+    id: 'agentcard',
+    title: t('tutorial.agentcard.title'),
+    subtitle: t('tutorial.agentcard.subtitle'),
+    duration: t('tutorial.agentcard.duration'),
+    difficulty: t('tutorial.agentcard.difficulty'),
+    faq: t('tutorial.agentcard.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Users,
+        title: t('tutorial.agentcard.steps.0.title'),
+        titleEn: t('tutorial.agentcard.steps.0.titleEn'),
+        estimatedTime: t('tutorial.agentcard.steps.0.estimatedTime'),
+        content: t('tutorial.agentcard.steps.0.content'),
+        commands: t('tutorial.agentcard.steps.0.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.agentcard.steps.0.expectedResult'),
+        tips: t('tutorial.agentcard.steps.0.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.agentcard.steps.0.troubleshooting.title'), items: t('tutorial.agentcard.steps.0.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Sparkles,
+        title: t('tutorial.agentcard.steps.1.title'),
+        titleEn: t('tutorial.agentcard.steps.1.titleEn'),
+        estimatedTime: t('tutorial.agentcard.steps.1.estimatedTime'),
+        content: t('tutorial.agentcard.steps.1.content'),
+        commands: t('tutorial.agentcard.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.agentcard.steps.1.expectedResult'),
+        tips: t('tutorial.agentcard.steps.1.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.agentcard.steps.1.troubleshooting.title'), items: t('tutorial.agentcard.steps.1.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Globe,
+        title: t('tutorial.agentcard.steps.2.title'),
+        titleEn: t('tutorial.agentcard.steps.2.titleEn'),
+        estimatedTime: t('tutorial.agentcard.steps.2.estimatedTime'),
+        content: t('tutorial.agentcard.steps.2.content'),
+        commands: t('tutorial.agentcard.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.agentcard.steps.2.expectedResult'),
+        tips: t('tutorial.agentcard.steps.2.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.agentcard.steps.2.troubleshooting.title'), items: t('tutorial.agentcard.steps.2.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.agentcard.steps.3.title'),
+        titleEn: t('tutorial.agentcard.steps.3.titleEn'),
+        estimatedTime: t('tutorial.agentcard.steps.3.estimatedTime'),
+        content: t('tutorial.agentcard.steps.3.content'),
+        tips: t('tutorial.agentcard.steps.3.tips', { returnObjects: true }),
+        nextStepCards: t('tutorial.agentcard.steps.3.nextStepCards', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
+function createUmbrelTutorial(t: any): TutorialData {
+  return {
+    id: 'umbrel-setup',
+    title: t('tutorial.umbrel.title'),
+    subtitle: t('tutorial.umbrel.subtitle'),
+    duration: t('tutorial.umbrel.duration'),
+    difficulty: t('tutorial.umbrel.difficulty'),
+    faq: t('tutorial.umbrel.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Download,
+        title: t('tutorial.umbrel.steps.0.title'),
+        titleEn: t('tutorial.umbrel.steps.0.titleEn'),
+        estimatedTime: t('tutorial.umbrel.steps.0.estimatedTime'),
+        content: t('tutorial.umbrel.steps.0.content'),
+        commands: t('tutorial.umbrel.steps.0.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.umbrel.steps.0.expectedResult'),
+        tips: t('tutorial.umbrel.steps.0.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.umbrel.steps.0.troubleshooting.title'), items: t('tutorial.umbrel.steps.0.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: HardDrive,
+        title: t('tutorial.umbrel.steps.1.title'),
+        titleEn: t('tutorial.umbrel.steps.1.titleEn'),
+        estimatedTime: t('tutorial.umbrel.steps.1.estimatedTime'),
+        content: t('tutorial.umbrel.steps.1.content'),
+        commands: t('tutorial.umbrel.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.umbrel.steps.1.expectedResult'),
+        tips: t('tutorial.umbrel.steps.1.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.umbrel.steps.1.troubleshooting.title'), items: t('tutorial.umbrel.steps.1.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Terminal,
+        title: t('tutorial.umbrel.steps.2.title'),
+        titleEn: t('tutorial.umbrel.steps.2.titleEn'),
+        estimatedTime: t('tutorial.umbrel.steps.2.estimatedTime'),
+        content: t('tutorial.umbrel.steps.2.content'),
+        commands: t('tutorial.umbrel.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.umbrel.steps.2.expectedResult'),
+        tips: t('tutorial.umbrel.steps.2.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.umbrel.steps.2.troubleshooting.title'), items: t('tutorial.umbrel.steps.2.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Monitor,
+        title: t('tutorial.umbrel.steps.3.title'),
+        titleEn: t('tutorial.umbrel.steps.3.titleEn'),
+        estimatedTime: t('tutorial.umbrel.steps.3.estimatedTime'),
+        content: t('tutorial.umbrel.steps.3.content'),
+        commands: t('tutorial.umbrel.steps.3.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.umbrel.steps.3.expectedResult'),
+        tips: t('tutorial.umbrel.steps.3.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.umbrel.steps.3.troubleshooting.title'), items: t('tutorial.umbrel.steps.3.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.umbrel.steps.4.title'),
+        titleEn: t('tutorial.umbrel.steps.4.titleEn'),
+        estimatedTime: t('tutorial.umbrel.steps.4.estimatedTime'),
+        content: t('tutorial.umbrel.steps.4.content'),
+        tips: t('tutorial.umbrel.steps.4.tips', { returnObjects: true }),
+        nextStepCards: t('tutorial.umbrel.steps.4.nextStepCards', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
+function createEvenG2Tutorial(t: any): TutorialData {
+  return {
+    id: 'even-g2-bridge',
+    title: t('tutorial.evenG2.title'),
+    subtitle: t('tutorial.evenG2.subtitle'),
+    duration: t('tutorial.evenG2.duration'),
+    difficulty: t('tutorial.evenG2.difficulty'),
+    faq: t('tutorial.evenG2.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Download,
+        title: t('tutorial.evenG2.steps.0.title'),
+        titleEn: t('tutorial.evenG2.steps.0.titleEn'),
+        estimatedTime: t('tutorial.evenG2.steps.0.estimatedTime'),
+        content: t('tutorial.evenG2.steps.0.content'),
+        commands: t('tutorial.evenG2.steps.0.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.evenG2.steps.0.expectedResult'),
+        tips: t('tutorial.evenG2.steps.0.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.evenG2.steps.0.troubleshooting.title'), items: t('tutorial.evenG2.steps.0.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Monitor,
+        title: t('tutorial.evenG2.steps.1.title'),
+        titleEn: t('tutorial.evenG2.steps.1.titleEn'),
+        estimatedTime: t('tutorial.evenG2.steps.1.estimatedTime'),
+        content: t('tutorial.evenG2.steps.1.content'),
+        commands: t('tutorial.evenG2.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.evenG2.steps.1.expectedResult'),
+        tips: t('tutorial.evenG2.steps.1.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.evenG2.steps.1.troubleshooting.title'), items: t('tutorial.evenG2.steps.1.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Zap,
+        title: t('tutorial.evenG2.steps.2.title'),
+        titleEn: t('tutorial.evenG2.steps.2.titleEn'),
+        estimatedTime: t('tutorial.evenG2.steps.2.estimatedTime'),
+        content: t('tutorial.evenG2.steps.2.content'),
+        commands: t('tutorial.evenG2.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.evenG2.steps.2.expectedResult'),
+        tips: t('tutorial.evenG2.steps.2.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.evenG2.steps.2.troubleshooting.title'), items: t('tutorial.evenG2.steps.2.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.evenG2.steps.3.title'),
+        titleEn: t('tutorial.evenG2.steps.3.titleEn'),
+        estimatedTime: t('tutorial.evenG2.steps.3.estimatedTime'),
+        content: t('tutorial.evenG2.steps.3.content'),
+        tips: t('tutorial.evenG2.steps.3.tips', { returnObjects: true }),
+        nextStepCards: t('tutorial.evenG2.steps.3.nextStepCards', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
 function getTutorials(t: any): Record<string, TutorialData> {
   return {
     ollama: createOllamaTutorial(t),
@@ -1716,6 +2255,15 @@ function getTutorials(t: any): Record<string, TutorialData> {
     agentbook: createAgentBookTutorial(t),
     'order-skills': createOrderSkillsTutorial(t),
     escrow: createEscrowTutorial(t),
+    openrouter: createOpenRouterTutorial(t),
+    'google-gemini': createGoogleGeminiTutorial(t),
+    'nemotron-3-super': createNemotronTutorial(t),
+    whisper: createWhisperTutorial(t),
+    basemail: createBasemailTutorial(t),
+    agentmail: createAgentmailTutorial(t),
+    agentcard: createAgentcardTutorial(t),
+    'umbrel-setup': createUmbrelTutorial(t),
+    'even-g2-bridge': createEvenG2Tutorial(t),
   }
 }
 
