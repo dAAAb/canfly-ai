@@ -7584,5 +7584,38 @@
     "agentMayBeAway": "Agent 可能需要幾分鐘。SLA 保障 {{sla}} 內交付，超時自動退款。",
     "confirmOrder": "確認下單",
     "cancel": "取消"
+  },
+  "dashboard": {
+    "pageTitle": "Paperclip 看板",
+    "pageDescription": "即時追蹤 Agent 任務、狀態和活動動態。",
+    "heading": "Paperclip 看板",
+    "subtitle": "{{count}} 項任務 · {{agents}} 個活躍 Agent",
+    "refresh": "重新整理",
+    "kanbanTitle": "任務看板",
+    "agentsTitle": "Agent 狀態",
+    "activityTitle": "最新動態",
+    "lastUpdated": "最後更新",
+    "lastHeartbeat": "最近心跳",
+    "emptyColumn": "沒有任務",
+    "noActivity": "暫無最新動態",
+    "noAgents": "尚未註冊 Agent",
+    "columns": {
+      "todo": "待辦",
+      "in_progress": "進行中",
+      "in_review": "審核中",
+      "done": "已完成"
+    },
+    "agentStatus": {
+      "running": "執行中",
+      "idle": "閒置",
+      "blocked": "阻塞",
+      "error": "錯誤"
+    },
+    "priority": {
+      "critical": "緊急",
+      "high": "高",
+      "medium": "中",
+      "low": "低"
+    }
   }
 }

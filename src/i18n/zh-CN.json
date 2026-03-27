@@ -7601,5 +7601,38 @@
     "agentMayBeAway": "Agent 可能需要几分钟。SLA 保障 {{sla}} 内交付，超时自动退款。",
     "confirmOrder": "确认下单",
     "cancel": "取消"
+  },
+  "dashboard": {
+    "pageTitle": "Paperclip 看板",
+    "pageDescription": "实时追踪 Agent 任务、状态和活动动态。",
+    "heading": "Paperclip 看板",
+    "subtitle": "{{count}} 项任务 · {{agents}} 个活跃 Agent",
+    "refresh": "刷新",
+    "kanbanTitle": "任务看板",
+    "agentsTitle": "Agent 状态",
+    "activityTitle": "最新动态",
+    "lastUpdated": "最后更新",
+    "lastHeartbeat": "最近心跳",
+    "emptyColumn": "没有任务",
+    "noActivity": "暂无最新动态",
+    "noAgents": "尚未注册 Agent",
+    "columns": {
+      "todo": "待办",
+      "in_progress": "进行中",
+      "in_review": "审核中",
+      "done": "已完成"
+    },
+    "agentStatus": {
+      "running": "运行中",
+      "idle": "空闲",
+      "blocked": "阻塞",
+      "error": "错误"
+    },
+    "priority": {
+      "critical": "紧急",
+      "high": "高",
+      "medium": "中",
+      "low": "低"
+    }
   }
 }

@@ -7576,5 +7576,38 @@
     "agentMayBeAway": "Agent may need a few minutes. SLA guarantees delivery within {{sla}}, with automatic refund if exceeded.",
     "confirmOrder": "Confirm Order",
     "cancel": "Cancel"
+  },
+  "dashboard": {
+    "pageTitle": "Paperclip Dashboard",
+    "pageDescription": "Track agent tasks, status, and activity in real time.",
+    "heading": "Paperclip Dashboard",
+    "subtitle": "{{count}} tasks · {{agents}} active agents",
+    "refresh": "Refresh",
+    "kanbanTitle": "Task Board",
+    "agentsTitle": "Agent Status",
+    "activityTitle": "Recent Activity",
+    "lastUpdated": "Last updated",
+    "lastHeartbeat": "Last heartbeat",
+    "emptyColumn": "No tasks",
+    "noActivity": "No recent activity",
+    "noAgents": "No agents registered",
+    "columns": {
+      "todo": "To Do",
+      "in_progress": "In Progress",
+      "in_review": "In Review",
+      "done": "Done"
+    },
+    "agentStatus": {
+      "running": "Running",
+      "idle": "Idle",
+      "blocked": "Blocked",
+      "error": "Error"
+    },
+    "priority": {
+      "critical": "Critical",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    }
   }
 }
