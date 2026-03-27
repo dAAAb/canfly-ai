@@ -2232,6 +2232,116 @@ function createEvenG2Tutorial(t: any): TutorialData {
   }
 }
 
+function createPinataTutorial(t: any): TutorialData {
+  return {
+    id: 'pinata',
+    title: t('tutorial.pinata.title'),
+    subtitle: t('tutorial.pinata.subtitle'),
+    duration: t('tutorial.pinata.duration'),
+    difficulty: t('tutorial.pinata.difficulty'),
+    faq: t('tutorial.pinata.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Globe,
+        title: t('tutorial.pinata.steps.0.title'),
+        titleEn: t('tutorial.pinata.steps.0.titleEn'),
+        estimatedTime: t('tutorial.pinata.steps.0.estimatedTime'),
+        content: t('tutorial.pinata.steps.0.content'),
+        commands: t('tutorial.pinata.steps.0.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.pinata.steps.0.expectedResult'),
+        tips: t('tutorial.pinata.steps.0.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.pinata.steps.0.troubleshooting.title'), items: t('tutorial.pinata.steps.0.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Terminal,
+        title: t('tutorial.pinata.steps.1.title'),
+        titleEn: t('tutorial.pinata.steps.1.titleEn'),
+        estimatedTime: t('tutorial.pinata.steps.1.estimatedTime'),
+        content: t('tutorial.pinata.steps.1.content'),
+        commands: t('tutorial.pinata.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.pinata.steps.1.expectedResult'),
+        tips: t('tutorial.pinata.steps.1.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.pinata.steps.1.troubleshooting.title'), items: t('tutorial.pinata.steps.1.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Sparkles,
+        title: t('tutorial.pinata.steps.2.title'),
+        titleEn: t('tutorial.pinata.steps.2.titleEn'),
+        estimatedTime: t('tutorial.pinata.steps.2.estimatedTime'),
+        content: t('tutorial.pinata.steps.2.content'),
+        commands: t('tutorial.pinata.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.pinata.steps.2.expectedResult'),
+        tips: t('tutorial.pinata.steps.2.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.pinata.steps.2.troubleshooting.title'), items: t('tutorial.pinata.steps.2.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.pinata.steps.3.title'),
+        titleEn: t('tutorial.pinata.steps.3.titleEn'),
+        estimatedTime: t('tutorial.pinata.steps.3.estimatedTime'),
+        content: t('tutorial.pinata.steps.3.content'),
+        tips: t('tutorial.pinata.steps.3.tips', { returnObjects: true }),
+        nextStepCards: t('tutorial.pinata.steps.3.nextStepCards', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
+function createSwitchbotAiHubTutorial(t: any): TutorialData {
+  return {
+    id: 'switchbot-ai-hub',
+    title: t('tutorial.switchbotAiHub.title'),
+    subtitle: t('tutorial.switchbotAiHub.subtitle'),
+    duration: t('tutorial.switchbotAiHub.duration'),
+    difficulty: t('tutorial.switchbotAiHub.difficulty'),
+    faq: t('tutorial.switchbotAiHub.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Download,
+        title: t('tutorial.switchbotAiHub.steps.0.title'),
+        titleEn: t('tutorial.switchbotAiHub.steps.0.titleEn'),
+        estimatedTime: t('tutorial.switchbotAiHub.steps.0.estimatedTime'),
+        content: t('tutorial.switchbotAiHub.steps.0.content'),
+        commands: t('tutorial.switchbotAiHub.steps.0.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.switchbotAiHub.steps.0.expectedResult'),
+        tips: t('tutorial.switchbotAiHub.steps.0.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.switchbotAiHub.steps.0.troubleshooting.title'), items: t('tutorial.switchbotAiHub.steps.0.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Monitor,
+        title: t('tutorial.switchbotAiHub.steps.1.title'),
+        titleEn: t('tutorial.switchbotAiHub.steps.1.titleEn'),
+        estimatedTime: t('tutorial.switchbotAiHub.steps.1.estimatedTime'),
+        content: t('tutorial.switchbotAiHub.steps.1.content'),
+        commands: t('tutorial.switchbotAiHub.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.switchbotAiHub.steps.1.expectedResult'),
+        tips: t('tutorial.switchbotAiHub.steps.1.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.switchbotAiHub.steps.1.troubleshooting.title'), items: t('tutorial.switchbotAiHub.steps.1.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Zap,
+        title: t('tutorial.switchbotAiHub.steps.2.title'),
+        titleEn: t('tutorial.switchbotAiHub.steps.2.titleEn'),
+        estimatedTime: t('tutorial.switchbotAiHub.steps.2.estimatedTime'),
+        content: t('tutorial.switchbotAiHub.steps.2.content'),
+        commands: t('tutorial.switchbotAiHub.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.switchbotAiHub.steps.2.expectedResult'),
+        tips: t('tutorial.switchbotAiHub.steps.2.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.switchbotAiHub.steps.2.troubleshooting.title'), items: t('tutorial.switchbotAiHub.steps.2.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.switchbotAiHub.steps.3.title'),
+        titleEn: t('tutorial.switchbotAiHub.steps.3.titleEn'),
+        estimatedTime: t('tutorial.switchbotAiHub.steps.3.estimatedTime'),
+        content: t('tutorial.switchbotAiHub.steps.3.content'),
+        tips: t('tutorial.switchbotAiHub.steps.3.tips', { returnObjects: true }),
+        nextStepCards: t('tutorial.switchbotAiHub.steps.3.nextStepCards', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
 function getTutorials(t: any): Record<string, TutorialData> {
   return {
     ollama: createOllamaTutorial(t),
@@ -2264,6 +2374,8 @@ function getTutorials(t: any): Record<string, TutorialData> {
     agentcard: createAgentcardTutorial(t),
     'umbrel-setup': createUmbrelTutorial(t),
     'even-g2-bridge': createEvenG2Tutorial(t),
+    pinata: createPinataTutorial(t),
+    'switchbot-ai-hub': createSwitchbotAiHubTutorial(t),
   }
 }
 
