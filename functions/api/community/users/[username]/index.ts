@@ -61,6 +61,18 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
     .bind(canonicalUsername)
     .all()
 
+  // Get user's Zeabur deployments (lobsters)
+  const deploymentsResult = await env.DB.prepare(
+    `SELECT id, agent_name, zeabur_project_id, zeabur_service_id, status,
+            deploy_url, error_code, error_message, retry_count, template_id,
+            created_at, updated_at
+     FROM v3_zeabur_deployments WHERE owner_username = ?1
+     ORDER BY created_at DESC`
+  )
+    .bind(canonicalUsername)
+    .all()
+    .catch(() => ({ results: [] }))
+
   return json({
     ...user,
     links: JSON.parse((user.links as string) || '{}'),
@@ -70,6 +82,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
     ownerInviteCode: user.owner_invite_code || null,
     agents,
     hardware: hardwareResult.results,
+    deployments: deploymentsResult.results,
   })
 }
 

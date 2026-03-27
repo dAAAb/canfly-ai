@@ -27,6 +27,8 @@ import {
   Loader2,
   CheckCircle,
   XCircle,
+  Cloud,
+  RefreshCw,
 } from 'lucide-react'
 
 interface Skill {
@@ -58,6 +60,21 @@ interface Hardware {
   role: string
 }
 
+interface Deployment {
+  id: string
+  agent_name: string | null
+  zeabur_project_id: string
+  zeabur_service_id: string | null
+  status: string
+  deploy_url: string | null
+  error_code: string | null
+  error_message: string | null
+  retry_count: number
+  template_id: string | null
+  created_at: string
+  updated_at: string
+}
+
 interface UserLinks {
   x?: string
   github?: string
@@ -79,6 +96,7 @@ interface UserData {
   created_at: string
   agents: Agent[]
   hardware: Hardware[]
+  deployments: Deployment[]
   ownerInviteCode: string | null
 }
 
@@ -118,6 +136,7 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
   const [pendingAgents, setPendingAgents] = useState<PendingAgent[]>([])
   const [confirmingId, setConfirmingId] = useState<number | null>(null)
   const [rejectingId, setRejectingId] = useState<number | null>(null)
+  const [retryingDeployment, setRetryingDeployment] = useState<string | null>(null)
 
   // useHead must be called before any early returns (React hooks rule)
   const profileUrl = username ? `https://canfly.ai/u/${username}` : undefined
@@ -205,6 +224,27 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
       setPendingAgents((prev) => prev.filter((a) => a.bindingId !== bindingId))
     } catch { /* ignore */ }
     finally { setRejectingId(null) }
+  }
+
+  const handleRetryDeployment = async (deploymentId: string) => {
+    if (!username) return
+    setRetryingDeployment(deploymentId)
+    try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      const editToken = localStorage.getItem(`canfly_edit_token_${username}`)
+      if (editToken) headers['X-Edit-Token'] = editToken
+      else if (walletAddress) headers['X-Wallet-Address'] = walletAddress
+
+      const res = await fetch('/api/zeabur/retry', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ deploymentId }),
+      })
+      if (res.ok) {
+        window.location.reload()
+      }
+    } catch { /* ignore */ }
+    finally { setRetryingDeployment(null) }
   }
 
   if (loading) {
@@ -619,6 +659,94 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
               </div>
               )}
             </section>
+
+          {/* Deployed Lobsters (Zeabur) */}
+          {user.deployments && user.deployments.length > 0 && (
+            <section className="mb-12">
+              <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <Cloud className="w-5 h-5 text-orange-400" />
+                Deployed Lobsters ({user.deployments.length})
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {user.deployments.map((dep) => {
+                  const statusConfig: Record<string, { color: string; label: string }> = {
+                    pending: { color: 'text-yellow-400 bg-yellow-400/10 border-yellow-600/40', label: 'Pending' },
+                    deploying: { color: 'text-blue-400 bg-blue-400/10 border-blue-600/40', label: 'Deploying' },
+                    running: { color: 'text-green-400 bg-green-400/10 border-green-600/40', label: 'Online' },
+                    failed: { color: 'text-red-400 bg-red-400/10 border-red-600/40', label: 'Failed' },
+                    stopped: { color: 'text-gray-400 bg-gray-400/10 border-gray-600/40', label: 'Offline' },
+                  }
+                  const cfg = statusConfig[dep.status] || statusConfig.stopped
+                  return (
+                    <div
+                      key={dep.id}
+                      className="bg-gray-900/50 border border-gray-800 rounded-xl p-5 hover:border-gray-700 transition-colors"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-lg">🦞</span>
+                            <span className="text-white font-medium truncate">
+                              {dep.agent_name || `lobster-${dep.zeabur_project_id.slice(0, 8)}`}
+                            </span>
+                          </div>
+                          {dep.template_id && (
+                            <p className="text-gray-500 text-xs mt-0.5">
+                              Template: {dep.template_id}
+                            </p>
+                          )}
+                          {dep.deploy_url && (
+                            <a
+                              href={dep.deploy_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-cyan-400 hover:text-cyan-300 text-xs mt-1 inline-flex items-center gap-1 transition-colors"
+                            >
+                              <ExternalLink className="w-3 h-3" />
+                              {dep.deploy_url.replace(/^https?:\/\//, '')}
+                            </a>
+                          )}
+                        </div>
+                        <span className={`shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${cfg.color}`}>
+                          {cfg.label}
+                        </span>
+                      </div>
+
+                      {/* Error info + retry */}
+                      {dep.status === 'failed' && (
+                        <div className="mt-3 pt-3 border-t border-gray-800">
+                          {dep.error_message && (
+                            <p className="text-red-400/80 text-xs mb-2">
+                              {dep.error_code && <span className="font-mono">[{dep.error_code}]</span>}{' '}
+                              {dep.error_message}
+                            </p>
+                          )}
+                          {canEdit && dep.retry_count < 5 && (
+                            <button
+                              onClick={() => handleRetryDeployment(dep.id)}
+                              disabled={retryingDeployment === dep.id}
+                              className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-600/20 hover:bg-orange-600/30 disabled:bg-gray-700 text-orange-300 text-xs font-medium rounded-lg transition-colors border border-orange-700/40"
+                            >
+                              {retryingDeployment === dep.id ? (
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                              ) : (
+                                <RefreshCw className="w-3 h-3" />
+                              )}
+                              Retry ({dep.retry_count}/5)
+                            </button>
+                          )}
+                        </div>
+                      )}
+
+                      <p className="text-gray-600 text-xs mt-2">
+                        Deployed {formatDate(dep.created_at)}
+                      </p>
+                    </div>
+                  )
+                })}
+              </div>
+            </section>
+          )}
 
           {/* My Setup (Hardware) */}
           {user.hardware.length > 0 && (
