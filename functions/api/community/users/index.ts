@@ -85,7 +85,10 @@ interface CreateUserBody {
 
 export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
   const body = await parseBody<CreateUserBody>(request)
-  if (!body || !body.username) {
+  if (!body) {
+    return errorResponse('Invalid request body. Expected valid JSON.', 400)
+  }
+  if (!body.username) {
     return errorResponse('username is required', 400)
   }
 
@@ -97,6 +100,17 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
       'Invalid username. Must be 2-30 chars, alphanumeric/hyphens/underscores.',
       400
     )
+  }
+
+  // Input length validation
+  if (displayName && displayName.length > 100) {
+    return errorResponse('Display name must be 100 characters or less.', 400)
+  }
+  if (bio && bio.length > 280) {
+    return errorResponse('Bio must be 280 characters or less.', 400)
+  }
+  if (avatarUrl && avatarUrl.length > 500) {
+    return errorResponse('Avatar URL is too long.', 400)
   }
 
   // Check if username already exists
@@ -115,34 +129,46 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
   const mergedExternalIds = { ...(externalIds || {}) }
   if (privyUserId) mergedExternalIds.privy = privyUserId
 
-  await env.DB.prepare(
-    `INSERT INTO users (username, display_name, wallet_address, avatar_url, bio, links, edit_token,
-                        source, claimed, scraped_at, scrape_ref, external_ids)
-     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)`
-  )
-    .bind(
-      username,
-      displayName || '',
-      walletAddress || null,
-      avatarUrl || null,
-      bio || null,
-      JSON.stringify(links || {}),
-      editToken,
-      source || 'registered',
-      claimed ?? 1,
-      isScraped ? now : null,
-      scrapeRef || null,
-      JSON.stringify(mergedExternalIds)
+  try {
+    await env.DB.prepare(
+      `INSERT INTO users (username, display_name, wallet_address, avatar_url, bio, links, edit_token,
+                          source, claimed, scraped_at, scrape_ref, external_ids)
+       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)`
     )
-    .run()
+      .bind(
+        username,
+        displayName || '',
+        walletAddress || null,
+        avatarUrl || null,
+        bio || null,
+        JSON.stringify(links || {}),
+        editToken,
+        source || 'registered',
+        claimed ?? 1,
+        isScraped ? now : null,
+        scrapeRef || null,
+        JSON.stringify(mergedExternalIds)
+      )
+      .run()
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Unknown error'
+    if (msg.includes('UNIQUE') || msg.includes('constraint')) {
+      return errorResponse('Username already taken', 409)
+    }
+    return errorResponse('Registration failed. Please try again.', 500)
+  }
 
-  // Log activity
+  // Log activity (best-effort)
   const action = isScraped ? 'discovered' : 'joined'
-  await env.DB.prepare(
-    `INSERT INTO activity_log (entity_type, entity_id, action, metadata) VALUES ('user', ?1, ?2, ?3)`
-  )
-    .bind(username, action, isScraped ? JSON.stringify({ source: scrapeRef }) : null)
-    .run()
+  try {
+    await env.DB.prepare(
+      `INSERT INTO activity_log (entity_type, entity_id, action, metadata) VALUES ('user', ?1, ?2, ?3)`
+    )
+      .bind(username, action, isScraped ? JSON.stringify({ source: scrapeRef }) : null)
+      .run()
+  } catch {
+    // Activity logging is non-critical
+  }
 
   return json({ username, editToken }, 201)
 }

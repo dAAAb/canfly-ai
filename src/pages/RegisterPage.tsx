@@ -169,8 +169,14 @@ export default function RegisterPage() {
       })
 
       if (!res.ok) {
-        const data = await res.json()
-        throw new Error((data as { error?: string }).error || 'Registration failed')
+        let msg = 'Registration failed'
+        try {
+          const data = await res.json()
+          msg = (data as { error?: string }).error || msg
+        } catch {
+          // Response body isn't JSON (e.g. Cloudflare error page)
+        }
+        throw new Error(msg)
       }
 
       const data = (await res.json()) as { username: string; editToken: string }
