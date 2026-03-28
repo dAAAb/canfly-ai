@@ -287,10 +287,10 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
   }
 
   return (
-    <div className="min-h-screen bg-black flex flex-col">
+    <div className="h-screen bg-black flex flex-col overflow-hidden">
       <Navbar />
 
-      <div className="flex-1 flex max-w-7xl mx-auto w-full">
+      <div className="flex-1 flex max-w-7xl mx-auto w-full overflow-hidden">
         {/* Sidebar — Session List */}
         <div className="w-64 border-r border-gray-800 flex flex-col hidden md:flex">
           <div className="p-4 border-b border-gray-800">

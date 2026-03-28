@@ -204,38 +204,90 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
       ? `http://${serverIp}:${port}`
       : deployment.deploy_url
 
-    // Update deployment to running
+    // ── Post-deploy automation (runs once when status transitions to RUNNING) ──
+
+    // 1. Read gateway token from env var
+    let gatewayToken = ''
+    try {
+      const tokenResult = await zeaburGQL(zeaburApiKey,
+        `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",command:$cmd){exitCode output}}`,
+        { cmd: ['node', '-e', 'console.log(process.env.OPENCLAW_GATEWAY_TOKEN)'] }
+      )
+      gatewayToken = (tokenResult.data?.executeCommand as { output?: string })?.output?.trim() || ''
+    } catch { /* token will be empty */ }
+
+    // 2. Fix environment variables (template variables don't auto-expand via API deploy)
+    const aiHubKey = metadata.aiHubKey || metadata.zeaburAiHubKey || ''
+    if (aiHubKey) {
+      await zeaburGQL(zeaburApiKey,
+        `mutation{updateSingleEnvironmentVariable(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",oldKey:"ZEABUR_AI_HUB_API_KEY",newKey:"ZEABUR_AI_HUB_API_KEY",value:"${aiHubKey}"){key}}`
+      )
+    }
+    await zeaburGQL(zeaburApiKey,
+      `mutation{updateSingleEnvironmentVariable(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",oldKey:"ENABLE_CONTROL_UI",newKey:"ENABLE_CONTROL_UI",value:"true"){key}}`
+    )
+
+    // 3. Add domain (sslip.io based on server IP)
+    const agentSlug = (metadata.agentName || `lobster-${deployment.zeabur_project_id.slice(0, 8)}`).toLowerCase().replace(/[^a-z0-9-]/g, '-')
+    const domain = serverIp ? `${agentSlug}.${serverIp}.sslip.io` : null
+    if (domain) {
+      await zeaburGQL(zeaburApiKey,
+        `mutation{addDomain(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",domain:"${domain}",isGenerated:false){domain}}`
+      )
+    }
+    const publicUrl = domain ? `https://${domain}` : gatewayUrl
+
+    // 4. Restart to apply env var changes
+    await zeaburGQL(zeaburApiKey,
+      `mutation{restartService(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}")}`
+    )
+
+    // 5. Update deployment record
     await env.DB.prepare(
       `UPDATE v3_zeabur_deployments SET
         status = 'running', deploy_url = ?1, updated_at = datetime('now')
       WHERE id = ?2`
-    ).bind(gatewayUrl || null, deployment.id).run()
+    ).bind(publicUrl || gatewayUrl || null, deployment.id).run()
 
-    // Auto-register lobster if not already registered
-    if (!deployment.agent_name) {
-      const agentName = await registerLobster(env, {
+    // 6. Register agent + set agent_card_override with gateway info
+    let finalAgentName = deployment.agent_name
+    if (!finalAgentName) {
+      finalAgentName = await registerLobster(env, {
         ownerUsername: deployment.owner_username,
         agentName: metadata.agentName || `lobster-${deployment.zeabur_project_id.slice(0, 8)}`,
         agentBio: metadata.agentBio,
         agentModel: metadata.agentModel,
-        deployUrl: gatewayUrl || undefined,
+        deployUrl: publicUrl || gatewayUrl || undefined,
         projectId: deployment.zeabur_project_id,
       }, deployment.id)
-
-      return json({
-        deploymentId: deployment.id,
-        status: 'running',
-        agentName,
-        deployUrl: gatewayUrl,
-        message: 'Deployment successful. Lobster registered.',
-      })
     }
+
+    // 7. Set agent_card_override with gateway URL + token (token stays private via security filter)
+    if (publicUrl && gatewayToken) {
+      const cardOverride = JSON.stringify({ url: publicUrl, gateway_token: gatewayToken })
+      await env.DB.prepare(
+        'UPDATE agents SET agent_card_override = ?1 WHERE name = ?2'
+      ).bind(cardOverride, finalAgentName).run()
+    }
+
+    // 8. Patch config (allowedOrigins + chatCompletions) — best effort, non-blocking
+    // This runs after restart; the service may not be fully up yet so we try and ignore errors
+    try {
+      const origins = [publicUrl, 'https://canfly.ai'].filter(Boolean)
+      const patchScript = `const fs=require('fs'),J=require('json5'),f='/home/node/.openclaw/openclaw.json';try{const c=J.parse(fs.readFileSync(f,'utf8'));let ch=false;if(!c.gateway.controlUi.allowedOrigins){c.gateway.controlUi.allowedOrigins=${JSON.stringify(origins)};ch=true}if(!c.gateway.http){c.gateway.http={endpoints:{chatCompletions:{enabled:true}}};ch=true}else if(!c.gateway.http.endpoints?.chatCompletions?.enabled){c.gateway.http.endpoints=c.gateway.http.endpoints||{};c.gateway.http.endpoints.chatCompletions={enabled:true};ch=true}if(ch){fs.writeFileSync(f,JSON.stringify(c,null,2));console.log('patched')}else console.log('ok')}catch(e){console.log('err:'+e.message)}`
+      await zeaburGQL(zeaburApiKey,
+        `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",command:$cmd){exitCode output}}`,
+        { cmd: ['node', '-e', patchScript] }
+      )
+    } catch { /* config patch is best-effort */ }
 
     return json({
       deploymentId: deployment.id,
       status: 'running',
-      agentName: deployment.agent_name,
-      deployUrl: gatewayUrl,
+      agentName: finalAgentName,
+      deployUrl: publicUrl || gatewayUrl,
+      errorCode: null,
+      errorMessage: null,
     })
   }
 
