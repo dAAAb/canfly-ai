@@ -163,16 +163,48 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     content: m.content,
   }))
 
-  // Proxy to agent gateway (A2A or OpenAI-compatible chat endpoint)
+  // Proxy to agent gateway via OpenAI-compatible /v1/chat/completions
+  // OpenClaw gateways support this endpoint with Bearer token auth
+  const gatewayToken = (() => {
+    try {
+      const card = JSON.parse(
+        (await env.DB.prepare('SELECT agent_card_override FROM agents WHERE name = ?1')
+          .bind(agentName).first<{ agent_card_override: string | null }>())?.agent_card_override || '{}'
+      )
+      return card.gateway_token || ''
+    } catch { return '' }
+  })()
+
   try {
-    const proxyResponse = await fetch(`${gatewayUrl}/chat`, {
+    const proxyResponse = await fetch(`${gatewayUrl}/v1/chat/completions`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages, stream: true }),
+      headers: {
+        'Content-Type': 'application/json',
+        ...(gatewayToken ? { 'Authorization': `Bearer ${gatewayToken}` } : {}),
+      },
+      body: JSON.stringify({
+        model: 'default',
+        messages: [...messages, { role: 'user', content: body.message }],
+        stream: false,
+      }),
     })
 
     if (!proxyResponse.ok) {
-      // Non-streaming fallback: try without streaming
+      return errorResponse(`Agent gateway error: ${proxyResponse.status}`, 502)
+    }
+
+    // OpenAI-compatible response format
+    const result = await proxyResponse.json() as {
+      choices?: Array<{ message?: { content?: string } }>
+    }
+    const reply = result.choices?.[0]?.message?.content || ''
+
+    await saveMessage(env.DB, sessionId, 'assistant', reply)
+
+    return json({ sessionId, role: 'assistant', content: reply })
+  } catch (err) {
+    // Fallback: try legacy /chat endpoint
+    try {
       const fallbackResponse = await fetch(`${gatewayUrl}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -189,9 +221,13 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
       await saveMessage(env.DB, sessionId, 'assistant', reply)
 
       return json({ sessionId, role: 'assistant', content: reply })
+    } catch (fallbackErr) {
+      return errorResponse(`Failed to reach agent gateway: ${(err as Error).message}`, 502)
     }
+  }
 
-    // Streaming response — pipe through as SSE
+  /* Streaming support (future enhancement) — currently using non-streaming for reliability */
+  /* Original streaming code kept for reference:
     if (proxyResponse.headers.get('content-type')?.includes('text/event-stream') && proxyResponse.body) {
       const { readable, writable } = new TransformStream()
       const writer = writable.getWriter()
@@ -245,6 +281,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   } catch (err) {
     return errorResponse(`Failed to reach agent gateway: ${(err as Error).message}`, 502)
   }
+  End of original streaming code */
 }
 
 // ── GET: Fetch chat history ─────────────────────────────────────────
