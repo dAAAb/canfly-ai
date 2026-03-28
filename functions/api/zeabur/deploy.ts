@@ -191,7 +191,53 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     zeaburServiceId = services?.[0]?._id || null
   } catch { /* fallback: will be resolved during status poll */ }
 
-  // Step 3: Record deployment in D1
+  // Step 3: Fix env vars IMMEDIATELY (before service fully starts)
+  // Template variables like ${ZEABUR_AI_HUB_API_KEY} don't expand via API deploy
+  if (zeaburServiceId) {
+    // Get environment ID
+    let envId: string | null = null
+    try {
+      const envResult = await zeaburGQL(body.zeaburApiKey, `
+        query { project(_id: "${zeaburProjectId}") { environments { _id } } }
+      `)
+      envId = (envResult.data?.project as { environments: Array<{ _id: string }> })?.environments?.[0]?._id || null
+    } catch { /* will retry in status poller */ }
+
+    if (envId) {
+      // Fix ZEABUR_AI_HUB_API_KEY
+      if (body.aiHubKey) {
+        await zeaburGQL(body.zeaburApiKey,
+          `mutation{updateSingleEnvironmentVariable(serviceID:"${zeaburServiceId}",environmentID:"${envId}",oldKey:"ZEABUR_AI_HUB_API_KEY",newKey:"ZEABUR_AI_HUB_API_KEY",value:"${body.aiHubKey}"){key}}`
+        ).catch(() => {})
+      }
+      // Fix ENABLE_CONTROL_UI
+      await zeaburGQL(body.zeaburApiKey,
+        `mutation{updateSingleEnvironmentVariable(serviceID:"${zeaburServiceId}",environmentID:"${envId}",oldKey:"ENABLE_CONTROL_UI",newKey:"ENABLE_CONTROL_UI",value:"true"){key}}`
+      ).catch(() => {})
+
+      // Add domain (sslip.io)
+      try {
+        const serverResult = await zeaburGQL(body.zeaburApiKey,
+          `query { server(_id: "${body.serverNodeId}") { ip } }`
+        )
+        const ip = (serverResult.data?.server as { ip?: string })?.ip
+        if (ip) {
+          const slug = body.agentName.toLowerCase().replace(/[^a-z0-9-]/g, '-')
+          const domain = `${slug}.${ip}.sslip.io`
+          await zeaburGQL(body.zeaburApiKey,
+            `mutation{addDomain(serviceID:"${zeaburServiceId}",environmentID:"${envId}",domain:"${domain}",isGenerated:false){domain}}`
+          ).catch(() => {})
+        }
+      } catch { /* domain will be added in status poller */ }
+
+      // Restart to apply env var changes (service may not be fully up yet, that's OK)
+      await zeaburGQL(body.zeaburApiKey,
+        `mutation{restartService(serviceID:"${zeaburServiceId}",environmentID:"${envId}")}`
+      ).catch(() => {})
+    }
+  }
+
+  // Step 4: Record deployment in D1
   const deploymentId = generateUUID()
   await env.DB.prepare(
     `INSERT INTO v3_zeabur_deployments
