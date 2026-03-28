@@ -9,6 +9,9 @@ export default defineConfig({
     __APP_VERSION__: JSON.stringify(process.env.npm_package_version || '0.5.0'),
   },
   plugins: [react(), tailwindcss()],
+  resolve: {
+    dedupe: ['react', 'react-dom'],
+  },
   test: {
     globals: true,
     environment: 'jsdom',
