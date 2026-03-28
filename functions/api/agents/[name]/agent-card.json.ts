@@ -228,9 +228,12 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
       const override = JSON.parse(agent.agent_card_override as string) as Record<string, unknown>
       // Preserve CanFly-managed fields that should not be overridden
       const canflyExtensions = agentCard._extensions
+      // SECURITY: filter out sensitive fields that must never be exposed publicly
+      const PRIVATE_FIELDS = new Set(['gateway_token', 'zeabur_api_key', 'api_key', 'secret', 'token', 'password'])
       // Merge override into agentCard (Layer 3 wins for A2A standard fields)
       for (const key of Object.keys(override)) {
         if (key === '_extensions') continue // CanFly manages _extensions
+        if (PRIVATE_FIELDS.has(key)) continue // Never expose secrets in public agent card
         agentCard[key] = override[key]
       }
       // Merge any user _extensions with CanFly _extensions (CanFly wins on conflicts)
