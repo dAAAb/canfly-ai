@@ -28,7 +28,7 @@ interface DeployBody {
   tier: 'light' | 'general'
 }
 
-const ZEABUR_GRAPHQL = 'https://gateway.zeabur.com/graphql'
+const ZEABUR_GRAPHQL = 'https://api.zeabur.com/graphql'
 
 async function isFeatureEnabled(db: D1Database, flagName: string): Promise<boolean> {
   const row = await db.prepare(
