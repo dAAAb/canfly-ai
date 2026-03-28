@@ -2,8 +2,28 @@ import { usePrivy } from '@privy-io/react-auth'
 
 export type WorldIdLevel = null | 'device' | 'orb'
 
+const NOOP = () => {}
+
+/**
+ * Safe auth hook — returns defaults when PrivyProvider is absent
+ * (e.g. on subdomain pages where Privy is intentionally skipped).
+ */
 export function useAuth() {
-  const privy = usePrivy()
+  let privy: ReturnType<typeof usePrivy> | null = null
+  try {
+    privy = usePrivy()
+  } catch {
+    // PrivyProvider not in tree (subdomain case) — return safe defaults
+    return {
+      user: null,
+      isAuthenticated: false,
+      ready: true,
+      login: NOOP,
+      logout: NOOP,
+      worldIdLevel: null as WorldIdLevel,
+      walletAddress: null as string | null,
+    }
+  }
 
   const user = privy.user
   const isAuthenticated = privy.authenticated && privy.ready
