@@ -356,10 +356,16 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
                   className="w-full px-4 py-3 bg-gray-900 border border-gray-700 text-white placeholder-gray-600 rounded-xl focus:outline-none focus:border-cyan-500/50 transition-colors text-sm"
                 />
                 <p className="text-[11px] text-gray-600 mt-1.5">
-                  {t('deploy.apiKeyHelp')}{' '}
-                  <a href="https://dash.zeabur.com/account/developer" target="_blank" rel="noopener noreferrer" className="text-cyan-500 hover:text-cyan-400">
-                    Zeabur Dashboard <ExternalLink className="w-3 h-3 inline" />
+                  <a href="https://zeabur.com/zh-TW/referral?referralCode=dAAAb" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:text-green-300">
+                    {t('deploy.registerZeabur', 'Register Zeabur')} <ExternalLink className="w-3 h-3 inline" />
                   </a>
+                  {' '}{t('deploy.apiKeyHelp')}{' '}
+                  <a href="https://zeabur.com/account/api-keys" target="_blank" rel="noopener noreferrer" className="text-cyan-500 hover:text-cyan-400">
+                    {t('deploy.getApiKey', 'Get API Key')} <ExternalLink className="w-3 h-3 inline" />
+                  </a>
+                </p>
+                <p className="text-[10px] text-gray-700 mt-1">
+                  💡 {t('deploy.referralTip', 'Use referral code "dAAAb" at checkout for 10% off servers and AI Hub credits')}
                 </p>
               </div>
               {keyError && (
