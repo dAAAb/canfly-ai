@@ -13,8 +13,8 @@
 import { type Env, CORS_HEADERS } from './community/_helpers'
 
 const WINDOW_SECONDS = 3600 // 1 hour
-const DEFAULT_LIMIT = 60    // requests per window (anonymous/IP)
-const AGENT_LIMIT = 120     // requests per window (authenticated agent)
+const DEFAULT_LIMIT = 300   // requests per window (anonymous/IP — enough for normal browsing)
+const AGENT_LIMIT = 600     // requests per window (authenticated agent)
 
 /** Endpoints exempt from rate limiting */
 function isExempt(path: string, request: Request): boolean {
@@ -22,6 +22,15 @@ function isExempt(path: string, request: Request): boolean {
   if (path.startsWith('/api/cron/')) return true
   // OPTIONS preflight requests
   if (request.method === 'OPTIONS') return true
+  // Same-origin requests from our own frontend (Referer or Origin matches canfly.ai)
+  const origin = request.headers.get('origin') || ''
+  const referer = request.headers.get('referer') || ''
+  if (
+    origin.endsWith('canfly.ai') ||
+    referer.includes('canfly.ai')
+  ) {
+    return true
+  }
   return false
 }
 
