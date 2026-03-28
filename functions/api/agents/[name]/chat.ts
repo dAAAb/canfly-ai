@@ -226,62 +226,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     }
   }
 
-  /* Streaming support (future enhancement) — currently using non-streaming for reliability */
-  /* Original streaming code kept for reference:
-    if (proxyResponse.headers.get('content-type')?.includes('text/event-stream') && proxyResponse.body) {
-      const { readable, writable } = new TransformStream()
-      const writer = writable.getWriter()
-      const encoder = new TextEncoder()
-      let fullReply = ''
-
-      // Send session ID as first event
-      writer.write(encoder.encode(`data: ${JSON.stringify({ sessionId })}\n\n`))
-
-      // Pipe the proxy stream
-      const reader = proxyResponse.body.getReader()
-      const decoder = new TextDecoder()
-
-      ;(async () => {
-        try {
-          while (true) {
-            const { done, value } = await reader.read()
-            if (done) break
-            const chunk = decoder.decode(value, { stream: true })
-            fullReply += chunk.replace(/^data:\s*/gm, '').replace(/\n\n/g, '')
-            writer.write(value)
-          }
-          // Save complete assistant reply
-          if (fullReply.trim()) {
-            await saveMessage(env.DB, sessionId, 'assistant', fullReply.trim())
-          }
-          writer.write(encoder.encode('data: [DONE]\n\n'))
-          writer.close()
-        } catch (err) {
-          writer.close()
-        }
-      })()
-
-      return new Response(readable, {
-        headers: {
-          ...CORS_HEADERS,
-          'Content-Type': 'text/event-stream',
-          'Cache-Control': 'no-cache',
-          'Connection': 'keep-alive',
-        },
-      })
-    }
-
-    // Non-streaming JSON response
-    const result = await proxyResponse.json() as { reply?: string; content?: string; message?: string }
-    const reply = result.reply || result.content || result.message || ''
-
-    await saveMessage(env.DB, sessionId, 'assistant', reply)
-
-    return json({ sessionId, role: 'assistant', content: reply })
-  } catch (err) {
-    return errorResponse(`Failed to reach agent gateway: ${(err as Error).message}`, 502)
-  }
-  // End of original streaming code */
+  // Note: Streaming support via SSE can be added in a future iteration
 }
 
 // ── GET: Fetch chat history ─────────────────────────────────────────
