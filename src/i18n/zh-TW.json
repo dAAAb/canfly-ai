@@ -7720,6 +7720,40 @@
       "high": "高",
       "medium": "中",
       "low": "低"
+    },
+    "telegram": {
+      "title": "串接 Telegram",
+      "description": "連結 Telegram 機器人，讓用戶透過 Telegram 跟這隻蝦對話。",
+      "botTokenLabel": "Bot Token",
+      "botTokenPlaceholder": "貼上 BotFather 給你的 Token...",
+      "botTokenHelp": "從 Telegram @BotFather → /newbot 取得 Token",
+      "connectBtn": "串接 Telegram",
+      "connecting": "串接中...",
+      "successTitle": "Telegram 串接成功！",
+      "successMsg": "機器人 @{{botUsername}} 已連結。到 Telegram 發送 /start 開始對話。",
+      "failedTitle": "串接失敗",
+      "disconnectBtn": "斷開連結",
+      "statusActive": "已連線",
+      "statusNone": "未連線",
+      "statusFailed": "連線失敗",
+      "invalidToken": "Token 格式錯誤，請貼上 BotFather 給的完整 Token。"
     }
+  },
+  "chat": {
+    "title": "對話",
+    "loginRequired": "登入以開始對話",
+    "loginDescription": "連結你的錢包，即可與你的 AI 代理人對話。",
+    "loginButton": "連結錢包",
+    "backToAgent": "返回代理人",
+    "newChat": "新對話",
+    "untitled": "未命名對話",
+    "noSessions": "尚無對話紀錄",
+    "startConversation": "與 {{agent}} 開始對話",
+    "defaultBio": "傳送訊息，開始與 {{agent}} 對話。",
+    "placeholder": "傳訊息給 {{agent}}⋯",
+    "disclaimer": "AI 回覆可能不準確，請自行驗證重要資訊。",
+    "loadError": "載入對話紀錄失敗。",
+    "online": "在線",
+    "sendError": "訊息傳送失敗，請重試。"
   }
 }
