@@ -7677,5 +7677,16 @@
     "rejected": "已拒絕",
     "noBuyerTasks": "尚無訂單。",
     "noSellerTasks": "尚無收到的訂單。"
-  }
+  },
+  "deployedLobsters": "已部署的蝦蝦",
+  "deployStatus": {
+    "pending": "等待中",
+    "deploying": "部署中",
+    "online": "上線",
+    "failed": "失敗",
+    "offline": "離線"
+  },
+  "deployTemplate": "範本",
+  "deployRetry": "重試",
+  "deployedOn": "部署於"
 }
