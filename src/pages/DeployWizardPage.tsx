@@ -259,9 +259,9 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
   }
 
   const goNext = () => {
-    if (step === 5) { // Deploy on final step
+    if (step === 4 && canAdvance()) {
+      // Transition to deploy step and auto-start
       setStep(5)
-      // Auto-start deploy when entering step 5
       setTimeout(() => startDeploy(), 100)
       return
     }
