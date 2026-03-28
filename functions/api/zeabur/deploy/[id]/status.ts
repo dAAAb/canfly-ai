@@ -15,7 +15,7 @@ import {
   generatePairingCode,
 } from '../../../community/_helpers'
 
-const ZEABUR_GRAPHQL = 'https://gateway.zeabur.com/graphql'
+const ZEABUR_GRAPHQL = 'https://api.zeabur.com/graphql'
 
 function generateUUID(): string {
   const bytes = new Uint8Array(16)
