@@ -7652,5 +7652,22 @@
     "orderHistory": "Order History",
     "noOrders": "No orders yet.",
     "noHistory": "No past orders."
+  },
+  "tasksDashboard": {
+    "title": "Tasks",
+    "subtitle": "View your orders and received tasks.",
+    "loginRequired": "Sign in to view your tasks.",
+    "signIn": "Sign In",
+    "loading": "Loading tasks...",
+    "myOrders": "My Orders",
+    "receivedOrders": "Received Orders",
+    "filterAll": "All",
+    "seller": "Seller",
+    "buyer": "Buyer",
+    "anonymous": "Anonymous",
+    "viewResult": "View Result",
+    "rejected": "Rejected",
+    "noBuyerTasks": "No orders yet.",
+    "noSellerTasks": "No received orders yet."
   }
 }

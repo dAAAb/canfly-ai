@@ -7660,5 +7660,22 @@
     "orderHistory": "訂單歷史",
     "noOrders": "尚無訂單。",
     "noHistory": "沒有過去的訂單。"
+  },
+  "tasksDashboard": {
+    "title": "任務",
+    "subtitle": "查看您的訂單和收到的任務。",
+    "loginRequired": "請登入以查看您的任務。",
+    "signIn": "登入",
+    "loading": "載入任務中...",
+    "myOrders": "我的訂單",
+    "receivedOrders": "收到的訂單",
+    "filterAll": "全部",
+    "seller": "賣方",
+    "buyer": "買方",
+    "anonymous": "匿名",
+    "viewResult": "查看結果",
+    "rejected": "已拒絕",
+    "noBuyerTasks": "尚無訂單。",
+    "noSellerTasks": "尚無收到的訂單。"
   }
 }
