@@ -163,8 +163,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     content: m.content,
   }))
 
-  // Proxy to agent gateway via OpenAI-compatible /v1/chat/completions
-  // OpenClaw gateways support this endpoint with Bearer token auth
+  // Resolve gateway token from agent_card_override
   let gatewayToken = ''
   try {
     const agentRow = await env.DB.prepare('SELECT agent_card_override FROM agents WHERE name = ?1')
@@ -175,8 +174,11 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     }
   } catch { /* ignore */ }
 
+  // Strategy: try /v1/chat/completions first (works on some setups),
+  // then fall back to WebSocket chat (works on all OpenClaw instances)
   try {
-    const proxyResponse = await fetch(`${gatewayUrl}/v1/chat/completions`, {
+    // Attempt 1: OpenAI-compatible REST API
+    const restResponse = await fetch(`${gatewayUrl}/v1/chat/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -189,44 +191,127 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
       }),
     })
 
-    if (!proxyResponse.ok) {
-      return errorResponse(`Agent gateway error: ${proxyResponse.status}`, 502)
-    }
-
-    // OpenAI-compatible response format
-    const result = await proxyResponse.json() as {
-      choices?: Array<{ message?: { content?: string } }>
-    }
-    const reply = result.choices?.[0]?.message?.content || ''
-
-    await saveMessage(env.DB, sessionId, 'assistant', reply)
-
-    return json({ sessionId, role: 'assistant', content: reply })
-  } catch (err) {
-    // Fallback: try legacy /chat endpoint
-    try {
-      const fallbackResponse = await fetch(`${gatewayUrl}/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages, stream: false }),
-      })
-
-      if (!fallbackResponse.ok) {
-        return errorResponse(`Agent gateway error: ${fallbackResponse.status}`, 502)
+    if (restResponse.ok) {
+      const ct = restResponse.headers.get('content-type') || ''
+      if (ct.includes('application/json')) {
+        const result = await restResponse.json() as {
+          choices?: Array<{ message?: { content?: string } }>
+        }
+        const reply = result.choices?.[0]?.message?.content || ''
+        if (reply) {
+          await saveMessage(env.DB, sessionId, 'assistant', reply)
+          return json({ sessionId, role: 'assistant', content: reply })
+        }
       }
-
-      const result = await fallbackResponse.json() as { reply?: string; content?: string; message?: string }
-      const reply = result.reply || result.content || result.message || ''
-
-      await saveMessage(env.DB, sessionId, 'assistant', reply)
-
-      return json({ sessionId, role: 'assistant', content: reply })
-    } catch (fallbackErr) {
-      return errorResponse(`Failed to reach agent gateway: ${(err as Error).message}`, 502)
     }
-  }
 
-  // Note: Streaming support via SSE can be added in a future iteration
+    // Attempt 2: WebSocket-based chat via Cloudflare Worker fetch to gateway
+    // OpenClaw gateway accepts WebSocket connections at ws(s)://domain/?token=xxx
+    // We use the gateway's HTTP session API as an alternative
+    const wsUrl = gatewayUrl.replace('https://', 'wss://').replace('http://', 'ws://')
+
+    // Since CF Workers can't hold WebSocket connections long enough for AI responses,
+    // use the gateway's internal REST-like message endpoint
+    // Try POST to gateway root with chat payload (some OpenClaw versions support this)
+    const chatPayload = {
+      type: 'chat',
+      message: body.message,
+      sessionId: sessionId,
+      token: gatewayToken,
+    }
+
+    const wsHttpResponse = await fetch(`${gatewayUrl}/api/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(gatewayToken ? { 'Authorization': `Bearer ${gatewayToken}` } : {}),
+      },
+      body: JSON.stringify(chatPayload),
+    })
+
+    if (wsHttpResponse.ok) {
+      const ct = wsHttpResponse.headers.get('content-type') || ''
+      if (ct.includes('json')) {
+        const result = await wsHttpResponse.json() as { content?: string; reply?: string; message?: string }
+        const reply = result.content || result.reply || result.message || ''
+        if (reply) {
+          await saveMessage(env.DB, sessionId, 'assistant', reply)
+          return json({ sessionId, role: 'assistant', content: reply })
+        }
+      }
+    }
+
+    // Attempt 3: Use Cloudflare Worker WebSocket upgrade to proxy
+    // Connect to gateway WS, send message, collect response chunks, return
+    const upgradeResponse = await fetch(`${wsUrl}/?token=${gatewayToken}`, {
+      headers: { 'Upgrade': 'websocket' },
+    })
+
+    if (upgradeResponse.webSocket) {
+      const ws = upgradeResponse.webSocket
+      ws.accept()
+
+      return new Promise<Response>((resolve) => {
+        let reply = ''
+        let resolved = false
+        const timeout = setTimeout(() => {
+          if (!resolved) {
+            resolved = true
+            ws.close()
+            if (reply) {
+              saveMessage(env.DB, sessionId, 'assistant', reply).catch(() => {})
+              resolve(json({ sessionId, role: 'assistant', content: reply }))
+            } else {
+              resolve(errorResponse('Agent response timeout', 504))
+            }
+          }
+        }, 55000) // 55s timeout (CF Workers max ~60s)
+
+        ws.addEventListener('message', (event) => {
+          try {
+            const data = typeof event.data === 'string' ? JSON.parse(event.data) : null
+            if (data?.type === 'assistant' || data?.type === 'message' || data?.role === 'assistant') {
+              reply += data.content || data.text || data.message || ''
+            }
+            // Check for completion signals
+            if (data?.type === 'done' || data?.type === 'end' || data?.finished) {
+              clearTimeout(timeout)
+              if (!resolved) {
+                resolved = true
+                ws.close()
+                saveMessage(env.DB, sessionId, 'assistant', reply).catch(() => {})
+                resolve(json({ sessionId, role: 'assistant', content: reply }))
+              }
+            }
+          } catch { /* non-JSON message, ignore */ }
+        })
+
+        ws.addEventListener('close', () => {
+          clearTimeout(timeout)
+          if (!resolved) {
+            resolved = true
+            if (reply) {
+              saveMessage(env.DB, sessionId, 'assistant', reply).catch(() => {})
+              resolve(json({ sessionId, role: 'assistant', content: reply }))
+            } else {
+              resolve(errorResponse('WebSocket closed without response', 502))
+            }
+          }
+        })
+
+        // Send chat message
+        ws.send(JSON.stringify({
+          type: 'chat',
+          content: body.message,
+          sessionId: sessionId,
+        }))
+      })
+    }
+
+    return errorResponse('Could not connect to agent gateway (REST and WebSocket both failed)', 502)
+  } catch (err) {
+    return errorResponse(`Failed to reach agent gateway: ${(err as Error).message}`, 502)
+  }
 }
 
 // ── GET: Fetch chat history ─────────────────────────────────────────
