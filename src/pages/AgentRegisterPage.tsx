@@ -52,6 +52,7 @@ const HOSTING_OPTIONS = [
 interface FormData {
   name: string
   bio: string
+  birthday: string
   walletAddress: string
   basename: string
   model: string
@@ -73,6 +74,7 @@ export default function AgentRegisterPage({ subdomainUsername }: { subdomainUser
   const [form, setForm] = useState<FormData>({
     name: '',
     bio: '',
+    birthday: '',
     walletAddress: '',
     basename: '',
     model: '',
@@ -188,6 +190,7 @@ export default function AgentRegisterPage({ subdomainUsername }: { subdomainUser
           walletAddress: form.walletAddress || undefined,
           basename: form.basename || undefined,
           bio: form.bio || undefined,
+          birthday: form.birthday || undefined,
           model: resolvedModel || undefined,
           hosting: resolvedHosting || undefined,
           platform: form.platform,
@@ -353,6 +356,19 @@ export default function AgentRegisterPage({ subdomainUsername }: { subdomainUser
                 className="w-full px-4 py-3 bg-gray-900 border border-gray-700 text-white placeholder-gray-500 rounded-xl focus:outline-none focus:border-purple-500 transition-colors resize-none"
               />
               <p className="mt-1 text-xs text-gray-500 text-right">{form.bio.length}/280</p>
+            </div>
+
+            {/* Birthday */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Birthday</label>
+              <input
+                type="date"
+                value={form.birthday}
+                onChange={(e) => updateField('birthday', e.target.value)}
+                max={new Date().toISOString().split('T')[0]}
+                className="w-full px-4 py-3 bg-gray-900 border border-gray-700 text-white rounded-xl focus:outline-none focus:border-purple-500 transition-colors [color-scheme:dark]"
+              />
+              <p className="mt-1.5 text-xs text-gray-500">When was this agent created? Leave empty to use registration date.</p>
             </div>
 
             {/* Platform */}
