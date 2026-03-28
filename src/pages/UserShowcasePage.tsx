@@ -676,13 +676,39 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
               )}
             </section>
 
+          {/* Deploy New Agent CTA (when no deployments) */}
+          {canEdit && (!user.deployments || user.deployments.length === 0) && (
+            <section className="mb-12">
+              <Link
+                to={`/u/${user.username}/deploy`}
+                className="flex items-center justify-center gap-2 p-6 bg-gray-900/50 border border-dashed border-gray-700 rounded-xl hover:border-green-600/50 hover:bg-green-900/10 transition-all group"
+              >
+                <span className="text-2xl">🦞</span>
+                <span className="text-gray-400 group-hover:text-green-300 font-medium">
+                  {t('deployFirstAgent', 'Deploy your first Zeabur agent')}
+                </span>
+                <span className="text-green-400 text-xl">+</span>
+              </Link>
+            </section>
+          )}
+
           {/* Deployed Lobsters (Zeabur) */}
           {user.deployments && user.deployments.length > 0 && (
             <section className="mb-12">
-              <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                <Cloud className="w-5 h-5 text-orange-400" />
-                {t('deployedLobsters', 'Deployed Lobsters')} ({user.deployments.length})
-              </h2>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+                  <Cloud className="w-5 h-5 text-orange-400" />
+                  {t('deployedLobsters', 'Deployed Lobsters')} ({user.deployments.length})
+                </h2>
+                {canEdit && (
+                  <Link
+                    to={`/u/${user.username}/deploy`}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600/20 hover:bg-green-600/30 text-green-300 text-xs font-medium rounded-lg transition-colors border border-green-700/40"
+                  >
+                    <span>+</span> {t('deployNew', 'Deploy New Agent')}
+                  </Link>
+                )}
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {user.deployments.map((dep) => {
                   const statusConfig: Record<string, { color: string; label: string }> = {
@@ -711,17 +737,26 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
                               {t('deployTemplate', 'Template')}: {dep.template_id}
                             </p>
                           )}
-                          {dep.deploy_url && (
-                            <a
-                              href={dep.deploy_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-cyan-400 hover:text-cyan-300 text-xs mt-1 inline-flex items-center gap-1 transition-colors"
-                            >
-                              <ExternalLink className="w-3 h-3" />
-                              {dep.deploy_url.replace(/^https?:\/\//, '')}
-                            </a>
-                          )}
+                          {dep.deploy_url && (() => {
+                            // Prefer HTTPS domain over raw IP:port
+                            const displayUrl = dep.deploy_url.startsWith('http://')
+                              ? dep.deploy_url.replace('http://', 'https://').replace(/:18789$/, '')
+                              : dep.deploy_url
+                            const href = displayUrl.includes('.sslip.io') || displayUrl.includes('.zeabur.app')
+                              ? displayUrl
+                              : dep.deploy_url // fallback to original
+                            return (
+                              <a
+                                href={href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-cyan-400 hover:text-cyan-300 text-xs mt-1 inline-flex items-center gap-1 transition-colors"
+                              >
+                                <ExternalLink className="w-3 h-3" />
+                                {href.replace(/^https?:\/\//, '')}
+                              </a>
+                            )
+                          })()}
                         </div>
                         <span className={`shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${cfg.color}`}>
                           {cfg.label}
@@ -750,6 +785,26 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
                               )}
                               {t('deployRetry', 'Retry')} ({dep.retry_count}/5)
                             </button>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Action buttons */}
+                      {dep.status === 'running' && (
+                        <div className="mt-3 pt-3 border-t border-gray-800 flex items-center gap-2">
+                          <Link
+                            to={`/u/${user.username}/chat/${dep.agent_name || 'agent'}`}
+                            className="flex items-center gap-1.5 px-3 py-1.5 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 text-xs font-medium rounded-lg transition-colors border border-cyan-700/40"
+                          >
+                            💬 {t('chatWithAgent', 'Chat')}
+                          </Link>
+                          {canEdit && (
+                            <Link
+                              to={`/u/${user.username}/agents/${dep.agent_name || 'agent'}/settings`}
+                              className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-600/20 hover:bg-gray-600/30 text-gray-300 text-xs font-medium rounded-lg transition-colors border border-gray-700/40"
+                            >
+                              ⚙️ {t('agentSettings', 'Settings')}
+                            </Link>
                           )}
                         </div>
                       )}
