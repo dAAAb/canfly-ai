@@ -281,7 +281,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   } catch (err) {
     return errorResponse(`Failed to reach agent gateway: ${(err as Error).message}`, 502)
   }
-  End of original streaming code */
+  // End of original streaming code */
 }
 
 // ── GET: Fetch chat history ─────────────────────────────────────────
