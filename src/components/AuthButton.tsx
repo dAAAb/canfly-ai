@@ -55,7 +55,7 @@ export default function AuthButton() {
   const displayName = user?.google?.name || user?.email?.address?.split('@')[0] || 'User'
 
   // Find the user's existing CanFly username from localStorage edit tokens
-  const ownUsername = (() => {
+  const localUsername = (() => {
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i)
       if (key?.startsWith('canfly_edit_token_')) {
@@ -64,6 +64,32 @@ export default function AuthButton() {
     }
     return null
   })()
+
+  // For email users without localStorage token, resolve username via API
+  const [resolvedUsername, setResolvedUsername] = useState<string | null>(null)
+  const privyId = user?.id
+  const lookupDone = useRef(false)
+
+  useEffect(() => {
+    if (localUsername || lookupDone.current) return
+    if (!walletAddress && !privyId) return
+    lookupDone.current = true
+
+    const params = new URLSearchParams()
+    if (walletAddress) params.set('address', walletAddress)
+    if (privyId) params.set('privyId', privyId)
+
+    fetch(`/api/community/lookup-wallet?${params.toString()}`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data && (data as { username?: string }).username) {
+          setResolvedUsername((data as { username: string }).username)
+        }
+      })
+      .catch(() => {})
+  }, [localUsername, walletAddress, privyId])
+
+  const ownUsername = localUsername || resolvedUsername
 
   return (
     <div className="relative" ref={dropdownRef}>

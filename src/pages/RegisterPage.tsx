@@ -29,7 +29,7 @@ interface FormData {
 type UsernameStatus = 'idle' | 'checking' | 'available' | 'taken' | 'invalid'
 
 export default function RegisterPage() {
-  const { isAuthenticated, ready, login, walletAddress, worldIdLevel } = useAuth()
+  const { isAuthenticated, ready, login, walletAddress, worldIdLevel, user: privyUser } = useAuth()
   const navigate = useNavigate()
 
   const [form, setForm] = useState<FormData>({
@@ -48,14 +48,25 @@ export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null)
   const [checkingProfile, setCheckingProfile] = useState(true)
 
-  // Check if user already has a profile (by wallet address)
+  // Check if user already has a profile (by wallet address or Privy user ID)
   useEffect(() => {
-    if (!isAuthenticated || !walletAddress) {
+    if (!isAuthenticated) {
       setCheckingProfile(false)
       return
     }
-    // Wallet→username lookup: if user already registered, redirect to their profile
-    fetch(`/api/community/lookup-wallet?address=${encodeURIComponent(walletAddress)}`)
+
+    const privyId = privyUser?.id
+    if (!walletAddress && !privyId) {
+      setCheckingProfile(false)
+      return
+    }
+
+    // Build lookup URL: try wallet first, fall back to Privy ID
+    const params = new URLSearchParams()
+    if (walletAddress) params.set('address', walletAddress)
+    if (privyId) params.set('privyId', privyId)
+
+    fetch(`/api/community/lookup-wallet?${params.toString()}`)
       .then((r) => {
         if (r.ok) return r.json()
         return null
@@ -70,7 +81,7 @@ export default function RegisterPage() {
         // lookup failed, let them register
       })
       .finally(() => setCheckingProfile(false))
-  }, [isAuthenticated, walletAddress, navigate])
+  }, [isAuthenticated, walletAddress, privyUser?.id, navigate])
 
   // Debounced username availability check
   const checkUsername = useCallback(async (username: string) => {
@@ -153,6 +164,7 @@ export default function RegisterPage() {
           avatarUrl: form.avatarUrl || undefined,
           bio: form.bio || undefined,
           links: Object.keys(links).length > 0 ? links : undefined,
+          privyUserId: privyUser?.id || undefined,
         }),
       })
 
