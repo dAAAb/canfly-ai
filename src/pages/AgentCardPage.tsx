@@ -245,6 +245,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
   useHead({
     title: agent ? `${agent.name} — AI Agent | CanFly.ai` : 'Agent | CanFly.ai',
     description: agent?.bio || (agent ? `${agent.name} is an AI agent on CanFly.ai` : 'AI Agent on CanFly.ai'),
+    ogImage: agent?.avatar_url || undefined,
     canonical: agentUrl,
     ogType: 'profile',
   })
@@ -343,6 +344,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
     "name": agent.name,
     "description": agent.bio || `AI agent on CanFly.ai`,
     "url": agentUrl,
+    ...(agent.avatar_url ? { "image": agent.avatar_url } : {}),
     "applicationCategory": "AIApplication",
     "operatingSystem": "All",
     ...(agent.model ? { "softwareVersion": agent.model } : {}),
