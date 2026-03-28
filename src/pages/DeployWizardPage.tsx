@@ -194,6 +194,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
           serverNodeId: selectedServer,
           agentName: agentName.trim(),
           agentBio: agentBio.trim() || undefined,
+          aiHubKey: aiHubKey.trim() || undefined,
           tier: 'general',
           templateCode: 'VTZ4FX',
         }),

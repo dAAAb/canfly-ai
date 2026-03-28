@@ -23,6 +23,7 @@ interface DeployBody {
   agentName: string
   agentBio?: string
   agentModel?: string
+  aiHubKey?: string
   templateCode?: string | null
   rawSpecYaml?: string | null
   tier: 'light' | 'general'
@@ -208,6 +209,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
       agentName: body.agentName,
       agentBio: body.agentBio || null,
       agentModel: body.agentModel || null,
+      aiHubKey: body.aiHubKey || null,
       serverNodeId: body.serverNodeId,
       zeaburApiKey: body.zeaburApiKey,
     }),
