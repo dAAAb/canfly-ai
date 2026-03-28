@@ -176,7 +176,19 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     )
   }
 
-  const zeaburServiceId = (deployResult.data?.deployTemplate as { _id: string })?._id || null
+  // deployTemplate returns project ID, not service ID — query services to get it
+  let zeaburServiceId: string | null = null
+  try {
+    const servicesResult = await zeaburGQL(body.zeaburApiKey, `
+      query GetServices($projectID: ObjectID!) {
+        project(_id: $projectID) {
+          services { _id name }
+        }
+      }
+    `, { projectID: zeaburProjectId })
+    const services = (servicesResult.data?.project as { services: Array<{ _id: string }> })?.services
+    zeaburServiceId = services?.[0]?._id || null
+  } catch { /* fallback: will be resolved during status poll */ }
 
   // Step 3: Record deployment in D1
   const deploymentId = generateUUID()
