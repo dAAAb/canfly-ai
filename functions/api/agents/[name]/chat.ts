@@ -165,15 +165,15 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
 
   // Proxy to agent gateway via OpenAI-compatible /v1/chat/completions
   // OpenClaw gateways support this endpoint with Bearer token auth
-  const gatewayToken = (() => {
-    try {
-      const card = JSON.parse(
-        (await env.DB.prepare('SELECT agent_card_override FROM agents WHERE name = ?1')
-          .bind(agentName).first<{ agent_card_override: string | null }>())?.agent_card_override || '{}'
-      )
-      return card.gateway_token || ''
-    } catch { return '' }
-  })()
+  let gatewayToken = ''
+  try {
+    const agentRow = await env.DB.prepare('SELECT agent_card_override FROM agents WHERE name = ?1')
+      .bind(agentName).first<{ agent_card_override: string | null }>()
+    if (agentRow?.agent_card_override) {
+      const card = JSON.parse(agentRow.agent_card_override)
+      gatewayToken = card.gateway_token || ''
+    }
+  } catch { /* ignore */ }
 
   try {
     const proxyResponse = await fetch(`${gatewayUrl}/v1/chat/completions`, {
