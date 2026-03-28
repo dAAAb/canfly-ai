@@ -7694,5 +7694,16 @@
     "rejected": "已拒绝",
     "noBuyerTasks": "暂无订单。",
     "noSellerTasks": "暂无收到的订单。"
-  }
+  },
+  "deployedLobsters": "已部署的虾虾",
+  "deployStatus": {
+    "pending": "等待中",
+    "deploying": "部署中",
+    "online": "在线",
+    "failed": "失败",
+    "offline": "离线"
+  },
+  "deployTemplate": "模板",
+  "deployRetry": "重试",
+  "deployedOn": "部署于"
 }

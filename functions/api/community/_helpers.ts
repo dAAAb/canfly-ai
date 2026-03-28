@@ -15,6 +15,7 @@ export interface Env {
   CRON_SECRET?: string
   GEMINI_API_KEY?: string
   OPENAI_API_KEY?: string
+  ZEABUR_WEBHOOK_SECRET?: string
 }
 
 /** Standard CORS headers for cross-origin access */

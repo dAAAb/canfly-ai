@@ -7669,5 +7669,16 @@
     "rejected": "Rejected",
     "noBuyerTasks": "No orders yet.",
     "noSellerTasks": "No received orders yet."
-  }
+  },
+  "deployedLobsters": "Deployed Lobsters",
+  "deployStatus": {
+    "pending": "Pending",
+    "deploying": "Deploying",
+    "online": "Online",
+    "failed": "Failed",
+    "offline": "Offline"
+  },
+  "deployTemplate": "Template",
+  "deployRetry": "Retry",
+  "deployedOn": "Deployed"
 }
