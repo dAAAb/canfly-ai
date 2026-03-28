@@ -7832,7 +7832,9 @@
     "noServersPrefix": "找不到服务器。",
     "addServerLink": "在 Zeabur 购买一台",
     "manualServerLabel": "或手动输入 Server ID：",
-    "manualServerHelp": "在以下位置找到 Server ID"
+    "manualServerHelp": "在以下位置找到 Server ID",
+    "step3DescPrefix": "输入 ",
+    "step3DescSuffix": " 密钥，让虾虾可以使用 AI 模型。"
   },
   "settings": {
     "pageTitle": "虾虾设置",
