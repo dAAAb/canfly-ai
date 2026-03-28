@@ -337,7 +337,12 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
           {step === 1 && (
             <div className="space-y-4">
               <h2 className="text-lg font-semibold text-white">{t('deploy.step1Title')}</h2>
-              <p className="text-sm text-gray-400">{t('deploy.step1Desc')}</p>
+              <p className="text-sm text-gray-400">
+                <a href="https://zeabur.com/zh-TW/referral?referralCode=dAAAb" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:text-green-300 underline">
+                  {t('deploy.registerZeaburAccount', 'Register a Zeabur account')}
+                </a>
+                {t('deploy.step1DescSuffix', ', get an API key to connect CanFly for deployment.')}
+              </p>
               <div>
                 <label className="block text-xs text-gray-400 mb-1.5">{t('deploy.apiKeyLabel')}</label>
                 <input
@@ -392,7 +397,12 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
           {step === 2 && (
             <div className="space-y-4">
               <h2 className="text-lg font-semibold text-white">{t('deploy.step2Title')}</h2>
-              <p className="text-sm text-gray-400">{t('deploy.step2Desc')}</p>
+              <p className="text-sm text-gray-400">
+                {t('deploy.step2DescPrefix', 'Select the Zeabur server for deployment. ')}
+                <a href="https://zeabur.com/servers" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 underline">
+                  {t('deploy.buyServer', 'Buy a server')} <ExternalLink className="w-3 h-3 inline" />
+                </a>
+              </p>
               {loadingServers ? (
                 <div className="flex items-center gap-2 py-8 justify-center">
                   <Loader2 className="w-5 h-5 text-cyan-400 animate-spin" />
@@ -401,7 +411,12 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
               ) : servers.length === 0 ? (
                 <div className="py-8 text-center">
                   <Server className="w-10 h-10 text-gray-600 mx-auto mb-3" />
-                  <p className="text-sm text-gray-400">{t('deploy.noServers')}</p>
+                  <p className="text-sm text-gray-400">
+                    {t('deploy.noServersPrefix', 'No servers found. ')}
+                    <a href="https://zeabur.com/servers" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 underline">
+                      {t('deploy.addServerLink', 'Add one on Zeabur')} <ExternalLink className="w-3 h-3 inline" />
+                    </a>
+                  </p>
                   <button
                     onClick={loadServers}
                     className="mt-3 text-sm text-cyan-400 hover:text-cyan-300 transition-colors"

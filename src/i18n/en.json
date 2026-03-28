@@ -7799,7 +7799,13 @@
     "retryDeploy": "Retry Deploy",
     "deployingTitle": "Deploying Your Agent...",
     "deployingDesc": "Setting up your agent on Zeabur. This usually takes 1-3 minutes.",
-    "deployFailed": "Deployment failed. Please try again."
+    "deployFailed": "Deployment failed. Please try again.",
+    "registerZeaburAccount": "Register a Zeabur account",
+    "step1DescSuffix": ", get an API key to connect CanFly for deployment.",
+    "step2DescPrefix": "Select the Zeabur server for deployment. ",
+    "buyServer": "Buy a server",
+    "noServersPrefix": "No servers found. ",
+    "addServerLink": "Add one on Zeabur"
   },
   "settings": {
     "pageTitle": "Agent Settings",

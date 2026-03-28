@@ -7824,7 +7824,13 @@
     "retryDeploy": "重试部署",
     "deployingTitle": "正在部署虾虾…",
     "deployingDesc": "正在 Zeabur 上设置虾虾，通常需要 1-3 分钟。",
-    "deployFailed": "部署失败，请重试。"
+    "deployFailed": "部署失败，请重试。",
+    "registerZeaburAccount": "注册 Zeabur 账号",
+    "step1DescSuffix": "，获取 API 密钥以连接 CanFly 进行部署。",
+    "step2DescPrefix": "选择要部署虾虾的 Zeabur 服务器。",
+    "buyServer": "购买服务器",
+    "noServersPrefix": "找不到服务器。",
+    "addServerLink": "在 Zeabur 购买一台"
   },
   "settings": {
     "pageTitle": "虾虾设置",
