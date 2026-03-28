@@ -159,7 +159,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
       service(_id: $serviceID) {
         status(environmentID: $environmentID)
         ports(environmentID: $environmentID) {
-          publishedPort
+          port
         }
       }
     }
@@ -175,7 +175,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
 
   const service = statusResult.data?.service as {
     status: string
-    ports?: Array<{ publishedPort: number }>
+    ports?: Array<{ port: number }>
   } | null
 
   if (!service) {
@@ -199,7 +199,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
     `, { serverID: metadata.serverNodeId })
 
     const serverIp = (serverResult.data?.server as { ip?: string })?.ip
-    const port = service.ports?.[0]?.publishedPort
+    const port = service.ports?.[0]?.port
     const gatewayUrl = serverIp && port
       ? `http://${serverIp}:${port}`
       : deployment.deploy_url
