@@ -5,6 +5,7 @@ import { ArrowRight, PlayCircle, Menu, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useLanguage } from '../hooks/useLanguage'
 import LanguageSwitcher from '../components/LanguageSwitcher'
+import AuthButton from '../components/AuthButton'
 import { trackCTAClick } from '../utils/analytics'
 
 export default function HeroSection() {
@@ -52,6 +53,7 @@ export default function HeroSection() {
             API
           </a>
           <LanguageSwitcher />
+          <AuthButton />
           <Link
             to={localePath('/apps/free/ollama')}
             className="text-sm bg-green-600/20 border border-green-600 px-3 py-1 rounded-full hover:bg-green-600/30 transition-colors"
@@ -87,6 +89,7 @@ export default function HeroSection() {
             API
           </a>
           <LanguageSwitcher />
+          <AuthButton />
           <Link
             to={localePath('/apps/free/ollama')}
             onClick={() => setMobileNavOpen(false)}
