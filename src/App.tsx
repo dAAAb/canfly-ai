@@ -28,6 +28,7 @@ const RegisterPage = lazy(() => import('./pages/RegisterPage'))
 const ProfileEditPage = lazy(() => import('./pages/ProfileEditPage'))
 const AgentRegisterPage = lazy(() => import('./pages/AgentRegisterPage'))
 const TaskManagerPage = lazy(() => import('./pages/TaskManagerPage'))
+const TasksDashboardPage = lazy(() => import('./pages/TasksDashboardPage'))
 
 /** Strip /:lang prefix and redirect to the unprefixed community path */
 function StripLangRedirect() {
@@ -118,6 +119,7 @@ function SubdomainRouter({ subdomain }: { subdomain: string }) {
               <Route path="/" element={<AutoLangSync><UserShowcasePage subdomainUsername={subdomain} /></AutoLangSync>} />
               <Route path="/agent/:agentName" element={<AutoLangSync><AgentCardPage subdomainUsername={subdomain} /></AutoLangSync>} />
               <Route path="/agents/new" element={<AutoLangSync><AgentRegisterPage subdomainUsername={subdomain} /></AutoLangSync>} />
+              <Route path="/tasks" element={<AutoLangSync><TasksDashboardPage subdomainUsername={subdomain} /></AutoLangSync>} />
               <Route path="/edit" element={<AutoLangSync><ProfileEditPage subdomainUsername={subdomain} /></AutoLangSync>} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
@@ -160,6 +162,7 @@ function App() {
               {/* Community routes: /u/:username (no @ — React Router v6 can't handle it) */}
               <Route path="/u/:username/agents/new" element={<AutoLangSync><AgentRegisterPage /></AutoLangSync>} />
               <Route path="/u/:username/agent/:agentName" element={<AutoLangSync><AgentCardPage /></AutoLangSync>} />
+              <Route path="/u/:username/tasks" element={<AutoLangSync><TasksDashboardPage /></AutoLangSync>} />
               <Route path="/u/:username/edit" element={<AutoLangSync><ProfileEditPage /></AutoLangSync>} />
               <Route path="/u/:username" element={<AutoLangSync><UserShowcasePage /></AutoLangSync>} />
 

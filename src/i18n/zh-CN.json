@@ -7677,5 +7677,22 @@
     "orderHistory": "订单历史",
     "noOrders": "暂无订单。",
     "noHistory": "没有过去的订单。"
+  },
+  "tasksDashboard": {
+    "title": "任务",
+    "subtitle": "查看您的订单和收到的任务。",
+    "loginRequired": "请登录以查看您的任务。",
+    "signIn": "登录",
+    "loading": "加载任务中...",
+    "myOrders": "我的订单",
+    "receivedOrders": "收到的订单",
+    "filterAll": "全部",
+    "seller": "卖方",
+    "buyer": "买方",
+    "anonymous": "匿名",
+    "viewResult": "查看结果",
+    "rejected": "已拒绝",
+    "noBuyerTasks": "暂无订单。",
+    "noSellerTasks": "暂无收到的订单。"
   }
 }
