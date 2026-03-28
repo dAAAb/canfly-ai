@@ -48,11 +48,11 @@ interface DeployWizardPageProps {
 type WizardStep = 1 | 2 | 3 | 4 | 5
 
 const STEPS = [
-  { icon: Key, labelKey: 'deploy.step1Label' },
-  { icon: Key, labelKey: 'deploy.step3Label' },    // AI Hub moved to step 2
-  { icon: Server, labelKey: 'deploy.step2Label' },  // Server moved to step 3
-  { icon: Bot, labelKey: 'deploy.step4Label' },
-  { icon: Rocket, labelKey: 'deploy.step5Label' },
+  { icon: Key, labelKey: 'deploy.step1Label' },     // 1: Zeabur API Key
+  { icon: Bot, labelKey: 'deploy.step4Label' },     // 2: Name your lobster
+  { icon: Key, labelKey: 'deploy.step3Label' },     // 3: AI Hub Key
+  { icon: Server, labelKey: 'deploy.step2Label' },  // 4: Select server
+  { icon: Rocket, labelKey: 'deploy.step5Label' },  // 5: Deploy
 ]
 
 const ZEABUR_PROXY = '/api/zeabur/proxy'
@@ -153,7 +153,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
   }, [zeaburApiKey])
 
   useEffect(() => {
-    if (step === 3 && keyValid && servers.length === 0) {
+    if (step === 4 && keyValid && servers.length === 0) {
       loadServers()
     }
   }, [step, keyValid, servers.length, loadServers])
@@ -250,16 +250,16 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
   const canAdvance = (): boolean => {
     switch (step) {
       case 1: return keyValid
-      case 2: return true // AI Hub key is optional
-      case 3: return !!selectedServer
-      case 4: return !!agentName.trim() && nameAvailable === true
+      case 2: return !!agentName.trim() && nameAvailable === true  // Name
+      case 3: return true // AI Hub key is optional
+      case 4: return !!selectedServer  // Server
       case 5: return false
       default: return false
     }
   }
 
   const goNext = () => {
-    if (step === 4) {
+    if (step === 5) { // Deploy on final step
       setStep(5)
       // Auto-start deploy when entering step 5
       setTimeout(() => startDeploy(), 100)
@@ -395,7 +395,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
           )}
 
           {/* Step 2: Select Server */}
-          {step === 3 && ( /* Server selection — was step 2, now step 3 */
+          {step === 4 && ( /* Server selection — step 4 */
             <div className="space-y-4">
               <h2 className="text-lg font-semibold text-white">{t('deploy.step2Title')}</h2>
               <p className="text-sm text-gray-400">
@@ -467,8 +467,8 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
             </div>
           )}
 
-          {/* Step 2: AI Hub Key (moved from step 3) */}
-          {step === 2 && (
+          {/* Step 3: AI Hub Key */}
+          {step === 3 && (
             <div className="space-y-4">
               <h2 className="text-lg font-semibold text-white">{t('deploy.step3Title')}</h2>
               <p className="text-sm text-gray-400">
@@ -492,8 +492,8 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
             </div>
           )}
 
-          {/* Step 4: Agent Name */}
-          {step === 4 && (
+          {/* Step 2: Name your lobster */}
+          {step === 2 && (
             <div className="space-y-4">
               <h2 className="text-lg font-semibold text-white">{t('deploy.step4Title')}</h2>
               <p className="text-sm text-gray-400">{t('deploy.step4Desc')}</p>
@@ -601,7 +601,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
               disabled={!canAdvance()}
               className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 disabled:bg-gray-700 disabled:text-gray-500 text-white text-sm font-medium transition-colors"
             >
-              {step === 4 ? t('deploy.deployBtn') : t('deploy.next')}
+              {step === 4 ? t('deploy.deployBtn') : step === 5 ? t('deploy.deploying') : t('deploy.next')}
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
