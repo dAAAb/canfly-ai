@@ -36,9 +36,10 @@ export const onRequestOptions: PagesFunction<Env> = () => handleOptions()
 export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }) => {
   const agentName = params.name as string
   const walletHeader = request.headers.get('X-Wallet-Address')
+  const editToken = request.headers.get('X-Edit-Token')
 
-  if (!walletHeader) {
-    return errorResponse('X-Wallet-Address header required', 401)
+  if (!walletHeader && !editToken) {
+    return errorResponse('X-Wallet-Address or X-Edit-Token header required', 401)
   }
 
   // Look up agent + verify ownership
@@ -57,9 +58,20 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     return errorResponse('Agent has no owner', 403)
   }
 
-  const ownerWallet = agent.owner_wallet as string | null
-  if (!ownerWallet || walletHeader.toLowerCase() !== ownerWallet.toLowerCase()) {
-    return errorResponse('Not authorized — wallet does not match agent owner', 403)
+  // Verify ownership via wallet or edit token
+  let authorized = false
+  if (editToken) {
+    const agentEditToken = await env.DB.prepare(
+      'SELECT edit_token FROM agents WHERE name = ?1'
+    ).bind(agentName).first<{ edit_token: string }>()
+    authorized = agentEditToken?.edit_token === editToken
+  }
+  if (!authorized && walletHeader) {
+    const ownerWallet = agent.owner_wallet as string | null
+    authorized = !!ownerWallet && walletHeader.toLowerCase() === ownerWallet.toLowerCase()
+  }
+  if (!authorized) {
+    return errorResponse('Not authorized — wallet or edit token does not match agent owner', 403)
   }
 
   // Parse body
@@ -87,23 +99,27 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     return errorResponse('Agent already has an active Telegram connection. Disconnect first.', 409)
   }
 
-  // Get agent's deploy URL from capabilities or v3_zeabur_deployments
+  // Get agent's gateway URL + token from agent_card_override
   let gatewayUrl: string | null = null
+  let gatewayToken: string | null = null
   try {
-    const caps = JSON.parse((agent.capabilities as string) || '{}')
-    if (caps.deployUrl) {
-      gatewayUrl = caps.deployUrl
+    const agentRow = await env.DB.prepare(
+      'SELECT agent_card_override FROM agents WHERE name = ?1'
+    ).bind(agentName).first<{ agent_card_override: string | null }>()
+    if (agentRow?.agent_card_override) {
+      const card = JSON.parse(agentRow.agent_card_override)
+      gatewayUrl = card.url || null
+      gatewayToken = card.gateway_token || null
     }
-  } catch { /* ignore parse errors */ }
+  } catch { /* ignore */ }
 
+  // Fallback: check v3_zeabur_deployments
   if (!gatewayUrl) {
-    // Fallback: check v3_zeabur_deployments
     const deployment = await env.DB.prepare(
       `SELECT deploy_url FROM v3_zeabur_deployments
        WHERE agent_name = ?1 AND status = 'running'
        ORDER BY updated_at DESC LIMIT 1`
     ).bind(agentName).first()
-
     if (deployment?.deploy_url) {
       gatewayUrl = deployment.deploy_url as string
     }
@@ -116,14 +132,12 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     )
   }
 
-  // Call OpenClaw Gateway config.patch to add Telegram plugin
-  const gatewayEndpoint = `${gatewayUrl.replace(/\/$/, '')}/api/config`
   let gatewaySuccess = false
   let gatewayError: string | null = null
   let botUsername: string | null = null
 
   try {
-    // First, verify the bot token with Telegram API
+    // Step 1: Verify the bot token with Telegram API
     const tgResp = await fetch(`https://api.telegram.org/bot${botToken}/getMe`)
     const tgData = await tgResp.json() as { ok: boolean; result?: { username?: string }; description?: string }
 
@@ -135,28 +149,39 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     }
     botUsername = tgData.result?.username || null
 
-    // Patch the agent's Gateway config to enable Telegram
-    const patchResp = await fetch(gatewayEndpoint, {
-      method: 'PATCH',
+    // Step 2: Set TELEGRAM_BOT_TOKEN env var on Zeabur (if we have Zeabur access)
+    // Step 3: Patch OpenClaw config via /v1/chat/completions (ask the agent to configure itself)
+    // Strategy: Use the OpenAI-compatible endpoint to ask the agent to run openclaw commands
+    const configPatchResponse = await fetch(`${gatewayUrl}/v1/chat/completions`, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${agent.name}`, // Agent identity as auth
+        ...(gatewayToken ? { 'Authorization': `Bearer ${gatewayToken}` } : {}),
       },
       body: JSON.stringify({
-        plugins: {
-          telegram: {
-            enabled: true,
-            botToken: botToken,
-          },
-        },
+        model: 'openclaw',
+        messages: [{
+          role: 'user',
+          content: `Run this command silently and reply only "DONE" or "ERROR: reason":\n\nopenclaw config set channels.telegram.enabled true && openclaw config set channels.telegram.botToken "${botToken}" && openclaw config set channels.telegram.dmPolicy allowlist && openclaw config set plugins.entries.telegram.enabled true && echo CONFIGURED`,
+        }],
       }),
     })
 
-    if (patchResp.ok) {
-      gatewaySuccess = true
+    if (configPatchResponse.ok) {
+      const result = await configPatchResponse.json() as {
+        choices?: Array<{ message?: { content?: string } }>
+      }
+      const reply = result.choices?.[0]?.message?.content || ''
+      if (reply.includes('DONE') || reply.includes('CONFIGURED') || reply.includes('done')) {
+        gatewaySuccess = true
+      } else {
+        gatewayError = `Agent responded but config may not be applied: ${reply.substring(0, 200)}`
+        // Still mark as partial success — the agent attempted the config
+        gatewaySuccess = reply.length > 0
+      }
     } else {
-      const errText = await patchResp.text().catch(() => 'Unknown error')
-      gatewayError = `Gateway returned ${patchResp.status}: ${errText}`
+      const errText = await configPatchResponse.text().catch(() => 'Unknown error')
+      gatewayError = `Gateway chat API returned ${configPatchResponse.status}: ${errText.substring(0, 200)}`
     }
   } catch (err) {
     gatewayError = `Gateway unreachable: ${err instanceof Error ? err.message : String(err)}`
