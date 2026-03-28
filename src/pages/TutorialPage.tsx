@@ -1,7 +1,7 @@
 import ReactMarkdown from 'react-markdown'
 import ReviewVideoPlayer from '../components/ReviewVideoPlayer'
 import { useParams, Link } from 'react-router-dom'
-import { Clock, CheckCircle, Copy, ExternalLink, ChevronDown, ChevronRight, Terminal, Download, Monitor, MessageSquare, Rocket, HelpCircle, Cpu, Sparkles, Search, Globe, Key, Shield, Users, HardDrive, Zap, Wallet } from 'lucide-react'
+import { Clock, CheckCircle, Copy, ExternalLink, ChevronDown, ChevronRight, Terminal, Download, Monitor, MessageSquare, Rocket, HelpCircle, Cpu, Sparkles, Search, Globe, Key, Shield, Users, HardDrive, Zap, Wallet, Mail } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import Navbar from '../components/Navbar'
@@ -1647,6 +1647,9 @@ function createEscrowTutorial(t: any): TutorialData {
         content: t('tutorial.escrow.steps.0.content'),
         expectedResult: t('tutorial.escrow.steps.0.expectedResult'),
         tips: t('tutorial.escrow.steps.0.tips', { returnObjects: true }),
+        screenshots: [
+          { src: '/images/tutorial/escrow-flow-diagram.webp', alt: 'Escrow transaction flow diagram', caption: t('tutorial.escrow.steps.0.title') },
+        ],
       },
       {
         icon: Wallet,
@@ -1657,37 +1660,54 @@ function createEscrowTutorial(t: any): TutorialData {
         commands: t('tutorial.escrow.steps.1.commands', { returnObjects: true }),
         expectedResult: t('tutorial.escrow.steps.1.expectedResult'),
         tips: t('tutorial.escrow.steps.1.tips', { returnObjects: true }),
+        screenshots: [
+          { src: '/images/tutorial/escrow-pay-order-ui.webp', alt: 'Pay & Order one-click UI', caption: 'Pay & Order' },
+        ],
       },
       {
-        icon: Clock,
+        icon: Mail,
         title: t('tutorial.escrow.steps.2.title'),
         titleEn: t('tutorial.escrow.steps.2.titleEn'),
         estimatedTime: t('tutorial.escrow.steps.2.estimatedTime'),
         content: t('tutorial.escrow.steps.2.content'),
+        commands: t('tutorial.escrow.steps.2.commands', { returnObjects: true }),
         expectedResult: t('tutorial.escrow.steps.2.expectedResult'),
         tips: t('tutorial.escrow.steps.2.tips', { returnObjects: true }),
+        screenshots: [
+          { src: '/images/tutorial/escrow-atomic-api.webp', alt: 'Atomic ordering API flow', caption: 'POST /tasks with tx_hash' },
+          { src: '/images/tutorial/escrow-basemail-notification.webp', alt: 'BaseMail escrow notification', caption: 'BaseMail notification' },
+        ],
       },
       {
-        icon: Users,
+        icon: Clock,
         title: t('tutorial.escrow.steps.3.title'),
         titleEn: t('tutorial.escrow.steps.3.titleEn'),
         estimatedTime: t('tutorial.escrow.steps.3.estimatedTime'),
         content: t('tutorial.escrow.steps.3.content'),
-        commands: t('tutorial.escrow.steps.3.commands', { returnObjects: true }),
         expectedResult: t('tutorial.escrow.steps.3.expectedResult'),
         tips: t('tutorial.escrow.steps.3.tips', { returnObjects: true }),
       },
       {
-        icon: Rocket,
+        icon: Users,
         title: t('tutorial.escrow.steps.4.title'),
         titleEn: t('tutorial.escrow.steps.4.titleEn'),
         estimatedTime: t('tutorial.escrow.steps.4.estimatedTime'),
         content: t('tutorial.escrow.steps.4.content'),
-        nextStepCards: (t('tutorial.escrow.steps.4.nextStepCards', { returnObjects: true }) || []).map((card: NextStepCard) => ({
+        commands: t('tutorial.escrow.steps.4.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.escrow.steps.4.expectedResult'),
+        tips: t('tutorial.escrow.steps.4.tips', { returnObjects: true }),
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.escrow.steps.5.title'),
+        titleEn: t('tutorial.escrow.steps.5.titleEn'),
+        estimatedTime: t('tutorial.escrow.steps.5.estimatedTime'),
+        content: t('tutorial.escrow.steps.5.content'),
+        nextStepCards: (t('tutorial.escrow.steps.5.nextStepCards', { returnObjects: true }) || []).map((card: NextStepCard) => ({
           ...card,
           link: card.link || '#',
         })),
-        tips: t('tutorial.escrow.steps.4.tips', { returnObjects: true }),
+        tips: t('tutorial.escrow.steps.5.tips', { returnObjects: true }),
       },
     ],
   }
