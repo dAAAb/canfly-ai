@@ -470,7 +470,13 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
           {step === 3 && (
             <div className="space-y-4">
               <h2 className="text-lg font-semibold text-white">{t('deploy.step3Title')}</h2>
-              <p className="text-sm text-gray-400">{t('deploy.step3Desc')}</p>
+              <p className="text-sm text-gray-400">
+                {t('deploy.step3DescPrefix', 'Enter your ')}
+                <a href="https://zeabur.com/ai-hub" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 underline">
+                  AI Hub <ExternalLink className="w-3 h-3 inline" />
+                </a>
+                {t('deploy.step3DescSuffix', ' key to give your agent access to AI models.')}
+              </p>
               <div>
                 <label className="block text-xs text-gray-400 mb-1.5">{t('deploy.aiHubKeyLabel')}</label>
                 <input

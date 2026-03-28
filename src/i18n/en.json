@@ -7807,7 +7807,9 @@
     "noServersPrefix": "No servers found. ",
     "addServerLink": "Add one on Zeabur",
     "manualServerLabel": "Or enter Server ID manually:",
-    "manualServerHelp": "Find your Server ID in"
+    "manualServerHelp": "Find your Server ID in",
+    "step3DescPrefix": "Enter your ",
+    "step3DescSuffix": " key to give your agent access to AI models."
   },
   "settings": {
     "pageTitle": "Agent Settings",

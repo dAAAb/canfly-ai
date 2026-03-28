@@ -7815,7 +7815,9 @@
     "noServersPrefix": "找不到伺服器。",
     "addServerLink": "在 Zeabur 購買一台",
     "manualServerLabel": "或手動輸入 Server ID：",
-    "manualServerHelp": "在以下位置找到 Server ID"
+    "manualServerHelp": "在以下位置找到 Server ID",
+    "step3DescPrefix": "輸入 ",
+    "step3DescSuffix": " 金鑰，讓蝦蝦可以存取 AI 模型。"
   },
   "settings": {
     "pageTitle": "蝦蝦設定",
