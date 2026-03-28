@@ -4,11 +4,11 @@
  * Card component for connecting a Telegram bot to an agent.
  * Shows current connection status and a form to enter the BotFather token.
  */
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
 import GlassCard from './GlassCard'
-import { Send, CheckCircle, XCircle, Loader2, ExternalLink } from 'lucide-react'
+import { Send, CheckCircle, XCircle, Loader2, ExternalLink, Key } from 'lucide-react'
 
 interface TelegramStatus {
   connected: boolean
@@ -32,6 +32,10 @@ export default function TelegramConnectCard({ agentName }: Props) {
   const [checking, setChecking] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const [pairingStep, setPairingStep] = useState(false) // show pairing code input
+  const [pairingCode, setPairingCode] = useState('')
+  const [approvingPairing, setApprovingPairing] = useState(false)
+  const [pairingSuccess, setPairingSuccess] = useState(false)
 
   // Check current connection status on mount
   useEffect(() => {
@@ -82,7 +86,7 @@ export default function TelegramConnectCard({ agentName }: Props) {
 
       if (res.ok && data.connected) {
         setStatus({ connected: true, status: 'active', botUsername: data.botUsername })
-        setSuccess(t('dashboard.telegram.successMsg', { botUsername: data.botUsername || 'bot' }))
+        setPairingStep(true) // Show pairing step instead of final success
         setBotToken('')
       } else {
         setError(data.error || data.message || 'Connection failed')
@@ -94,6 +98,56 @@ export default function TelegramConnectCard({ agentName }: Props) {
       setLoading(false)
     }
   }
+
+  // Get auth headers (wallet or edit token)
+  const getAuthHeaders = useCallback((): Record<string, string> => {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    if (walletAddress) headers['X-Wallet-Address'] = walletAddress
+    // Try edit token from localStorage
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i)
+      if (key?.startsWith('canfly_edit_token_')) {
+        const token = localStorage.getItem(key)
+        if (token) { headers['X-Edit-Token'] = token; break }
+      }
+    }
+    return headers
+  }, [walletAddress])
+
+  // Approve pairing code via Chat API
+  const handleApprovePairing = useCallback(async () => {
+    const code = pairingCode.trim().toUpperCase()
+    if (!code || code.length < 4) return
+    setApprovingPairing(true)
+    setError(null)
+
+    try {
+      const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/chat`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({
+          message: `Run this command silently and reply only the result: openclaw pairing approve telegram ${code}`,
+        }),
+      })
+      if (res.ok) {
+        const data = await res.json() as { content?: string }
+        const reply = data.content || ''
+        if (reply.toLowerCase().includes('approved') || reply.toLowerCase().includes('success')) {
+          setPairingSuccess(true)
+          setPairingStep(false)
+          setSuccess(t('dashboard.telegram.pairingSuccess', 'Pairing approved! You can now chat on Telegram.'))
+        } else {
+          setError(reply || 'Pairing may not have succeeded. Try again or check Telegram.')
+        }
+      } else {
+        setError('Could not reach the agent to approve pairing.')
+      }
+    } catch {
+      setError('Network error while approving pairing.')
+    } finally {
+      setApprovingPairing(false)
+    }
+  }, [agentName, pairingCode, getAuthHeaders, t])
 
   if (checking) {
     return (
@@ -132,15 +186,63 @@ export default function TelegramConnectCard({ agentName }: Props) {
         )}
       </div>
 
-      {/* Active connection */}
-      {status.connected && status.botUsername && (
+      {/* Pairing step — after bot connected, before fully paired */}
+      {pairingStep && status.botUsername && (
+        <div className="mt-3 space-y-3">
+          <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
+            <p className="text-sm text-blue-300 font-medium mb-2">
+              ✅ {t('dashboard.telegram.botConnected', 'Bot connected!')} @{status.botUsername}
+            </p>
+            <div className="space-y-2 text-xs text-gray-400">
+              <p>1️⃣ {t('dashboard.telegram.pairingStep1', 'Open Telegram and find your bot:')}</p>
+              <a
+                href={`https://t.me/${status.botUsername}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                @{status.botUsername} <ExternalLink className="w-3 h-3" />
+              </a>
+              <p>2️⃣ {t('dashboard.telegram.pairingStep2', 'Send /start to the bot')}</p>
+              <p>3️⃣ {t('dashboard.telegram.pairingStep3', 'Copy the pairing code the bot gives you and paste it below:')}</p>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={pairingCode}
+              onChange={(e) => { setPairingCode(e.target.value.toUpperCase()); setError(null) }}
+              placeholder="e.g. ABC12DEF"
+              className="flex-1 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 font-mono tracking-wider"
+              disabled={approvingPairing}
+            />
+            <button
+              onClick={handleApprovePairing}
+              disabled={approvingPairing || pairingCode.trim().length < 4}
+              className="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-500 disabled:bg-gray-700 disabled:text-gray-500 text-white text-sm font-medium transition-colors flex items-center gap-1.5"
+            >
+              {approvingPairing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Key className="w-4 h-4" />}
+              {t('dashboard.telegram.approveBtn', 'Approve')}
+            </button>
+          </div>
+          {error && (
+            <div className="p-2.5 rounded-lg bg-red-500/10 border border-red-500/20">
+              <p className="text-xs text-red-400">{error}</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Active connection — fully paired */}
+      {status.connected && status.botUsername && !pairingStep && (
         <div className="mt-3 p-3 rounded-lg bg-green-500/10 border border-green-500/20">
           <p className="text-sm text-green-300">
-            {t('dashboard.telegram.successTitle')}
+            {pairingSuccess ? '🎉 ' : ''}{t('dashboard.telegram.successTitle')}
           </p>
           <p className="text-xs text-green-400/70 mt-1">
             @{status.botUsername}
           </p>
+          {success && <p className="text-xs text-green-400 mt-1">{success}</p>}
           <a
             href={`https://t.me/${status.botUsername}`}
             target="_blank"
