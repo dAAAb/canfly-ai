@@ -49,8 +49,8 @@ type WizardStep = 1 | 2 | 3 | 4 | 5
 
 const STEPS = [
   { icon: Key, labelKey: 'deploy.step1Label' },
-  { icon: Server, labelKey: 'deploy.step2Label' },
-  { icon: Key, labelKey: 'deploy.step3Label' },
+  { icon: Key, labelKey: 'deploy.step3Label' },    // AI Hub moved to step 2
+  { icon: Server, labelKey: 'deploy.step2Label' },  // Server moved to step 3
   { icon: Bot, labelKey: 'deploy.step4Label' },
   { icon: Rocket, labelKey: 'deploy.step5Label' },
 ]
@@ -153,7 +153,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
   }, [zeaburApiKey])
 
   useEffect(() => {
-    if (step === 2 && keyValid && servers.length === 0) {
+    if (step === 3 && keyValid && servers.length === 0) {
       loadServers()
     }
   }, [step, keyValid, servers.length, loadServers])
@@ -250,8 +250,8 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
   const canAdvance = (): boolean => {
     switch (step) {
       case 1: return keyValid
-      case 2: return !!selectedServer
-      case 3: return true // AI Hub key is optional
+      case 2: return true // AI Hub key is optional
+      case 3: return !!selectedServer
       case 4: return !!agentName.trim() && nameAvailable === true
       case 5: return false
       default: return false
@@ -395,7 +395,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
           )}
 
           {/* Step 2: Select Server */}
-          {step === 2 && (
+          {step === 3 && ( /* Server selection — was step 2, now step 3 */
             <div className="space-y-4">
               <h2 className="text-lg font-semibold text-white">{t('deploy.step2Title')}</h2>
               <p className="text-sm text-gray-400">
@@ -467,8 +467,8 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
             </div>
           )}
 
-          {/* Step 3: AI Hub Key */}
-          {step === 3 && (
+          {/* Step 2: AI Hub Key (moved from step 3) */}
+          {step === 2 && (
             <div className="space-y-4">
               <h2 className="text-lg font-semibold text-white">{t('deploy.step3Title')}</h2>
               <p className="text-sm text-gray-400">
