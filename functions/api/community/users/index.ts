@@ -74,6 +74,8 @@ interface CreateUserBody {
   avatarUrl?: string
   bio?: string
   links?: Record<string, string>
+  // Privy user ID for cross-device profile resolution (email login)
+  privyUserId?: string
   // Scraper fields (optional — used by scrape-community script)
   source?: 'seed' | 'scraped' | 'registered'
   claimed?: 0 | 1
@@ -88,7 +90,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
   }
 
   const { username, displayName, walletAddress, avatarUrl, bio, links,
-          source, claimed, scrapeRef, externalIds } = body
+          privyUserId, source, claimed, scrapeRef, externalIds } = body
 
   if (!isValidUsername(username)) {
     return errorResponse(
@@ -109,6 +111,10 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
   const now = new Date().toISOString()
   const isScraped = source === 'scraped'
 
+  // Merge privyUserId into external_ids for cross-device profile resolution
+  const mergedExternalIds = { ...(externalIds || {}) }
+  if (privyUserId) mergedExternalIds.privy = privyUserId
+
   await env.DB.prepare(
     `INSERT INTO users (username, display_name, wallet_address, avatar_url, bio, links, edit_token,
                         source, claimed, scraped_at, scrape_ref, external_ids)
@@ -126,7 +132,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
       claimed ?? 1,
       isScraped ? now : null,
       scrapeRef || null,
-      JSON.stringify(externalIds || {})
+      JSON.stringify(mergedExternalIds)
     )
     .run()
 

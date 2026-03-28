@@ -1,7 +1,8 @@
 /**
  * GET /api/community/lookup-wallet?address=0x...
+ * GET /api/community/lookup-wallet?privyId=did:privy:...
  * Also resolves basenames: checks users.links JSON for matching basename.
- * Returns { username, editToken? } if found, 404 otherwise.
+ * Returns { username, walletAddress } if found, 404 otherwise.
  *
  * NOTE: editToken is NOT returned here (security). The frontend should
  * check localStorage for the edit token after redirect.
@@ -11,9 +12,34 @@ import { type Env, json, errorResponse, handleOptions } from './_helpers'
 export const onRequestGet: PagesFunction<Env> = async ({ env, request }) => {
   const url = new URL(request.url)
   const address = url.searchParams.get('address')
+  const privyId = url.searchParams.get('privyId')
+
+  // Privy ID lookup: find user by external_ids.privy
+  if (privyId) {
+    const rows = await env.DB.prepare(
+      `SELECT username, wallet_address, external_ids FROM users WHERE external_ids IS NOT NULL`
+    ).all()
+
+    for (const row of rows.results) {
+      try {
+        const ids = JSON.parse(row.external_ids as string)
+        if (ids.privy === privyId) {
+          return json({
+            username: row.username,
+            walletAddress: row.wallet_address,
+          })
+        }
+      } catch { /* skip */ }
+    }
+
+    // Fall through to wallet lookup if address also provided, otherwise 404
+    if (!address) {
+      return errorResponse('No user found for this Privy ID', 404)
+    }
+  }
 
   if (!address) {
-    return errorResponse('address query parameter is required', 400)
+    return errorResponse('address or privyId query parameter is required', 400)
   }
 
   const normalizedAddress = address.trim()
