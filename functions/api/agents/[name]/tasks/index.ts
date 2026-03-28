@@ -158,6 +158,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
 
     let transferredAmount: number
     let onChainTaskId: string | null = null
+    let buyerWallet: string | null = null
 
     // Auto-detect escrow mode: if tx has a Deposited event from our escrow contract, use escrow flow
     if (!isEscrowMode && escrowContract) {
@@ -179,6 +180,11 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
 
       // CAN-235: Extract on-chain taskId from Deposited event (topics[1] = indexed taskId)
       onChainTaskId = depositLog.topics[1]?.toLowerCase() || null
+
+      // CAN-265: Extract buyer wallet from Deposited event (topics[2] = indexed buyer address)
+      if (depositLog.topics[2]) {
+        buyerWallet = ('0x' + depositLog.topics[2].slice(26)).toLowerCase()
+      }
 
       // If caller provided task_id, verify it matches the on-chain event
       if (body.task_id && onChainTaskId) {
@@ -206,6 +212,11 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
       })
       if (!transferLog) return errorResponse('No USDC transfer to seller wallet found in transaction', 400)
 
+      // CAN-265: Extract buyer wallet from Transfer event (topics[1] = indexed from address)
+      if (transferLog.topics[1]) {
+        buyerWallet = ('0x' + transferLog.topics[1].slice(26)).toLowerCase()
+      }
+
       const transferredRaw = BigInt(transferLog.data)
       transferredAmount = Number(transferredRaw) / Math.pow(10, USDC_DECIMALS)
 
@@ -222,9 +233,9 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
       `INSERT INTO tasks (id, buyer_agent, buyer_email, seller_agent, skill_name, params,
                           status, payment_method, payment_chain, payment_tx,
                           amount, currency, channel, escrow_tx, escrow_status,
-                          paid_at, started_at)
+                          buyer_wallet, paid_at, started_at)
        VALUES (?1, ?2, ?3, ?4, ?5, ?6, 'paid', ?7, 'base', ?8, ?9, ?10, 'api', ?11, ?12,
-               datetime('now'), datetime('now'))`
+               ?13, datetime('now'), datetime('now'))`
     ).bind(
       taskId,
       body.buyer || null,
@@ -238,6 +249,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
       currency,
       isEscrowMode ? txHash : null,
       isEscrowMode ? 'deposited' : 'none',
+      buyerWallet,
     ).run()
 
     // CAN-226: Notify seller (fire-and-forget)

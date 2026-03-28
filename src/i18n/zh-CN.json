@@ -7657,5 +7657,25 @@
     "agentMayBeAway": "Agent 可能需要几分钟。SLA 保障 {{sla}} 内交付，超时自动退款。",
     "confirmOrder": "确认下单",
     "cancel": "取消"
+  },
+  "taskManager": {
+    "title": "我的订单",
+    "subtitle": "查看已完成的任务并释放托管付款。",
+    "loginRequired": "请登录以查看您的订单。",
+    "signIn": "登录",
+    "loading": "加载订单中...",
+    "awaitingConfirmation": "等待您的确认",
+    "seller": "卖方",
+    "completed": "已完成",
+    "viewResult": "查看结果",
+    "autoReleaseNotice": "7 天内未操作，资金将自动释放给卖方。",
+    "confirmRelease": "确认并释放资金",
+    "reject": "拒绝",
+    "confirmReject": "拒绝并退款",
+    "cancelAction": "取消",
+    "rejectReasonPlaceholder": "为什么要拒绝此交付？",
+    "orderHistory": "订单历史",
+    "noOrders": "暂无订单。",
+    "noHistory": "没有过去的订单。"
   }
 }

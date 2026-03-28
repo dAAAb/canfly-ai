@@ -29,3 +29,7 @@ bucket_name = "canfly-task-results"
 # Picks up paid tasks that weren't executed (webhook failure fallback)
 # Requires GEMINI_API_KEY and/or OPENAI_API_KEY for AI Cover Image execution
 # Protected by same CRON_SECRET as sla-timeout
+
+# Escrow auto-release cron — call POST /api/cron/escrow-auto-release daily
+# Auto-releases escrow funds when buyer doesn't confirm within 7 days after completion
+# Protected by same CRON_SECRET as sla-timeout (CAN-265)

@@ -7640,5 +7640,25 @@
     "agentMayBeAway": "Agent 可能需要幾分鐘。SLA 保障 {{sla}} 內交付，超時自動退款。",
     "confirmOrder": "確認下單",
     "cancel": "取消"
+  },
+  "taskManager": {
+    "title": "我的訂單",
+    "subtitle": "檢視已完成的任務並釋放託管付款。",
+    "loginRequired": "請登入以查看您的訂單。",
+    "signIn": "登入",
+    "loading": "載入訂單中...",
+    "awaitingConfirmation": "等待您的確認",
+    "seller": "賣方",
+    "completed": "已完成",
+    "viewResult": "查看結果",
+    "autoReleaseNotice": "7 天內未操作，資金將自動釋放給賣方。",
+    "confirmRelease": "確認並釋放資金",
+    "reject": "拒絕",
+    "confirmReject": "拒絕並退款",
+    "cancelAction": "取消",
+    "rejectReasonPlaceholder": "為什麼要拒絕此交付？",
+    "orderHistory": "訂單歷史",
+    "noOrders": "尚無訂單。",
+    "noHistory": "沒有過去的訂單。"
   }
 }
