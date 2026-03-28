@@ -55,7 +55,7 @@ const STEPS = [
   { icon: Rocket, labelKey: 'deploy.step5Label' },
 ]
 
-const ZEABUR_GRAPHQL = 'https://api.zeabur.com/graphql'
+const ZEABUR_PROXY = '/api/zeabur/proxy'
 
 /* ── Component ──────────────────────────────────── */
 
@@ -108,13 +108,10 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
     setKeyValid(false)
 
     try {
-      const res = await fetch(ZEABUR_GRAPHQL, {
+      const res = await fetch(ZEABUR_PROXY, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${zeaburApiKey.trim()}`,
-        },
-        body: JSON.stringify({ query: '{ me { _id username email } }' }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ zeaburApiKey: zeaburApiKey.trim(), query: '{ me { _id username email } }' }),
       })
       const data = (await res.json()) as {
         data?: { me?: { _id: string; username: string } }
@@ -137,15 +134,10 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
   const loadServers = useCallback(async () => {
     setLoadingServers(true)
     try {
-      const res = await fetch(ZEABUR_GRAPHQL, {
+      const res = await fetch(ZEABUR_PROXY, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${zeaburApiKey.trim()}`,
-        },
-        body: JSON.stringify({
-          query: `{ servers { _id name region status } }`,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ zeaburApiKey: zeaburApiKey.trim(), query: '{ servers { _id name region status } }' }),
       })
       const data = (await res.json()) as {
         data?: { servers?: ZeaburServer[] }
