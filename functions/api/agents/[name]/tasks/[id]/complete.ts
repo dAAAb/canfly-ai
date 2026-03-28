@@ -4,9 +4,10 @@
  * Called by the seller agent to deliver task results. Supports:
  * - Inline result_data (JSON) stored in DB
  * - File upload to R2 (result_url returned)
- * - BaseMail auto-reply for basemail-channel tasks
+ * - BaseMail auto-notification for all tasks with buyer_email (CAN-267)
  *
  * CAN-209: Task completion notification + delivery
+ * CAN-267: Auto BaseMail notify buyer on any task completion
  */
 import { type Env, json, errorResponse, handleOptions, parseBody } from '../../../../community/_helpers'
 import { recalcTrustScore } from '../../../_trust'
@@ -134,11 +135,10 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     await recalcTrustScore(env, agentName)
   }
 
-  // BaseMail auto-reply for basemail-channel tasks
+  // BaseMail auto-notify buyer on task completion (CAN-267)
   let basemailReply: { sent: boolean; error?: string } | null = null
   if (
     finalStatus === 'completed' &&
-    task.channel === 'basemail' &&
     task.buyer_email &&
     agent.basemail_handle
   ) {
@@ -200,17 +200,23 @@ async function sendBasemailReply(
     : 'N/A'
 
   const resultLine = opts.resultUrl
-    ? `Result: ${opts.resultUrl}`
-    : 'Result delivered inline — poll the task status API for details.'
+    ? `📎 Your result is ready:\n${opts.resultUrl}`
+    : `📎 Your result is available via the API:\nGET /api/agents/${opts.from}/tasks/${opts.taskId}/result`
 
   const body = [
-    `✅ Task ${opts.taskId} completed.`,
-    `Skill: ${opts.skill}`,
-    `Execution time: ${execTime}`,
+    `Hi there! 👋`,
+    '',
+    `Great news — your task has been completed!`,
+    '',
+    `📋 Task ID: ${opts.taskId}`,
+    `⚡ Skill: ${opts.skill}`,
+    `⏱️ Completed in: ${execTime}`,
     '',
     resultLine,
     '',
-    `Poll: GET /api/agents/${opts.from}/tasks/${opts.taskId}/result`,
+    `If you have any questions, feel free to reach out.`,
+    '',
+    `— ${opts.from} on CanFly.ai`,
   ].join('\n')
 
   try {
@@ -223,7 +229,7 @@ async function sendBasemailReply(
       body: JSON.stringify({
         from: `${opts.from}@basemail.ai`,
         to: opts.to,
-        subject: `Re: ${opts.skill} — Task Complete`,
+        subject: `✅ Your ${opts.skill} task is complete!`,
         body,
       }),
       signal: AbortSignal.timeout(10_000),
