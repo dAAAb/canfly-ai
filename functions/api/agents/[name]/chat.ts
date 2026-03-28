@@ -185,7 +185,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
         ...(gatewayToken ? { 'Authorization': `Bearer ${gatewayToken}` } : {}),
       },
       body: JSON.stringify({
-        model: 'default',
+        model: 'openclaw',
         messages: [...messages, { role: 'user', content: body.message }],
         stream: false,
       }),
