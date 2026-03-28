@@ -24,6 +24,10 @@ export default function AuthButton() {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
+  // For email users without localStorage token, resolve username via API
+  const [resolvedUsername, setResolvedUsername] = useState<string | null>(null)
+  const lookupDone = useRef(false)
+
   // Close dropdown on outside click
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -34,24 +38,6 @@ export default function AuthButton() {
     document.addEventListener('mousedown', handleClick as EventListener)
     return () => document.removeEventListener('mousedown', handleClick as EventListener)
   }, [])
-
-  // Not ready yet — show nothing
-  if (!ready) return null
-
-  // Not authenticated — show login button
-  if (!isAuthenticated) {
-    return (
-      <button
-        onClick={login}
-        className="text-sm bg-sky-600/20 border border-sky-600 px-3 py-1.5 rounded-full hover:bg-sky-600/30 transition-all text-sky-400 hover:shadow-[0_0_16px_rgba(14,165,233,0.3)] cursor-pointer"
-      >
-        {t('auth.joinCommunity', 'Join Flight Community')}
-      </button>
-    )
-  }
-
-  // Authenticated — show pill badge with dropdown
-  const badge = getBadge(worldIdLevel, walletAddress)
 
   // Find the user's existing CanFly username from localStorage edit tokens
   const localUsername = (() => {
@@ -64,10 +50,7 @@ export default function AuthButton() {
     return null
   })()
 
-  // For email users without localStorage token, resolve username via API
-  const [resolvedUsername, setResolvedUsername] = useState<string | null>(null)
   const privyId = user?.id
-  const lookupDone = useRef(false)
 
   useEffect(() => {
     if (localUsername || lookupDone.current) return
@@ -90,6 +73,24 @@ export default function AuthButton() {
 
   const ownUsername = localUsername || resolvedUsername
   const displayName = ownUsername || user?.google?.name || user?.email?.address?.split('@')[0] || 'User'
+
+  // Not ready yet — show nothing
+  if (!ready) return null
+
+  // Not authenticated — show login button
+  if (!isAuthenticated) {
+    return (
+      <button
+        onClick={login}
+        className="text-sm bg-sky-600/20 border border-sky-600 px-3 py-1.5 rounded-full hover:bg-sky-600/30 transition-all text-sky-400 hover:shadow-[0_0_16px_rgba(14,165,233,0.3)] cursor-pointer"
+      >
+        {t('auth.joinCommunity', 'Join Flight Community')}
+      </button>
+    )
+  }
+
+  // Authenticated — show pill badge with dropdown
+  const badge = getBadge(worldIdLevel, walletAddress)
 
   return (
     <div className="relative" ref={dropdownRef}>
