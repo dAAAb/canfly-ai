@@ -7,6 +7,7 @@ import Navbar from '../components/Navbar'
 import SmartAvatar from '../components/SmartAvatar'
 import GlassCard from '../components/GlassCard'
 import { walletGradient } from '../utils/walletGradient'
+import TelegramConnectCard from '../components/TelegramConnectCard'
 import {
   LayoutDashboard,
   Bot,
@@ -19,6 +20,7 @@ import {
   Loader2,
   ArrowRight,
   RefreshCw,
+  Send,
 } from 'lucide-react'
 
 /* ── Types ──────────────────────────────────────────────── */
@@ -411,6 +413,21 @@ export default function PaperclipDashboardPage({ subdomainUsername }: { subdomai
               </p>
             </section>
           </div>
+
+          {/* Integrations — Telegram Connect (CAN-274) */}
+          {data.agents.length > 0 && (
+            <section>
+              <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <Send className="w-4 h-4 text-blue-400" />
+                {t('dashboard.telegram.title')}
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {data.agents.map((agent) => (
+                  <TelegramConnectCard key={agent.id} agentName={agent.name} />
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       </div>
     </div>
