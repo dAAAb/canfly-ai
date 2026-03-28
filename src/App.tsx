@@ -124,8 +124,6 @@ function SubdomainRouter({ subdomain }: { subdomain: string }) {
               <Route path="/chat/:agentName" element={<AutoLangSync><ChatProxyPage subdomainUsername={subdomain} /></AutoLangSync>} />
               <Route path="/agent/:agentName" element={<AutoLangSync><AgentCardPage subdomainUsername={subdomain} /></AutoLangSync>} />
               <Route path="/agents/new" element={<AutoLangSync><AgentRegisterPage subdomainUsername={subdomain} /></AutoLangSync>} />
-              <Route path="/agents/:agentName/settings" element={<AutoLangSync><AgentSettingsPage subdomainUsername={subdomain} /></AutoLangSync>} />
-              <Route path="/deploy" element={<AutoLangSync><DeployWizardPage subdomainUsername={subdomain} /></AutoLangSync>} />
               <Route path="/tasks" element={<AutoLangSync><TasksDashboardPage subdomainUsername={subdomain} /></AutoLangSync>} />
               <Route path="/paperclip" element={<AutoLangSync><PaperclipDashboardPage subdomainUsername={subdomain} /></AutoLangSync>} />
               <Route path="/edit" element={<AutoLangSync><ProfileEditPage subdomainUsername={subdomain} /></AutoLangSync>} />

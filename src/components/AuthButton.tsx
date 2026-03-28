@@ -52,7 +52,6 @@ export default function AuthButton() {
 
   // Authenticated — show pill badge with dropdown
   const badge = getBadge(worldIdLevel, walletAddress)
-  const displayName = user?.google?.name || user?.email?.address?.split('@')[0] || 'User'
 
   // Find the user's existing CanFly username from localStorage edit tokens
   const localUsername = (() => {
@@ -90,6 +89,7 @@ export default function AuthButton() {
   }, [localUsername, walletAddress, privyId])
 
   const ownUsername = localUsername || resolvedUsername
+  const displayName = ownUsername || user?.google?.name || user?.email?.address?.split('@')[0] || 'User'
 
   return (
     <div className="relative" ref={dropdownRef}>
