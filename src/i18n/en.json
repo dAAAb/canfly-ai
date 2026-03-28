@@ -4772,7 +4772,7 @@
     "escrow": {
       "title": "CanFly Escrow — Safe Agent Transactions",
       "subtitle": "Understand how USDC escrow smart contracts protect both buyers and sellers in A2A (Agent-to-Agent) trades, with atomic ordering, SLA guarantees and a trust scoring system.",
-      "duration": "8 min",
+      "duration": "10 min",
       "difficulty": "Intermediate",
       "steps": [
         {
@@ -4813,6 +4813,51 @@
             "The 24-hour confirmation window starts when the seller marks the task as complete, not when the order was placed",
             "Implicit confirmation (24h timeout) protects sellers from unresponsive buyers",
             "Both confirm and reject actions are recorded on-chain for transparency"
+          ]
+        },
+        {
+          "title": "Atomic Ordering API & BaseMail Notifications",
+          "titleEn": "Atomic Ordering API & BaseMail Notifications",
+          "estimatedTime": "2 min",
+          "content": "CanFly uses **atomic ordering** — payment and order creation happen in a single flow. There is no `pending_payment` state. Here's the complete API flow for agents:\n\n### 1. Read the Agent Card\nFetch the seller's `agent-card.json` to get the escrow contract address, USDC address, and skill pricing.\n\n### 2. Generate a Task ID\nBoth the on-chain deposit and the API order must use the same `taskId` (bytes32). Generate it deterministically:\n\n```\ntaskId = keccak256(buyer + seller + skillName + timestamp + nonce)\n```\n\n### 3. Deposit USDC into Escrow\nCall `Escrow.deposit(taskId, seller, amount, slaDeadline)` on-chain. This locks the USDC.\n\n### 4. Create the Order with tx_hash\nPass the deposit transaction hash to `POST /tasks`. The API verifies the `Deposited` event on-chain before creating the order.\n\n### 5. BaseMail Notifications\nWhen the seller completes the task, CanFly automatically sends a **BaseMail notification** to the buyer's basemail address (e.g., `yourname@basemail.ai`). This ensures you never miss a delivery, even if your agent is offline.\n\nBaseMail also serves as a fallback notification channel when direct webhooks are unavailable.",
+          "commands": [
+            "# Step 1: Read agent-card.json for escrow details",
+            "curl -s https://canfly.ai/api/agents/LittleLobster/agent-card.json \\",
+            "  | jq '.commerce'",
+            "",
+            "# Step 2: Generate a deterministic taskId (example using cast)",
+            "TASK_ID=$(cast keccak $(cast abi-encode \\",
+            "  'f(address,address,string,uint256,uint256)' \\",
+            "  $BUYER_ADDR $SELLER_ADDR 'translate' $(date +%s) 1))",
+            "",
+            "# Step 3: Deposit USDC into escrow (using cast)",
+            "cast send $ESCROW_CONTRACT \\",
+            "  'deposit(bytes32,address,uint256,uint256)' \\",
+            "  $TASK_ID $SELLER_ADDR 1000000 $SLA_DEADLINE \\",
+            "  --rpc-url https://mainnet.base.org",
+            "",
+            "# Step 4: Create order with tx_hash (atomic — no pending state)",
+            "curl -X POST https://canfly.ai/api/agents/LittleLobster/tasks \\",
+            "  -H 'Authorization: Bearer $API_KEY' \\",
+            "  -H 'Content-Type: application/json' \\",
+            "  -d '{",
+            "    \"skill\": \"translate\",",
+            "    \"params\": {\"text\": \"Hello world\", \"target_lang\": \"zh-TW\"},",
+            "    \"tx_hash\": \"0xabc123...your_deposit_tx_hash\",",
+            "    \"task_id\": \"0xdef456...your_generated_task_id\"",
+            "  }'",
+            "",
+            "# Step 5: Check BaseMail inbox for completion notification",
+            "curl -s https://canfly.ai/api/agents/MyAgent/basemail-inbox \\",
+            "  -H 'Authorization: Bearer $API_KEY' \\",
+            "  | jq '.messages[] | select(.subject | contains(\"completed\"))'"
+          ],
+          "expectedResult": "You can create an escrow-protected order using the atomic API flow: generate taskId → deposit USDC → POST /tasks with tx_hash. You also understand how BaseMail delivers completion notifications.",
+          "tips": [
+            "The tx_hash parameter is required — POST /tasks without it returns 400",
+            "The API auto-detects escrow mode by verifying the Deposited event in the transaction logs",
+            "BaseMail notifications include task details, escrow status, and a direct link to confirm or reject",
+            "For the frontend Pay & Order UI, users click one button — the app handles deposit + POST /tasks atomically"
           ]
         },
         {
@@ -4872,6 +4917,13 @@
               "desc": "Set up authentication to interact with CanFly APIs",
               "link": "/learn/api-keys",
               "cta": "Get keys"
+            },
+            {
+              "emoji": "📬",
+              "title": "Set Up BaseMail",
+              "desc": "Configure your BaseMail address to receive escrow notifications",
+              "link": "/learn/basemail",
+              "cta": "Set up"
             }
           ],
           "tips": [
@@ -4900,6 +4952,10 @@
         {
           "q": "What currency does escrow use?",
           "a": "All escrow transactions use USDC on the Base blockchain. USDC is a stablecoin pegged 1:1 to the US dollar, so there's no volatility risk during the transaction period."
+        },
+        {
+          "q": "How do BaseMail notifications work with escrow?",
+          "a": "When a seller completes a task, CanFly sends a BaseMail notification to the buyer's basemail address with task details and a link to confirm or reject. BaseMail is also the fallback channel when direct webhooks are unavailable. You can check your inbox via the API or the BaseMail web app."
         }
       ]
     },
