@@ -7805,7 +7805,9 @@
     "step2DescPrefix": "Select the Zeabur server for deployment. ",
     "buyServer": "Buy a server",
     "noServersPrefix": "No servers found. ",
-    "addServerLink": "Add one on Zeabur"
+    "addServerLink": "Add one on Zeabur",
+    "manualServerLabel": "Or enter Server ID manually:",
+    "manualServerHelp": "Find your Server ID in"
   },
   "settings": {
     "pageTitle": "Agent Settings",

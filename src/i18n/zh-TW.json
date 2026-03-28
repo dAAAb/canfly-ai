@@ -7813,7 +7813,9 @@
     "step2DescPrefix": "選擇要部署蝦蝦的 Zeabur 伺服器。",
     "buyServer": "購買伺服器",
     "noServersPrefix": "找不到伺服器。",
-    "addServerLink": "在 Zeabur 購買一台"
+    "addServerLink": "在 Zeabur 購買一台",
+    "manualServerLabel": "或手動輸入 Server ID：",
+    "manualServerHelp": "在以下位置找到 Server ID"
   },
   "settings": {
     "pageTitle": "蝦蝦設定",

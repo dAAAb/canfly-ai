@@ -7830,7 +7830,9 @@
     "step2DescPrefix": "选择要部署虾虾的 Zeabur 服务器。",
     "buyServer": "购买服务器",
     "noServersPrefix": "找不到服务器。",
-    "addServerLink": "在 Zeabur 购买一台"
+    "addServerLink": "在 Zeabur 购买一台",
+    "manualServerLabel": "或手动输入 Server ID：",
+    "manualServerHelp": "在以下位置找到 Server ID"
   },
   "settings": {
     "pageTitle": "虾虾设置",

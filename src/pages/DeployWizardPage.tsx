@@ -409,8 +409,8 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
                   <span className="text-sm text-gray-400">{t('deploy.loadingServers')}</span>
                 </div>
               ) : servers.length === 0 ? (
-                <div className="py-8 text-center">
-                  <Server className="w-10 h-10 text-gray-600 mx-auto mb-3" />
+                <div className="py-6 text-center space-y-4">
+                  <Server className="w-10 h-10 text-gray-600 mx-auto mb-2" />
                   <p className="text-sm text-gray-400">
                     {t('deploy.noServersPrefix', 'No servers found. ')}
                     <a href="https://zeabur.com/servers" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 underline">
@@ -419,10 +419,23 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
                   </p>
                   <button
                     onClick={loadServers}
-                    className="mt-3 text-sm text-cyan-400 hover:text-cyan-300 transition-colors"
+                    className="text-sm text-cyan-400 hover:text-cyan-300 transition-colors"
                   >
-                    {t('deploy.retry')}
+                    {t('deploy.retry', 'Retry')}
                   </button>
+                  <div className="pt-3 border-t border-gray-800">
+                    <p className="text-xs text-gray-500 mb-2">{t('deploy.manualServerLabel', 'Or enter Server ID manually:')}</p>
+                    <input
+                      type="text"
+                      value={selectedServer}
+                      onChange={(e) => setSelectedServer(e.target.value.trim())}
+                      placeholder="e.g. 69c7f5d3726b928734624781"
+                      className="w-full px-3 py-2 bg-gray-900 border border-gray-700 text-white placeholder-gray-600 rounded-lg text-xs focus:outline-none focus:border-cyan-500/50"
+                    />
+                    <p className="text-[10px] text-gray-600 mt-1">
+                      {t('deploy.manualServerHelp', 'Find your Server ID in')} <a href="https://zeabur.com/servers" target="_blank" rel="noopener noreferrer" className="text-cyan-500 hover:text-cyan-400">Zeabur Dashboard → Servers <ExternalLink className="w-3 h-3 inline" /></a>
+                    </p>
+                  </div>
                 </div>
               ) : (
                 <div className="space-y-2">
