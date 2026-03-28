@@ -7712,6 +7712,40 @@
       "high": "High",
       "medium": "Medium",
       "low": "Low"
+    },
+    "telegram": {
+      "title": "Connect Telegram",
+      "description": "Link a Telegram bot so users can chat with this agent via Telegram.",
+      "botTokenLabel": "Bot Token",
+      "botTokenPlaceholder": "Paste your BotFather token here...",
+      "botTokenHelp": "Get a token from @BotFather on Telegram → /newbot",
+      "connectBtn": "Connect Telegram",
+      "connecting": "Connecting...",
+      "successTitle": "Telegram Connected!",
+      "successMsg": "Bot @{{botUsername}} is now linked. Go to Telegram and send /start to begin chatting.",
+      "failedTitle": "Connection Failed",
+      "disconnectBtn": "Disconnect",
+      "statusActive": "Active",
+      "statusNone": "Not connected",
+      "statusFailed": "Failed",
+      "invalidToken": "Invalid token format. Paste the full token from BotFather."
     }
+  },
+  "chat": {
+    "title": "Chat",
+    "loginRequired": "Sign in to Chat",
+    "loginDescription": "Connect your wallet to start chatting with your AI agents.",
+    "loginButton": "Connect Wallet",
+    "backToAgent": "Back to agent",
+    "newChat": "New Chat",
+    "untitled": "Untitled Chat",
+    "noSessions": "No conversations yet",
+    "startConversation": "Start a conversation with {{agent}}",
+    "defaultBio": "Send a message to start chatting with {{agent}}.",
+    "placeholder": "Message {{agent}}...",
+    "disclaimer": "AI responses may be inaccurate. Verify important information.",
+    "loadError": "Failed to load chat history.",
+    "online": "Online",
+    "sendError": "Failed to send message. Please try again."
   }
 }

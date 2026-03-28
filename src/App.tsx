@@ -30,6 +30,7 @@ const AgentRegisterPage = lazy(() => import('./pages/AgentRegisterPage'))
 const TaskManagerPage = lazy(() => import('./pages/TaskManagerPage'))
 const TasksDashboardPage = lazy(() => import('./pages/TasksDashboardPage'))
 const PaperclipDashboardPage = lazy(() => import('./pages/PaperclipDashboardPage'))
+const ChatProxyPage = lazy(() => import('./pages/ChatProxyPage'))
 
 /** Strip /:lang prefix and redirect to the unprefixed community path */
 function StripLangRedirect() {
@@ -118,6 +119,7 @@ function SubdomainRouter({ subdomain }: { subdomain: string }) {
           <Suspense fallback={<div className="min-h-screen" />}>
             <Routes>
               <Route path="/" element={<AutoLangSync><UserShowcasePage subdomainUsername={subdomain} /></AutoLangSync>} />
+              <Route path="/chat/:agentName" element={<AutoLangSync><ChatProxyPage subdomainUsername={subdomain} /></AutoLangSync>} />
               <Route path="/agent/:agentName" element={<AutoLangSync><AgentCardPage subdomainUsername={subdomain} /></AutoLangSync>} />
               <Route path="/agents/new" element={<AutoLangSync><AgentRegisterPage subdomainUsername={subdomain} /></AutoLangSync>} />
               <Route path="/tasks" element={<AutoLangSync><TasksDashboardPage subdomainUsername={subdomain} /></AutoLangSync>} />
@@ -163,6 +165,7 @@ function App() {
               {/* Community routes — no lang prefix, auto-detect from cookie/browser */}
               {/* Community routes: /u/:username (no @ — React Router v6 can't handle it) */}
               <Route path="/u/:username/agents/new" element={<AutoLangSync><AgentRegisterPage /></AutoLangSync>} />
+              <Route path="/u/:username/chat/:agentName" element={<AutoLangSync><ChatProxyPage /></AutoLangSync>} />
               <Route path="/u/:username/agent/:agentName" element={<AutoLangSync><AgentCardPage /></AutoLangSync>} />
               <Route path="/u/:username/tasks" element={<AutoLangSync><TasksDashboardPage /></AutoLangSync>} />
               <Route path="/u/:username/paperclip" element={<AutoLangSync><PaperclipDashboardPage /></AutoLangSync>} />

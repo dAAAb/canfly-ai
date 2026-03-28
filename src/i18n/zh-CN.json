@@ -7737,6 +7737,40 @@
       "high": "高",
       "medium": "中",
       "low": "低"
+    },
+    "telegram": {
+      "title": "连接 Telegram",
+      "description": "连接 Telegram 机器人，让用户通过 Telegram 与这只虾对话。",
+      "botTokenLabel": "Bot Token",
+      "botTokenPlaceholder": "粘贴 BotFather 给你的 Token...",
+      "botTokenHelp": "从 Telegram @BotFather → /newbot 获取 Token",
+      "connectBtn": "连接 Telegram",
+      "connecting": "连接中...",
+      "successTitle": "Telegram 连接成功！",
+      "successMsg": "机器人 @{{botUsername}} 已连接。到 Telegram 发送 /start 开始对话。",
+      "failedTitle": "连接失败",
+      "disconnectBtn": "断开连接",
+      "statusActive": "已连线",
+      "statusNone": "未连线",
+      "statusFailed": "连线失败",
+      "invalidToken": "Token 格式错误，请粘贴 BotFather 给的完整 Token。"
     }
+  },
+  "chat": {
+    "title": "对话",
+    "loginRequired": "登录以开始对话",
+    "loginDescription": "连接你的钱包，即可与你的 AI 代理人对话。",
+    "loginButton": "连接钱包",
+    "backToAgent": "返回代理人",
+    "newChat": "新对话",
+    "untitled": "未命名对话",
+    "noSessions": "暂无对话记录",
+    "startConversation": "与 {{agent}} 开始对话",
+    "defaultBio": "发送消息，开始与 {{agent}} 对话。",
+    "placeholder": "发消息给 {{agent}}…",
+    "disclaimer": "AI 回复可能不准确，请自行验证重要信息。",
+    "loadError": "加载对话记录失败。",
+    "online": "在线",
+    "sendError": "消息发送失败，请重试。"
   }
 }
