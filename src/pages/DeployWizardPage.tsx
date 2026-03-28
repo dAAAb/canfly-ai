@@ -195,7 +195,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
           agentName: agentName.trim(),
           agentBio: agentBio.trim() || undefined,
           tier: 'general',
-          templateCode: 'openclaw-agent',
+          templateCode: 'VTZ4FX',
         }),
       })
 
