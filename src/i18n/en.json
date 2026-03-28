@@ -7632,5 +7632,25 @@
     "agentMayBeAway": "Agent may need a few minutes. SLA guarantees delivery within {{sla}}, with automatic refund if exceeded.",
     "confirmOrder": "Confirm Order",
     "cancel": "Cancel"
+  },
+  "taskManager": {
+    "title": "My Orders",
+    "subtitle": "Review completed tasks and release escrow payments.",
+    "loginRequired": "Sign in to view your orders.",
+    "signIn": "Sign In",
+    "loading": "Loading orders...",
+    "awaitingConfirmation": "Awaiting Your Confirmation",
+    "seller": "Seller",
+    "completed": "Completed",
+    "viewResult": "View Result",
+    "autoReleaseNotice": "Funds auto-release to seller after 7 days if no action taken.",
+    "confirmRelease": "Confirm & Release Funds",
+    "reject": "Reject",
+    "confirmReject": "Reject & Refund",
+    "cancelAction": "Cancel",
+    "rejectReasonPlaceholder": "Why are you rejecting this delivery?",
+    "orderHistory": "Order History",
+    "noOrders": "No orders yet.",
+    "noHistory": "No past orders."
   }
 }

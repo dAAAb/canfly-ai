@@ -27,6 +27,7 @@ const BrandPage = lazy(() => import('./pages/BrandPage'))
 const RegisterPage = lazy(() => import('./pages/RegisterPage'))
 const ProfileEditPage = lazy(() => import('./pages/ProfileEditPage'))
 const AgentRegisterPage = lazy(() => import('./pages/AgentRegisterPage'))
+const TaskManagerPage = lazy(() => import('./pages/TaskManagerPage'))
 
 /** Strip /:lang prefix and redirect to the unprefixed community path */
 function StripLangRedirect() {
@@ -151,6 +152,7 @@ function App() {
               <Route path="/community" element={<AutoLangSync><CommunityPage /></AutoLangSync>} />
               <Route path="/community/register" element={<AutoLangSync><RegisterPage /></AutoLangSync>} />
               <Route path="/subscribe/confirmed" element={<SubscribeConfirmedPage />} />
+              <Route path="/orders" element={<AutoLangSync><TaskManagerPage /></AutoLangSync>} />
               <Route path="/blog" element={<BlogListPage />} />
               <Route path="/blog/:slug" element={<BlogPostPage />} />
 
@@ -179,6 +181,7 @@ function App() {
               <Route path="/:lang/community/register" element={<LangSync><RegisterPage /></LangSync>} />
               <Route path="/:lang/community" element={<LangSync><CommunityPage /></LangSync>} />
               <Route path="/:lang/subscribe/confirmed" element={<LangSync><SubscribeConfirmedPage /></LangSync>} />
+              <Route path="/:lang/orders" element={<LangSync><TaskManagerPage /></LangSync>} />
               <Route path="/:lang/blog" element={<LangSync><BlogListPage /></LangSync>} />
               <Route path="/:lang/blog/:slug" element={<LangSync><BlogPostPage /></LangSync>} />
 
