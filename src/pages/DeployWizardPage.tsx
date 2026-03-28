@@ -37,8 +37,8 @@ import {
 interface ZeaburServer {
   _id: string
   name: string
-  region: string
-  status: string
+  provider: string
+  ip: string
 }
 
 interface DeployWizardPageProps {
@@ -137,7 +137,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
       const res = await fetch(ZEABUR_PROXY, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ zeaburApiKey: zeaburApiKey.trim(), query: '{ servers { _id name region status } }' }),
+        body: JSON.stringify({ zeaburApiKey: zeaburApiKey.trim(), query: '{ servers { _id name provider ip } }' }),
       })
       const data = (await res.json()) as {
         data?: { servers?: ZeaburServer[] }
@@ -453,7 +453,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
                         <Server className="w-4 h-4 flex-shrink-0" />
                         <div className="min-w-0">
                           <p className="text-sm font-medium truncate">{srv.name || srv._id}</p>
-                          <p className="text-xs text-gray-500">{srv.region}</p>
+                          <p className="text-xs text-gray-500">{srv.provider} · {srv.ip}</p>
                         </div>
                         {selectedServer === srv._id && (
                           <Check className="w-4 h-4 text-cyan-400 ml-auto flex-shrink-0" />
