@@ -178,6 +178,7 @@ interface UpdateAgentBody {
   platform?: string
   avatarUrl?: string | null
   bio?: string | null
+  birthday?: string | null
   model?: string | null
   hosting?: string | null
   capabilities?: Record<string, unknown>
@@ -211,6 +212,13 @@ export const onRequestPut: PagesFunction<Env> = async ({ env, params, request })
   const body = await parseBody<UpdateAgentBody>(request)
   if (!body) {
     return errorResponse('Invalid request body', 400)
+  }
+
+  // Validate birthday format if provided
+  if (body.birthday !== undefined && body.birthday !== null) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(body.birthday) || isNaN(new Date(body.birthday).getTime())) {
+      return errorResponse('Invalid birthday format. Use YYYY-MM-DD.', 400)
+    }
   }
 
   // If changing owner, verify the new owner exists
@@ -256,6 +264,11 @@ export const onRequestPut: PagesFunction<Env> = async ({ env, params, request })
   if (body.bio !== undefined) {
     updates.push(`bio = ?${paramIdx}`)
     values.push(body.bio || null)
+    paramIdx++
+  }
+  if (body.birthday !== undefined) {
+    updates.push(`birthday = ?${paramIdx}`)
+    values.push(body.birthday || null)
     paramIdx++
   }
   if (body.model !== undefined) {

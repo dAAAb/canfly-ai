@@ -85,6 +85,7 @@ interface CreateAgentBody {
   platform?: string
   avatarUrl?: string
   bio?: string
+  birthday?: string
   model?: string
   hosting?: string
   capabilities?: Record<string, unknown>
@@ -98,7 +99,14 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     return errorResponse('name is required', 400)
   }
 
-  const { name, ownerUsername, walletAddress, basename, platform, avatarUrl, bio, model, hosting, capabilities, erc8004Url, skills } = body
+  const { name, ownerUsername, walletAddress, basename, platform, avatarUrl, bio, birthday, model, hosting, capabilities, erc8004Url, skills } = body
+
+  // Validate birthday format (YYYY-MM-DD) if provided
+  if (birthday) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(birthday) || isNaN(new Date(birthday).getTime())) {
+      return errorResponse('Invalid birthday format. Use YYYY-MM-DD.', 400)
+    }
+  }
 
   if (!isValidAgentName(name)) {
     return errorResponse(
@@ -144,8 +152,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
 
   await env.DB.prepare(
     `INSERT INTO agents (name, owner_username, wallet_address, basename, platform,
-                         avatar_url, bio, model, hosting, capabilities, erc8004_url, edit_token)
-     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)`
+                         avatar_url, bio, birthday, model, hosting, capabilities, erc8004_url, edit_token)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13)`
   )
     .bind(
       name,
@@ -155,6 +163,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
       platform || 'other',
       avatarUrl || null,
       bio || null,
+      birthday || null,
       model || null,
       hosting || null,
       JSON.stringify(capabilities || {}),
