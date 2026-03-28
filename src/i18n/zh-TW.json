@@ -7807,7 +7807,13 @@
     "retryDeploy": "重試部署",
     "deployingTitle": "正在部署蝦蝦⋯",
     "deployingDesc": "正在 Zeabur 上設定蝦蝦，通常需要 1-3 分鐘。",
-    "deployFailed": "部署失敗，請重試。"
+    "deployFailed": "部署失敗，請重試。",
+    "registerZeaburAccount": "註冊 Zeabur 帳號",
+    "step1DescSuffix": "，取得 API 金鑰以連結 CanFly 進行部署。",
+    "step2DescPrefix": "選擇要部署蝦蝦的 Zeabur 伺服器。",
+    "buyServer": "購買伺服器",
+    "noServersPrefix": "找不到伺服器。",
+    "addServerLink": "在 Zeabur 購買一台"
   },
   "settings": {
     "pageTitle": "蝦蝦設定",
