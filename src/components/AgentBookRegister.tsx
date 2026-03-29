@@ -8,6 +8,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { decodeAbiParameters, keccak256, encodePacked } from 'viem'
 import QRCode from 'react-qr-code'
 import { Loader2, ExternalLink, CheckCircle } from 'lucide-react'
+import { getApiAuthHeaders } from '../utils/apiAuth'
 import {
   createBridgeSession,
   pollBridgeResult,
@@ -31,15 +32,11 @@ interface Props {
   ownerUsername: string
   editToken: string | null
   ownerWalletAddress: string | null
+  getAccessToken: () => Promise<string | null>
   onRegistered?: () => void
 }
 
-function buildAuthHeaders(editToken: string | null, walletAddress: string | null): Record<string, string> {
-  const h: Record<string, string> = { 'Content-Type': 'application/json' }
-  if (editToken) h['X-Edit-Token'] = editToken
-  else if (walletAddress) h['X-Wallet-Address'] = walletAddress
-  return h
-}
+/** @deprecated — kept as type reference only; callers now use getApiAuthHeaders */
 
 function normalizeProof(rawProof: string): string[] | null {
   if (rawProof.startsWith('[')) {
@@ -59,7 +56,7 @@ type Status = 'loading' | 'no_wallet' | 'already_registered' | 'ready' |
   'creating' | 'waiting' | 'submitting' | 'done' | 'error'
 
 export default function AgentBookRegister({
-  agentName, agentWalletAddress, ownerUsername, editToken, ownerWalletAddress, onRegistered,
+  agentName, agentWalletAddress, ownerUsername, editToken, ownerWalletAddress, getAccessToken, onRegistered,
 }: Props) {
   const [status, setStatus] = useState<Status>('loading')
   const [nonce, setNonce] = useState('0')
@@ -85,7 +82,7 @@ export default function AgentBookRegister({
 
     const res = await fetch('/api/agents/agentbook-register', {
       method: 'POST',
-      headers: buildAuthHeaders(editToken, ownerWalletAddress),
+      headers: await getApiAuthHeaders({ getAccessToken, walletAddress: ownerWalletAddress, editToken }),
       body: JSON.stringify({
         agentName, agentAddress: agentWalletAddress,
         root: result.merkle_root, nonce,
@@ -116,7 +113,7 @@ export default function AgentBookRegister({
     setTxHash(data.txHash || null)
     setStatus('done')
     onRegistered?.()
-  }, [agentWalletAddress, agentName, nonce, editToken, ownerWalletAddress, onRegistered])
+  }, [agentWalletAddress, agentName, nonce, editToken, ownerWalletAddress, getAccessToken, onRegistered])
 
   const failWithError = useCallback((message: string) => {
     setError(message)

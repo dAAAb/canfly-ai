@@ -16,6 +16,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
 import { useHead } from '../hooks/useHead'
+import { getApiAuthHeaders } from '../utils/apiAuth'
 import Navbar from '../components/Navbar'
 import GlassCard from '../components/GlassCard'
 import {
@@ -44,7 +45,7 @@ interface ZeaburServer {
 /** Health check component — polls chat API until the agent is ready */
 function WakingUpCheck({ agentName, username, navigate, t, getAuthHeaders }: {
   agentName: string; username: string; navigate: (path: string) => void;
-  t: (key: string, fallback?: string) => string; getAuthHeaders: () => Record<string, string>
+  t: (key: string, fallback?: string) => string; getAuthHeaders: () => Promise<Record<string, string>>
 }) {
   const [ready, setReady] = useState(false)
   const [checking, setChecking] = useState(true)
@@ -58,7 +59,7 @@ function WakingUpCheck({ agentName, username, navigate, t, getAuthHeaders }: {
       try {
         const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/chat`, {
           method: 'POST',
-          headers: getAuthHeaders(),
+          headers: await getAuthHeaders(),
           body: JSON.stringify({ message: 'ping' }),
           signal: AbortSignal.timeout(10000),
         })
@@ -146,7 +147,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
   const username = subdomainUsername || paramUsername || ''
   const navigate = useNavigate()
   const { t } = useTranslation()
-  const { isAuthenticated, login, walletAddress } = useAuth()
+  const { isAuthenticated, login, walletAddress, getAccessToken } = useAuth()
 
   useHead({ title: t('deploy.pageTitle') })
 
@@ -184,13 +185,10 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
   const [deployError, setDeployError] = useState<string | null>(null)
 
   /* ── Auth headers ── */
-  const getAuthHeaders = useCallback((): Record<string, string> => {
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-    if (walletAddress) headers['X-Wallet-Address'] = walletAddress
-    const editToken = localStorage.getItem(`canfly_edit_token_${username}`)
-    if (editToken) headers['X-Edit-Token'] = editToken
-    return headers
-  }, [walletAddress, username])
+  const getAuthHeaders = useCallback(
+    () => getApiAuthHeaders({ getAccessToken, walletAddress }),
+    [getAccessToken, walletAddress],
+  )
 
   /* ── Step 1: Verify Zeabur API Key ── */
   const verifyZeaburKey = useCallback(async () => {
@@ -280,7 +278,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
     try {
       const res = await fetch('/api/zeabur/deploy', {
         method: 'POST',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
         body: JSON.stringify({
           zeaburApiKey: zeaburApiKey.trim(),
           serverNodeId: selectedServer,
@@ -304,7 +302,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
       setDeployError((err as Error).message)
       setDeploying(false)
     }
-  }, [selectedServer, agentName, agentBio, zeaburApiKey, getAuthHeaders])
+  }, [selectedServer, agentName, agentBio, zeaburApiKey, aiHubKey, getAuthHeaders])
 
   /* ── Poll deployment status ── */
   useEffect(() => {
@@ -313,7 +311,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
     const interval = setInterval(async () => {
       try {
         const res = await fetch(`/api/zeabur/deploy/${deploymentId}/status`, {
-          headers: getAuthHeaders(),
+          headers: await getAuthHeaders(),
         })
         if (!res.ok) return
         const data = (await res.json()) as {
