@@ -249,15 +249,23 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
 
     // 6b. Inject CANFLY_API_KEY + CANFLY_AGENT_NAME into Zeabur service env vars
     if (agentApiKey && finalAgentName && deployment.zeabur_service_id) {
-      await zeaburGQL(zeaburApiKey,
-        `mutation{updateSingleEnvironmentVariable(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",oldKey:"CANFLY_API_KEY",newKey:"CANFLY_API_KEY",value:"${agentApiKey}"){key}}`
-      ).catch(() => {})
-      await zeaburGQL(zeaburApiKey,
-        `mutation{updateSingleEnvironmentVariable(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",oldKey:"CANFLY_AGENT_NAME",newKey:"CANFLY_AGENT_NAME",value:"${finalAgentName}"){key}}`
-      ).catch(() => {})
-      await zeaburGQL(zeaburApiKey,
-        `mutation{updateSingleEnvironmentVariable(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",oldKey:"CANFLY_API_URL",newKey:"CANFLY_API_URL",value:"https://canfly.ai/api"){key}}`
-      ).catch(() => {})
+      const sid = deployment.zeabur_service_id
+      const eid = prodEnv._id
+      // Upsert: try create first, if exists then update
+      for (const [key, value] of [
+        ['CANFLY_API_KEY', agentApiKey],
+        ['CANFLY_AGENT_NAME', finalAgentName],
+        ['CANFLY_API_URL', 'https://canfly.ai/api'],
+      ] as const) {
+        const cr = await zeaburGQL(zeaburApiKey,
+          `mutation{createEnvironmentVariable(serviceID:"${sid}",environmentID:"${eid}",key:"${key}",value:"${value}"){key}}`
+        ).catch(() => null)
+        if (cr?.errors?.length) {
+          await zeaburGQL(zeaburApiKey,
+            `mutation{updateSingleEnvironmentVariable(serviceID:"${sid}",environmentID:"${eid}",oldKey:"${key}",newKey:"${key}",value:"${value}"){key}}`
+          ).catch(() => {})
+        }
+      }
     }
 
     // 7. Set agent_card_override with gateway URL + token (token stays private via security filter)
