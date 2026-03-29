@@ -232,8 +232,9 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
 
     // 6. Register agent + set agent_card_override with gateway info
     let finalAgentName = deployment.agent_name
+    let agentApiKey: string | null = null
     if (!finalAgentName) {
-      finalAgentName = await registerLobster(env, {
+      const result = await registerLobster(env, {
         ownerUsername: deployment.owner_username,
         agentName: metadata.agentName || `lobster-${deployment.zeabur_project_id.slice(0, 8)}`,
         agentDisplayName: metadata.agentDisplayName,
@@ -242,6 +243,21 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
         deployUrl: publicUrl || gatewayUrl || undefined,
         projectId: deployment.zeabur_project_id,
       }, deployment.id)
+      finalAgentName = result.agentName
+      agentApiKey = result.apiKey
+    }
+
+    // 6b. Inject CANFLY_API_KEY + CANFLY_AGENT_NAME into Zeabur service env vars
+    if (agentApiKey && finalAgentName && deployment.zeabur_service_id) {
+      await zeaburGQL(zeaburApiKey,
+        `mutation{updateSingleEnvironmentVariable(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",oldKey:"CANFLY_API_KEY",newKey:"CANFLY_API_KEY",value:"${agentApiKey}"){key}}`
+      ).catch(() => {})
+      await zeaburGQL(zeaburApiKey,
+        `mutation{updateSingleEnvironmentVariable(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",oldKey:"CANFLY_AGENT_NAME",newKey:"CANFLY_AGENT_NAME",value:"${finalAgentName}"){key}}`
+      ).catch(() => {})
+      await zeaburGQL(zeaburApiKey,
+        `mutation{updateSingleEnvironmentVariable(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",oldKey:"CANFLY_API_URL",newKey:"CANFLY_API_URL",value:"https://canfly.ai/api"){key}}`
+      ).catch(() => {})
     }
 
     // 7. Set agent_card_override with gateway URL + token (token stays private via security filter)
@@ -373,5 +389,5 @@ async function registerLobster(
     deployUrl: opts.deployUrl,
   })).run()
 
-  return agentName
+  return { agentName, apiKey }
 }

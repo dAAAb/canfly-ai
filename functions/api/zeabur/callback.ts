@@ -123,11 +123,11 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
 
     // If transitioning to 'running' and no agent yet, register the lobster
     if (body.status === 'running' && !existing.agent_name) {
-      const agentName = await registerLobster(env, body, existing.id as string)
+      const result = await registerLobster(env, body, existing.id as string)
       return json({
         deploymentId: existing.id,
         status: 'running',
-        agentName,
+        agentName: result.agentName,
         message: 'Deployment successful. Lobster registered.',
       })
     }
@@ -164,7 +164,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
   // If already running (direct success callback), register the lobster
   let agentName: string | null = null
   if (body.status === 'running') {
-    agentName = await registerLobster(env, body, deploymentId)
+    const result = await registerLobster(env, body, deploymentId)
+    agentName = result.agentName
   }
 
   // Log activity
@@ -252,5 +253,5 @@ async function registerLobster(
     deployUrl: body.deployUrl,
   })).run()
 
-  return agentName
+  return { agentName, apiKey }
 }
