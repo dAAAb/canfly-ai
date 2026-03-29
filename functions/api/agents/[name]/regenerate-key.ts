@@ -23,6 +23,28 @@ async function zeaburGQL(
   return res.json() as Promise<{ data?: Record<string, unknown>; errors?: Array<{ message: string }> }>
 }
 
+/**
+ * Upsert an environment variable: try create first, if it fails (already exists), update.
+ */
+async function upsertEnvVar(
+  apiKey: string,
+  serviceId: string,
+  envId: string,
+  key: string,
+  value: string,
+): Promise<void> {
+  // Try create first
+  const createResult = await zeaburGQL(apiKey,
+    `mutation{createEnvironmentVariable(serviceID:"${serviceId}",environmentID:"${envId}",key:"${key}",value:"${value}"){key}}`
+  )
+  // If create failed (variable already exists), update it
+  if (createResult.errors?.length) {
+    await zeaburGQL(apiKey,
+      `mutation{updateSingleEnvironmentVariable(serviceID:"${serviceId}",environmentID:"${envId}",oldKey:"${key}",newKey:"${key}",value:"${value}"){key}}`
+    )
+  }
+}
+
 export const onRequestOptions: PagesFunction<Env> = () => handleOptions()
 
 export const onRequestPost: PagesFunction<Env> = async ({ env, request, params }) => {
@@ -81,18 +103,10 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request, params }
         const envId = (envResult.data?.project as { environments: Array<{ _id: string }> })?.environments?.[0]?._id
 
         if (envId) {
-          // Inject CANFLY_API_KEY
-          await zeaburGQL(zeaburApiKey,
-            `mutation{updateSingleEnvironmentVariable(serviceID:"${deployment.zeabur_service_id}",environmentID:"${envId}",oldKey:"CANFLY_API_KEY",newKey:"CANFLY_API_KEY",value:"${newApiKey}"){key}}`
-          )
-
-          // Also ensure CANFLY_AGENT_NAME and CANFLY_API_URL are set
-          await zeaburGQL(zeaburApiKey,
-            `mutation{updateSingleEnvironmentVariable(serviceID:"${deployment.zeabur_service_id}",environmentID:"${envId}",oldKey:"CANFLY_AGENT_NAME",newKey:"CANFLY_AGENT_NAME",value:"${agentName}"){key}}`
-          )
-          await zeaburGQL(zeaburApiKey,
-            `mutation{updateSingleEnvironmentVariable(serviceID:"${deployment.zeabur_service_id}",environmentID:"${envId}",oldKey:"CANFLY_API_URL",newKey:"CANFLY_API_URL",value:"https://canfly.ai/api"){key}}`
-          )
+          // Upsert all three env vars (create if missing, update if exists)
+          await upsertEnvVar(zeaburApiKey, deployment.zeabur_service_id!, envId, 'CANFLY_API_KEY', newApiKey)
+          await upsertEnvVar(zeaburApiKey, deployment.zeabur_service_id!, envId, 'CANFLY_AGENT_NAME', agentName)
+          await upsertEnvVar(zeaburApiKey, deployment.zeabur_service_id!, envId, 'CANFLY_API_URL', 'https://canfly.ai/api')
 
           // Restart service to pick up new env vars
           await zeaburGQL(zeaburApiKey,
