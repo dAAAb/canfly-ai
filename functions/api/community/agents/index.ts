@@ -9,6 +9,7 @@ import {
   handleOptions,
   generateEditToken,
   isValidAgentName,
+  toAgentSlug,
   parseBody,
   intParam,
 } from '../_helpers'
@@ -26,7 +27,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request }) => {
   const offset = intParam(url, 'offset', 0)
 
   let sql = `
-    SELECT a.name, a.owner_username, a.wallet_address, a.basename,
+    SELECT a.name, a.display_name, a.owner_username, a.wallet_address, a.basename,
            a.platform, a.avatar_url, a.bio, a.model, a.hosting,
            a.capabilities, a.erc8004_url, a.is_public, a.created_at,
            a.agentbook_registered,
@@ -80,6 +81,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request }) => {
 // ── POST /api/community/agents ──────────────────────────────────────────
 interface CreateAgentBody {
   name: string
+  displayName?: string
   ownerUsername?: string
   walletAddress?: string
   basename?: string
@@ -100,7 +102,11 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     return errorResponse('name is required', 400)
   }
 
-  const { name, ownerUsername, walletAddress, basename, platform, avatarUrl, bio, birthday, model, hosting, capabilities, erc8004Url, skills } = body
+  const { ownerUsername, walletAddress, basename, platform, avatarUrl, bio, birthday, model, hosting, capabilities, erc8004Url, skills } = body
+
+  // If displayName is provided, derive slug from it; otherwise use name as both
+  const displayName = body.displayName?.trim() || body.name.trim()
+  const name = toAgentSlug(body.displayName || body.name)
 
   // Validate birthday format (YYYY-MM-DD) if provided
   if (birthday) {
@@ -111,12 +117,12 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
 
   if (!isValidAgentName(name)) {
     return errorResponse(
-      'Invalid agent name. Must be 2-50 chars, alphanumeric/hyphens/underscores/spaces.',
+      'Invalid agent name. The generated slug must be 2-40 chars with lowercase letters, numbers, and hyphens.',
       400
     )
   }
 
-  // Check if agent name already exists
+  // Check if agent slug already exists
   const existing = await env.DB.prepare('SELECT name FROM agents WHERE name = ?1')
     .bind(name)
     .first()
@@ -138,12 +144,13 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
   const editToken = generateEditToken()
 
   await env.DB.prepare(
-    `INSERT INTO agents (name, owner_username, wallet_address, basename, platform,
+    `INSERT INTO agents (name, display_name, owner_username, wallet_address, basename, platform,
                          avatar_url, bio, birthday, model, hosting, capabilities, erc8004_url, edit_token)
-     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13)`
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14)`
   )
     .bind(
       name,
+      displayName,
       ownerUsername || null,
       walletAddress || null,
       basename || null,
@@ -179,7 +186,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     .bind(name, JSON.stringify({ ownerUsername: ownerUsername || null }))
     .run()
 
-  return json({ name, editToken }, 201)
+  return json({ name, displayName, editToken }, 201)
 }
 
 // ── OPTIONS (CORS preflight) ────────────────────────────────────────────

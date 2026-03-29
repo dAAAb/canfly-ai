@@ -163,20 +163,16 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
 
   const [aiHubKey, setAiHubKey] = useState('')
 
-  const [agentName, setAgentName] = useState('')
+  const [agentDisplayName, setAgentDisplayName] = useState('')
   const [agentBio, setAgentBio] = useState('')
   const [nameChecking, setNameChecking] = useState(false)
   const [nameAvailable, setNameAvailable] = useState<boolean | null>(null)
 
-  /** Convert input to valid agent slug: lowercase + digits + hyphens only */
+  /** Convert display name to URL slug: lowercase + digits + hyphens only */
   const toSlug = (s: string): string =>
     s.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '').replace(/-{2,}/g, '-').slice(0, 40).replace(/-+$/, '')
 
-  const handleAgentNameChange = (raw: string) => {
-    // Allow typing freely but auto-slugify
-    const slug = toSlug(raw)
-    setAgentName(slug)
-  }
+  const agentSlug = toSlug(agentDisplayName)
 
   const [deploying, setDeploying] = useState(false)
   const [deploymentId, setDeploymentId] = useState<string | null>(null)
@@ -250,14 +246,14 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
 
   /* ── Step 4: Agent name check ── */
   useEffect(() => {
-    if (!agentName || agentName.length < 2) {
+    if (!agentSlug || agentSlug.length < 2) {
       setNameAvailable(null)
       return
     }
     const timer = setTimeout(async () => {
       setNameChecking(true)
       try {
-        const res = await fetch(`/api/community/agents/${encodeURIComponent(agentName)}`)
+        const res = await fetch(`/api/community/agents/${encodeURIComponent(agentSlug)}`)
         setNameAvailable(res.status === 404)
       } catch {
         setNameAvailable(null)
@@ -266,11 +262,11 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
       }
     }, 400)
     return () => clearTimeout(timer)
-  }, [agentName])
+  }, [agentSlug])
 
   /* ── Step 5: Deploy ── */
   const startDeploy = useCallback(async () => {
-    if (!selectedServer || !agentName) return
+    if (!selectedServer || !agentSlug) return
     setDeploying(true)
     setDeployError(null)
     setDeployStatus('deploying')
@@ -282,7 +278,8 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
         body: JSON.stringify({
           zeaburApiKey: zeaburApiKey.trim(),
           serverNodeId: selectedServer,
-          agentName: agentName.trim(),
+          agentName: agentSlug,
+          agentDisplayName: agentDisplayName.trim(),
           agentBio: agentBio.trim() || undefined,
           aiHubKey: aiHubKey.trim() || undefined,
           tier: 'general',
@@ -302,7 +299,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
       setDeployError((err as Error).message)
       setDeploying(false)
     }
-  }, [selectedServer, agentName, agentBio, zeaburApiKey, aiHubKey, getAuthHeaders])
+  }, [selectedServer, agentSlug, agentDisplayName, agentBio, zeaburApiKey, aiHubKey, getAuthHeaders])
 
   /* ── Poll deployment status ── */
   useEffect(() => {
@@ -340,7 +337,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
   const canAdvance = (): boolean => {
     switch (step) {
       case 1: return keyValid
-      case 2: return !!agentName.trim() && nameAvailable === true  // Name
+      case 2: return !!agentDisplayName.trim() && agentSlug.length >= 2 && nameAvailable === true  // Name
       case 3: return true // AI Hub key is optional
       case 4: return !!selectedServer  // Server
       case 5: return false
@@ -592,11 +589,11 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
                 <div className="relative">
                   <input
                     type="text"
-                    value={agentName}
-                    onChange={(e) => handleAgentNameChange(e.target.value)}
-                    placeholder="my-awesome-lobster"
-                    maxLength={40}
-                    className="w-full px-4 pr-10 py-3 bg-gray-900 border border-gray-700 text-white placeholder-gray-600 rounded-xl focus:outline-none focus:border-cyan-500/50 transition-colors text-sm font-mono"
+                    value={agentDisplayName}
+                    onChange={(e) => setAgentDisplayName(e.target.value)}
+                    placeholder={t('deploy.agentNamePlaceholder', 'My Awesome Lobster')}
+                    maxLength={50}
+                    className="w-full px-4 pr-10 py-3 bg-gray-900 border border-gray-700 text-white placeholder-gray-600 rounded-xl focus:outline-none focus:border-cyan-500/50 transition-colors text-sm"
                   />
                   <span className="absolute right-3 top-1/2 -translate-y-1/2">
                     {nameChecking && <Loader2 className="w-4 h-4 text-gray-400 animate-spin" />}
@@ -604,9 +601,16 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
                     {nameAvailable === false && <AlertCircle className="w-4 h-4 text-red-400" />}
                   </span>
                 </div>
-                <p className="text-[11px] mt-1 text-gray-500">
-                  {nameAvailable === false ? t('deploy.nameTaken') : nameAvailable === true ? t('deploy.nameAvailable') : '💡 Lowercase letters, numbers, and hyphens only (e.g. my-lobster-01)'}
-                </p>
+                {agentSlug && (
+                  <p className="text-[11px] mt-1 text-gray-500">
+                    URL: canfly.ai/u/{username}/agent/<span className="text-cyan-400 font-mono">{agentSlug}</span>
+                    {nameAvailable === false && <span className="text-red-400 ml-2">{t('deploy.nameTaken')}</span>}
+                    {nameAvailable === true && <span className="text-green-400 ml-2">✓</span>}
+                  </p>
+                )}
+                {!agentSlug && agentDisplayName && (
+                  <p className="text-[11px] mt-1 text-red-400">{t('deploy.nameInvalid', 'Name must contain at least 2 letters or numbers')}</p>
+                )}
               </div>
               <div>
                 <label className="block text-xs text-gray-400 mb-1.5">{t('deploy.agentBioLabel')}</label>
@@ -627,7 +631,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
             <div className="space-y-4 text-center py-4">
               {deployStatus === 'running' ? (
                 <WakingUpCheck
-                  agentName={deployAgentName || agentName}
+                  agentName={deployAgentName || agentSlug}
                   username={username}
                   navigate={navigate}
                   t={t}
