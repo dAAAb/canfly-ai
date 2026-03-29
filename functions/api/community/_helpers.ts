@@ -17,6 +17,7 @@ export interface Env {
   GEMINI_API_KEY?: string
   OPENAI_API_KEY?: string
   ZEABUR_WEBHOOK_SECRET?: string
+  ZEABUR_ADMIN_API_KEY?: string
 }
 
 /** Standard CORS headers for cross-origin access */
