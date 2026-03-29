@@ -262,7 +262,7 @@ export default function CommunityPage() {
   const stats = useMemo(
     () => ({
       agents: agents.length,
-      users: users.filter((u) => (u.agent_count || 0) > 0).length,
+      users: users.length,
       skills: agents.reduce((sum, a) => sum + (a.skillCount || 0), 0),
     }),
     [agents, users]
