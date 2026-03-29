@@ -233,31 +233,48 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
   const loadServers = useCallback(async () => {
     setLoadingServers(true)
     try {
-      // Fetch servers with their projects from Zeabur
-      const res = await fetch(ZEABUR_PROXY, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          zeaburApiKey: zeaburApiKey.trim(),
-          query: '{ servers { _id name provider ip projects { _id name } } }',
+      // Fetch servers and projects separately (Zeabur doesn't nest projects inside servers)
+      const [serversRes, projectsRes] = await Promise.all([
+        fetch(ZEABUR_PROXY, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            zeaburApiKey: zeaburApiKey.trim(),
+            query: '{ servers { _id name provider ip } }',
+          }),
         }),
-      })
-      const data = (await res.json()) as {
+        fetch(ZEABUR_PROXY, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            zeaburApiKey: zeaburApiKey.trim(),
+            query: '{ projects { edges { node { _id name region { id name } } } } }',
+          }),
+        }),
+      ])
+
+      const serversData = (await serversRes.json()) as {
         data?: { servers?: ZeaburServer[] }
       }
-      const rawServers = data.data?.servers || []
+      const projectsData = (await projectsRes.json()) as {
+        data?: { projects?: { edges?: Array<{ node: { _id: string; name: string; region: { id: string } } }> } }
+      }
+
+      const rawServers = serversData.data?.servers || []
+      const zeaburProjects = (projectsData.data?.projects?.edges || []).map(e => e.node)
+
+      // Build map: serverId → list of projects on that server
+      // Zeabur region.id format: "server-{serverNodeId}"
+      const serverProjectMap = new Map<string, Array<{ _id: string; name: string }>>()
+      for (const proj of zeaburProjects) {
+        const serverId = proj.region.id.replace(/^server-/, '')
+        const existing = serverProjectMap.get(serverId) || []
+        existing.push({ _id: proj._id, name: proj.name })
+        serverProjectMap.set(serverId, existing)
+      }
 
       // Fetch CanFly deployments to identify which projects are ours
-      let canflyProjectIds = new Map<string, string>() // projectId → agentName
-      try {
-        const depRes = await fetch(`/api/community/agents?owner=${encodeURIComponent(username)}&limit=100`)
-        if (depRes.ok) {
-          // We need deployment data, not agents — check zeabur deployments via metadata
-          // Actually, let's query the user's deployments from the zeabur status endpoint
-        }
-      } catch { /* ignore */ }
-
-      // Also check v3_zeabur_deployments via a lightweight endpoint
+      const canflyProjectIds = new Map<string, string>() // projectId → agentName
       try {
         const headers = await getAuthHeaders()
         const depRes = await fetch(`/api/zeabur/deploy?owner=${encodeURIComponent(username)}`, { headers })
@@ -273,7 +290,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
 
       // Classify each server
       const classified: ServerWithStatus[] = rawServers.map(srv => {
-        const projects = srv.projects || []
+        const projects = serverProjectMap.get(srv._id) || []
         if (projects.length === 0) {
           return { ...srv, status: 'empty' as const }
         }
