@@ -12,8 +12,9 @@ import AgentAvatarCall from '../components/AgentAvatarCall'
 import { useAuth } from '../hooks/useAuth'
 import { getApiAuthHeaders } from '../utils/apiAuth'
 import { useEscrowPayment, type PaymentStep } from '../hooks/useEscrowPayment'
-import { Cpu, Globe, Wallet, ExternalLink, Sparkles, Video, MessageCircle, Mail, Github, Shield, Fingerprint, Clock, Calendar, CheckCircle, Circle, AlertCircle, Loader2, Copy, Check, Star, TrendingUp, Package, ShieldCheck, Pencil, Plus, Trash2, Save, X } from 'lucide-react'
+import { Cpu, Globe, Wallet, ExternalLink, Sparkles, Video, MessageCircle, Mail, Github, Shield, Fingerprint, Clock, Calendar, CheckCircle, Circle, AlertCircle, Loader2, Copy, Check, Star, TrendingUp, Package, ShieldCheck, Pencil, Plus, Trash2, Save, X, Settings } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { useLiveStatus, STATUS_CONFIG } from '../hooks/useLiveStatus'
 
 function formatTimeAgo(isoDate: string): string {
   const diffMs = Date.now() - new Date(isoDate).getTime()
@@ -152,7 +153,11 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
   const [pingStatus, setPingStatus] = useState<'idle' | 'pinging' | 'online' | 'away'>('idle')
   const [pingSla, setPingSla] = useState<string | null>(null)
   const [pingSkill, setPingSkill] = useState<string | null>(null)
+
+  // Deployment data for Chat/Settings buttons
+  const [deployment, setDeployment] = useState<{ id: string; status: string } | null>(null)
   const escrow = useEscrowPayment()
+  const { liveStatus, isOnline } = useLiveStatus(deployment?.id || null, deployment?.status || 'stopped')
 
   // Skill editing state
   interface SkillDraft {
@@ -293,6 +298,20 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
           .then((d) => { if (d?.tasks) setRecentJobs(d.tasks) })
           .catch(() => {})
           .finally(() => setJobsLoaded(true))
+
+        // Fetch deployment data for this agent (for Chat/Settings buttons)
+        const agentData = data as AgentData
+        if (agentData.owner_username) {
+          getApiAuthHeaders({ getAccessToken, walletAddress }).then(headers =>
+            fetch(`/api/zeabur/deploy?owner=${encodeURIComponent(agentData.owner_username!)}`, { headers })
+          )
+            .then(r => r.ok ? r.json() : null)
+            .then((d: { deployments?: Array<{ id: string; agent_name: string; status: string }> } | null) => {
+              const dep = d?.deployments?.find(dep => dep.agent_name === agentName)
+              if (dep) setDeployment({ id: dep.id, status: dep.status })
+            })
+            .catch(() => {})
+        }
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false))
@@ -483,6 +502,40 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
             {/* Bio */}
             {agent.bio && (
               <p className="text-gray-300 text-lg max-w-2xl mx-auto">{agent.bio}</p>
+            )}
+
+            {/* Action Buttons: Chat + Settings + Live Status */}
+            {deployment && (
+              <div className="flex items-center justify-center gap-3 mt-6">
+                {/* Live Status Badge */}
+                <span className={`shrink-0 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${(STATUS_CONFIG[liveStatus] || STATUS_CONFIG.STOPPED).color}`}>
+                  {t((STATUS_CONFIG[liveStatus] || STATUS_CONFIG.STOPPED).labelKey, (STATUS_CONFIG[liveStatus] || STATUS_CONFIG.STOPPED).fallback)}
+                </span>
+
+                {/* Chat Button */}
+                {isOnline ? (
+                  <Link
+                    to={`/u/${agent.owner_username}/chat/${agent.name}`}
+                    className="flex items-center gap-1.5 px-4 py-2 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 text-sm font-medium rounded-lg transition-colors border border-cyan-700/40"
+                  >
+                    💬 {t('chatWithAgent', 'Chat')}
+                  </Link>
+                ) : (
+                  <span className="flex items-center gap-1.5 px-4 py-2 bg-gray-700/30 text-gray-500 text-sm font-medium rounded-lg border border-gray-700/40 cursor-not-allowed">
+                    💬 {t('chatWithAgent', 'Chat')}
+                  </span>
+                )}
+
+                {/* Settings Button (owner only) */}
+                {isOwner && (
+                  <Link
+                    to={`/u/${agent.owner_username}/agents/${agent.name}/settings`}
+                    className="flex items-center gap-1.5 px-4 py-2 bg-gray-600/20 hover:bg-gray-600/30 text-gray-300 text-sm font-medium rounded-lg transition-colors border border-gray-700/40"
+                  >
+                    ⚙️ {t('agentSettings', 'Settings')}
+                  </Link>
+                )}
+              </div>
             )}
           </div>
 
