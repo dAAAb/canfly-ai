@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import { useAuth } from '../hooks/useAuth'
+import { getApiAuthHeaders } from '../utils/apiAuth'
 import { walletGradient } from '../utils/walletGradient'
 import { Bot, AlertCircle, Check, Loader2, Plus, X } from 'lucide-react'
 
@@ -68,7 +69,7 @@ type NameStatus = 'idle' | 'checking' | 'available' | 'taken' | 'invalid'
 
 export default function AgentRegisterPage({ subdomainUsername }: { subdomainUsername?: string } = {}) {
   const params = useParams<{ username: string }>(); const username = subdomainUsername || params.username
-  const { isAuthenticated, ready, login, walletAddress: authWallet } = useAuth()
+  const { isAuthenticated, ready, login, walletAddress: authWallet, getAccessToken } = useAuth()
   const navigate = useNavigate()
 
   const [form, setForm] = useState<FormData>({
@@ -177,9 +178,7 @@ export default function AgentRegisterPage({ subdomainUsername }: { subdomainUser
     })
 
     try {
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-      if (editToken) headers['X-Edit-Token'] = editToken
-      if (authWallet) headers['X-Wallet-Address'] = authWallet
+      const headers = await getApiAuthHeaders({ getAccessToken, walletAddress: authWallet, editToken })
 
       const res = await fetch('/api/community/agents', {
         method: 'POST',

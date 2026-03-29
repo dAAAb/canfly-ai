@@ -10,6 +10,7 @@ import TrustBadge from '../components/TrustBadge'
 import { getTrustLevel } from '../utils/trustLevel'
 import AgentAvatarCall from '../components/AgentAvatarCall'
 import { useAuth } from '../hooks/useAuth'
+import { getApiAuthHeaders } from '../utils/apiAuth'
 import { useEscrowPayment, type PaymentStep } from '../hooks/useEscrowPayment'
 import { Cpu, Globe, Wallet, ExternalLink, Sparkles, Video, MessageCircle, Mail, Github, Shield, Fingerprint, Clock, Calendar, CheckCircle, Circle, AlertCircle, Loader2, Copy, Check, Star, TrendingUp, Package, ShieldCheck, Pencil, Plus, Trash2, Save, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -133,7 +134,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
   const username = subdomainUsername || params.username
   const agentName = params.agentName
   const { currentLang, switchLang } = useQueryLang()
-  const { walletAddress } = useAuth()
+  const { walletAddress, getAccessToken } = useAuth()
   const { t } = useTranslation()
   const [agent, setAgent] = useState<AgentData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -168,15 +169,8 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
   const agentEditToken = agentName ? localStorage.getItem(`canfly_agent_token_${agentName}`) : null
   const isOwner = !!(agentEditToken || (walletAddress && agent?.owner?.wallet_address && walletAddress.toLowerCase() === agent.owner.wallet_address.toLowerCase()))
 
-  const getAuthHeaders = (): Record<string, string> => {
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-    if (agentEditToken) {
-      headers['X-Edit-Token'] = agentEditToken
-    } else if (walletAddress) {
-      headers['X-Wallet-Address'] = walletAddress
-    }
-    return headers
-  }
+  const getAuthHeaders = () =>
+    getApiAuthHeaders({ getAccessToken, walletAddress, editToken: agentEditToken })
 
   const saveSkill = async (slug: string, draft: SkillDraft, isNew: boolean) => {
     if (!agent) return
@@ -196,7 +190,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
       }
       const res = await fetch(`/api/agents/${agent.name}/skills/${slug}`, {
         method: 'PUT',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
         body: JSON.stringify(body),
       })
       if (!res.ok) throw new Error('Save failed')
@@ -227,7 +221,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
     try {
       const res = await fetch(`/api/agents/${agent.name}/skills/${slug}`, {
         method: 'DELETE',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
       })
       if (!res.ok) throw new Error('Delete failed')
       setAgent(prev => prev ? { ...prev, skills: prev.skills.filter(s => s.slug !== slug) } : prev)
@@ -265,10 +259,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
       }
       const res = await fetch(`/api/community/users/${lookupData.username}/pair-agent`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Wallet-Address': walletAddress,
-        },
+        headers: await getApiAuthHeaders({ getAccessToken, walletAddress }),
         body: JSON.stringify({ pairingCode: claimCode.trim().toUpperCase() }),
       })
       const data = await res.json() as { paired?: boolean; agentName?: string; error?: string }

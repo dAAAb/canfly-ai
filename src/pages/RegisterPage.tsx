@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import { useAuth } from '../hooks/useAuth'
+import { getApiAuthHeaders } from '../utils/apiAuth'
 import { walletGradient } from '../utils/walletGradient'
 import { products } from '../data/products'
 import { User, AlertCircle, Check, Loader2, Plus, X } from 'lucide-react'
@@ -29,7 +30,7 @@ interface FormData {
 type UsernameStatus = 'idle' | 'checking' | 'available' | 'taken' | 'invalid'
 
 export default function RegisterPage() {
-  const { isAuthenticated, ready, login, walletAddress, worldIdLevel, user: privyUser } = useAuth()
+  const { isAuthenticated, ready, login, walletAddress, worldIdLevel, user: privyUser, getAccessToken } = useAuth()
   const navigate = useNavigate()
 
   const [form, setForm] = useState<FormData>({
@@ -190,10 +191,7 @@ export default function RegisterPage() {
         try {
           await fetch('/api/basemail/check-wallet', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-Edit-Token': data.editToken,
-            },
+            headers: await getApiAuthHeaders({ getAccessToken, walletAddress, editToken: data.editToken }),
             body: JSON.stringify({ username: data.username }),
           })
         } catch {
@@ -206,10 +204,7 @@ export default function RegisterPage() {
         if (hw.slug || hw.name) {
           await fetch(`/api/community/users/${data.username}/hardware`, {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-Edit-Token': data.editToken,
-            },
+            headers: await getApiAuthHeaders({ getAccessToken, walletAddress, editToken: data.editToken }),
             body: JSON.stringify(hw),
           }).catch(() => {
             // Hardware add is best-effort for now

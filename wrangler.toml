@@ -6,6 +6,7 @@ compatibility_flags = ["nodejs_compat"]
 
 [vars]
 SATORI_STANDALONE = "1"
+PRIVY_APP_ID = "cmmsdn6om01vo0cl4gowxmydu"
 
 [[d1_databases]]
 binding = "DB"
