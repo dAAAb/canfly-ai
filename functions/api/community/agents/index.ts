@@ -12,6 +12,7 @@ import {
   parseBody,
   intParam,
 } from '../_helpers'
+import { authenticateRequest } from '../../_auth'
 
 // ── GET /api/community/agents ───────────────────────────────────────────
 export const onRequestGet: PagesFunction<Env> = async ({ env, request }) => {
@@ -125,27 +126,13 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
 
   // If ownerUsername provided, authenticate caller and verify user exists
   if (ownerUsername) {
-    const editToken = request.headers.get('X-Edit-Token')
-    const walletHeader = request.headers.get('X-Wallet-Address')
-
-    if (!editToken && !walletHeader) {
-      return errorResponse('X-Edit-Token or X-Wallet-Address header required when setting ownerUsername', 401)
+    const auth = await authenticateRequest(request, env.DB, env.PRIVY_APP_ID)
+    if (!auth) {
+      return errorResponse('Authentication required when setting ownerUsername', 401)
     }
-
-    const user = await env.DB.prepare(
-      'SELECT username, edit_token, wallet_address FROM users WHERE username = ?1'
-    )
-      .bind(ownerUsername)
-      .first()
-    if (!user) {
-      return errorResponse('Owner user not found', 404)
+    if (auth.username !== ownerUsername) {
+      return errorResponse('Unauthorized', 403)
     }
-
-    const tokenOk = editToken && user.edit_token === editToken
-    const walletOk = walletHeader && user.wallet_address &&
-      walletHeader.toLowerCase() === (user.wallet_address as string).toLowerCase()
-
-    if (!tokenOk && !walletOk) return errorResponse('Unauthorized', 403)
   }
 
   const editToken = generateEditToken()

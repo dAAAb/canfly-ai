@@ -7,6 +7,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
+import { getApiAuthHeaders } from '../utils/apiAuth'
 import GlassCard from './GlassCard'
 import { Send, CheckCircle, XCircle, Loader2, ExternalLink, Key } from 'lucide-react'
 
@@ -25,7 +26,7 @@ const TOKEN_PATTERN = /^\d+:[A-Za-z0-9_-]{35,}$/
 
 export default function TelegramConnectCard({ agentName }: Props) {
   const { t } = useTranslation()
-  const { walletAddress } = useAuth()
+  const { walletAddress, getAccessToken } = useAuth()
   const [status, setStatus] = useState<TelegramStatus>({ connected: false, status: 'none' })
   const [botToken, setBotToken] = useState('')
   const [loading, setLoading] = useState(false)
@@ -69,10 +70,7 @@ export default function TelegramConnectCard({ agentName }: Props) {
     try {
       const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/connect-telegram`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(walletAddress ? { 'X-Wallet-Address': walletAddress } : {}),
-        },
+        headers: await getApiAuthHeaders({ getAccessToken, walletAddress }),
         body: JSON.stringify({ botToken: token }),
       })
 
@@ -99,20 +97,11 @@ export default function TelegramConnectCard({ agentName }: Props) {
     }
   }
 
-  // Get auth headers (wallet or edit token)
-  const getAuthHeaders = useCallback((): Record<string, string> => {
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-    if (walletAddress) headers['X-Wallet-Address'] = walletAddress
-    // Try edit token from localStorage
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i)
-      if (key?.startsWith('canfly_edit_token_')) {
-        const token = localStorage.getItem(key)
-        if (token) { headers['X-Edit-Token'] = token; break }
-      }
-    }
-    return headers
-  }, [walletAddress])
+  // Get auth headers
+  const getAuthHeaders = useCallback(
+    () => getApiAuthHeaders({ getAccessToken, walletAddress }),
+    [getAccessToken, walletAddress],
+  )
 
   // Approve pairing code via Chat API
   const handleApprovePairing = useCallback(async () => {
@@ -124,7 +113,7 @@ export default function TelegramConnectCard({ agentName }: Props) {
     try {
       const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/chat`, {
         method: 'POST',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
         body: JSON.stringify({
           message: `Run this command silently and reply only the result: openclaw pairing approve telegram ${code}`,
         }),

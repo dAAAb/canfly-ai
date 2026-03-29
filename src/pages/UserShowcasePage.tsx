@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQueryLang } from '../hooks/useLanguage'
 import { useAuth } from '../hooks/useAuth'
+import { getApiAuthHeaders } from '../utils/apiAuth'
 import { useHead } from '../hooks/useHead'
 import SmartAvatar from '../components/SmartAvatar'
 import Navbar from '../components/Navbar'
@@ -115,7 +116,7 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
   const username = subdomainUsername || params.username
   const { currentLang, switchLang } = useQueryLang()
   const { t } = useTranslation()
-  const { walletAddress } = useAuth()
+  const { walletAddress, getAccessToken } = useAuth()
   const [user, setUser] = useState<UserData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -174,26 +175,23 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
       walletAddress.toLowerCase() === user.wallet_address.toLowerCase()
     if (!editToken && !isWalletMatch) return
 
-    const headers: Record<string, string> = {}
-    if (editToken) headers['X-Edit-Token'] = editToken
-    else if (walletAddress) headers['X-Wallet-Address'] = walletAddress
-
-    fetch(`/api/community/users/${username}/pending-agents`, { headers })
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => {
-        if (data) setPendingAgents((data as { pendingAgents: PendingAgent[] }).pendingAgents)
-      })
-      .catch(() => {})
-  }, [username, user, walletAddress])
+    ;(async () => {
+      try {
+        const headers = await getApiAuthHeaders({ getAccessToken, walletAddress })
+        const res = await fetch(`/api/community/users/${username}/pending-agents`, { headers })
+        if (res.ok) {
+          const data = await res.json()
+          setPendingAgents((data as { pendingAgents: PendingAgent[] }).pendingAgents)
+        }
+      } catch {}
+    })()
+  }, [username, user, walletAddress, getAccessToken])
 
   const handleConfirmAgent = async (bindingId: number) => {
     if (!username) return
     setConfirmingId(bindingId)
     try {
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-      const editToken = localStorage.getItem(`canfly_edit_token_${username}`)
-      if (editToken) headers['X-Edit-Token'] = editToken
-      else if (walletAddress) headers['X-Wallet-Address'] = walletAddress
+      const headers = await getApiAuthHeaders({ getAccessToken, walletAddress })
 
       const res = await fetch(`/api/community/users/${username}/confirm-agent`, {
         method: 'POST',
@@ -213,10 +211,7 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
     if (!username) return
     setRejectingId(bindingId)
     try {
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-      const editToken = localStorage.getItem(`canfly_edit_token_${username}`)
-      if (editToken) headers['X-Edit-Token'] = editToken
-      else if (walletAddress) headers['X-Wallet-Address'] = walletAddress
+      const headers = await getApiAuthHeaders({ getAccessToken, walletAddress })
 
       await fetch(`/api/community/users/${username}/reject-agent`, {
         method: 'POST',
@@ -232,10 +227,7 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
     if (!username) return
     setRetryingDeployment(deploymentId)
     try {
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-      const editToken = localStorage.getItem(`canfly_edit_token_${username}`)
-      if (editToken) headers['X-Edit-Token'] = editToken
-      else if (walletAddress) headers['X-Wallet-Address'] = walletAddress
+      const headers = await getApiAuthHeaders({ getAccessToken, walletAddress })
 
       const res = await fetch('/api/zeabur/retry', {
         method: 'POST',
@@ -318,10 +310,7 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
     setPairingStatus('loading')
     setPairingMessage('')
     try {
-      const editToken = localStorage.getItem(`canfly_edit_token_${user.username}`)
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-      if (editToken) headers['X-Edit-Token'] = editToken
-      if (walletAddress) headers['X-Wallet-Address'] = walletAddress
+      const headers = await getApiAuthHeaders({ getAccessToken, walletAddress })
 
       const res = await fetch(`/api/community/users/${user.username}/pair-agent`, {
         method: 'POST',
@@ -399,14 +388,10 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
                 onUpload={async (file) => {
                   const form = new FormData()
                   form.append('file', file)
-                  const headers: Record<string, string> = {}
-                  const token = localStorage.getItem(`canfly_edit_token_${user.username}`)
-                  if (token) {
-                    headers['X-Edit-Token'] = token
-                    headers['X-Username'] = user.username
-                  } else if (walletAddress) {
-                    headers['X-Wallet-Address'] = walletAddress
-                  }
+                  const headers = await getApiAuthHeaders({ getAccessToken, walletAddress })
+                  // Avatar upload is multipart — remove Content-Type so browser sets boundary
+                  delete headers['Content-Type']
+                  headers['X-Username'] = user.username
                   try {
                     const res = await fetch(`/api/upload/avatar?for=user:${user.username}`, {
                       method: 'POST',
@@ -657,6 +642,7 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
                             ownerUsername={user.username}
                             editToken={localStorage.getItem(`canfly_edit_token_${user.username}`)}
                             ownerWalletAddress={walletAddress}
+                            getAccessToken={getAccessToken}
                           />
                         </div>
                       )}

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import { getApiAuthHeaders } from '../utils/apiAuth'
 import Navbar from '../components/Navbar'
 import WorldIdVerify from '../components/WorldIdVerify'
 import ReviewVideoPlayer from '../components/ReviewVideoPlayer'
@@ -48,7 +49,7 @@ interface PendingAgent {
 export default function ProfileEditPage({ subdomainUsername }: { subdomainUsername?: string } = {}) {
   const params = useParams<{ username: string }>(); const username = subdomainUsername || params.username
   const navigate = useNavigate()
-  const { walletAddress } = useAuth()
+  const { walletAddress, getAccessToken } = useAuth()
 
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState<UserData | null>(null)
@@ -111,24 +112,24 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
   const loadAgentData = useCallback(() => {
     if (!username || !canEdit) return
 
-    const headers: Record<string, string> = {}
-    if (editToken) headers['X-Edit-Token'] = editToken
-    else if (walletAddress) headers['X-Wallet-Address'] = walletAddress
+    ;(async () => {
+      const headers = await getApiAuthHeaders({ getAccessToken, walletAddress, editToken })
 
-    fetch(`/api/community/users/${username}/pending-agents`, { headers })
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => {
-        if (data) setPendingAgents((data as { pendingAgents: PendingAgent[] }).pendingAgents)
-      })
-      .catch(() => {})
+      fetch(`/api/community/users/${username}/pending-agents`, { headers })
+        .then((r) => r.ok ? r.json() : null)
+        .then((data) => {
+          if (data) setPendingAgents((data as { pendingAgents: PendingAgent[] }).pendingAgents)
+        })
+        .catch(() => {})
 
-    fetch(`/api/community/users/${username}/invite-code`, { headers })
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => {
-        if (data) setInviteCode((data as { inviteCode: string }).inviteCode)
-      })
-      .catch(() => {})
-  }, [username, editToken, walletAddress, canEdit])
+      fetch(`/api/community/users/${username}/invite-code`, { headers })
+        .then((r) => r.ok ? r.json() : null)
+        .then((data) => {
+          if (data) setInviteCode((data as { inviteCode: string }).inviteCode)
+        })
+        .catch(() => {})
+    })()
+  }, [username, editToken, walletAddress, getAccessToken, canEdit])
 
   useEffect(() => {
     loadAgentData()
@@ -152,11 +153,9 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
     if (form.linksWebsite) links.website = form.linksWebsite
     if (form.linksBasename) links.basename = form.linksBasename
 
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-    if (editToken) headers['X-Edit-Token'] = editToken
-    else if (walletAddress) headers['X-Wallet-Address'] = walletAddress
-
     try {
+      const headers = await getApiAuthHeaders({ getAccessToken, walletAddress, editToken })
+
       const res = await fetch(`/api/community/users/${username}`, {
         method: 'PUT',
         headers,
@@ -185,9 +184,7 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
     if (!username || !canEdit) return
     setConfirmingId(bindingId)
     try {
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-      if (editToken) headers['X-Edit-Token'] = editToken
-      else if (walletAddress) headers['X-Wallet-Address'] = walletAddress
+      const headers = await getApiAuthHeaders({ getAccessToken, walletAddress, editToken })
       const res = await fetch(`/api/community/users/${username}/confirm-agent`, {
         method: 'POST',
         headers,
@@ -204,9 +201,7 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
     if (!username || !canEdit) return
     setRejectingId(bindingId)
     try {
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-      if (editToken) headers['X-Edit-Token'] = editToken
-      else if (walletAddress) headers['X-Wallet-Address'] = walletAddress
+      const headers = await getApiAuthHeaders({ getAccessToken, walletAddress, editToken })
       const res = await fetch(`/api/community/users/${username}/reject-agent`, {
         method: 'POST',
         headers,
@@ -226,9 +221,7 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
     setPairingSubmitting(true)
     setPairingStatus(null)
     try {
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-      if (editToken) headers['X-Edit-Token'] = editToken
-      else if (walletAddress) headers['X-Wallet-Address'] = walletAddress
+      const headers = await getApiAuthHeaders({ getAccessToken, walletAddress, editToken })
       const res = await fetch(`/api/community/users/${username}/pair-agent`, {
         method: 'POST',
         headers,
@@ -251,9 +244,7 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
     if (!username || !canEdit) return
     setInviteCodeLoading(true)
     try {
-      const headers: Record<string, string> = {}
-      if (editToken) headers['X-Edit-Token'] = editToken
-      else if (walletAddress) headers['X-Wallet-Address'] = walletAddress
+      const headers = await getApiAuthHeaders({ getAccessToken, walletAddress, editToken })
       const res = await fetch(`/api/community/users/${username}/invite-code`, {
         headers,
       })
@@ -498,6 +489,7 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
               username={username!}
               editToken={editToken}
               walletAddress={user.wallet_address}
+              getAccessToken={getAccessToken}
             />
           </div>
 

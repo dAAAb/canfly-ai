@@ -4,6 +4,7 @@
  * Auth: X-Edit-Token header OR X-Wallet-Address header (matching user's wallet)
  */
 import { type Env, json, errorResponse, handleOptions, parseBody } from '../../_helpers'
+import { authenticateRequest } from '../../../_auth'
 
 interface PairBody {
   pairingCode: string
@@ -11,26 +12,10 @@ interface PairBody {
 
 export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }) => {
   const username = params.username as string
-  const editToken = request.headers.get('X-Edit-Token')
-  const walletHeader = request.headers.get('X-Wallet-Address')
 
-  if (!editToken && !walletHeader) {
-    return errorResponse('X-Edit-Token or X-Wallet-Address header required', 401)
-  }
-
-  const user = await env.DB.prepare(
-    'SELECT username, edit_token, wallet_address FROM users WHERE username = ?1'
-  )
-    .bind(username)
-    .first()
-
-  if (!user) return errorResponse('User not found', 404)
-
-  const tokenOk = editToken && user.edit_token === editToken
-  const walletOk = walletHeader && user.wallet_address &&
-    walletHeader.toLowerCase() === (user.wallet_address as string).toLowerCase()
-
-  if (!tokenOk && !walletOk) return errorResponse('Unauthorized', 403)
+  const auth = await authenticateRequest(request, env.DB, env.PRIVY_APP_ID)
+  if (!auth) return errorResponse('Authentication required', 401)
+  if (auth.username !== username) return errorResponse('Unauthorized', 403)
 
   const body = await parseBody<PairBody>(request)
   if (!body || !body.pairingCode) {

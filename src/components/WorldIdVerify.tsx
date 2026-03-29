@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { IDKitRequestWidget, orbLegacy } from '@worldcoin/idkit'
 import type { IDKitResult, RpContext } from '@worldcoin/idkit'
 import { Loader2 } from 'lucide-react'
+import { getApiAuthHeaders } from '../utils/apiAuth'
 
 const WORLD_ID_APP_ID = 'app_ee5d4fa1aa655b4a3ba0641bb070ad67'
 const WORLD_ID_ACTION = 'real-human-canfly'
@@ -11,16 +12,12 @@ interface Props {
   username: string
   editToken: string | null
   walletAddress: string | null
+  getAccessToken: () => Promise<string | null>
 }
 
-function buildAuthHeaders(editToken: string | null, walletAddress: string | null): Record<string, string> {
-  const h: Record<string, string> = { 'Content-Type': 'application/json' }
-  if (editToken) h['X-Edit-Token'] = editToken
-  else if (walletAddress) h['X-Wallet-Address'] = walletAddress
-  return h
-}
+/** @deprecated — kept as type reference only; callers now use getApiAuthHeaders */
 
-export default function WorldIdVerify({ username, editToken, walletAddress }: Props) {
+export default function WorldIdVerify({ username, editToken, walletAddress, getAccessToken }: Props) {
   const [status, setStatus] = useState<'loading' | 'unverified' | 'verified' | 'verifying' | 'error'>('loading')
   const [verificationLevel, setVerificationLevel] = useState<string | null>(null)
   const [verifiedAt, setVerifiedAt] = useState<string | null>(null)
@@ -56,7 +53,7 @@ export default function WorldIdVerify({ username, editToken, walletAddress }: Pr
     try {
       const res = await fetch('/api/world-id/rp-signature', {
         method: 'POST',
-        headers: buildAuthHeaders(editToken, walletAddress),
+        headers: await getApiAuthHeaders({ getAccessToken, walletAddress, editToken }),
       })
       if (!res.ok) {
         const data = (await res.json()) as { error?: string }
@@ -77,7 +74,7 @@ export default function WorldIdVerify({ username, editToken, walletAddress }: Pr
       setError('Network error')
       setStatus('unverified')
     }
-  }, [editToken])
+  }, [editToken, walletAddress, getAccessToken])
 
   // handleVerify: store IDKit proof in backend
   const handleVerify = useCallback(
@@ -85,7 +82,7 @@ export default function WorldIdVerify({ username, editToken, walletAddress }: Pr
       try {
         const res = await fetch('/api/world-id/verify', {
           method: 'POST',
-          headers: buildAuthHeaders(editToken, walletAddress),
+          headers: await getApiAuthHeaders({ getAccessToken, walletAddress, editToken }),
           body: JSON.stringify({
             username,
             idkit_result: idkitResult,
@@ -111,7 +108,7 @@ export default function WorldIdVerify({ username, editToken, walletAddress }: Pr
         throw e
       }
     },
-    [username, editToken, error],
+    [username, editToken, walletAddress, getAccessToken, error],
   )
 
   // Check BaseMail by wallet address (public API, no auth needed)
@@ -132,11 +129,13 @@ export default function WorldIdVerify({ username, editToken, walletAddress }: Pr
           setBasemailHandle(handle)
           setBasemailStatus('provisioned')
           // Persist to our DB (best-effort)
-          fetch('/api/world-id/link-basemail', {
-            method: 'POST',
-            headers: buildAuthHeaders(editToken, walletAddress),
-            body: JSON.stringify({ username, basemail_handle: handle }),
-          }).catch(() => {})
+          getApiAuthHeaders({ getAccessToken, walletAddress, editToken }).then(h =>
+            fetch('/api/world-id/link-basemail', {
+              method: 'POST',
+              headers: h,
+              body: JSON.stringify({ username, basemail_handle: handle }),
+            }).catch(() => {})
+          )
           return
         }
       }
@@ -145,7 +144,7 @@ export default function WorldIdVerify({ username, editToken, walletAddress }: Pr
     } catch {
       setBasemailStatus('failed')
     }
-  }, [username, editToken, walletAddress])
+  }, [username, editToken, walletAddress, getAccessToken])
 
   const handleSuccess = useCallback(() => {
     setStatus('verified')

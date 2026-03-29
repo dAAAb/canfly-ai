@@ -4,30 +4,22 @@
  * Returns agents that registered with this user's owner_invite_code.
  */
 import { type Env, json, errorResponse, handleOptions } from '../../_helpers'
+import { authenticateRequest } from '../../../_auth'
 
 export const onRequestGet: PagesFunction<Env> = async ({ env, params, request }) => {
   const username = params.username as string
-  const editToken = request.headers.get('X-Edit-Token')
-  const walletHeader = request.headers.get('X-Wallet-Address')
 
-  if (!editToken && !walletHeader) {
-    return errorResponse('X-Edit-Token or X-Wallet-Address header required', 401)
-  }
+  const auth = await authenticateRequest(request, env.DB, env.PRIVY_APP_ID)
+  if (!auth) return errorResponse('Authentication required', 401)
+  if (auth.username !== username) return errorResponse('Unauthorized', 403)
 
   const user = await env.DB.prepare(
-    'SELECT username, edit_token, owner_invite_code, wallet_address FROM users WHERE username = ?1'
+    'SELECT username, owner_invite_code FROM users WHERE username = ?1'
   )
     .bind(username)
     .first()
 
   if (!user) return errorResponse('User not found', 404)
-
-  // Authenticate via edit token or wallet address match
-  const tokenOk = editToken && user.edit_token === editToken
-  const walletOk = walletHeader && user.wallet_address &&
-    walletHeader.toLowerCase() === (user.wallet_address as string).toLowerCase()
-
-  if (!tokenOk && !walletOk) return errorResponse('Unauthorized', 403)
 
   const inviteCode = user.owner_invite_code as string | null
   if (!inviteCode) {
