@@ -6,6 +6,7 @@ export interface Env {
   DB: D1Database
   AVATARS: R2Bucket
   TASK_RESULTS: R2Bucket
+  PRIVY_APP_ID?: string
   WORLD_ID_APP_ID?: string
   WORLD_ID_RP_ID?: string
   WORLD_ID_ACTION?: string
@@ -22,7 +23,7 @@ export interface Env {
 export const CORS_HEADERS: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Edit-Token, X-Wallet-Address',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Edit-Token, X-Wallet-Address, X-Canfly-Api-Key, X-Canfly-Channel, X-Canfly-Sender-Type',
 }
 
 /** Handle CORS preflight */
