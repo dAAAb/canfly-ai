@@ -274,7 +274,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
         body: JSON.stringify({
           zeaburApiKey: zeaburApiKey.trim(),
           serverNodeId: selectedServer,
-          agentName: agentName.trim(),
+          agentName: agentName.trim().replace(/\s+/g, ' '),
           agentBio: agentBio.trim() || undefined,
           aiHubKey: aiHubKey.trim() || undefined,
           tier: 'general',
