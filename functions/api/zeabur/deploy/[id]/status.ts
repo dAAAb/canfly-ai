@@ -291,6 +291,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
   return json({
     deploymentId: deployment.id,
     status: 'deploying',
+    zeaburStatus: zeaburStatus || 'STARTING',
     message: `Zeabur service status: ${zeaburStatus || 'STARTING'}. Keep polling.`,
   })
 }
