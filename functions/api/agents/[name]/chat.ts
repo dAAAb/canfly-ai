@@ -1,17 +1,26 @@
 /**
- * POST /api/agents/:name/chat — Chat Proxy (CAN-273)
+ * POST /api/agents/:name/chat — Chat Proxy (CAN-273, CAN-276)
  *
  * Proxies chat messages from the CanFly frontend to the agent's gateway.
  * Supports streaming responses via ReadableStream.
  *
- * Auth: X-Wallet-Address or X-Edit-Token header (user must own the agent)
+ * Auth:
+ *   - Owner (CanFly UI): X-Wallet-Address or X-Edit-Token header
+ *   - PM / Peer (Paperclip Bridge): X-Canfly-Api-Key header
+ *
+ * Headers (CAN-276):
+ *   - X-Canfly-Channel: 'canfly' (default) | 'canfly-pm'
+ *   - X-Canfly-Sender-Type: 'owner' (default) | 'pm' | 'peer'
  *
  * Body: { message: string, sessionId?: string }
  * Response: Streamed text/event-stream (SSE) or JSON fallback
  *
- * GET /api/agents/:name/chat?sessionId=xxx — Fetch chat history
+ * GET /api/agents/:name/chat?sessionId=xxx&channel=canfly — Fetch chat history
  */
 import { type Env, json, errorResponse, handleOptions, CORS_HEADERS } from '../../community/_helpers'
+
+type SenderType = 'owner' | 'pm' | 'peer'
+type Channel = 'canfly' | 'canfly-pm'
 
 interface ChatRequest {
   message: string
@@ -42,7 +51,7 @@ async function resolveGatewayUrl(db: D1Database, agentName: string): Promise<str
   return deployment?.deploy_url || null
 }
 
-/** Verify the requesting user owns this agent */
+/** Verify the requesting user owns this agent (owner auth) */
 async function verifyOwnership(
   db: D1Database,
   agentName: string,
@@ -71,26 +80,47 @@ async function verifyOwnership(
   return null
 }
 
-/** Get or create a chat session */
+/** Verify PM/peer access via agent's own API key */
+async function verifyApiKeyAccess(
+  db: D1Database,
+  agentName: string,
+  apiKey: string,
+): Promise<{ username: string } | null> {
+  const agent = await db.prepare(
+    'SELECT owner_username, api_key FROM agents WHERE name = ?1'
+  ).bind(agentName).first<{ owner_username: string | null; api_key: string | null }>()
+
+  if (!agent?.owner_username || !agent.api_key) return null
+  if (agent.api_key === apiKey) return { username: `pm:${agentName}` }
+
+  return null
+}
+
+/** Get or create a chat session, scoped by channel + sender_type */
 async function getOrCreateSession(
   db: D1Database,
   sessionId: string | undefined,
   username: string,
   agentName: string,
   firstMessage: string,
+  channel: Channel,
+  senderType: SenderType,
 ): Promise<string> {
   if (sessionId) {
+    // Session lookup is scoped: PM sessions can't reference owner sessions
     const existing = await db.prepare(
-      'SELECT id FROM v3_chat_sessions WHERE id = ?1 AND owner_username = ?2 AND agent_name = ?3'
-    ).bind(sessionId, username, agentName).first()
+      `SELECT id FROM v3_chat_sessions
+       WHERE id = ?1 AND owner_username = ?2 AND agent_name = ?3 AND channel = ?4`
+    ).bind(sessionId, username, agentName, channel).first()
     if (existing) return sessionId
   }
 
   const id = crypto.randomUUID()
   const title = firstMessage.slice(0, 80) + (firstMessage.length > 80 ? '…' : '')
   await db.prepare(
-    `INSERT INTO v3_chat_sessions (id, owner_username, agent_name, title) VALUES (?1, ?2, ?3, ?4)`
-  ).bind(id, username, agentName, title).run()
+    `INSERT INTO v3_chat_sessions (id, owner_username, agent_name, title, channel, sender_type)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6)`
+  ).bind(id, username, agentName, title, channel, senderType).run()
   return id
 }
 
@@ -111,21 +141,36 @@ async function saveMessage(
 export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }) => {
   const agentName = params.name as string
 
-  // Auth: wallet address or edit token
+  // CAN-276: Read channel + sender type headers
+  const rawChannel = request.headers.get('X-Canfly-Channel') || 'canfly'
+  const rawSenderType = request.headers.get('X-Canfly-Sender-Type') || 'owner'
+  const channel: Channel = rawChannel === 'canfly-pm' ? 'canfly-pm' : 'canfly'
+  const senderType: SenderType = (['owner', 'pm', 'peer'] as const).includes(rawSenderType as SenderType)
+    ? (rawSenderType as SenderType) : 'owner'
+
+  // Auth: owner (wallet/editToken) or PM/peer (API key)
   const walletAddress = request.headers.get('X-Wallet-Address')
   const editToken = request.headers.get('X-Edit-Token')
-  if (!walletAddress && !editToken) {
-    return errorResponse('Authentication required (X-Wallet-Address or X-Edit-Token)', 401)
+  const apiKey = request.headers.get('X-Canfly-Api-Key')
+
+  let caller: { username: string } | null = null
+
+  if (senderType === 'owner') {
+    // Owner auth: wallet address or edit token
+    if (!walletAddress && !editToken) {
+      return errorResponse('Authentication required (X-Wallet-Address or X-Edit-Token)', 401)
+    }
+    caller = await verifyOwnership(env.DB, agentName, walletAddress, editToken)
+  } else {
+    // PM/peer auth: API key
+    if (!apiKey) {
+      return errorResponse('Authentication required (X-Canfly-Api-Key) for pm/peer sender type', 401)
+    }
+    caller = await verifyApiKeyAccess(env.DB, agentName, apiKey)
   }
 
-  let owner: { username: string } | null
-  try {
-    owner = await verifyOwnership(env.DB, agentName, walletAddress, editToken)
-  } catch (err) {
-    return errorResponse(`Auth lookup failed: ${(err as Error).message}`, 500)
-  }
-  if (!owner) {
-    return errorResponse('Not authorized — you must own this agent', 403)
+  if (!caller) {
+    return errorResponse('Not authorized', 403)
   }
 
   // Parse body
@@ -146,24 +191,18 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   }
 
   // Resolve agent gateway URL
-  let gatewayUrl: string | null
-  try {
-    gatewayUrl = await resolveGatewayUrl(env.DB, agentName)
-  } catch (err) {
-    return errorResponse(`Failed to resolve gateway: ${(err as Error).message}`, 500)
-  }
+  const gatewayUrl = await resolveGatewayUrl(env.DB, agentName)
   if (!gatewayUrl) {
     return errorResponse('Agent has no gateway URL configured — deploy the agent first', 422)
   }
 
-  // Create/get session
-  let sessionId: string
-  try {
-    sessionId = await getOrCreateSession(env.DB, body.sessionId, owner.username, agentName, message)
-    await saveMessage(env.DB, sessionId, 'user', message)
-  } catch (err) {
-    return errorResponse(`Session/message DB error: ${(err as Error).message}`, 500)
-  }
+  // Create/get session (scoped by channel — PM can't see owner sessions)
+  const sessionId = await getOrCreateSession(
+    env.DB, body.sessionId, caller.username, agentName, message, channel, senderType,
+  )
+
+  // Save user message
+  await saveMessage(env.DB, sessionId, 'user', message)
 
   // Load recent chat history for context (last 20 messages)
   const history = await env.DB.prepare(
@@ -190,17 +229,23 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   // Strategy: try /v1/chat/completions first (works on some setups),
   // then fall back to WebSocket chat (works on all OpenClaw instances)
   try {
+    // CAN-276: Headers forwarded to gateway so agent can adjust behavior
+    const gatewayHeaders: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'X-Canfly-Channel': channel,
+      'X-Canfly-Sender-Type': senderType,
+      ...(gatewayToken ? { 'Authorization': `Bearer ${gatewayToken}` } : {}),
+    }
+
     // Attempt 1: OpenAI-compatible REST API
     const restResponse = await fetch(`${gatewayUrl}/v1/chat/completions`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(gatewayToken ? { 'Authorization': `Bearer ${gatewayToken}` } : {}),
-      },
+      headers: gatewayHeaders,
       body: JSON.stringify({
         model: 'openclaw',
         messages: [...messages, { role: 'user', content: body.message }],
         stream: false,
+        metadata: { channel, sender_type: senderType },
       }),
     })
 
@@ -231,14 +276,13 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
       message: body.message,
       sessionId: sessionId,
       token: gatewayToken,
+      channel,
+      senderType,
     }
 
     const wsHttpResponse = await fetch(`${gatewayUrl}/api/chat`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(gatewayToken ? { 'Authorization': `Bearer ${gatewayToken}` } : {}),
-      },
+      headers: gatewayHeaders,
       body: JSON.stringify(chatPayload),
     })
 
@@ -312,11 +356,13 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
           }
         })
 
-        // Send chat message
+        // Send chat message with channel/sender context
         ws.send(JSON.stringify({
           type: 'chat',
           content: body.message,
           sessionId: sessionId,
+          channel,
+          senderType,
         }))
       })
     }
@@ -331,22 +377,48 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
 export const onRequestGet: PagesFunction<Env> = async ({ env, params, request }) => {
   const agentName = params.name as string
 
+  // CAN-276: Support both owner and PM/peer auth for GET
   const walletAddress = request.headers.get('X-Wallet-Address')
   const editToken = request.headers.get('X-Edit-Token')
-  if (!walletAddress && !editToken) {
-    return errorResponse('Authentication required', 401)
+  const apiKey = request.headers.get('X-Canfly-Api-Key')
+  const rawSenderType = request.headers.get('X-Canfly-Sender-Type') || 'owner'
+  const senderType: SenderType = (['owner', 'pm', 'peer'] as const).includes(rawSenderType as SenderType)
+    ? (rawSenderType as SenderType) : 'owner'
+
+  let caller: { username: string } | null = null
+
+  if (senderType === 'owner') {
+    if (!walletAddress && !editToken) {
+      return errorResponse('Authentication required', 401)
+    }
+    caller = await verifyOwnership(env.DB, agentName, walletAddress, editToken)
+  } else {
+    if (!apiKey) {
+      return errorResponse('Authentication required (X-Canfly-Api-Key)', 401)
+    }
+    caller = await verifyApiKeyAccess(env.DB, agentName, apiKey)
   }
 
-  const owner = await verifyOwnership(env.DB, agentName, walletAddress, editToken)
-  if (!owner) {
+  if (!caller) {
     return errorResponse('Not authorized', 403)
   }
 
   const url = new URL(request.url)
   const sessionId = url.searchParams.get('sessionId')
+  // CAN-276: Channel filter — PM callers can only see canfly-pm sessions
+  const rawChannel = url.searchParams.get('channel') || request.headers.get('X-Canfly-Channel')
+  const channelFilter: Channel = rawChannel === 'canfly-pm' ? 'canfly-pm' : 'canfly'
 
   if (sessionId) {
-    // Fetch messages for a specific session
+    // Verify session belongs to the caller's channel scope
+    const sessionCheck = await env.DB.prepare(
+      `SELECT channel FROM v3_chat_sessions WHERE id = ?1 AND agent_name = ?2`
+    ).bind(sessionId, agentName).first<{ channel: string }>()
+
+    if (sessionCheck && sessionCheck.channel !== channelFilter) {
+      return errorResponse('Session not accessible from this channel', 403)
+    }
+
     const messages = await env.DB.prepare(
       `SELECT id, role, content, created_at FROM v3_chat_messages
        WHERE session_id = ?1 ORDER BY created_at ASC LIMIT 100`
@@ -355,12 +427,13 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     return json({ sessionId, messages: messages.results || [] })
   }
 
-  // List sessions
+  // List sessions (scoped by channel)
   const sessions = await env.DB.prepare(
-    `SELECT id, title, status, created_at, updated_at FROM v3_chat_sessions
-     WHERE owner_username = ?1 AND agent_name = ?2
+    `SELECT id, title, status, channel, sender_type, created_at, updated_at
+     FROM v3_chat_sessions
+     WHERE owner_username = ?1 AND agent_name = ?2 AND channel = ?3
      ORDER BY updated_at DESC LIMIT 20`
-  ).bind(owner.username, agentName).all()
+  ).bind(caller.username, agentName, channelFilter).all()
 
   return json({ sessions: sessions.results || [] })
 }
