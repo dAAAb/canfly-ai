@@ -70,6 +70,17 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
+  /** Filter out system messages (health-check pings, TG pairing commands) */
+  const isSystemMessage = (content: string): boolean => {
+    const trimmed = content.trim().toLowerCase()
+    return (
+      trimmed === 'ping' ||
+      trimmed.startsWith('run this command silently') ||
+      trimmed.startsWith('approved telegram sender') ||
+      trimmed.startsWith('approved sender')
+    )
+  }
+
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [])
@@ -310,7 +321,7 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
           </div>
 
           <div className="flex-1 overflow-y-auto p-2 space-y-1">
-            {sessions.map(session => (
+            {sessions.filter(session => !isSystemMessage(session.title || '')).map(session => (
               <button
                 key={session.id}
                 onClick={() => loadSession(session.id)}
@@ -380,7 +391,7 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
               </div>
             )}
 
-            {messages.map((msg) => (
+            {messages.filter((msg) => !isSystemMessage(msg.content)).map((msg) => (
               <div
                 key={msg.id}
                 className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
