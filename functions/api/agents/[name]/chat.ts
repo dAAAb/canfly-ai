@@ -64,15 +64,23 @@ async function verifyOwnership(
 
   if (!agent?.owner_username) return null
 
-  // Check edit token match
+  // Check edit token match (agent's own token)
   if (editToken && agent.edit_token === editToken) {
     return { username: agent.owner_username }
   }
 
-  // Check wallet address match
+  // Check edit token match (user's token — frontend stores user edit_token)
+  if (editToken) {
+    const user = await db.prepare(
+      'SELECT username FROM users WHERE username = ?1 AND edit_token = ?2'
+    ).bind(agent.owner_username, editToken).first<{ username: string }>()
+    if (user) return { username: user.username }
+  }
+
+  // Check wallet address match (case-insensitive for EVM checksum addresses)
   if (walletAddress) {
     const user = await db.prepare(
-      'SELECT username FROM users WHERE username = ?1 AND wallet_address = ?2'
+      'SELECT username FROM users WHERE username = ?1 AND LOWER(wallet_address) = LOWER(?2)'
     ).bind(agent.owner_username, walletAddress).first<{ username: string }>()
     if (user) return { username: user.username }
   }
