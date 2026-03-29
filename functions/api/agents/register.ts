@@ -13,6 +13,7 @@ import {
   generateApiKey,
   generatePairingCode,
   isValidAgentName,
+  toAgentSlug,
   parseBody,
 } from '../community/_helpers'
 
@@ -36,11 +37,13 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     return errorResponse('name is required', 400)
   }
 
+  // Enforce slug format for agent names
+  body.name = toAgentSlug(body.name)
   const { name, bio, platform, model, skills, avatarUrl, portfolio, owner_invite } = body
 
   if (!isValidAgentName(name)) {
     return errorResponse(
-      'Invalid agent name. Must be 2-50 chars, alphanumeric/hyphens/underscores/spaces.',
+      'Invalid agent name. Use lowercase letters, numbers, and hyphens (2-40 chars, e.g. my-lobster-01).',
       400
     )
   }

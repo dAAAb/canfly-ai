@@ -15,6 +15,8 @@ import {
   errorResponse,
   handleOptions,
   parseBody,
+  isValidAgentName,
+  toAgentSlug,
 } from '../community/_helpers'
 
 interface DeployBody {
@@ -108,6 +110,12 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
   }
   if (!body.zeaburApiKey || !body.serverNodeId || !body.agentName) {
     return errorResponse('zeaburApiKey, serverNodeId, and agentName are required', 400)
+  }
+
+  // Enforce slug format
+  body.agentName = toAgentSlug(body.agentName)
+  if (!isValidAgentName(body.agentName)) {
+    return errorResponse('Invalid agent name. Use lowercase letters, numbers, and hyphens (2-40 chars, e.g. my-lobster-01).', 400)
   }
   if (body.tier !== 'light' && body.tier !== 'general') {
     return errorResponse('tier must be "light" or "general"', 400)
