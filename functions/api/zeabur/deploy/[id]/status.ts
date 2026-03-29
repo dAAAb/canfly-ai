@@ -359,7 +359,7 @@ async function registerLobster(
     `INSERT INTO agents (name, display_name, owner_username, platform, avatar_url, bio, model,
                          hosting, capabilities, is_public, edit_token, source,
                          api_key, pairing_code, pairing_code_expires, registration_source)
-     VALUES (?1, ?2, ?3, 'zeabur', NULL, ?4, ?5,
+     VALUES (?1, ?2, ?3, 'openclaw', NULL, ?4, ?5,
              'zeabur-cloud', ?6, 1, ?7, 'registered',
              ?8, ?9, ?10, 'zeabur_deploy')`
   ).bind(
