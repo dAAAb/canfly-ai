@@ -135,7 +135,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
   const username = subdomainUsername || params.username
   const agentName = params.agentName
   const { currentLang, switchLang } = useQueryLang()
-  const { walletAddress, getAccessToken } = useAuth()
+  const { walletAddress, getAccessToken, isAuthenticated, login } = useAuth()
   const { t } = useTranslation()
   const [agent, setAgent] = useState<AgentData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -504,29 +504,38 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
               <p className="text-gray-300 text-lg max-w-2xl mx-auto">{agent.bio}</p>
             )}
 
-            {/* Action Buttons: Chat + Settings + Live Status */}
+            {/* Action Buttons: Live Status + Chat + Settings */}
             {deployment && (
               <div className="flex items-center justify-center gap-3 mt-6">
-                {/* Live Status Badge */}
+                {/* Live Status Badge — always public */}
                 <span className={`shrink-0 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${(STATUS_CONFIG[liveStatus] || STATUS_CONFIG.STOPPED).color}`}>
                   {t((STATUS_CONFIG[liveStatus] || STATUS_CONFIG.STOPPED).labelKey, (STATUS_CONFIG[liveStatus] || STATUS_CONFIG.STOPPED).fallback)}
                 </span>
 
-                {/* Chat Button */}
+                {/* Chat Button — visible to everyone; not logged in → trigger login */}
                 {isOnline ? (
-                  <Link
-                    to={`/u/${agent.owner_username}/chat/${agent.name}`}
-                    className="flex items-center gap-1.5 px-4 py-2 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 text-sm font-medium rounded-lg transition-colors border border-cyan-700/40"
-                  >
-                    💬 {t('chatWithAgent', 'Chat')}
-                  </Link>
+                  isAuthenticated ? (
+                    <Link
+                      to={`/u/${agent.owner_username}/chat/${agent.name}`}
+                      className="flex items-center gap-1.5 px-4 py-2 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 text-sm font-medium rounded-lg transition-colors border border-cyan-700/40"
+                    >
+                      💬 {t('chatWithAgent', 'Chat')}
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={login}
+                      className="flex items-center gap-1.5 px-4 py-2 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 text-sm font-medium rounded-lg transition-colors border border-cyan-700/40"
+                    >
+                      💬 {t('chatWithAgent', 'Chat')}
+                    </button>
+                  )
                 ) : (
                   <span className="flex items-center gap-1.5 px-4 py-2 bg-gray-700/30 text-gray-500 text-sm font-medium rounded-lg border border-gray-700/40 cursor-not-allowed">
                     💬 {t('chatWithAgent', 'Chat')}
                   </span>
                 )}
 
-                {/* Settings Button (owner only) */}
+                {/* Settings Button — owner only */}
                 {isOwner && (
                   <Link
                     to={`/u/${agent.owner_username}/agents/${agent.name}/settings`}
