@@ -41,6 +41,88 @@ interface ZeaburServer {
   ip: string
 }
 
+/** Health check component — polls chat API until the agent is ready */
+function WakingUpCheck({ agentName, username, navigate, t, getAuthHeaders }: {
+  agentName: string; username: string; navigate: (path: string) => void;
+  t: (key: string, fallback?: string) => string; getAuthHeaders: () => Record<string, string>
+}) {
+  const [ready, setReady] = useState(false)
+  const [checking, setChecking] = useState(true)
+
+  useEffect(() => {
+    let cancelled = false
+    let attempts = 0
+    const maxAttempts = 20 // ~60s
+
+    const check = async () => {
+      try {
+        const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/chat`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ message: 'ping' }),
+          signal: AbortSignal.timeout(10000),
+        })
+        if (res.ok && !cancelled) {
+          setReady(true)
+          setChecking(false)
+          return
+        }
+      } catch { /* not ready yet */ }
+
+      attempts++
+      if (attempts < maxAttempts && !cancelled) {
+        setTimeout(check, 3000)
+      } else if (!cancelled) {
+        setChecking(false) // give up waiting, show buttons anyway
+      }
+    }
+
+    // Start checking after 5s delay (give server time to restart)
+    setTimeout(check, 5000)
+    return () => { cancelled = true }
+  }, [agentName, getAuthHeaders])
+
+  if (checking) {
+    return (
+      <>
+        <div className="w-16 h-16 rounded-full bg-yellow-500/20 flex items-center justify-center mx-auto">
+          <Loader2 className="w-8 h-8 text-yellow-400 animate-spin" />
+        </div>
+        <h2 className="text-lg font-semibold text-white">{t('deploy.wakingUp', '🦞 Lobster is waking up...')}</h2>
+        <p className="text-sm text-gray-400">{t('deploy.wakingUpDesc', 'Setting up AI model and configuration. This takes about 30-60 seconds.')}</p>
+      </>
+    )
+  }
+
+  return (
+    <>
+      <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto">
+        <CheckCircle className="w-8 h-8 text-green-400" />
+      </div>
+      <h2 className="text-lg font-semibold text-white">
+        {ready ? t('deploy.successTitle', '🎉 Lobster is ready!') : t('deploy.successTitle')}
+      </h2>
+      <p className="text-sm text-gray-400">
+        {ready ? t('deploy.successDesc') : t('deploy.mayNeedMoment', 'Your lobster may need another moment to fully wake up.')}
+      </p>
+      <div className="flex gap-3 justify-center pt-2">
+        <button
+          onClick={() => navigate(`/u/${username}/chat/${encodeURIComponent(agentName)}`)}
+          className="px-5 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-medium transition-colors"
+        >
+          {t('deploy.goToChat')}
+        </button>
+        <button
+          onClick={() => navigate(`/u/${username}/agents/${encodeURIComponent(agentName)}/settings`)}
+          className="px-5 py-2.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm font-medium transition-colors border border-gray-700"
+        >
+          {t('deploy.goToSettings')}
+        </button>
+      </div>
+    </>
+  )
+}
+
 interface DeployWizardPageProps {
   subdomainUsername?: string
 }
@@ -536,27 +618,13 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
           {step === 5 && (
             <div className="space-y-4 text-center py-4">
               {deployStatus === 'running' ? (
-                <>
-                  <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto">
-                    <CheckCircle className="w-8 h-8 text-green-400" />
-                  </div>
-                  <h2 className="text-lg font-semibold text-white">{t('deploy.successTitle')}</h2>
-                  <p className="text-sm text-gray-400">{t('deploy.successDesc')}</p>
-                  <div className="flex gap-3 justify-center pt-2">
-                    <button
-                      onClick={() => navigate(`/u/${username}/chat/${encodeURIComponent(deployAgentName || agentName)}`)}
-                      className="px-5 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-medium transition-colors"
-                    >
-                      {t('deploy.goToChat')}
-                    </button>
-                    <button
-                      onClick={() => navigate(`/u/${username}/agents/${encodeURIComponent(deployAgentName || agentName)}/settings`)}
-                      className="px-5 py-2.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm font-medium transition-colors border border-gray-700"
-                    >
-                      {t('deploy.goToSettings')}
-                    </button>
-                  </div>
-                </>
+                <WakingUpCheck
+                  agentName={deployAgentName || agentName}
+                  username={username}
+                  navigate={navigate}
+                  t={t}
+                  getAuthHeaders={getAuthHeaders}
+                />
               ) : deployError ? (
                 <>
                   <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mx-auto">
