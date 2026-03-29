@@ -49,6 +49,8 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
   // API Key regeneration
   const [regenerating, setRegenerating] = useState(false)
   const [newApiKey, setNewApiKey] = useState<string | null>(null)
+  const [zeaburInjected, setZeaburInjected] = useState(false)
+  const [zeaburInjectError, setZeaburInjectError] = useState<string | null>(null)
   const [regenError, setRegenError] = useState<string | null>(null)
   const [keyCopied, setKeyCopied] = useState(false)
 
@@ -62,6 +64,8 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
     setRegenerating(true)
     setRegenError(null)
     setNewApiKey(null)
+    setZeaburInjected(false)
+    setZeaburInjectError(null)
 
     try {
       const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/regenerate-key`, {
@@ -72,8 +76,10 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
         const data = (await res.json()) as { error?: string }
         throw new Error(data.error || `Failed (${res.status})`)
       }
-      const data = (await res.json()) as { apiKey: string }
+      const data = (await res.json()) as { apiKey: string; zeaburInjected?: boolean; zeaburError?: string }
       setNewApiKey(data.apiKey)
+      setZeaburInjected(!!data.zeaburInjected)
+      if (data.zeaburError) setZeaburInjectError(data.zeaburError)
     } catch (err) {
       setRegenError((err as Error).message)
     } finally {
@@ -197,12 +203,28 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
 
                 {newApiKey ? (
                   <div className="mt-3 space-y-2">
-                    <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20">
-                      <p className="text-xs text-green-400 mb-2">
-                        {t('settings.regenSuccess', '✅ New API key generated. Copy it now — it won\'t be shown again.')}
+                    {zeaburInjected ? (
+                      <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20">
+                        <p className="text-xs text-green-400">
+                          ✅ {t('settings.regenAutoInjected', 'API key regenerated and automatically deployed to your Zeabur service. The agent is restarting now.')}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
+                        <p className="text-xs text-yellow-400 mb-2">
+                          ⚠️ {t('settings.regenManual', 'API key regenerated, but could not auto-inject into Zeabur. Copy the key and set it manually.')}
+                        </p>
+                        {zeaburInjectError && (
+                          <p className="text-[11px] text-yellow-400/60 mb-2">Reason: {zeaburInjectError}</p>
+                        )}
+                      </div>
+                    )}
+                    <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                      <p className="text-[11px] text-gray-400 mb-1.5">
+                        {t('settings.regenKeyCopy', 'Your new API key (save it — shown only once):')}
                       </p>
                       <div className="flex items-center gap-2">
-                        <code className="flex-1 text-xs font-mono text-green-300 bg-black/40 px-3 py-2 rounded-lg break-all select-all">
+                        <code className="flex-1 text-xs font-mono text-cyan-300 bg-black/40 px-3 py-2 rounded-lg break-all select-all">
                           {newApiKey}
                         </code>
                         <button
@@ -211,15 +233,17 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
                             setKeyCopied(true)
                             setTimeout(() => setKeyCopied(false), 2000)
                           }}
-                          className="shrink-0 p-2 rounded-lg bg-green-500/20 hover:bg-green-500/30 text-green-400 transition-colors"
+                          className="shrink-0 p-2 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 transition-colors"
                         >
                           {keyCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                         </button>
                       </div>
                     </div>
-                    <p className="text-[11px] text-gray-500">
-                      {t('settings.regenEnvHint', 'Set this as CANFLY_API_KEY in your agent\'s environment variables (Zeabur Dashboard → Service → Variables).')}
-                    </p>
+                    {!zeaburInjected && (
+                      <p className="text-[11px] text-gray-500">
+                        {t('settings.regenEnvHint', 'Set this as CANFLY_API_KEY in your agent\'s environment variables (Zeabur Dashboard → Service → Variables).')}
+                      </p>
+                    )}
                   </div>
                 ) : (
                   <>
