@@ -1,4 +1,4 @@
-import { createContext, useMemo } from 'react'
+import { createContext, useMemo, useCallback } from 'react'
 import { PrivyProvider, usePrivy } from '@privy-io/react-auth'
 
 export type WorldIdLevel = null | 'device' | 'orb'
@@ -9,12 +9,14 @@ export interface AuthValue {
   ready: boolean
   login: () => void
   logout: () => Promise<void>
+  getAccessToken: () => Promise<string | null>
   worldIdLevel: WorldIdLevel
   walletAddress: string | null
 }
 
 const NOOP = () => {}
 const NOOP_ASYNC = () => Promise.resolve()
+const NOOP_TOKEN = () => Promise.resolve(null as string | null)
 
 const defaultAuth: AuthValue = {
   user: null,
@@ -22,6 +24,7 @@ const defaultAuth: AuthValue = {
   ready: true,
   login: NOOP,
   logout: NOOP_ASYNC,
+  getAccessToken: NOOP_TOKEN,
   worldIdLevel: null,
   walletAddress: null,
 }
@@ -56,15 +59,24 @@ function PrivyAuthBridge({ children }: { children: React.ReactNode }) {
     return null
   })()
 
+  const getAccessToken = useCallback(async (): Promise<string | null> => {
+    try {
+      return await privy.getAccessToken()
+    } catch {
+      return null
+    }
+  }, [privy])
+
   const value = useMemo<AuthValue>(() => ({
     user,
     isAuthenticated,
     ready: privy.ready,
     login: privy.login,
     logout: privy.logout,
+    getAccessToken,
     worldIdLevel,
     walletAddress,
-  }), [user, isAuthenticated, privy.ready, privy.login, privy.logout, worldIdLevel, walletAddress])
+  }), [user, isAuthenticated, privy.ready, privy.login, privy.logout, getAccessToken, worldIdLevel, walletAddress])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
