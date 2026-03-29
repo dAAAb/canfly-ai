@@ -118,7 +118,12 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     return errorResponse('Authentication required (X-Wallet-Address or X-Edit-Token)', 401)
   }
 
-  const owner = await verifyOwnership(env.DB, agentName, walletAddress, editToken)
+  let owner: { username: string } | null
+  try {
+    owner = await verifyOwnership(env.DB, agentName, walletAddress, editToken)
+  } catch (err) {
+    return errorResponse(`Auth lookup failed: ${(err as Error).message}`, 500)
+  }
   if (!owner) {
     return errorResponse('Not authorized — you must own this agent', 403)
   }
@@ -141,16 +146,24 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   }
 
   // Resolve agent gateway URL
-  const gatewayUrl = await resolveGatewayUrl(env.DB, agentName)
+  let gatewayUrl: string | null
+  try {
+    gatewayUrl = await resolveGatewayUrl(env.DB, agentName)
+  } catch (err) {
+    return errorResponse(`Failed to resolve gateway: ${(err as Error).message}`, 500)
+  }
   if (!gatewayUrl) {
     return errorResponse('Agent has no gateway URL configured — deploy the agent first', 422)
   }
 
   // Create/get session
-  const sessionId = await getOrCreateSession(env.DB, body.sessionId, owner.username, agentName, message)
-
-  // Save user message
-  await saveMessage(env.DB, sessionId, 'user', message)
+  let sessionId: string
+  try {
+    sessionId = await getOrCreateSession(env.DB, body.sessionId, owner.username, agentName, message)
+    await saveMessage(env.DB, sessionId, 'user', message)
+  } catch (err) {
+    return errorResponse(`Session/message DB error: ${(err as Error).message}`, 500)
+  }
 
   // Load recent chat history for context (last 20 messages)
   const history = await env.DB.prepare(
