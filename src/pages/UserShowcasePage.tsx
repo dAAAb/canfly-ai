@@ -33,6 +33,54 @@ import {
   RefreshCw,
 } from 'lucide-react'
 
+/** Live Zeabur status badge — polls every 30s */
+function LiveStatusBadge({ deploymentId, canflyStatus, t }: {
+  deploymentId: string
+  canflyStatus: string
+  t: (key: string, fallback?: string) => string
+}) {
+  const [zeaburStatus, setZeaburStatus] = useState<string | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+
+    const check = async () => {
+      try {
+        const res = await fetch(`/api/zeabur/deploy/${deploymentId}/live-status`)
+        if (res.ok && !cancelled) {
+          const data = (await res.json()) as { zeaburStatus?: string | null }
+          setZeaburStatus(data.zeaburStatus || null)
+        }
+      } catch { /* ignore */ }
+    }
+
+    check()
+    const interval = setInterval(check, 30000)
+    return () => { cancelled = true; clearInterval(interval) }
+  }, [deploymentId])
+
+  // Use Zeabur live status if available, otherwise fall back to CanFly DB status
+  const liveStatus = zeaburStatus || canflyStatus.toUpperCase()
+
+  const statusConfig: Record<string, { color: string; label: string }> = {
+    RUNNING: { color: 'text-green-400 bg-green-400/10 border-green-600/40', label: t('deployStatus.online', 'Online') },
+    QUEUED: { color: 'text-yellow-400 bg-yellow-400/10 border-yellow-600/40', label: t('deployStatus.queued', 'Queued') },
+    DEPLOYING: { color: 'text-blue-400 bg-blue-400/10 border-blue-600/40', label: t('deployStatus.deploying', 'Deploying') },
+    STOPPED: { color: 'text-gray-400 bg-gray-400/10 border-gray-600/40', label: t('deployStatus.offline', 'Offline') },
+    ERROR: { color: 'text-red-400 bg-red-400/10 border-red-600/40', label: t('deployStatus.failed', 'Failed') },
+    FAILED: { color: 'text-red-400 bg-red-400/10 border-red-600/40', label: t('deployStatus.failed', 'Failed') },
+    PENDING: { color: 'text-yellow-400 bg-yellow-400/10 border-yellow-600/40', label: t('deployStatus.pending', 'Pending') },
+  }
+
+  const cfg = statusConfig[liveStatus] || statusConfig.STOPPED
+
+  return (
+    <span className={`shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${cfg.color}`}>
+      {cfg.label}
+    </span>
+  )
+}
+
 interface Skill {
   name: string
   slug: string | null
@@ -697,14 +745,6 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {user.deployments.map((dep) => {
-                  const statusConfig: Record<string, { color: string; label: string }> = {
-                    pending: { color: 'text-yellow-400 bg-yellow-400/10 border-yellow-600/40', label: t('deployStatus.pending', 'Pending') },
-                    deploying: { color: 'text-blue-400 bg-blue-400/10 border-blue-600/40', label: t('deployStatus.deploying', 'Deploying') },
-                    running: { color: 'text-green-400 bg-green-400/10 border-green-600/40', label: t('deployStatus.online', 'Online') },
-                    failed: { color: 'text-red-400 bg-red-400/10 border-red-600/40', label: t('deployStatus.failed', 'Failed') },
-                    stopped: { color: 'text-gray-400 bg-gray-400/10 border-gray-600/40', label: t('deployStatus.offline', 'Offline') },
-                  }
-                  const cfg = statusConfig[dep.status] || statusConfig.stopped
                   return (
                     <div
                       key={dep.id}
@@ -744,9 +784,7 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
                             )
                           })()}
                         </div>
-                        <span className={`shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${cfg.color}`}>
-                          {cfg.label}
-                        </span>
+                        <LiveStatusBadge deploymentId={dep.id} canflyStatus={dep.status} t={t} />
                       </div>
 
                       {/* Error info + retry */}
