@@ -35,11 +35,24 @@ import {
 
 /* ── Types ──────────────────────────────────────── */
 
+interface ZeaburProject {
+  _id: string
+  name: string
+}
+
 interface ZeaburServer {
   _id: string
   name: string
   provider: string
   ip: string
+  projects?: ZeaburProject[]
+}
+
+type ServerStatus = 'empty' | 'has-canfly' | 'has-other'
+
+interface ServerWithStatus extends ZeaburServer {
+  status: ServerStatus
+  canalyAgentName?: string // agent name if has-canfly
 }
 
 /** Health check component — polls chat API until the agent is ready */
@@ -220,23 +233,82 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
   const loadServers = useCallback(async () => {
     setLoadingServers(true)
     try {
+      // Fetch servers with their projects from Zeabur
       const res = await fetch(ZEABUR_PROXY, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ zeaburApiKey: zeaburApiKey.trim(), query: '{ servers { _id name provider ip } }' }),
+        body: JSON.stringify({
+          zeaburApiKey: zeaburApiKey.trim(),
+          query: '{ servers { _id name provider ip projects { _id name } } }',
+        }),
       })
       const data = (await res.json()) as {
         data?: { servers?: ZeaburServer[] }
       }
-      const svrs = data.data?.servers || []
-      setServers(svrs)
-      if (svrs.length === 1) setSelectedServer(svrs[0]._id)
+      const rawServers = data.data?.servers || []
+
+      // Fetch CanFly deployments to identify which projects are ours
+      let canflyProjectIds = new Map<string, string>() // projectId → agentName
+      try {
+        const depRes = await fetch(`/api/community/agents?owner=${encodeURIComponent(username)}&limit=100`)
+        if (depRes.ok) {
+          // We need deployment data, not agents — check zeabur deployments via metadata
+          // Actually, let's query the user's deployments from the zeabur status endpoint
+        }
+      } catch { /* ignore */ }
+
+      // Also check v3_zeabur_deployments via a lightweight endpoint
+      try {
+        const headers = await getAuthHeaders()
+        const depRes = await fetch(`/api/zeabur/deploy?owner=${encodeURIComponent(username)}`, { headers })
+        if (depRes.ok) {
+          const depData = (await depRes.json()) as {
+            deployments?: Array<{ zeabur_project_id: string; agent_name: string; status: string }>
+          }
+          for (const dep of depData.deployments || []) {
+            canflyProjectIds.set(dep.zeabur_project_id, dep.agent_name)
+          }
+        }
+      } catch { /* ignore — classification will default to 'has-other' */ }
+
+      // Classify each server
+      const classified: ServerWithStatus[] = rawServers.map(srv => {
+        const projects = srv.projects || []
+        if (projects.length === 0) {
+          return { ...srv, status: 'empty' as const }
+        }
+        // Check if any project belongs to CanFly
+        const canflyProject = projects.find(p => canflyProjectIds.has(p._id))
+        if (canflyProject) {
+          return {
+            ...srv,
+            status: 'has-canfly' as const,
+            canalyAgentName: canflyProjectIds.get(canflyProject._id),
+          }
+        }
+        return { ...srv, status: 'has-other' as const }
+      })
+
+      // Sort: empty first, then has-canfly, then has-other
+      classified.sort((a, b) => {
+        const order: Record<ServerStatus, number> = { empty: 0, 'has-canfly': 1, 'has-other': 2 }
+        return order[a.status] - order[b.status]
+      })
+
+      setServers(classified)
+      // Auto-select first empty server
+      const firstEmpty = classified.find(s => s.status === 'empty')
+      if (firstEmpty) {
+        setSelectedServer(firstEmpty._id)
+      } else if (classified.length === 1 && classified[0].status !== 'has-other') {
+        setSelectedServer(classified[0]._id)
+      }
     } catch {
       setServers([])
     } finally {
       setLoadingServers(false)
     }
-  }, [zeaburApiKey])
+  }, [zeaburApiKey, username, getAuthHeaders])
 
   useEffect(() => {
     if (step === 4 && keyValid && servers.length === 0) {
@@ -527,28 +599,56 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {servers.map((srv) => (
-                    <button
-                      key={srv._id}
-                      onClick={() => setSelectedServer(srv._id)}
-                      className={`w-full text-left px-4 py-3 rounded-xl border transition-colors ${
-                        selectedServer === srv._id
-                          ? 'border-cyan-500 bg-cyan-500/10 text-white'
-                          : 'border-gray-700 bg-gray-900 text-gray-300 hover:border-gray-600'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <Server className="w-4 h-4 flex-shrink-0" />
-                        <div className="min-w-0">
-                          <p className="text-sm font-medium truncate">{srv.name || srv._id}</p>
-                          <p className="text-xs text-gray-500">{srv.provider} · {srv.ip}</p>
+                  {(servers as ServerWithStatus[]).map((srv) => {
+                    const isOther = srv.status === 'has-other'
+                    const isCanfly = srv.status === 'has-canfly'
+                    const isEmpty = srv.status === 'empty'
+                    const isSelected = selectedServer === srv._id
+                    const isDisabled = isOther
+
+                    return (
+                      <button
+                        key={srv._id}
+                        onClick={() => !isDisabled && setSelectedServer(srv._id)}
+                        disabled={isDisabled}
+                        className={`w-full text-left px-4 py-3 rounded-xl border transition-colors ${
+                          isDisabled
+                            ? 'border-gray-800 bg-gray-900/50 text-gray-600 cursor-not-allowed opacity-60'
+                            : isSelected
+                              ? 'border-cyan-500 bg-cyan-500/10 text-white'
+                              : 'border-gray-700 bg-gray-900 text-gray-300 hover:border-gray-600'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <Server className={`w-4 h-4 flex-shrink-0 ${isDisabled ? 'text-gray-700' : ''}`} />
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-2">
+                              <p className="text-sm font-medium truncate">{srv.name || srv._id}</p>
+                              {isEmpty && (
+                                <span className="shrink-0 text-[10px] px-1.5 py-0.5 rounded-full bg-green-500/15 text-green-400 border border-green-500/30">
+                                  {t('deploy.serverEmpty', 'Ready')}
+                                </span>
+                              )}
+                              {isCanfly && (
+                                <span className="shrink-0 text-[10px] px-1.5 py-0.5 rounded-full bg-yellow-500/15 text-yellow-400 border border-yellow-500/30">
+                                  🦞 {srv.canalyAgentName || t('deploy.serverHasAgent', 'Has agent')}
+                                </span>
+                              )}
+                              {isOther && (
+                                <span className="shrink-0 text-[10px] px-1.5 py-0.5 rounded-full bg-gray-500/15 text-gray-500 border border-gray-600/30">
+                                  🔒 {t('deploy.serverHasOther', 'In use')}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs text-gray-500">{srv.provider} · {srv.ip}</p>
+                          </div>
+                          {isSelected && !isDisabled && (
+                            <Check className="w-4 h-4 text-cyan-400 ml-auto flex-shrink-0" />
+                          )}
                         </div>
-                        {selectedServer === srv._id && (
-                          <Check className="w-4 h-4 text-cyan-400 ml-auto flex-shrink-0" />
-                        )}
-                      </div>
-                    </button>
-                  ))}
+                      </button>
+                    )
+                  })}
                 </div>
               )}
             </div>
