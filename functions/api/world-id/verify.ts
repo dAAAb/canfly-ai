@@ -9,6 +9,7 @@
  * Auth: X-Edit-Token header
  */
 import { type Env, json, errorResponse, handleOptions, parseBody } from '../community/_helpers'
+import { authenticateRequest } from '../_auth'
 
 interface VerifyBody {
   username: string
@@ -22,9 +23,8 @@ interface VerifyBody {
 }
 
 export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
-  const editToken = request.headers.get('X-Edit-Token')
-  const walletHeader = request.headers.get('X-Wallet-Address')
-  if (!editToken && !walletHeader) {
+  const auth = await authenticateRequest(request, env.DB, env.PRIVY_APP_ID)
+  if (!auth) {
     return errorResponse('Authentication required', 401)
   }
 
@@ -36,19 +36,15 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
   const { username, idkit_result: idkit } = body
 
   // Verify auth matches this user
-  const user = await env.DB.prepare(
-    'SELECT username, edit_token, wallet_address FROM users WHERE username = ?1'
-  ).bind(username).first<{ username: string; edit_token: string; wallet_address: string | null }>()
-
-  if (!user) return errorResponse('User not found', 404)
-
-  const tokenOk = editToken && user.edit_token === editToken
-  const walletOk = walletHeader && user.wallet_address &&
-    walletHeader.toLowerCase() === user.wallet_address.toLowerCase()
-
-  if (!tokenOk && !walletOk) {
+  if (auth.username !== username) {
     return errorResponse('Unauthorized', 403)
   }
+
+  const user = await env.DB.prepare(
+    'SELECT username, wallet_address FROM users WHERE username = ?1'
+  ).bind(username).first<{ username: string; wallet_address: string | null }>()
+
+  if (!user) return errorResponse('User not found', 404)
 
   // Extract nullifier from IDKit result
   const firstResponse = idkit.responses?.[0]

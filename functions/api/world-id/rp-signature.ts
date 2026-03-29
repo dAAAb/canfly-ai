@@ -5,12 +5,11 @@
  */
 import { type Env, json, errorResponse, handleOptions, CORS_HEADERS } from '../community/_helpers'
 import { signRpRequest } from './_rp-sign'
+import { authenticateRequest } from '../_auth'
 
 export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
-  // Auth: X-Edit-Token or X-Wallet-Address
-  const editToken = request.headers.get('X-Edit-Token')
-  const walletHeader = request.headers.get('X-Wallet-Address')
-  if (!editToken && !walletHeader) {
+  const auth = await authenticateRequest(request, env.DB, env.PRIVY_APP_ID)
+  if (!auth) {
     return errorResponse('Authentication required', 401)
   }
 

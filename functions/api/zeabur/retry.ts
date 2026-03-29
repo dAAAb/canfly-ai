@@ -13,6 +13,7 @@ import {
   handleOptions,
   parseBody,
 } from '../community/_helpers'
+import { authenticateRequest } from '../_auth'
 
 interface RetryBody {
   deploymentId: string
@@ -36,25 +37,13 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     return errorResponse('Deployment not found', 404)
   }
 
-  // Auth: check edit token or wallet address matches owner
-  const editToken = request.headers.get('X-Edit-Token')
-  const walletAddress = request.headers.get('X-Wallet-Address')
+  // Auth: verify authenticated user is the deployment owner
+  const auth = await authenticateRequest(request, env.DB, env.PRIVY_APP_ID)
+  if (!auth) {
+    return errorResponse('Authentication required', 401)
+  }
   const ownerUsername = deployment.owner_username as string
-
-  let authorized = false
-  if (editToken) {
-    const user = await env.DB.prepare(
-      'SELECT username FROM users WHERE username = ?1 AND edit_token = ?2'
-    ).bind(ownerUsername, editToken).first()
-    authorized = !!user
-  }
-  if (!authorized && walletAddress) {
-    const user = await env.DB.prepare(
-      'SELECT username FROM users WHERE username = ?1 AND LOWER(wallet_address) = LOWER(?2)'
-    ).bind(ownerUsername, walletAddress).first()
-    authorized = !!user
-  }
-  if (!authorized) {
+  if (auth.username !== ownerUsername) {
     return errorResponse('Unauthorized. Only the deployment owner can retry.', 403)
   }
 
