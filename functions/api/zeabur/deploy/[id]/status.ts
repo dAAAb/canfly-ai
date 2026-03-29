@@ -13,6 +13,7 @@ import {
   handleOptions,
   generateApiKey,
   generatePairingCode,
+  toAgentSlug,
 } from '../../../community/_helpers'
 
 const ZEABUR_GRAPHQL = 'https://api.zeabur.com/graphql'
@@ -228,7 +229,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
     )
 
     // 3. Add domain (sslip.io based on server IP)
-    const agentSlug = (metadata.agentName || `lobster-${deployment.zeabur_project_id.slice(0, 8)}`).toLowerCase().replace(/[^a-z0-9-]/g, '-')
+    const agentSlug = toAgentSlug(metadata.agentName || `lobster-${deployment.zeabur_project_id.slice(0, 8)}`)
     const domain = serverIp ? `${agentSlug}.${serverIp}.sslip.io` : null
     if (domain) {
       await zeaburGQL(zeaburApiKey,
@@ -328,7 +329,7 @@ async function registerLobster(
   },
   deploymentId: string
 ): Promise<string> {
-  const baseName = opts.agentName
+  const baseName = toAgentSlug(opts.agentName)
 
   // Ensure uniqueness
   let agentName = baseName

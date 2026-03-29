@@ -167,6 +167,16 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
   const [nameChecking, setNameChecking] = useState(false)
   const [nameAvailable, setNameAvailable] = useState<boolean | null>(null)
 
+  /** Convert input to valid agent slug: lowercase + digits + hyphens only */
+  const toSlug = (s: string): string =>
+    s.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '').replace(/-{2,}/g, '-').slice(0, 40).replace(/-+$/, '')
+
+  const handleAgentNameChange = (raw: string) => {
+    // Allow typing freely but auto-slugify
+    const slug = toSlug(raw)
+    setAgentName(slug)
+  }
+
   const [deploying, setDeploying] = useState(false)
   const [deploymentId, setDeploymentId] = useState<string | null>(null)
   const [deployStatus, setDeployStatus] = useState<string | null>(null)
@@ -274,7 +284,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
         body: JSON.stringify({
           zeaburApiKey: zeaburApiKey.trim(),
           serverNodeId: selectedServer,
-          agentName: agentName.trim().replace(/\s+/g, ' '),
+          agentName: agentName.trim(),
           agentBio: agentBio.trim() || undefined,
           aiHubKey: aiHubKey.trim() || undefined,
           tier: 'general',
@@ -585,10 +595,10 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
                   <input
                     type="text"
                     value={agentName}
-                    onChange={(e) => setAgentName(e.target.value)}
-                    placeholder={t('deploy.agentNamePlaceholder')}
-                    maxLength={50}
-                    className="w-full px-4 pr-10 py-3 bg-gray-900 border border-gray-700 text-white placeholder-gray-600 rounded-xl focus:outline-none focus:border-cyan-500/50 transition-colors text-sm"
+                    onChange={(e) => handleAgentNameChange(e.target.value)}
+                    placeholder="my-awesome-lobster"
+                    maxLength={40}
+                    className="w-full px-4 pr-10 py-3 bg-gray-900 border border-gray-700 text-white placeholder-gray-600 rounded-xl focus:outline-none focus:border-cyan-500/50 transition-colors text-sm font-mono"
                   />
                   <span className="absolute right-3 top-1/2 -translate-y-1/2">
                     {nameChecking && <Loader2 className="w-4 h-4 text-gray-400 animate-spin" />}
@@ -597,7 +607,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
                   </span>
                 </div>
                 <p className="text-[11px] mt-1 text-gray-500">
-                  {nameAvailable === false ? t('deploy.nameTaken') : nameAvailable === true ? t('deploy.nameAvailable') : t('deploy.nameHint')}
+                  {nameAvailable === false ? t('deploy.nameTaken') : nameAvailable === true ? t('deploy.nameAvailable') : '💡 Lowercase letters, numbers, and hyphens only (e.g. my-lobster-01)'}
                 </p>
               </div>
               <div>

@@ -55,9 +55,24 @@ export function isValidUsername(username: string): boolean {
   return /^[a-zA-Z0-9_-]{2,30}$/.test(username)
 }
 
-/** Validate agent name: alphanumeric + hyphens + underscores + spaces, 2-50 chars */
+/** Validate agent name (slug format): lowercase alphanumeric + hyphens, 2-40 chars */
 export function isValidAgentName(name: string): boolean {
-  return /^[a-zA-Z0-9_ -]{2,50}$/.test(name)
+  return /^[a-z0-9][a-z0-9-]{0,38}[a-z0-9]$/.test(name) && !name.includes('--')
+}
+
+/**
+ * Convert any string into a valid agent slug.
+ * "My Second Zeabur Lobster" → "my-second-zeabur-lobster"
+ */
+export function toAgentSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')  // non-alphanumeric → hyphen
+    .replace(/^-+|-+$/g, '')       // trim leading/trailing hyphens
+    .replace(/-{2,}/g, '-')        // collapse consecutive hyphens
+    .slice(0, 40)                  // max 40 chars
+    .replace(/-+$/, '')            // trim trailing hyphen after slice
 }
 
 /** Parse JSON body safely */

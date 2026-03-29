@@ -16,6 +16,7 @@ import {
   parseBody,
   generateApiKey,
   generatePairingCode,
+  toAgentSlug,
 } from '../community/_helpers'
 
 interface ZeaburCallbackBody {
@@ -190,7 +191,7 @@ async function registerLobster(
   body: ZeaburCallbackBody,
   deploymentId: string
 ): Promise<string> {
-  const baseName = body.agentName || `lobster-${body.projectId.slice(0, 8)}`
+  const baseName = toAgentSlug(body.agentName || `lobster-${body.projectId.slice(0, 8)}`)
 
   // Ensure uniqueness
   let agentName = baseName
