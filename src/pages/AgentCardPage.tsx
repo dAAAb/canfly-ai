@@ -299,18 +299,19 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
           .catch(() => {})
           .finally(() => setJobsLoaded(true))
 
-        // Fetch deployment data for this agent (for Chat/Settings buttons)
+        // Fetch deployment data for this agent (for live status + Chat button)
         const agentData = data as AgentData
         if (agentData.owner_username) {
-          getApiAuthHeaders({ getAccessToken, walletAddress }).then(headers =>
-            fetch(`/api/zeabur/deploy?owner=${encodeURIComponent(agentData.owner_username!)}`, { headers })
-          )
-            .then(r => r.ok ? r.json() : null)
-            .then((d: { deployments?: Array<{ id: string; agent_name: string; status: string }> } | null) => {
+          (async () => {
+            try {
+              const headers = await getApiAuthHeaders({ getAccessToken, walletAddress })
+              const res = await fetch(`/api/zeabur/deploy?owner=${encodeURIComponent(agentData.owner_username!)}`, { headers })
+              if (!res.ok) return
+              const d = (await res.json()) as { deployments?: Array<{ id: string; agent_name: string; status: string }> }
               const dep = d?.deployments?.find(dep => dep.agent_name === agentName)
               if (dep) setDeployment({ id: dep.id, status: dep.status })
-            })
-            .catch(() => {})
+            } catch { /* auth not available or API error — silently ignore */ }
+          })()
         }
       })
       .catch(() => setError(true))
