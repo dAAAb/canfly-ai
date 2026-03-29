@@ -236,6 +236,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
       finalAgentName = await registerLobster(env, {
         ownerUsername: deployment.owner_username,
         agentName: metadata.agentName || `lobster-${deployment.zeabur_project_id.slice(0, 8)}`,
+        agentDisplayName: metadata.agentDisplayName,
         agentBio: metadata.agentBio,
         agentModel: metadata.agentModel,
         deployUrl: publicUrl || gatewayUrl || undefined,
@@ -302,6 +303,7 @@ async function registerLobster(
   opts: {
     ownerUsername: string
     agentName: string
+    agentDisplayName?: string
     agentBio?: string
     agentModel?: string
     deployUrl?: string
@@ -310,6 +312,7 @@ async function registerLobster(
   deploymentId: string
 ): Promise<string> {
   const baseName = toAgentSlug(opts.agentName)
+  const displayName = opts.agentDisplayName || opts.agentName
 
   // Ensure uniqueness
   let agentName = baseName
@@ -328,14 +331,15 @@ async function registerLobster(
   const expires = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().replace('T', ' ').slice(0, 19)
 
   await env.DB.prepare(
-    `INSERT INTO agents (name, owner_username, platform, avatar_url, bio, model,
+    `INSERT INTO agents (name, display_name, owner_username, platform, avatar_url, bio, model,
                          hosting, capabilities, is_public, edit_token, source,
                          api_key, pairing_code, pairing_code_expires, registration_source)
-     VALUES (?1, ?2, 'zeabur', NULL, ?3, ?4,
-             'zeabur-cloud', ?5, 1, ?6, 'registered',
-             ?7, ?8, ?9, 'zeabur_deploy')`
+     VALUES (?1, ?2, ?3, 'zeabur', NULL, ?4, ?5,
+             'zeabur-cloud', ?6, 1, ?7, 'registered',
+             ?8, ?9, ?10, 'zeabur_deploy')`
   ).bind(
     agentName,
+    displayName,
     opts.ownerUsername,
     opts.agentBio || `Deployed on Zeabur`,
     opts.agentModel || null,

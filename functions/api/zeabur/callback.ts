@@ -211,14 +211,15 @@ async function registerLobster(
 
   // Insert agent with owner binding
   await env.DB.prepare(
-    `INSERT INTO agents (name, owner_username, platform, avatar_url, bio, model,
+    `INSERT INTO agents (name, display_name, owner_username, platform, avatar_url, bio, model,
                          hosting, capabilities, is_public, edit_token, source,
                          api_key, pairing_code, pairing_code_expires, registration_source)
-     VALUES (?1, ?2, 'zeabur', NULL, ?3, ?4,
-             'zeabur-cloud', ?5, 1, ?6, 'registered',
-             ?7, ?8, ?9, 'zeabur_deploy')`
+     VALUES (?1, ?2, ?3, 'zeabur', NULL, ?4, ?5,
+             'zeabur-cloud', ?6, 1, ?7, 'registered',
+             ?8, ?9, ?10, 'zeabur_deploy')`
   ).bind(
     agentName,
+    agentName, /* display_name — callback doesn't have display name, use slug */
     body.ownerUsername,
     body.agentBio || `Deployed on Zeabur (${body.templateId || 'custom'})`,
     body.agentModel || null,
