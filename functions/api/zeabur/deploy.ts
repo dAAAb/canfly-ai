@@ -270,3 +270,28 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     message: 'Deployment initiated. Poll /api/zeabur/deploy/{id}/status for updates.',
   }, 201)
 }
+
+// ── GET /api/zeabur/deploy?owner=username — List user's deployments ──
+export const onRequestGet: PagesFunction<Env> = async ({ env, request }) => {
+  const auth = await authenticateRequest(request, env.DB, env.PRIVY_APP_ID)
+  if (!auth) {
+    return errorResponse('Authentication required', 401)
+  }
+
+  const url = new URL(request.url)
+  const owner = url.searchParams.get('owner') || auth.username
+
+  // Only allow querying own deployments
+  if (owner !== auth.username) {
+    return errorResponse('Can only query own deployments', 403)
+  }
+
+  const result = await env.DB.prepare(
+    `SELECT id, agent_name, zeabur_project_id, zeabur_service_id, status, deploy_url, created_at, updated_at
+     FROM v3_zeabur_deployments
+     WHERE owner_username = ?1
+     ORDER BY created_at DESC LIMIT 50`
+  ).bind(owner).all()
+
+  return json({ deployments: result.results || [] })
+}
