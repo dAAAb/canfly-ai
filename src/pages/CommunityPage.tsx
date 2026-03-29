@@ -205,7 +205,17 @@ export default function CommunityPage() {
     const discoveries = unclaimed
       .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 
-    return { featured, recentlyClaimed, topShrimp, discoveries }
+    // Catch-all: claimed users not in any section above
+    const placed = new Set([
+      ...featured.map(u => u.username),
+      ...recentlyClaimed.map(u => u.username),
+      ...topShrimp.map(u => u.username),
+    ])
+    const otherFlyers = claimed
+      .filter(u => !placed.has(u.username))
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+
+    return { featured, recentlyClaimed, topShrimp, discoveries, otherFlyers }
   }, [filteredUsers])
 
   // Sort-based flat list
@@ -612,6 +622,13 @@ export default function CommunityPage() {
                     t('community.sections.topShrimp'),
                     <span className="text-lg">🦞</span>,
                     sections.topShrimp
+                  )}
+
+                  {/* 🧑‍✈️ Other Flyers */}
+                  {renderUserSection(
+                    t('community.sections.otherFlyers', 'Flyers'),
+                    <span className="text-lg">🧑‍✈️</span>,
+                    sections.otherFlyers
                   )}
 
                   {/* 🆕 New Discoveries */}
