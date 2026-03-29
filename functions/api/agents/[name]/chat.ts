@@ -18,6 +18,7 @@
  * GET /api/agents/:name/chat?sessionId=xxx&channel=canfly — Fetch chat history
  */
 import { type Env, json, errorResponse, handleOptions, CORS_HEADERS } from '../../community/_helpers'
+import { authenticateRequest } from '../../_auth'
 
 type SenderType = 'owner' | 'pm' | 'peer'
 type Channel = 'canfly' | 'canfly-pm'
@@ -51,41 +52,20 @@ async function resolveGatewayUrl(db: D1Database, agentName: string): Promise<str
   return deployment?.deploy_url || null
 }
 
-/** Verify the requesting user owns this agent (owner auth) */
+/** Verify the requesting user owns this agent (owner auth via centralized authenticateRequest) */
 async function verifyOwnership(
   db: D1Database,
   agentName: string,
-  walletAddress: string | null,
-  editToken: string | null,
+  auth: { username: string },
 ): Promise<{ username: string } | null> {
   const agent = await db.prepare(
-    'SELECT owner_username, edit_token FROM agents WHERE name = ?1'
-  ).bind(agentName).first<{ owner_username: string | null; edit_token: string }>()
+    'SELECT owner_username FROM agents WHERE name = ?1'
+  ).bind(agentName).first<{ owner_username: string | null }>()
 
   if (!agent?.owner_username) return null
+  if (agent.owner_username !== auth.username) return null
 
-  // Check edit token match (agent's own token)
-  if (editToken && agent.edit_token === editToken) {
-    return { username: agent.owner_username }
-  }
-
-  // Check edit token match (user's token — frontend stores user edit_token)
-  if (editToken) {
-    const user = await db.prepare(
-      'SELECT username FROM users WHERE username = ?1 AND edit_token = ?2'
-    ).bind(agent.owner_username, editToken).first<{ username: string }>()
-    if (user) return { username: user.username }
-  }
-
-  // Check wallet address match (case-insensitive for EVM checksum addresses)
-  if (walletAddress) {
-    const user = await db.prepare(
-      'SELECT username FROM users WHERE username = ?1 AND LOWER(wallet_address) = LOWER(?2)'
-    ).bind(agent.owner_username, walletAddress).first<{ username: string }>()
-    if (user) return { username: user.username }
-  }
-
-  return null
+  return { username: auth.username }
 }
 
 /** Verify PM/peer access via agent's own API key */
@@ -156,19 +136,18 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   const senderType: SenderType = (['owner', 'pm', 'peer'] as const).includes(rawSenderType as SenderType)
     ? (rawSenderType as SenderType) : 'owner'
 
-  // Auth: owner (wallet/editToken) or PM/peer (API key)
-  const walletAddress = request.headers.get('X-Wallet-Address')
-  const editToken = request.headers.get('X-Edit-Token')
+  // Auth: owner (centralized auth) or PM/peer (API key)
   const apiKey = request.headers.get('X-Canfly-Api-Key')
 
   let caller: { username: string } | null = null
 
   if (senderType === 'owner') {
-    // Owner auth: wallet address or edit token
-    if (!walletAddress && !editToken) {
-      return errorResponse('Authentication required (X-Wallet-Address or X-Edit-Token)', 401)
+    // Owner auth via centralized authenticateRequest
+    const auth = await authenticateRequest(request, env.DB, env.PRIVY_APP_ID)
+    if (!auth) {
+      return errorResponse('Authentication required', 401)
     }
-    caller = await verifyOwnership(env.DB, agentName, walletAddress, editToken)
+    caller = await verifyOwnership(env.DB, agentName, auth)
   } else {
     // PM/peer auth: API key
     if (!apiKey) {
@@ -386,8 +365,6 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   const agentName = params.name as string
 
   // CAN-276: Support both owner and PM/peer auth for GET
-  const walletAddress = request.headers.get('X-Wallet-Address')
-  const editToken = request.headers.get('X-Edit-Token')
   const apiKey = request.headers.get('X-Canfly-Api-Key')
   const rawSenderType = request.headers.get('X-Canfly-Sender-Type') || 'owner'
   const senderType: SenderType = (['owner', 'pm', 'peer'] as const).includes(rawSenderType as SenderType)
@@ -396,10 +373,11 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   let caller: { username: string } | null = null
 
   if (senderType === 'owner') {
-    if (!walletAddress && !editToken) {
+    const auth = await authenticateRequest(request, env.DB, env.PRIVY_APP_ID)
+    if (!auth) {
       return errorResponse('Authentication required', 401)
     }
-    caller = await verifyOwnership(env.DB, agentName, walletAddress, editToken)
+    caller = await verifyOwnership(env.DB, agentName, auth)
   } else {
     if (!apiKey) {
       return errorResponse('Authentication required (X-Canfly-Api-Key)', 401)

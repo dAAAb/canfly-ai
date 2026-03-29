@@ -15,6 +15,7 @@ import {
   generatePairingCode,
   toAgentSlug,
 } from '../../../community/_helpers'
+import { authenticateRequest } from '../../../_auth'
 
 const ZEABUR_GRAPHQL = 'https://api.zeabur.com/graphql'
 
@@ -25,28 +26,6 @@ function generateUUID(): string {
   bytes[8] = (bytes[8] & 0x3f) | 0x80
   const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`
-}
-
-/** Authenticate user, return username or null */
-async function authenticateUser(db: D1Database, request: Request): Promise<string | null> {
-  const editToken = request.headers.get('X-Edit-Token')
-  const walletAddress = request.headers.get('X-Wallet-Address')
-
-  if (editToken) {
-    const user = await db.prepare(
-      'SELECT username FROM users WHERE edit_token = ?1'
-    ).bind(editToken).first<{ username: string }>()
-    if (user) return user.username
-  }
-
-  if (walletAddress) {
-    const user = await db.prepare(
-      'SELECT username FROM users WHERE LOWER(wallet_address) = LOWER(?1)'
-    ).bind(walletAddress).first<{ username: string }>()
-    if (user) return user.username
-  }
-
-  return null
 }
 
 /** Call Zeabur GraphQL API */
@@ -88,10 +67,11 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
   }
 
   // Auth
-  const username = await authenticateUser(env.DB, request)
-  if (!username) {
-    return errorResponse('Authentication required. Provide X-Edit-Token or X-Wallet-Address header.', 401)
+  const auth = await authenticateRequest(request, env.DB, env.PRIVY_APP_ID)
+  if (!auth) {
+    return errorResponse('Authentication required', 401)
   }
+  const username = auth.username
 
   // Fetch deployment
   const deployment = await env.DB.prepare(
