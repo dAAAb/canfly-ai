@@ -24,6 +24,7 @@ interface DeployBody {
   zeaburApiKey: string
   serverNodeId: string
   agentName: string
+  agentDisplayName?: string
   agentBio?: string
   agentModel?: string
   aiHubKey?: string
@@ -92,10 +93,11 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     return errorResponse('zeaburApiKey, serverNodeId, and agentName are required', 400)
   }
 
-  // Enforce slug format
+  // Derive slug from display name (or raw agentName)
+  const agentDisplayName = body.agentDisplayName?.trim() || body.agentName.trim()
   body.agentName = toAgentSlug(body.agentName)
   if (!isValidAgentName(body.agentName)) {
-    return errorResponse('Invalid agent name. Use lowercase letters, numbers, and hyphens (2-40 chars, e.g. my-lobster-01).', 400)
+    return errorResponse('Invalid agent name. The generated slug must be 2-40 chars with lowercase letters, numbers, and hyphens.', 400)
   }
   if (body.tier !== 'light' && body.tier !== 'general') {
     return errorResponse('tier must be "light" or "general"', 400)
@@ -241,6 +243,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     JSON.stringify({
       tier: body.tier,
       agentName: body.agentName,
+      agentDisplayName: agentDisplayName,
       agentBio: body.agentBio || null,
       agentModel: body.agentModel || null,
       aiHubKey: body.aiHubKey || null,
