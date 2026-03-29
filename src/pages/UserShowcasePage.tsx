@@ -33,17 +33,12 @@ import {
   RefreshCw,
 } from 'lucide-react'
 
-/** Live Zeabur status badge — polls every 30s */
-function LiveStatusBadge({ deploymentId, canflyStatus, t }: {
-  deploymentId: string
-  canflyStatus: string
-  t: (key: string, fallback?: string) => string
-}) {
+/** Poll Zeabur live status for a deployment */
+function useLiveStatus(deploymentId: string, canflyStatus: string) {
   const [zeaburStatus, setZeaburStatus] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
-
     const check = async () => {
       try {
         const res = await fetch(`/api/zeabur/deploy/${deploymentId}/live-status`)
@@ -53,31 +48,131 @@ function LiveStatusBadge({ deploymentId, canflyStatus, t }: {
         }
       } catch { /* ignore */ }
     }
-
     check()
     const interval = setInterval(check, 30000)
     return () => { cancelled = true; clearInterval(interval) }
   }, [deploymentId])
 
-  // Use Zeabur live status if available, otherwise fall back to CanFly DB status
   const liveStatus = zeaburStatus || canflyStatus.toUpperCase()
+  const isOnline = liveStatus === 'RUNNING'
+  return { liveStatus, isOnline }
+}
 
-  const statusConfig: Record<string, { color: string; label: string }> = {
-    RUNNING: { color: 'text-green-400 bg-green-400/10 border-green-600/40', label: t('deployStatus.online', 'Online') },
-    QUEUED: { color: 'text-yellow-400 bg-yellow-400/10 border-yellow-600/40', label: t('deployStatus.queued', 'Queued') },
-    DEPLOYING: { color: 'text-blue-400 bg-blue-400/10 border-blue-600/40', label: t('deployStatus.deploying', 'Deploying') },
-    STOPPED: { color: 'text-gray-400 bg-gray-400/10 border-gray-600/40', label: t('deployStatus.offline', 'Offline') },
-    ERROR: { color: 'text-red-400 bg-red-400/10 border-red-600/40', label: t('deployStatus.failed', 'Failed') },
-    FAILED: { color: 'text-red-400 bg-red-400/10 border-red-600/40', label: t('deployStatus.failed', 'Failed') },
-    PENDING: { color: 'text-yellow-400 bg-yellow-400/10 border-yellow-600/40', label: t('deployStatus.pending', 'Pending') },
-  }
+const STATUS_CONFIG: Record<string, { color: string; labelKey: string; fallback: string }> = {
+  RUNNING: { color: 'text-green-400 bg-green-400/10 border-green-600/40', labelKey: 'deployStatus.online', fallback: 'Online' },
+  QUEUED: { color: 'text-yellow-400 bg-yellow-400/10 border-yellow-600/40', labelKey: 'deployStatus.queued', fallback: 'Queued' },
+  DEPLOYING: { color: 'text-blue-400 bg-blue-400/10 border-blue-600/40', labelKey: 'deployStatus.deploying', fallback: 'Deploying' },
+  STOPPED: { color: 'text-gray-400 bg-gray-400/10 border-gray-600/40', labelKey: 'deployStatus.offline', fallback: 'Offline' },
+  ERROR: { color: 'text-red-400 bg-red-400/10 border-red-600/40', labelKey: 'deployStatus.failed', fallback: 'Failed' },
+  FAILED: { color: 'text-red-400 bg-red-400/10 border-red-600/40', labelKey: 'deployStatus.failed', fallback: 'Failed' },
+  PENDING: { color: 'text-yellow-400 bg-yellow-400/10 border-yellow-600/40', labelKey: 'deployStatus.pending', fallback: 'Pending' },
+}
 
-  const cfg = statusConfig[liveStatus] || statusConfig.STOPPED
-
+/** Status badge using live Zeabur status */
+function LiveStatusBadge({ liveStatus, t }: { liveStatus: string; t: (key: string, fallback?: string) => string }) {
+  const cfg = STATUS_CONFIG[liveStatus] || STATUS_CONFIG.STOPPED
   return (
     <span className={`shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${cfg.color}`}>
-      {cfg.label}
+      {t(cfg.labelKey, cfg.fallback)}
     </span>
+  )
+}
+
+/** Deployment card with live status — uses hook so must be a component */
+function DeploymentCard({ dep, user, canEdit, t, onRetry, retrying }: {
+  dep: { id: string; status: string; agent_name: string | null; zeabur_project_id: string; template_id?: string; deploy_url?: string; created_at: string; error_code?: string; error_message?: string; retry_count?: number }
+  user: { username: string }
+  canEdit: boolean
+  t: (key: string, fallback?: string) => string
+  onRetry: (id: string) => void
+  retrying: string | null
+}) {
+  const { liveStatus, isOnline } = useLiveStatus(dep.id, dep.status)
+
+  return (
+    <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-5 hover:border-gray-700 transition-colors">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-lg">🦞</span>
+            <span className="text-white font-medium truncate">
+              {dep.agent_name || `lobster-${dep.zeabur_project_id.slice(0, 8)}`}
+            </span>
+          </div>
+          {dep.template_id && (
+            <p className="text-gray-500 text-xs mt-0.5">
+              {t('deployTemplate', 'Template')}: {dep.template_id}
+            </p>
+          )}
+          {dep.deploy_url && (() => {
+            const displayUrl = dep.deploy_url.startsWith('http://')
+              ? dep.deploy_url.replace('http://', 'https://').replace(/:18789$/, '')
+              : dep.deploy_url
+            const href = displayUrl.includes('.sslip.io') || displayUrl.includes('.zeabur.app')
+              ? displayUrl
+              : dep.deploy_url
+            return (
+              <a href={href} target="_blank" rel="noopener noreferrer"
+                className="text-cyan-400 hover:text-cyan-300 text-xs mt-1 inline-flex items-center gap-1 transition-colors">
+                <ExternalLink className="w-3 h-3" />
+                {href.replace(/^https?:\/\//, '')}
+              </a>
+            )
+          })()}
+        </div>
+        <LiveStatusBadge liveStatus={liveStatus} t={t} />
+      </div>
+
+      {/* Error info + retry */}
+      {dep.status === 'failed' && (
+        <div className="mt-3 pt-3 border-t border-gray-800">
+          {dep.error_message && (
+            <p className="text-red-400/80 text-xs mb-2">
+              {dep.error_code && <span className="font-mono">[{dep.error_code}]</span>}{' '}
+              {dep.error_message}
+            </p>
+          )}
+          {canEdit && (dep.retry_count || 0) < 5 && (
+            <button
+              onClick={() => onRetry(dep.id)}
+              disabled={retrying === dep.id}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-600/20 hover:bg-orange-600/30 disabled:bg-gray-700 text-orange-300 text-xs font-medium rounded-lg transition-colors border border-orange-700/40"
+            >
+              {retrying === dep.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
+              {t('deployRetry', 'Retry')} ({dep.retry_count || 0}/5)
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Action buttons — Chat only when online */}
+      <div className="mt-3 pt-3 border-t border-gray-800 flex items-center gap-2">
+        {isOnline ? (
+          <Link
+            to={`/u/${user.username}/chat/${dep.agent_name || 'agent'}`}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 text-xs font-medium rounded-lg transition-colors border border-cyan-700/40"
+          >
+            💬 {t('chatWithAgent', 'Chat')}
+          </Link>
+        ) : (
+          <span className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-700/30 text-gray-500 text-xs font-medium rounded-lg border border-gray-700/40 cursor-not-allowed">
+            💬 {t('chatWithAgent', 'Chat')}
+          </span>
+        )}
+        {canEdit && (
+          <Link
+            to={`/u/${user.username}/agents/${dep.agent_name || 'agent'}/settings`}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-600/20 hover:bg-gray-600/30 text-gray-300 text-xs font-medium rounded-lg transition-colors border border-gray-700/40"
+          >
+            ⚙️ {t('agentSettings', 'Settings')}
+          </Link>
+        )}
+      </div>
+
+      <p className="text-gray-600 text-xs mt-2">
+        {t('deployedOn', 'Deployed')} {new Date(dep.created_at).toLocaleDateString()}
+      </p>
+    </div>
   )
 }
 
@@ -744,101 +839,17 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
                 )}
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {user.deployments.map((dep) => {
-                  return (
-                    <div
-                      key={dep.id}
-                      className="bg-gray-900/50 border border-gray-800 rounded-xl p-5 hover:border-gray-700 transition-colors"
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-lg">🦞</span>
-                            <span className="text-white font-medium truncate">
-                              {dep.agent_name || `lobster-${dep.zeabur_project_id.slice(0, 8)}`}
-                            </span>
-                          </div>
-                          {dep.template_id && (
-                            <p className="text-gray-500 text-xs mt-0.5">
-                              {t('deployTemplate', 'Template')}: {dep.template_id}
-                            </p>
-                          )}
-                          {dep.deploy_url && (() => {
-                            // Prefer HTTPS domain over raw IP:port
-                            const displayUrl = dep.deploy_url.startsWith('http://')
-                              ? dep.deploy_url.replace('http://', 'https://').replace(/:18789$/, '')
-                              : dep.deploy_url
-                            const href = displayUrl.includes('.sslip.io') || displayUrl.includes('.zeabur.app')
-                              ? displayUrl
-                              : dep.deploy_url // fallback to original
-                            return (
-                              <a
-                                href={href}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-cyan-400 hover:text-cyan-300 text-xs mt-1 inline-flex items-center gap-1 transition-colors"
-                              >
-                                <ExternalLink className="w-3 h-3" />
-                                {href.replace(/^https?:\/\//, '')}
-                              </a>
-                            )
-                          })()}
-                        </div>
-                        <LiveStatusBadge deploymentId={dep.id} canflyStatus={dep.status} t={t} />
-                      </div>
-
-                      {/* Error info + retry */}
-                      {dep.status === 'failed' && (
-                        <div className="mt-3 pt-3 border-t border-gray-800">
-                          {dep.error_message && (
-                            <p className="text-red-400/80 text-xs mb-2">
-                              {dep.error_code && <span className="font-mono">[{dep.error_code}]</span>}{' '}
-                              {dep.error_message}
-                            </p>
-                          )}
-                          {canEdit && dep.retry_count < 5 && (
-                            <button
-                              onClick={() => handleRetryDeployment(dep.id)}
-                              disabled={retryingDeployment === dep.id}
-                              className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-600/20 hover:bg-orange-600/30 disabled:bg-gray-700 text-orange-300 text-xs font-medium rounded-lg transition-colors border border-orange-700/40"
-                            >
-                              {retryingDeployment === dep.id ? (
-                                <Loader2 className="w-3 h-3 animate-spin" />
-                              ) : (
-                                <RefreshCw className="w-3 h-3" />
-                              )}
-                              {t('deployRetry', 'Retry')} ({dep.retry_count}/5)
-                            </button>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Action buttons */}
-                      {dep.status === 'running' && (
-                        <div className="mt-3 pt-3 border-t border-gray-800 flex items-center gap-2">
-                          <Link
-                            to={`/u/${user.username}/chat/${dep.agent_name || 'agent'}`}
-                            className="flex items-center gap-1.5 px-3 py-1.5 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 text-xs font-medium rounded-lg transition-colors border border-cyan-700/40"
-                          >
-                            💬 {t('chatWithAgent', 'Chat')}
-                          </Link>
-                          {canEdit && (
-                            <Link
-                              to={`/u/${user.username}/agents/${dep.agent_name || 'agent'}/settings`}
-                              className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-600/20 hover:bg-gray-600/30 text-gray-300 text-xs font-medium rounded-lg transition-colors border border-gray-700/40"
-                            >
-                              ⚙️ {t('agentSettings', 'Settings')}
-                            </Link>
-                          )}
-                        </div>
-                      )}
-
-                      <p className="text-gray-600 text-xs mt-2">
-                        {t('deployedOn', 'Deployed')} {formatDate(dep.created_at)}
-                      </p>
-                    </div>
-                  )
-                })}
+                {user.deployments.map((dep) => (
+                  <DeploymentCard
+                    key={dep.id}
+                    dep={dep}
+                    user={user}
+                    canEdit={canEdit}
+                    t={t}
+                    onRetry={handleRetryDeployment}
+                    retrying={retryingDeployment}
+                  />
+                ))}
               </div>
             </section>
           )}
