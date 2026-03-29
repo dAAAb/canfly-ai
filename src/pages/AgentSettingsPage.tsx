@@ -47,6 +47,7 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
   const [deleteError, setDeleteError] = useState<string | null>(null)
 
   // API Key regeneration
+  const [showRegenConfirm, setShowRegenConfirm] = useState(false)
   const [regenerating, setRegenerating] = useState(false)
   const [newApiKey, setNewApiKey] = useState<string | null>(null)
   const [zeaburInjected, setZeaburInjected] = useState(false)
@@ -60,7 +61,6 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
   )
 
   const handleRegenerateKey = useCallback(async () => {
-    if (!confirm(t('settings.regenConfirm', 'Are you sure? The old API key will stop working immediately.'))) return
     setRegenerating(true)
     setRegenError(null)
     setNewApiKey(null)
@@ -250,17 +250,41 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
                     {regenError && (
                       <p className="text-xs text-red-400 mt-2">{regenError}</p>
                     )}
-                    <button
-                      onClick={handleRegenerateKey}
-                      disabled={regenerating}
-                      className="mt-3 flex items-center gap-2 px-4 py-2 rounded-lg border border-cyan-500/30 bg-cyan-500/10 hover:bg-cyan-500/20 disabled:bg-gray-700 disabled:border-gray-600 text-cyan-400 disabled:text-gray-500 text-sm font-medium transition-colors"
-                    >
-                      {regenerating ? (
-                        <><Loader2 className="w-4 h-4 animate-spin" /> {t('settings.regenerating', 'Regenerating...')}</>
-                      ) : (
-                        <><RefreshCw className="w-4 h-4" /> {t('settings.regenBtn', 'Regenerate API Key')}</>
-                      )}
-                    </button>
+                    {!showRegenConfirm ? (
+                      <button
+                        onClick={() => setShowRegenConfirm(true)}
+                        className="mt-3 flex items-center gap-2 px-4 py-2 rounded-lg border border-cyan-500/30 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 text-sm font-medium transition-colors"
+                      >
+                        <RefreshCw className="w-4 h-4" /> {t('settings.regenBtn', 'Regenerate API Key')}
+                      </button>
+                    ) : (
+                      <div className="mt-3 space-y-2">
+                        <div className="p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
+                          <p className="text-xs text-yellow-400">
+                            ⚠️ {t('settings.regenConfirm', 'The old API key will stop working immediately. Your agent will be restarted with the new key.')}
+                          </p>
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={handleRegenerateKey}
+                            disabled={regenerating}
+                            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 disabled:bg-gray-700 text-white disabled:text-gray-500 text-sm font-medium transition-colors"
+                          >
+                            {regenerating ? (
+                              <><Loader2 className="w-4 h-4 animate-spin" /> {t('settings.regenerating', 'Regenerating...')}</>
+                            ) : (
+                              <><RefreshCw className="w-4 h-4" /> {t('settings.regenConfirmBtn', 'Yes, Regenerate')}</>
+                            )}
+                          </button>
+                          <button
+                            onClick={() => setShowRegenConfirm(false)}
+                            className="px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm transition-colors"
+                          >
+                            {t('settings.cancel', 'Cancel')}
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </>
                 )}
               </div>
