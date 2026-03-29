@@ -14,6 +14,7 @@
  * Max size: 5MB. Accepted: jpg, jpeg, png, gif, webp.
  */
 import { type Env, json, errorResponse, handleOptions, CORS_HEADERS } from '../../community/_helpers'
+import { authenticateRequest, type AuthResult } from '../../_auth'
 
 const MAX_SIZE = 5 * 1024 * 1024 // 5MB
 const ALLOWED_TYPES = new Set([
@@ -28,12 +29,6 @@ const ALLOWED_TYPES = new Set([
 const AVATAR_PATH_PREFIX = '/api/upload/avatar/'
 
 export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
-  // Parse auth
-  const authHeader = request.headers.get('Authorization')
-  const editToken = request.headers.get('X-Edit-Token')
-  const walletHeader = request.headers.get('X-Wallet-Address')
-  const usernameHeader = request.headers.get('X-Username')
-
   let entityType: 'agent' | 'user' = 'agent'
   let entityId: string | null = null
 
@@ -48,10 +43,10 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     }
   }
 
-  // ── Agent auth via Bearer token ──
-  if (authHeader?.startsWith('Bearer ')) {
+  // ── Agent auth via Bearer token (agent API key) ──
+  const authHeader = request.headers.get('Authorization')
+  if (authHeader?.startsWith('Bearer cfa_')) {
     const apiKey = authHeader.slice(7)
-    // If no explicit target, find agent by API key
     const agent = await env.DB.prepare(
       'SELECT name FROM agents WHERE api_key = ?1'
     ).bind(apiKey).first()
@@ -61,38 +56,20 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
       entityType = 'agent'
       entityId = agent.name as string
     }
-    // Verify they own the target if specified
     if (entityType === 'agent' && entityId !== agent.name) {
       return errorResponse('Cannot upload avatar for another agent', 403)
     }
   }
-  // ── User auth via edit token ──
-  else if (editToken && usernameHeader) {
-    const user = await env.DB.prepare(
-      'SELECT username, edit_token FROM users WHERE username = ?1'
-    ).bind(usernameHeader).first()
-
-    if (!user || user.edit_token !== editToken) {
-      return errorResponse('Invalid credentials', 403)
+  // ── User auth via centralized authenticateRequest ──
+  else {
+    const auth = await authenticateRequest(request, env.DB, env.PRIVY_APP_ID)
+    if (!auth) {
+      return errorResponse('Authentication required', 401)
     }
     if (!entityId) {
       entityType = 'user'
-      entityId = usernameHeader
+      entityId = auth.username
     }
-  }
-  // ── User auth via wallet ──
-  else if (walletHeader) {
-    const user = await env.DB.prepare(
-      'SELECT username, wallet_address FROM users WHERE LOWER(wallet_address) = LOWER(?1)'
-    ).bind(walletHeader).first()
-
-    if (!user) return errorResponse('No user found for this wallet', 403)
-    if (!entityId) {
-      entityType = 'user'
-      entityId = user.username as string
-    }
-  } else {
-    return errorResponse('Authentication required (Bearer token, X-Edit-Token + X-Username, or X-Wallet-Address)', 401)
   }
 
   if (!entityId) {

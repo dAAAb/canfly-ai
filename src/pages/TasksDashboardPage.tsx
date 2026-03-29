@@ -10,6 +10,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
+import { getApiAuthHeaders } from '../utils/apiAuth'
 import Navbar from '../components/Navbar'
 import {
   ShoppingCart, Store, Loader2, Clock, AlertCircle, Package,
@@ -127,7 +128,7 @@ export default function TasksDashboardPage({ subdomainUsername }: Props) {
   const params = useParams<{ username: string }>()
   const username = subdomainUsername || params.username || ''
   const { t } = useTranslation()
-  const { isAuthenticated, login, walletAddress } = useAuth()
+  const { isAuthenticated, login, walletAddress, getAccessToken } = useAuth()
 
   const [tab, setTab] = useState<'buyer' | 'seller'>('buyer')
   const [statusFilter, setStatusFilter] = useState<string>('all')
@@ -144,7 +145,7 @@ export default function TasksDashboardPage({ subdomainUsername }: Props) {
       const params = new URLSearchParams({ view: 'all' })
       if (statusFilter !== 'all') params.set('status', statusFilter)
       const res = await fetch(`/api/community/users/${encodeURIComponent(username)}/tasks?${params}`, {
-        headers: walletAddress ? { 'X-Wallet-Address': walletAddress } : {},
+        headers: await getApiAuthHeaders({ getAccessToken, walletAddress }),
       })
       if (!res.ok) throw new Error(`${res.status}`)
       const data = await res.json() as {
@@ -158,7 +159,7 @@ export default function TasksDashboardPage({ subdomainUsername }: Props) {
     } finally {
       setLoading(false)
     }
-  }, [username, walletAddress, statusFilter])
+  }, [username, walletAddress, getAccessToken, statusFilter])
 
   useEffect(() => { fetchTasks() }, [fetchTasks])
 

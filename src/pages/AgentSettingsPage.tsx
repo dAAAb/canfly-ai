@@ -9,6 +9,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
 import { useHead } from '../hooks/useHead'
+import { getApiAuthHeaders } from '../utils/apiAuth'
 import Navbar from '../components/Navbar'
 import GlassCard from '../components/GlassCard'
 import TelegramConnectCard from '../components/TelegramConnectCard'
@@ -32,7 +33,7 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
   const agentName = paramAgentName || ''
   const navigate = useNavigate()
   const { t } = useTranslation()
-  const { walletAddress, isAuthenticated, login } = useAuth()
+  const { walletAddress, isAuthenticated, login, getAccessToken } = useAuth()
 
   useHead({ title: `${t('settings.pageTitle')} — ${agentName}` })
 
@@ -41,13 +42,10 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
   const [deleting, setDeleting] = useState(false)
   const [deleteError, setDeleteError] = useState<string | null>(null)
 
-  const getAuthHeaders = useCallback((): Record<string, string> => {
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-    if (walletAddress) headers['X-Wallet-Address'] = walletAddress
-    const editToken = localStorage.getItem(`canfly_edit_token_${username}`)
-    if (editToken) headers['X-Edit-Token'] = editToken
-    return headers
-  }, [walletAddress, username])
+  const getAuthHeaders = useCallback(
+    () => getApiAuthHeaders({ getAccessToken, walletAddress }),
+    [getAccessToken, walletAddress],
+  )
 
   const handleDelete = useCallback(async () => {
     if (deleteConfirmText !== agentName) return
@@ -57,7 +55,7 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
     try {
       const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/delete-deployment`, {
         method: 'DELETE',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
       })
 
       if (!res.ok) {

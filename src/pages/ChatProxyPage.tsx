@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
 import { useHead } from '../hooks/useHead'
+import { getApiAuthHeaders } from '../utils/apiAuth'
 import Navbar from '../components/Navbar'
 import SmartAvatar from '../components/SmartAvatar'
 import { walletGradient } from '../utils/walletGradient'
@@ -52,7 +53,7 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
   const username = subdomainUsername || paramUsername || ''
   const agentName = paramAgentName || ''
   const { t } = useTranslation()
-  const { walletAddress, isAuthenticated, login } = useAuth()
+  const { walletAddress, isAuthenticated, login, getAccessToken } = useAuth()
 
   useHead({ title: `${t('chat.title')} — ${agentName}` })
 
@@ -76,13 +77,10 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
   useEffect(() => { scrollToBottom() }, [messages, scrollToBottom])
 
   // Get auth headers
-  const getAuthHeaders = useCallback((): Record<string, string> => {
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-    if (walletAddress) headers['X-Wallet-Address'] = walletAddress
-    const editToken = localStorage.getItem(`canfly_edit_token_${username}`)
-    if (editToken) headers['X-Edit-Token'] = editToken
-    return headers
-  }, [walletAddress, username])
+  const getAuthHeaders = useCallback(
+    () => getApiAuthHeaders({ getAccessToken, walletAddress }),
+    [getAccessToken, walletAddress],
+  )
 
   // Fetch agent info
   useEffect(() => {
@@ -99,14 +97,15 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
   // Fetch chat sessions
   useEffect(() => {
     if (!agentName || !isAuthenticated) return
-    fetch(`/api/agents/${encodeURIComponent(agentName)}/chat`, {
-      headers: getAuthHeaders(),
-    })
-      .then(r => r.json())
-      .then((data: { sessions?: ChatSession[] }) => {
+    ;(async () => {
+      try {
+        const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/chat`, {
+          headers: await getAuthHeaders(),
+        })
+        const data: { sessions?: ChatSession[] } = await res.json()
         setSessions(data.sessions || [])
-      })
-      .catch(() => {})
+      } catch {}
+    })()
   }, [agentName, isAuthenticated, getAuthHeaders])
 
   // Load session messages
@@ -116,7 +115,7 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
     try {
       const res = await fetch(
         `/api/agents/${encodeURIComponent(agentName)}/chat?sessionId=${sessionId}`,
-        { headers: getAuthHeaders() },
+        { headers: await getAuthHeaders() },
       )
       const data = await res.json() as { messages?: ChatMessage[] }
       setMessages(data.messages || [])
@@ -153,7 +152,7 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
     try {
       const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/chat`, {
         method: 'POST',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
         body: JSON.stringify({ message, sessionId: activeSession }),
       })
 
@@ -232,12 +231,12 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
       }
 
       // Refresh sessions list
-      fetch(`/api/agents/${encodeURIComponent(agentName)}/chat`, {
-        headers: getAuthHeaders(),
-      })
-        .then(r => r.json())
-        .then((data: { sessions?: ChatSession[] }) => setSessions(data.sessions || []))
-        .catch(() => {})
+      getAuthHeaders().then(h =>
+        fetch(`/api/agents/${encodeURIComponent(agentName)}/chat`, { headers: h })
+          .then(r => r.json())
+          .then((data: { sessions?: ChatSession[] }) => setSessions(data.sessions || []))
+          .catch(() => {})
+      )
     } catch (err) {
       setError((err as Error).message)
       // Remove optimistic message on error

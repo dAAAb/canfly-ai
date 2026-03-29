@@ -16,6 +16,7 @@
  * Auth: X-Edit-Token or X-Wallet-Address
  */
 import { type Env, json, errorResponse, handleOptions, parseBody } from '../community/_helpers'
+import { authenticateRequest } from '../_auth'
 
 const AGENTBOOK_RELAY_URL = 'https://x402-worldchain.vercel.app/register'
 
@@ -31,9 +32,8 @@ interface RegisterBody {
 }
 
 export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
-  const editToken = request.headers.get('X-Edit-Token')
-  const walletHeader = request.headers.get('X-Wallet-Address')
-  if (!editToken && !walletHeader) {
+  const auth = await authenticateRequest(request, env.DB, env.PRIVY_APP_ID)
+  if (!auth) {
     return errorResponse('Authentication required', 401)
   }
 
@@ -44,28 +44,21 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
 
   // Verify the agent exists and belongs to the authenticated user
   const agent = await env.DB.prepare(`
-    SELECT a.name, a.wallet_address, a.owner_username, a.agentbook_registered,
-           u.edit_token, u.wallet_address AS user_wallet
+    SELECT a.name, a.wallet_address, a.owner_username, a.agentbook_registered
     FROM agents a
-    JOIN users u ON u.username = a.owner_username
     WHERE a.name = ?1
   `).bind(body.agentName).first<{
     name: string
     wallet_address: string | null
     owner_username: string
     agentbook_registered: number
-    edit_token: string
-    user_wallet: string | null
   }>()
 
   if (!agent) return errorResponse('Agent not found', 404)
   if (!agent.wallet_address) return errorResponse('Agent wallet address is required', 400)
 
-  // Auth check
-  const tokenOk = editToken && agent.edit_token === editToken
-  const walletOk = walletHeader && agent.user_wallet &&
-    walletHeader.toLowerCase() === agent.user_wallet.toLowerCase()
-  if (!tokenOk && !walletOk) return errorResponse('Unauthorized', 403)
+  // Verify ownership: authenticated user must be the agent's owner
+  if (agent.owner_username !== auth.username) return errorResponse('Unauthorized', 403)
 
   // Prevent client-side spoofing: the submitted address must match the agent's stored wallet
   if (agent.wallet_address.toLowerCase() !== body.agentAddress.toLowerCase()) {

@@ -11,6 +11,7 @@
  * Body: { botToken: string }
  */
 import { type Env, json, errorResponse, handleOptions, parseBody } from '../../community/_helpers'
+import { authenticateRequest } from '../../_auth'
 
 interface ConnectTelegramBody {
   botToken: string
@@ -35,19 +36,16 @@ export const onRequestOptions: PagesFunction<Env> = () => handleOptions()
 
 export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }) => {
   const agentName = params.name as string
-  const walletHeader = request.headers.get('X-Wallet-Address')
-  const editToken = request.headers.get('X-Edit-Token')
 
-  if (!walletHeader && !editToken) {
-    return errorResponse('X-Wallet-Address or X-Edit-Token header required', 401)
+  const auth = await authenticateRequest(request, env.DB, env.PRIVY_APP_ID)
+  if (!auth) {
+    return errorResponse('Authentication required', 401)
   }
 
   // Look up agent + verify ownership
   const agent = await env.DB.prepare(
-    `SELECT a.name, a.owner_username, a.capabilities,
-            u.wallet_address AS owner_wallet
+    `SELECT a.name, a.owner_username, a.capabilities
      FROM agents a
-     LEFT JOIN users u ON a.owner_username = u.username
      WHERE a.name = ?1`
   ).bind(agentName).first()
 
@@ -57,21 +55,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   if (!agent.owner_username) {
     return errorResponse('Agent has no owner', 403)
   }
-
-  // Verify ownership via wallet or edit token
-  let authorized = false
-  if (editToken) {
-    const agentEditToken = await env.DB.prepare(
-      'SELECT edit_token FROM agents WHERE name = ?1'
-    ).bind(agentName).first<{ edit_token: string }>()
-    authorized = agentEditToken?.edit_token === editToken
-  }
-  if (!authorized && walletHeader) {
-    const ownerWallet = agent.owner_wallet as string | null
-    authorized = !!ownerWallet && walletHeader.toLowerCase() === ownerWallet.toLowerCase()
-  }
-  if (!authorized) {
-    return errorResponse('Not authorized — wallet or edit token does not match agent owner', 403)
+  if (agent.owner_username !== auth.username) {
+    return errorResponse('Not authorized — you are not the agent owner', 403)
   }
 
   // Parse body

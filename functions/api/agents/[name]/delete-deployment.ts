@@ -7,6 +7,7 @@
  * Auth: X-Edit-Token or X-Wallet-Address (must be agent owner)
  */
 import { type Env, json, errorResponse, handleOptions } from '../../community/_helpers'
+import { authenticateRequest } from '../../_auth'
 
 const ZEABUR_GRAPHQL = 'https://api.zeabur.com/graphql'
 
@@ -14,19 +15,16 @@ export const onRequestOptions: PagesFunction<Env> = () => handleOptions()
 
 export const onRequestDelete: PagesFunction<Env> = async ({ env, params, request }) => {
   const agentName = params.name as string
-  const editToken = request.headers.get('X-Edit-Token')
-  const walletAddress = request.headers.get('X-Wallet-Address')
 
-  if (!editToken && !walletAddress) {
-    return errorResponse('X-Edit-Token or X-Wallet-Address header required', 401)
+  const auth = await authenticateRequest(request, env.DB, env.PRIVY_APP_ID)
+  if (!auth) {
+    return errorResponse('Authentication required', 401)
   }
 
   // Verify agent exists + ownership
   const agent = await env.DB.prepare(
-    `SELECT a.name, a.owner_username, a.edit_token,
-            u.wallet_address AS owner_wallet
+    `SELECT a.name, a.owner_username
      FROM agents a
-     LEFT JOIN users u ON a.owner_username = u.username
      WHERE a.name = ?1`
   ).bind(agentName).first()
 
@@ -34,11 +32,7 @@ export const onRequestDelete: PagesFunction<Env> = async ({ env, params, request
     return errorResponse('Agent not found', 404)
   }
 
-  let authorized = false
-  if (editToken && agent.edit_token === editToken) authorized = true
-  if (walletAddress && agent.owner_wallet &&
-      (walletAddress as string).toLowerCase() === (agent.owner_wallet as string).toLowerCase()) authorized = true
-  if (!authorized) {
+  if (agent.owner_username !== auth.username) {
     return errorResponse('Not authorized', 403)
   }
 
