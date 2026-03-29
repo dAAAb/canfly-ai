@@ -190,6 +190,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
   const [deploying, setDeploying] = useState(false)
   const [deploymentId, setDeploymentId] = useState<string | null>(null)
   const [deployStatus, setDeployStatus] = useState<string | null>(null)
+  const [zeaburStatus, setZeaburStatus] = useState<string | null>(null)
   const [deployAgentName, setDeployAgentName] = useState<string | null>(null)
   const [deployError, setDeployError] = useState<string | null>(null)
 
@@ -402,10 +403,12 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
         if (!res.ok) return
         const data = (await res.json()) as {
           status: string
+          zeaburStatus?: string
           agentName?: string
           errorMessage?: string
         }
         setDeployStatus(data.status)
+        if (data.zeaburStatus) setZeaburStatus(data.zeaburStatus)
         if (data.agentName) setDeployAgentName(data.agentName)
         if (data.status === 'failed') {
           setDeployError(data.errorMessage || t('deploy.deployFailed'))
@@ -668,6 +671,18 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
                   })}
                 </div>
               )}
+              {/* Warning when a has-canfly server is selected */}
+              {selectedServer && (servers as ServerWithStatus[]).find(s => s._id === selectedServer && s.status === 'has-canfly') && (
+                <div className="p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20 flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 text-yellow-400 flex-shrink-0 mt-0.5" />
+                  <div className="text-xs text-yellow-400">
+                    <p className="font-medium">{t('deploy.serverWarningTitle', 'This server already has an agent')}</p>
+                    <p className="text-yellow-400/70 mt-0.5">
+                      {t('deploy.serverWarningDesc', 'Deploying a second agent on the same server may cause resource conflicts or queuing. We recommend using an empty server for best performance.')}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -770,11 +785,19 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
                 </>
               ) : (
                 <>
-                  <Loader2 className="w-12 h-12 text-cyan-400 animate-spin mx-auto" />
-                  <h2 className="text-lg font-semibold text-white">{t('deploy.deployingTitle')}</h2>
-                  <p className="text-sm text-gray-400">{t('deploy.deployingDesc')}</p>
+                  <Loader2 className={`w-12 h-12 animate-spin mx-auto ${zeaburStatus === 'QUEUED' ? 'text-yellow-400' : 'text-cyan-400'}`} />
+                  <h2 className="text-lg font-semibold text-white">
+                    {zeaburStatus === 'QUEUED'
+                      ? t('deploy.queuedTitle', '排隊中...')
+                      : t('deploy.deployingTitle')}
+                  </h2>
+                  <p className="text-sm text-gray-400">
+                    {zeaburStatus === 'QUEUED'
+                      ? t('deploy.queuedDesc', '伺服器資源正被其他專案佔用，蝦蝦正在排隊等候。建議使用空閒伺服器以加快部署。')
+                      : t('deploy.deployingDesc')}
+                  </p>
                   <div className="w-full bg-gray-800 rounded-full h-2 mt-4">
-                    <div className="bg-cyan-500 h-2 rounded-full animate-pulse" style={{ width: '60%' }} />
+                    <div className={`h-2 rounded-full animate-pulse ${zeaburStatus === 'QUEUED' ? 'bg-yellow-500' : 'bg-cyan-500'}`} style={{ width: zeaburStatus === 'QUEUED' ? '30%' : '60%' }} />
                   </div>
                 </>
               )}
