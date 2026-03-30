@@ -12,6 +12,7 @@
  */
 import { type Env, json, errorResponse, handleOptions, parseBody } from '../../community/_helpers'
 import { authenticateRequest } from '../../_auth'
+import { importKey, decrypt } from '../../../lib/crypto'
 
 interface ConnectTelegramBody {
   botToken: string
@@ -94,7 +95,9 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     if (agentRow?.agent_card_override) {
       const card = JSON.parse(agentRow.agent_card_override)
       gatewayUrl = card.url || null
-      gatewayToken = card.gateway_token || null
+      const rawToken = card.gateway_token || null
+      const cryptoKey = env.ENCRYPTION_KEY ? await importKey(env.ENCRYPTION_KEY) : null
+      gatewayToken = cryptoKey && rawToken ? await decrypt(rawToken, cryptoKey) : rawToken
     }
   } catch { /* ignore */ }
 

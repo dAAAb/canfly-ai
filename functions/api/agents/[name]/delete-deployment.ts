@@ -8,6 +8,7 @@
  */
 import { type Env, json, errorResponse, handleOptions } from '../../community/_helpers'
 import { authenticateRequest } from '../../_auth'
+import { importKey, decrypt } from '../../../lib/crypto'
 
 const ZEABUR_GRAPHQL = 'https://api.zeabur.com/graphql'
 
@@ -56,7 +57,8 @@ export const onRequestDelete: PagesFunction<Env> = async ({ env, params, request
   if (zeaburProjectId) {
     try {
       const metadata = JSON.parse((deployment.metadata as string) || '{}')
-      const zeaburApiKey = metadata.zeaburApiKey
+      const cryptoKey = env.ENCRYPTION_KEY ? await importKey(env.ENCRYPTION_KEY) : null
+      const zeaburApiKey = cryptoKey ? await decrypt(metadata.zeaburApiKey || '', cryptoKey) : metadata.zeaburApiKey
 
       if (zeaburApiKey) {
         const r = await fetch(ZEABUR_GRAPHQL, {

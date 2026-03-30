@@ -19,6 +19,7 @@
  */
 import { type Env, json, errorResponse, handleOptions, CORS_HEADERS } from '../../community/_helpers'
 import { authenticateRequest } from '../../_auth'
+import { importKey, decrypt } from '../../../lib/crypto'
 
 type SenderType = 'owner' | 'pm' | 'peer'
 type Channel = 'canfly' | 'canfly-pm'
@@ -209,7 +210,9 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
       .bind(agentName).first<{ agent_card_override: string | null }>()
     if (agentRow?.agent_card_override) {
       const card = JSON.parse(agentRow.agent_card_override)
-      gatewayToken = card.gateway_token || ''
+      const rawToken = card.gateway_token || ''
+      const cryptoKey = env.ENCRYPTION_KEY ? await importKey(env.ENCRYPTION_KEY) : null
+      gatewayToken = cryptoKey && rawToken ? await decrypt(rawToken, cryptoKey) : rawToken
     }
   } catch { /* ignore */ }
 

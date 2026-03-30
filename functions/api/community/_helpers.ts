@@ -18,6 +18,7 @@ export interface Env {
   OPENAI_API_KEY?: string
   ZEABUR_WEBHOOK_SECRET?: string
   ZEABUR_ADMIN_API_KEY?: string
+  ENCRYPTION_KEY?: string
 }
 
 /** Standard CORS headers for cross-origin access */

@@ -19,6 +19,7 @@ import {
   toAgentSlug,
 } from '../community/_helpers'
 import { authenticateRequest } from '../_auth'
+import { importKey, encrypt } from '../../lib/crypto'
 
 interface DeployBody {
   zeaburApiKey: string
@@ -234,16 +235,19 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     zeaburProjectId,
     zeaburServiceId,
     body.templateCode || null,
-    JSON.stringify({
-      tier: body.tier,
-      agentName: body.agentName,
-      agentDisplayName: agentDisplayName,
-      agentBio: body.agentBio || null,
-      agentModel: body.agentModel || null,
-      aiHubKey: body.aiHubKey || null,
-      serverNodeId: body.serverNodeId,
-      zeaburApiKey: body.zeaburApiKey,
-    }),
+    await (async () => {
+      const cryptoKey = env.ENCRYPTION_KEY ? await importKey(env.ENCRYPTION_KEY) : null
+      return JSON.stringify({
+        tier: body.tier,
+        agentName: body.agentName,
+        agentDisplayName: agentDisplayName,
+        agentBio: body.agentBio || null,
+        agentModel: body.agentModel || null,
+        aiHubKey: cryptoKey && body.aiHubKey ? await encrypt(body.aiHubKey, cryptoKey) : (body.aiHubKey || null),
+        serverNodeId: body.serverNodeId,
+        zeaburApiKey: cryptoKey ? await encrypt(body.zeaburApiKey, cryptoKey) : body.zeaburApiKey,
+      })
+    })(),
   ).run()
 
   // Log activity
