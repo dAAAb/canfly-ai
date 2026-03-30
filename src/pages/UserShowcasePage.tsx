@@ -771,9 +771,9 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
               )}
             </section>
 
-          {/* Deploy New Agent CTA (when no deployments) */}
+          {/* Deploy / Bind CTA (when no deployments) */}
           {canEdit && (!user.deployments || user.deployments.length === 0) && (
-            <section className="mb-12">
+            <section className="mb-12 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Link
                 to={`/u/${user.username}/agents/deploy`}
                 className="flex items-center justify-center gap-2 p-6 bg-gray-900/50 border border-dashed border-gray-700 rounded-xl hover:border-green-600/50 hover:bg-green-900/10 transition-all group"
@@ -783,6 +783,15 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
                   {t('deployFirstAgent', 'Deploy your first Zeabur agent')}
                 </span>
                 <span className="text-green-400 text-xl">+</span>
+              </Link>
+              <Link
+                to={`/u/${user.username}/agents/bind`}
+                className="flex items-center justify-center gap-2 p-6 bg-gray-900/50 border border-dashed border-gray-700 rounded-xl hover:border-cyan-600/50 hover:bg-cyan-900/10 transition-all group"
+              >
+                <span className="text-2xl">🔗</span>
+                <span className="text-gray-400 group-hover:text-cyan-300 font-medium">
+                  {t('bindExistingAgent', 'Bind existing Zeabur agent')}
+                </span>
               </Link>
             </section>
           )}
@@ -796,12 +805,20 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
                   {t('deployedLobsters', 'Deployed Lobsters')} ({user.deployments.length})
                 </h2>
                 {canEdit && (
-                  <Link
-                    to={`/u/${user.username}/agents/deploy`}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600/20 hover:bg-green-600/30 text-green-300 text-xs font-medium rounded-lg transition-colors border border-green-700/40"
-                  >
-                    <span>+</span> {t('deployNew', 'Deploy New Agent')}
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      to={`/u/${user.username}/agents/bind`}
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 text-xs font-medium rounded-lg transition-colors border border-cyan-700/40"
+                    >
+                      🔗 {t('bindExisting', 'Bind Existing')}
+                    </Link>
+                    <Link
+                      to={`/u/${user.username}/agents/deploy`}
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600/20 hover:bg-green-600/30 text-green-300 text-xs font-medium rounded-lg transition-colors border border-green-700/40"
+                    >
+                      <span>+</span> {t('deployNew', 'Deploy New Agent')}
+                    </Link>
+                  </div>
                 )}
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
