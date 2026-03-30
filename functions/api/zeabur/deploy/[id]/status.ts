@@ -208,15 +208,14 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
       `mutation{updateSingleEnvironmentVariable(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",oldKey:"ENABLE_CONTROL_UI",newKey:"ENABLE_CONTROL_UI",value:"true"){key}}`
     )
 
-    // 3. Add domain (sslip.io based on server IP)
+    // 3. Add domain (zeabur.app via isGenerated=true)
     const agentSlug = toAgentSlug(metadata.agentName || `lobster-${deployment.zeabur_project_id.slice(0, 8)}`)
-    const domain = serverIp ? `${agentSlug}.${serverIp}.sslip.io` : null
-    if (domain) {
-      await zeaburGQL(zeaburApiKey,
-        `mutation{addDomain(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",domain:"${domain}",isGenerated:false){domain}}`
-      )
-    }
-    const publicUrl = domain ? `https://${domain}` : gatewayUrl
+    const domain = `${agentSlug}-canfly`
+    const addDomainResult = await zeaburGQL(zeaburApiKey,
+      `mutation{addDomain(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",domain:"${domain}",isGenerated:true){domain}}`
+    ).catch(() => null)
+    const assignedDomain = (addDomainResult?.data?.addDomain as { domain?: string })?.domain
+    const publicUrl = assignedDomain ? `https://${assignedDomain}` : (domain ? `https://${domain}.zeabur.app` : gatewayUrl)
 
     // 4. Restart to apply env var changes
     await zeaburGQL(zeaburApiKey,

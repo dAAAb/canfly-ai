@@ -205,19 +205,13 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
         `mutation{updateSingleEnvironmentVariable(serviceID:"${zeaburServiceId}",environmentID:"${envId}",oldKey:"ENABLE_CONTROL_UI",newKey:"ENABLE_CONTROL_UI",value:"true"){key}}`
       ).catch(() => {})
 
-      // Add domain (sslip.io)
+      // Add domain (zeabur.app via isGenerated=true)
       try {
-        const serverResult = await zeaburGQL(body.zeaburApiKey,
-          `query { server(_id: "${body.serverNodeId}") { ip } }`
-        )
-        const ip = (serverResult.data?.server as { ip?: string })?.ip
-        if (ip) {
-          const slug = body.agentName.toLowerCase().replace(/[^a-z0-9-]/g, '-')
-          const domain = `${slug}.${ip}.sslip.io`
-          await zeaburGQL(body.zeaburApiKey,
-            `mutation{addDomain(serviceID:"${zeaburServiceId}",environmentID:"${envId}",domain:"${domain}",isGenerated:false){domain}}`
-          ).catch(() => {})
-        }
+        const slug = body.agentName.toLowerCase().replace(/[^a-z0-9-]/g, '-')
+        const domain = `${slug}-canfly`
+        await zeaburGQL(body.zeaburApiKey,
+          `mutation{addDomain(serviceID:"${zeaburServiceId}",environmentID:"${envId}",domain:"${domain}",isGenerated:true){domain}}`
+        ).catch(() => {})
       } catch { /* domain will be added in status poller */ }
 
       // Restart to apply env var changes (service may not be fully up yet, that's OK)
