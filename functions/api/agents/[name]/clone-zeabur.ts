@@ -288,12 +288,18 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   // Find cloned sandbox-browser for browser.cdpUrl update (multi-service projects)
   const sandboxBrowserService = proj?.services?.find(s => /sandbox-browser/i.test(s.name))
 
-  // 1. Start cloned service (cloneProject doesn't auto-start)
+  // 1. Set temp command so container stays alive for config patching
+  //    (OpenClaw crashes on start if allowedOrigins doesn't include the new domain)
+  await zeaburGQL(zeaburApiKey, `
+    mutation UpdateCmd($cmd: String!) { updateServiceCommand(serviceID: "${newServiceId}", command: $cmd) }
+  `, { cmd: 'sleep infinity' }).catch((e) => { verifyErrors.push(`setTempCmd: ${e}`) })
+
+  // 2. Start cloned service (runs "sleep infinity" — won't crash)
   await zeaburGQL(zeaburApiKey,
     `mutation{restartService(serviceID:"${newServiceId}",environmentID:"${newEnvId}")}`
   ).catch((e) => { verifyErrors.push(`restartService: ${e}`) })
 
-  // 2. Add new domain (can do while service is starting)
+  // 3. Add new domain (can do while waiting for container)
   const domain = `${bakSlug}-canfly`
   const addDomainResult = await zeaburGQL(zeaburApiKey,
     `mutation{addDomain(serviceID:"${newServiceId}",environmentID:"${newEnvId}",domain:"${domain}",isGenerated:true){domain}}`
@@ -301,7 +307,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   const assignedDomain = (addDomainResult?.data?.addDomain as { domain?: string })?.domain
   const publicUrl = assignedDomain ? `https://${assignedDomain}` : `https://${domain}.zeabur.app`
 
-  // 3. Register new agent in Canfly DB (doesn't need service to be up)
+  // 4. Register new agent in Canfly DB (doesn't need service to be up)
   let finalAgentName = bakSlug
   let sfx = 0
   while (true) {
@@ -328,14 +334,14 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     apiKey, apiKey, pairingCode, expires,
   ).run()
 
-  // 4. Wait for service to be accessible (up to 60s)
+  // 5. Wait for container to be accessible (up to 60s)
   let serviceReady = false
   for (let attempt = 0; attempt < 12; attempt++) {
     await new Promise(r => setTimeout(r, 5000))
     try {
       const ping = await zeaburGQL(zeaburApiKey,
         `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-        { cmd: ['node', '-e', 'console.log("READY")'] }
+        { cmd: ['echo', 'READY'] }
       )
       if ((ping.data?.executeCommand as { output?: string })?.output?.includes('READY')) {
         serviceReady = true
@@ -345,10 +351,10 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   }
 
   if (!serviceReady) {
-    return json({ cloneId, status: 'cloning', message: 'Clone complete, waiting for service to start...' })
+    return json({ cloneId, status: 'cloning', message: 'Clone complete, waiting for container to start...' })
   }
 
-  // 5. Patch config: update allowedOrigins, enable chatCompletions, remove Telegram, update browser cdpUrl
+  // 6. Patch config: update allowedOrigins, enable chatCompletions, remove Telegram, update browser cdpUrl
   const origins = [publicUrl, 'https://canfly.ai'].filter(Boolean)
   const sandboxCdpUrl = sandboxBrowserService ? `http://service-${sandboxBrowserService._id}:9222` : ''
   const patchScript = [
@@ -384,12 +390,16 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     }
   }
 
-  // 7. Restart to apply config + env vars
+  // 8. Clear temp command and restart (now starts OpenClaw normally with patched config)
+  await zeaburGQL(zeaburApiKey, `
+    mutation UpdateCmd($cmd: String!) { updateServiceCommand(serviceID: "${newServiceId}", command: $cmd) }
+  `, { cmd: '' }).catch((e) => { verifyErrors.push(`resetCmd: ${e}`) })
+
   await zeaburGQL(zeaburApiKey,
     `mutation{restartService(serviceID:"${newServiceId}",environmentID:"${newEnvId}")}`
   )
 
-  // 8. Verify: wait for chat endpoint + read fresh gateway token
+  // 9. Verify: wait for chat endpoint + read fresh gateway token
   let chatReady = false
   let newGatewayToken = ''
   for (let attempt = 0; attempt < 5; attempt++) {
@@ -413,7 +423,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     } catch (e) { verifyErrors.push(`chatVerify attempt ${attempt}: ${e}`) }
   }
 
-  // 9. Re-read gateway token (may have changed after restart)
+  // 10. Re-read gateway token (may have changed after restart)
   try {
     const tokenResult = await zeaburGQL(zeaburApiKey,
       `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
@@ -423,7 +433,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     if (freshToken) newGatewayToken = freshToken
   } catch (e) { verifyErrors.push(`reReadToken: ${e}`) }
 
-  // 10. Store agent_card_override with encrypted gateway token
+  // 11. Store agent_card_override with encrypted gateway token
   const encToken = cryptoKey && newGatewayToken ? await encrypt(newGatewayToken, cryptoKey) : newGatewayToken
   const cardOverride = JSON.stringify({ url: publicUrl, gateway_token: encToken })
   await env.DB.prepare(
