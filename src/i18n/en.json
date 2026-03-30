@@ -7747,7 +7747,10 @@
     "disclaimer": "AI responses may be inaccurate. Verify important information.",
     "loadError": "Failed to load chat history.",
     "online": "Online",
-    "sendError": "Failed to send message. Please try again."
+    "sendError": "Failed to send message. Please try again.",
+    "gatewayError": "Your lobster is temporarily unavailable",
+    "gatewayHint1": "Chat may not be enabled yet — try \"Reconfigure\" in Settings",
+    "gatewayHint2": "Connection key may be out of sync — try \"Resync\" in Settings"
   },
   "deploy": {
     "pageTitle": "Deploy Agent",

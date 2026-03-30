@@ -168,6 +168,10 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
       })
 
       if (!res.ok) {
+        const ct = res.headers.get('content-type') || ''
+        if (res.status === 502 || !ct.includes('json')) {
+          throw new Error('GATEWAY_ERROR')
+        }
         const err = await res.json() as { error?: string }
         throw new Error(err.error || `Error ${res.status}`)
       }
@@ -441,9 +445,17 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
 
           {/* Error Banner */}
           {error && (
-            <div className="mx-6 mb-2 flex items-center gap-2 px-4 py-2 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">
-              <AlertCircle className="w-4 h-4 flex-shrink-0" />
-              {error}
+            <div className="mx-6 mb-2 px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-lg text-sm">
+              <div className="flex items-center gap-2 text-red-400">
+                <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                {error === 'GATEWAY_ERROR' ? t('chat.gatewayError') : error}
+              </div>
+              {error === 'GATEWAY_ERROR' && (
+                <ul className="mt-2 ml-6 text-gray-400 text-xs space-y-1 list-disc">
+                  <li>{t('chat.gatewayHint1')}</li>
+                  <li>{t('chat.gatewayHint2')}</li>
+                </ul>
+              )}
             </div>
           )}
 

@@ -7772,7 +7772,10 @@
     "disclaimer": "AI 回复可能不准确，请自行验证重要信息。",
     "loadError": "加载对话记录失败。",
     "online": "在线",
-    "sendError": "消息发送失败，请重试。"
+    "sendError": "消息发送失败，请重试。",
+    "gatewayError": "虾虾暂时无法回应",
+    "gatewayHint1": "虾虾的聊天功能可能尚未启用 — 请到设置页尝试「重新设置」",
+    "gatewayHint2": "连接密钥可能不同步 — 请到设置页尝试「重新同步」"
   },
   "deploy": {
     "pageTitle": "部署虾虾",
