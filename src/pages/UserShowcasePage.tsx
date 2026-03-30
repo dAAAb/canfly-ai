@@ -65,11 +65,9 @@ function DeploymentCard({ dep, user, canEdit, t, onRetry, retrying }: {
               {dep.agent_name || `lobster-${dep.zeabur_project_id.slice(0, 8)}`}
             </span>
           </div>
-          {dep.template_id && (
-            <p className="text-gray-500 text-xs mt-0.5">
-              {t('deployTemplate', 'Template')}: {dep.template_id}
-            </p>
-          )}
+          <p className="text-gray-500 text-xs mt-0.5">
+            {t('deployTemplate', 'Template')}: {dep.template_id || '—'}
+          </p>
           {dep.deploy_url && (() => {
             const displayUrl = dep.deploy_url.startsWith('http://')
               ? dep.deploy_url.replace('http://', 'https://').replace(/:18789$/, '')
@@ -136,7 +134,10 @@ function DeploymentCard({ dep, user, canEdit, t, onRetry, retrying }: {
       </div>
 
       <p className="text-gray-600 text-xs mt-2">
-        {t('deployedOn', 'Deployed')} {new Date(dep.created_at).toLocaleDateString()}
+        {dep.template_id
+          ? t('deployedOn', 'Deployed')
+          : t('boundOn', 'Bound')
+        } {new Date(dep.created_at).toLocaleDateString()}
       </p>
     </div>
   )
