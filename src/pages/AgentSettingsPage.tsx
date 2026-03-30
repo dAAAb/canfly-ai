@@ -2,7 +2,7 @@
  * AgentSettingsPage — CAN-277
  *
  * Agent management page with Telegram connection and delete deployment.
- * Route: /u/{username}/agents/{agentName}/settings  (or /agents/{agentName}/settings on subdomain)
+ * Route: /u/{username}/agent/{agentName}/settings  (or /agent/{agentName}/settings on subdomain)
  */
 import { useState, useCallback, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
@@ -202,7 +202,7 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
         {/* Quick Actions */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
           <button
-            onClick={() => navigate(subdomainUsername ? `/chat/${agentName}` : `/u/${username}/chat/${agentName}`)}
+            onClick={() => navigate(subdomainUsername ? `/agent/${agentName}/chat` : `/u/${username}/agent/${agentName}/chat`)}
             className="flex items-center gap-3 px-4 py-3 rounded-xl border border-gray-700 bg-gray-900 hover:bg-gray-800 text-gray-300 hover:text-white transition-colors text-sm"
           >
             <MessageSquare className="w-4 h-4 text-cyan-400" />

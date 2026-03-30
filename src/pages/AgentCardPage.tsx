@@ -517,7 +517,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                 {isOnline ? (
                   isAuthenticated ? (
                     <Link
-                      to={`/u/${agent.owner_username}/chat/${agent.name}`}
+                      to={`/u/${agent.owner_username}/agent/${agent.name}/chat`}
                       className="flex items-center gap-1.5 px-4 py-2 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 text-sm font-medium rounded-lg transition-colors border border-cyan-700/40"
                     >
                       💬 {t('chatWithAgent', 'Chat')}
@@ -539,7 +539,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                 {/* Settings Button — owner only */}
                 {isOwner && (
                   <Link
-                    to={`/u/${agent.owner_username}/agents/${agent.name}/settings`}
+                    to={`/u/${agent.owner_username}/agent/${agent.name}/settings`}
                     className="flex items-center gap-1.5 px-4 py-2 bg-gray-600/20 hover:bg-gray-600/30 text-gray-300 text-sm font-medium rounded-lg transition-colors border border-gray-700/40"
                   >
                     ⚙️ {t('agentSettings', 'Settings')}

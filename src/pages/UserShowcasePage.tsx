@@ -115,7 +115,7 @@ function DeploymentCard({ dep, user, canEdit, t, onRetry, retrying }: {
       <div className="mt-3 pt-3 border-t border-gray-800 flex items-center gap-2">
         {isOnline ? (
           <Link
-            to={`/u/${user.username}/chat/${dep.agent_name || 'agent'}`}
+            to={`/u/${user.username}/agent/${dep.agent_name || 'agent'}/chat`}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 text-xs font-medium rounded-lg transition-colors border border-cyan-700/40"
           >
             💬 {t('chatWithAgent', 'Chat')}
@@ -127,7 +127,7 @@ function DeploymentCard({ dep, user, canEdit, t, onRetry, retrying }: {
         )}
         {canEdit && (
           <Link
-            to={`/u/${user.username}/agents/${dep.agent_name || 'agent'}/settings`}
+            to={`/u/${user.username}/agent/${dep.agent_name || 'agent'}/settings`}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-600/20 hover:bg-gray-600/30 text-gray-300 text-xs font-medium rounded-lg transition-colors border border-gray-700/40"
           >
             ⚙️ {t('agentSettings', 'Settings')}
