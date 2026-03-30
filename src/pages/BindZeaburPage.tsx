@@ -145,11 +145,10 @@ export default function BindZeaburPage({ subdomainUsername }: BindZeaburPageProp
     }
   }, [selectedAgent, zeaburApiKey, tokenInput, getAuthHeaders])
 
-  const stepIcons = [Bot, Key, Link2]
-  const stepLabels = [
-    t('bind.step1Label', 'Agent'),
-    t('bind.step2Label', 'API Key'),
-    t('bind.step3Label', 'Bind'),
+  const STEPS = [
+    { icon: Bot, labelKey: 'bind.step1Label' },
+    { icon: Key, labelKey: 'bind.step2Label' },
+    { icon: Link2, labelKey: 'bind.step3Label' },
   ]
 
   if (!isAuthenticated) {
@@ -173,23 +172,33 @@ export default function BindZeaburPage({ subdomainUsername }: BindZeaburPageProp
       <Navbar />
 
       <div className="max-w-2xl mx-auto px-6 py-8">
-        <h1 className="text-2xl font-bold text-white mb-2">{t('bind.pageTitle', 'Bind Zeabur Lobster')}</h1>
-        <p className="text-gray-400 text-sm mb-8">{t('bind.pageDesc', 'Connect an existing OpenClaw lobster on Zeabur to your Canfly agent.')}</p>
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-white mb-2">{t('bind.pageTitle', 'Bind Zeabur Lobster')}</h1>
+          <p className="text-gray-400">{t('bind.pageDesc', 'Connect an existing OpenClaw lobster on Zeabur to your Canfly agent.')}</p>
+        </div>
 
-        {/* Step Indicator */}
-        <div className="flex items-center justify-center gap-4 mb-8">
-          {stepIcons.map((Icon, i) => {
+        {/* Progress Bar */}
+        <div className="flex items-center gap-1 mb-8">
+          {STEPS.map((s, i) => {
             const stepNum = i + 1
-            const done = bindResult ? true : step > stepNum
-            const active = !bindResult && step === stepNum
+            const Icon = s.icon
+            const isActive = !bindResult && step === stepNum
+            const isComplete = bindResult ? true : step > stepNum
             return (
-              <div key={i} className="flex flex-col items-center gap-1.5">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
-                  done ? 'bg-green-600' : active ? 'bg-cyan-600' : 'bg-gray-800'
+              <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all ${
+                  isComplete
+                    ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                    : isActive
+                      ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
+                      : 'bg-gray-800 text-gray-500 border border-gray-700'
                 }`}>
-                  {done ? <Check className="w-5 h-5 text-white" /> : <Icon className="w-5 h-5 text-white" />}
+                  {isComplete ? <Check className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
                 </div>
-                <span className={`text-xs ${active ? 'text-white' : 'text-gray-500'}`}>{stepLabels[i]}</span>
+                <span className={`text-[11px] text-center ${isActive ? 'text-cyan-400' : isComplete ? 'text-green-400' : 'text-gray-600'}`}>
+                  {t(s.labelKey)}
+                </span>
               </div>
             )
           })}
