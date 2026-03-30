@@ -279,16 +279,21 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
       ).bind(cardOverride, finalAgentName).run()
     }
 
-    // 8. Patch config (allowedOrigins + chatCompletions) — best effort, non-blocking
-    // This runs after restart; the service may not be fully up yet so we try and ignore errors
-    try {
-      const origins = [publicUrl, 'https://canfly.ai'].filter(Boolean)
-      const patchScript = `const fs=require('fs'),J=require('json5'),f='/home/node/.openclaw/openclaw.json';try{const c=J.parse(fs.readFileSync(f,'utf8'));let ch=false;if(!c.gateway.controlUi.allowedOrigins){c.gateway.controlUi.allowedOrigins=${JSON.stringify(origins)};ch=true}if(!c.gateway.http){c.gateway.http={endpoints:{chatCompletions:{enabled:true}}};ch=true}else if(!c.gateway.http.endpoints?.chatCompletions?.enabled){c.gateway.http.endpoints=c.gateway.http.endpoints||{};c.gateway.http.endpoints.chatCompletions={enabled:true};ch=true}if(ch){fs.writeFileSync(f,JSON.stringify(c,null,2));console.log('patched')}else console.log('ok')}catch(e){console.log('err:'+e.message)}`
-      await zeaburGQL(zeaburApiKey,
-        `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",command:$cmd){exitCode output}}`,
-        { cmd: ['node', '-e', patchScript] }
-      )
-    } catch { /* config patch is best-effort */ }
+    // 8. Patch config (allowedOrigins + chatCompletions)
+    // Wait for service to be back up after restart, then patch config
+    const origins = [publicUrl, 'https://canfly.ai'].filter(Boolean)
+    const patchScript = `const fs=require('fs'),J=require('json5'),f='/home/node/.openclaw/openclaw.json';try{const c=J.parse(fs.readFileSync(f,'utf8'));let ch=false;if(!c.gateway.controlUi.allowedOrigins){c.gateway.controlUi.allowedOrigins=${JSON.stringify(origins)};ch=true}if(!c.gateway.http){c.gateway.http={endpoints:{chatCompletions:{enabled:true}}};ch=true}else if(!c.gateway.http.endpoints?.chatCompletions?.enabled){c.gateway.http.endpoints=c.gateway.http.endpoints||{};c.gateway.http.endpoints.chatCompletions={enabled:true};ch=true}if(ch){fs.writeFileSync(f,JSON.stringify(c,null,2));console.log('patched')}else console.log('ok')}catch(e){console.log('err:'+e.message)}`
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        if (attempt > 0) await new Promise(r => setTimeout(r, 3000))
+        const patchResult = await zeaburGQL(zeaburApiKey,
+          `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",command:$cmd){exitCode output}}`,
+          { cmd: ['node', '-e', patchScript] }
+        )
+        const output = (patchResult.data?.executeCommand as { output?: string })?.output || ''
+        if (output.includes('patched') || output.includes('ok')) break
+      } catch { if (attempt === 2) { /* give up after 3 attempts */ } }
+    }
 
     return json({
       deploymentId: deployment.id,
