@@ -29,12 +29,25 @@ interface DeployBody {
   agentBio?: string
   agentModel?: string
   aiHubKey?: string
+  aiProvider?: string
+  aiProviderKey?: string
   templateCode?: string | null
   rawSpecYaml?: string | null
   tier: 'light' | 'general'
 }
 
 const ZEABUR_GRAPHQL = 'https://api.zeabur.com/graphql'
+
+/** Map AI provider name to the environment variable OpenClaw expects */
+export function aiProviderEnvVar(provider: string): string {
+  switch (provider) {
+    case 'zeabur-ai-hub': return 'ZEABUR_AI_HUB_API_KEY'
+    case 'openai': return 'OPENAI_API_KEY'
+    case 'anthropic': return 'ANTHROPIC_API_KEY'
+    case 'openrouter': return 'OPENROUTER_API_KEY'
+    default: return 'ZEABUR_AI_HUB_API_KEY'
+  }
+}
 
 async function isFeatureEnabled(db: D1Database, flagName: string): Promise<boolean> {
   const row = await db.prepare(
@@ -195,10 +208,13 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     } catch { /* will retry in status poller */ }
 
     if (envId) {
-      // Fix ZEABUR_AI_HUB_API_KEY
-      if (body.aiHubKey) {
+      // Fix AI provider key (supports multiple providers)
+      const aiKey = body.aiProviderKey || body.aiHubKey || ''
+      const aiProvider = body.aiProvider || (body.aiHubKey ? 'zeabur-ai-hub' : '')
+      if (aiKey && aiProvider) {
+        const envVarName = aiProviderEnvVar(aiProvider)
         await zeaburGQL(body.zeaburApiKey,
-          `mutation{updateSingleEnvironmentVariable(serviceID:"${zeaburServiceId}",environmentID:"${envId}",oldKey:"ZEABUR_AI_HUB_API_KEY",newKey:"ZEABUR_AI_HUB_API_KEY",value:"${body.aiHubKey}"){key}}`
+          `mutation{updateSingleEnvironmentVariable(serviceID:"${zeaburServiceId}",environmentID:"${envId}",oldKey:"${envVarName}",newKey:"${envVarName}",value:"${aiKey}"){key}}`
         ).catch(() => {})
       }
       // Fix ENABLE_CONTROL_UI
@@ -243,7 +259,10 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
         agentDisplayName: agentDisplayName,
         agentBio: body.agentBio || null,
         agentModel: body.agentModel || null,
-        aiHubKey: cryptoKey && body.aiHubKey ? await encrypt(body.aiHubKey, cryptoKey) : (body.aiHubKey || null),
+        aiProvider: body.aiProvider || (body.aiHubKey ? 'zeabur-ai-hub' : null),
+        aiProviderKey: cryptoKey && (body.aiProviderKey || body.aiHubKey)
+          ? await encrypt(body.aiProviderKey || body.aiHubKey!, cryptoKey)
+          : (body.aiProviderKey || body.aiHubKey || null),
         serverNodeId: body.serverNodeId,
         zeaburApiKey: cryptoKey ? await encrypt(body.zeaburApiKey, cryptoKey) : body.zeaburApiKey,
       })

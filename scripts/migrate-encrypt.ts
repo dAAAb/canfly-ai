@@ -100,6 +100,10 @@ async function main() {
         meta.zeaburApiKey = await encrypt(meta.zeaburApiKey, key)
         changed = true
       }
+      if (meta.aiProviderKey && !isEncrypted(meta.aiProviderKey)) {
+        meta.aiProviderKey = await encrypt(meta.aiProviderKey, key)
+        changed = true
+      }
       if (meta.aiHubKey && !isEncrypted(meta.aiHubKey)) {
         meta.aiHubKey = await encrypt(meta.aiHubKey, key)
         changed = true

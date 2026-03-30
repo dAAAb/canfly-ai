@@ -66,6 +66,7 @@ async function main() {
       const meta = JSON.parse(raw)
       let changed = false
       if (meta.zeaburApiKey?.startsWith(PREFIX)) { meta.zeaburApiKey = await decrypt(meta.zeaburApiKey, key); changed = true }
+      if (meta.aiProviderKey?.startsWith(PREFIX)) { meta.aiProviderKey = await decrypt(meta.aiProviderKey, key); changed = true }
       if (meta.aiHubKey?.startsWith(PREFIX)) { meta.aiHubKey = await decrypt(meta.aiHubKey, key); changed = true }
       if (changed) {
         await d1Execute('UPDATE v3_zeabur_deployments SET metadata = ?1 WHERE id = ?2', [JSON.stringify(meta), id])

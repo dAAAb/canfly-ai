@@ -17,6 +17,7 @@ import {
 } from '../../../community/_helpers'
 import { authenticateRequest } from '../../../_auth'
 import { importKey, decrypt, encrypt } from '../../../../lib/crypto'
+import { aiProviderEnvVar } from '../../../zeabur/deploy'
 
 const ZEABUR_GRAPHQL = 'https://api.zeabur.com/graphql'
 
@@ -200,11 +201,13 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
     } catch { /* token will be empty */ }
 
     // 2. Fix environment variables (template variables don't auto-expand via API deploy)
-    const rawAiHubKey = metadata.aiHubKey || metadata.zeaburAiHubKey || ''
-    const aiHubKey = cryptoKey && rawAiHubKey ? await decrypt(rawAiHubKey, cryptoKey) : rawAiHubKey
-    if (aiHubKey) {
+    const rawAiKey = metadata.aiProviderKey || metadata.aiHubKey || metadata.zeaburAiHubKey || ''
+    const aiKey = cryptoKey && rawAiKey ? await decrypt(rawAiKey, cryptoKey) : rawAiKey
+    const aiProvider = metadata.aiProvider || (rawAiKey ? 'zeabur-ai-hub' : '')
+    if (aiKey && aiProvider) {
+      const envVarName = aiProviderEnvVar(aiProvider)
       await zeaburGQL(zeaburApiKey,
-        `mutation{updateSingleEnvironmentVariable(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",oldKey:"ZEABUR_AI_HUB_API_KEY",newKey:"ZEABUR_AI_HUB_API_KEY",value:"${aiHubKey}"){key}}`
+        `mutation{updateSingleEnvironmentVariable(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",oldKey:"${envVarName}",newKey:"${envVarName}",value:"${aiKey}"){key}}`
       )
     }
     await zeaburGQL(zeaburApiKey,

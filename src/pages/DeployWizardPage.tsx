@@ -174,7 +174,8 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
   const [loadingServers, setLoadingServers] = useState(false)
   const [selectedServer, setSelectedServer] = useState<string | null>(null)
 
-  const [aiHubKey, setAiHubKey] = useState('')
+  const [aiProvider, setAiProvider] = useState('zeabur-ai-hub')
+  const [aiProviderKey, setAiProviderKey] = useState('')
 
   const [agentDisplayName, setAgentDisplayName] = useState('')
   const [agentBio, setAgentBio] = useState('')
@@ -371,7 +372,8 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
           agentName: agentSlug,
           agentDisplayName: agentDisplayName.trim(),
           agentBio: agentBio.trim() || undefined,
-          aiHubKey: aiHubKey.trim() || undefined,
+          aiProvider: aiProviderKey.trim() ? aiProvider : undefined,
+          aiProviderKey: aiProviderKey.trim() || undefined,
           tier: 'general',
           templateCode: 'VTZ4FX',
         }),
@@ -389,7 +391,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
       setDeployError((err as Error).message)
       setDeploying(false)
     }
-  }, [selectedServer, agentSlug, agentDisplayName, agentBio, zeaburApiKey, aiHubKey, getAuthHeaders])
+  }, [selectedServer, agentSlug, agentDisplayName, agentBio, zeaburApiKey, aiProvider, aiProviderKey, getAuthHeaders])
 
   /* ── Poll deployment status ── */
   useEffect(() => {
@@ -690,23 +692,30 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
           {step === 3 && (
             <div className="space-y-4">
               <h2 className="text-lg font-semibold text-white">{t('deploy.step3Title')}</h2>
-              <p className="text-sm text-gray-400">
-                {t('deploy.step3DescPrefix', 'Enter your ')}
-                <a href="https://zeabur.com/ai-hub" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 underline">
-                  AI Hub <ExternalLink className="w-3 h-3 inline" />
-                </a>
-                {t('deploy.step3DescSuffix', ' key to give your agent access to AI models.')}
-              </p>
+              <p className="text-sm text-gray-400">{t('deploy.step3Desc')}</p>
               <div>
-                <label className="block text-xs text-gray-400 mb-1.5">{t('deploy.aiHubKeyLabel')}</label>
+                <label className="block text-xs text-gray-400 mb-1.5">{t('deploy.aiProviderLabel')}</label>
+                <select
+                  value={aiProvider}
+                  onChange={(e) => setAiProvider(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-900 border border-gray-700 text-white rounded-xl focus:outline-none focus:border-cyan-500/50 transition-colors text-sm"
+                >
+                  <option value="zeabur-ai-hub">Zeabur AI Hub</option>
+                  <option value="openai">OpenAI</option>
+                  <option value="anthropic">Anthropic</option>
+                  <option value="openrouter">OpenRouter</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs text-gray-400 mb-1.5">{t('deploy.aiProviderKeyLabel')}</label>
                 <input
                   type="password"
-                  value={aiHubKey}
-                  onChange={(e) => setAiHubKey(e.target.value)}
-                  placeholder={t('deploy.aiHubKeyPlaceholder')}
+                  value={aiProviderKey}
+                  onChange={(e) => setAiProviderKey(e.target.value)}
+                  placeholder={t('deploy.aiProviderKeyPlaceholder')}
                   className="w-full px-4 py-3 bg-gray-900 border border-gray-700 text-white placeholder-gray-600 rounded-xl focus:outline-none focus:border-cyan-500/50 transition-colors text-sm"
                 />
-                <p className="text-[11px] text-gray-600 mt-1.5">{t('deploy.aiHubKeyHelp')}</p>
+                <p className="text-[11px] text-gray-600 mt-1.5">{t('deploy.aiProviderKeyHelp')}</p>
               </div>
             </div>
           )}
