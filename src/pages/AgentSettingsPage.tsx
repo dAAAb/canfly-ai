@@ -82,28 +82,15 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
     ;(async () => {
       try {
         const headers = await getAuthHeaders()
-        const res = await fetch(`/api/zeabur/deploy?owner=${encodeURIComponent(username)}`, { headers })
-        const data = await res.json() as { deployments?: Array<{ agent_name: string; status: string; metadata: string }> }
-        const dep = (data.deployments || []).find(d => d.agent_name === agentName && d.status === 'running')
-        if (dep) {
-          setHasDeployment(true)
-          // Load servers using the deployment's Zeabur API key
-          setLoadingServers(true)
-          const meta = JSON.parse(dep.metadata || '{}')
-          if (meta.zeaburApiKey) {
-            const srvRes = await fetch('/api/zeabur/proxy', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ zeaburApiKey: meta.zeaburApiKey, query: '{ servers { _id name provider } }' }),
-            })
-            const srvData = await srvRes.json() as { data?: { servers?: Array<{ _id: string; name: string; provider: string }> } }
-            setCloneServers(srvData.data?.servers || [])
-          }
-          setLoadingServers(false)
+        const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/clone-zeabur`, { headers })
+        if (res.ok) {
+          const data = await res.json() as { servers?: Array<{ _id: string; name: string; provider: string }>; hasDeployment?: boolean }
+          setHasDeployment(!!data.hasDeployment)
+          setCloneServers(data.servers || [])
         }
       } catch { /* ignore */ }
     })()
-  }, [agentName, username, isAuthenticated, getAuthHeaders])
+  }, [agentName, isAuthenticated, getAuthHeaders])
 
   const handleClone = useCallback(async () => {
     if (!selectedCloneServer) return
@@ -394,7 +381,7 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
             <h2 className="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-3">
               {t('settings.cloneTitle', 'Backup / Clone')}
             </h2>
-            <GlassCard>
+            <GlassCard className="p-5">
               <div className="flex items-start gap-4">
                 <div className="p-2 rounded-lg bg-purple-500/10">
                   <CopyIcon className="w-5 h-5 text-purple-400" />

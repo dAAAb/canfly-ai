@@ -163,7 +163,27 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
 
   const url = new URL(request.url)
   const cloneId = url.searchParams.get('cloneId')
-  if (!cloneId) return errorResponse('cloneId query param required', 400)
+
+  // No cloneId → return available servers for backup
+  if (!cloneId) {
+    const dep = await env.DB.prepare(
+      `SELECT metadata FROM v3_zeabur_deployments WHERE agent_name = ?1 AND status = 'running' ORDER BY created_at DESC LIMIT 1`
+    ).bind(agentName).first<{ metadata: string }>()
+    if (!dep) return json({ servers: [], hasDeployment: false })
+
+    const meta = JSON.parse(dep.metadata || '{}')
+    const cryptoKey = env.ENCRYPTION_KEY ? await importKey(env.ENCRYPTION_KEY) : null
+    const apiKey = cryptoKey ? await decrypt(meta.zeaburApiKey || '', cryptoKey) : meta.zeaburApiKey
+    if (!apiKey) return json({ servers: [], hasDeployment: true })
+
+    try {
+      const srvResult = await zeaburGQL(apiKey, '{ servers { _id name provider } }')
+      const servers = (srvResult.data?.servers as Array<{ _id: string; name: string; provider: string }>) || []
+      return json({ servers, hasDeployment: true })
+    } catch {
+      return json({ servers: [], hasDeployment: true })
+    }
+  }
 
   const deployment = await env.DB.prepare(
     `SELECT id, owner_username, zeabur_project_id, status, deploy_url, agent_name, metadata
