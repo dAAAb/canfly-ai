@@ -195,13 +195,14 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   if (!deployment) return errorResponse('Clone deployment not found', 404)
   if (deployment.owner_username !== auth.username) return errorResponse('Not authorized', 403)
 
-  // Already done?
-  if (['running', 'failed'].includes(deployment.status)) {
+  // Already done or in setup?
+  if (['running', 'failed', 'setting_up'].includes(deployment.status)) {
     return json({
       cloneId: deployment.id,
-      status: deployment.status,
+      status: deployment.status === 'setting_up' ? 'cloning' : deployment.status,
       agentName: deployment.agent_name,
       deployUrl: deployment.deploy_url,
+      message: deployment.status === 'setting_up' ? 'Setting up cloned service...' : undefined,
     })
   }
 
@@ -268,9 +269,9 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     return json({ cloneId, status: 'failed', error: 'No service found in cloned project' })
   }
 
-  // Update deployment with service ID
+  // Lock: mark as 'setting_up' to prevent concurrent polls from re-running setup
   await env.DB.prepare(
-    `UPDATE v3_zeabur_deployments SET zeabur_service_id = ?1, updated_at = datetime('now') WHERE id = ?2`
+    `UPDATE v3_zeabur_deployments SET status = 'setting_up', zeabur_service_id = ?1, updated_at = datetime('now') WHERE id = ?2`
   ).bind(newServiceId, cloneId).run()
 
   // ── Post-clone setup (ONLY on new project) ──
