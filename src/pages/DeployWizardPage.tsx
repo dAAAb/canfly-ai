@@ -703,6 +703,8 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
                   <option value="zeabur-ai-hub">Zeabur AI Hub</option>
                   <option value="openai">OpenAI</option>
                   <option value="anthropic">Anthropic</option>
+                  <option value="google-gemini">Google Gemini</option>
+                  <option value="deepseek">DeepSeek</option>
                   <option value="openrouter">OpenRouter</option>
                 </select>
               </div>
