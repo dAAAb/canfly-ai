@@ -7880,6 +7880,17 @@
     "bindZeaburBtn": "Bind Zeabur Lobster",
     "bindZeaburScanning": "Scanning Zeabur services...",
     "bindZeaburSuccess": "Bound \"{{serviceName}}\" from project \"{{projectName}}\".",
-    "bindZeaburAlreadyBound": "This agent is bound to a Zeabur deployment."
+    "bindZeaburAlreadyBound": "This agent is bound to a Zeabur deployment.",
+    "cloneTitle": "Backup / Clone",
+    "cloneDesc": "Clone this lobster (with all memory and config) to another server as a backup.",
+    "cloneServerLabel": "Target Server",
+    "cloneLoadingServers": "Loading servers...",
+    "cloneNoServers": "No servers available",
+    "cloneBtn": "Start Backup",
+    "cloneStarted": "Clone started, please wait...",
+    "cloneInProgress": "Cloning in progress...",
+    "cloneSuccess": "Backup complete!",
+    "cloneChat": "Chat",
+    "cloneSettings": "Settings"
   }
 }
