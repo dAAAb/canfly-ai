@@ -273,67 +273,17 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     `UPDATE v3_zeabur_deployments SET zeabur_service_id = ?1, updated_at = datetime('now') WHERE id = ?2`
   ).bind(newServiceId, cloneId).run()
 
-  // ── Verification: wait for service to be ready, then check clone integrity ──
-  const verifyErrors: string[] = []
-  let newGatewayToken = ''
-
-  // Wait for cloned service to be accessible (up to 30s)
-  let serviceReady = false
-  for (let attempt = 0; attempt < 6; attempt++) {
-    if (attempt > 0) await new Promise(r => setTimeout(r, 5000))
-    try {
-      const ping = await zeaburGQL(zeaburApiKey,
-        `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-        { cmd: ['node', '-e', 'console.log("READY")'] }
-      )
-      if ((ping.data?.executeCommand as { output?: string })?.output?.includes('READY')) {
-        serviceReady = true
-        break
-      }
-    } catch { /* not ready yet */ }
-  }
-
-  if (!serviceReady) {
-    // Service not accessible yet — don't fail, just return cloning status and let next poll retry
-    return json({ cloneId, status: 'cloning', message: 'Clone complete, waiting for service to start...' })
-  }
-
-  // Verify 1: openclaw.json exists + file count
-  try {
-    const configCheck = await zeaburGQL(zeaburApiKey,
-      `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-      { cmd: ['node', '-e', 'const fs=require("fs"),f="/home/node/.openclaw/openclaw.json",d="/home/node/.openclaw";console.log(fs.existsSync(f)?"EXISTS":"MISSING");try{console.log("FILES:"+fs.readdirSync(d,{recursive:true}).length)}catch(e){console.log("FILES:0")}'] }
-    )
-    const output = (configCheck.data?.executeCommand as { output?: string })?.output?.trim() || ''
-    if (!output.includes('EXISTS')) verifyErrors.push('openclaw.json missing')
-    const fileMatch = output.match(/FILES:(\d+)/)
-    if (fileMatch && parseInt(fileMatch[1]) < 3) verifyErrors.push(`Only ${fileMatch[1]} files in .openclaw dir`)
-  } catch { verifyErrors.push('Could not verify openclaw files') }
-
-  // Verify 2: OPENCLAW_GATEWAY_TOKEN exists
-  try {
-    const tokenResult = await zeaburGQL(zeaburApiKey,
-      `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-      { cmd: ['node', '-e', 'console.log(process.env.OPENCLAW_GATEWAY_TOKEN || "NONE")'] }
-    )
-    newGatewayToken = ((tokenResult.data?.executeCommand as { output?: string })?.output || '').replace(/[\r\n\s]+$/g, '')
-    if (newGatewayToken === 'NONE' || !newGatewayToken) verifyErrors.push('OPENCLAW_GATEWAY_TOKEN not set')
-  } catch { verifyErrors.push('Could not read gateway token') }
-
-  // If critical verification failed, mark as failed
-  if (verifyErrors.some(e => e.includes('openclaw.json missing'))) {
-    await env.DB.prepare(
-      `UPDATE v3_zeabur_deployments SET status = 'failed', error_message = ?1, updated_at = datetime('now') WHERE id = ?2`
-    ).bind(`Clone verification failed: ${verifyErrors.join('; ')}`, cloneId).run()
-    return json({ cloneId, status: 'failed', error: `Verification failed: ${verifyErrors.join('; ')}` })
-  }
-
   // ── Post-clone setup (ONLY on new project) ──
 
   const bakSlug = metadata.bakSlug || `${toAgentSlug(agentName)}-bak-${dateSuffix()}`
   const bakDisplayName = metadata.bakDisplayName || `${agentName} BAK ${dateSuffix()}`
 
-  // 1. Add new domain
+  // 1. Start cloned service (cloneProject doesn't auto-start)
+  await zeaburGQL(zeaburApiKey,
+    `mutation{restartService(serviceID:"${newServiceId}",environmentID:"${newEnvId}")}`
+  ).catch(() => {})
+
+  // 2. Add new domain (can do while service is starting)
   const domain = `${bakSlug}-canfly`
   const addDomainResult = await zeaburGQL(zeaburApiKey,
     `mutation{addDomain(serviceID:"${newServiceId}",environmentID:"${newEnvId}",domain:"${domain}",isGenerated:true){domain}}`
@@ -341,24 +291,14 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   const assignedDomain = (addDomainResult?.data?.addDomain as { domain?: string })?.domain
   const publicUrl = assignedDomain ? `https://${assignedDomain}` : `https://${domain}.zeabur.app`
 
-  // 2. Patch config: update allowedOrigins + remove Telegram plugin
-  const origins = [publicUrl, 'https://canfly.ai'].filter(Boolean)
-  const patchScript = `const fs=require('fs'),J=require('json5'),f='/home/node/.openclaw/openclaw.json';try{const c=J.parse(fs.readFileSync(f,'utf8'));c.gateway.controlUi.allowedOrigins=${JSON.stringify(origins)};if(!c.gateway.http)c.gateway.http={endpoints:{chatCompletions:{enabled:true}}};else{c.gateway.http.endpoints=c.gateway.http.endpoints||{};c.gateway.http.endpoints.chatCompletions={enabled:true}};if(c.plugins&&c.plugins.entries){delete c.plugins.entries['@openclaw/plugin-telegram'];delete c.plugins.entries['plugin-telegram']};fs.writeFileSync(f,JSON.stringify(c,null,2));console.log('patched')}catch(e){console.log('err:'+e.message)}`
-  try {
-    await zeaburGQL(zeaburApiKey,
-      `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-      { cmd: ['node', '-e', patchScript] }
-    )
-  } catch { /* best effort */ }
-
-  // 3. Register new agent
+  // 3. Register new agent in Canfly DB (doesn't need service to be up)
   let finalAgentName = bakSlug
-  let suffix = 0
+  let sfx = 0
   while (true) {
     const exists = await env.DB.prepare('SELECT name FROM agents WHERE name = ?1').bind(finalAgentName).first()
     if (!exists) break
-    suffix++
-    finalAgentName = `${bakSlug}-${suffix}`
+    sfx++
+    finalAgentName = `${bakSlug}-${sfx}`
   }
 
   const apiKey = generateApiKey()
@@ -378,7 +318,37 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     apiKey, apiKey, pairingCode, expires,
   ).run()
 
-  // 4. Inject new CANFLY env vars into cloned project
+  // 4. Wait for service to be accessible (up to 60s)
+  let serviceReady = false
+  for (let attempt = 0; attempt < 12; attempt++) {
+    await new Promise(r => setTimeout(r, 5000))
+    try {
+      const ping = await zeaburGQL(zeaburApiKey,
+        `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
+        { cmd: ['node', '-e', 'console.log("READY")'] }
+      )
+      if ((ping.data?.executeCommand as { output?: string })?.output?.includes('READY')) {
+        serviceReady = true
+        break
+      }
+    } catch { /* not ready yet */ }
+  }
+
+  if (!serviceReady) {
+    return json({ cloneId, status: 'cloning', message: 'Clone complete, waiting for service to start...' })
+  }
+
+  // 5. Patch config: update allowedOrigins, enable chatCompletions, remove Telegram
+  const origins = [publicUrl, 'https://canfly.ai'].filter(Boolean)
+  const patchScript = `const fs=require('fs'),J=require('json5'),f='/home/node/.openclaw/openclaw.json';try{const c=J.parse(fs.readFileSync(f,'utf8'));c.gateway.controlUi.allowedOrigins=${JSON.stringify(origins)};if(!c.gateway.http)c.gateway.http={endpoints:{chatCompletions:{enabled:true}}};else{c.gateway.http.endpoints=c.gateway.http.endpoints||{};c.gateway.http.endpoints.chatCompletions={enabled:true}};if(c.plugins&&c.plugins.entries){delete c.plugins.entries['@openclaw/plugin-telegram'];delete c.plugins.entries['plugin-telegram']};fs.writeFileSync(f,JSON.stringify(c,null,2));console.log('patched')}catch(e){console.log('err:'+e.message)}`
+  try {
+    await zeaburGQL(zeaburApiKey,
+      `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
+      { cmd: ['node', '-e', patchScript] }
+    )
+  } catch { /* best effort */ }
+
+  // 6. Inject new CANFLY env vars
   for (const [key, value] of [
     ['CANFLY_API_KEY', apiKey],
     ['CANFLY_AGENT_NAME', finalAgentName],
@@ -394,16 +364,26 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     }
   }
 
-  // 5. Restart cloned service
+  // 7. Restart to apply config + env vars
   await zeaburGQL(zeaburApiKey,
     `mutation{restartService(serviceID:"${newServiceId}",environmentID:"${newEnvId}")}`
   )
 
-  // 6. Wait for service + verify chat endpoint
+  // 8. Verify: wait for chat endpoint + read fresh gateway token
   let chatReady = false
+  let newGatewayToken = ''
   for (let attempt = 0; attempt < 5; attempt++) {
     await new Promise(r => setTimeout(r, 5000))
     try {
+      // Read gateway token
+      if (!newGatewayToken) {
+        const tokenResult = await zeaburGQL(zeaburApiKey,
+          `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
+          { cmd: ['node', '-e', 'console.log(process.env.OPENCLAW_GATEWAY_TOKEN || "")'] }
+        )
+        newGatewayToken = ((tokenResult.data?.executeCommand as { output?: string })?.output || '').replace(/[\r\n\s]+$/g, '')
+      }
+      // Check chat endpoint
       const testRes = await fetch(`${publicUrl}/v1/chat/completions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(newGatewayToken ? { 'Authorization': `Bearer ${newGatewayToken}` } : {}) },
@@ -413,7 +393,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     } catch { /* not ready */ }
   }
 
-  // If not ready, try re-patching config (may have been overwritten on restart)
+  // Fallback: re-patch config if chat not ready
   if (!chatReady) {
     try {
       await zeaburGQL(zeaburApiKey,
@@ -426,7 +406,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     } catch { /* best effort */ }
   }
 
-  // 7. Re-read gateway token (may have changed after restart)
+  // 9. Re-read gateway token (may have changed after restart)
   try {
     const tokenResult = await zeaburGQL(zeaburApiKey,
       `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,

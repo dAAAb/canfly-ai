@@ -70,6 +70,7 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
   const [cloneMessage, setCloneMessage] = useState<string | null>(null)
   const [cloneResult, setCloneResult] = useState<{ agentName?: string; displayName?: string; deployUrl?: string } | null>(null)
   const [cloneError, setCloneError] = useState<string | null>(null)
+  const [showAllServers, setShowAllServers] = useState(false)
 
   const getAuthHeaders = useCallback(
     () => getApiAuthHeaders({ getAccessToken, walletAddress }),
@@ -439,17 +440,50 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
                         ) : cloneServers.length === 0 ? (
                           <p className="text-gray-500 text-sm">{t('settings.cloneNoServers', 'No servers available')}</p>
                         ) : (
-                          <select
-                            value={selectedCloneServer || ''}
-                            onChange={e => setSelectedCloneServer(e.target.value)}
-                            className="w-full px-3 py-2.5 bg-gray-900 border border-gray-700 text-white rounded-lg text-sm focus:outline-none focus:border-purple-500/50 transition-colors"
-                          >
-                            {cloneServers.map(srv => (
-                              <option key={srv._id} value={srv._id}>
-                                {srv.name} ({srv.provider})
-                              </option>
-                            ))}
-                          </select>
+                          <div className="space-y-1.5">
+                            {/* Pre-selected server (always visible) */}
+                            {selectedCloneServer && (() => {
+                              const srv = cloneServers.find(s => s._id === selectedCloneServer)
+                              return srv ? (
+                                <button
+                                  key={srv._id}
+                                  className="w-full text-left px-3 py-2 rounded-lg border border-purple-500 bg-purple-500/10 text-white text-sm"
+                                >
+                                  <span className="flex items-center gap-2">
+                                    <Server className="w-3.5 h-3.5 text-purple-400" />
+                                    {srv.name} <span className="text-gray-500 text-xs">({srv.provider})</span>
+                                  </span>
+                                </button>
+                              ) : null
+                            })()}
+                            {/* Toggle to show other servers */}
+                            {cloneServers.length > 1 && (
+                              <>
+                                <button
+                                  onClick={() => setShowAllServers(!showAllServers)}
+                                  className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
+                                >
+                                  {showAllServers
+                                    ? t('settings.cloneHideServers', 'Hide other servers')
+                                    : t('settings.cloneShowServers', `Show all ${cloneServers.length} servers`)}
+                                </button>
+                                {showAllServers && cloneServers
+                                  .filter(s => s._id !== selectedCloneServer)
+                                  .map(srv => (
+                                    <button
+                                      key={srv._id}
+                                      onClick={() => { setSelectedCloneServer(srv._id); setShowAllServers(false) }}
+                                      className="w-full text-left px-3 py-2 rounded-lg border border-gray-700 bg-gray-900 text-gray-300 hover:border-gray-600 text-sm transition-colors"
+                                    >
+                                      <span className="flex items-center gap-2">
+                                        <Server className="w-3.5 h-3.5 text-gray-500" />
+                                        {srv.name} <span className="text-gray-600 text-xs">({srv.provider})</span>
+                                      </span>
+                                    </button>
+                                  ))}
+                              </>
+                            )}
+                          </div>
                         )}
                       </div>
 
