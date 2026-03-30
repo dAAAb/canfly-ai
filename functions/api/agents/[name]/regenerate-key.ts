@@ -7,6 +7,7 @@
  */
 import { type Env, json, errorResponse, handleOptions, generateApiKey } from '../../community/_helpers'
 import { authenticateRequest } from '../../_auth'
+import { importKey, decrypt } from '../../../lib/crypto'
 
 const ZEABUR_GRAPHQL = 'https://api.zeabur.com/graphql'
 
@@ -93,7 +94,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request, params }
   if (deployment?.zeabur_service_id) {
     try {
       const metadata = JSON.parse(deployment.metadata || '{}')
-      const zeaburApiKey = metadata.zeaburApiKey
+      const cryptoKey = env.ENCRYPTION_KEY ? await importKey(env.ENCRYPTION_KEY) : null
+      const zeaburApiKey = cryptoKey ? await decrypt(metadata.zeaburApiKey || '', cryptoKey) : metadata.zeaburApiKey
 
       if (zeaburApiKey) {
         // Get environment ID

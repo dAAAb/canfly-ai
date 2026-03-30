@@ -16,6 +16,7 @@ import {
   toAgentSlug,
 } from '../../../community/_helpers'
 import { authenticateRequest } from '../../../_auth'
+import { importKey, decrypt, encrypt } from '../../../../lib/crypto'
 
 const ZEABUR_GRAPHQL = 'https://api.zeabur.com/graphql'
 
@@ -102,7 +103,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
 
   // Still deploying — poll Zeabur for live status
   const metadata = JSON.parse(deployment.metadata || '{}')
-  const zeaburApiKey = metadata.zeaburApiKey
+  const cryptoKey = env.ENCRYPTION_KEY ? await importKey(env.ENCRYPTION_KEY) : null
+  const zeaburApiKey = cryptoKey ? await decrypt(metadata.zeaburApiKey || '', cryptoKey) : metadata.zeaburApiKey
 
   if (!zeaburApiKey || !deployment.zeabur_service_id) {
     return json({
@@ -198,7 +200,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
     } catch { /* token will be empty */ }
 
     // 2. Fix environment variables (template variables don't auto-expand via API deploy)
-    const aiHubKey = metadata.aiHubKey || metadata.zeaburAiHubKey || ''
+    const rawAiHubKey = metadata.aiHubKey || metadata.zeaburAiHubKey || ''
+    const aiHubKey = cryptoKey && rawAiHubKey ? await decrypt(rawAiHubKey, cryptoKey) : rawAiHubKey
     if (aiHubKey) {
       await zeaburGQL(zeaburApiKey,
         `mutation{updateSingleEnvironmentVariable(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",oldKey:"ZEABUR_AI_HUB_API_KEY",newKey:"ZEABUR_AI_HUB_API_KEY",value:"${aiHubKey}"){key}}`
@@ -269,7 +272,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
 
     // 7. Set agent_card_override with gateway URL + token (token stays private via security filter)
     if (publicUrl && gatewayToken) {
-      const cardOverride = JSON.stringify({ url: publicUrl, gateway_token: gatewayToken })
+      const encToken = cryptoKey ? await encrypt(gatewayToken, cryptoKey) : gatewayToken
+      const cardOverride = JSON.stringify({ url: publicUrl, gateway_token: encToken })
       await env.DB.prepare(
         'UPDATE agents SET agent_card_override = ?1 WHERE name = ?2'
       ).bind(cardOverride, finalAgentName).run()
