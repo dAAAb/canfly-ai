@@ -7905,6 +7905,17 @@
     "bindZeaburBtn": "绑定 Zeabur 虾虾",
     "bindZeaburScanning": "正在扫描 Zeabur 服务…",
     "bindZeaburSuccess": "成功绑定项目「{{projectName}}」中的「{{serviceName}}」。",
-    "bindZeaburAlreadyBound": "此代理已绑定至 Zeabur 部署。"
+    "bindZeaburAlreadyBound": "此代理已绑定至 Zeabur 部署。",
+    "cloneTitle": "备份 / 克隆",
+    "cloneDesc": "将虾虾（含所有记忆与设置）克隆到另一台服务器作为备份。",
+    "cloneServerLabel": "目标服务器",
+    "cloneLoadingServers": "加载服务器中…",
+    "cloneNoServers": "没有可用的服务器",
+    "cloneBtn": "开始备份",
+    "cloneStarted": "备份已启动，请稍候…",
+    "cloneInProgress": "备份进行中…",
+    "cloneSuccess": "备份完成！",
+    "cloneChat": "聊天",
+    "cloneSettings": "设置"
   }
 }

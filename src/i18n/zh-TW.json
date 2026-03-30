@@ -7888,6 +7888,17 @@
     "bindZeaburBtn": "綁定 Zeabur 蝦蝦",
     "bindZeaburScanning": "正在掃描 Zeabur 服務⋯",
     "bindZeaburSuccess": "成功綁定專案「{{projectName}}」中的「{{serviceName}}」。",
-    "bindZeaburAlreadyBound": "此代理已綁定至 Zeabur 部署。"
+    "bindZeaburAlreadyBound": "此代理已綁定至 Zeabur 部署。",
+    "cloneTitle": "備份 / 複製",
+    "cloneDesc": "將蝦蝦（含所有記憶與設定）複製到另一台伺服器作為備份。",
+    "cloneServerLabel": "目標伺服器",
+    "cloneLoadingServers": "載入伺服器中⋯",
+    "cloneNoServers": "沒有可用的伺服器",
+    "cloneBtn": "開始備份",
+    "cloneStarted": "備份已啟動，請稍候⋯",
+    "cloneInProgress": "備份進行中⋯",
+    "cloneSuccess": "備份完成！",
+    "cloneChat": "聊天",
+    "cloneSettings": "設定"
   }
 }

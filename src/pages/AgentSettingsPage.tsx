@@ -4,7 +4,7 @@
  * Agent management page with Telegram connection and delete deployment.
  * Route: /u/{username}/agent/{agentName}/settings  (or /agent/{agentName}/settings on subdomain)
  */
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
@@ -25,6 +25,10 @@ import {
   Copy,
   Check,
   RefreshCw,
+  Copy as CopyIcon,
+  Server,
+  AlertCircle,
+  CheckCircle,
 } from 'lucide-react'
 
 interface AgentSettingsPageProps {
@@ -55,10 +59,101 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
   const [regenError, setRegenError] = useState<string | null>(null)
   const [keyCopied, setKeyCopied] = useState(false)
 
+  // Clone/Backup
+  const [hasDeployment, setHasDeployment] = useState(false)
+  const [cloneServers, setCloneServers] = useState<Array<{ _id: string; name: string; provider: string }>>([])
+  const [loadingServers, setLoadingServers] = useState(false)
+  const [selectedCloneServer, setSelectedCloneServer] = useState<string | null>(null)
+  const [cloning, setCloning] = useState(false)
+  const [cloneId, setCloneId] = useState<string | null>(null)
+  const [cloneStatus, setCloneStatus] = useState<string | null>(null)
+  const [cloneMessage, setCloneMessage] = useState<string | null>(null)
+  const [cloneResult, setCloneResult] = useState<{ agentName?: string; displayName?: string; deployUrl?: string } | null>(null)
+  const [cloneError, setCloneError] = useState<string | null>(null)
+
   const getAuthHeaders = useCallback(
     () => getApiAuthHeaders({ getAccessToken, walletAddress }),
     [getAccessToken, walletAddress],
   )
+
+  // Check if agent has a running deployment + load available servers
+  useEffect(() => {
+    if (!agentName || !isAuthenticated) return
+    ;(async () => {
+      try {
+        const headers = await getAuthHeaders()
+        const res = await fetch(`/api/zeabur/deploy?owner=${encodeURIComponent(username)}`, { headers })
+        const data = await res.json() as { deployments?: Array<{ agent_name: string; status: string; metadata: string }> }
+        const dep = (data.deployments || []).find(d => d.agent_name === agentName && d.status === 'running')
+        if (dep) {
+          setHasDeployment(true)
+          // Load servers using the deployment's Zeabur API key
+          setLoadingServers(true)
+          const meta = JSON.parse(dep.metadata || '{}')
+          if (meta.zeaburApiKey) {
+            const srvRes = await fetch('/api/zeabur/proxy', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ zeaburApiKey: meta.zeaburApiKey, query: '{ servers { _id name provider } }' }),
+            })
+            const srvData = await srvRes.json() as { data?: { servers?: Array<{ _id: string; name: string; provider: string }> } }
+            setCloneServers(srvData.data?.servers || [])
+          }
+          setLoadingServers(false)
+        }
+      } catch { /* ignore */ }
+    })()
+  }, [agentName, username, isAuthenticated, getAuthHeaders])
+
+  const handleClone = useCallback(async () => {
+    if (!selectedCloneServer) return
+    setCloning(true)
+    setCloneError(null)
+    try {
+      const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/clone-zeabur`, {
+        method: 'POST',
+        headers: await getAuthHeaders(),
+        body: JSON.stringify({ targetServerNodeId: selectedCloneServer }),
+      })
+      const data = await res.json() as Record<string, unknown>
+      if (!res.ok) throw new Error((data.error as string) || `Clone failed (${res.status})`)
+      setCloneId(data.cloneId as string)
+      setCloneStatus('cloning')
+      setCloneMessage(t('settings.cloneStarted', 'Clone started, please wait...'))
+    } catch (err) {
+      setCloneError((err as Error).message)
+      setCloning(false)
+    }
+  }, [agentName, selectedCloneServer, getAuthHeaders, t])
+
+  // Poll clone status
+  useEffect(() => {
+    if (!cloneId || cloneStatus === 'running' || cloneStatus === 'failed') return
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(
+          `/api/agents/${encodeURIComponent(agentName)}/clone-zeabur?cloneId=${cloneId}`,
+          { headers: await getAuthHeaders() },
+        )
+        const data = await res.json() as Record<string, unknown>
+        setCloneStatus(data.status as string)
+        if (data.status === 'running') {
+          setCloneResult({
+            agentName: data.agentName as string,
+            displayName: data.displayName as string,
+            deployUrl: data.deployUrl as string,
+          })
+          setCloning(false)
+        } else if (data.status === 'failed') {
+          setCloneError((data.error as string) || 'Clone failed')
+          setCloning(false)
+        } else {
+          setCloneMessage((data.message as string) || 'Cloning in progress...')
+        }
+      } catch { /* retry on next interval */ }
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [cloneId, cloneStatus, agentName, getAuthHeaders])
 
   const handleRegenerateKey = useCallback(async () => {
     setRegenerating(true)
@@ -292,6 +387,110 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
             </div>
           </GlassCard>
         </div>
+
+        {/* Clone/Backup */}
+        {hasDeployment && (
+          <div className="mb-6">
+            <h2 className="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-3">
+              {t('settings.cloneTitle', 'Backup / Clone')}
+            </h2>
+            <GlassCard>
+              <div className="flex items-start gap-4">
+                <div className="p-2 rounded-lg bg-purple-500/10">
+                  <CopyIcon className="w-5 h-5 text-purple-400" />
+                </div>
+                <div className="flex-1 space-y-3">
+                  <p className="text-gray-400 text-sm">
+                    {t('settings.cloneDesc', 'Clone this lobster (with all memory and config) to another server as a backup.')}
+                  </p>
+
+                  {cloneResult ? (
+                    <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                      <div className="flex items-center gap-2 text-green-400 text-sm mb-2">
+                        <CheckCircle className="w-4 h-4" />
+                        {t('settings.cloneSuccess', 'Backup complete!')}
+                      </div>
+                      <p className="text-white text-sm font-medium">{cloneResult.displayName}</p>
+                      {cloneResult.deployUrl && (
+                        <a href={cloneResult.deployUrl} target="_blank" rel="noopener noreferrer"
+                          className="text-xs text-cyan-400 hover:text-cyan-300">
+                          {cloneResult.deployUrl}
+                        </a>
+                      )}
+                      <div className="flex gap-2 mt-3">
+                        <button
+                          onClick={() => navigate(`/u/${username}/agent/${cloneResult.agentName}/chat`)}
+                          className="px-3 py-1.5 bg-cyan-600/20 text-cyan-300 text-xs rounded-lg border border-cyan-700/40 hover:bg-cyan-600/30 transition-colors"
+                        >
+                          💬 {t('settings.cloneChat', 'Chat')}
+                        </button>
+                        <button
+                          onClick={() => navigate(`/u/${username}/agent/${cloneResult.agentName}/settings`)}
+                          className="px-3 py-1.5 bg-gray-600/20 text-gray-300 text-xs rounded-lg border border-gray-700/40 hover:bg-gray-600/30 transition-colors"
+                        >
+                          ⚙️ {t('settings.cloneSettings', 'Settings')}
+                        </button>
+                      </div>
+                    </div>
+                  ) : cloning ? (
+                    <div className="flex items-center gap-2 text-purple-400 text-sm py-2">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      {cloneMessage || t('settings.cloneInProgress', 'Cloning in progress...')}
+                    </div>
+                  ) : (
+                    <>
+                      <div>
+                        <label className="block text-xs text-gray-400 mb-1.5">
+                          {t('settings.cloneServerLabel', 'Target Server')}
+                        </label>
+                        {loadingServers ? (
+                          <div className="flex items-center gap-2 text-gray-500 text-sm py-2">
+                            <Loader2 className="w-4 h-4 animate-spin" /> {t('settings.cloneLoadingServers', 'Loading servers...')}
+                          </div>
+                        ) : cloneServers.length === 0 ? (
+                          <p className="text-gray-500 text-sm">{t('settings.cloneNoServers', 'No servers available')}</p>
+                        ) : (
+                          <div className="space-y-1.5">
+                            {cloneServers.map(srv => (
+                              <button
+                                key={srv._id}
+                                onClick={() => setSelectedCloneServer(srv._id)}
+                                className={`w-full text-left px-3 py-2 rounded-lg border text-sm transition-colors ${
+                                  selectedCloneServer === srv._id
+                                    ? 'border-purple-500 bg-purple-500/10 text-white'
+                                    : 'border-gray-700 bg-gray-900 text-gray-300 hover:border-gray-600'
+                                }`}
+                              >
+                                <span className="flex items-center gap-2">
+                                  <Server className="w-3.5 h-3.5 text-gray-500" />
+                                  {srv.name} <span className="text-gray-600 text-xs">({srv.provider})</span>
+                                </span>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {cloneError && (
+                        <div className="flex items-center gap-2 text-red-400 text-sm">
+                          <AlertCircle className="w-4 h-4 flex-shrink-0" /> {cloneError}
+                        </div>
+                      )}
+
+                      <button
+                        onClick={handleClone}
+                        disabled={!selectedCloneServer}
+                        className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg text-sm hover:bg-purple-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                      >
+                        <CopyIcon className="w-4 h-4" /> {t('settings.cloneBtn', 'Start Backup')}
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </GlassCard>
+          </div>
+        )}
 
         {/* Danger Zone */}
         <div className="mt-10">
