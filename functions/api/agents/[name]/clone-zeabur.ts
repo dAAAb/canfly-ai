@@ -134,6 +134,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
       source: 'clone',
       sourceAgentName: agentName,
       sourceProjectId: deployment.zeabur_project_id,
+      sourceServiceId: deployment.zeabur_service_id,
       bakSlug,
       bakDisplayName,
       clonedAt: new Date().toISOString(),
@@ -259,14 +260,18 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     environments: Array<{ _id: string; name: string }>
   } | null
 
-  const newServiceId = proj?.services?.[0]?._id
+  // Find the OpenClaw service by name (not services[0] which may be sandbox-browser or devbox-wings)
+  const openClawService = proj?.services?.find(s => s.name === 'OpenClaw')
+    || proj?.services?.find(s => /openclaw/i.test(s.name) && !/sandbox|browser|devbox|wings/i.test(s.name))
+  const newServiceId = openClawService?._id
   const newEnvId = (proj?.environments?.find(e => e.name === 'production') || proj?.environments?.[0])?._id
 
   if (!newServiceId || !newEnvId) {
+    const serviceNames = proj?.services?.map(s => s.name).join(', ') || 'none'
     await env.DB.prepare(
-      `UPDATE v3_zeabur_deployments SET status = 'failed', error_message = 'Clone completed but no service found in new project', updated_at = datetime('now') WHERE id = ?1`
-    ).bind(cloneId).run()
-    return json({ cloneId, status: 'failed', error: 'No service found in cloned project' })
+      `UPDATE v3_zeabur_deployments SET status = 'failed', error_message = ?1, updated_at = datetime('now') WHERE id = ?2`
+    ).bind(`Clone completed but OpenClaw service not found. Services: ${serviceNames}`, cloneId).run()
+    return json({ cloneId, status: 'failed', error: `OpenClaw service not found in cloned project. Found: ${serviceNames}` })
   }
 
   // Lock: mark as 'setting_up' to prevent concurrent polls from re-running setup
@@ -276,13 +281,17 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
 
   // ── Post-clone setup (ONLY on new project) ──
 
+  const verifyErrors: string[] = []
   const bakSlug = metadata.bakSlug || `${toAgentSlug(agentName)}-bak-${dateSuffix()}`
   const bakDisplayName = metadata.bakDisplayName || `${agentName} BAK ${dateSuffix()}`
+
+  // Find cloned sandbox-browser for browser.cdpUrl update (multi-service projects)
+  const sandboxBrowserService = proj?.services?.find(s => /sandbox-browser/i.test(s.name))
 
   // 1. Start cloned service (cloneProject doesn't auto-start)
   await zeaburGQL(zeaburApiKey,
     `mutation{restartService(serviceID:"${newServiceId}",environmentID:"${newEnvId}")}`
-  ).catch(() => {})
+  ).catch((e) => { verifyErrors.push(`restartService: ${e}`) })
 
   // 2. Add new domain (can do while service is starting)
   const domain = `${bakSlug}-canfly`
@@ -339,15 +348,25 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     return json({ cloneId, status: 'cloning', message: 'Clone complete, waiting for service to start...' })
   }
 
-  // 5. Patch config: update allowedOrigins, enable chatCompletions, remove Telegram
+  // 5. Patch config: update allowedOrigins, enable chatCompletions, remove Telegram, update browser cdpUrl
   const origins = [publicUrl, 'https://canfly.ai'].filter(Boolean)
-  const patchScript = `const fs=require('fs'),J=require('json5'),f='/home/node/.openclaw/openclaw.json';try{const c=J.parse(fs.readFileSync(f,'utf8'));c.gateway.controlUi.allowedOrigins=${JSON.stringify(origins)};if(!c.gateway.http)c.gateway.http={endpoints:{chatCompletions:{enabled:true}}};else{c.gateway.http.endpoints=c.gateway.http.endpoints||{};c.gateway.http.endpoints.chatCompletions={enabled:true}};if(c.plugins&&c.plugins.entries){delete c.plugins.entries['@openclaw/plugin-telegram'];delete c.plugins.entries['plugin-telegram']};fs.writeFileSync(f,JSON.stringify(c,null,2));console.log('patched')}catch(e){console.log('err:'+e.message)}`
+  const sandboxCdpUrl = sandboxBrowserService ? `http://service-${sandboxBrowserService._id}:9222` : ''
+  const patchScript = [
+    `const fs=require('fs'),J=require('json5'),f='/home/node/.openclaw/openclaw.json'`,
+    `try{const c=J.parse(fs.readFileSync(f,'utf8'))`,
+    `c.gateway.controlUi.allowedOrigins=${JSON.stringify(origins)}`,
+    `if(!c.gateway.http)c.gateway.http={endpoints:{chatCompletions:{enabled:true}}}`,
+    `else{c.gateway.http.endpoints=c.gateway.http.endpoints||{};c.gateway.http.endpoints.chatCompletions={enabled:true}}`,
+    `if(c.plugins&&c.plugins.entries){delete c.plugins.entries['@openclaw/plugin-telegram'];delete c.plugins.entries['plugin-telegram']}`,
+    sandboxCdpUrl ? `if(c.browser){c.browser.cdpUrl='${sandboxCdpUrl}';if(c.browser.profiles&&c.browser.profiles.remote)c.browser.profiles.remote.cdpUrl='${sandboxCdpUrl}'}` : '',
+    `fs.writeFileSync(f,JSON.stringify(c,null,2));console.log('patched')}catch(e){console.log('err:'+e.message)}`,
+  ].filter(Boolean).join(';')
   try {
     await zeaburGQL(zeaburApiKey,
       `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
       { cmd: ['node', '-e', patchScript] }
     )
-  } catch { /* best effort */ }
+  } catch (e) { verifyErrors.push(`patchConfig: ${e}`) }
 
   // 6. Inject new CANFLY env vars
   for (const [key, value] of [
@@ -391,20 +410,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
         body: JSON.stringify({ model: 'openclaw', messages: [{ role: 'user', content: 'ping' }], stream: false }),
       })
       if (testRes.status === 200 || testRes.status === 401) { chatReady = true; break }
-    } catch { /* not ready */ }
-  }
-
-  // Fallback: re-patch config if chat not ready
-  if (!chatReady) {
-    try {
-      await zeaburGQL(zeaburApiKey,
-        `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-        { cmd: ['node', '-e', patchScript] }
-      )
-      await zeaburGQL(zeaburApiKey,
-        `mutation{restartService(serviceID:"${newServiceId}",environmentID:"${newEnvId}")}`
-      )
-    } catch { /* best effort */ }
+    } catch (e) { verifyErrors.push(`chatVerify attempt ${attempt}: ${e}`) }
   }
 
   // 9. Re-read gateway token (may have changed after restart)
@@ -415,9 +421,9 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     )
     const freshToken = ((tokenResult.data?.executeCommand as { output?: string })?.output || '').replace(/[\r\n\s]+$/g, '')
     if (freshToken) newGatewayToken = freshToken
-  } catch { /* keep previous token */ }
+  } catch (e) { verifyErrors.push(`reReadToken: ${e}`) }
 
-  // 8. Store agent_card_override with encrypted gateway token
+  // 10. Store agent_card_override with encrypted gateway token
   const encToken = cryptoKey && newGatewayToken ? await encrypt(newGatewayToken, cryptoKey) : newGatewayToken
   const cardOverride = JSON.stringify({ url: publicUrl, gateway_token: encToken })
   await env.DB.prepare(
