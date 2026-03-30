@@ -44,6 +44,8 @@ export function aiProviderEnvVar(provider: string): string {
     case 'zeabur-ai-hub': return 'ZEABUR_AI_HUB_API_KEY'
     case 'openai': return 'OPENAI_API_KEY'
     case 'anthropic': return 'ANTHROPIC_API_KEY'
+    case 'google-gemini': return 'GEMINI_API_KEY'
+    case 'deepseek': return 'DEEPSEEK_API_KEY'
     case 'openrouter': return 'OPENROUTER_API_KEY'
     default: return 'ZEABUR_AI_HUB_API_KEY'
   }
