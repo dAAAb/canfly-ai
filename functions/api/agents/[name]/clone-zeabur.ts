@@ -273,32 +273,44 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     `UPDATE v3_zeabur_deployments SET zeabur_service_id = ?1, updated_at = datetime('now') WHERE id = ?2`
   ).bind(newServiceId, cloneId).run()
 
-  // ── Verification: check clone integrity ──
+  // ── Verification: wait for service to be ready, then check clone integrity ──
   const verifyErrors: string[] = []
+  let newGatewayToken = ''
 
-  // Verify 1: openclaw.json exists
+  // Wait for cloned service to be accessible (up to 30s)
+  let serviceReady = false
+  for (let attempt = 0; attempt < 6; attempt++) {
+    if (attempt > 0) await new Promise(r => setTimeout(r, 5000))
+    try {
+      const ping = await zeaburGQL(zeaburApiKey,
+        `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
+        { cmd: ['node', '-e', 'console.log("READY")'] }
+      )
+      if ((ping.data?.executeCommand as { output?: string })?.output?.includes('READY')) {
+        serviceReady = true
+        break
+      }
+    } catch { /* not ready yet */ }
+  }
+
+  if (!serviceReady) {
+    // Service not accessible yet — don't fail, just return cloning status and let next poll retry
+    return json({ cloneId, status: 'cloning', message: 'Clone complete, waiting for service to start...' })
+  }
+
+  // Verify 1: openclaw.json exists + file count
   try {
     const configCheck = await zeaburGQL(zeaburApiKey,
       `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-      { cmd: ['node', '-e', 'const fs=require("fs");const f="/home/node/.openclaw/openclaw.json";console.log(fs.existsSync(f)?"EXISTS":"MISSING")'] }
+      { cmd: ['node', '-e', 'const fs=require("fs"),f="/home/node/.openclaw/openclaw.json",d="/home/node/.openclaw";console.log(fs.existsSync(f)?"EXISTS":"MISSING");try{console.log("FILES:"+fs.readdirSync(d,{recursive:true}).length)}catch(e){console.log("FILES:0")}'] }
     )
-    const configOutput = (configCheck.data?.executeCommand as { output?: string })?.output?.trim() || ''
-    if (!configOutput.includes('EXISTS')) verifyErrors.push('openclaw.json missing')
-  } catch { verifyErrors.push('Could not verify openclaw.json') }
+    const output = (configCheck.data?.executeCommand as { output?: string })?.output?.trim() || ''
+    if (!output.includes('EXISTS')) verifyErrors.push('openclaw.json missing')
+    const fileMatch = output.match(/FILES:(\d+)/)
+    if (fileMatch && parseInt(fileMatch[1]) < 3) verifyErrors.push(`Only ${fileMatch[1]} files in .openclaw dir`)
+  } catch { verifyErrors.push('Could not verify openclaw files') }
 
-  // Verify 2: check file count in openclaw dir
-  try {
-    const fileCount = await zeaburGQL(zeaburApiKey,
-      `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-      { cmd: ['node', '-e', 'const fs=require("fs"),p="/home/node/.openclaw";try{const f=fs.readdirSync(p,{recursive:true});console.log("FILES:"+f.length)}catch(e){console.log("ERR:"+e.message)}'] }
-    )
-    const countOutput = (fileCount.data?.executeCommand as { output?: string })?.output?.trim() || ''
-    const match = countOutput.match(/FILES:(\d+)/)
-    if (match && parseInt(match[1]) < 3) verifyErrors.push(`Only ${match[1]} files in .openclaw dir (expected more)`)
-  } catch { verifyErrors.push('Could not verify file count') }
-
-  // Verify 3: OPENCLAW_GATEWAY_TOKEN exists
-  let newGatewayToken = ''
+  // Verify 2: OPENCLAW_GATEWAY_TOKEN exists
   try {
     const tokenResult = await zeaburGQL(zeaburApiKey,
       `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
