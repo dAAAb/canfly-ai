@@ -17,7 +17,7 @@ import {
 } from '../../../community/_helpers'
 import { authenticateRequest } from '../../../_auth'
 import { importKey, decrypt, encrypt } from '../../../../lib/crypto'
-import { aiProviderEnvVar } from '../../../zeabur/deploy'
+import { aiProviderEnvVar, aiProviderDefaultModel } from '../../../zeabur/deploy'
 
 const ZEABUR_GRAPHQL = 'https://api.zeabur.com/graphql'
 
@@ -225,7 +225,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
 
     // 4. Patch config BEFORE restart (so config is ready when service comes back up)
     const origins = [publicUrl, 'https://canfly.ai'].filter(Boolean)
-    const patchScript = `const fs=require('fs'),J=require('json5'),f='/home/node/.openclaw/openclaw.json';try{const c=J.parse(fs.readFileSync(f,'utf8'));c.gateway.controlUi.allowedOrigins=${JSON.stringify(origins)};if(!c.gateway.http)c.gateway.http={endpoints:{chatCompletions:{enabled:true}}};else{c.gateway.http.endpoints=c.gateway.http.endpoints||{};c.gateway.http.endpoints.chatCompletions={enabled:true}};fs.writeFileSync(f,JSON.stringify(c,null,2));console.log('patched')}catch(e){console.log('err:'+e.message)}`
+    const defaultModel = aiProviderDefaultModel(aiProvider)
+    const patchScript = `const fs=require('fs'),J=require('json5'),f='/home/node/.openclaw/openclaw.json';try{const c=J.parse(fs.readFileSync(f,'utf8'));c.gateway.controlUi.allowedOrigins=${JSON.stringify(origins)};if(!c.gateway.http)c.gateway.http={endpoints:{chatCompletions:{enabled:true}}};else{c.gateway.http.endpoints=c.gateway.http.endpoints||{};c.gateway.http.endpoints.chatCompletions={enabled:true}};if(${JSON.stringify(defaultModel)}!=='zeabur-ai/glm-4.7-flash'){c.agents=c.agents||{};c.agents.defaults=c.agents.defaults||{};c.agents.defaults.model=c.agents.defaults.model||{};c.agents.defaults.model.primary=${JSON.stringify(defaultModel)}};fs.writeFileSync(f,JSON.stringify(c,null,2));console.log('patched')}catch(e){console.log('err:'+e.message)}`
     try {
       await zeaburGQL(zeaburApiKey,
         `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",command:$cmd){exitCode output}}`,
