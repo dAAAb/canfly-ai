@@ -4,7 +4,7 @@
  * Agent management page with Telegram connection and delete deployment.
  * Route: /u/{username}/agent/{agentName}/settings  (or /agent/{agentName}/settings on subdomain)
  */
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
@@ -25,9 +25,6 @@ import {
   Copy,
   Check,
   RefreshCw,
-  Link2,
-  CheckCircle,
-  AlertCircle,
 } from 'lucide-react'
 
 interface AgentSettingsPageProps {
@@ -49,14 +46,6 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
   const [deleting, setDeleting] = useState(false)
   const [deleteError, setDeleteError] = useState<string | null>(null)
 
-  // Deep Bind Zeabur
-  const [zeaburBinding, setZeaburBinding] = useState<{ bound: boolean; deployUrl?: string; zeaburProjectId?: string; source?: string } | null>(null)
-  const [bindApiKey, setBindApiKey] = useState('')
-  const [bindTokenInput, setBindTokenInput] = useState('')
-  const [binding, setBinding] = useState(false)
-  const [bindError, setBindError] = useState<string | null>(null)
-  const [bindResult, setBindResult] = useState<{ zeaburProjectName?: string; zeaburServiceName?: string; deployUrl?: string } | null>(null)
-
   // API Key regeneration
   const [showRegenConfirm, setShowRegenConfirm] = useState(false)
   const [regenerating, setRegenerating] = useState(false)
@@ -70,37 +59,6 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
     () => getApiAuthHeaders({ getAccessToken, walletAddress }),
     [getAccessToken, walletAddress],
   )
-
-  // Check Zeabur binding status on mount
-  useEffect(() => {
-    if (!agentName) return
-    fetch(`/api/agents/${encodeURIComponent(agentName)}/bind-zeabur`)
-      .then(r => r.ok ? r.json() : { bound: false })
-      .then(data => setZeaburBinding(data))
-      .catch(() => setZeaburBinding({ bound: false }))
-  }, [agentName])
-
-  const handleBind = useCallback(async () => {
-    if (!bindApiKey.trim() || !bindTokenInput.trim()) return
-    setBinding(true)
-    setBindError(null)
-    setBindResult(null)
-    try {
-      const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/bind-zeabur`, {
-        method: 'POST',
-        headers: await getAuthHeaders(),
-        body: JSON.stringify({ zeaburApiKey: bindApiKey.trim(), gatewayToken: bindTokenInput.trim() }),
-      })
-      const data = await res.json() as Record<string, unknown>
-      if (!res.ok) throw new Error((data.error as string) || `Bind failed (${res.status})`)
-      setBindResult(data as { zeaburProjectName?: string; zeaburServiceName?: string; deployUrl?: string })
-      setZeaburBinding({ bound: true, deployUrl: data.deployUrl as string, zeaburProjectId: data.zeaburProjectId as string })
-    } catch (err) {
-      setBindError((err as Error).message)
-    } finally {
-      setBinding(false)
-    }
-  }, [agentName, bindApiKey, bindTokenInput, getAuthHeaders])
 
   const handleRegenerateKey = useCallback(async () => {
     setRegenerating(true)
@@ -225,114 +183,6 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
           <TelegramConnectCard agentName={agentName} />
         </div>
 
-        {/* Deep Bind Zeabur */}
-        {zeaburBinding && !zeaburBinding.bound && (
-          <div className="mb-6">
-            <h2 className="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-3">
-              {t('settings.bindZeaburTitle', 'Deep Bind Zeabur')}
-            </h2>
-            <GlassCard>
-              <div className="flex items-start gap-4">
-                <div className="p-2 rounded-lg bg-cyan-500/10">
-                  <Link2 className="w-5 h-5 text-cyan-400" />
-                </div>
-                <div className="flex-1 space-y-3">
-                  <p className="text-gray-400 text-sm">
-                    {t('settings.bindZeaburDesc', 'Connect an existing OpenClaw lobster on Zeabur to this agent for backup, clone, and management.')}
-                  </p>
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1">{t('settings.bindZeaburApiKeyLabel', 'Zeabur API Key')}</label>
-                    <input
-                      type="password"
-                      value={bindApiKey}
-                      onChange={e => setBindApiKey(e.target.value)}
-                      placeholder={t('settings.bindZeaburApiKeyPlaceholder', 'Paste your Zeabur API key')}
-                      className="w-full px-3 py-2 bg-gray-900 border border-gray-700 text-white placeholder-gray-600 rounded-lg text-sm focus:outline-none focus:border-cyan-500/50"
-                    />
-                    <p className="text-[11px] text-gray-600 mt-1">
-                      {t('settings.bindZeaburApiKeyHelp', 'Zeabur Dashboard → Settings → API Keys')}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1">{t('settings.bindZeaburTokenLabel', 'Gateway Token')}</label>
-                    <textarea
-                      value={bindTokenInput}
-                      onChange={e => setBindTokenInput(e.target.value)}
-                      placeholder={t('settings.bindZeaburTokenPlaceholder', 'Paste Gateway Token, Web UI URL, or AI prompt text')}
-                      rows={2}
-                      className="w-full px-3 py-2 bg-gray-900 border border-gray-700 text-white placeholder-gray-600 rounded-lg text-sm focus:outline-none focus:border-cyan-500/50 resize-none"
-                    />
-                    <p className="text-[11px] text-gray-600 mt-1">
-                      {t('settings.bindZeaburTokenHelp', 'Copy any of the three values from your Zeabur service page: Gateway Token, Web UI URL, or the AI prompt text.')}
-                    </p>
-                  </div>
-
-                  {bindError && (
-                    <div className="flex items-center gap-2 text-red-400 text-sm">
-                      <AlertCircle className="w-4 h-4 flex-shrink-0" /> {bindError}
-                    </div>
-                  )}
-
-                  {bindResult && (
-                    <div className="flex items-start gap-2 p-3 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-sm">
-                      <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                      <div>
-                        {t('settings.bindZeaburSuccess', {
-                          serviceName: bindResult.zeaburServiceName,
-                          projectName: bindResult.zeaburProjectName,
-                          defaultValue: `Bound "${bindResult.zeaburServiceName}" from "${bindResult.zeaburProjectName}"`,
-                        })}
-                        {bindResult.deployUrl && (
-                          <a href={bindResult.deployUrl} target="_blank" rel="noopener noreferrer"
-                            className="block text-xs text-green-300 mt-1 hover:underline">
-                            {bindResult.deployUrl}
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {!bindResult && (
-                    <button
-                      onClick={handleBind}
-                      disabled={binding || !bindApiKey.trim() || !bindTokenInput.trim()}
-                      className="flex items-center gap-2 px-4 py-2 bg-cyan-600 text-white rounded-lg text-sm hover:bg-cyan-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                    >
-                      {binding ? (
-                        <><Loader2 className="w-4 h-4 animate-spin" /> {t('settings.bindZeaburScanning', 'Scanning Zeabur services...')}</>
-                      ) : (
-                        <><Link2 className="w-4 h-4" /> {t('settings.bindZeaburBtn', 'Bind Zeabur Lobster')}</>
-                      )}
-                    </button>
-                  )}
-                </div>
-              </div>
-            </GlassCard>
-          </div>
-        )}
-
-        {/* Bound info */}
-        {zeaburBinding?.bound && zeaburBinding.source === 'deep_bind' && (
-          <div className="mb-6">
-            <h2 className="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-3">
-              {t('settings.bindZeaburTitle', 'Deep Bind Zeabur')}
-            </h2>
-            <GlassCard>
-              <div className="flex items-center gap-3 text-sm">
-                <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
-                <div>
-                  <p className="text-green-400">{t('settings.bindZeaburAlreadyBound', 'This agent is bound to a Zeabur deployment.')}</p>
-                  {zeaburBinding.deployUrl && (
-                    <a href={zeaburBinding.deployUrl} target="_blank" rel="noopener noreferrer"
-                      className="text-xs text-gray-400 hover:text-cyan-400 transition-colors">
-                      {zeaburBinding.deployUrl} <ExternalLink className="w-3 h-3 inline" />
-                    </a>
-                  )}
-                </div>
-              </div>
-            </GlassCard>
-          </div>
-        )}
 
         {/* API Key Management */}
         <div className="mb-6">

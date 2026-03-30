@@ -32,6 +32,7 @@ const TasksDashboardPage = lazy(() => import('./pages/TasksDashboardPage'))
 const PaperclipDashboardPage = lazy(() => import('./pages/PaperclipDashboardPage'))
 const ChatProxyPage = lazy(() => import('./pages/ChatProxyPage'))
 const DeployWizardPage = lazy(() => import('./pages/DeployWizardPage'))
+const BindZeaburPage = lazy(() => import('./pages/BindZeaburPage'))
 const AgentSettingsPage = lazy(() => import('./pages/AgentSettingsPage'))
 
 /** Strip /:lang prefix and redirect to the unprefixed community path */
@@ -169,6 +170,7 @@ function App() {
               <Route path="/u/:username/agents/new" element={<AutoLangSync><AgentRegisterPage /></AutoLangSync>} />
               <Route path="/u/:username/agent/:agentName/settings" element={<AutoLangSync><AgentSettingsPage /></AutoLangSync>} />
               <Route path="/u/:username/agents/deploy" element={<AutoLangSync><DeployWizardPage /></AutoLangSync>} />
+              <Route path="/u/:username/agents/bind" element={<AutoLangSync><BindZeaburPage /></AutoLangSync>} />
               <Route path="/u/:username/agent/:agentName/chat" element={<AutoLangSync><ChatProxyPage /></AutoLangSync>} />
               <Route path="/u/:username/agent/:agentName" element={<AutoLangSync><AgentCardPage /></AutoLangSync>} />
               <Route path="/u/:username/tasks" element={<AutoLangSync><TasksDashboardPage /></AutoLangSync>} />
