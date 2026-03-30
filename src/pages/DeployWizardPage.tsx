@@ -121,13 +121,13 @@ function WakingUpCheck({ agentName, username, navigate, t, getAuthHeaders }: {
       </p>
       <div className="flex gap-3 justify-center pt-2">
         <button
-          onClick={() => navigate(`/u/${username}/chat/${encodeURIComponent(agentName)}`)}
+          onClick={() => navigate(`/u/${username}/agent/${encodeURIComponent(agentName)}/chat`)}
           className="px-5 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-medium transition-colors"
         >
           {t('deploy.goToChat')}
         </button>
         <button
-          onClick={() => navigate(`/u/${username}/agents/${encodeURIComponent(agentName)}/settings`)}
+          onClick={() => navigate(`/u/${username}/agent/${encodeURIComponent(agentName)}/settings`)}
           className="px-5 py-2.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm font-medium transition-colors border border-gray-700"
         >
           {t('deploy.goToSettings')}
