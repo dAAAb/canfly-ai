@@ -86,7 +86,9 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
         if (res.ok) {
           const data = await res.json() as { servers?: Array<{ _id: string; name: string; provider: string }>; hasDeployment?: boolean }
           setHasDeployment(!!data.hasDeployment)
-          setCloneServers(data.servers || [])
+          const servers = data.servers || []
+          setCloneServers(servers)
+          if (servers.length > 0) setSelectedCloneServer(servers[servers.length - 1]._id)
         }
       } catch { /* ignore */ }
     })()
@@ -437,24 +439,17 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
                         ) : cloneServers.length === 0 ? (
                           <p className="text-gray-500 text-sm">{t('settings.cloneNoServers', 'No servers available')}</p>
                         ) : (
-                          <div className="space-y-1.5">
+                          <select
+                            value={selectedCloneServer || ''}
+                            onChange={e => setSelectedCloneServer(e.target.value)}
+                            className="w-full px-3 py-2.5 bg-gray-900 border border-gray-700 text-white rounded-lg text-sm focus:outline-none focus:border-purple-500/50 transition-colors"
+                          >
                             {cloneServers.map(srv => (
-                              <button
-                                key={srv._id}
-                                onClick={() => setSelectedCloneServer(srv._id)}
-                                className={`w-full text-left px-3 py-2 rounded-lg border text-sm transition-colors ${
-                                  selectedCloneServer === srv._id
-                                    ? 'border-purple-500 bg-purple-500/10 text-white'
-                                    : 'border-gray-700 bg-gray-900 text-gray-300 hover:border-gray-600'
-                                }`}
-                              >
-                                <span className="flex items-center gap-2">
-                                  <Server className="w-3.5 h-3.5 text-gray-500" />
-                                  {srv.name} <span className="text-gray-600 text-xs">({srv.provider})</span>
-                                </span>
-                              </button>
+                              <option key={srv._id} value={srv._id}>
+                                {srv.name} ({srv.provider})
+                              </option>
                             ))}
-                          </div>
+                          </select>
                         )}
                       </div>
 
