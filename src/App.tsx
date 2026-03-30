@@ -168,7 +168,7 @@ function App() {
               {/* Community routes: /u/:username (no @ — React Router v6 can't handle it) */}
               <Route path="/u/:username/agents/new" element={<AutoLangSync><AgentRegisterPage /></AutoLangSync>} />
               <Route path="/u/:username/agent/:agentName/settings" element={<AutoLangSync><AgentSettingsPage /></AutoLangSync>} />
-              <Route path="/u/:username/deploy" element={<AutoLangSync><DeployWizardPage /></AutoLangSync>} />
+              <Route path="/u/:username/agents/deploy" element={<AutoLangSync><DeployWizardPage /></AutoLangSync>} />
               <Route path="/u/:username/agent/:agentName/chat" element={<AutoLangSync><ChatProxyPage /></AutoLangSync>} />
               <Route path="/u/:username/agent/:agentName" element={<AutoLangSync><AgentCardPage /></AutoLangSync>} />
               <Route path="/u/:username/tasks" element={<AutoLangSync><TasksDashboardPage /></AutoLangSync>} />

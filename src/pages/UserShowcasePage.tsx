@@ -775,7 +775,7 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
           {canEdit && (!user.deployments || user.deployments.length === 0) && (
             <section className="mb-12">
               <Link
-                to={`/u/${user.username}/deploy`}
+                to={`/u/${user.username}/agents/deploy`}
                 className="flex items-center justify-center gap-2 p-6 bg-gray-900/50 border border-dashed border-gray-700 rounded-xl hover:border-green-600/50 hover:bg-green-900/10 transition-all group"
               >
                 <span className="text-2xl">🦞</span>
@@ -797,7 +797,7 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
                 </h2>
                 {canEdit && (
                   <Link
-                    to={`/u/${user.username}/deploy`}
+                    to={`/u/${user.username}/agents/deploy`}
                     className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600/20 hover:bg-green-600/30 text-green-300 text-xs font-medium rounded-lg transition-colors border border-green-700/40"
                   >
                     <span>+</span> {t('deployNew', 'Deploy New Agent')}
