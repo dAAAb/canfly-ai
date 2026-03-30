@@ -7751,7 +7751,8 @@
     "sendError": "Failed to send message. Please try again.",
     "gatewayError": "Your lobster is temporarily unavailable",
     "gatewayHint1": "Chat may not be enabled yet — try \"Reconfigure\" in Settings",
-    "gatewayHint2": "Connection key may be out of sync — try \"Resync\" in Settings"
+    "gatewayHint2": "Connection key may be out of sync — try \"Resync\" in Settings",
+    "goToSettings": "Go to Settings"
   },
   "deploy": {
     "pageTitle": "Deploy Agent",

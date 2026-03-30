@@ -451,10 +451,16 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
                 {error === 'GATEWAY_ERROR' ? t('chat.gatewayError') : error}
               </div>
               {error === 'GATEWAY_ERROR' && (
-                <ul className="mt-2 ml-6 text-gray-400 text-xs space-y-1 list-disc">
-                  <li>{t('chat.gatewayHint1')}</li>
-                  <li>{t('chat.gatewayHint2')}</li>
-                </ul>
+                <div className="mt-2 ml-6 text-xs space-y-1.5">
+                  <p className="text-gray-400">{t('chat.gatewayHint1')}</p>
+                  <p className="text-gray-400">{t('chat.gatewayHint2')}</p>
+                  <Link
+                    to={subdomainUsername ? `/agent/${agentName}/settings` : `/u/${username}/agent/${agentName}/settings`}
+                    className="inline-flex items-center gap-1 text-cyan-400 hover:text-cyan-300 transition-colors mt-1"
+                  >
+                    ⚙️ {t('chat.goToSettings', 'Go to Settings')}
+                  </Link>
+                </div>
               )}
             </div>
           )}

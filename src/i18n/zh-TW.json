@@ -7759,7 +7759,8 @@
     "sendError": "訊息傳送失敗，請重試。",
     "gatewayError": "蝦蝦暫時無法回應",
     "gatewayHint1": "蝦蝦的聊天功能可能尚未啟用 — 請到設定頁嘗試「重新設定」",
-    "gatewayHint2": "連線金鑰可能不同步 — 請到設定頁嘗試「重新同步」"
+    "gatewayHint2": "連線金鑰可能不同步 — 請到設定頁嘗試「重新同步」",
+    "goToSettings": "前往設定頁"
   },
   "deploy": {
     "pageTitle": "部署蝦蝦",
