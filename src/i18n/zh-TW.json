@@ -7842,6 +7842,18 @@
     "deleteConfirmLabel": "輸入「{{agentName}}」以確認：",
     "deleting": "刪除中⋯",
     "confirmDelete": "永久刪除",
-    "cancel": "取消"
+    "cancel": "取消",
+    "bindZeaburTitle": "深度綁定 Zeabur 蝦蝦",
+    "bindZeaburDesc": "將已部署在 Zeabur 上的 OpenClaw 蝦蝦連結至此代理，啟用備份、複製和管理功能。",
+    "bindZeaburApiKeyLabel": "Zeabur API 金鑰",
+    "bindZeaburApiKeyPlaceholder": "貼上你的 Zeabur API 金鑰",
+    "bindZeaburApiKeyHelp": "請至 Zeabur 控制台 → 設定 → API 金鑰取得。",
+    "bindZeaburTokenLabel": "閘道 Token",
+    "bindZeaburTokenPlaceholder": "貼上 Gateway Token、Web UI 網址、或「複製 AI 提示詞」的內容皆可",
+    "bindZeaburTokenHelp": "從 Zeabur 服務頁面複製以上任一種格式皆可辨識。",
+    "bindZeaburBtn": "綁定 Zeabur 蝦蝦",
+    "bindZeaburScanning": "正在掃描 Zeabur 服務⋯",
+    "bindZeaburSuccess": "成功綁定專案「{{projectName}}」中的「{{serviceName}}」。",
+    "bindZeaburAlreadyBound": "此代理已綁定至 Zeabur 部署。"
   }
 }

@@ -7834,6 +7834,18 @@
     "deleteConfirmLabel": "Type \"{{agentName}}\" to confirm:",
     "deleting": "Deleting...",
     "confirmDelete": "Delete Forever",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "bindZeaburTitle": "Deep Bind Zeabur Lobster",
+    "bindZeaburDesc": "Connect an existing OpenClaw lobster on Zeabur to this agent for backup, clone, and management.",
+    "bindZeaburApiKeyLabel": "Zeabur API Key",
+    "bindZeaburApiKeyPlaceholder": "Paste your Zeabur API key",
+    "bindZeaburApiKeyHelp": "Zeabur Dashboard → Settings → API Keys.",
+    "bindZeaburTokenLabel": "Gateway Token",
+    "bindZeaburTokenPlaceholder": "Paste Gateway Token, Web UI URL, or AI prompt text",
+    "bindZeaburTokenHelp": "Copy any of the three values from your Zeabur service page — all formats are recognized.",
+    "bindZeaburBtn": "Bind Zeabur Lobster",
+    "bindZeaburScanning": "Scanning Zeabur services...",
+    "bindZeaburSuccess": "Bound \"{{serviceName}}\" from project \"{{projectName}}\".",
+    "bindZeaburAlreadyBound": "This agent is bound to a Zeabur deployment."
   }
 }

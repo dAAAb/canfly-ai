@@ -7859,6 +7859,18 @@
     "deleteConfirmLabel": "输入「{{agentName}}」以确认：",
     "deleting": "删除中…",
     "confirmDelete": "永久删除",
-    "cancel": "取消"
+    "cancel": "取消",
+    "bindZeaburTitle": "深度绑定 Zeabur 虾虾",
+    "bindZeaburDesc": "将已部署在 Zeabur 上的 OpenClaw 虾虾连接至此代理，启用备份、克隆和管理功能。",
+    "bindZeaburApiKeyLabel": "Zeabur API 密钥",
+    "bindZeaburApiKeyPlaceholder": "粘贴你的 Zeabur API 密钥",
+    "bindZeaburApiKeyHelp": "请到 Zeabur 控制台 → 设置 → API 密钥获取。",
+    "bindZeaburTokenLabel": "网关 Token",
+    "bindZeaburTokenPlaceholder": "粘贴 Gateway Token、Web UI 网址、或「复制 AI 提示词」的内容均可",
+    "bindZeaburTokenHelp": "从 Zeabur 服务页面复制以上任一格式均可识别。",
+    "bindZeaburBtn": "绑定 Zeabur 虾虾",
+    "bindZeaburScanning": "正在扫描 Zeabur 服务…",
+    "bindZeaburSuccess": "成功绑定项目「{{projectName}}」中的「{{serviceName}}」。",
+    "bindZeaburAlreadyBound": "此代理已绑定至 Zeabur 部署。"
   }
 }
