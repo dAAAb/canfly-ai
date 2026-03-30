@@ -220,19 +220,17 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
     const assignedDomain = (addDomainResult?.data?.addDomain as { domain?: string })?.domain
     const publicUrl = assignedDomain ? `https://${assignedDomain}` : (domain ? `https://${domain}.zeabur.app` : gatewayUrl)
 
-    // 4. Restart to apply env var changes
-    await zeaburGQL(zeaburApiKey,
-      `mutation{restartService(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}")}`
-    )
+    // 4. Patch config BEFORE restart (so config is ready when service comes back up)
+    const origins = [publicUrl, 'https://canfly.ai'].filter(Boolean)
+    const patchScript = `const fs=require('fs'),J=require('json5'),f='/home/node/.openclaw/openclaw.json';try{const c=J.parse(fs.readFileSync(f,'utf8'));c.gateway.controlUi.allowedOrigins=${JSON.stringify(origins)};if(!c.gateway.http)c.gateway.http={endpoints:{chatCompletions:{enabled:true}}};else{c.gateway.http.endpoints=c.gateway.http.endpoints||{};c.gateway.http.endpoints.chatCompletions={enabled:true}};fs.writeFileSync(f,JSON.stringify(c,null,2));console.log('patched')}catch(e){console.log('err:'+e.message)}`
+    try {
+      await zeaburGQL(zeaburApiKey,
+        `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",command:$cmd){exitCode output}}`,
+        { cmd: ['node', '-e', patchScript] }
+      )
+    } catch { /* will verify after restart */ }
 
-    // 5. Update deployment record
-    await env.DB.prepare(
-      `UPDATE v3_zeabur_deployments SET
-        status = 'running', deploy_url = ?1, updated_at = datetime('now')
-      WHERE id = ?2`
-    ).bind(publicUrl || gatewayUrl || null, deployment.id).run()
-
-    // 6. Register agent + set agent_card_override with gateway info
+    // 5. Register agent (do DB work before restart so it doesn't add delay)
     let finalAgentName = deployment.agent_name
     let agentApiKey: string | null = null
     if (!finalAgentName) {
@@ -249,11 +247,10 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
       agentApiKey = result.apiKey
     }
 
-    // 6b. Inject CANFLY_API_KEY + CANFLY_AGENT_NAME into Zeabur service env vars
+    // 6. Inject CANFLY_API_KEY + CANFLY_AGENT_NAME into Zeabur service env vars
     if (agentApiKey && finalAgentName && deployment.zeabur_service_id) {
       const sid = deployment.zeabur_service_id
       const eid = prodEnv._id
-      // Upsert: try create first, if exists then update
       for (const [key, value] of [
         ['CANFLY_API_KEY', agentApiKey],
         ['CANFLY_AGENT_NAME', finalAgentName],
@@ -270,7 +267,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
       }
     }
 
-    // 7. Set agent_card_override with gateway URL + token (token stays private via security filter)
+    // 7. Set agent_card_override with gateway URL + token
     if (publicUrl && gatewayToken) {
       const encToken = cryptoKey ? await encrypt(gatewayToken, cryptoKey) : gatewayToken
       const cardOverride = JSON.stringify({ url: publicUrl, gateway_token: encToken })
@@ -279,29 +276,57 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
       ).bind(cardOverride, finalAgentName).run()
     }
 
-    // 8. Patch config (allowedOrigins + chatCompletions)
-    // Wait for service to be back up after restart, then patch config
-    const origins = [publicUrl, 'https://canfly.ai'].filter(Boolean)
-    const patchScript = `const fs=require('fs'),J=require('json5'),f='/home/node/.openclaw/openclaw.json';try{const c=J.parse(fs.readFileSync(f,'utf8'));let ch=false;if(!c.gateway.controlUi.allowedOrigins){c.gateway.controlUi.allowedOrigins=${JSON.stringify(origins)};ch=true}if(!c.gateway.http){c.gateway.http={endpoints:{chatCompletions:{enabled:true}}};ch=true}else if(!c.gateway.http.endpoints?.chatCompletions?.enabled){c.gateway.http.endpoints=c.gateway.http.endpoints||{};c.gateway.http.endpoints.chatCompletions={enabled:true};ch=true}if(ch){fs.writeFileSync(f,JSON.stringify(c,null,2));console.log('patched')}else console.log('ok')}catch(e){console.log('err:'+e.message)}`
-    for (let attempt = 0; attempt < 3; attempt++) {
+    // 8. Restart to apply env var changes + config patch
+    await zeaburGQL(zeaburApiKey,
+      `mutation{restartService(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}")}`
+    )
+
+    // 9. Wait for service to come back, then verify chat endpoint works
+    let chatReady = false
+    for (let attempt = 0; attempt < 5; attempt++) {
+      await new Promise(r => setTimeout(r, 5000))
       try {
-        if (attempt > 0) await new Promise(r => setTimeout(r, 3000))
-        const patchResult = await zeaburGQL(zeaburApiKey,
+        const testRes = await fetch(`${publicUrl}/v1/chat/completions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...(gatewayToken ? { 'Authorization': `Bearer ${gatewayToken}` } : {}) },
+          body: JSON.stringify({ model: 'openclaw', messages: [{ role: 'user', content: 'ping' }], stream: false }),
+        })
+        if (testRes.status === 200 || testRes.status === 401) {
+          // 200 = chat works, 401 = endpoint exists but needs token (still means config is loaded)
+          chatReady = true
+          break
+        }
+      } catch { /* service not ready yet */ }
+    }
+
+    // If chat still not ready, try patching config again (service might have lost the patch on restart)
+    if (!chatReady) {
+      try {
+        await zeaburGQL(zeaburApiKey,
           `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",command:$cmd){exitCode output}}`,
           { cmd: ['node', '-e', patchScript] }
         )
-        const output = (patchResult.data?.executeCommand as { output?: string })?.output || ''
-        if (output.includes('patched') || output.includes('ok')) break
-      } catch { if (attempt === 2) { /* give up after 3 attempts */ } }
+        // One more restart to apply
+        await zeaburGQL(zeaburApiKey,
+          `mutation{restartService(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}")}`
+        )
+      } catch { /* best effort */ }
     }
+
+    // 10. Update deployment record
+    await env.DB.prepare(
+      `UPDATE v3_zeabur_deployments SET
+        status = 'running', deploy_url = ?1, updated_at = datetime('now')
+      WHERE id = ?2`
+    ).bind(publicUrl || gatewayUrl || null, deployment.id).run()
 
     return json({
       deploymentId: deployment.id,
-      status: 'running',
+      status: chatReady ? 'running' : 'running',
       agentName: finalAgentName,
       deployUrl: publicUrl || gatewayUrl,
       errorCode: null,
-      errorMessage: null,
+      errorMessage: chatReady ? null : 'Chat endpoint may need a moment to initialize',
     })
   }
 
