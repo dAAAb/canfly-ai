@@ -38,6 +38,18 @@ interface DeployBody {
 
 const ZEABUR_GRAPHQL = 'https://api.zeabur.com/graphql'
 
+/** Map AI provider to its default model in OpenClaw format */
+export function aiProviderDefaultModel(provider: string): string {
+  switch (provider) {
+    case 'zeabur-ai-hub': return 'zeabur-ai/glm-4.7-flash'
+    case 'openai': return 'openai/gpt-4.1-mini'
+    case 'anthropic': return 'anthropic/claude-sonnet-4-6'
+    case 'google-gemini': return 'google/gemini-2.5-flash'
+    case 'openrouter': return 'openrouter/auto'
+    default: return 'zeabur-ai/glm-4.7-flash'
+  }
+}
+
 /** Map AI provider name to the environment variable OpenClaw expects */
 export function aiProviderEnvVar(provider: string): string {
   switch (provider) {
@@ -45,7 +57,6 @@ export function aiProviderEnvVar(provider: string): string {
     case 'openai': return 'OPENAI_API_KEY'
     case 'anthropic': return 'ANTHROPIC_API_KEY'
     case 'google-gemini': return 'GEMINI_API_KEY'
-    case 'deepseek': return 'DEEPSEEK_API_KEY'
     case 'openrouter': return 'OPENROUTER_API_KEY'
     default: return 'ZEABUR_AI_HUB_API_KEY'
   }
