@@ -136,7 +136,7 @@ Step 6: 一鍵部署 🚀
 
 ### 注意事項
 - ❌ 共享叢集已廢止，region 必須填 `server-XXXXXXXX`
-- ❌ `zeabur.app` domain 在 dedicated server 不可用，需用 sslip.io 或自訂域名
+- ✅ `zeabur.app` domain 在 dedicated server 可用（需用 `isGenerated: true`，之前誤用 `isGenerated: false` 導致失敗）
 - ❌ introspection 被禁，schema 需靠猜或 Apollo Explorer
 - ✅ `createProject` 有公開 API（文件說沒有，但實測有）
 - ✅ 用戶不需提供 Project ID，我們幫建
