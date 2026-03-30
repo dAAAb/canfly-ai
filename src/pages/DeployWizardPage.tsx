@@ -2,7 +2,7 @@
  * DeployWizardPage — CAN-277
  *
  * 5-step wizard for deploying an OpenClaw agent to Zeabur.
- * Route: /u/{username}/deploy  (or /deploy on subdomain)
+ * Route: /u/{username}/agents/deploy  (or /agents/deploy on subdomain)
  *
  * Steps:
  *   1. Enter Zeabur API Key → verify via "me" query
