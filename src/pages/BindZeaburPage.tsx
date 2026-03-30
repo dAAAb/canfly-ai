@@ -206,7 +206,7 @@ export default function BindZeaburPage({ subdomainUsername }: BindZeaburPageProp
 
         {/* Success */}
         {bindResult && (
-          <GlassCard>
+          <GlassCard className="p-6">
             <div className="text-center py-4">
               <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-4" />
               <h2 className="text-xl font-bold text-white mb-2">{t('bind.successTitle', 'Binding Complete!')}</h2>
@@ -243,7 +243,7 @@ export default function BindZeaburPage({ subdomainUsername }: BindZeaburPageProp
 
         {/* Step Content */}
         {!bindResult && (
-          <GlassCard>
+          <GlassCard className="p-6">
             {/* Step 1: Select Agent */}
             {step === 1 && (
               <div className="space-y-4">
