@@ -173,6 +173,19 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
   const zeaburStatus = service.status?.toUpperCase()
 
   if (zeaburStatus === 'RUNNING') {
+    // Lock: prevent concurrent polls from re-running setup (same pattern as clone-zeabur.ts)
+    if (deployment.status === 'deploying') {
+      await env.DB.prepare(
+        `UPDATE v3_zeabur_deployments SET status = 'setting_up', updated_at = datetime('now') WHERE id = ?1 AND status = 'deploying'`
+      ).bind(deploymentId).run()
+    } else if (deployment.status === 'setting_up') {
+      return json({
+        deploymentId: deployment.id,
+        status: 'deploying',
+        message: 'Setting up deployed service...',
+      })
+    }
+
     // Get server IP for gateway URL
     const serverResult = await zeaburGQL(zeaburApiKey, `
       query ServerInfo($serverID: ObjectID!) {
