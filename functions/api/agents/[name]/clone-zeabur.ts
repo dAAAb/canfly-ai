@@ -198,13 +198,46 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   if (!deployment) return errorResponse('Clone deployment not found', 404)
   if (deployment.owner_username !== auth.username) return errorResponse('Not authorized', 403)
 
-  // Terminal states — return immediately
-  if (deployment.status === 'running' || deployment.status === 'failed') {
+  // Terminal: running — return immediately
+  if (deployment.status === 'running') {
     return json({
       cloneId: deployment.id,
       status: deployment.status,
       agentName: deployment.agent_name,
       deployUrl: deployment.deploy_url,
+    })
+  }
+
+  // Terminal: failed — support retry
+  if (deployment.status === 'failed') {
+    const retry = url.searchParams.get('retry')
+    if (retry === 'resume') {
+      // Resume from the appropriate phase based on what data we have
+      const pd = JSON.parse(deployment.phase_data || '{}')
+      let resumePhase = 'setting_up_wait' // default: service might be up now, re-check
+      if (!pd.newServiceId) resumePhase = 'cloning' // never got service ID
+      if (!pd.publicUrl) resumePhase = 'setting_up_init' // never got domain
+      if (pd.waitAttempts && pd.waitAttempts > 0) resumePhase = 'setting_up_wait' // was waiting for boot
+      if (pd.configRetryCount && pd.configRetryCount > 0) resumePhase = 'setting_up_config' // was patching config
+
+      // Reset waitAttempts/configRetryCount for fresh retry
+      pd.waitAttempts = 0
+      pd.configRetryCount = 0
+
+      await env.DB.prepare(
+        `UPDATE v3_zeabur_deployments SET status = ?1, phase_data = ?2, error_message = NULL, phase_started_at = datetime('now'), updated_at = datetime('now') WHERE id = ?3`
+      ).bind(resumePhase, JSON.stringify(pd), cloneId).run()
+      return json({ cloneId, status: resumePhase, message: `Retrying from ${resumePhase}...` })
+    }
+    // Not retrying — return failed status with error info
+    const pd = JSON.parse(deployment.phase_data || '{}')
+    return json({
+      cloneId: deployment.id,
+      status: 'failed',
+      agentName: deployment.agent_name,
+      deployUrl: deployment.deploy_url,
+      error: deployment.error_message,
+      canRetry: !!(pd.newServiceId), // can resume if we at least have service ID
     })
   }
 
@@ -461,11 +494,11 @@ async function handleWait(
   if (!ready) {
     const newAttempts = waitAttempts + 1
 
-    if (newAttempts > 24) {
+    if (newAttempts > 60) {
       await env.DB.prepare(
-        `UPDATE v3_zeabur_deployments SET status = 'failed', error_message = 'Service did not start within 120 seconds', updated_at = datetime('now') WHERE id = ?1`
+        `UPDATE v3_zeabur_deployments SET status = 'failed', error_message = 'Service did not start within 5 minutes', updated_at = datetime('now') WHERE id = ?1`
       ).bind(cloneId).run()
-      return json({ cloneId, status: 'failed', error: 'Service did not start within 120 seconds' })
+      return json({ cloneId, status: 'failed', error: 'Service did not start within 5 minutes' })
     }
 
     // Update attempt count

@@ -310,11 +310,11 @@ async function handleWait(
 
   if (!ready) {
     const newAttempts = waitAttempts + 1
-    if (newAttempts > 24) {
+    if (newAttempts > 60) {
       await env.DB.prepare(
-        `UPDATE v3_zeabur_deployments SET status = 'failed', error_message = 'Service did not start within 120 seconds', updated_at = datetime('now') WHERE id = ?1`
+        `UPDATE v3_zeabur_deployments SET status = 'failed', error_message = 'Service did not start within 5 minutes', updated_at = datetime('now') WHERE id = ?1`
       ).bind(deploymentId).run()
-      return json({ deploymentId, status: 'failed', errorMessage: 'Service did not start within 120 seconds' })
+      return json({ deploymentId, status: 'failed', errorMessage: 'Service did not start within 5 minutes' })
     }
 
     await env.DB.prepare(
