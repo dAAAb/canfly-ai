@@ -331,9 +331,9 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     try {
       const ping = await zeaburGQL(zeaburApiKey,
         `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-        { cmd: ['node', '-e', 'console.log("READY")'] }
+        { cmd: ['node', '-e', 'const s=new(require("net").Socket)();s.setTimeout(2000);s.connect(18789,"127.0.0.1",()=>{console.log("GATEWAY_UP");s.destroy()});s.on("error",()=>{console.log("WAITING");s.destroy()});s.on("timeout",()=>{console.log("WAITING");s.destroy()})'] }
       )
-      if ((ping.data?.executeCommand as { output?: string })?.output?.includes('READY')) {
+      if ((ping.data?.executeCommand as { output?: string })?.output?.includes('GATEWAY_UP')) {
         serviceReady = true
         break
       }
