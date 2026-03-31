@@ -328,16 +328,18 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     apiKey, apiKey, pairingCode, expires,
   ).run()
 
-  // 4. Wait for service to be accessible (up to 60s)
+  // 4. Wait for OpenClaw gateway to be fully booted (up to 90s)
+  //    Check port 18789 is listening, not just that node is available —
+  //    OpenClaw may still be processing config ($include, merges) during boot
   let serviceReady = false
-  for (let attempt = 0; attempt < 12; attempt++) {
+  for (let attempt = 0; attempt < 18; attempt++) {
     await new Promise(r => setTimeout(r, 5000))
     try {
       const ping = await zeaburGQL(zeaburApiKey,
         `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-        { cmd: ['node', '-e', 'console.log("READY")'] }
+        { cmd: ['node', '-e', 'const s=new(require("net").Socket)();s.setTimeout(2000);s.connect(18789,"127.0.0.1",()=>{console.log("GATEWAY_UP");s.destroy()});s.on("error",()=>{console.log("WAITING");s.destroy()});s.on("timeout",()=>{console.log("WAITING");s.destroy()})'] }
       )
-      if ((ping.data?.executeCommand as { output?: string })?.output?.includes('READY')) {
+      if ((ping.data?.executeCommand as { output?: string })?.output?.includes('GATEWAY_UP')) {
         serviceReady = true
         break
       }
@@ -348,37 +350,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     return json({ cloneId, status: 'cloning', message: 'Clone complete, waiting for service to start...' })
   }
 
-  // 5. Wait for config to be fully written by comparing with source config key count
-  //    (Zeabur writes the cloned config in stages — patching too early loses keys)
-  let sourceKeyCount = 0
-  if (metadata.sourceServiceId && metadata.sourceProjectId) {
-    try {
-      const srcEnvResult = await zeaburGQL(zeaburApiKey, `
-        query { project(_id: "${metadata.sourceProjectId}") { environments { _id name } } }
-      `)
-      const srcEnvs = (srcEnvResult.data?.project as { environments: Array<{ _id: string; name: string }> })?.environments || []
-      const srcEnvId = (srcEnvs.find(e => e.name === 'production') || srcEnvs[0])?._id
-      if (srcEnvId) {
-        const srcCheck = await zeaburGQL(zeaburApiKey,
-          `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${metadata.sourceServiceId}",environmentID:"${srcEnvId}",command:$cmd){exitCode output}}`,
-          { cmd: ['node', '-e', 'try{const c=require("json5").parse(require("fs").readFileSync("/home/node/.openclaw/openclaw.json","utf8"));console.log(Object.keys(c).length)}catch(e){console.log("0")}'] }
-        )
-        sourceKeyCount = parseInt(((srcCheck.data?.executeCommand as { output?: string })?.output || '0').trim()) || 0
-      }
-    } catch { /* fallback to basic check */ }
-  }
-
-  for (let attempt = 0; attempt < 12; attempt++) {
-    try {
-      const check = await zeaburGQL(zeaburApiKey,
-        `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-        { cmd: ['node', '-e', 'try{const c=require("json5").parse(require("fs").readFileSync("/home/node/.openclaw/openclaw.json","utf8"));console.log(Object.keys(c).length)}catch(e){console.log("0")}'] }
-      )
-      const cloneKeyCount = parseInt(((check.data?.executeCommand as { output?: string })?.output || '0').trim()) || 0
-      if (cloneKeyCount > 0 && cloneKeyCount >= sourceKeyCount) break
-    } catch { /* not ready */ }
-    await new Promise(r => setTimeout(r, 5000))
-  }
+  // 5. Small grace period after gateway is up (let OpenClaw finish config processing)
+  await new Promise(r => setTimeout(r, 3000))
 
   // 6a. Patch config: update allowedOrigins, enable chatCompletions, remove Telegram, update browser cdpUrl
   const origins = [publicUrl, 'https://canfly.ai'].filter(Boolean)
