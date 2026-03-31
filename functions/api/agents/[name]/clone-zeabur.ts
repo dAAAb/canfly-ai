@@ -350,8 +350,23 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     return json({ cloneId, status: 'cloning', message: 'Clone complete, waiting for service to start...' })
   }
 
-  // 5. Small grace period after gateway is up (let OpenClaw finish config processing)
-  await new Promise(r => setTimeout(r, 3000))
+  // 5. Wait for config file to stabilize (read twice, 3s apart, confirm identical)
+  const readConfigHash = async () => {
+    const r = await zeaburGQL(zeaburApiKey,
+      `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
+      { cmd: ['node', '-e', 'const fs=require("fs"),crypto=require("crypto");try{const d=fs.readFileSync("/home/node/.openclaw/openclaw.json");console.log(crypto.createHash("md5").update(d).digest("hex"))}catch(e){console.log("ERR")}'] }
+    )
+    return ((r.data?.executeCommand as { output?: string })?.output || '').trim()
+  }
+  for (let attempt = 0; attempt < 5; attempt++) {
+    try {
+      const hash1 = await readConfigHash()
+      await new Promise(r => setTimeout(r, 3000))
+      const hash2 = await readConfigHash()
+      if (hash1 === hash2 && hash1 !== 'ERR') break
+    } catch { /* retry */ }
+    await new Promise(r => setTimeout(r, 2000))
+  }
 
   // 6a. Patch config: update allowedOrigins, enable chatCompletions, remove Telegram, update browser cdpUrl
   const origins = [publicUrl, 'https://canfly.ai'].filter(Boolean)
