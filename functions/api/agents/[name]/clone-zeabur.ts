@@ -348,7 +348,19 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     return json({ cloneId, status: 'cloning', message: 'Clone complete, waiting for service to start...' })
   }
 
-  // 5. Patch config: update allowedOrigins, enable chatCompletions, remove Telegram, update browser cdpUrl
+  // 5. Wait for config file to be ready (Zeabur may still be writing cloned files)
+  for (let attempt = 0; attempt < 6; attempt++) {
+    try {
+      const check = await zeaburGQL(zeaburApiKey,
+        `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
+        { cmd: ['node', '-e', 'try{require("json5").parse(require("fs").readFileSync("/home/node/.openclaw/openclaw.json","utf8"));console.log("CONFIG_OK")}catch(e){console.log("NOT_READY:"+e.message)}'] }
+      )
+      if ((check.data?.executeCommand as { output?: string })?.output?.includes('CONFIG_OK')) break
+    } catch { /* not ready */ }
+    await new Promise(r => setTimeout(r, 5000))
+  }
+
+  // 6a. Patch config: update allowedOrigins, enable chatCompletions, remove Telegram, update browser cdpUrl
   const origins = [publicUrl, 'https://canfly.ai'].filter(Boolean)
   const sandboxCdpUrl = sandboxBrowserService ? `http://service-${sandboxBrowserService._id}:9222` : ''
   const patchScript = [
