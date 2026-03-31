@@ -189,13 +189,14 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   // No cloneId → return available servers for backup
   if (!cloneId) {
     const dep = await env.DB.prepare(
-      `SELECT metadata FROM v3_zeabur_deployments WHERE agent_name = ?1 AND status = 'running' ORDER BY created_at DESC LIMIT 1`
-    ).bind(agentName).first<{ metadata: string }>()
+      `SELECT zeabur_project_id, metadata FROM v3_zeabur_deployments WHERE agent_name = ?1 AND status = 'running' ORDER BY created_at DESC LIMIT 1`
+    ).bind(agentName).first<{ zeabur_project_id: string; metadata: string }>()
     if (!dep) return json({ servers: [], hasDeployment: false })
 
     const meta = JSON.parse(dep.metadata || '{}')
     const cryptoKey = env.ENCRYPTION_KEY ? await importKey(env.ENCRYPTION_KEY) : null
-    const apiKey = cryptoKey ? await decrypt(meta.zeaburApiKey || '', cryptoKey) : meta.zeaburApiKey
+    const rawKey = meta.zeaburApiKey || ''
+    const apiKey = cryptoKey && rawKey ? await decrypt(rawKey, cryptoKey) : rawKey
     if (!apiKey) return json({ servers: [], hasDeployment: true })
 
     try {
@@ -205,17 +206,14 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
       // Check source project service count for multi-service detection
       let serviceCount = 1
       let canClone = true
-      const sourceProjectId = meta.sourceProjectId || meta.zeaburProjectId
-      if (sourceProjectId) {
-        try {
-          const projResult = await zeaburGQL(apiKey, `
-            query { project(_id: "${sourceProjectId}") { services { _id name } } }
-          `)
-          const services = (projResult.data?.project as { services: Array<{ _id: string; name: string }> })?.services || []
-          serviceCount = services.length
-          canClone = serviceCount <= 1
-        } catch { /* default to canClone=true */ }
-      }
+      try {
+        const projResult = await zeaburGQL(apiKey, `
+          query { project(_id: "${dep.zeabur_project_id}") { services { _id name } } }
+        `)
+        const services = (projResult.data?.project as { services: Array<{ _id: string; name: string }> })?.services || []
+        serviceCount = services.length
+        canClone = serviceCount <= 1
+      } catch { /* default to canClone=true */ }
 
       return json({ servers, hasDeployment: true, serviceCount, canClone })
     } catch {
