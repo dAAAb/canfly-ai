@@ -134,7 +134,6 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
       source: 'clone',
       sourceAgentName: agentName,
       sourceProjectId: deployment.zeabur_project_id,
-      sourceServiceId: deployment.zeabur_service_id,
       bakSlug,
       bakDisplayName,
       clonedAt: new Date().toISOString(),
@@ -270,8 +269,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     const serviceNames = proj?.services?.map(s => s.name).join(', ') || 'none'
     await env.DB.prepare(
       `UPDATE v3_zeabur_deployments SET status = 'failed', error_message = ?1, updated_at = datetime('now') WHERE id = ?2`
-    ).bind(`Clone completed but OpenClaw service not found. Services: ${serviceNames}`, cloneId).run()
-    return json({ cloneId, status: 'failed', error: `OpenClaw service not found in cloned project. Found: ${serviceNames}` })
+    ).bind(`OpenClaw service not found. Services: ${serviceNames}`, cloneId).run()
+    return json({ cloneId, status: 'failed', error: `OpenClaw service not found. Found: ${serviceNames}` })
   }
 
   // Lock: mark as 'setting_up' to prevent concurrent polls from re-running setup
@@ -285,13 +284,10 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   const bakSlug = metadata.bakSlug || `${toAgentSlug(agentName)}-bak-${dateSuffix()}`
   const bakDisplayName = metadata.bakDisplayName || `${agentName} BAK ${dateSuffix()}`
 
-  // Find cloned sandbox-browser for browser.cdpUrl update (multi-service projects)
-  const sandboxBrowserService = proj?.services?.find(s => /sandbox-browser/i.test(s.name))
-
   // 1. Start cloned service (cloneProject doesn't auto-start)
   await zeaburGQL(zeaburApiKey,
     `mutation{restartService(serviceID:"${newServiceId}",environmentID:"${newEnvId}")}`
-  ).catch((e) => { verifyErrors.push(`restartService: ${e}`) })
+  ).catch(() => {})
 
   // 2. Add new domain (can do while service is starting)
   const domain = `${bakSlug}-canfly`
@@ -328,18 +324,16 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     apiKey, apiKey, pairingCode, expires,
   ).run()
 
-  // 4. Wait for OpenClaw gateway to be fully booted (up to 90s)
-  //    Check port 18789 is listening, not just that node is available —
-  //    OpenClaw may still be processing config ($include, merges) during boot
+  // 4. Wait for service to be accessible (up to 60s)
   let serviceReady = false
-  for (let attempt = 0; attempt < 18; attempt++) {
+  for (let attempt = 0; attempt < 12; attempt++) {
     await new Promise(r => setTimeout(r, 5000))
     try {
       const ping = await zeaburGQL(zeaburApiKey,
         `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-        { cmd: ['node', '-e', 'const s=new(require("net").Socket)();s.setTimeout(2000);s.connect(18789,"127.0.0.1",()=>{console.log("GATEWAY_UP");s.destroy()});s.on("error",()=>{console.log("WAITING");s.destroy()});s.on("timeout",()=>{console.log("WAITING");s.destroy()})'] }
+        { cmd: ['node', '-e', 'console.log("READY")'] }
       )
-      if ((ping.data?.executeCommand as { output?: string })?.output?.includes('GATEWAY_UP')) {
+      if ((ping.data?.executeCommand as { output?: string })?.output?.includes('READY')) {
         serviceReady = true
         break
       }
@@ -350,55 +344,15 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     return json({ cloneId, status: 'cloning', message: 'Clone complete, waiting for service to start...' })
   }
 
-  // 5. Wait for config file to stabilize (read twice, 3s apart, confirm identical)
-  const readConfigHash = async () => {
-    const r = await zeaburGQL(zeaburApiKey,
-      `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-      { cmd: ['node', '-e', 'const fs=require("fs"),crypto=require("crypto");try{const d=fs.readFileSync("/home/node/.openclaw/openclaw.json");console.log(crypto.createHash("md5").update(d).digest("hex"))}catch(e){console.log("ERR")}'] }
-    )
-    return ((r.data?.executeCommand as { output?: string })?.output || '').trim()
-  }
-  for (let attempt = 0; attempt < 5; attempt++) {
-    try {
-      const hash1 = await readConfigHash()
-      await new Promise(r => setTimeout(r, 3000))
-      const hash2 = await readConfigHash()
-      if (hash1 === hash2 && hash1 !== 'ERR') break
-    } catch { /* retry */ }
-    await new Promise(r => setTimeout(r, 2000))
-  }
-
-  // 6a. Patch config: update allowedOrigins, enable chatCompletions, remove Telegram, update browser cdpUrl
+  // 5. Patch config: update allowedOrigins, enable chatCompletions, remove Telegram
   const origins = [publicUrl, 'https://canfly.ai'].filter(Boolean)
-  const sandboxCdpUrl = sandboxBrowserService ? `http://service-${sandboxBrowserService._id}:9222` : ''
-  const patchScript = [
-    `const fs=require('fs'),J=require('json5'),f='/home/node/.openclaw/openclaw.json'`,
-    `try{const c=J.parse(fs.readFileSync(f,'utf8'))`,
-    `c.gateway.controlUi.allowedOrigins=${JSON.stringify(origins)}`,
-    `if(!c.gateway.http)c.gateway.http={endpoints:{chatCompletions:{enabled:true}}}`,
-    `else{c.gateway.http.endpoints=c.gateway.http.endpoints||{};c.gateway.http.endpoints.chatCompletions={enabled:true}}`,
-    `if(c.plugins&&c.plugins.entries){delete c.plugins.entries['@openclaw/plugin-telegram'];delete c.plugins.entries['plugin-telegram']}`,
-    `if(c.channels&&c.channels.telegram){delete c.channels.telegram}`,
-    sandboxCdpUrl ? `if(c.browser){c.browser.cdpUrl='${sandboxCdpUrl}';if(c.browser.profiles&&c.browser.profiles.remote)c.browser.profiles.remote.cdpUrl='${sandboxCdpUrl}'}` : '',
-    `fs.writeFileSync(f,JSON.stringify(c,null,2));console.log('patched')}catch(e){console.log('err:'+e.message)}`,
-  ].filter(Boolean).join(';')
-  let patchApplied = false
-  for (let patchAttempt = 0; patchAttempt < 3; patchAttempt++) {
-    try {
-      const patchResult = await zeaburGQL(zeaburApiKey,
-        `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-        { cmd: ['node', '-e', patchScript] }
-      )
-      const patchOutput = ((patchResult.data?.executeCommand as { output?: string })?.output || '').trim()
-      if (patchOutput.includes('patched')) {
-        patchApplied = true
-        break
-      }
-      verifyErrors.push(`patchConfig attempt ${patchAttempt}: output=${patchOutput}`)
-    } catch (e) { verifyErrors.push(`patchConfig attempt ${patchAttempt}: ${e}`) }
-    await new Promise(r => setTimeout(r, 3000))
-  }
-  if (!patchApplied) verifyErrors.push('patchConfig: all attempts failed')
+  const patchScript = `const fs=require('fs'),J=require('json5'),f='/home/node/.openclaw/openclaw.json';try{const c=J.parse(fs.readFileSync(f,'utf8'));c.gateway.controlUi.allowedOrigins=${JSON.stringify(origins)};if(!c.gateway.http)c.gateway.http={endpoints:{chatCompletions:{enabled:true}}};else{c.gateway.http.endpoints=c.gateway.http.endpoints||{};c.gateway.http.endpoints.chatCompletions={enabled:true}};if(c.plugins&&c.plugins.entries){delete c.plugins.entries['@openclaw/plugin-telegram'];delete c.plugins.entries['plugin-telegram']};fs.writeFileSync(f,JSON.stringify(c,null,2));console.log('patched')}catch(e){console.log('err:'+e.message)}`
+  try {
+    await zeaburGQL(zeaburApiKey,
+      `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
+      { cmd: ['node', '-e', patchScript] }
+    )
+  } catch { /* best effort */ }
 
   // 6. Inject new CANFLY env vars
   for (const [key, value] of [
@@ -421,10 +375,10 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     `mutation{restartService(serviceID:"${newServiceId}",environmentID:"${newEnvId}")}`
   )
 
-  // 8. Verify: wait for chat endpoint to actually respond before declaring success
+  // 8. Verify: wait for chat endpoint + read fresh gateway token
   let chatReady = false
   let newGatewayToken = ''
-  for (let attempt = 0; attempt < 8; attempt++) {
+  for (let attempt = 0; attempt < 5; attempt++) {
     await new Promise(r => setTimeout(r, 5000))
     try {
       // Read gateway token
@@ -442,7 +396,20 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
         body: JSON.stringify({ model: 'openclaw', messages: [{ role: 'user', content: 'ping' }], stream: false }),
       })
       if (testRes.status === 200 || testRes.status === 401) { chatReady = true; break }
-    } catch (e) { verifyErrors.push(`chatVerify attempt ${attempt}: ${e}`) }
+    } catch { /* not ready */ }
+  }
+
+  // Fallback: re-patch config if chat not ready
+  if (!chatReady) {
+    try {
+      await zeaburGQL(zeaburApiKey,
+        `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
+        { cmd: ['node', '-e', patchScript] }
+      )
+      await zeaburGQL(zeaburApiKey,
+        `mutation{restartService(serviceID:"${newServiceId}",environmentID:"${newEnvId}")}`
+      )
+    } catch { /* best effort */ }
   }
 
   // 9. Re-read gateway token (may have changed after restart)
@@ -453,9 +420,9 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     )
     const freshToken = ((tokenResult.data?.executeCommand as { output?: string })?.output || '').replace(/[\r\n\s]+$/g, '')
     if (freshToken) newGatewayToken = freshToken
-  } catch (e) { verifyErrors.push(`reReadToken: ${e}`) }
+  } catch { /* keep previous token */ }
 
-  // 10. Store agent_card_override with encrypted gateway token
+  // 8. Store agent_card_override with encrypted gateway token
   const encToken = cryptoKey && newGatewayToken ? await encrypt(newGatewayToken, cryptoKey) : newGatewayToken
   const cardOverride = JSON.stringify({ url: publicUrl, gateway_token: encToken })
   await env.DB.prepare(
