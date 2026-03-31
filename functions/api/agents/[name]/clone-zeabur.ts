@@ -89,11 +89,28 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   const zeaburApiKey = cryptoKey ? await decrypt(metadata.zeaburApiKey || '', cryptoKey) : metadata.zeaburApiKey
   if (!zeaburApiKey) return errorResponse('Zeabur API key not found in deployment metadata', 500)
 
-  // Get source environment ID
-  const envResult = await zeaburGQL(zeaburApiKey, `
-    query { project(_id: "${deployment.zeabur_project_id}") { environments { _id name } } }
+  // Check source project service count — block multi-service projects
+  const projCheckResult = await zeaburGQL(zeaburApiKey, `
+    query { project(_id: "${deployment.zeabur_project_id}") {
+      services { _id name }
+      environments { _id name }
+    } }
   `)
-  const envs = (envResult.data?.project as { environments: Array<{ _id: string; name: string }> })?.environments || []
+  const projCheck = projCheckResult.data?.project as {
+    services: Array<{ _id: string; name: string }>
+    environments: Array<{ _id: string; name: string }>
+  } | null
+
+  if ((projCheck?.services?.length || 0) > 1) {
+    return errorResponse(
+      'Multi-service projects cannot be auto-cloned. Please use one of these alternatives:\n' +
+      '1. Use Zeabur Dashboard\'s built-in "Clone Project" feature to clone the entire project\n' +
+      '2. Remove extra services (browser, devbox, etc.) before cloning, then reinstall them on the clone',
+      400,
+    )
+  }
+
+  const envs = projCheck?.environments || []
   const prodEnv = envs.find(e => e.name === 'production') || envs[0]
   if (!prodEnv) return errorResponse('Source project has no environment', 500)
 
@@ -184,7 +201,23 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     try {
       const srvResult = await zeaburGQL(apiKey, '{ servers { _id name provider } }')
       const servers = (srvResult.data?.servers as Array<{ _id: string; name: string; provider: string }>) || []
-      return json({ servers, hasDeployment: true })
+
+      // Check source project service count for multi-service detection
+      let serviceCount = 1
+      let canClone = true
+      const sourceProjectId = meta.sourceProjectId || meta.zeaburProjectId
+      if (sourceProjectId) {
+        try {
+          const projResult = await zeaburGQL(apiKey, `
+            query { project(_id: "${sourceProjectId}") { services { _id name } } }
+          `)
+          const services = (projResult.data?.project as { services: Array<{ _id: string; name: string }> })?.services || []
+          serviceCount = services.length
+          canClone = serviceCount <= 1
+        } catch { /* default to canClone=true */ }
+      }
+
+      return json({ servers, hasDeployment: true, serviceCount, canClone })
     } catch {
       return json({ servers: [], hasDeployment: true })
     }

@@ -61,6 +61,7 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
 
   // Clone/Backup
   const [hasDeployment, setHasDeployment] = useState(false)
+  const [canClone, setCanClone] = useState(true)
   const [cloneServers, setCloneServers] = useState<Array<{ _id: string; name: string; provider: string }>>([])
   const [loadingServers, setLoadingServers] = useState(false)
   const [selectedCloneServer, setSelectedCloneServer] = useState<string | null>(null)
@@ -87,8 +88,9 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
         const headers = await getAuthHeaders()
         const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/clone-zeabur`, { headers })
         if (res.ok) {
-          const data = await res.json() as { servers?: Array<{ _id: string; name: string; provider: string }>; hasDeployment?: boolean }
+          const data = await res.json() as { servers?: Array<{ _id: string; name: string; provider: string }>; hasDeployment?: boolean; canClone?: boolean }
           setHasDeployment(!!data.hasDeployment)
+          setCanClone(data.canClone !== false)
           const servers = data.servers || []
           setCloneServers(servers)
           if (servers.length > 0) setSelectedCloneServer(servers[servers.length - 1]._id)
@@ -398,7 +400,19 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
                     {t('settings.cloneDesc', 'Clone this lobster (with all memory and config) to another server as a backup.')}
                   </p>
 
-                  {cloneResult ? (
+                  {!canClone ? (
+                    <div className="p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg space-y-2">
+                      <div className="flex items-center gap-2 text-yellow-400 text-sm">
+                        <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                        {t('settings.cloneMultiService', 'This lobster has multiple services and cannot be auto-cloned.')}
+                      </div>
+                      <p className="text-gray-400 text-xs leading-relaxed">
+                        {t('settings.cloneMultiServiceHelp',
+                          'Please use one of these alternatives:\n1. Use Zeabur Dashboard\'s "Clone Project" to clone the entire project\n2. Remove extra services (browser, devbox, etc.) before cloning, then reinstall them on the backup'
+                        ).split('\n').map((line, i) => <span key={i}>{line}<br /></span>)}
+                      </p>
+                    </div>
+                  ) : cloneResult ? (
                     <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
                       <div className="flex items-center gap-2 text-green-400 text-sm mb-2">
                         <CheckCircle className="w-4 h-4" />
