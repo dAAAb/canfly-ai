@@ -358,7 +358,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   const origins = [publicUrl, 'https://canfly.ai'].filter(Boolean)
   const sandboxCdpUrl = sandboxBrowserService ? `http://service-${sandboxBrowserService._id}:9222` : ''
   const patchScript = [
-    `const fs=require('fs'),J=require('json5'),f='/home/node/.openclaw/openclaw.json'`,
+    `const fs=require('fs'),J=require('/app/node_modules/json5'),f='/home/node/.openclaw/openclaw.json'`,
     `try{const c=J.parse(fs.readFileSync(f,'utf8'))`,
     `c.gateway.controlUi.allowedOrigins=${JSON.stringify(origins)}`,
     `if(!c.gateway.http)c.gateway.http={endpoints:{chatCompletions:{enabled:true}}}`,
