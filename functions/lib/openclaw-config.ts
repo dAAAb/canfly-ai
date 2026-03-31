@@ -329,9 +329,37 @@ export function generateUUID(): string {
 
 // ── Find OpenClaw service in project ──────────────────────
 
+/**
+ * Find the OpenClaw service in a project.
+ * For single-service projects, returns that service regardless of name.
+ * For multi-service, matches by name pattern.
+ */
 export function findOpenClawService(
   services: Array<{ _id: string; name: string }>,
 ): { _id: string; name: string } | undefined {
+  // Single service — must be the one, regardless of name
+  if (services.length === 1) return services[0]
+
+  // Multi-service — match by name
   return services.find(s => s.name === 'OpenClaw')
     || services.find(s => /openclaw/i.test(s.name) && !/sandbox|browser|devbox|wings/i.test(s.name))
+}
+
+/**
+ * Verify a service is actually running OpenClaw by checking for
+ * the ~/.openclaw directory. Use when service name is unreliable.
+ */
+export async function verifyIsOpenClaw(
+  apiKey: string,
+  serviceId: string,
+  envId: string,
+): Promise<boolean> {
+  try {
+    const { output } = await execCommand(apiKey, serviceId, envId,
+      ['sh', '-c', 'test -d /home/node/.openclaw && echo "IS_OPENCLAW" || echo "NOT_OPENCLAW"'],
+    )
+    return output.includes('IS_OPENCLAW')
+  } catch {
+    return false
+  }
 }
