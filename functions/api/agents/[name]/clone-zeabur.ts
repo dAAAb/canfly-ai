@@ -259,7 +259,6 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     environments: Array<{ _id: string; name: string }>
   } | null
 
-  // Find the OpenClaw service by name (not services[0] which may be sandbox-browser or devbox-wings)
   const openClawService = proj?.services?.find(s => s.name === 'OpenClaw')
     || proj?.services?.find(s => /openclaw/i.test(s.name) && !/sandbox|browser|devbox|wings/i.test(s.name))
   const newServiceId = openClawService?._id
@@ -324,17 +323,16 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     apiKey, apiKey, pairingCode, expires,
   ).run()
 
-  // 4. Wait for OpenClaw gateway to be healthy (up to 60s)
+  // 4. Wait for service to be accessible (up to 60s)
   let serviceReady = false
   for (let attempt = 0; attempt < 12; attempt++) {
     await new Promise(r => setTimeout(r, 5000))
     try {
       const ping = await zeaburGQL(zeaburApiKey,
         `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-        { cmd: ['openclaw', 'health'] }
+        { cmd: ['node', '-e', 'console.log("READY")'] }
       )
-      const out = (ping.data?.executeCommand as { output?: string; exitCode?: number })
-      if (out?.exitCode === 0 || out?.output?.includes('ok') || out?.output?.includes('healthy')) {
+      if ((ping.data?.executeCommand as { output?: string })?.output?.includes('READY')) {
         serviceReady = true
         break
       }
@@ -345,29 +343,14 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     return json({ cloneId, status: 'cloning', message: 'Clone complete, waiting for service to start...' })
   }
 
-  // 5. Patch config via OpenClaw CLI (safe runtime update, no file race condition)
+  // 5. Patch config: update allowedOrigins, enable chatCompletions, remove Telegram
   const origins = [publicUrl, 'https://canfly.ai'].filter(Boolean)
-  const patchPayload = JSON.stringify({
-    gateway: {
-      controlUi: { allowedOrigins: origins },
-      http: { endpoints: { chatCompletions: { enabled: true } } },
-    },
-  })
+  const patchScript = `const fs=require('fs'),J=require('json5'),f='/home/node/.openclaw/openclaw.json';try{const c=J.parse(fs.readFileSync(f,'utf8'));c.gateway.controlUi.allowedOrigins=${JSON.stringify(origins)};if(!c.gateway.http)c.gateway.http={endpoints:{chatCompletions:{enabled:true}}};else{c.gateway.http.endpoints=c.gateway.http.endpoints||{};c.gateway.http.endpoints.chatCompletions={enabled:true}};if(c.plugins&&c.plugins.entries){delete c.plugins.entries['@openclaw/plugin-telegram'];delete c.plugins.entries['plugin-telegram']};fs.writeFileSync(f,JSON.stringify(c,null,2));console.log('patched')}catch(e){console.log('err:'+e.message)}`
   try {
-    // Apply config patch (merges + restarts gateway internally)
     await zeaburGQL(zeaburApiKey,
       `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-      { cmd: ['openclaw', 'gateway', 'call', 'config.patch', patchPayload] }
+      { cmd: ['node', '-e', patchScript] }
     )
-    // Remove Telegram channel + plugin entries
-    await zeaburGQL(zeaburApiKey,
-      `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-      { cmd: ['openclaw', 'config', 'unset', 'channels.telegram'] }
-    ).catch(() => {})
-    await zeaburGQL(zeaburApiKey,
-      `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-      { cmd: ['openclaw', 'config', 'unset', 'plugins.entries.@openclaw/plugin-telegram'] }
-    ).catch(() => {})
   } catch { /* best effort */ }
 
   // 6. Inject new CANFLY env vars
