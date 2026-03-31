@@ -375,12 +375,23 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     sandboxCdpUrl ? `if(c.browser){c.browser.cdpUrl='${sandboxCdpUrl}';if(c.browser.profiles&&c.browser.profiles.remote)c.browser.profiles.remote.cdpUrl='${sandboxCdpUrl}'}` : '',
     `fs.writeFileSync(f,JSON.stringify(c,null,2));console.log('patched')}catch(e){console.log('err:'+e.message)}`,
   ].filter(Boolean).join(';')
-  try {
-    await zeaburGQL(zeaburApiKey,
-      `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-      { cmd: ['node', '-e', patchScript] }
-    )
-  } catch (e) { verifyErrors.push(`patchConfig: ${e}`) }
+  let patchApplied = false
+  for (let patchAttempt = 0; patchAttempt < 3; patchAttempt++) {
+    try {
+      const patchResult = await zeaburGQL(zeaburApiKey,
+        `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
+        { cmd: ['node', '-e', patchScript] }
+      )
+      const patchOutput = ((patchResult.data?.executeCommand as { output?: string })?.output || '').trim()
+      if (patchOutput.includes('patched')) {
+        patchApplied = true
+        break
+      }
+      verifyErrors.push(`patchConfig attempt ${patchAttempt}: output=${patchOutput}`)
+    } catch (e) { verifyErrors.push(`patchConfig attempt ${patchAttempt}: ${e}`) }
+    await new Promise(r => setTimeout(r, 3000))
+  }
+  if (!patchApplied) verifyErrors.push('patchConfig: all attempts failed')
 
   // 6. Inject new CANFLY env vars
   for (const [key, value] of [
