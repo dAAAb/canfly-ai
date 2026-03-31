@@ -3,19 +3,30 @@
  *
  * Returns the uploaded result artifact for a completed task.
  * CAN-209: Task completion notification + delivery
+ * CAN-280: Auth required — seller, buyer wallet, or buyer agent.
  */
 import { type Env, errorResponse, handleOptions, CORS_HEADERS } from '../../../../../community/_helpers'
+import { checkTaskAuth } from '../../../../../../lib/task-auth'
 
-export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
+export const onRequestGet: PagesFunction<Env> = async ({ env, params, request }) => {
   const agentName = params.name as string
   const taskId = params.id as string
 
   // Verify task exists and is completed
   const task = await env.DB.prepare(
-    `SELECT id, status, result_url FROM tasks WHERE id = ?1 AND seller_agent = ?2`
+    `SELECT id, status, result_url, buyer_agent, buyer_wallet
+     FROM tasks WHERE id = ?1 AND seller_agent = ?2`
   ).bind(taskId, agentName).first()
 
   if (!task) return errorResponse('Task not found', 404)
+
+  // CAN-280: Auth guard
+  const auth = await checkTaskAuth(env, request, agentName, {
+    buyer_agent: task.buyer_agent as string | null,
+    buyer_wallet: task.buyer_wallet as string | null,
+  })
+  if (!auth.authorized) return errorResponse('Forbidden', 403)
+
   if (task.status !== 'completed') {
     return errorResponse('Task result not yet available', 202)
   }

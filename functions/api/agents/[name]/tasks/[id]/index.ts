@@ -2,15 +2,17 @@
  * GET /api/agents/:name/tasks/:id — Get task status
  *
  * Part of the A2A Task Protocol (CAN-204).
+ * CAN-280: Auth required — seller, buyer wallet, or buyer agent.
  */
 import { type Env, json, errorResponse, handleOptions } from '../../../../community/_helpers'
+import { checkTaskAuth } from '../../../../../lib/task-auth'
 
-export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
+export const onRequestGet: PagesFunction<Env> = async ({ env, params, request }) => {
   const agentName = params.name as string
   const taskId = params.id as string
 
   const task = await env.DB.prepare(
-    `SELECT id, buyer_agent, buyer_email, seller_agent, skill_name, params,
+    `SELECT id, buyer_agent, buyer_email, buyer_wallet, seller_agent, skill_name, params,
             status, payment_method, payment_chain, payment_tx,
             amount, currency, channel, result_url, result_data,
             escrow_tx, escrow_status, sla_deadline, confirmed_at, rejected_at, reject_reason,
@@ -19,6 +21,13 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
   ).bind(taskId, agentName).first()
 
   if (!task) return errorResponse('Task not found', 404)
+
+  // CAN-280: Auth guard
+  const auth = await checkTaskAuth(env, request, agentName, {
+    buyer_agent: task.buyer_agent as string | null,
+    buyer_wallet: task.buyer_wallet as string | null,
+  })
+  if (!auth.authorized) return errorResponse('Forbidden', 403)
 
   // Calculate execution time if completed
   const startTime = task.started_at || task.paid_at || task.created_at
