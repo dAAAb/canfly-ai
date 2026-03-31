@@ -295,13 +295,18 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
 
   // Verify agent exists
   const agent = await env.DB.prepare(
-    'SELECT name, is_public FROM agents WHERE name = ?1'
+    'SELECT name, is_public, api_key FROM agents WHERE name = ?1'
   ).bind(agentName).first()
 
   if (!agent) return errorResponse('Agent not found', 404)
   if (agent.is_public === 0) return errorResponse('Agent profile is private', 403)
 
-  // List all tasks (public transaction history)
+  // CAN-280: Check if caller is the seller (has valid Bearer token)
+  const authHeader = request.headers.get('Authorization')
+  const bearerKey = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
+  const isSellerAuth = !!(bearerKey && agent.api_key && agent.api_key === bearerKey)
+
+  // List tasks
   const statusFilter = url.searchParams.get('status') // optional filter: completed, paid, executing, all (pending_payment deprecated per CAN-232)
   const statusClause = statusFilter && statusFilter !== 'all'
     ? `AND status = '${statusFilter.replace(/[^a-z_]/g, '')}'`
@@ -324,27 +329,39 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
      WHERE seller_agent = ?1 ${statusClause}`
   ).bind(agentName).first()
 
+  // CAN-280: Public view returns limited fields (no task ID, buyer info, or result_url)
+  const tasks = isSellerAuth
+    ? result.results.map((t) => ({
+        id: t.id,
+        buyer: t.buyer_agent || null,
+        buyer_email: t.buyer_email || null,
+        skill: t.skill_name,
+        status: t.status,
+        amount: t.amount,
+        currency: t.currency,
+        payment_tx: t.payment_tx || null,
+        payment_chain: t.payment_chain || null,
+        channel: t.channel,
+        result_url: t.status === 'completed' ? (t.result_url || null) : null,
+        escrow_tx: t.escrow_tx || null,
+        escrow_status: t.escrow_status || 'none',
+        created_at: t.created_at,
+        paid_at: t.paid_at || null,
+        completed_at: t.completed_at || null,
+        basescan_url: t.payment_tx ? `https://basescan.org/tx/${t.payment_tx}` : null,
+      }))
+    : result.results.map((t) => ({
+        skill: t.skill_name,
+        status: t.status,
+        amount: t.amount,
+        currency: t.currency,
+        created_at: t.created_at,
+        completed_at: t.completed_at || null,
+      }))
+
   return json({
     agent: agentName,
-    tasks: result.results.map((t) => ({
-      id: t.id,
-      buyer: t.buyer_agent || null,
-      buyer_email: t.buyer_email || null,
-      skill: t.skill_name,
-      status: t.status,
-      amount: t.amount,
-      currency: t.currency,
-      payment_tx: t.payment_tx || null,
-      payment_chain: t.payment_chain || null,
-      channel: t.channel,
-      result_url: t.status === 'completed' ? (t.result_url || null) : null,
-      escrow_tx: t.escrow_tx || null,
-      escrow_status: t.escrow_status || 'none',
-      created_at: t.created_at,
-      paid_at: t.paid_at || null,
-      completed_at: t.completed_at || null,
-      basescan_url: t.payment_tx ? `https://basescan.org/tx/${t.payment_tx}` : null,
-    })),
+    tasks,
     total: (countResult?.total as number) || 0,
     limit,
     offset,

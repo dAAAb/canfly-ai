@@ -3,20 +3,30 @@
  *
  * Returns result_data and result_url once the task is completed.
  * Part of the A2A Task Protocol (CAN-204).
+ * CAN-280: Auth required — seller, buyer wallet, or buyer agent.
  */
 import { type Env, json, errorResponse, handleOptions } from '../../../../community/_helpers'
+import { checkTaskAuth } from '../../../../../lib/task-auth'
 
-export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
+export const onRequestGet: PagesFunction<Env> = async ({ env, params, request }) => {
   const agentName = params.name as string
   const taskId = params.id as string
 
   const task = await env.DB.prepare(
     `SELECT id, status, skill_name, result_url, result_data,
+            buyer_agent, buyer_wallet,
             created_at, started_at, paid_at, completed_at
      FROM tasks WHERE id = ?1 AND seller_agent = ?2`
   ).bind(taskId, agentName).first()
 
   if (!task) return errorResponse('Task not found', 404)
+
+  // CAN-280: Auth guard
+  const auth = await checkTaskAuth(env, request, agentName, {
+    buyer_agent: task.buyer_agent as string | null,
+    buyer_wallet: task.buyer_wallet as string | null,
+  })
+  if (!auth.authorized) return errorResponse('Forbidden', 403)
 
   if (task.status === 'failed') {
     return json({

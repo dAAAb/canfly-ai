@@ -25,7 +25,7 @@ export interface Env {
 export const CORS_HEADERS: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Edit-Token, X-Wallet-Address, X-Canfly-Api-Key, X-Canfly-Channel, X-Canfly-Sender-Type',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Edit-Token, X-Wallet-Address, X-Buyer-Wallet, X-Canfly-Api-Key, X-Canfly-Channel, X-Canfly-Sender-Type',
 }
 
 /** Handle CORS preflight */
