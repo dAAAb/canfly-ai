@@ -388,6 +388,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     `if(!c.gateway.http)c.gateway.http={endpoints:{chatCompletions:{enabled:true}}}`,
     `else{c.gateway.http.endpoints=c.gateway.http.endpoints||{};c.gateway.http.endpoints.chatCompletions={enabled:true}}`,
     `if(c.plugins&&c.plugins.entries){delete c.plugins.entries['@openclaw/plugin-telegram'];delete c.plugins.entries['plugin-telegram']}`,
+    `if(c.channels&&c.channels.telegram){delete c.channels.telegram}`,
     sandboxCdpUrl ? `if(c.browser){c.browser.cdpUrl='${sandboxCdpUrl}';if(c.browser.profiles&&c.browser.profiles.remote)c.browser.profiles.remote.cdpUrl='${sandboxCdpUrl}'}` : '',
     `fs.writeFileSync(f,JSON.stringify(c,null,2));console.log('patched')}catch(e){console.log('err:'+e.message)}`,
   ].filter(Boolean).join(';')
