@@ -348,15 +348,34 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     return json({ cloneId, status: 'cloning', message: 'Clone complete, waiting for service to start...' })
   }
 
-  // 5. Wait for config file to be fully written (Zeabur may still be syncing cloned files)
-  //    Verify the file has actual content (gateway key), not just a partial write
-  for (let attempt = 0; attempt < 6; attempt++) {
+  // 5. Wait for config to be fully written by comparing with source config key count
+  //    (Zeabur writes the cloned config in stages — patching too early loses keys)
+  let sourceKeyCount = 0
+  if (metadata.sourceServiceId && metadata.sourceProjectId) {
+    try {
+      const srcEnvResult = await zeaburGQL(zeaburApiKey, `
+        query { project(_id: "${metadata.sourceProjectId}") { environments { _id name } } }
+      `)
+      const srcEnvs = (srcEnvResult.data?.project as { environments: Array<{ _id: string; name: string }> })?.environments || []
+      const srcEnvId = (srcEnvs.find(e => e.name === 'production') || srcEnvs[0])?._id
+      if (srcEnvId) {
+        const srcCheck = await zeaburGQL(zeaburApiKey,
+          `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${metadata.sourceServiceId}",environmentID:"${srcEnvId}",command:$cmd){exitCode output}}`,
+          { cmd: ['node', '-e', 'try{const c=require("json5").parse(require("fs").readFileSync("/home/node/.openclaw/openclaw.json","utf8"));console.log(Object.keys(c).length)}catch(e){console.log("0")}'] }
+        )
+        sourceKeyCount = parseInt(((srcCheck.data?.executeCommand as { output?: string })?.output || '0').trim()) || 0
+      }
+    } catch { /* fallback to basic check */ }
+  }
+
+  for (let attempt = 0; attempt < 12; attempt++) {
     try {
       const check = await zeaburGQL(zeaburApiKey,
         `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-        { cmd: ['node', '-e', 'try{const c=require("json5").parse(require("fs").readFileSync("/home/node/.openclaw/openclaw.json","utf8"));if(c.gateway)console.log("CONFIG_OK");else console.log("NOT_READY:no gateway key")}catch(e){console.log("NOT_READY:"+e.message)}'] }
+        { cmd: ['node', '-e', 'try{const c=require("json5").parse(require("fs").readFileSync("/home/node/.openclaw/openclaw.json","utf8"));console.log(Object.keys(c).length)}catch(e){console.log("0")}'] }
       )
-      if ((check.data?.executeCommand as { output?: string })?.output?.includes('CONFIG_OK')) break
+      const cloneKeyCount = parseInt(((check.data?.executeCommand as { output?: string })?.output || '0').trim()) || 0
+      if (cloneKeyCount > 0 && cloneKeyCount >= sourceKeyCount) break
     } catch { /* not ready */ }
     await new Promise(r => setTimeout(r, 5000))
   }
