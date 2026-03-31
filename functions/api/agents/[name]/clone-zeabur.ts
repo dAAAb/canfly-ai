@@ -346,12 +346,25 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   // 5. Patch config: update allowedOrigins, enable chatCompletions, remove Telegram
   const origins = [publicUrl, 'https://canfly.ai'].filter(Boolean)
   const patchScript = `const fs=require('fs'),J=require('json5'),f='/home/node/.openclaw/openclaw.json';try{const c=J.parse(fs.readFileSync(f,'utf8'));c.gateway.controlUi.allowedOrigins=${JSON.stringify(origins)};if(!c.gateway.http)c.gateway.http={endpoints:{chatCompletions:{enabled:true}}};else{c.gateway.http.endpoints=c.gateway.http.endpoints||{};c.gateway.http.endpoints.chatCompletions={enabled:true}};if(c.plugins&&c.plugins.entries){delete c.plugins.entries['@openclaw/plugin-telegram'];delete c.plugins.entries['plugin-telegram']};fs.writeFileSync(f,JSON.stringify(c,null,2));console.log('patched')}catch(e){console.log('err:'+e.message)}`
-  try {
-    await zeaburGQL(zeaburApiKey,
-      `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-      { cmd: ['node', '-e', patchScript] }
-    )
-  } catch { /* best effort */ }
+  // Try patch, verify it applied, retry if OpenClaw overwrote it
+  for (let patchAttempt = 0; patchAttempt < 3; patchAttempt++) {
+    try {
+      await zeaburGQL(zeaburApiKey,
+        `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
+        { cmd: ['node', '-e', patchScript] }
+      )
+      // Verify patch applied by reading back allowedOrigins
+      await new Promise(r => setTimeout(r, 2000))
+      const verify = await zeaburGQL(zeaburApiKey,
+        `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
+        { cmd: ['node', '-e', `try{const c=require('json5').parse(require('fs').readFileSync('/home/node/.openclaw/openclaw.json','utf8'));console.log(JSON.stringify(c.gateway?.controlUi?.allowedOrigins))}catch(e){console.log('err')}`] }
+      )
+      const readBack = ((verify.data?.executeCommand as { output?: string })?.output || '').trim()
+      if (readBack.includes(publicUrl)) break // patch stuck!
+      verifyErrors.push(`patchConfig attempt ${patchAttempt}: wrote but overwritten, readBack=${readBack}`)
+    } catch (e) { verifyErrors.push(`patchConfig attempt ${patchAttempt}: ${e}`) }
+    await new Promise(r => setTimeout(r, 3000))
+  }
 
   // 6. Inject new CANFLY env vars
   for (const [key, value] of [
