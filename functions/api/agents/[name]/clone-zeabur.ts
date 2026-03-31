@@ -288,18 +288,12 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   // Find cloned sandbox-browser for browser.cdpUrl update (multi-service projects)
   const sandboxBrowserService = proj?.services?.find(s => /sandbox-browser/i.test(s.name))
 
-  // 1. Set temp command so container stays alive for config patching
-  //    (OpenClaw crashes on start if allowedOrigins doesn't include the new domain)
-  await zeaburGQL(zeaburApiKey, `
-    mutation UpdateCmd($cmd: String!) { updateServiceCommand(serviceID: "${newServiceId}", command: $cmd) }
-  `, { cmd: 'sleep infinity' }).catch((e) => { verifyErrors.push(`setTempCmd: ${e}`) })
-
-  // 2. Start cloned service (runs "sleep infinity" — won't crash)
+  // 1. Start cloned service normally (works for thin lobsters where volume is cloned)
   await zeaburGQL(zeaburApiKey,
     `mutation{restartService(serviceID:"${newServiceId}",environmentID:"${newEnvId}")}`
   ).catch((e) => { verifyErrors.push(`restartService: ${e}`) })
 
-  // 3. Add new domain (can do while waiting for container)
+  // 2. Add new domain (can do while waiting for container)
   const domain = `${bakSlug}-canfly`
   const addDomainResult = await zeaburGQL(zeaburApiKey,
     `mutation{addDomain(serviceID:"${newServiceId}",environmentID:"${newEnvId}",domain:"${domain}",isGenerated:true){domain}}`
@@ -307,7 +301,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   const assignedDomain = (addDomainResult?.data?.addDomain as { domain?: string })?.domain
   const publicUrl = assignedDomain ? `https://${assignedDomain}` : `https://${domain}.zeabur.app`
 
-  // 4. Register new agent in Canfly DB (doesn't need service to be up)
+  // 3. Register new agent in Canfly DB (doesn't need service to be up)
   let finalAgentName = bakSlug
   let sfx = 0
   while (true) {
@@ -334,14 +328,17 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     apiKey, apiKey, pairingCode, expires,
   ).run()
 
-  // 5. Wait for container to be accessible (up to 60s)
+  // 4. Wait for service to be accessible (up to 60s)
+  //    Thin lobsters: OpenClaw starts normally (volume cloned, config exists)
+  //    Fat lobsters: OpenClaw may crash (no config) — handled in fallback below
   let serviceReady = false
+  let usedSleepFallback = false
   for (let attempt = 0; attempt < 12; attempt++) {
     await new Promise(r => setTimeout(r, 5000))
     try {
       const ping = await zeaburGQL(zeaburApiKey,
         `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-        { cmd: ['echo', 'READY'] }
+        { cmd: ['node', '-e', 'console.log("READY")'] }
       )
       if ((ping.data?.executeCommand as { output?: string })?.output?.includes('READY')) {
         serviceReady = true
@@ -350,15 +347,42 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     } catch { /* not ready yet */ }
   }
 
+  // Fallback for fat lobsters: if service didn't start, use sleep infinity to keep container alive
   if (!serviceReady) {
-    return json({ cloneId, status: 'cloning', message: 'Clone complete, waiting for container to start...' })
+    await zeaburGQL(zeaburApiKey, `
+      mutation UpdateCmd($cmd: String!) { updateServiceCommand(serviceID: "${newServiceId}", command: $cmd) }
+    `, { cmd: 'sleep infinity' }).catch((e) => { verifyErrors.push(`setTempCmd: ${e}`) })
+
+    await zeaburGQL(zeaburApiKey,
+      `mutation{restartService(serviceID:"${newServiceId}",environmentID:"${newEnvId}")}`
+    ).catch((e) => { verifyErrors.push(`restartFallback: ${e}`) })
+
+    // Wait for sleep container (up to 30s)
+    for (let attempt = 0; attempt < 6; attempt++) {
+      await new Promise(r => setTimeout(r, 5000))
+      try {
+        const ping = await zeaburGQL(zeaburApiKey,
+          `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
+          { cmd: ['echo', 'READY'] }
+        )
+        if ((ping.data?.executeCommand as { output?: string })?.output?.includes('READY')) {
+          serviceReady = true
+          usedSleepFallback = true
+          break
+        }
+      } catch { /* not ready yet */ }
+    }
   }
 
-  // 6. Patch config: update allowedOrigins, enable chatCompletions, remove Telegram, update browser cdpUrl
+  if (!serviceReady) {
+    return json({ cloneId, status: 'cloning', message: 'Clone complete, waiting for service to start...' })
+  }
+
+  // 5. Patch config: update allowedOrigins, enable chatCompletions, remove Telegram, update browser cdpUrl
   const origins = [publicUrl, 'https://canfly.ai'].filter(Boolean)
   const sandboxCdpUrl = sandboxBrowserService ? `http://service-${sandboxBrowserService._id}:9222` : ''
   const patchScript = [
-    `const fs=require('fs'),J=require('/app/node_modules/json5'),f='/home/node/.openclaw/openclaw.json'`,
+    `const fs=require('fs'),J=(()=>{try{return require('json5')}catch{return require('/app/node_modules/json5')}})(),f='/home/node/.openclaw/openclaw.json'`,
     `try{const c=J.parse(fs.readFileSync(f,'utf8'))`,
     `c.gateway.controlUi.allowedOrigins=${JSON.stringify(origins)}`,
     `if(!c.gateway.http)c.gateway.http={endpoints:{chatCompletions:{enabled:true}}}`,
@@ -390,10 +414,12 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     }
   }
 
-  // 8. Clear temp command and restart (now starts OpenClaw normally with patched config)
-  await zeaburGQL(zeaburApiKey, `
-    mutation UpdateCmd($cmd: String!) { updateServiceCommand(serviceID: "${newServiceId}", command: $cmd) }
-  `, { cmd: '' }).catch((e) => { verifyErrors.push(`resetCmd: ${e}`) })
+  // 8. Clear temp command (if used) and restart to apply patched config + env vars
+  if (usedSleepFallback) {
+    await zeaburGQL(zeaburApiKey, `
+      mutation UpdateCmd($cmd: String!) { updateServiceCommand(serviceID: "${newServiceId}", command: $cmd) }
+    `, { cmd: '' }).catch((e) => { verifyErrors.push(`resetCmd: ${e}`) })
+  }
 
   await zeaburGQL(zeaburApiKey,
     `mutation{restartService(serviceID:"${newServiceId}",environmentID:"${newEnvId}")}`
