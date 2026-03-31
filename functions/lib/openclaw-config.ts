@@ -46,8 +46,12 @@ export async function checkServiceReady(
   envId: string,
 ): Promise<boolean> {
   try {
-    const { output } = await execCommand(apiKey, serviceId, envId, ['node', '-e', 'console.log("READY")'])
-    return output.includes('READY')
+    // Check that the container is up AND the gateway port is listening
+    // Just running node proves the container is alive, but not that OpenClaw gateway has booted
+    const { output } = await execCommand(apiKey, serviceId, envId,
+      ['node', '-e', `const http=require('http');const r=http.get('http://127.0.0.1:18789/health',(res)=>{let d='';res.on('data',c=>d+=c);res.on('end',()=>console.log('READY:'+res.statusCode))});r.on('error',()=>console.log('NOT_READY'));r.setTimeout(3000,()=>{r.destroy();console.log('NOT_READY')})`],
+    )
+    return output.includes('READY:')
   } catch {
     return false
   }
@@ -163,27 +167,31 @@ export async function patchConfigViaCLI(
   envId: string,
   patchPayload: string,
 ): Promise<PatchResult> {
-  // Step 1: check if `openclaw` CLI exists
+  // Step 1: find the openclaw CLI binary
+  let cliBin = ''
   try {
-    const whichResult = await execCommand(apiKey, serviceId, envId,
-      ['which', 'openclaw'],
+    const findResult = await execCommand(apiKey, serviceId, envId,
+      ['sh', '-c', 'which openclaw 2>/dev/null || ls /home/node/.openclaw/bin/openclaw 2>/dev/null || ls /usr/local/bin/openclaw 2>/dev/null || echo "NOT_FOUND"'],
     )
-    if (!whichResult.output.includes('/openclaw')) {
-      throw new Error(`openclaw not found: ${whichResult.output.slice(0, 100)}`)
+    const path = findResult.output.trim().split('\n')[0]
+    if (path && !path.includes('NOT_FOUND')) {
+      cliBin = path
     }
-  } catch (e) {
+  } catch { /* not found */ }
+
+  if (!cliBin) {
     // CLI not available — go straight to fallback
     try {
       return await patchConfigViaFile(apiKey, serviceId, envId, patchPayload)
     } catch (fallbackError) {
-      return { success: false, method: 'fallback', error: `No CLI: ${e}; Fallback: ${fallbackError}` }
+      return { success: false, method: 'fallback', error: `No CLI found; Fallback: ${fallbackError}` }
     }
   }
 
   // Step 2: get current config hash
   try {
     const getResult = await execCommand(apiKey, serviceId, envId,
-      ['openclaw', 'gateway', 'call', 'config.get', '--json'],
+      [cliBin, 'gateway', 'call', 'config.get', '--json'],
     )
 
     const hashMatch = getResult.output.match(/"hash"\s*:\s*"([^"]+)"/)
@@ -195,7 +203,7 @@ export async function patchConfigViaCLI(
     // Step 3: call config.patch
     const patchParams = JSON.stringify({ raw: patchPayload, baseHash })
     const patchResult = await execCommand(apiKey, serviceId, envId,
-      ['openclaw', 'gateway', 'call', 'config.patch', '--params', patchParams],
+      [cliBin, 'gateway', 'call', 'config.patch', '--params', patchParams],
     )
 
     // Strict success check: must contain "ok" in output (not just exitCode)
@@ -230,7 +238,7 @@ async function verifyConfigPatched(
 ): Promise<boolean> {
   try {
     const { output } = await execCommand(apiKey, serviceId, envId,
-      ['node', '-e', `try{const c=require('json5').parse(require('fs').readFileSync('/home/node/.openclaw/openclaw.json','utf8'));console.log(JSON.stringify({hasDangerous:!!c.gateway?.controlUi?.dangerouslyAllowHostHeaderOriginFallback}))}catch(e){console.log('err:'+e.message)}`],
+      ['node', '-e', `const fs=require('fs'),f='/home/node/.openclaw/openclaw.json';function P(s){try{return JSON.parse(s)}catch{try{return require('json5').parse(s)}catch{return JSON.parse(s.replace(/\\/\\/.*$/gm,'').replace(/,\\s*([}\\]])/g,'$1'))}}};try{const c=P(fs.readFileSync(f,'utf8'));console.log(JSON.stringify({hasDangerous:!!c.gateway?.controlUi?.dangerouslyAllowHostHeaderOriginFallback}))}catch(e){console.log('err:'+e.message)}`],
     )
     return output.includes('"hasDangerous":false')
   } catch {
@@ -253,9 +261,10 @@ async function patchConfigViaFile(
   const origins = JSON.stringify(patch.gateway?.controlUi?.allowedOrigins || [])
   const defaultModel = patch.agents?.defaults?.model?.primary
 
-  // Build the node script (same approach as before, but with null-deletion semantics)
-  let script = `const fs=require('fs'),J=require('json5'),f='/home/node/.openclaw/openclaw.json';`
-  script += `try{const c=J.parse(fs.readFileSync(f,'utf8'));`
+  // Build the node script — try JSON.parse first, fall back to json5 if available
+  let script = `const fs=require('fs'),f='/home/node/.openclaw/openclaw.json';`
+  script += `function P(s){try{return JSON.parse(s)}catch{try{return require('json5').parse(s)}catch{return JSON.parse(s.replace(/\\/\\/.*$/gm,'').replace(/,\\s*([}\\]])/g,'$1'))}}};`
+  script += `try{const c=P(fs.readFileSync(f,'utf8'));`
   script += `c.gateway.controlUi.allowedOrigins=${origins};`
   script += `delete c.gateway.controlUi.dangerouslyAllowHostHeaderOriginFallback;`
   script += `delete c.gateway.controlUi.allowInsecureAuth;`
@@ -280,7 +289,7 @@ async function patchConfigViaFile(
   // (without this, the running gateway keeps the old config in memory)
   try {
     await execCommand(apiKey, serviceId, envId,
-      ['sh', '-c', 'kill -USR1 $(pgrep -f "openclaw") 2>/dev/null || true'],
+      ['sh', '-c', 'kill -USR1 $(pgrep -f "openclaw" | head -1) 2>/dev/null || kill -USR1 $(pgrep -f "node.*gateway" | head -1) 2>/dev/null || true'],
     )
   } catch { /* best effort — process may not be named 'openclaw' */ }
 
