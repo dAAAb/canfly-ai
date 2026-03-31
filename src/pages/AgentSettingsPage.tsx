@@ -71,6 +71,7 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
   const [cloneResult, setCloneResult] = useState<{ agentName?: string; displayName?: string; deployUrl?: string } | null>(null)
   const [cloneError, setCloneError] = useState<string | null>(null)
   const [cloneAttempt, setCloneAttempt] = useState<number>(0)
+  const [cloneCanRetry, setCloneCanRetry] = useState(false)
   const [showAllServers, setShowAllServers] = useState(false)
 
   const getAuthHeaders = useCallback(
@@ -138,6 +139,7 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
           setCloning(false)
         } else if (data.status === 'failed') {
           setCloneError((data.error as string) || 'Clone failed')
+          setCloneCanRetry(!!data.canRetry)
           setCloning(false)
         } else {
           setCloneMessage((data.message as string) || 'Cloning in progress...')
@@ -460,20 +462,51 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
                       <div className="flex items-center gap-2 text-red-400 text-sm">
                         <AlertCircle className="w-4 h-4 flex-shrink-0" /> {cloneError || 'Clone failed'}
                       </div>
-                      <button
-                        onClick={() => {
-                          setCloneId(null)
-                          setCloneStatus(null)
-                          setCloneError(null)
-                          setCloneMessage(null)
-                          setCloneAttempt(0)
-                          setCloning(false)
-                          setCloneResult(null)
-                        }}
-                        className="flex items-center gap-2 px-3 py-1.5 bg-red-600/20 text-red-300 text-xs rounded-lg border border-red-700/40 hover:bg-red-600/30 transition-colors"
-                      >
-                        {t('settings.cloneRetry', 'Retry')}
-                      </button>
+                      <div className="flex gap-2">
+                        {cloneCanRetry && (
+                          <button
+                            onClick={async () => {
+                              setCloneStatus(null)
+                              setCloneError(null)
+                              setCloneMessage(null)
+                              setCloneAttempt(0)
+                              setCloning(true)
+                              setCloneCanRetry(false)
+                              // Resume from failed phase
+                              try {
+                                const res = await fetch(
+                                  `/api/agents/${encodeURIComponent(agentName)}/clone-zeabur?cloneId=${cloneId}&retry=resume`,
+                                  { headers: await getAuthHeaders() },
+                                )
+                                const data = await res.json() as Record<string, unknown>
+                                setCloneStatus(data.status as string)
+                                setCloneMessage((data.message as string) || 'Retrying...')
+                              } catch {
+                                setCloneError('Retry failed')
+                                setCloning(false)
+                              }
+                            }}
+                            className="flex items-center gap-2 px-3 py-1.5 bg-purple-600/20 text-purple-300 text-xs rounded-lg border border-purple-700/40 hover:bg-purple-600/30 transition-colors"
+                          >
+                            {t('settings.cloneRetryResume', 'Retry Setup')}
+                          </button>
+                        )}
+                        <button
+                          onClick={() => {
+                            setCloneId(null)
+                            setCloneStatus(null)
+                            setCloneError(null)
+                            setCloneMessage(null)
+                            setCloneAttempt(0)
+                            setCloning(false)
+                            setCloneResult(null)
+                            setCloneCanRetry(false)
+                          }}
+                          className="flex items-center gap-2 px-3 py-1.5 bg-red-600/20 text-red-300 text-xs rounded-lg border border-red-700/40 hover:bg-red-600/30 transition-colors"
+                        >
+                          {t('settings.cloneRetryNew', 'New Backup')}
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     <>
