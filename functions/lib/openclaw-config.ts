@@ -163,37 +163,56 @@ export async function patchConfigViaCLI(
   envId: string,
   patchPayload: string,
 ): Promise<PatchResult> {
-  // Step 1: try `openclaw gateway call config.get --json` to get current hash
+  // Step 1: check if `openclaw` CLI exists
+  try {
+    const whichResult = await execCommand(apiKey, serviceId, envId,
+      ['which', 'openclaw'],
+    )
+    if (!whichResult.output.includes('/openclaw')) {
+      throw new Error(`openclaw not found: ${whichResult.output.slice(0, 100)}`)
+    }
+  } catch (e) {
+    // CLI not available — go straight to fallback
+    try {
+      return await patchConfigViaFile(apiKey, serviceId, envId, patchPayload)
+    } catch (fallbackError) {
+      return { success: false, method: 'fallback', error: `No CLI: ${e}; Fallback: ${fallbackError}` }
+    }
+  }
+
+  // Step 2: get current config hash
   try {
     const getResult = await execCommand(apiKey, serviceId, envId,
       ['openclaw', 'gateway', 'call', 'config.get', '--json'],
     )
 
-    // Parse hash from output — look for "hash" field in JSON output
     const hashMatch = getResult.output.match(/"hash"\s*:\s*"([^"]+)"/)
     if (!hashMatch) {
-      // CLI exists but couldn't parse output — try with node fallback
       throw new Error(`Could not parse config.get output: ${getResult.output.slice(0, 200)}`)
     }
     const baseHash = hashMatch[1]
 
-    // Step 2: call config.patch with the payload
+    // Step 3: call config.patch
     const patchParams = JSON.stringify({ raw: patchPayload, baseHash })
     const patchResult = await execCommand(apiKey, serviceId, envId,
       ['openclaw', 'gateway', 'call', 'config.patch', '--params', patchParams],
     )
 
-    // Check for success
-    if (patchResult.output.includes('"ok"') || patchResult.output.includes('true') || patchResult.exitCode === 0) {
-      return { success: true, method: 'cli' }
+    // Strict success check: must contain "ok" in output (not just exitCode)
+    if (patchResult.output.includes('"ok"') || patchResult.output.includes('"ok":true')) {
+      // Step 4: verify — read back config to confirm flags are removed
+      const verified = await verifyConfigPatched(apiKey, serviceId, envId)
+      if (verified) {
+        return { success: true, method: 'cli' }
+      }
+      return { success: false, method: 'cli', error: 'config.patch reported ok but verification failed — dangerous flags still present' }
     }
 
-    return { success: false, method: 'cli', error: `config.patch returned: ${patchResult.output.slice(0, 300)}` }
+    return { success: false, method: 'cli', error: `config.patch output: ${patchResult.output.slice(0, 300)}` }
   } catch (cliError) {
-    // CLI not available or failed — fallback to fs.writeFileSync (no restart after)
+    // CLI call failed — fallback to file write
     try {
-      const fallbackResult = await patchConfigViaFile(apiKey, serviceId, envId, patchPayload)
-      return fallbackResult
+      return await patchConfigViaFile(apiKey, serviceId, envId, patchPayload)
     } catch (fallbackError) {
       return { success: false, method: 'fallback', error: `CLI: ${cliError}; Fallback: ${fallbackError}` }
     }
@@ -201,9 +220,27 @@ export async function patchConfigViaCLI(
 }
 
 /**
- * Fallback: patch config by directly writing openclaw.json.
- * Does NOT trigger a restart (caller should NOT restart, or the entrypoint
- * will overwrite the file).
+ * Verify config was patched: read back openclaw.json and check that
+ * dangerouslyAllowHostHeaderOriginFallback is absent.
+ */
+async function verifyConfigPatched(
+  apiKey: string,
+  serviceId: string,
+  envId: string,
+): Promise<boolean> {
+  try {
+    const { output } = await execCommand(apiKey, serviceId, envId,
+      ['node', '-e', `try{const c=require('json5').parse(require('fs').readFileSync('/home/node/.openclaw/openclaw.json','utf8'));console.log(JSON.stringify({hasDangerous:!!c.gateway?.controlUi?.dangerouslyAllowHostHeaderOriginFallback}))}catch(e){console.log('err:'+e.message)}`],
+    )
+    return output.includes('"hasDangerous":false')
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Fallback: patch config by directly writing openclaw.json, then send SIGUSR1
+ * to the gateway process to trigger an in-process config reload.
  */
 async function patchConfigViaFile(
   apiKey: string,
@@ -235,10 +272,25 @@ async function patchConfigViaFile(
 
   const { output } = await execCommand(apiKey, serviceId, envId, ['node', '-e', script])
 
-  if (output.includes('patched')) {
+  if (!output.includes('patched')) {
+    return { success: false, method: 'fallback', error: `File patch output: ${output.slice(0, 200)}` }
+  }
+
+  // Send SIGUSR1 to openclaw gateway to trigger in-process config reload
+  // (without this, the running gateway keeps the old config in memory)
+  try {
+    await execCommand(apiKey, serviceId, envId,
+      ['sh', '-c', 'kill -USR1 $(pgrep -f "openclaw") 2>/dev/null || true'],
+    )
+  } catch { /* best effort — process may not be named 'openclaw' */ }
+
+  // Wait a moment for reload, then verify
+  await new Promise(r => setTimeout(r, 3000))
+  const verified = await verifyConfigPatched(apiKey, serviceId, envId)
+  if (verified) {
     return { success: true, method: 'fallback' }
   }
-  return { success: false, method: 'fallback', error: `File patch output: ${output.slice(0, 200)}` }
+  return { success: false, method: 'fallback', error: 'File patched + SIGUSR1 sent but verification failed' }
 }
 
 // ── Phase timeout check ───────────────────────────────────
