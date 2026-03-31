@@ -348,12 +348,13 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     return json({ cloneId, status: 'cloning', message: 'Clone complete, waiting for service to start...' })
   }
 
-  // 5. Wait for config file to be ready (Zeabur may still be writing cloned files)
+  // 5. Wait for config file to be fully written (Zeabur may still be syncing cloned files)
+  //    Verify the file has actual content (gateway key), not just a partial write
   for (let attempt = 0; attempt < 6; attempt++) {
     try {
       const check = await zeaburGQL(zeaburApiKey,
         `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-        { cmd: ['node', '-e', 'try{require("json5").parse(require("fs").readFileSync("/home/node/.openclaw/openclaw.json","utf8"));console.log("CONFIG_OK")}catch(e){console.log("NOT_READY:"+e.message)}'] }
+        { cmd: ['node', '-e', 'try{const c=require("json5").parse(require("fs").readFileSync("/home/node/.openclaw/openclaw.json","utf8"));if(c.gateway)console.log("CONFIG_OK");else console.log("NOT_READY:no gateway key")}catch(e){console.log("NOT_READY:"+e.message)}'] }
       )
       if ((check.data?.executeCommand as { output?: string })?.output?.includes('CONFIG_OK')) break
     } catch { /* not ready */ }
@@ -402,10 +403,10 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     `mutation{restartService(serviceID:"${newServiceId}",environmentID:"${newEnvId}")}`
   )
 
-  // 8. Verify: wait for chat endpoint + read fresh gateway token
+  // 8. Verify: wait for chat endpoint to actually respond before declaring success
   let chatReady = false
   let newGatewayToken = ''
-  for (let attempt = 0; attempt < 5; attempt++) {
+  for (let attempt = 0; attempt < 8; attempt++) {
     await new Promise(r => setTimeout(r, 5000))
     try {
       // Read gateway token
