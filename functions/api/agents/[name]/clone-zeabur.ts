@@ -1,10 +1,14 @@
 /**
  * POST /api/agents/:name/clone-zeabur — Clone lobster to another server (backup)
- * GET  /api/agents/:name/clone-zeabur?cloneId=xxx — Poll clone status
+ * GET  /api/agents/:name/clone-zeabur?cloneId=xxx — Poll clone status (multi-phase)
  *
  * PRINCIPLE: Source lobster is NEVER modified. All writes target the NEW project only.
  *
  * Auth: agent owner (Privy JWT / X-Wallet-Address)
+ *
+ * Phase flow:
+ *   cloning → setting_up_init → setting_up_wait → setting_up_config → running
+ *                                                                    → failed
  */
 import {
   type Env,
@@ -18,38 +22,39 @@ import {
 } from '../../community/_helpers'
 import { authenticateRequest } from '../../_auth'
 import { importKey, encrypt, decrypt } from '../../../lib/crypto'
-
-const ZEABUR_GRAPHQL = 'https://api.zeabur.com/graphql'
+import {
+  zeaburGQL,
+  execCommand,
+  checkServiceReady,
+  readGatewayToken,
+  injectCanflyEnvVars,
+  buildConfigPatchPayload,
+  patchConfigViaCLI,
+  isPhaseTimedOut,
+  generateUUID,
+  findOpenClawService,
+} from '../../../lib/openclaw-config'
 
 interface CloneBody {
   targetServerNodeId: string
 }
 
-function generateUUID(): string {
-  const bytes = new Uint8Array(16)
-  crypto.getRandomValues(bytes)
-  bytes[6] = (bytes[6] & 0x0f) | 0x40
-  bytes[8] = (bytes[8] & 0x3f) | 0x80
-  const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')
-  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`
-}
-
-async function zeaburGQL(
-  apiKey: string,
-  query: string,
-  variables: Record<string, unknown> = {}
-): Promise<{ data?: Record<string, unknown>; errors?: Array<{ message: string }> }> {
-  const res = await fetch(ZEABUR_GRAPHQL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-    body: JSON.stringify({ query, variables }),
-  })
-  return res.json() as Promise<{ data?: Record<string, unknown>; errors?: Array<{ message: string }> }>
-}
-
 function dateSuffix(): string {
   const d = new Date()
   return `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`
+}
+
+interface DeploymentRow {
+  id: string
+  owner_username: string
+  zeabur_project_id: string
+  zeabur_service_id: string | null
+  status: string
+  deploy_url: string | null
+  agent_name: string | null
+  metadata: string
+  phase_data: string | null
+  phase_started_at: string | null
 }
 
 export const onRequestOptions: PagesFunction<Env> = () => handleOptions()
@@ -124,8 +129,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   await env.DB.prepare(
     `INSERT INTO v3_zeabur_deployments
       (id, owner_username, zeabur_project_id, zeabur_service_id, zeabur_environment,
-       status, metadata)
-     VALUES (?1, ?2, ?3, NULL, 'production', 'cloning', ?4)`
+       status, metadata, phase_started_at)
+     VALUES (?1, ?2, ?3, NULL, 'production', 'cloning', ?4, datetime('now'))`
   ).bind(
     deploymentId, auth.username, newProjectId,
     JSON.stringify({
@@ -154,7 +159,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   return json({ cloneId: deploymentId, newProjectId, status: 'cloning', bakSlug, bakDisplayName }, 201)
 }
 
-// ── GET: Poll clone status ─────────────────────────────────
+// ── GET: Poll clone status (multi-phase state machine) ────
 export const onRequestGet: PagesFunction<Env> = async ({ env, params, request }) => {
   const agentName = params.name as string
 
@@ -186,32 +191,75 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   }
 
   const deployment = await env.DB.prepare(
-    `SELECT id, owner_username, zeabur_project_id, status, deploy_url, agent_name, metadata
+    `SELECT id, owner_username, zeabur_project_id, zeabur_service_id, status,
+            deploy_url, agent_name, metadata, phase_data, phase_started_at
      FROM v3_zeabur_deployments WHERE id = ?1`
-  ).bind(cloneId).first<{
-    id: string; owner_username: string; zeabur_project_id: string
-    status: string; deploy_url: string | null; agent_name: string | null; metadata: string
-  }>()
+  ).bind(cloneId).first<DeploymentRow>()
   if (!deployment) return errorResponse('Clone deployment not found', 404)
   if (deployment.owner_username !== auth.username) return errorResponse('Not authorized', 403)
 
-  // Already done or in setup?
-  if (['running', 'failed', 'setting_up'].includes(deployment.status)) {
+  // Terminal states — return immediately
+  if (deployment.status === 'running' || deployment.status === 'failed') {
     return json({
       cloneId: deployment.id,
-      status: deployment.status === 'setting_up' ? 'cloning' : deployment.status,
+      status: deployment.status,
       agentName: deployment.agent_name,
       deployUrl: deployment.deploy_url,
-      message: deployment.status === 'setting_up' ? 'Setting up cloned service...' : undefined,
     })
   }
 
+  // Legacy 'setting_up' — mark failed, ask user to retry
+  if (deployment.status === 'setting_up') {
+    await env.DB.prepare(
+      `UPDATE v3_zeabur_deployments SET status = 'failed', error_message = '系統已升級，請重新 clone', updated_at = datetime('now') WHERE id = ?1`
+    ).bind(cloneId).run()
+    return json({ cloneId, status: 'failed', error: '系統已升級，請重新 clone' })
+  }
+
+  // Phase timeout check (applies to all in-progress phases)
+  if (isPhaseTimedOut(deployment.phase_started_at)) {
+    await env.DB.prepare(
+      `UPDATE v3_zeabur_deployments SET status = 'failed', error_message = 'Setup timed out after 15 minutes', updated_at = datetime('now') WHERE id = ?1`
+    ).bind(cloneId).run()
+    return json({ cloneId, status: 'failed', error: 'Setup timed out after 15 minutes' })
+  }
+
+  // Decrypt API key (guard empty string to avoid decrypt throw)
   const metadata = JSON.parse(deployment.metadata || '{}')
   const cryptoKey = env.ENCRYPTION_KEY ? await importKey(env.ENCRYPTION_KEY) : null
-  const zeaburApiKey = cryptoKey ? await decrypt(metadata.zeaburApiKey || '', cryptoKey) : metadata.zeaburApiKey
+  const rawKey = metadata.zeaburApiKey || ''
+  const zeaburApiKey = cryptoKey && rawKey ? await decrypt(rawKey, cryptoKey) : rawKey
   if (!zeaburApiKey) return errorResponse('Missing Zeabur API key', 500)
 
-  // Poll Zeabur clone status
+  const phaseData = JSON.parse(deployment.phase_data || '{}')
+
+  // ── Phase dispatcher ──
+  switch (deployment.status) {
+    case 'cloning':
+      return handleCloning(env, deployment, zeaburApiKey, metadata, phaseData, cloneId, agentName)
+    case 'setting_up_init':
+    case 'setting_up_init_locked':
+      return handleInit(env, deployment, zeaburApiKey, metadata, phaseData, cryptoKey, cloneId, auth.username, agentName)
+    case 'setting_up_wait':
+      return handleWait(env, deployment, zeaburApiKey, phaseData, cloneId)
+    case 'setting_up_config':
+      return handleConfig(env, deployment, zeaburApiKey, phaseData, cryptoKey, cloneId, auth.username, agentName, metadata)
+    default:
+      return json({ cloneId, status: deployment.status, message: 'Unknown phase' })
+  }
+}
+
+// ── Phase: cloning ────────────────────────────────────────
+// Poll Zeabur cloneProjectStatus. On completion, find service/env IDs and transition.
+async function handleCloning(
+  env: Env,
+  deployment: DeploymentRow,
+  zeaburApiKey: string,
+  metadata: Record<string, unknown>,
+  phaseData: Record<string, unknown>,
+  cloneId: string,
+  agentName: string,
+) {
   const statusResult = await zeaburGQL(zeaburApiKey, `
     query { cloneProjectStatus(newProjectId: "${deployment.zeabur_project_id}") {
       newProjectId
@@ -243,11 +291,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     return json({ cloneId, status: 'cloning', message: lastEvent?.message || 'Cloning in progress...' })
   }
 
-  // ── Clone complete — run post-clone setup (ONLY on new project) ──
-
+  // ── Clone complete — find service/env IDs and transition ──
   const newProjectId = deployment.zeabur_project_id
-
-  // Get new project's service + env
   const projResult = await zeaburGQL(zeaburApiKey, `
     query { project(_id: "${newProjectId}") {
       services { _id name }
@@ -259,8 +304,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     environments: Array<{ _id: string; name: string }>
   } | null
 
-  const openClawService = proj?.services?.find(s => s.name === 'OpenClaw')
-    || proj?.services?.find(s => /openclaw/i.test(s.name) && !/sandbox|browser|devbox|wings/i.test(s.name))
+  const openClawService = findOpenClawService(proj?.services || [])
   const newServiceId = openClawService?._id
   const newEnvId = (proj?.environments?.find(e => e.name === 'production') || proj?.environments?.[0])?._id
 
@@ -272,31 +316,67 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     return json({ cloneId, status: 'failed', error: `OpenClaw service not found. Found: ${serviceNames}` })
   }
 
-  // Lock: mark as 'setting_up' to prevent concurrent polls from re-running setup
-  await env.DB.prepare(
-    `UPDATE v3_zeabur_deployments SET status = 'setting_up', zeabur_service_id = ?1, updated_at = datetime('now') WHERE id = ?2`
-  ).bind(newServiceId, cloneId).run()
+  // Atomic transition: cloning → setting_up_init (optimistic lock)
+  const transition = await env.DB.prepare(
+    `UPDATE v3_zeabur_deployments
+     SET status = 'setting_up_init', zeabur_service_id = ?1,
+         phase_data = ?2, phase_started_at = datetime('now'), updated_at = datetime('now')
+     WHERE id = ?3 AND status = 'cloning'`
+  ).bind(
+    newServiceId,
+    JSON.stringify({ ...phaseData, newServiceId, newEnvId }),
+    cloneId,
+  ).run()
 
-  // ── Post-clone setup (ONLY on new project) ──
+  if (!transition.meta?.changes) {
+    // Another poll already advanced — return current status
+    return json({ cloneId, status: 'cloning', message: 'Transitioning to setup...' })
+  }
 
-  const verifyErrors: string[] = []
-  const bakSlug = metadata.bakSlug || `${toAgentSlug(agentName)}-bak-${dateSuffix()}`
-  const bakDisplayName = metadata.bakDisplayName || `${agentName} BAK ${dateSuffix()}`
+  return json({ cloneId, status: 'setting_up_init', message: 'Clone complete. Configuring service...' })
+}
+
+// ── Phase: setting_up_init ────────────────────────────────
+// Fast API calls: start service, add domain, register agent, inject env vars, final restart.
+async function handleInit(
+  env: Env,
+  deployment: DeploymentRow,
+  zeaburApiKey: string,
+  metadata: Record<string, unknown>,
+  phaseData: Record<string, unknown>,
+  cryptoKey: CryptoKey | null,
+  cloneId: string,
+  username: string,
+  agentName: string,
+) {
+  // Optimistic lock: only one poll can run init
+  const lock = await env.DB.prepare(
+    `UPDATE v3_zeabur_deployments SET status = 'setting_up_init_locked', updated_at = datetime('now')
+     WHERE id = ?1 AND status = 'setting_up_init'`
+  ).bind(cloneId).run()
+  if (!lock.meta?.changes) {
+    return json({ cloneId, status: 'setting_up_init', message: 'Configuring service...' })
+  }
+
+  const newServiceId = phaseData.newServiceId as string
+  const newEnvId = phaseData.newEnvId as string
+  const bakSlug = (metadata.bakSlug as string) || `${toAgentSlug(agentName)}-bak-${dateSuffix()}`
+  const bakDisplayName = (metadata.bakDisplayName as string) || `${agentName} BAK ${dateSuffix()}`
 
   // 1. Start cloned service (cloneProject doesn't auto-start)
   await zeaburGQL(zeaburApiKey,
-    `mutation{restartService(serviceID:"${newServiceId}",environmentID:"${newEnvId}")}`
+    `mutation{restartService(serviceID:"${newServiceId}",environmentID:"${newEnvId}")}`,
   ).catch(() => {})
 
-  // 2. Add new domain (can do while service is starting)
+  // 2. Add domain (can do while service is starting)
   const domain = `${bakSlug}-canfly`
   const addDomainResult = await zeaburGQL(zeaburApiKey,
-    `mutation{addDomain(serviceID:"${newServiceId}",environmentID:"${newEnvId}",domain:"${domain}",isGenerated:true){domain}}`
+    `mutation{addDomain(serviceID:"${newServiceId}",environmentID:"${newEnvId}",domain:"${domain}",isGenerated:true){domain}}`,
   ).catch(() => null)
   const assignedDomain = (addDomainResult?.data?.addDomain as { domain?: string })?.domain
   const publicUrl = assignedDomain ? `https://${assignedDomain}` : `https://${domain}.zeabur.app`
 
-  // 3. Register new agent in Canfly DB (doesn't need service to be up)
+  // 3. Register new agent in Canfly DB
   let finalAgentName = bakSlug
   let sfx = 0
   while (true) {
@@ -318,155 +398,210 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
              'zeabur-cloud', '{}', 1, ?5, 'registered',
              ?6, ?7, ?8, 'zeabur_clone')`
   ).bind(
-    finalAgentName, bakDisplayName, auth.username,
+    finalAgentName, bakDisplayName, username,
     `Backup of ${agentName}`,
     apiKey, apiKey, pairingCode, expires,
   ).run()
 
-  // 4. Wait for service to be accessible (up to 60s)
-  let serviceReady = false
-  for (let attempt = 0; attempt < 12; attempt++) {
-    await new Promise(r => setTimeout(r, 5000))
-    try {
-      const ping = await zeaburGQL(zeaburApiKey,
-        `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-        { cmd: ['node', '-e', 'console.log("READY")'] }
-      )
-      if ((ping.data?.executeCommand as { output?: string })?.output?.includes('READY')) {
-        serviceReady = true
-        break
-      }
-    } catch { /* not ready yet */ }
-  }
+  // 4. Inject CANFLY env vars
+  await injectCanflyEnvVars(zeaburApiKey, newServiceId, newEnvId, {
+    CANFLY_API_KEY: apiKey,
+    CANFLY_AGENT_NAME: finalAgentName,
+    CANFLY_API_URL: 'https://canfly.ai/api',
+  })
 
-  if (!serviceReady) {
-    return json({ cloneId, status: 'cloning', message: 'Clone complete, waiting for service to start...' })
-  }
-
-  // 5. Patch config: update allowedOrigins, enable chatCompletions, remove Telegram
-  const origins = [publicUrl, 'https://canfly.ai'].filter(Boolean)
-  const patchScript = `const fs=require('fs'),J=require('json5'),f='/home/node/.openclaw/openclaw.json';try{const c=J.parse(fs.readFileSync(f,'utf8'));c.gateway.controlUi.allowedOrigins=${JSON.stringify(origins)};delete c.gateway.controlUi.dangerouslyAllowHostHeaderOriginFallback;delete c.gateway.controlUi.allowInsecureAuth;delete c.gateway.controlUi.dangerouslyDisableDeviceAuth;if(!c.gateway.http)c.gateway.http={endpoints:{chatCompletions:{enabled:true}}};else{c.gateway.http.endpoints=c.gateway.http.endpoints||{};c.gateway.http.endpoints.chatCompletions={enabled:true}};if(c.plugins&&c.plugins.entries){delete c.plugins.entries['@openclaw/plugin-telegram'];delete c.plugins.entries['plugin-telegram']};if(c.channels&&c.channels.telegram){delete c.channels.telegram};fs.writeFileSync(f,JSON.stringify(c,null,2));console.log('patched')}catch(e){console.log('err:'+e.message)}`
-  // Try patch, verify it applied, retry if OpenClaw overwrote it
-  for (let patchAttempt = 0; patchAttempt < 3; patchAttempt++) {
-    try {
-      await zeaburGQL(zeaburApiKey,
-        `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-        { cmd: ['node', '-e', patchScript] }
-      )
-      // Verify patch applied by reading back allowedOrigins
-      await new Promise(r => setTimeout(r, 2000))
-      const verify = await zeaburGQL(zeaburApiKey,
-        `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-        { cmd: ['node', '-e', `try{const c=require('json5').parse(require('fs').readFileSync('/home/node/.openclaw/openclaw.json','utf8'));console.log(JSON.stringify(c.gateway?.controlUi?.allowedOrigins))}catch(e){console.log('err')}`] }
-      )
-      const readBack = ((verify.data?.executeCommand as { output?: string })?.output || '').trim()
-      if (readBack.includes(publicUrl)) break // patch stuck!
-      verifyErrors.push(`patchConfig attempt ${patchAttempt}: wrote but overwritten, readBack=${readBack}`)
-    } catch (e) { verifyErrors.push(`patchConfig attempt ${patchAttempt}: ${e}`) }
-    await new Promise(r => setTimeout(r, 3000))
-  }
-
-  // 6. Inject new CANFLY env vars
-  for (const [key, value] of [
-    ['CANFLY_API_KEY', apiKey],
-    ['CANFLY_AGENT_NAME', finalAgentName],
-    ['CANFLY_API_URL', 'https://canfly.ai/api'],
-  ] as const) {
-    const cr = await zeaburGQL(zeaburApiKey,
-      `mutation{createEnvironmentVariable(serviceID:"${newServiceId}",environmentID:"${newEnvId}",key:"${key}",value:"${value}"){key}}`
-    ).catch(() => null)
-    if (cr?.errors?.length) {
-      await zeaburGQL(zeaburApiKey,
-        `mutation{updateSingleEnvironmentVariable(serviceID:"${newServiceId}",environmentID:"${newEnvId}",oldKey:"${key}",newKey:"${key}",value:"${value}"){key}}`
-      ).catch(() => {})
-    }
-  }
-
-  // 7. Restart to apply config + env vars
+  // 5. Final container restart (applies env vars — this is the LAST restart)
   await zeaburGQL(zeaburApiKey,
-    `mutation{restartService(serviceID:"${newServiceId}",environmentID:"${newEnvId}")}`
+    `mutation{restartService(serviceID:"${newServiceId}",environmentID:"${newEnvId}")}`,
   )
 
-  // 8. Verify: wait for chat endpoint + read fresh gateway token
-  let chatReady = false
-  let newGatewayToken = ''
-  for (let attempt = 0; attempt < 5; attempt++) {
-    await new Promise(r => setTimeout(r, 5000))
-    try {
-      // Read gateway token
-      if (!newGatewayToken) {
-        const tokenResult = await zeaburGQL(zeaburApiKey,
-          `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-          { cmd: ['node', '-e', 'console.log(process.env.OPENCLAW_GATEWAY_TOKEN || "")'] }
-        )
-        newGatewayToken = ((tokenResult.data?.executeCommand as { output?: string })?.output || '').replace(/[\r\n\s]+$/g, '')
-      }
-      // Check chat endpoint
-      const testRes = await fetch(`${publicUrl}/v1/chat/completions`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...(newGatewayToken ? { 'Authorization': `Bearer ${newGatewayToken}` } : {}) },
-        body: JSON.stringify({ model: 'openclaw', messages: [{ role: 'user', content: 'ping' }], stream: false }),
+  // 6. Transition: setting_up_init → setting_up_wait
+  const encApiKey = cryptoKey ? await encrypt(apiKey, cryptoKey) : apiKey
+  await env.DB.prepare(
+    `UPDATE v3_zeabur_deployments
+     SET status = 'setting_up_wait', agent_name = ?1,
+         phase_data = ?2, phase_started_at = datetime('now'), updated_at = datetime('now')
+     WHERE id = ?3`
+  ).bind(
+    finalAgentName,
+    JSON.stringify({
+      ...phaseData,
+      publicUrl,
+      apiKey: encApiKey,
+      finalAgentName,
+      bakDisplayName,
+      waitAttempts: 0,
+    }),
+    cloneId,
+  ).run()
+
+  return json({
+    cloneId,
+    status: 'setting_up_wait',
+    message: 'Service configured. Waiting for boot...',
+  })
+}
+
+// ── Phase: setting_up_wait ────────────────────────────────
+// Single readiness check per poll. Max 24 attempts (~120s at 5s interval).
+async function handleWait(
+  env: Env,
+  deployment: DeploymentRow,
+  zeaburApiKey: string,
+  phaseData: Record<string, unknown>,
+  cloneId: string,
+) {
+  const newServiceId = phaseData.newServiceId as string
+  const newEnvId = phaseData.newEnvId as string
+  const waitAttempts = (phaseData.waitAttempts as number) || 0
+
+  // Check if service is ready
+  const ready = await checkServiceReady(zeaburApiKey, newServiceId, newEnvId)
+
+  if (!ready) {
+    const newAttempts = waitAttempts + 1
+
+    if (newAttempts > 24) {
+      await env.DB.prepare(
+        `UPDATE v3_zeabur_deployments SET status = 'failed', error_message = 'Service did not start within 120 seconds', updated_at = datetime('now') WHERE id = ?1`
+      ).bind(cloneId).run()
+      return json({ cloneId, status: 'failed', error: 'Service did not start within 120 seconds' })
+    }
+
+    // Update attempt count
+    await env.DB.prepare(
+      `UPDATE v3_zeabur_deployments SET phase_data = ?1, updated_at = datetime('now') WHERE id = ?2`
+    ).bind(JSON.stringify({ ...phaseData, waitAttempts: newAttempts }), cloneId).run()
+
+    return json({
+      cloneId,
+      status: 'setting_up_wait',
+      message: `Waiting for service to start...`,
+      attempt: newAttempts,
+    })
+  }
+
+  // Ready → transition to setting_up_config
+  await env.DB.prepare(
+    `UPDATE v3_zeabur_deployments
+     SET status = 'setting_up_config', phase_data = ?1, phase_started_at = datetime('now'), updated_at = datetime('now')
+     WHERE id = ?2 AND status = 'setting_up_wait'`
+  ).bind(JSON.stringify({ ...phaseData, configRetryCount: 0 }), cloneId).run()
+
+  return json({
+    cloneId,
+    status: 'setting_up_config',
+    message: 'Service is up. Applying security settings...',
+  })
+}
+
+// ── Phase: setting_up_config ──────────────────────────────
+// Patch config via OpenClaw CLI, read gateway token, verify chat, finalize.
+async function handleConfig(
+  env: Env,
+  deployment: DeploymentRow,
+  zeaburApiKey: string,
+  phaseData: Record<string, unknown>,
+  cryptoKey: CryptoKey | null,
+  cloneId: string,
+  username: string,
+  agentName: string,
+  metadata: Record<string, unknown>,
+) {
+  const newServiceId = phaseData.newServiceId as string
+  const newEnvId = phaseData.newEnvId as string
+  const publicUrl = phaseData.publicUrl as string
+  const finalAgentName = phaseData.finalAgentName as string
+  const bakDisplayName = phaseData.bakDisplayName as string
+  const configRetryCount = (phaseData.configRetryCount as number) || 0
+
+  // 1. Patch config (after final restart — entrypoint already ran, gateway is up)
+  const patchPayload = buildConfigPatchPayload(publicUrl)
+  const patchResult = await patchConfigViaCLI(zeaburApiKey, newServiceId, newEnvId, patchPayload)
+
+  if (!patchResult.success) {
+    if (configRetryCount < 3) {
+      // Retry on next poll
+      await env.DB.prepare(
+        `UPDATE v3_zeabur_deployments SET phase_data = ?1, updated_at = datetime('now') WHERE id = ?2`
+      ).bind(JSON.stringify({ ...phaseData, configRetryCount: configRetryCount + 1 }), cloneId).run()
+      return json({
+        cloneId,
+        status: 'setting_up_config',
+        message: `Config patch attempt ${configRetryCount + 1}/3 failed, retrying...`,
+        configRetryCount: configRetryCount + 1,
       })
-      if (testRes.status === 200 || testRes.status === 401) { chatReady = true; break }
-    } catch { /* not ready */ }
+    }
+    // Max retries — log but continue (config patch is best-effort, service still runs)
+    await env.DB.prepare(
+      `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
+       VALUES ('agent', ?1, 'config_patch_failed', ?2)`
+    ).bind(finalAgentName, JSON.stringify({
+      method: patchResult.method,
+      error: patchResult.error,
+      configRetryCount,
+    })).run()
   }
 
-  // Fallback: re-patch config if chat not ready
-  if (!chatReady) {
-    try {
-      await zeaburGQL(zeaburApiKey,
-        `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-        { cmd: ['node', '-e', patchScript] }
-      )
-      await zeaburGQL(zeaburApiKey,
-        `mutation{restartService(serviceID:"${newServiceId}",environmentID:"${newEnvId}")}`
-      )
-    } catch { /* best effort */ }
-  }
+  // 2. Read gateway token
+  const newGatewayToken = await readGatewayToken(zeaburApiKey, newServiceId, newEnvId)
 
-  // 9. Re-read gateway token (may have changed after restart)
+  // 3. Single-shot chat endpoint verify
+  let chatReady = false
   try {
-    const tokenResult = await zeaburGQL(zeaburApiKey,
-      `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${newServiceId}",environmentID:"${newEnvId}",command:$cmd){exitCode output}}`,
-      { cmd: ['node', '-e', 'console.log(process.env.OPENCLAW_GATEWAY_TOKEN)'] }
-    )
-    const freshToken = ((tokenResult.data?.executeCommand as { output?: string })?.output || '').replace(/[\r\n\s]+$/g, '')
-    if (freshToken) newGatewayToken = freshToken
-  } catch { /* keep previous token */ }
+    const testRes = await fetch(`${publicUrl}/v1/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(newGatewayToken ? { Authorization: `Bearer ${newGatewayToken}` } : {}),
+      },
+      body: JSON.stringify({ model: 'openclaw', messages: [{ role: 'user', content: 'ping' }], stream: false }),
+    })
+    chatReady = testRes.status === 200 || testRes.status === 401
+  } catch { /* not ready yet */ }
 
-  // 8. Store agent_card_override with encrypted gateway token
-  const encToken = cryptoKey && newGatewayToken ? await encrypt(newGatewayToken, cryptoKey) : newGatewayToken
-  const cardOverride = JSON.stringify({ url: publicUrl, gateway_token: encToken })
-  await env.DB.prepare(
-    'UPDATE agents SET agent_card_override = ?1 WHERE name = ?2'
-  ).bind(cardOverride, finalAgentName).run()
+  // 4. Store encrypted gateway token in agent_card_override
+  if (newGatewayToken) {
+    const encToken = cryptoKey ? await encrypt(newGatewayToken, cryptoKey) : newGatewayToken
+    const cardOverride = JSON.stringify({ url: publicUrl, gateway_token: encToken })
+    await env.DB.prepare(
+      'UPDATE agents SET agent_card_override = ?1 WHERE name = ?2'
+    ).bind(cardOverride, finalAgentName).run()
+  }
 
-  // 9. Update deployment record
-  await env.DB.prepare(
+  // 5. Update deployment → running (optimistic lock)
+  const runTransition = await env.DB.prepare(
     `UPDATE v3_zeabur_deployments SET
-      status = 'running', agent_name = ?1, deploy_url = ?2, updated_at = datetime('now')
-    WHERE id = ?3`
-  ).bind(finalAgentName, publicUrl, cloneId).run()
+      status = 'running', deploy_url = ?1, updated_at = datetime('now')
+    WHERE id = ?2 AND status = 'setting_up_config'`
+  ).bind(publicUrl, cloneId).run()
 
-  // 10. Create ownership record
+  if (!runTransition.meta?.changes) {
+    // Another poll already completed — just return current state
+    return json({ cloneId, status: 'running', agentName: finalAgentName, deployUrl: publicUrl })
+  }
+
+  // 6. Create ownership record
   const ownershipId = generateUUID()
   await env.DB.prepare(
     `INSERT OR IGNORE INTO v3_ownership_records (id, agent_name, owner_type, owner_id, ownership_level, granted_by)
      VALUES (?1, ?2, 'user', ?3, 'full', 'zeabur_clone')`
-  ).bind(ownershipId, finalAgentName, auth.username).run()
+  ).bind(ownershipId, finalAgentName, username).run()
 
-  // 11. Activity log
+  // 7. Activity log
   await env.DB.prepare(
     `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
      VALUES ('agent', ?1, 'zeabur_clone_completed', ?2)`
   ).bind(finalAgentName, JSON.stringify({
-    owner: auth.username,
+    owner: username,
     sourceAgentName: agentName,
     sourceProjectId: metadata.sourceProjectId,
-    newProjectId,
+    newProjectId: deployment.zeabur_project_id,
     deployUrl: publicUrl,
     chatReady,
-    verifyErrors: verifyErrors.length ? verifyErrors : undefined,
+    configPatchMethod: patchResult.method,
+    configPatchSuccess: patchResult.success,
+    configPatchFallback: patchResult.method === 'fallback' || undefined,
   })).run()
 
   return json({
@@ -476,6 +611,6 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     displayName: bakDisplayName,
     deployUrl: publicUrl,
     chatReady,
-    verifyWarnings: verifyErrors.length ? verifyErrors : undefined,
+    configPatchFallback: patchResult.method === 'fallback' || undefined,
   })
 }

@@ -1,10 +1,10 @@
 /**
- * GET /api/zeabur/deploy/:id/status — Poll deployment status (CAN-275)
+ * GET /api/zeabur/deploy/:id/status — Poll deployment status (multi-phase)
  *
- * Checks Zeabur service status. When RUNNING, auto-registers the lobster
- * via the existing callback endpoint logic.
+ * Checks Zeabur service status. When RUNNING, transitions through setup phases:
+ *   deploying → setting_up_init → setting_up_wait → setting_up_config → running
  *
- * Auth: deployment owner (X-Edit-Token or X-Wallet-Address)
+ * Auth: deployment owner (Privy JWT / X-Wallet-Address)
  */
 import {
   type Env,
@@ -18,34 +18,16 @@ import {
 import { authenticateRequest } from '../../../_auth'
 import { importKey, decrypt, encrypt } from '../../../../lib/crypto'
 import { aiProviderEnvVar, aiProviderDefaultModel } from '../../../zeabur/deploy'
-
-const ZEABUR_GRAPHQL = 'https://api.zeabur.com/graphql'
-
-function generateUUID(): string {
-  const bytes = new Uint8Array(16)
-  crypto.getRandomValues(bytes)
-  bytes[6] = (bytes[6] & 0x0f) | 0x40
-  bytes[8] = (bytes[8] & 0x3f) | 0x80
-  const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')
-  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`
-}
-
-/** Call Zeabur GraphQL API */
-async function zeaburGQL(
-  apiKey: string,
-  query: string,
-  variables: Record<string, unknown> = {}
-): Promise<{ data?: Record<string, unknown>; errors?: Array<{ message: string }> }> {
-  const res = await fetch(ZEABUR_GRAPHQL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({ query, variables }),
-  })
-  return res.json() as Promise<{ data?: Record<string, unknown>; errors?: Array<{ message: string }> }>
-}
+import {
+  zeaburGQL,
+  checkServiceReady,
+  readGatewayToken,
+  injectCanflyEnvVars,
+  buildConfigPatchPayload,
+  patchConfigViaCLI,
+  isPhaseTimedOut,
+  generateUUID,
+} from '../../../../lib/openclaw-config'
 
 interface DeploymentRow {
   id: string
@@ -58,39 +40,31 @@ interface DeploymentRow {
   error_code: string | null
   error_message: string | null
   metadata: string
+  phase_data: string | null
+  phase_started_at: string | null
 }
 
 export const onRequestOptions: PagesFunction<Env> = () => handleOptions()
 
 export const onRequestGet: PagesFunction<Env> = async ({ env, request, params }) => {
   const deploymentId = params.id as string
-  if (!deploymentId) {
-    return errorResponse('Deployment ID is required', 400)
-  }
+  if (!deploymentId) return errorResponse('Deployment ID is required', 400)
 
-  // Auth
   const auth = await authenticateRequest(request, env.DB, env.PRIVY_APP_ID)
-  if (!auth) {
-    return errorResponse('Authentication required', 401)
-  }
-  const username = auth.username
+  if (!auth) return errorResponse('Authentication required', 401)
 
-  // Fetch deployment
   const deployment = await env.DB.prepare(
     `SELECT id, owner_username, zeabur_project_id, zeabur_service_id, agent_name,
-            status, deploy_url, error_code, error_message, metadata
+            status, deploy_url, error_code, error_message, metadata, phase_data, phase_started_at
      FROM v3_zeabur_deployments WHERE id = ?1`
   ).bind(deploymentId).first<DeploymentRow>()
 
-  if (!deployment) {
-    return errorResponse('Deployment not found', 404)
-  }
-
-  if (deployment.owner_username !== username) {
+  if (!deployment) return errorResponse('Deployment not found', 404)
+  if (deployment.owner_username !== auth.username) {
     return errorResponse('Unauthorized. Only the deployment owner can check status.', 403)
   }
 
-  // If terminal status, return immediately
+  // Terminal states — return immediately
   if (['running', 'failed', 'stopped'].includes(deployment.status)) {
     return json({
       deploymentId: deployment.id,
@@ -102,11 +76,48 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
     })
   }
 
-  // Still deploying — poll Zeabur for live status
+  // Legacy 'setting_up' — mark failed, ask user to retry
+  if (deployment.status === 'setting_up') {
+    await env.DB.prepare(
+      `UPDATE v3_zeabur_deployments SET status = 'failed', error_message = '系統已升級，請重新部署', updated_at = datetime('now') WHERE id = ?1`
+    ).bind(deploymentId).run()
+    return json({ deploymentId, status: 'failed', errorMessage: '系統已升級，請重新部署' })
+  }
+
+  // Phase timeout check
+  if (['setting_up_init', 'setting_up_init_locked', 'setting_up_wait', 'setting_up_config'].includes(deployment.status)) {
+    if (isPhaseTimedOut(deployment.phase_started_at)) {
+      await env.DB.prepare(
+        `UPDATE v3_zeabur_deployments SET status = 'failed', error_message = 'Setup timed out after 15 minutes', updated_at = datetime('now') WHERE id = ?1`
+      ).bind(deploymentId).run()
+      return json({ deploymentId, status: 'failed', errorMessage: 'Setup timed out after 15 minutes' })
+    }
+  }
+
+  // Decrypt API key (guard empty string to avoid decrypt throw)
   const metadata = JSON.parse(deployment.metadata || '{}')
   const cryptoKey = env.ENCRYPTION_KEY ? await importKey(env.ENCRYPTION_KEY) : null
-  const zeaburApiKey = cryptoKey ? await decrypt(metadata.zeaburApiKey || '', cryptoKey) : metadata.zeaburApiKey
+  const rawKey = metadata.zeaburApiKey || ''
+  const zeaburApiKey = cryptoKey && rawKey ? await decrypt(rawKey, cryptoKey) : rawKey
+  const phaseData = JSON.parse(deployment.phase_data || '{}')
 
+  // All setup phases need a valid API key
+  if (['setting_up_init', 'setting_up_init_locked', 'setting_up_wait', 'setting_up_config'].includes(deployment.status)) {
+    if (!zeaburApiKey) return errorResponse('Missing Zeabur API key for setup phase', 500)
+  }
+
+  // Phase dispatcher for setup phases
+  if (deployment.status === 'setting_up_init' || deployment.status === 'setting_up_init_locked') {
+    return handleInit(env, deployment, zeaburApiKey, metadata, phaseData, cryptoKey, deploymentId)
+  }
+  if (deployment.status === 'setting_up_wait') {
+    return handleWait(env, deployment, zeaburApiKey, phaseData, deploymentId)
+  }
+  if (deployment.status === 'setting_up_config') {
+    return handleConfig(env, deployment, zeaburApiKey, metadata, phaseData, cryptoKey, deploymentId)
+  }
+
+  // ── Still deploying — poll Zeabur for live status ──
   if (!zeaburApiKey || !deployment.zeabur_service_id) {
     return json({
       deploymentId: deployment.id,
@@ -115,14 +126,10 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
     })
   }
 
-  // Query Zeabur for service status
-  // First get the environment ID from the project
+  // Get environment ID
   const envResult = await zeaburGQL(zeaburApiKey, `
     query GetEnvironments($projectID: ObjectID!) {
-      environments(projectID: $projectID) {
-        _id
-        name
-      }
+      environments(projectID: $projectID) { _id name }
     }
   `, { projectID: deployment.zeabur_project_id })
 
@@ -130,11 +137,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
   const prodEnv = environments.find(e => e.name === 'production') || environments[0]
 
   if (!prodEnv) {
-    return json({
-      deploymentId: deployment.id,
-      status: 'deploying',
-      message: 'Waiting for Zeabur environment setup.',
-    })
+    return json({ deploymentId: deployment.id, status: 'deploying', message: 'Waiting for Zeabur environment setup.' })
   }
 
   // Check service status
@@ -142,223 +145,46 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
     query ServiceStatus($serviceID: ObjectID!, $environmentID: ObjectID!) {
       service(_id: $serviceID) {
         status(environmentID: $environmentID)
-        ports(environmentID: $environmentID) {
-          port
-        }
+        ports(environmentID: $environmentID) { port }
       }
     }
   `, { serviceID: deployment.zeabur_service_id, environmentID: prodEnv._id })
 
   if (statusResult.errors?.length) {
-    return json({
-      deploymentId: deployment.id,
-      status: 'deploying',
-      message: `Waiting for service. Zeabur: ${statusResult.errors[0].message}`,
-    })
+    return json({ deploymentId: deployment.id, status: 'deploying', message: `Waiting for service. Zeabur: ${statusResult.errors[0].message}` })
   }
 
-  const service = statusResult.data?.service as {
-    status: string
-    ports?: Array<{ port: number }>
-  } | null
-
+  const service = statusResult.data?.service as { status: string; ports?: Array<{ port: number }> } | null
   if (!service) {
-    return json({
-      deploymentId: deployment.id,
-      status: 'deploying',
-      message: 'Service not ready yet.',
-    })
+    return json({ deploymentId: deployment.id, status: 'deploying', message: 'Service not ready yet.' })
   }
 
   const zeaburStatus = service.status?.toUpperCase()
 
   if (zeaburStatus === 'RUNNING') {
-    // Lock: prevent concurrent polls from re-running setup (same pattern as clone-zeabur.ts)
-    if (deployment.status === 'deploying') {
-      await env.DB.prepare(
-        `UPDATE v3_zeabur_deployments SET status = 'setting_up', updated_at = datetime('now') WHERE id = ?1 AND status = 'deploying'`
-      ).bind(deploymentId).run()
-    } else if (deployment.status === 'setting_up') {
-      return json({
-        deploymentId: deployment.id,
-        status: 'deploying',
-        message: 'Setting up deployed service...',
-      })
+    // Atomic transition: deploying → setting_up_init
+    const transition = await env.DB.prepare(
+      `UPDATE v3_zeabur_deployments
+       SET status = 'setting_up_init', phase_data = ?1, phase_started_at = datetime('now'), updated_at = datetime('now')
+       WHERE id = ?2 AND status = 'deploying'`
+    ).bind(
+      JSON.stringify({ prodEnvId: prodEnv._id, serverNodeId: metadata.serverNodeId }),
+      deploymentId,
+    ).run()
+
+    if (!transition.meta?.changes) {
+      // Already transitioned by another poll
+      return json({ deploymentId: deployment.id, status: 'deploying', message: 'Setting up deployed service...' })
     }
 
-    // Get server IP for gateway URL
-    const serverResult = await zeaburGQL(zeaburApiKey, `
-      query ServerInfo($serverID: ObjectID!) {
-        server(_id: $serverID) {
-          ip
-        }
-      }
-    `, { serverID: metadata.serverNodeId })
-
-    const serverIp = (serverResult.data?.server as { ip?: string })?.ip
-    const port = service.ports?.[0]?.port
-    const gatewayUrl = serverIp && port
-      ? `http://${serverIp}:${port}`
-      : deployment.deploy_url
-
-    // ── Post-deploy automation (runs once when status transitions to RUNNING) ──
-
-    // 1. Read gateway token from env var
-    let gatewayToken = ''
-    try {
-      const tokenResult = await zeaburGQL(zeaburApiKey,
-        `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",command:$cmd){exitCode output}}`,
-        { cmd: ['node', '-e', 'console.log(process.env.OPENCLAW_GATEWAY_TOKEN)'] }
-      )
-      gatewayToken = (tokenResult.data?.executeCommand as { output?: string })?.output?.trim() || ''
-    } catch { /* token will be empty */ }
-
-    // 2. Fix environment variables (template variables don't auto-expand via API deploy)
-    const rawAiKey = metadata.aiProviderKey || metadata.aiHubKey || metadata.zeaburAiHubKey || ''
-    const aiKey = cryptoKey && rawAiKey ? await decrypt(rawAiKey, cryptoKey) : rawAiKey
-    const aiProvider = metadata.aiProvider || (rawAiKey ? 'zeabur-ai-hub' : '')
-    if (aiKey && aiProvider) {
-      const envVarName = aiProviderEnvVar(aiProvider)
-      await zeaburGQL(zeaburApiKey,
-        `mutation{updateSingleEnvironmentVariable(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",oldKey:"${envVarName}",newKey:"${envVarName}",value:"${aiKey}"){key}}`
-      )
-    }
-    await zeaburGQL(zeaburApiKey,
-      `mutation{updateSingleEnvironmentVariable(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",oldKey:"ENABLE_CONTROL_UI",newKey:"ENABLE_CONTROL_UI",value:"true"){key}}`
-    )
-
-    // 3. Add domain (zeabur.app via isGenerated=true)
-    const agentSlug = toAgentSlug(metadata.agentName || `lobster-${deployment.zeabur_project_id.slice(0, 8)}`)
-    const domain = `${agentSlug}-canfly`
-    const addDomainResult = await zeaburGQL(zeaburApiKey,
-      `mutation{addDomain(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",domain:"${domain}",isGenerated:true){domain}}`
-    ).catch(() => null)
-    const assignedDomain = (addDomainResult?.data?.addDomain as { domain?: string })?.domain
-    const publicUrl = assignedDomain ? `https://${assignedDomain}` : (domain ? `https://${domain}.zeabur.app` : gatewayUrl)
-
-    // 4. Patch config BEFORE restart (so config is ready when service comes back up)
-    const origins = [publicUrl, 'https://canfly.ai'].filter(Boolean)
-    const defaultModel = aiProviderDefaultModel(aiProvider)
-    const patchScript = `const fs=require('fs'),J=require('json5'),f='/home/node/.openclaw/openclaw.json';try{const c=J.parse(fs.readFileSync(f,'utf8'));c.gateway.controlUi.allowedOrigins=${JSON.stringify(origins)};delete c.gateway.controlUi.dangerouslyAllowHostHeaderOriginFallback;delete c.gateway.controlUi.allowInsecureAuth;delete c.gateway.controlUi.dangerouslyDisableDeviceAuth;if(!c.gateway.http)c.gateway.http={endpoints:{chatCompletions:{enabled:true}}};else{c.gateway.http.endpoints=c.gateway.http.endpoints||{};c.gateway.http.endpoints.chatCompletions={enabled:true}};if(${JSON.stringify(defaultModel)}!=='zeabur-ai/glm-4.7-flash'){c.agents=c.agents||{};c.agents.defaults=c.agents.defaults||{};c.agents.defaults.model=c.agents.defaults.model||{};c.agents.defaults.model.primary=${JSON.stringify(defaultModel)}};fs.writeFileSync(f,JSON.stringify(c,null,2));console.log('patched')}catch(e){console.log('err:'+e.message)}`
-    try {
-      await zeaburGQL(zeaburApiKey,
-        `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",command:$cmd){exitCode output}}`,
-        { cmd: ['node', '-e', patchScript] }
-      )
-    } catch { /* will verify after restart */ }
-
-    // 5. Register agent (do DB work before restart so it doesn't add delay)
-    let finalAgentName = deployment.agent_name
-    let agentApiKey: string | null = null
-    if (!finalAgentName) {
-      const result = await registerLobster(env, {
-        ownerUsername: deployment.owner_username,
-        agentName: metadata.agentName || `lobster-${deployment.zeabur_project_id.slice(0, 8)}`,
-        agentDisplayName: metadata.agentDisplayName,
-        agentBio: metadata.agentBio,
-        agentModel: metadata.agentModel,
-        deployUrl: publicUrl || gatewayUrl || undefined,
-        projectId: deployment.zeabur_project_id,
-      }, deployment.id)
-      finalAgentName = result.agentName
-      agentApiKey = result.apiKey
-    }
-
-    // 6. Inject CANFLY_API_KEY + CANFLY_AGENT_NAME into Zeabur service env vars
-    if (agentApiKey && finalAgentName && deployment.zeabur_service_id) {
-      const sid = deployment.zeabur_service_id
-      const eid = prodEnv._id
-      for (const [key, value] of [
-        ['CANFLY_API_KEY', agentApiKey],
-        ['CANFLY_AGENT_NAME', finalAgentName],
-        ['CANFLY_API_URL', 'https://canfly.ai/api'],
-      ] as const) {
-        const cr = await zeaburGQL(zeaburApiKey,
-          `mutation{createEnvironmentVariable(serviceID:"${sid}",environmentID:"${eid}",key:"${key}",value:"${value}"){key}}`
-        ).catch(() => null)
-        if (cr?.errors?.length) {
-          await zeaburGQL(zeaburApiKey,
-            `mutation{updateSingleEnvironmentVariable(serviceID:"${sid}",environmentID:"${eid}",oldKey:"${key}",newKey:"${key}",value:"${value}"){key}}`
-          ).catch(() => {})
-        }
-      }
-    }
-
-    // 7. Set agent_card_override with gateway URL + token
-    if (publicUrl && gatewayToken) {
-      const encToken = cryptoKey ? await encrypt(gatewayToken, cryptoKey) : gatewayToken
-      const cardOverride = JSON.stringify({ url: publicUrl, gateway_token: encToken })
-      await env.DB.prepare(
-        'UPDATE agents SET agent_card_override = ?1 WHERE name = ?2'
-      ).bind(cardOverride, finalAgentName).run()
-    }
-
-    // 8. Restart to apply env var changes + config patch
-    await zeaburGQL(zeaburApiKey,
-      `mutation{restartService(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}")}`
-    )
-
-    // 9. Wait for service to come back, then verify chat endpoint works
-    let chatReady = false
-    for (let attempt = 0; attempt < 5; attempt++) {
-      await new Promise(r => setTimeout(r, 5000))
-      try {
-        const testRes = await fetch(`${publicUrl}/v1/chat/completions`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', ...(gatewayToken ? { 'Authorization': `Bearer ${gatewayToken}` } : {}) },
-          body: JSON.stringify({ model: 'openclaw', messages: [{ role: 'user', content: 'ping' }], stream: false }),
-        })
-        if (testRes.status === 200 || testRes.status === 401) {
-          // 200 = chat works, 401 = endpoint exists but needs token (still means config is loaded)
-          chatReady = true
-          break
-        }
-      } catch { /* service not ready yet */ }
-    }
-
-    // If chat still not ready, try patching config again (service might have lost the patch on restart)
-    if (!chatReady) {
-      try {
-        await zeaburGQL(zeaburApiKey,
-          `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}",command:$cmd){exitCode output}}`,
-          { cmd: ['node', '-e', patchScript] }
-        )
-        // One more restart to apply
-        await zeaburGQL(zeaburApiKey,
-          `mutation{restartService(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}")}`
-        )
-      } catch { /* best effort */ }
-    }
-
-    // 10. Update deployment record
-    await env.DB.prepare(
-      `UPDATE v3_zeabur_deployments SET
-        status = 'running', deploy_url = ?1, updated_at = datetime('now')
-      WHERE id = ?2`
-    ).bind(publicUrl || gatewayUrl || null, deployment.id).run()
-
-    return json({
-      deploymentId: deployment.id,
-      status: chatReady ? 'running' : 'running',
-      agentName: finalAgentName,
-      deployUrl: publicUrl || gatewayUrl,
-      errorCode: null,
-      errorMessage: chatReady ? null : 'Chat endpoint may need a moment to initialize',
-    })
+    return json({ deploymentId: deployment.id, status: 'setting_up_init', message: 'Service is running. Configuring...' })
   }
 
   if (zeaburStatus === 'FAILED' || zeaburStatus === 'ERROR') {
     await env.DB.prepare(
-      `UPDATE v3_zeabur_deployments SET
-        status = 'failed', error_message = 'Zeabur service failed', updated_at = datetime('now')
-      WHERE id = ?1`
+      `UPDATE v3_zeabur_deployments SET status = 'failed', error_message = 'Zeabur service failed', updated_at = datetime('now') WHERE id = ?1`
     ).bind(deployment.id).run()
-
-    return json({
-      deploymentId: deployment.id,
-      status: 'failed',
-      errorMessage: 'Zeabur service failed. You can retry via POST /api/zeabur/retry.',
-    })
+    return json({ deploymentId: deployment.id, status: 'failed', errorMessage: 'Zeabur service failed. You can retry via POST /api/zeabur/retry.' })
   }
 
   // Still starting
@@ -370,9 +196,225 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
   })
 }
 
-/**
- * Register a lobster agent and bind ownership (mirrors callback.ts logic).
- */
+// ── Phase: setting_up_init ────────────────────────────────
+async function handleInit(
+  env: Env,
+  deployment: DeploymentRow,
+  zeaburApiKey: string,
+  metadata: Record<string, unknown>,
+  phaseData: Record<string, unknown>,
+  cryptoKey: CryptoKey | null,
+  deploymentId: string,
+) {
+  // Optimistic lock: only one poll can run init
+  const lock = await env.DB.prepare(
+    `UPDATE v3_zeabur_deployments SET status = 'setting_up_init_locked', updated_at = datetime('now')
+     WHERE id = ?1 AND status = 'setting_up_init'`
+  ).bind(deploymentId).run()
+  if (!lock.meta?.changes) {
+    return json({ deploymentId, status: 'setting_up_init', message: 'Configuring service...' })
+  }
+
+  const serviceId = deployment.zeabur_service_id!
+  const prodEnvId = phaseData.prodEnvId as string
+
+  // 1. Fix environment variables (template variables don't auto-expand via API deploy)
+  const rawAiKey = (metadata.aiProviderKey || metadata.aiHubKey || metadata.zeaburAiHubKey || '') as string
+  const aiKey = cryptoKey && rawAiKey ? await decrypt(rawAiKey, cryptoKey) : rawAiKey
+  const aiProvider = (metadata.aiProvider || (rawAiKey ? 'zeabur-ai-hub' : '')) as string
+  if (aiKey && aiProvider) {
+    const envVarName = aiProviderEnvVar(aiProvider)
+    await zeaburGQL(zeaburApiKey,
+      `mutation{updateSingleEnvironmentVariable(serviceID:"${serviceId}",environmentID:"${prodEnvId}",oldKey:"${envVarName}",newKey:"${envVarName}",value:"${aiKey}"){key}}`,
+    )
+  }
+  await zeaburGQL(zeaburApiKey,
+    `mutation{updateSingleEnvironmentVariable(serviceID:"${serviceId}",environmentID:"${prodEnvId}",oldKey:"ENABLE_CONTROL_UI",newKey:"ENABLE_CONTROL_UI",value:"true"){key}}`,
+  )
+
+  // 2. Add domain
+  const agentSlug = toAgentSlug((metadata.agentName as string) || `lobster-${deployment.zeabur_project_id.slice(0, 8)}`)
+  const domain = `${agentSlug}-canfly`
+  const addDomainResult = await zeaburGQL(zeaburApiKey,
+    `mutation{addDomain(serviceID:"${serviceId}",environmentID:"${prodEnvId}",domain:"${domain}",isGenerated:true){domain}}`,
+  ).catch(() => null)
+  const assignedDomain = (addDomainResult?.data?.addDomain as { domain?: string })?.domain
+  const publicUrl = assignedDomain ? `https://${assignedDomain}` : `https://${domain}.zeabur.app`
+
+  // 3. Register agent
+  let finalAgentName = deployment.agent_name
+  let agentApiKey: string | null = null
+  if (!finalAgentName) {
+    const result = await registerLobster(env, {
+      ownerUsername: deployment.owner_username,
+      agentName: (metadata.agentName as string) || `lobster-${deployment.zeabur_project_id.slice(0, 8)}`,
+      agentDisplayName: metadata.agentDisplayName as string | undefined,
+      agentBio: metadata.agentBio as string | undefined,
+      agentModel: metadata.agentModel as string | undefined,
+      deployUrl: publicUrl,
+      projectId: deployment.zeabur_project_id,
+    }, deploymentId)
+    finalAgentName = result.agentName
+    agentApiKey = result.apiKey
+  }
+
+  // 4. Inject CANFLY env vars
+  if (agentApiKey && finalAgentName) {
+    await injectCanflyEnvVars(zeaburApiKey, serviceId, prodEnvId, {
+      CANFLY_API_KEY: agentApiKey,
+      CANFLY_AGENT_NAME: finalAgentName,
+      CANFLY_API_URL: 'https://canfly.ai/api',
+    })
+  }
+
+  // 5. Final restart (applies env vars — this is the LAST container restart)
+  await zeaburGQL(zeaburApiKey,
+    `mutation{restartService(serviceID:"${serviceId}",environmentID:"${prodEnvId}")}`,
+  )
+
+  // 6. Transition → setting_up_wait
+  await env.DB.prepare(
+    `UPDATE v3_zeabur_deployments
+     SET status = 'setting_up_wait', agent_name = ?1,
+         phase_data = ?2, phase_started_at = datetime('now'), updated_at = datetime('now')
+     WHERE id = ?3`
+  ).bind(
+    finalAgentName,
+    JSON.stringify({
+      ...phaseData,
+      publicUrl,
+      agentApiKey: agentApiKey || null,
+      finalAgentName,
+      aiProvider,
+      waitAttempts: 0,
+    }),
+    deploymentId,
+  ).run()
+
+  return json({ deploymentId, status: 'setting_up_wait', message: 'Service configured. Waiting for boot...' })
+}
+
+// ── Phase: setting_up_wait ────────────────────────────────
+async function handleWait(
+  env: Env,
+  deployment: DeploymentRow,
+  zeaburApiKey: string,
+  phaseData: Record<string, unknown>,
+  deploymentId: string,
+) {
+  const serviceId = deployment.zeabur_service_id!
+  const prodEnvId = phaseData.prodEnvId as string
+  const waitAttempts = (phaseData.waitAttempts as number) || 0
+
+  const ready = await checkServiceReady(zeaburApiKey, serviceId, prodEnvId)
+
+  if (!ready) {
+    const newAttempts = waitAttempts + 1
+    if (newAttempts > 24) {
+      await env.DB.prepare(
+        `UPDATE v3_zeabur_deployments SET status = 'failed', error_message = 'Service did not start within 120 seconds', updated_at = datetime('now') WHERE id = ?1`
+      ).bind(deploymentId).run()
+      return json({ deploymentId, status: 'failed', errorMessage: 'Service did not start within 120 seconds' })
+    }
+
+    await env.DB.prepare(
+      `UPDATE v3_zeabur_deployments SET phase_data = ?1, updated_at = datetime('now') WHERE id = ?2`
+    ).bind(JSON.stringify({ ...phaseData, waitAttempts: newAttempts }), deploymentId).run()
+
+    return json({ deploymentId, status: 'setting_up_wait', message: 'Waiting for service to start...', attempt: newAttempts })
+  }
+
+  // Ready → transition to setting_up_config
+  await env.DB.prepare(
+    `UPDATE v3_zeabur_deployments
+     SET status = 'setting_up_config', phase_data = ?1, phase_started_at = datetime('now'), updated_at = datetime('now')
+     WHERE id = ?2 AND status = 'setting_up_wait'`
+  ).bind(JSON.stringify({ ...phaseData, configRetryCount: 0 }), deploymentId).run()
+
+  return json({ deploymentId, status: 'setting_up_config', message: 'Service is up. Applying security settings...' })
+}
+
+// ── Phase: setting_up_config ──────────────────────────────
+async function handleConfig(
+  env: Env,
+  deployment: DeploymentRow,
+  zeaburApiKey: string,
+  metadata: Record<string, unknown>,
+  phaseData: Record<string, unknown>,
+  cryptoKey: CryptoKey | null,
+  deploymentId: string,
+) {
+  const serviceId = deployment.zeabur_service_id!
+  const prodEnvId = phaseData.prodEnvId as string
+  const publicUrl = phaseData.publicUrl as string
+  const finalAgentName = phaseData.finalAgentName as string || deployment.agent_name!
+  const aiProvider = (phaseData.aiProvider as string) || ''
+  const configRetryCount = (phaseData.configRetryCount as number) || 0
+
+  // 1. Patch config (after final restart — entrypoint already ran)
+  const defaultModel = aiProviderDefaultModel(aiProvider)
+  const patchPayload = buildConfigPatchPayload(publicUrl, { defaultModel })
+  const patchResult = await patchConfigViaCLI(zeaburApiKey, serviceId, prodEnvId, patchPayload)
+
+  if (!patchResult.success) {
+    if (configRetryCount < 3) {
+      await env.DB.prepare(
+        `UPDATE v3_zeabur_deployments SET phase_data = ?1, updated_at = datetime('now') WHERE id = ?2`
+      ).bind(JSON.stringify({ ...phaseData, configRetryCount: configRetryCount + 1 }), deploymentId).run()
+      return json({ deploymentId, status: 'setting_up_config', message: `Config patch attempt ${configRetryCount + 1}/3 failed, retrying...` })
+    }
+    // Log failure but continue
+    await env.DB.prepare(
+      `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
+       VALUES ('agent', ?1, 'config_patch_failed', ?2)`
+    ).bind(finalAgentName, JSON.stringify({ method: patchResult.method, error: patchResult.error })).run()
+  }
+
+  // 2. Read gateway token
+  const gatewayToken = await readGatewayToken(zeaburApiKey, serviceId, prodEnvId)
+
+  // 3. Single-shot chat verify
+  let chatReady = false
+  try {
+    const testRes = await fetch(`${publicUrl}/v1/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(gatewayToken ? { Authorization: `Bearer ${gatewayToken}` } : {}),
+      },
+      body: JSON.stringify({ model: 'openclaw', messages: [{ role: 'user', content: 'ping' }], stream: false }),
+    })
+    chatReady = testRes.status === 200 || testRes.status === 401
+  } catch { /* not ready */ }
+
+  // 4. Store gateway token
+  if (publicUrl && gatewayToken) {
+    const encToken = cryptoKey ? await encrypt(gatewayToken, cryptoKey) : gatewayToken
+    const cardOverride = JSON.stringify({ url: publicUrl, gateway_token: encToken })
+    await env.DB.prepare(
+      'UPDATE agents SET agent_card_override = ?1 WHERE name = ?2'
+    ).bind(cardOverride, finalAgentName).run()
+  }
+
+  // 5. Update deployment → running (optimistic lock)
+  await env.DB.prepare(
+    `UPDATE v3_zeabur_deployments SET
+      status = 'running', deploy_url = ?1, updated_at = datetime('now')
+    WHERE id = ?2 AND status = 'setting_up_config'`
+  ).bind(publicUrl, deploymentId).run()
+
+  return json({
+    deploymentId: deployment.id,
+    status: 'running',
+    agentName: finalAgentName,
+    deployUrl: publicUrl,
+    errorCode: null,
+    errorMessage: chatReady ? null : 'Chat endpoint may need a moment to initialize',
+    configPatchFallback: patchResult.method === 'fallback' || undefined,
+  })
+}
+
+// ── Register lobster helper ───────────────────────────────
 async function registerLobster(
   env: Env,
   opts: {
@@ -384,18 +426,15 @@ async function registerLobster(
     deployUrl?: string
     projectId: string
   },
-  deploymentId: string
-): Promise<string> {
+  deploymentId: string,
+): Promise<{ agentName: string; apiKey: string }> {
   const baseName = toAgentSlug(opts.agentName)
   const displayName = opts.agentDisplayName || opts.agentName
 
-  // Ensure uniqueness
   let agentName = baseName
   let suffix = 0
   while (true) {
-    const exists = await env.DB.prepare(
-      'SELECT name FROM agents WHERE name = ?1'
-    ).bind(agentName).first()
+    const exists = await env.DB.prepare('SELECT name FROM agents WHERE name = ?1').bind(agentName).first()
     if (!exists) break
     suffix++
     agentName = `${baseName}-${suffix}`
@@ -413,39 +452,27 @@ async function registerLobster(
              'zeabur-cloud', ?6, 1, ?7, 'registered',
              ?8, ?9, ?10, 'zeabur_deploy')`
   ).bind(
-    agentName,
-    displayName,
-    opts.ownerUsername,
-    opts.agentBio || `Deployed on Zeabur`,
+    agentName, displayName, opts.ownerUsername,
+    opts.agentBio || 'Deployed on Zeabur',
     opts.agentModel || null,
     JSON.stringify({ deployUrl: opts.deployUrl, zeaburProjectId: opts.projectId }),
-    apiKey,
-    apiKey,
-    pairingCode,
-    expires,
+    apiKey, apiKey, pairingCode, expires,
   ).run()
 
-  // Link agent to deployment
   await env.DB.prepare(
     `UPDATE v3_zeabur_deployments SET agent_name = ?1, updated_at = datetime('now') WHERE id = ?2`
   ).bind(agentName, deploymentId).run()
 
-  // Create v3 ownership record
   const ownershipId = generateUUID()
   await env.DB.prepare(
     `INSERT INTO v3_ownership_records (id, agent_name, owner_type, owner_id, ownership_level, granted_by)
      VALUES (?1, ?2, 'user', ?3, 'full', 'zeabur_deploy')`
   ).bind(ownershipId, agentName, opts.ownerUsername).run()
 
-  // Log activity
   await env.DB.prepare(
     `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
      VALUES ('agent', ?1, 'zeabur_registered', ?2)`
-  ).bind(agentName, JSON.stringify({
-    owner: opts.ownerUsername,
-    deploymentId,
-    deployUrl: opts.deployUrl,
-  })).run()
+  ).bind(agentName, JSON.stringify({ owner: opts.ownerUsername, deploymentId, deployUrl: opts.deployUrl })).run()
 
   return { agentName, apiKey }
 }

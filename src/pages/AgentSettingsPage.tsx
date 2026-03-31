@@ -70,6 +70,7 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
   const [cloneMessage, setCloneMessage] = useState<string | null>(null)
   const [cloneResult, setCloneResult] = useState<{ agentName?: string; displayName?: string; deployUrl?: string } | null>(null)
   const [cloneError, setCloneError] = useState<string | null>(null)
+  const [cloneAttempt, setCloneAttempt] = useState<number>(0)
   const [showAllServers, setShowAllServers] = useState(false)
 
   const getAuthHeaders = useCallback(
@@ -116,7 +117,7 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
     }
   }, [agentName, selectedCloneServer, getAuthHeaders, t])
 
-  // Poll clone status
+  // Poll clone status (multi-phase)
   useEffect(() => {
     if (!cloneId || cloneStatus === 'running' || cloneStatus === 'failed') return
     const interval = setInterval(async () => {
@@ -127,6 +128,7 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
         )
         const data = await res.json() as Record<string, unknown>
         setCloneStatus(data.status as string)
+        if (data.attempt != null) setCloneAttempt(data.attempt as number)
         if (data.status === 'running') {
           setCloneResult({
             agentName: data.agentName as string,
@@ -422,10 +424,56 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
                         </button>
                       </div>
                     </div>
-                  ) : cloning ? (
-                    <div className="flex items-center gap-2 text-purple-400 text-sm py-2">
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      {cloneMessage || t('settings.cloneInProgress', 'Cloning in progress...')}
+                  ) : cloning || (cloneStatus && !['running', 'failed'].includes(cloneStatus)) ? (
+                    <div className="space-y-3 py-2">
+                      {/* Phase progress bar */}
+                      <div className="flex gap-1">
+                        {(() => {
+                          const phases = ['cloning', 'setting_up_init', 'setting_up_wait', 'setting_up_config']
+                          const currentIdx = phases.indexOf(cloneStatus || 'cloning')
+                          return phases.map((phase, i) => (
+                            <div
+                              key={phase}
+                              className={`h-1.5 flex-1 rounded-full transition-colors ${
+                                i <= currentIdx ? 'bg-purple-500' : 'bg-gray-700'
+                              }`}
+                            />
+                          ))
+                        })()}
+                      </div>
+                      <div className="flex items-center gap-2 text-purple-400 text-sm">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        {cloneStatus === 'cloning' && (cloneMessage || t('settings.clonePhaseCloning', 'Copying project data...'))}
+                        {(cloneStatus === 'setting_up_init' || cloneStatus === 'setting_up_init_locked') && t('settings.clonePhaseInit', 'Configuring service...')}
+                        {cloneStatus === 'setting_up_wait' && t('settings.clonePhaseWait', 'Waiting for service to start...')}
+                        {cloneStatus === 'setting_up_config' && t('settings.clonePhaseSecurity', 'Applying security settings...')}
+                        {!cloneStatus && (cloneMessage || t('settings.cloneInProgress', 'Cloning in progress...'))}
+                      </div>
+                      {cloneStatus === 'setting_up_wait' && cloneAttempt > 15 && (
+                        <p className="text-yellow-500/80 text-xs">
+                          {t('settings.cloneTakingLong', 'Taking longer than expected...')}
+                        </p>
+                      )}
+                    </div>
+                  ) : cloneStatus === 'failed' ? (
+                    <div className="space-y-3 py-2">
+                      <div className="flex items-center gap-2 text-red-400 text-sm">
+                        <AlertCircle className="w-4 h-4 flex-shrink-0" /> {cloneError || 'Clone failed'}
+                      </div>
+                      <button
+                        onClick={() => {
+                          setCloneId(null)
+                          setCloneStatus(null)
+                          setCloneError(null)
+                          setCloneMessage(null)
+                          setCloneAttempt(0)
+                          setCloning(false)
+                          setCloneResult(null)
+                        }}
+                        className="flex items-center gap-2 px-3 py-1.5 bg-red-600/20 text-red-300 text-xs rounded-lg border border-red-700/40 hover:bg-red-600/30 transition-colors"
+                      >
+                        {t('settings.cloneRetry', 'Retry')}
+                      </button>
                     </div>
                   ) : (
                     <>
