@@ -140,8 +140,12 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     // Step 2: Set TELEGRAM_BOT_TOKEN env var on Zeabur (if we have Zeabur access)
     // Step 3: Patch OpenClaw config via /v1/chat/completions (ask the agent to configure itself)
     // Strategy: Use the OpenAI-compatible endpoint to ask the agent to run openclaw commands
+    // Use AbortController to prevent gateway slowness from timing out the entire Function
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 20000) // 20s timeout
     const configPatchResponse = await fetch(`${gatewayUrl}/v1/chat/completions`, {
       method: 'POST',
+      signal: controller.signal,
       headers: {
         'Content-Type': 'application/json',
         ...(gatewayToken ? { 'Authorization': `Bearer ${gatewayToken}` } : {}),
@@ -154,6 +158,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
         }],
       }),
     })
+    clearTimeout(timeout)
 
     if (configPatchResponse.ok) {
       const result = await configPatchResponse.json() as {

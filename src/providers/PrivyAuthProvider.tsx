@@ -67,16 +67,32 @@ function PrivyAuthBridge({ children }: { children: React.ReactNode }) {
     }
   }, [privy])
 
+  /** Logout: clear Privy state AND all CanFly edit tokens from localStorage */
+  const wrappedLogout = useCallback(async () => {
+    // Clear all canfly_edit_token_* entries to prevent cross-account leaks
+    try {
+      const keysToRemove: string[] = []
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i)
+        if (key?.startsWith('canfly_edit_token_')) keysToRemove.push(key)
+      }
+      keysToRemove.forEach((k) => localStorage.removeItem(k))
+    } catch {
+      // localStorage not available
+    }
+    await privy.logout()
+  }, [privy])
+
   const value = useMemo<AuthValue>(() => ({
     user,
     isAuthenticated,
     ready: privy.ready,
     login: privy.login,
-    logout: privy.logout,
+    logout: wrappedLogout,
     getAccessToken,
     worldIdLevel,
     walletAddress,
-  }), [user, isAuthenticated, privy.ready, privy.login, privy.logout, getAccessToken, worldIdLevel, walletAddress])
+  }), [user, isAuthenticated, privy.ready, privy.login, wrappedLogout, getAccessToken, worldIdLevel, walletAddress])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

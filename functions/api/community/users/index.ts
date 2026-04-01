@@ -132,8 +132,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
   try {
     await env.DB.prepare(
       `INSERT INTO users (username, display_name, wallet_address, avatar_url, bio, links, edit_token,
-                          source, claimed, scraped_at, scrape_ref, external_ids)
-       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)`
+                          source, claimed, scraped_at, scrape_ref, external_ids, privy_user_id)
+       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13)`
     )
       .bind(
         username,
@@ -147,7 +147,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
         claimed ?? 1,
         isScraped ? now : null,
         scrapeRef || null,
-        JSON.stringify(mergedExternalIds)
+        JSON.stringify(mergedExternalIds),
+        privyUserId || null
       )
       .run()
   } catch (err) {

@@ -169,20 +169,34 @@ export default function RegisterPage() {
         }),
       })
 
+      // Guard against non-JSON responses (e.g. Cloudflare returning HTML on transient failures)
+      const contentType = res.headers.get('content-type') || ''
+      if (!contentType.includes('application/json')) {
+        throw new Error('Server returned an unexpected response. Please try again.')
+      }
+
       if (!res.ok) {
         let msg = 'Registration failed'
         try {
           const data = await res.json()
           msg = (data as { error?: string }).error || msg
         } catch {
-          // Response body isn't JSON (e.g. Cloudflare error page)
+          // Response body isn't JSON
         }
         throw new Error(msg)
       }
 
       const data = (await res.json()) as { username: string; editToken: string }
 
-      // Store edit token for future edits
+      // Clear any stale edit tokens from previous sessions, then store the new one
+      try {
+        const staleKeys: string[] = []
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i)
+          if (key?.startsWith('canfly_edit_token_')) staleKeys.push(key)
+        }
+        staleKeys.forEach((k) => localStorage.removeItem(k))
+      } catch { /* localStorage not available */ }
       localStorage.setItem(`canfly_edit_token_${data.username}`, data.editToken)
 
       // Path A: If wallet is connected, check BaseMail for existing human verification

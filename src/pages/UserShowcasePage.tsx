@@ -401,7 +401,8 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
 
   const hasAgentsWithSlugs = user.agents.some((a) => a.skills.some((s) => s.slug))
   // Owner can edit if they have the edit token in localStorage,
-  // OR if they're logged in with the same wallet address as the profile
+  // OR if they're logged in with the same wallet address as the profile.
+  // Note: Logout now clears all edit tokens, preventing cross-account leaks.
   const hasEditToken = !!localStorage.getItem(`canfly_edit_token_${user.username}`)
   const isWalletOwner = !!(
     walletAddress &&
