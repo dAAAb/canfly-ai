@@ -24,9 +24,10 @@ export default function AuthButton() {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  // For email users without localStorage token, resolve username via API
+  // Resolve the current user's CanFly username via API (authoritative source)
   const [resolvedUsername, setResolvedUsername] = useState<string | null>(null)
   const lookupDone = useRef(false)
+  const prevWalletRef = useRef<string | null>(null)
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -40,20 +41,31 @@ export default function AuthButton() {
   }, [])
 
   // Find the user's existing CanFly username from localStorage edit tokens
+  // Only used as a fast hint before API responds; API result takes precedence
   const localUsername = (() => {
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i)
-      if (key?.startsWith('canfly_edit_token_')) {
-        return key.replace('canfly_edit_token_', '')
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i)
+        if (key?.startsWith('canfly_edit_token_')) {
+          return key.replace('canfly_edit_token_', '')
+        }
       }
-    }
+    } catch { /* localStorage not available */ }
     return null
   })()
 
   const privyId = user?.id
 
+  // Re-lookup when wallet/privy changes (e.g. after switching accounts)
   useEffect(() => {
-    if (localUsername || lookupDone.current) return
+    const walletChanged = walletAddress !== prevWalletRef.current
+    if (walletChanged) {
+      lookupDone.current = false
+      setResolvedUsername(null)
+      prevWalletRef.current = walletAddress
+    }
+
+    if (lookupDone.current) return
     if (!walletAddress && !privyId) return
     lookupDone.current = true
 
@@ -69,9 +81,10 @@ export default function AuthButton() {
         }
       })
       .catch(() => {})
-  }, [localUsername, walletAddress, privyId])
+  }, [walletAddress, privyId])
 
-  const ownUsername = localUsername || resolvedUsername
+  // API result is authoritative; localStorage is only a fast hint before API responds
+  const ownUsername = resolvedUsername || localUsername
   const displayName = ownUsername || user?.google?.name || user?.email?.address?.split('@')[0] || 'User'
 
   // Not ready yet — show nothing

@@ -56,7 +56,15 @@ export default function ClaimProfileButton({ username, onClaimed }: ClaimProfile
 
       const data = await res.json() as { editToken: string }
 
-      // Store edit token so the user can edit their profile
+      // Clear stale edit tokens, then store the new one
+      try {
+        const staleKeys: string[] = []
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i)
+          if (key?.startsWith('canfly_edit_token_')) staleKeys.push(key)
+        }
+        staleKeys.forEach((k) => localStorage.removeItem(k))
+      } catch { /* localStorage not available */ }
       localStorage.setItem(`canfly_edit_token_${username}`, data.editToken)
       onClaimed(data.editToken)
     } catch (err) {
