@@ -26,6 +26,7 @@ interface CommunityUser {
 
 interface CommunityAgent {
   name: string
+  display_name: string | null
   owner_username: string | null
   wallet_address: string | null
   platform: string
@@ -157,7 +158,7 @@ export default function CommunityPage() {
         if (u.bio?.toLowerCase().includes(q)) return true
         // Search agent names owned by this user
         const userAgents = userAgentMap.get(u.username)
-        if (userAgents?.some((a) => a.name.toLowerCase().includes(q))) return true
+        if (userAgents?.some((a) => a.name.toLowerCase().includes(q) || a.display_name?.toLowerCase().includes(q))) return true
         return false
       })
     }
@@ -249,6 +250,7 @@ export default function CommunityPage() {
       result = result.filter(
         (a) =>
           a.name.toLowerCase().includes(q) ||
+          a.display_name?.toLowerCase().includes(q) ||
           a.bio?.toLowerCase().includes(q) ||
           a.owner_username?.toLowerCase().includes(q)
       )
@@ -668,7 +670,7 @@ export default function CommunityPage() {
                     {filteredAgents.map((agent) => (
                       <div key={agent.name} className="flex items-center gap-2">
                         <PillBadge
-                          name={agent.name}
+                          name={agent.display_name || agent.name}
                           walletAddress={agent.wallet_address}
                           type={agent.platform === 'openclaw' ? 'openclaw-agent' : 'agent'}
                           href={getAgentHref(agent)}
@@ -726,7 +728,7 @@ export default function CommunityPage() {
                     "position": users.slice(0, 10).length + i + 1,
                     "item": {
                       "@type": "SoftwareApplication",
-                      "name": a.name,
+                      "name": a.display_name || a.name,
                       "url": a.owner_username
                         ? `https://canfly.ai/u/${a.owner_username}/agent/${a.name}`
                         : `https://canfly.ai/free/agent/${a.name}`,
