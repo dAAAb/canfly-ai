@@ -28,7 +28,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
 
   // Get user's agents with their skills
   const agentsResult = await env.DB.prepare(
-    `SELECT name, wallet_address, basename, platform, avatar_url,
+    `SELECT name, display_name, wallet_address, basename, platform, avatar_url,
             bio, model, hosting, capabilities, erc8004_url, is_public, created_at,
             agentbook_registered
      FROM agents WHERE owner_username = ?1 COLLATE NOCASE AND is_public = 1

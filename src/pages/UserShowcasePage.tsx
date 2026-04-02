@@ -151,6 +151,7 @@ interface Skill {
 
 interface Agent {
   name: string
+  display_name: string | null
   wallet_address: string | null
   basename: string | null
   platform: string
@@ -619,7 +620,7 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
                     className="bg-yellow-900/10 border border-yellow-700/40 rounded-xl p-4 flex items-center justify-between gap-4"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="text-white font-medium">{agent.name}</p>
+                      <p className="text-white font-medium">{agent.display_name || agent.name}</p>
                       {agent.bio && (
                         <p className="text-gray-400 text-sm mt-1 line-clamp-1">{agent.bio}</p>
                       )}
@@ -710,7 +711,7 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
                             avatarUrl={agent.avatar_url}
                             walletAddress={agent.wallet_address}
                             basename={agent.basename}
-                            name={agent.name}
+                            name={agent.display_name || agent.name}
                             size={48}
                             emoji={agent.platform === 'openclaw' ? '🦞' : '🤖'}
                             border="border-0"
@@ -719,7 +720,7 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-2 mb-1">
                               <PillBadge
-                                name={agent.name}
+                                name={agent.display_name || agent.name}
                                 walletAddress={agent.wallet_address}
                                 type={badgeType}
                                 href={`/u/${user.username}/agent/${agent.name}`}
@@ -890,7 +891,7 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
                       to={`/u/${user.username}/agent/${agent.name}`}
                       className="text-cyan-400 hover:text-cyan-300 transition-colors"
                     >
-                      {agent.name}
+                      {agent.display_name || agent.name}
                     </Link>
                   </span>
                 </div>
