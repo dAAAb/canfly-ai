@@ -40,6 +40,7 @@ vi.mock('lucide-react', () => ({
   Shield: () => <span />,
   Wallet: () => <span />,
   X: () => <span />,
+  Terminal: () => <span />,
 }))
 
 import CommunityPage from './CommunityPage'
