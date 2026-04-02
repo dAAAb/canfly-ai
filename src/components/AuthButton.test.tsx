@@ -182,7 +182,8 @@ describe('AuthButton', () => {
     })
 
     renderAuthButton()
-    fireEvent.click(screen.getByText('TestUser'))
+    // With localStorage token set, displayName resolves to 'dAAAb' (from token key)
+    fireEvent.click(screen.getByText('dAAAb'))
     const profileLink = screen.getByText('Profile').closest('a')
     expect(profileLink).toHaveAttribute('href', '/u/dAAAb')
   })
