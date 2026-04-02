@@ -29,6 +29,8 @@ import {
   Server,
   AlertCircle,
   CheckCircle,
+  Unlink,
+  TicketCheck,
 } from 'lucide-react'
 
 interface AgentSettingsPageProps {
@@ -74,6 +76,23 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
   const [cloneAttempt, setCloneAttempt] = useState<number>(0)
   const [cloneCanRetry, setCloneCanRetry] = useState(false)
   const [showAllServers, setShowAllServers] = useState(false)
+
+  // Regenerate pairing code
+  const [regenPairingLoading, setRegenPairingLoading] = useState(false)
+  const [regenPairingResult, setRegenPairingResult] = useState<{ code: string; expiresAt: string } | null>(null)
+  const [regenPairingError, setRegenPairingError] = useState<string | null>(null)
+  const [pairingCodeCopied, setPairingCodeCopied] = useState(false)
+
+  // Unbind agent
+  const [showUnbindConfirm, setShowUnbindConfirm] = useState(false)
+  const [unbinding, setUnbinding] = useState(false)
+  const [unbindError, setUnbindError] = useState<string | null>(null)
+
+  // Remove agent from platform
+  const [showRemoveConfirm, setShowRemoveConfirm] = useState(false)
+  const [removeConfirmText, setRemoveConfirmText] = useState('')
+  const [removing, setRemoving] = useState(false)
+  const [removeError, setRemoveError] = useState<string | null>(null)
 
   const getAuthHeaders = useCallback(
     () => getApiAuthHeaders({ getAccessToken, walletAddress }),
@@ -206,6 +225,70 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
       setDeleting(false)
     }
   }, [agentName, deleteConfirmText, getAuthHeaders, navigate, username, subdomainUsername])
+
+  const handleRegenPairingCode = useCallback(async () => {
+    setRegenPairingLoading(true)
+    setRegenPairingError(null)
+    try {
+      const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/regenerate-pairing-code`, {
+        method: 'POST',
+        headers: await getAuthHeaders(),
+      })
+      if (!res.ok) {
+        const data = (await res.json()) as { error?: string }
+        throw new Error(data.error || `Failed (${res.status})`)
+      }
+      const data = (await res.json()) as { pairingCode: string; expiresAt: string }
+      setRegenPairingResult({ code: data.pairingCode, expiresAt: data.expiresAt })
+    } catch (err) {
+      setRegenPairingError((err as Error).message)
+    } finally {
+      setRegenPairingLoading(false)
+    }
+  }, [agentName, getAuthHeaders])
+
+  const handleUnbind = useCallback(async () => {
+    setUnbinding(true)
+    setUnbindError(null)
+    try {
+      const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/unbind`, {
+        method: 'POST',
+        headers: await getAuthHeaders(),
+      })
+      if (!res.ok) {
+        const data = (await res.json()) as { error?: string }
+        throw new Error(data.error || `Unbind failed (${res.status})`)
+      }
+      // Redirect to user profile — agent is no longer owned
+      navigate(subdomainUsername ? '/' : `/u/${username}`)
+    } catch (err) {
+      setUnbindError((err as Error).message)
+    } finally {
+      setUnbinding(false)
+    }
+  }, [agentName, getAuthHeaders, navigate, username, subdomainUsername])
+
+  const handleRemove = useCallback(async () => {
+    if (removeConfirmText !== agentName) return
+    setRemoving(true)
+    setRemoveError(null)
+    try {
+      const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/remove`, {
+        method: 'DELETE',
+        headers: await getAuthHeaders(),
+        body: JSON.stringify({ confirmName: agentName }),
+      })
+      if (!res.ok) {
+        const data = (await res.json()) as { error?: string }
+        throw new Error(data.error || `Remove failed (${res.status})`)
+      }
+      navigate(subdomainUsername ? '/' : `/u/${username}`)
+    } catch (err) {
+      setRemoveError((err as Error).message)
+    } finally {
+      setRemoving(false)
+    }
+  }, [agentName, removeConfirmText, getAuthHeaders, navigate, username, subdomainUsername])
 
   if (!isAuthenticated) {
     return (
@@ -377,6 +460,71 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
                         </div>
                       </div>
                     )}
+                  </>
+                )}
+              </div>
+            </div>
+          </GlassCard>
+        </div>
+
+        {/* Pairing Code */}
+        <div className="mb-6">
+          <h2 className="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-3">
+            {t('settings.pairingTitle', 'Pairing Code')}
+          </h2>
+          <GlassCard className="p-5">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center flex-shrink-0">
+                <TicketCheck className="w-5 h-5 text-purple-400" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-semibold text-white">
+                  {t('settings.pairingCodeTitle', 'Generate Pairing Code')}
+                </h3>
+                <p className="text-xs text-gray-400 mt-1">
+                  {t('settings.pairingCodeDesc', 'Generate a new pairing code to transfer this agent to another user. The code is valid for 7 days.')}
+                </p>
+
+                {regenPairingResult ? (
+                  <div className="mt-3 p-3 rounded-lg bg-purple-500/10 border border-purple-500/20">
+                    <p className="text-xs text-gray-400 mb-1.5">
+                      {t('settings.pairingCodeGenerated', 'Pairing code (valid for 7 days):')}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <code className="flex-1 text-lg font-mono font-bold text-purple-300 bg-black/40 px-3 py-2 rounded-lg text-center select-all tracking-wider">
+                        {regenPairingResult.code}
+                      </code>
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(regenPairingResult.code)
+                          setPairingCodeCopied(true)
+                          setTimeout(() => setPairingCodeCopied(false), 2000)
+                        }}
+                        className="shrink-0 p-2 rounded-lg bg-purple-500/20 hover:bg-purple-500/30 text-purple-400 transition-colors"
+                      >
+                        {pairingCodeCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                      </button>
+                    </div>
+                    <p className="text-[11px] text-gray-500 mt-2">
+                      {t('settings.pairingCodeHint', 'Share this code with the person who will claim the agent. They can enter it on the agent\'s profile page.')}
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    {regenPairingError && (
+                      <p className="text-xs text-red-400 mt-2">{regenPairingError}</p>
+                    )}
+                    <button
+                      onClick={handleRegenPairingCode}
+                      disabled={regenPairingLoading}
+                      className="mt-3 flex items-center gap-2 px-4 py-2 rounded-lg border border-purple-500/30 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 text-sm font-medium transition-colors disabled:opacity-50"
+                    >
+                      {regenPairingLoading ? (
+                        <><Loader2 className="w-4 h-4 animate-spin" /> {t('settings.generating', 'Generating...')}</>
+                      ) : (
+                        <><TicketCheck className="w-4 h-4" /> {t('settings.generatePairingCode', 'Generate Pairing Code')}</>
+                      )}
+                    </button>
                   </>
                 )}
               </div>
@@ -608,10 +756,137 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
           <h2 className="text-sm font-semibold text-red-400 uppercase tracking-wider mb-3">
             {t('settings.dangerZone')}
           </h2>
-          <GlassCard className="p-5 !border-red-500/20">
+          {/* Unbind Agent */}
+          <GlassCard className="p-5 !border-red-500/20 mb-4">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center flex-shrink-0">
+                <Unlink className="w-5 h-5 text-orange-400" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-semibold text-white">
+                  {t('settings.unbindTitle', 'Unbind Agent')}
+                </h3>
+                <p className="text-xs text-gray-400 mt-1">
+                  {t('settings.unbindDesc', 'Release ownership of this agent. The agent will remain on the platform as a free agent with a new pairing code. You will lose management access.')}
+                </p>
+
+                {!showUnbindConfirm ? (
+                  <button
+                    onClick={() => setShowUnbindConfirm(true)}
+                    className="mt-3 px-4 py-2 rounded-lg border border-orange-500/30 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 text-sm font-medium transition-colors"
+                  >
+                    {t('settings.unbindBtn', 'Unbind Agent')}
+                  </button>
+                ) : (
+                  <div className="mt-3 space-y-3">
+                    <div className="p-3 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-start gap-2">
+                      <AlertTriangle className="w-4 h-4 text-orange-400 flex-shrink-0 mt-0.5" />
+                      <p className="text-xs text-orange-300">
+                        {t('settings.unbindWarning', 'After unbinding, you will no longer be the owner of this agent. A new pairing code will be generated for someone else to claim it. This action cannot be undone.')}
+                      </p>
+                    </div>
+                    {unbindError && (
+                      <p className="text-xs text-red-400">{unbindError}</p>
+                    )}
+                    <div className="flex gap-2">
+                      <button
+                        onClick={handleUnbind}
+                        disabled={unbinding}
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-orange-600 hover:bg-orange-500 disabled:bg-gray-700 disabled:text-gray-500 text-white text-sm font-medium transition-colors"
+                      >
+                        {unbinding ? (
+                          <><Loader2 className="w-4 h-4 animate-spin" /> {t('settings.unbinding', 'Unbinding...')}</>
+                        ) : (
+                          <><Unlink className="w-3.5 h-3.5" /> {t('settings.confirmUnbind', 'Yes, Unbind')}</>
+                        )}
+                      </button>
+                      <button
+                        onClick={() => { setShowUnbindConfirm(false); setUnbindError(null) }}
+                        className="px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm transition-colors"
+                      >
+                        {t('settings.cancel', 'Cancel')}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </GlassCard>
+
+          {/* Remove from Platform */}
+          <GlassCard className="p-5 !border-red-500/20 mb-4">
             <div className="flex items-start gap-3">
               <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center flex-shrink-0">
                 <Trash2 className="w-5 h-5 text-red-400" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-semibold text-white">
+                  {t('settings.removeTitle', 'Remove from Platform')}
+                </h3>
+                <p className="text-xs text-gray-400 mt-1">
+                  {t('settings.removeDesc', 'Permanently delete this agent from CanFly. All data (skills, chat history, ratings) will be lost. The Zeabur deployment will keep running but lose its CanFly link.')}
+                </p>
+
+                {!showRemoveConfirm ? (
+                  <button
+                    onClick={() => setShowRemoveConfirm(true)}
+                    className="mt-3 px-4 py-2 rounded-lg border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-sm font-medium transition-colors"
+                  >
+                    {t('settings.removeBtn', 'Remove from Platform')}
+                  </button>
+                ) : (
+                  <div className="mt-3 space-y-3">
+                    <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 flex items-start gap-2">
+                      <AlertTriangle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
+                      <p className="text-xs text-red-300">
+                        {t('settings.removeWarning', 'This will permanently delete the agent record, all skills, chat sessions, Telegram connections, and ratings. The agent name will become available for re-registration. This cannot be undone.')}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="block text-xs text-gray-400 mb-1.5">
+                        {t('settings.removeConfirmLabel', `Type "${agentName}" to confirm`, { agentName })}
+                      </label>
+                      <input
+                        type="text"
+                        value={removeConfirmText}
+                        onChange={(e) => setRemoveConfirmText(e.target.value)}
+                        placeholder={agentName}
+                        className="w-full px-3 py-2 bg-gray-900 border border-gray-700 text-white text-sm rounded-lg focus:outline-none focus:border-red-500/50 transition-colors"
+                      />
+                    </div>
+                    {removeError && (
+                      <p className="text-xs text-red-400">{removeError}</p>
+                    )}
+                    <div className="flex gap-2">
+                      <button
+                        onClick={handleRemove}
+                        disabled={removeConfirmText !== agentName || removing}
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 disabled:bg-gray-700 disabled:text-gray-500 text-white text-sm font-medium transition-colors"
+                      >
+                        {removing ? (
+                          <><Loader2 className="w-4 h-4 animate-spin" /> {t('settings.removing', 'Removing...')}</>
+                        ) : (
+                          <><Trash2 className="w-3.5 h-3.5" /> {t('settings.confirmRemove', 'Permanently Remove')}</>
+                        )}
+                      </button>
+                      <button
+                        onClick={() => { setShowRemoveConfirm(false); setRemoveConfirmText(''); setRemoveError(null) }}
+                        className="px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm transition-colors"
+                      >
+                        {t('settings.cancel', 'Cancel')}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </GlassCard>
+
+          {/* Delete Deployment (existing) */}
+          <GlassCard className="p-5 !border-red-500/20">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center flex-shrink-0">
+                <Server className="w-5 h-5 text-red-400" />
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="text-sm font-semibold text-white">{t('settings.deleteTitle')}</h3>
