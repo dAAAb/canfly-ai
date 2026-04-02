@@ -330,7 +330,7 @@ export default function RegisterPage() {
                 <input
                   type="text"
                   value={form.username}
-                  onChange={(e) => updateField('username', e.target.value.toLowerCase())}
+                  onChange={(e) => updateField('username', e.target.value)}
                   placeholder="your-username"
                   maxLength={30}
                   className="w-full pl-8 pr-10 py-3 bg-gray-900 border border-gray-700 text-white placeholder-gray-500 rounded-xl focus:outline-none focus:border-purple-500 transition-colors"
@@ -354,9 +354,9 @@ export default function RegisterPage() {
                 {usernameStatus === 'taken' && 'This username is already taken.'}
                 {usernameStatus === 'invalid' &&
                   '2-30 characters, letters, numbers, hyphens, underscores only.'}
-                {usernameStatus === 'available' && 'Username is available!'}
+                {usernameStatus === 'available' && `✓ canfly.ai/u/${form.username}`}
                 {(usernameStatus === 'idle' || usernameStatus === 'checking') &&
-                  'Your profile URL will be canfly.ai/@username'}
+                  'Case is preserved — dAAAb and daaab are the same username.'}
               </p>
             </div>
 

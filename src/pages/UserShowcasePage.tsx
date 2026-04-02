@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQueryLang } from '../hooks/useLanguage'
@@ -225,6 +225,7 @@ function formatDate(iso: string): string {
 export default function UserShowcasePage({ subdomainUsername }: { subdomainUsername?: string } = {}) {
   const params = useParams<{ username: string }>()
   const username = subdomainUsername || params.username
+  const navigate = useNavigate()
   const { currentLang, switchLang } = useQueryLang()
   const { t } = useTranslation()
   const { walletAddress, getAccessToken } = useAuth()
@@ -273,10 +274,18 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
         if (!r.ok) throw new Error('error')
         return r.json()
       })
-      .then((data) => setUser(data as UserData))
+      .then((data) => {
+        const userData = data as UserData
+        // Canonical redirect: if URL has wrong case, redirect to canonical username
+        if (userData.username !== username && !subdomainUsername) {
+          navigate(`/u/${userData.username}${window.location.search}`, { replace: true })
+          return
+        }
+        setUser(userData)
+      })
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false))
-  }, [username])
+  }, [username, navigate, subdomainUsername])
 
   // Load pending agents when user can edit
   useEffect(() => {

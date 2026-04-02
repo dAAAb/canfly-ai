@@ -113,8 +113,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     return errorResponse('Avatar URL is too long.', 400)
   }
 
-  // Check if username already exists
-  const existing = await env.DB.prepare('SELECT username FROM users WHERE username = ?1')
+  // Check if username already exists (case-insensitive to prevent dAAAb vs daaab conflicts)
+  const existing = await env.DB.prepare('SELECT username FROM users WHERE username = ?1 COLLATE NOCASE')
     .bind(username)
     .first()
   if (existing) {
