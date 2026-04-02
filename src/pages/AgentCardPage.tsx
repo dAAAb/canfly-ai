@@ -111,6 +111,7 @@ interface TrustData {
 
 interface AgentData {
   name: string
+  display_name: string | null
   owner_username: string | null
   wallet_address: string | null
   basename: string | null
@@ -242,8 +243,8 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
       ? `https://canfly.ai/u/${agent.owner_username}/agent/${agent.name}`
       : 'https://canfly.ai'
   useHead({
-    title: agent ? `${agent.name} — AI Agent | CanFly.ai` : 'Agent | CanFly.ai',
-    description: agent?.bio || (agent ? `${agent.name} is an AI agent on CanFly.ai` : 'AI Agent on CanFly.ai'),
+    title: agent ? `${agent.display_name || agent.name} — AI Agent | CanFly.ai` : 'Agent | CanFly.ai',
+    description: agent?.bio || (agent ? `${agent.display_name || agent.name} is an AI agent on CanFly.ai` : 'AI Agent on CanFly.ai'),
     ogImage: agent?.avatar_url || undefined,
     canonical: agentUrl,
     ogType: 'profile',
@@ -352,7 +353,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": agent.name,
+    "name": agent.display_name || agent.name,
     "description": agent.bio || `AI agent on CanFly.ai`,
     "url": agentUrl,
     ...(agent.avatar_url ? { "image": agent.avatar_url } : {}),
@@ -396,7 +397,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                 avatarUrl={agent.avatar_url}
                 walletAddress={agent.wallet_address}
                 basename={agent.basename}
-                name={agent.name}
+                name={agent.display_name || agent.name}
                 size={96}
                 emoji={platformEmoji}
                 border="border-4 border-black ring-2 ring-gray-700"
@@ -417,7 +418,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
             {/* PillBadge */}
             <div className="mb-3">
               <PillBadge
-                name={agent.name}
+                name={agent.display_name || agent.name}
                 walletAddress={agent.wallet_address}
                 type={badgeType}
                 href={free ? `/free/agent/${agent.name}` : `/u/${agent.owner_username}/agent/${agent.name}`}
