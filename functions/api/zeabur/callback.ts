@@ -16,6 +16,7 @@ import {
   parseBody,
   generateApiKey,
   generatePairingCode,
+  pairingCodeExpires,
   toAgentSlug,
 } from '../community/_helpers'
 
@@ -208,7 +209,7 @@ async function registerLobster(
 
   const apiKey = generateApiKey()
   const pairingCode = generatePairingCode()
-  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().replace('T', ' ').slice(0, 19)
+  const expires = pairingCodeExpires()
 
   // Insert agent with owner binding
   await env.DB.prepare(

@@ -12,6 +12,7 @@ import {
   handleOptions,
   generateApiKey,
   generatePairingCode,
+  pairingCodeExpires,
   isValidAgentName,
   toAgentSlug,
   parseBody,
@@ -58,8 +59,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
 
   const apiKey = generateApiKey()
   const pairingCode = generatePairingCode()
-  // Pairing code expires in 24 hours
-  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().replace('T', ' ').slice(0, 19)
+  const expires = pairingCodeExpires()
 
   const status = owner_invite ? 'pending_confirmation' : 'free'
 

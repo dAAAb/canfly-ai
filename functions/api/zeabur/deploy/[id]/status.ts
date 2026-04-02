@@ -13,6 +13,7 @@ import {
   handleOptions,
   generateApiKey,
   generatePairingCode,
+  pairingCodeExpires,
   toAgentSlug,
 } from '../../../community/_helpers'
 import { authenticateRequest } from '../../../_auth'
@@ -442,7 +443,7 @@ async function registerLobster(
 
   const apiKey = generateApiKey()
   const pairingCode = generatePairingCode()
-  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().replace('T', ' ').slice(0, 19)
+  const expires = pairingCodeExpires()
 
   await env.DB.prepare(
     `INSERT INTO agents (name, display_name, owner_username, platform, avatar_url, bio, model,

@@ -94,6 +94,9 @@ export function generateApiKey(): string {
   return 'cfa_' + Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')
 }
 
+/** Pairing code validity period: 7 days */
+export const PAIRING_CODE_TTL_MS = 7 * 24 * 60 * 60 * 1000
+
 /** Generate a pairing code like CLAW-8K2M-X9F3 */
 export function generatePairingCode(): string {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789' // no 0/O/1/I ambiguity
@@ -103,6 +106,11 @@ export function generatePairingCode(): string {
     return Array.from(bytes, (b) => chars[b % chars.length]).join('')
   }
   return `CLAW-${segment(4)}-${segment(4)}`
+}
+
+/** Generate a pairing code expiry timestamp (ISO string for D1) */
+export function pairingCodeExpires(): string {
+  return new Date(Date.now() + PAIRING_CODE_TTL_MS).toISOString().replace('T', ' ').slice(0, 19)
 }
 
 /** Parse integer query param with default */
