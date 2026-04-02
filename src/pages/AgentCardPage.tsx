@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { useQueryLang } from '../hooks/useLanguage'
 import { useHead } from '../hooks/useHead'
@@ -135,6 +135,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
   const params = useParams<{ username?: string; agentName: string }>()
   const username = subdomainUsername || params.username
   const agentName = params.agentName
+  const navigate = useNavigate()
   const { currentLang, switchLang } = useQueryLang()
   const { walletAddress, getAccessToken, isAuthenticated, login } = useAuth()
   const { t } = useTranslation()
@@ -292,7 +293,17 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
         return r.json()
       })
       .then((data) => {
-        setAgent(data as AgentData)
+        const agentResult = data as AgentData
+        // Canonical redirect: if URL has wrong case, redirect to slug URL
+        if (agentResult.name !== agentName) {
+          const base = free
+            ? `/free/agent/${agentResult.name}`
+            : `/u/${username}/agent/${agentResult.name}`
+          const search = window.location.search
+          navigate(base + search, { replace: true })
+          return
+        }
+        setAgent(agentResult)
         // Fetch completed tasks for the agent
         fetch(`/api/agents/${agentName}/tasks?limit=5`)
           .then((r) => r.ok ? r.json() : null)
@@ -301,12 +312,11 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
           .finally(() => setJobsLoaded(true))
 
         // Fetch deployment data for this agent (for live status + Chat button)
-        const agentData = data as AgentData
-        if (agentData.owner_username) {
+        if (agentResult.owner_username) {
           (async () => {
             try {
               const headers = await getApiAuthHeaders({ getAccessToken, walletAddress })
-              const res = await fetch(`/api/zeabur/deploy?owner=${encodeURIComponent(agentData.owner_username!)}`, { headers })
+              const res = await fetch(`/api/zeabur/deploy?owner=${encodeURIComponent(agentResult.owner_username!)}`, { headers })
               if (!res.ok) return
               const d = (await res.json()) as { deployments?: Array<{ id: string; agent_name: string; status: string }> }
               const dep = d?.deployments?.find(dep => dep.agent_name === agentName)
@@ -317,7 +327,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false))
-  }, [agentName])
+  }, [agentName, navigate, free, username])
 
   if (loading) {
     return (

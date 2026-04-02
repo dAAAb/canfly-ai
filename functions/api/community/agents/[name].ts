@@ -12,7 +12,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
             avatar_url, bio, model, hosting, capabilities, erc8004_url,
             is_public, created_at, agentbook_registered, basemail_handle,
             birthday, birthday_verified, last_heartbeat
-     FROM agents WHERE name = ?1`
+     FROM agents WHERE name = ?1 COLLATE NOCASE`
   )
     .bind(name)
     .first()
