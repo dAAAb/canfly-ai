@@ -511,7 +511,7 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
               const linked = privy.user?.linkedAccounts || []
               const googleAccount = linked.find((a) => a.type === 'google_oauth')
               const twitterAccount = linked.find((a) => a.type === 'twitter_oauth')
-              const linkedinAccount = linked.find((a) => a.type === 'linkedin_oauth')
+              const githubAccount = linked.find((a) => a.type === 'github_oauth')
 
               const providers: {
                 id: string
@@ -544,13 +544,13 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
                   getSubject: (a) => (a as Record<string, string>).subject || '',
                 },
                 {
-                  id: 'linkedin',
-                  label: 'LinkedIn',
-                  icon: '🔗',
-                  account: linkedinAccount,
-                  link: privy.linkLinkedIn,
-                  unlink: linked.length > 1 ? (s: string) => privy.unlinkLinkedIn(s) : null,
-                  getDisplayName: (a) => (a as Record<string, string>).name || (a as Record<string, string>).email || 'LinkedIn',
+                  id: 'github',
+                  label: 'GitHub',
+                  icon: '🐙',
+                  account: githubAccount,
+                  link: privy.linkGithub,
+                  unlink: linked.length > 1 ? (s: string) => privy.unlinkGithub(s) : null,
+                  getDisplayName: (a) => (a as Record<string, string>).username || (a as Record<string, string>).name || 'GitHub',
                   getSubject: (a) => (a as Record<string, string>).subject || '',
                 },
               ]
