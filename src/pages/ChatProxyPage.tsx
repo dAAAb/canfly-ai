@@ -7,6 +7,8 @@ import { getApiAuthHeaders } from '../utils/apiAuth'
 import Navbar from '../components/Navbar'
 import SmartAvatar from '../components/SmartAvatar'
 import { walletGradient } from '../utils/walletGradient'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import {
   Send,
   ArrowLeft,
@@ -16,7 +18,42 @@ import {
   MessageSquare,
   AlertCircle,
   Plus,
+  Square,
 } from 'lucide-react'
+
+/* ── Media embed helpers ───────────────────────────────────── */
+
+const MEDIA_URL_RE = /https?:\/\/\S+\.(?:png|jpg|jpeg|gif|webp|svg|mp4|webm|mov|mp3|wav|ogg|aac)(?:\?\S*)?/gi
+const IMAGE_EXT = /\.(png|jpg|jpeg|gif|webp|svg)(\?|$)/i
+const VIDEO_EXT = /\.(mp4|webm|mov)(\?|$)/i
+const AUDIO_EXT = /\.(mp3|wav|ogg|aac)(\?|$)/i
+
+function MediaEmbed({ url }: { url: string }) {
+  if (IMAGE_EXT.test(url)) {
+    return <img src={url} alt="" className="max-w-full max-h-80 rounded-lg mt-2" loading="lazy" />
+  }
+  if (VIDEO_EXT.test(url)) {
+    return <video src={url} controls className="max-w-full max-h-80 rounded-lg mt-2" />
+  }
+  if (AUDIO_EXT.test(url)) {
+    return <audio src={url} controls className="w-full mt-2" />
+  }
+  return null
+}
+
+/** Extract media URLs from message content and render embeds */
+function MessageMediaEmbeds({ content }: { content: string }) {
+  const urls = content.match(MEDIA_URL_RE)
+  if (!urls) return null
+  const unique = [...new Set(urls)]
+  return (
+    <>
+      {unique.map((url) => (
+        <MediaEmbed key={url} url={url} />
+      ))}
+    </>
+  )
+}
 
 /* ── Types ──────────────────────────────────────────────── */
 
@@ -69,6 +106,8 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
+  const composingRef = useRef(false) // IME composition state (Chinese/Japanese input)
+  const abortRef = useRef<AbortController | null>(null)
 
   /** Filter out system messages (health-check pings, TG pairing commands) */
   const isSystemMessage = (content: string): boolean => {
@@ -160,9 +199,13 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
     setMessages(prev => [...prev, tempUserMsg])
     setSending(true)
 
+    const controller = new AbortController()
+    abortRef.current = controller
+
     try {
       const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/chat`, {
         method: 'POST',
+        signal: controller.signal,
         headers: await getAuthHeaders(),
         body: JSON.stringify({ message, sessionId: activeSession }),
       })
@@ -253,17 +296,30 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
           .catch(() => {})
       )
     } catch (err) {
-      setError((err as Error).message)
-      // Remove optimistic message on error
-      setMessages(prev => prev.filter(m => m.id !== tempUserMsg.id))
+      if ((err as Error).name === 'AbortError') {
+        // User clicked stop — keep messages as-is
+        setStreaming(false)
+      } else {
+        setError((err as Error).message)
+        // Remove optimistic message on error
+        setMessages(prev => prev.filter(m => m.id !== tempUserMsg.id))
+      }
     } finally {
       setSending(false)
+      abortRef.current = null
     }
   }, [input, sending, agentName, getAuthHeaders, activeSession])
 
-  // Handle Enter key (Shift+Enter for newline)
+  // Stop generation
+  const stopGeneration = useCallback(() => {
+    abortRef.current?.abort()
+    setSending(false)
+    setStreaming(false)
+  }, [])
+
+  // Handle Enter key — IME-aware (compositionstart/end prevents send during Chinese input)
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey && !composingRef.current) {
       e.preventDefault()
       sendMessage()
     }
@@ -406,13 +462,23 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
                   </div>
                 )}
                 <div
-                  className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
+                  className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
                     msg.role === 'user'
-                      ? 'bg-blue-600 text-white rounded-br-md'
+                      ? 'bg-blue-600 text-white rounded-br-md whitespace-pre-wrap'
                       : 'bg-gray-800 text-gray-200 rounded-bl-md'
                   }`}
                 >
-                  {msg.content}
+                  {msg.role === 'assistant' ? (
+                    <div className="prose prose-invert prose-sm max-w-none [&_pre]:bg-black/40 [&_pre]:rounded-lg [&_pre]:p-3 [&_code]:text-cyan-300 [&_a]:text-cyan-400 [&_a]:underline [&_table]:border-collapse [&_th]:border [&_th]:border-gray-600 [&_th]:px-2 [&_th]:py-1 [&_td]:border [&_td]:border-gray-700 [&_td]:px-2 [&_td]:py-1 [&_p]:my-1 [&_ul]:my-1 [&_ol]:my-1 [&_li]:my-0">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                      <MessageMediaEmbeds content={msg.content} />
+                    </div>
+                  ) : (
+                    <>
+                      {msg.content}
+                      <MessageMediaEmbeds content={msg.content} />
+                    </>
+                  )}
                   {streaming && msg === messages[messages.length - 1] && msg.role === 'assistant' && (
                     <span className="inline-block w-2 h-4 bg-gray-400 animate-pulse ml-0.5" />
                   )}
@@ -473,23 +539,31 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
+                onCompositionStart={() => { composingRef.current = true }}
+                onCompositionEnd={() => { composingRef.current = false }}
                 placeholder={t('chat.placeholder', { agent: agentName })}
                 rows={1}
                 className="flex-1 bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white text-sm placeholder-gray-500 resize-none focus:outline-none focus:border-gray-500 transition-colors max-h-32"
                 style={{ minHeight: '44px' }}
-                disabled={sending}
+                disabled={sending && !streaming}
               />
-              <button
-                onClick={sendMessage}
-                disabled={!input.trim() || sending}
-                className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-blue-600 text-white hover:bg-blue-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              >
-                {sending ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
+              {sending ? (
+                <button
+                  onClick={stopGeneration}
+                  className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-red-600 text-white hover:bg-red-500 transition-colors"
+                  title={t('chat.stop', 'Stop')}
+                >
+                  <Square className="w-4 h-4" />
+                </button>
+              ) : (
+                <button
+                  onClick={sendMessage}
+                  disabled={!input.trim()}
+                  className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-blue-600 text-white hover:bg-blue-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
                   <Send className="w-4 h-4" />
-                )}
-              </button>
+                </button>
+              )}
             </div>
             <p className="text-gray-600 text-xs mt-2 text-center">
               {t('chat.disclaimer')}
