@@ -240,6 +240,11 @@ export const onRequestPut: PagesFunction<Env> = async ({ env, params, request })
              VALUES (?1, ?2, NULL, NULL, NULL)`
           ).bind(finalName, skill).run()
         } else {
+          // Auto-fill payment_methods for purchasable skills
+          if (skill.type === 'purchasable') {
+            if (!skill.currency) skill.currency = 'USDC'
+            if (!skill.payment_methods) skill.payment_methods = ['USDC (Base)']
+          }
           await env.DB.prepare(
             `INSERT INTO skills (agent_name, name, slug, description, url, type, price, currency, payment_methods, sla)
              VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)`

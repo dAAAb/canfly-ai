@@ -83,6 +83,19 @@ export const onRequestPut: PagesFunction<Env> = async ({ env, params, request })
     return errorResponse('type must be "free" or "purchasable"', 400)
   }
 
+  // Validate purchasable skills: require price + currency, auto-fill payment_methods
+  if (body.type === 'purchasable') {
+    if (!body.price || body.price <= 0) {
+      return errorResponse('purchasable skills require a price > 0', 400)
+    }
+    if (!body.currency) {
+      body.currency = 'USDC'
+    }
+    if (!body.payment_methods) {
+      body.payment_methods = ['USDC (Base)']
+    }
+  }
+
   // Check if skill exists
   const existing = await env.DB.prepare(
     'SELECT id, name FROM skills WHERE agent_name = ?1 AND slug = ?2',
