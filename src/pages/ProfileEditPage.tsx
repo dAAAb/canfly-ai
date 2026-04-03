@@ -1,12 +1,14 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { usePrivy } from '@privy-io/react-auth'
 import { useAuth } from '../hooks/useAuth'
+import { useTranslation } from 'react-i18next'
 import { getApiAuthHeaders } from '../utils/apiAuth'
 import Navbar from '../components/Navbar'
 import WorldIdVerify from '../components/WorldIdVerify'
 import ReviewVideoPlayer from '../components/ReviewVideoPlayer'
 import { walletGradient } from '../utils/walletGradient'
-import { AlertCircle, Loader2, User, Save, Copy, Check, X, Link2, Sparkles } from 'lucide-react'
+import { AlertCircle, Loader2, User, Save, Copy, Check, X, Link2, Sparkles, Shield } from 'lucide-react'
 
 interface UserLinks {
   x?: string
@@ -50,6 +52,8 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
   const params = useParams<{ username: string }>(); const username = subdomainUsername || params.username
   const navigate = useNavigate()
   const { walletAddress, getAccessToken } = useAuth()
+  const { t } = useTranslation()
+  const privy = usePrivy()
 
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState<UserData | null>(null)
@@ -491,6 +495,114 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
               walletAddress={user.wallet_address}
               getAccessToken={getAccessToken}
             />
+          </div>
+
+          {/* ── Linked Accounts Section ── */}
+          <div className="mt-12 border-t border-gray-800 pt-10">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2 mb-2">
+              <Shield className="w-5 h-5 text-cyan-400" />
+              {t('profile.linkedAccounts')}
+            </h2>
+            <p className="text-gray-500 text-sm mb-6">
+              {t('profile.linkedAccountsDesc')}
+            </p>
+
+            {(() => {
+              const linked = privy.user?.linkedAccounts || []
+              const googleAccount = linked.find((a) => a.type === 'google_oauth')
+              const twitterAccount = linked.find((a) => a.type === 'twitter_oauth')
+              const linkedinAccount = linked.find((a) => a.type === 'linkedin_oauth')
+
+              const providers: {
+                id: string
+                label: string
+                icon: string
+                account: typeof linked[number] | undefined
+                link: () => void
+                unlink: ((subject: string) => Promise<unknown>) | null
+                getDisplayName: (a: typeof linked[number]) => string
+                getSubject: (a: typeof linked[number]) => string
+              }[] = [
+                {
+                  id: 'google',
+                  label: 'Google',
+                  icon: '🔵',
+                  account: googleAccount,
+                  link: privy.linkGoogle,
+                  unlink: linked.length > 1 ? (s: string) => privy.unlinkGoogle(s) : null,
+                  getDisplayName: (a) => (a as Record<string, string>).email || (a as Record<string, string>).name || 'Google',
+                  getSubject: (a) => (a as Record<string, string>).subject || '',
+                },
+                {
+                  id: 'twitter',
+                  label: 'X (Twitter)',
+                  icon: '𝕏',
+                  account: twitterAccount,
+                  link: privy.linkTwitter,
+                  unlink: linked.length > 1 ? (s: string) => privy.unlinkTwitter(s) : null,
+                  getDisplayName: (a) => '@' + ((a as Record<string, string>).username || (a as Record<string, string>).name || 'twitter'),
+                  getSubject: (a) => (a as Record<string, string>).subject || '',
+                },
+                {
+                  id: 'linkedin',
+                  label: 'LinkedIn',
+                  icon: '🔗',
+                  account: linkedinAccount,
+                  link: privy.linkLinkedIn,
+                  unlink: linked.length > 1 ? (s: string) => privy.unlinkLinkedIn(s) : null,
+                  getDisplayName: (a) => (a as Record<string, string>).name || (a as Record<string, string>).email || 'LinkedIn',
+                  getSubject: (a) => (a as Record<string, string>).subject || '',
+                },
+              ]
+
+              return (
+                <div className="space-y-3">
+                  {providers.map((p) => (
+                    <div
+                      key={p.id}
+                      className="flex items-center justify-between bg-gray-900/50 border border-gray-800 rounded-xl px-4 py-3"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-lg w-6 text-center">{p.icon}</span>
+                        <div>
+                          <span className="text-white text-sm font-medium">{p.label}</span>
+                          {p.account && (
+                            <p className="text-gray-400 text-xs">{p.getDisplayName(p.account)}</p>
+                          )}
+                        </div>
+                      </div>
+                      {p.account ? (
+                        <div className="flex items-center gap-2">
+                          <span className="text-green-400 text-xs font-medium flex items-center gap-1">
+                            <Check className="w-3.5 h-3.5" /> {t('profile.linked')}
+                          </span>
+                          {p.unlink && (
+                            <button
+                              onClick={() => {
+                                const subject = p.getSubject(p.account!)
+                                if (subject && confirm(t('profile.unlinkConfirm', { provider: p.label }))) {
+                                  p.unlink!(subject)
+                                }
+                              }}
+                              className="text-gray-600 hover:text-red-400 text-xs transition-colors"
+                            >
+                              {t('profile.unlink')}
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        <button
+                          onClick={p.link}
+                          className="px-3 py-1.5 bg-cyan-600/20 hover:bg-cyan-600/30 border border-cyan-600/30 text-cyan-400 text-xs font-medium rounded-lg transition-colors"
+                        >
+                          {t('profile.linkAccount')}
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )
+            })()}
           </div>
 
           {/* ── Agent Binding Section ── */}

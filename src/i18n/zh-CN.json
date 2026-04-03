@@ -7585,6 +7585,12 @@
     }
   },
   "profile": {
+    "linkedAccounts": "账号绑定",
+    "linkedAccountsDesc": "绑定社交账号，之后可以用这些方式快速登录。",
+    "linked": "已绑定",
+    "unlink": "解除",
+    "linkAccount": "绑定",
+    "unlinkConfirm": "确定要解除 {{provider}} 的绑定吗？",
     "notFound": "找不到用户",
     "notFoundDesc": "这个档案还不存在。也许他们还没开始飞翔！",
     "backHome": "回首页",

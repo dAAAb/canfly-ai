@@ -7560,6 +7560,12 @@
     }
   },
   "profile": {
+    "linkedAccounts": "Linked Accounts",
+    "linkedAccountsDesc": "Link social accounts for quick login alternatives.",
+    "linked": "Linked",
+    "unlink": "Unlink",
+    "linkAccount": "Link",
+    "unlinkConfirm": "Unlink {{provider}}? You can re-link it later.",
     "notFound": "User not found",
     "notFoundDesc": "This profile doesn't exist yet. Maybe they haven't started flying!",
     "backHome": "Back to home",
