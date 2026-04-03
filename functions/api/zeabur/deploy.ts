@@ -45,7 +45,7 @@ export function aiProviderDefaultModel(provider: string): string {
     case 'openai': return 'openai/gpt-4.1-mini'
     case 'anthropic': return 'anthropic/claude-sonnet-4-6'
     case 'google-gemini': return 'google/gemini-2.5-flash'
-    case 'openrouter': return 'openrouter/auto'
+    case 'openrouter': return 'qwen/qwen3.6-plus:free'
     default: return 'zeabur-ai/glm-4.7-flash'
   }
 }

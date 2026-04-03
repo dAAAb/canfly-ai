@@ -177,6 +177,15 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
   const [aiProvider, setAiProvider] = useState('zeabur-ai-hub')
   const [aiProviderKey, setAiProviderKey] = useState('')
 
+  /** Provider default model info for user display */
+  const providerModelInfo: Record<string, { model: string; free?: boolean; note?: string }> = {
+    'zeabur-ai-hub': { model: 'glm-4.7-flash' },
+    'openai': { model: 'gpt-4.1-mini' },
+    'anthropic': { model: 'claude-sonnet-4-6' },
+    'google-gemini': { model: 'gemini-2.5-flash' },
+    'openrouter': { model: 'qwen/qwen3.6-plus:free', free: true, note: 'openrouter_free_note' },
+  }
+
   const [agentDisplayName, setAgentDisplayName] = useState('')
   const [agentBio, setAgentBio] = useState('')
   const [nameChecking, setNameChecking] = useState(false)
@@ -706,6 +715,28 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
                   <option value="google-gemini">Google Gemini</option>
                   <option value="openrouter">OpenRouter</option>
                 </select>
+                {/* Provider default model info hint */}
+                {providerModelInfo[aiProvider] && (
+                  <div className="mt-2 px-3 py-2.5 bg-gray-800/60 border border-gray-700/50 rounded-lg">
+                    <p className="text-[11px] text-gray-400">
+                      {t('deploy.defaultModelLabel')}{' '}
+                      <code className="text-cyan-400 bg-gray-900/60 px-1.5 py-0.5 rounded text-[11px]">
+                        {providerModelInfo[aiProvider].model}
+                      </code>
+                      {providerModelInfo[aiProvider].free && (
+                        <span className="ml-1.5 text-green-400 font-medium">✦ Free</span>
+                      )}
+                    </p>
+                    {providerModelInfo[aiProvider].note && (
+                      <p className="text-[10px] text-yellow-500/80 mt-1">
+                        ⚠ {t(`deploy.${providerModelInfo[aiProvider].note}`)}
+                      </p>
+                    )}
+                    <p className="text-[10px] text-gray-500 mt-1">
+                      {t('deploy.changeModelLater')}
+                    </p>
+                  </div>
+                )}
               </div>
               <div>
                 <label className="block text-xs text-gray-400 mb-1.5">{t('deploy.aiProviderKeyLabel')}</label>
