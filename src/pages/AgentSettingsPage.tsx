@@ -77,6 +77,13 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
   const [cloneCanRetry, setCloneCanRetry] = useState(false)
   const [showAllServers, setShowAllServers] = useState(false)
 
+  // Display name editing
+  const [displayName, setDisplayName] = useState('')
+  const [displayNameLoaded, setDisplayNameLoaded] = useState(false)
+  const [savingDisplayName, setSavingDisplayName] = useState(false)
+  const [displayNameSaved, setDisplayNameSaved] = useState(false)
+  const [displayNameError, setDisplayNameError] = useState<string | null>(null)
+
   // Regenerate pairing code
   const [regenPairingLoading, setRegenPairingLoading] = useState(false)
   const [regenPairingResult, setRegenPairingResult] = useState<{ code: string; expiresAt: string } | null>(null)
@@ -226,6 +233,44 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
     }
   }, [agentName, deleteConfirmText, getAuthHeaders, navigate, username, subdomainUsername])
 
+  // Load current display name
+  useEffect(() => {
+    if (!agentName || displayNameLoaded) return
+    fetch(`/api/community/agents/${encodeURIComponent(agentName)}`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data) {
+          const d = data as { display_name?: string | null }
+          setDisplayName(d.display_name || '')
+        }
+        setDisplayNameLoaded(true)
+      })
+      .catch(() => setDisplayNameLoaded(true))
+  }, [agentName, displayNameLoaded])
+
+  const handleSaveDisplayName = useCallback(async () => {
+    setSavingDisplayName(true)
+    setDisplayNameError(null)
+    setDisplayNameSaved(false)
+    try {
+      const res = await fetch(`/api/community/agents/${encodeURIComponent(agentName)}`, {
+        method: 'PUT',
+        headers: await getAuthHeaders(),
+        body: JSON.stringify({ displayName: displayName.trim() || null }),
+      })
+      if (!res.ok) {
+        const data = (await res.json()) as { error?: string }
+        throw new Error(data.error || `Failed (${res.status})`)
+      }
+      setDisplayNameSaved(true)
+      setTimeout(() => setDisplayNameSaved(false), 3000)
+    } catch (err) {
+      setDisplayNameError((err as Error).message)
+    } finally {
+      setSavingDisplayName(false)
+    }
+  }, [agentName, displayName, getAuthHeaders])
+
   const handleRegenPairingCode = useCallback(async () => {
     setRegenPairingLoading(true)
     setRegenPairingError(null)
@@ -329,6 +374,49 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
             {t('settings.pageTitle')} — {agentName}
           </h1>
           <p className="text-gray-400 text-sm">{t('settings.pageDescription')}</p>
+        </div>
+
+        {/* Display Name */}
+        <div className="mb-8">
+          <h2 className="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-3">
+            {t('settings.displayNameTitle', 'Display Name')}
+          </h2>
+          <GlassCard className="p-5">
+            <div className="flex items-start gap-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-gray-400 mb-3">
+                  {t('settings.displayNameDesc', 'The display name shown on the agent\'s profile. The URL will always use the slug: ')}
+                  <code className="text-cyan-400">{agentName}</code>
+                </p>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={displayName}
+                    onChange={(e) => { setDisplayName(e.target.value); setDisplayNameSaved(false) }}
+                    placeholder={agentName}
+                    maxLength={100}
+                    className="flex-1 px-3 py-2 bg-gray-900 border border-gray-700 text-white text-sm rounded-lg focus:outline-none focus:border-cyan-500/50 transition-colors"
+                  />
+                  <button
+                    onClick={handleSaveDisplayName}
+                    disabled={savingDisplayName}
+                    className="shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 disabled:bg-gray-700 text-white text-sm font-medium transition-colors"
+                  >
+                    {savingDisplayName ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : displayNameSaved ? (
+                      <><Check className="w-4 h-4" /> {t('settings.saved', 'Saved')}</>
+                    ) : (
+                      t('settings.save', 'Save')
+                    )}
+                  </button>
+                </div>
+                {displayNameError && (
+                  <p className="text-xs text-red-400 mt-2">{displayNameError}</p>
+                )}
+              </div>
+            </div>
+          </GlassCard>
         </div>
 
         {/* Quick Actions */}

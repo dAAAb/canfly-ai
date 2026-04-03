@@ -3,6 +3,7 @@
  * PUT  /api/community/agents/:name — Update agent profile (requires edit token)
  */
 import { type Env, json, errorResponse, handleOptions, parseBody } from '../_helpers'
+import { authenticateRequest } from '../../_auth'
 
 export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
   const name = params.name as string
@@ -172,6 +173,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
 
 // ── PUT /api/community/agents/:name ──────────────────────────────────
 interface UpdateAgentBody {
+  displayName?: string | null
   ownerUsername?: string | null
   walletAddress?: string | null
   basename?: string | null
@@ -189,15 +191,10 @@ interface UpdateAgentBody {
 
 export const onRequestPut: PagesFunction<Env> = async ({ env, params, request }) => {
   const name = params.name as string
-  const editToken = request.headers.get('X-Edit-Token')
 
-  if (!editToken) {
-    return errorResponse('X-Edit-Token header required', 401)
-  }
-
-  // Verify agent exists and edit token matches
+  // Verify agent exists
   const agent = await env.DB.prepare(
-    'SELECT name, edit_token FROM agents WHERE name = ?1'
+    'SELECT name, edit_token, owner_username FROM agents WHERE name = ?1'
   )
     .bind(name)
     .first()
@@ -205,8 +202,24 @@ export const onRequestPut: PagesFunction<Env> = async ({ env, params, request })
   if (!agent) {
     return errorResponse('Agent not found', 404)
   }
-  if (agent.edit_token !== editToken) {
-    return errorResponse('Invalid edit token', 403)
+
+  // Auth: accept edit token (agent self-update) OR owner auth (Privy JWT / user edit token)
+  const editToken = request.headers.get('X-Edit-Token')
+  let authorized = false
+
+  if (editToken && agent.edit_token === editToken) {
+    authorized = true
+  }
+
+  if (!authorized) {
+    const auth = await authenticateRequest(request, env.DB, env.PRIVY_APP_ID)
+    if (auth && agent.owner_username && auth.username === agent.owner_username) {
+      authorized = true
+    }
+  }
+
+  if (!authorized) {
+    return errorResponse('Authentication required (edit token or owner auth)', 401)
   }
 
   const body = await parseBody<UpdateAgentBody>(request)
@@ -236,6 +249,11 @@ export const onRequestPut: PagesFunction<Env> = async ({ env, params, request })
   const values: unknown[] = []
   let paramIdx = 1
 
+  if (body.displayName !== undefined) {
+    updates.push(`display_name = ?${paramIdx}`)
+    values.push(body.displayName || null)
+    paramIdx++
+  }
   if (body.ownerUsername !== undefined) {
     updates.push(`owner_username = ?${paramIdx}`)
     values.push(body.ownerUsername || null)
