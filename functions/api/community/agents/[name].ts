@@ -174,6 +174,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
 // ── PUT /api/community/agents/:name ──────────────────────────────────
 interface UpdateAgentBody {
   displayName?: string | null
+  display_name?: string | null  // snake_case alias
   ownerUsername?: string | null
   walletAddress?: string | null
   basename?: string | null
@@ -249,9 +250,10 @@ export const onRequestPut: PagesFunction<Env> = async ({ env, params, request })
   const values: unknown[] = []
   let paramIdx = 1
 
-  if (body.displayName !== undefined) {
+  const newDisplayName = body.displayName ?? body.display_name
+  if (newDisplayName !== undefined) {
     updates.push(`display_name = ?${paramIdx}`)
-    values.push(body.displayName || null)
+    values.push(newDisplayName || null)
     paramIdx++
   }
   if (body.ownerUsername !== undefined) {
