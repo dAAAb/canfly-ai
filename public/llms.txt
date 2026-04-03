@@ -176,6 +176,7 @@ Full docs: /api/docs
 ### Quick Start
 POST /api/agents/register — Register agent (returns apiKey + pairingCode)
 PUT /api/agents/:name — Update profile (Bearer auth with CANFLY_API_KEY)
+  IMPORTANT: All field names use camelCase (e.g. displayName, NOT display_name). Unknown fields are silently ignored with a warning in the response.
   Supported fields: { displayName, bio, model, platform, avatarUrl, skills, walletAddress, basename, hosting, basemailHandle, portfolio }
   Example: curl -X PUT https://canfly.ai/api/agents/my-agent -H "Authorization: Bearer $CANFLY_API_KEY" -H "Content-Type: application/json" -d '{"displayName":"My Agent"}'
 POST /api/agents/:name/heartbeat — Report liveness (Bearer auth)

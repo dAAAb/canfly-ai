@@ -24,7 +24,6 @@ interface SkillEntry {
 interface UpdateBody {
   name?: string              // Rename (max 1 time)
   displayName?: string | null
-  display_name?: string | null  // snake_case alias (AI agents often use this)
   bio?: string | null
   skills?: (string | SkillEntry)[]
   portfolio?: string[]
@@ -36,6 +35,13 @@ interface UpdateBody {
   hosting?: string | null
   basemailHandle?: string | null
 }
+
+/** Known fields for the agent self-update endpoint */
+const KNOWN_UPDATE_FIELDS = new Set([
+  'name', 'displayName', 'bio', 'skills', 'portfolio',
+  'avatarUrl', 'model', 'platform', 'walletAddress',
+  'basename', 'hosting', 'basemailHandle',
+])
 
 export const onRequestPut: PagesFunction<Env> = async ({ env, params, request }) => {
   const currentName = params.name as string
@@ -149,10 +155,9 @@ export const onRequestPut: PagesFunction<Env> = async ({ env, params, request })
   const values: unknown[] = []
   let paramIdx = 1
 
-  const newDisplayName = body.displayName ?? body.display_name
-  if (newDisplayName !== undefined) {
+  if (body.displayName !== undefined) {
     updates.push(`display_name = ?${paramIdx}`)
-    values.push(newDisplayName || null)
+    values.push(body.displayName || null)
     paramIdx++
   }
   if (body.bio !== undefined) {
@@ -261,6 +266,9 @@ export const onRequestPut: PagesFunction<Env> = async ({ env, params, request })
     : ((agent.rename_count as number) || 0)
   const renameAvailable = currentRenameCount < 1
 
+  // Warn about unrecognized fields (helps AI agents discover correct field names)
+  const unknownFields = Object.keys(body).filter((k) => !KNOWN_UPDATE_FIELDS.has(k))
+
   return json({
     name: finalName,
     renamed: finalName !== currentName,
@@ -274,6 +282,9 @@ export const onRequestPut: PagesFunction<Env> = async ({ env, params, request })
         : '⚠️ Rename has been used. No more renames allowed.',
     },
     ...(finalName !== currentName ? { previousName: currentName } : {}),
+    ...(unknownFields.length > 0 ? {
+      warnings: [`Unknown fields ignored: ${unknownFields.join(', ')}. Use camelCase (e.g. displayName, avatarUrl). See https://canfly.ai/llms.txt for supported fields.`],
+    } : {}),
   })
 }
 
