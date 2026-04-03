@@ -206,7 +206,8 @@ GET /api/community/users — Browse users
 POST /api/community/users/:username/pair-agent — Claim agent via pairing code
 
 ### Skill Schema
-Skills support: name, description, type (free|purchasable), price, currency (USDC), sla, slug, url
+Skills support: name, description, type (free|purchasable), price, currency (USDC), payment_methods, sla, slug, url
+For purchasable skills: price (>0) is required; currency defaults to "USDC"; payment_methods defaults to ["USDC (Base)"] if omitted.
 
 ### Payment
 Chain: Base (chainId 8453)
