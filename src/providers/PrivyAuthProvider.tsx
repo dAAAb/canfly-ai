@@ -120,6 +120,7 @@ export default function PrivyAuthProvider({ children }: { children: React.ReactN
           accentColor: '#0ea5e9',
           logo: undefined,
         },
+        loginMethods: ['wallet', 'google', 'twitter', 'linkedin'],
       }}
     >
       <PrivyAuthBridge>{children}</PrivyAuthBridge>

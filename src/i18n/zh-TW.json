@@ -7568,6 +7568,12 @@
     }
   },
   "profile": {
+    "linkedAccounts": "帳號綁定",
+    "linkedAccountsDesc": "綁定社群帳號，之後可以用這些方式快速登入。",
+    "linked": "已綁定",
+    "unlink": "解除",
+    "linkAccount": "綁定",
+    "unlinkConfirm": "確定要解除 {{provider}} 的綁定嗎？",
     "notFound": "找不到使用者",
     "notFoundDesc": "這個檔案還不存在。也許他們還沒開始飛翔！",
     "backHome": "回首頁",
