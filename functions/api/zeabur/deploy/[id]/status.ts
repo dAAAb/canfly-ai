@@ -26,6 +26,7 @@ import {
   injectCanflyEnvVars,
   buildConfigPatchPayload,
   patchConfigViaCLI,
+  writeAuthProfile,
   isPhaseTimedOut,
   generateUUID,
 } from '../../../../lib/openclaw-config'
@@ -352,7 +353,18 @@ async function handleConfig(
   const aiProvider = (phaseData.aiProvider as string) || ''
   const configRetryCount = (phaseData.configRetryCount as number) || 0
 
-  // 1. Patch config (after final restart — entrypoint already ran)
+  // 1a. Write auth-profiles.json for AI provider (env vars get stripped by OpenClaw sandbox)
+  if (aiProvider && aiProvider !== 'zeabur-ai-hub') {
+    const rawAiKey = (metadata.aiProviderKey || metadata.aiHubKey || '') as string
+    const aiKey = cryptoKey && rawAiKey ? await decrypt(rawAiKey, cryptoKey) : rawAiKey
+    if (aiKey) {
+      // Map Canfly provider name to OpenClaw provider name
+      const openclawProvider = aiProvider === 'google-gemini' ? 'google' : aiProvider
+      await writeAuthProfile(zeaburApiKey, serviceId, prodEnvId, openclawProvider, aiKey)
+    }
+  }
+
+  // 1b. Patch config (after final restart — entrypoint already ran)
   const defaultModel = aiProviderDefaultModel(aiProvider)
   const patchPayload = buildConfigPatchPayload(publicUrl, { defaultModel })
   const patchResult = await patchConfigViaCLI(zeaburApiKey, serviceId, prodEnvId, patchPayload)

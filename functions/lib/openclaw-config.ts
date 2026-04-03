@@ -94,6 +94,59 @@ export async function injectCanflyEnvVars(
   }
 }
 
+// ── Auth profiles (API key injection for providers) ──────
+
+/**
+ * Write a provider API key into OpenClaw's auth-profiles.json.
+ * This is needed because OpenClaw's sandbox strips env vars for security,
+ * so env-var-based auth (OPENROUTER_API_KEY etc.) doesn't always work.
+ *
+ * Format: { version: 1, profiles: { "<provider>:default": { type: "api_key", provider, key } } }
+ *
+ * Merges with existing profiles (doesn't overwrite other providers).
+ */
+export async function writeAuthProfile(
+  zeaburApiKey: string,
+  serviceId: string,
+  envId: string,
+  provider: string,
+  apiKey: string,
+): Promise<{ success: boolean; error?: string }> {
+  if (!apiKey || !provider) return { success: true } // nothing to write
+
+  const profileKey = `${provider}:default`
+  const profile = JSON.stringify({ type: 'api_key', provider, key: apiKey })
+
+  const script = [
+    `const fs=require('fs'),path=require('path');`,
+    `const dirs=['/home/node/.openclaw/agents/main/agent','/home/node/.openclaw'];`,
+    `let written=false;`,
+    `for(const d of dirs){`,
+    `  const f=d+'/auth-profiles.json';`,
+    `  try{`,
+    `    fs.mkdirSync(d,{recursive:true});`,
+    `    let data={version:1,profiles:{}};`,
+    `    try{data=JSON.parse(fs.readFileSync(f,'utf8'))}catch{}`,
+    `    data.profiles=data.profiles||{};`,
+    `    data.profiles[${JSON.stringify(profileKey)}]=${profile};`,
+    `    fs.writeFileSync(f,JSON.stringify(data,null,2));`,
+    `    written=true;`,
+    `  }catch(e){console.log('skip:'+d+':'+e.message)}`,
+    `}`,
+    `console.log(written?'auth_ok':'auth_fail')`,
+  ].join('')
+
+  try {
+    const { output } = await execCommand(zeaburApiKey, serviceId, envId, ['node', '-e', script])
+    if (output.includes('auth_ok')) {
+      return { success: true }
+    }
+    return { success: false, error: `auth-profiles write: ${output.slice(0, 200)}` }
+  } catch (err) {
+    return { success: false, error: `auth-profiles exec: ${(err as Error).message}` }
+  }
+}
+
 // ── Config patch payload builder ──────────────────────────
 
 /**
