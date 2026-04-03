@@ -23,6 +23,7 @@ interface SkillEntry {
 
 interface UpdateBody {
   name?: string              // Rename (max 1 time)
+  displayName?: string | null
   bio?: string | null
   skills?: (string | SkillEntry)[]
   portfolio?: string[]
@@ -147,6 +148,11 @@ export const onRequestPut: PagesFunction<Env> = async ({ env, params, request })
   const values: unknown[] = []
   let paramIdx = 1
 
+  if (body.displayName !== undefined) {
+    updates.push(`display_name = ?${paramIdx}`)
+    values.push(body.displayName || null)
+    paramIdx++
+  }
   if (body.bio !== undefined) {
     updates.push(`bio = ?${paramIdx}`)
     values.push(body.bio || null)
