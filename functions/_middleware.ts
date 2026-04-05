@@ -430,11 +430,12 @@ export const onRequest: PagesFunction = async (context) => {
   const path = url.pathname
   const ua = context.request.headers.get('user-agent') || ''
 
-  // ── MPP discovery: /openapi.json → serve dynamic OpenAPI spec ──
+  // ── MPP discovery: /openapi.json → redirect to /api/openapi.json ──
   if (path === '/openapi.json') {
-    // Import and delegate to the API handler to avoid self-fetch issues
-    const { onRequestGet } = await import('./api/openapi.json')
-    return onRequestGet(context as any)
+    return new Response(null, {
+      status: 301,
+      headers: { Location: '/api/openapi.json', 'Cache-Control': 'no-cache' },
+    })
   }
 
   // ── A2A .well-known/agent.json rewrite ──
