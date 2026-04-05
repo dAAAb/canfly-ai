@@ -15,6 +15,7 @@
  *   payment_methods (string[] | string, optional)
  */
 import { type Env, json, errorResponse, handleOptions, parseBody } from '../../../community/_helpers'
+import { slugify } from '../../../../lib/slugify'
 
 interface SkillBody {
   name?: string

@@ -5,6 +5,7 @@
  * individually — like an app store for AI agent skills.
  */
 import { type Env, handleOptions } from './community/_helpers'
+import { slugify } from '../lib/slugify'
 
 const USDC_E = '0x20c000000000000000000000b9537d11c60e8b50'
 
@@ -30,9 +31,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
     const sla = r.sla as string | null
     const amountAtomic = String(Math.round(price * 1_000_000))
 
-    // Use slug, or slugified name, or encoded name as fallback for uniqueness
-    let skillSlug = slug || skillName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
-    if (!skillSlug) skillSlug = encodeURIComponent(skillName)
+    const skillSlug = slug || slugify(skillName)
     const path = `/api/agents/${agent}/tasks/${skillSlug}`
 
     skillPaths[path] = {

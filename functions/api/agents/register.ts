@@ -17,6 +17,7 @@ import {
   toAgentSlug,
   parseBody,
 } from '../community/_helpers'
+import { slugify } from '../../lib/slugify'
 
 interface RegisterBody {
   name: string
@@ -90,8 +91,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
       if (typeof skill === 'string') {
         await env.DB.prepare(
           `INSERT INTO skills (agent_name, name, slug, description, url)
-           VALUES (?1, ?2, NULL, NULL, NULL)`
-        ).bind(name, skill).run()
+           VALUES (?1, ?2, ?3, NULL, NULL)`
+        ).bind(name, skill, slugify(skill)).run()
       } else {
         await env.DB.prepare(
           `INSERT INTO skills (agent_name, name, slug, description, url, type, price, currency, sla)
@@ -99,7 +100,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
         ).bind(
           name,
           skill.name,
-          skill.slug || null,
+          skill.slug || slugify(skill.name),
           skill.description || null,
           skill.url || null,
           skill.type || 'free',
