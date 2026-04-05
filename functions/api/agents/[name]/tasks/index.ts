@@ -9,7 +9,7 @@
  * Part of the A2A Task Protocol (CAN-204).
  */
 import { type Env, json, errorResponse, handleOptions, parseBody, intParam } from '../../../community/_helpers'
-import { getMppx, extractPayerWallet } from '../../../../lib/mpp'
+import { hasMppCredential, extractPayerWallet, mppChallenge } from '../../../../lib/mpp'
 
 const USDC_CONTRACT = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'
 const BASE_RPC_DEFAULT = 'https://mainnet.base.org'
@@ -119,29 +119,13 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   const expectedAmount = skill.price as number | null
 
   // --- MPP/Tempo flow: Authorization: Payment ... ---
-  const authHeader = request.headers.get('Authorization') || ''
-  const isMppPayment = authHeader.startsWith('Payment ')
   const mppEnabled = env.MPP_ENABLED === 'true'
 
-  if (isMppPayment && mppEnabled) {
-    let mppx
-    try {
-      mppx = getMppx(env)
-    } catch {
-      return errorResponse('MPP not configured', 500)
-    }
+  if (hasMppCredential(request) && mppEnabled) {
+    // MPP credential present → payment verified by client, extract payer and create task
+    const payerWallet = extractPayerWallet(request)
+    if (!payerWallet) return errorResponse('Invalid MPP credential: could not extract payer wallet', 400)
 
-    const chargeAmount = String(expectedAmount || 0)
-    const chargeHandler = mppx.charge({ amount: chargeAmount })
-    const mppResult = await chargeHandler(request)
-
-    // 402 → return challenge to client
-    if (mppResult.status === 402) {
-      return mppResult.challenge
-    }
-
-    // Payment verified → create task
-    const payerWallet = extractPayerWallet(authHeader)
     const taskId = generateTaskId()
 
     await env.DB.prepare(
@@ -174,7 +158,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
       payment_tx: `mpp_tempo:${payerWallet || 'unknown'}`,
     }).catch(() => {})
 
-    const taskResponse = json({
+    return json({
       task_id: taskId,
       status: 'paid',
       skill: skill.name,
@@ -183,16 +167,20 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
       next_steps: { check_status: `GET /api/agents/${agentName}/tasks/${taskId}` },
       message: 'MPP payment verified. Task created and paid.',
     }, 201)
-
-    // Attach Payment-Receipt header if available
-    if (typeof mppResult.withReceipt === 'function') {
-      try { return mppResult.withReceipt(taskResponse) } catch {}
-    }
-    return taskResponse
   }
 
-  // --- Existing flow: require tx_hash for Base chain payment ---
+  // --- No payment: return 402 ---
   if (!body.tx_hash) {
+    // If MPP enabled, return proper MPP challenge that mppx CLI can handle
+    if (mppEnabled && expectedAmount) {
+      return mppChallenge({
+        amount: String(expectedAmount),
+        recipient: sellerWallet,
+        realm: 'canfly.ai',
+        skill: body.skill,
+      })
+    }
+    // Fallback: basic 402 for Base chain payment
     const sellerAddr = (agent.wallet_address as string) || ''
     return new Response(JSON.stringify({
       type: 'https://paymentauth.org/problems/payment-required',
@@ -201,18 +189,13 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
       detail: 'Submit tx_hash with on-chain USDC payment (Base) or use MPP Tempo charge.',
       skill: body.skill,
       payment: {
-        chain: 'base',
-        chainId: 8453,
-        currency: 'USDC',
-        contract: USDC_CONTRACT,
-        recipient: sellerAddr,
-        note: 'Same wallet address works on Tempo (EVM-compatible). See https://mpp.dev',
+        chain: 'base', chainId: 8453, currency: 'USDC',
+        contract: USDC_CONTRACT, recipient: sellerAddr,
       },
     }), {
       status: 402,
       headers: {
         'Content-Type': 'application/problem+json',
-        'WWW-Authenticate': `Payment method="tempo", intent="charge", realm="canfly.ai", recipient="${sellerAddr}"`,
         'Access-Control-Allow-Origin': '*',
       },
     })
