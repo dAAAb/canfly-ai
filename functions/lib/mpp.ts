@@ -9,11 +9,8 @@
 import { Mppx, tempo } from 'mppx/server'
 import { privateKeyToAccount } from 'viem/accounts'
 
-// USDC.e on Tempo mainnet (6 decimals) — switch to PathUSD for testnet
-const USDC_E_MAINNET = '0x20c000000000000000000000b9537d11c60e8b50'
-const PATHUSD_TESTNET = '0x20c0000000000000000000000000000000000000'
-// TODO: remove testnet override after e2e testing
-const USDC_E = PATHUSD_TESTNET
+// USDC.e on Tempo mainnet (6 decimals)
+const USDC_E = '0x20c000000000000000000000b9537d11c60e8b50'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let _mppxInstance: any = null
@@ -34,7 +31,6 @@ export function getMppx(env: { MPP_SECRET_KEY?: string; MPP_PRIVATE_KEY?: string
     secretKey,
     methods: [
       tempo({
-        testnet: true,
         currency: USDC_E as `0x${string}`,
         account,
         mode: 'push',
