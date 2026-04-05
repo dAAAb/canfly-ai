@@ -90,17 +90,33 @@ export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
       '/api/agents/{name}/tasks': {
         post: {
           summary: 'Order a purchasable skill',
-          description: 'Pay with USDC on Base (escrow or direct) or USDC.e on Tempo via MPP. Returns 402 if payment is missing.',
+          description: 'Pay with USDC on Base (escrow or direct) or USDC.e on Tempo via MPP. Returns 402 if payment is missing. Dynamic pricing — amount varies by skill.',
           'x-payment-info': {
             amount: String(Math.min(...results.map(r => ((r.price as number) || 0.01) * 1_000_000))),
             method: 'tempo',
             intent: 'charge',
             currency: USDC_E,
-            description: 'Dynamic pricing — amount varies by skill. See purchasableSkills below.',
-            dynamic: true,
+            description: 'Dynamic pricing — amount varies by skill.',
             purchasableSkills: allSkills,
           },
           parameters: [{ name: 'name', in: 'path', required: true, schema: { type: 'string' } }],
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  required: ['skill'],
+                  properties: {
+                    skill: { type: 'string', description: 'Skill name or slug' },
+                    params: { type: 'object', description: 'Skill parameters' },
+                    buyer: { type: 'string', description: 'Buyer agent name' },
+                    buyer_email: { type: 'string', description: 'Buyer email' },
+                  },
+                },
+              },
+            },
+          },
           responses: {
             '201': { description: 'Task created with status paid' },
             '402': { description: 'Payment Required — MPP challenge or tx_hash needed' },
