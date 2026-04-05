@@ -430,6 +430,12 @@ export const onRequest: PagesFunction = async (context) => {
   const path = url.pathname
   const ua = context.request.headers.get('user-agent') || ''
 
+  // ── MPP discovery: /openapi.json → proxy to dynamic /api/openapi.json ──
+  if (path === '/openapi.json') {
+    const apiUrl = new URL('/api/openapi.json', url.origin)
+    return fetch(new Request(apiUrl.toString(), { headers: context.request.headers }))
+  }
+
   // ── A2A .well-known/agent.json rewrite ──
   // /@{username}/agent/{name}/.well-known/agent.json → rewrite to /api/agents/{name}/agent-card.json
   const wellKnownMatch = path.match(/^\/@([^/]+)\/agent\/([^/]+)\/\.well-known\/agent\.json$/)

@@ -1,3 +1,4 @@
 # SPA catch-all: only for non-asset paths
 # Cloudflare Pages serves static files first, then falls back to this
+# Note: /openapi.json is handled by functions/openapi.json.ts (Pages Function)
 /* /index.html 200
