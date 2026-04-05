@@ -43,7 +43,7 @@ export function slugify(name: string): string {
       currentCJK += char
     } else {
       if (currentCJK) {
-        segments.push(pinyin.convertToPinyin(currentCJK, '', true))
+        segments.push(pinyin.convertToPinyin(currentCJK, '-', true))
         currentCJK = ''
       }
       currentOther += char
@@ -52,7 +52,7 @@ export function slugify(name: string): string {
 
   // Flush remaining
   if (currentCJK) {
-    segments.push(pinyin.convertToPinyin(currentCJK, '', true))
+    segments.push(pinyin.convertToPinyin(currentCJK, '-', true))
   }
   if (currentOther) {
     const slug = currentOther.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
