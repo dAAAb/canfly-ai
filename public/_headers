@@ -12,6 +12,11 @@
 /community/*
   Cache-Control: no-store, no-cache, must-revalidate, max-age=0
 
+# OpenAPI discovery: short cache for MPPScan
+/openapi.json
+  Cache-Control: public, max-age=300
+  Access-Control-Allow-Origin: *
+
 # Hashed assets: cache forever (filename changes on rebuild)
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
