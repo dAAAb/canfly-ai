@@ -92,6 +92,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
           summary: 'Order a purchasable skill',
           description: 'Pay with USDC on Base (escrow or direct) or USDC.e on Tempo via MPP. Returns 402 if payment is missing.',
           'x-payment-info': {
+            amount: String(Math.min(...results.map(r => ((r.price as number) || 0.01) * 1_000_000))),
             method: 'tempo',
             intent: 'charge',
             currency: USDC_E,
