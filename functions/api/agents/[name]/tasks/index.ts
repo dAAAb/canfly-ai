@@ -9,6 +9,7 @@
  * Part of the A2A Task Protocol (CAN-204).
  */
 import { type Env, json, errorResponse, handleOptions, parseBody, intParam } from '../../../community/_helpers'
+import { getMppx, extractPayerWallet } from '../../../../lib/mpp'
 
 const USDC_CONTRACT = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'
 const BASE_RPC_DEFAULT = 'https://mainnet.base.org'
@@ -103,9 +104,94 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   if (!body) return errorResponse('Invalid request body', 400)
   if (!body.skill) return errorResponse('Missing required field: skill', 400)
 
-  // MPP-compatible: return HTTP 402 Payment Required when tx_hash is missing
-  // This follows the Machine Payments Protocol (https://mpp.dev) standard,
-  // signaling to agents that payment is needed before accessing this resource.
+  // Look up skill BEFORE payment check (needed for dynamic MPP pricing)
+  const skill = await env.DB.prepare(
+    `SELECT id, name, slug, type, price, currency, payment_methods, sla
+     FROM skills WHERE agent_name = ?1 AND (name = ?2 OR slug = ?2)`
+  ).bind(agentName, body.skill).first()
+
+  if (!skill) return errorResponse(`Skill not found: ${body.skill}`, 404)
+  if (skill.type !== 'purchasable') return errorResponse('This skill is not purchasable', 400)
+
+  const sellerWallet = (agent.wallet_address as string | null)?.toLowerCase()
+  if (!sellerWallet) return errorResponse('Seller agent has no wallet address configured', 400)
+
+  const expectedAmount = skill.price as number | null
+
+  // --- MPP/Tempo flow: Authorization: Payment ... ---
+  const authHeader = request.headers.get('Authorization') || ''
+  const isMppPayment = authHeader.startsWith('Payment ')
+  const mppEnabled = env.MPP_ENABLED === 'true'
+
+  if (isMppPayment && mppEnabled) {
+    let mppx
+    try {
+      mppx = getMppx(env)
+    } catch {
+      return errorResponse('MPP not configured', 500)
+    }
+
+    const chargeAmount = String(expectedAmount || 0)
+    const chargeHandler = mppx.charge({ amount: chargeAmount })
+    const mppResult = await chargeHandler(request)
+
+    // 402 → return challenge to client
+    if (mppResult.status === 402) {
+      return mppResult.challenge
+    }
+
+    // Payment verified → create task
+    const payerWallet = extractPayerWallet(authHeader)
+    const taskId = generateTaskId()
+
+    await env.DB.prepare(
+      `INSERT INTO tasks (id, buyer_agent, buyer_email, seller_agent, skill_name, params,
+                          status, payment_method, payment_chain, payment_tx,
+                          amount, currency, channel, escrow_tx, escrow_status,
+                          buyer_wallet, paid_at, started_at)
+       VALUES (?1, ?2, ?3, ?4, ?5, ?6, 'paid', 'mpp_tempo', 'tempo', NULL, ?7, 'USDC.e', 'api', NULL, 'none',
+               ?8, datetime('now'), datetime('now'))`
+    ).bind(
+      taskId,
+      body.buyer || null,
+      body.buyer_email || null,
+      agentName,
+      skill.name,
+      body.params ? JSON.stringify(body.params) : null,
+      expectedAmount,
+      payerWallet,
+    ).run()
+
+    // Notify seller (fire-and-forget)
+    notifySeller(env, agent, {
+      task_id: taskId,
+      skill: skill.name as string,
+      params: body.params || null,
+      buyer: (body.buyer || body.buyer_email || payerWallet || 'anonymous') as string,
+      paid_at: new Date().toISOString(),
+      amount: expectedAmount || 0,
+      currency: 'USDC.e',
+      payment_tx: `mpp_tempo:${payerWallet || 'unknown'}`,
+    }).catch(() => {})
+
+    const taskResponse = json({
+      task_id: taskId,
+      status: 'paid',
+      skill: skill.name,
+      sla: skill.sla || null,
+      payment: { method: 'mpp_tempo', chain: 'tempo', amount: expectedAmount, currency: 'USDC.e' },
+      next_steps: { check_status: `GET /api/agents/${agentName}/tasks/${taskId}` },
+      message: 'MPP payment verified. Task created and paid.',
+    }, 201)
+
+    // Attach Payment-Receipt header if available
+    if (typeof mppResult.withReceipt === 'function') {
+      try { return mppResult.withReceipt(taskResponse) } catch {}
+    }
+    return taskResponse
+  }
+
+  // --- Existing flow: require tx_hash for Base chain payment ---
   if (!body.tx_hash) {
     const sellerAddr = (agent.wallet_address as string) || ''
     return new Response(JSON.stringify({
@@ -139,20 +225,6 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   if (body.task_id && !BYTES32_RE.test(body.task_id.toLowerCase())) {
     return errorResponse('Invalid task_id format: must be 0x-prefixed bytes32 hex', 400)
   }
-
-  // Find the skill (match by name or slug)
-  const skill = await env.DB.prepare(
-    `SELECT id, name, slug, type, price, currency, payment_methods, sla
-     FROM skills WHERE agent_name = ?1 AND (name = ?2 OR slug = ?2)`
-  ).bind(agentName, body.skill).first()
-
-  if (!skill) return errorResponse(`Skill not found: ${body.skill}`, 404)
-  if (skill.type !== 'purchasable') return errorResponse('This skill is not purchasable', 400)
-
-  const sellerWallet = (agent.wallet_address as string | null)?.toLowerCase()
-  if (!sellerWallet) return errorResponse('Seller agent has no wallet address configured', 400)
-
-  const expectedAmount = skill.price as number | null
   const currency = (skill.currency as string) || 'USDC'
   const rpcUrl = (env as unknown as Record<string, string>).BASE_RPC_URL || BASE_RPC_DEFAULT
   const escrowContract = ((env as unknown as Record<string, string>).TASK_ESCROW_CONTRACT || '').toLowerCase()

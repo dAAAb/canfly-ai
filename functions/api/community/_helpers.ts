@@ -19,13 +19,18 @@ export interface Env {
   ZEABUR_WEBHOOK_SECRET?: string
   ZEABUR_ADMIN_API_KEY?: string
   ENCRYPTION_KEY?: string
+  // MPP (Machine Payments Protocol)
+  MPP_ENABLED?: string
+  MPP_SECRET_KEY?: string
+  MPP_PRIVATE_KEY?: string
 }
 
 /** Standard CORS headers for cross-origin access */
 export const CORS_HEADERS: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Edit-Token, X-Wallet-Address, X-Buyer-Wallet, X-Canfly-Api-Key, X-Canfly-Channel, X-Canfly-Sender-Type',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Edit-Token, X-Wallet-Address, X-Buyer-Wallet, X-Canfly-Api-Key, X-Canfly-Channel, X-Canfly-Sender-Type, Payment, Payment-Method',
+  'Access-Control-Expose-Headers': 'WWW-Authenticate, Payment-Receipt',
 }
 
 /** Handle CORS preflight */
