@@ -1,4 +1,5 @@
-# SPA catch-all: only for non-asset paths
-# Cloudflare Pages serves static files first, then falls back to this
-# Note: /openapi.json is handled by functions/openapi.json.ts (Pages Function)
+# MPP discovery: redirect before SPA catch-all
+/openapi.json /api/openapi.json 301
+
+# SPA catch-all
 /* /index.html 200
