@@ -19,27 +19,47 @@ export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
      ORDER BY a.name, s.name`
   ).all()
 
-  // Build per-agent task endpoints with x-payment-info
-  const agentPaths: Record<string, unknown> = {}
-  const skillsByAgent: Record<string, typeof results> = {}
+  // Build per-agent/skill paths so each skill appears as its own endpoint on MPPScan
+  const skillPaths: Record<string, unknown> = {}
 
-  for (const row of results) {
-    const agent = row.agent_name as string
-    if (!skillsByAgent[agent]) skillsByAgent[agent] = []
-    skillsByAgent[agent].push(row)
+  for (const r of results) {
+    const agent = r.agent_name as string
+    const skillName = r.skill_name as string
+    const slug = r.slug as string
+    const price = r.price as number
+    const amountAtomic = String(Math.round(price * 1_000_000))
+    const path = `/api/agents/${agent}/tasks`
+
+    // Each agent gets their own concrete path entry
+    if (!skillPaths[path]) {
+      skillPaths[path] = { post: {
+        summary: `Order skills from ${agent}`,
+        description: `Available skills: ${results.filter(s => s.agent_name === agent).map(s => `${s.skill_name} ($${s.price})`).join(', ')}`,
+        'x-payment-info': {
+          amount: amountAtomic,
+          method: 'tempo',
+          intent: 'charge',
+          currency: USDC_E,
+          description: `${skillName} — $${price} USDC.e`,
+        },
+        requestBody: {
+          required: true,
+          content: { 'application/json': { schema: {
+            type: 'object', required: ['skill'],
+            properties: {
+              skill: { type: 'string', description: 'Skill name or slug' },
+              params: { type: 'object', description: 'Skill parameters' },
+              buyer: { type: 'string', description: 'Buyer agent name' },
+            },
+          }}},
+        },
+        responses: {
+          '201': { description: 'Task created' },
+          '402': { description: 'Payment Required' },
+        },
+      }}
+    }
   }
-
-  // Add a generic task endpoint with all purchasable skills listed
-  const allSkills = results.map((r) => ({
-    agent: r.agent_name,
-    skill: r.skill_name,
-    slug: r.slug,
-    description: r.description || '',
-    amount: String((r.price as number) * 1_000_000), // human → atomic (6 decimals)
-    amountHuman: `$${r.price}`,
-    currency: 'USDC.e',
-    sla: r.sla || null,
-  }))
 
   const spec = {
     openapi: '3.1.0',
@@ -87,48 +107,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
           responses: { '200': { description: 'Agent registered with apiKey' } },
         },
       },
-      '/api/agents/{name}/tasks': {
-        post: {
-          summary: 'Order a purchasable skill',
-          description: 'Pay with USDC on Base (escrow or direct) or USDC.e on Tempo via MPP. Returns 402 if payment is missing. Dynamic pricing — amount varies by skill.',
-          'x-payment-info': {
-            amount: String(Math.min(...results.map(r => ((r.price as number) || 0.01) * 1_000_000))),
-            method: 'tempo',
-            intent: 'charge',
-            currency: USDC_E,
-            description: 'Dynamic pricing — amount varies by skill.',
-            purchasableSkills: allSkills,
-          },
-          parameters: [{ name: 'name', in: 'path', required: true, schema: { type: 'string' } }],
-          requestBody: {
-            required: true,
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  required: ['skill'],
-                  properties: {
-                    skill: { type: 'string', description: 'Skill name or slug' },
-                    params: { type: 'object', description: 'Skill parameters' },
-                    buyer: { type: 'string', description: 'Buyer agent name' },
-                    buyer_email: { type: 'string', description: 'Buyer email' },
-                  },
-                },
-              },
-            },
-          },
-          responses: {
-            '201': { description: 'Task created with status paid' },
-            '402': { description: 'Payment Required — MPP challenge or tx_hash needed' },
-          },
-        },
-        get: {
-          summary: 'List tasks',
-          parameters: [{ name: 'name', in: 'path', required: true, schema: { type: 'string' } }],
-          responses: { '200': { description: 'Task list' } },
-        },
-      },
-      ...agentPaths,
+      ...skillPaths,
     },
   }
 
