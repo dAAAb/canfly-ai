@@ -1,61 +1,45 @@
 /**
  * MPP (Machine Payments Protocol) helper for CanFly.ai
  *
- * Lightweight implementation without mppx SDK (avoids node:util dependency
- * which Cloudflare Pages Functions doesn't support).
+ * Provides pay-per-skill access via Tempo USDC.e.
+ * Used alongside the existing Base chain USDC/escrow flow.
  *
- * Flow:
- * 1. No payment credential → return 402 challenge
- * 2. Has Authorization: Payment <credential> → verify and extract payer
+ * Requires nodejs_compat compatibility flag in Cloudflare Pages settings.
  */
+import { Mppx, tempo } from 'mppx/server'
+import { privateKeyToAccount } from 'viem/accounts'
 
+// USDC.e on Tempo mainnet (6 decimals)
 const USDC_E = '0x20c000000000000000000000b9537d11c60e8b50'
-const TEMPO_CHAIN_ID = 4217
 
-/**
- * Build a 402 Payment Required response with MPP-compatible challenge.
- */
-export function mppChallenge(opts: {
-  amount: string   // human-readable (e.g. '1.00')
-  recipient: string
-  realm: string
-  skill?: string
-}): Response {
-  const amountAtomic = String(Math.round(parseFloat(opts.amount) * 1_000_000))
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let _mppxInstance: any = null
+let _lastConfig: string | null = null
 
-  const request = btoa(JSON.stringify({
-    amount: amountAtomic,
-    currency: USDC_E,
-    methodDetails: { chainId: TEMPO_CHAIN_ID },
-    recipient: opts.recipient,
-  }))
+export function getMppx(env: { MPP_SECRET_KEY?: string; MPP_PRIVATE_KEY?: string }): any {
+  const secretKey = env.MPP_SECRET_KEY
+  const privateKey = env.MPP_PRIVATE_KEY
+  if (!secretKey) throw new Error('MPP_SECRET_KEY required')
+  if (!privateKey) throw new Error('MPP_PRIVATE_KEY required')
 
-  const challengeId = crypto.randomUUID()
+  const configKey = `${secretKey}:${privateKey}`
+  if (_mppxInstance && _lastConfig === configKey) return _mppxInstance
 
-  return new Response(JSON.stringify({
-    type: 'https://paymentauth.org/problems/payment-required',
-    title: 'Payment Required',
-    status: 402,
-    detail: `Payment is required. ${opts.skill ? `Skill: ${opts.skill}` : ''}`.trim(),
-    challengeId,
-  }), {
-    status: 402,
-    headers: {
-      'Content-Type': 'application/problem+json',
-      'WWW-Authenticate': `Payment id="${challengeId}", realm="${opts.realm}", method="tempo", intent="charge", request="${request}"`,
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Expose-Headers': 'WWW-Authenticate, Payment-Receipt',
-      'Cache-Control': 'no-store',
-    },
+  const account = privateKeyToAccount(privateKey as `0x${string}`)
+
+  _mppxInstance = Mppx.create({
+    secretKey,
+    methods: [
+      tempo({
+        currency: USDC_E as `0x${string}`,
+        account,
+        mode: 'push',
+        waitForConfirmation: false,
+      }),
+    ],
   })
-}
-
-/**
- * Check if request has an MPP Payment credential.
- */
-export function hasMppCredential(request: Request): boolean {
-  const auth = request.headers.get('Authorization') || ''
-  return auth.startsWith('Payment ')
+  _lastConfig = configKey
+  return _mppxInstance
 }
 
 /**
@@ -75,4 +59,12 @@ export function extractPayerWallet(request: Request): string | null {
   } catch {
     return null
   }
+}
+
+/**
+ * Check if request has an MPP Payment credential.
+ */
+export function hasMppCredential(request: Request): boolean {
+  const auth = request.headers.get('Authorization') || ''
+  return auth.startsWith('Payment ')
 }
