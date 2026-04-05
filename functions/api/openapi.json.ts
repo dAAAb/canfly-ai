@@ -1,15 +1,14 @@
 /**
  * GET /api/openapi.json — Dynamic OpenAPI 3.1 spec with live purchasable skills
  *
- * Generates discovery document from DB so new skills are automatically visible
- * to MPP scanners (mppscan.com) and AI agents.
+ * Each agent's each skill gets its own path entry so MPPScan lists them
+ * individually — like an app store for AI agent skills.
  */
 import { type Env, handleOptions } from './community/_helpers'
 
 const USDC_E = '0x20c000000000000000000000b9537d11c60e8b50'
 
 export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
-  // Query all purchasable skills with their agent info
   const { results } = await env.DB.prepare(
     `SELECT s.name AS skill_name, s.slug, s.description, s.price, s.currency, s.sla,
             a.name AS agent_name, a.wallet_address
@@ -19,22 +18,24 @@ export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
      ORDER BY a.name, s.name`
   ).all()
 
-  // Build per-agent/skill paths so each skill appears as its own endpoint on MPPScan
+  // Each skill → its own path: /api/agents/{agent}/tasks?skill={slug}
   const skillPaths: Record<string, unknown> = {}
 
   for (const r of results) {
     const agent = r.agent_name as string
     const skillName = r.skill_name as string
     const slug = r.slug as string
+    const description = (r.description as string) || skillName
     const price = r.price as number
+    const sla = r.sla as string | null
     const amountAtomic = String(Math.round(price * 1_000_000))
-    const path = `/api/agents/${agent}/tasks`
 
-    // Each agent gets their own concrete path entry
-    if (!skillPaths[path]) {
-      skillPaths[path] = { post: {
-        summary: `Order skills from ${agent}`,
-        description: `Available skills: ${results.filter(s => s.agent_name === agent).map(s => `${s.skill_name} ($${s.price})`).join(', ')}`,
+    const path = `/api/agents/${agent}/tasks?skill=${slug}`
+
+    skillPaths[path] = {
+      post: {
+        summary: `${skillName} by ${agent}`,
+        description: `${description}${sla ? ` (SLA: ${sla})` : ''}`,
         'x-payment-info': {
           amount: amountAtomic,
           method: 'tempo',
@@ -45,34 +46,37 @@ export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
         requestBody: {
           required: true,
           content: { 'application/json': { schema: {
-            type: 'object', required: ['skill'],
+            type: 'object',
+            required: ['skill'],
             properties: {
-              skill: { type: 'string', description: 'Skill name or slug' },
-              params: { type: 'object', description: 'Skill parameters' },
+              skill: { type: 'string', description: 'Skill name or slug', default: slug },
+              params: { type: 'object', description: 'Skill-specific parameters' },
               buyer: { type: 'string', description: 'Buyer agent name' },
+              buyer_email: { type: 'string', description: 'Buyer email / BaseMail' },
             },
           }}},
         },
         responses: {
-          '201': { description: 'Task created' },
-          '402': { description: 'Payment Required' },
+          '201': { description: 'Task created with status paid' },
+          '402': { description: 'Payment Required — MPP challenge' },
         },
-      }}
+      },
     }
   }
 
   const spec = {
     openapi: '3.1.0',
     info: {
-      title: 'CanFly.ai — AI Agent Marketplace API',
-      version: '1.0.0',
-      description: 'Discover, deploy, and trade AI agent skills. Supports USDC on Base chain and MPP (Machine Payments Protocol) via Tempo.',
+      title: 'CanFly.ai — AI Agent Skill Marketplace',
+      version: '1.1.0',
+      description: `AI agent skill marketplace with ${results.length} purchasable skills. Pay with USDC.e on Tempo via MPP. Each skill is independently priced and discoverable.`,
     },
     'x-service-info': {
       categories: ['ai', 'marketplace'],
-      tags: ['agents', 'skills', 'escrow', 'base', 'usdc', 'mpp', 'tempo'],
+      tags: ['agents', 'skills', 'escrow', 'base', 'usdc', 'mpp', 'tempo', 'a2a'],
       docs: {
         homepage: 'https://canfly.ai',
+        apiReference: 'https://canfly.ai/api/community/agents',
         llms: 'https://canfly.ai/llms.txt',
       },
     },
