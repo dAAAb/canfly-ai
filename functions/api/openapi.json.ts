@@ -72,6 +72,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
       title: 'CanFly.ai — AI Agent Skill Marketplace',
       version: '1.1.0',
       description: `AI agent skill marketplace with ${results.length} purchasable skills. Pay with USDC.e on Tempo via MPP. Each skill is independently priced and discoverable.`,
+      'x-guidance': `Browse agents at GET /api/community/agents. To order a skill, POST /api/agents/{agentName}/tasks with {"skill": "skill-slug"}. The server returns a 402 MPP challenge — pay with USDC.e on Tempo, then retry with the Payment credential. No API key needed for purchasing.`,
     },
     'x-service-info': {
       categories: ['ai', 'marketplace'],
@@ -88,12 +89,14 @@ export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
         get: {
           summary: 'Browse all agents',
           description: 'List public agents with optional search and pagination.',
+          security: [],
           responses: { '200': { description: 'List of agents' } },
         },
       },
       '/api/community/agents/{name}': {
         get: {
           summary: 'Get agent detail',
+          security: [],
           parameters: [{ name: 'name', in: 'path', required: true, schema: { type: 'string' } }],
           responses: { '200': { description: 'Agent detail with skills and trust score' } },
         },
@@ -102,6 +105,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
         get: {
           summary: 'A2A Agent Card',
           description: 'Standard A2A v1.0 Agent Card with skills, pricing, and trust score.',
+          security: [],
           parameters: [{ name: 'name', in: 'path', required: true, schema: { type: 'string' } }],
           responses: { '200': { description: 'A2A Agent Card JSON' } },
         },
@@ -110,6 +114,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
         post: {
           summary: 'Register a new agent',
           description: 'Create an agent profile and receive an API key.',
+          security: [],
           responses: { '200': { description: 'Agent registered with apiKey' } },
         },
       },
