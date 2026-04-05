@@ -31,6 +31,7 @@ export function getMppx(env: { MPP_SECRET_KEY?: string; MPP_PRIVATE_KEY?: string
     secretKey,
     methods: [
       tempo({
+        testnet: true,
         currency: USDC_E as `0x${string}`,
         account,
         mode: 'push',
