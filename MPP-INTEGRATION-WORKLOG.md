@@ -1,41 +1,52 @@
 # MPP Integration Worklog
 
 **開始時間**：2026-04-05 18:15
-**目標**：P0-P3 MPP 整合
-**回滾方案**：每步 commit，隨時 `git revert`
+**完成時間**：2026-04-05 18:25
+**Commit**: `1760ecc` feat(mpp): P0-P3
 
-## Checklist
+## ✅ 完成 Checklist
 
-### P0: llms.txt 更新（加入 MPP 相關資訊 + 付費 API 說明）
-- [ ] 更新 `public/llms.txt` 加入 MPP payment info
-- [ ] 加入 `public/llms-full.txt` 完整版
-- [ ] Build + 測試
-- [ ] Commit: `feat(mpp): P0 — llms.txt with MPP payment discovery`
+### P0: llms.txt ✅
+- [x] `public/llms.txt` — 精簡版，加入 MPP payment info
+- [x] `public/llms-full.txt` — 完整 API 文件
+- [x] 線上測試：`curl https://canfly.ai/llms.txt` ✅
+- [x] 線上測試：`curl https://canfly.ai/llms-full.txt` ✅
 
-### P1: HTTP 402 標準回應
-- [ ] 付費 task endpoint 加 402 header（向後相容）
-- [ ] agent-card.json 加入 MPP payment method 資訊
-- [ ] Build + 測試
-- [ ] Commit: `feat(mpp): P1 — HTTP 402 payment required standard`
+### P1: HTTP 402 ✅
+- [x] `functions/api/agents/[name]/tasks/index.ts` — 缺少 tx_hash 時回 402
+- [x] 回應包含 `WWW-Authenticate: Payment method="tempo"` header
+- [x] 回應包含 payment info（chain, contract, recipient）
+- [x] 向後相容：有 tx_hash 的請求不受影響
+- [x] 線上測試：`POST /api/agents/littlelobster/tasks` → HTTP 402 ✅
 
-### P2: BaseMail 接入 MPP（規劃，不在此 repo 實作）
-- [ ] 撰寫 BaseMail MPP 整合規劃文件
-- [ ] Commit: `docs(mpp): P2 — BaseMail MPP integration plan`
+### P2: BaseMail MPP Plan ✅
+- [x] `BASEMAIL-MPP-PLAN.md` — 完整規劃文件
+- [x] 定價策略（vs AgentMail）
+- [x] 技術實作步驟
+- [x] 工時估計：3-4 天
 
-### P3: 提交 MPP 目錄
-- [ ] 建立 `public/openapi.json` (x-payment-info)
-- [ ] 準備 MPPScan 提交資訊
-- [ ] Commit: `feat(mpp): P3 — OpenAPI discovery + MPP directory submission`
+### P3: OpenAPI Discovery ✅
+- [x] `public/openapi.json` — OpenAPI 3.1 + x-payment-info
+- [x] 8 個 endpoint documented
+- [x] x-payment-info 在 task creation endpoint
+- [x] `_routes.json` 更新排除新靜態檔案
+- [x] 線上測試：`curl https://canfly.ai/openapi.json` ✅
 
-### 部署
-- [ ] `npm run build` 確認無錯
-- [ ] 本地 preview 測試
-- [ ] Push to main → CF Pages auto-deploy
-- [ ] 線上驗證 canfly.ai/llms.txt、/openapi.json
+### P3b: MPP 目錄提交（待做）
+- [ ] 到 https://mppscan.com/register 提交
+- [ ] PR to https://github.com/tempoxyz/mpp
+
+## 線上驗證結果
+
+| Endpoint | Status | Content-Type |
+|----------|--------|-------------|
+| `/llms.txt` | 200 ✅ | text/plain |
+| `/llms-full.txt` | 200 ✅ | text/plain |
+| `/openapi.json` | 200 ✅ | application/json |
+| `POST /api/agents/:name/tasks` (no tx_hash) | 402 ✅ | application/problem+json |
+| `WWW-Authenticate` header | Present ✅ | Payment method="tempo" |
 
 ## 回滾
 ```bash
-# 回到 MPP 之前
-git log --oneline  # 找到 8120bb2 (MPP 研究報告之前的 commit)
-git revert HEAD~N..HEAD  # 或 git reset --hard 8120bb2
+git revert 1760ecc  # 回到 MPP 前
 ```
