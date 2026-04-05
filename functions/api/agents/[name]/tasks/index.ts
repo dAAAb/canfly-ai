@@ -102,7 +102,35 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   const body = await parseBody<CreateTaskBody>(request)
   if (!body) return errorResponse('Invalid request body', 400)
   if (!body.skill) return errorResponse('Missing required field: skill', 400)
-  if (!body.tx_hash) return errorResponse('Missing required field: tx_hash', 400)
+
+  // MPP-compatible: return HTTP 402 Payment Required when tx_hash is missing
+  // This follows the Machine Payments Protocol (https://mpp.dev) standard,
+  // signaling to agents that payment is needed before accessing this resource.
+  if (!body.tx_hash) {
+    const sellerAddr = (agent.wallet_address as string) || ''
+    return new Response(JSON.stringify({
+      type: 'https://paymentauth.org/problems/payment-required',
+      title: 'Payment Required',
+      status: 402,
+      detail: 'Submit tx_hash with on-chain USDC payment (Base) or use MPP Tempo charge.',
+      skill: body.skill,
+      payment: {
+        chain: 'base',
+        chainId: 8453,
+        currency: 'USDC',
+        contract: USDC_CONTRACT,
+        recipient: sellerAddr,
+        note: 'Same wallet address works on Tempo (EVM-compatible). See https://mpp.dev',
+      },
+    }), {
+      status: 402,
+      headers: {
+        'Content-Type': 'application/problem+json',
+        'WWW-Authenticate': `Payment method="tempo", intent="charge", realm="canfly.ai", recipient="${sellerAddr}"`,
+        'Access-Control-Allow-Origin': '*',
+      },
+    })
+  }
 
   const txHash = body.tx_hash.toLowerCase()
   if (!/^0x[a-f0-9]{64}$/.test(txHash)) return errorResponse('Invalid tx_hash format', 400)
