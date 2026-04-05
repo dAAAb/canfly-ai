@@ -1,7 +1,6 @@
-/** Redirect /openapi.json → /api/openapi.json for MPP discovery */
-export const onRequestGet: PagesFunction = async () => {
-  return new Response(null, {
-    status: 301,
-    headers: { Location: '/api/openapi.json' },
-  })
+/** GET /openapi.json — redirect to dynamic API version */
+export const onRequestGet: PagesFunction = async ({ request }) => {
+  const url = new URL(request.url)
+  const apiUrl = new URL('/api/openapi.json', url.origin)
+  return fetch(new Request(apiUrl.toString(), { headers: request.headers }))
 }
