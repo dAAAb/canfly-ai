@@ -102,6 +102,26 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
 
   const body = await parseBody<CreateTaskBody>(request)
   if (!body) return errorResponse('Invalid request body', 400)
+
+  const mppEnabled = env.MPP_ENABLED === 'true'
+  const sellerWallet = (agent.wallet_address as string | null)?.toLowerCase()
+
+  // MPP discovery: if no skill specified and no tx_hash, return 402 challenge
+  // with the agent's cheapest purchasable skill price (lets MPPScan probe correctly)
+  if (!body.skill && mppEnabled && !body.tx_hash && !hasMppCredential(request) && sellerWallet) {
+    const cheapest = await env.DB.prepare(
+      `SELECT MIN(price) as min_price FROM skills WHERE agent_name = ?1 AND type = 'purchasable' AND price > 0`
+    ).bind(agentName).first()
+    const probeAmount = String((cheapest?.min_price as number) || 0.01)
+    let mppx
+    try { mppx = getMppx(env) } catch { /* fall through */ }
+    if (mppx) {
+      const handler = mppx.charge({ amount: probeAmount })
+      const result = await handler(request)
+      if (result.status === 402) return result.challenge
+    }
+  }
+
   if (!body.skill) return errorResponse('Missing required field: skill', 400)
 
   // Look up skill BEFORE payment check (needed for dynamic MPP pricing)
@@ -113,14 +133,11 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   if (!skill) return errorResponse(`Skill not found: ${body.skill}`, 404)
   if (skill.type !== 'purchasable') return errorResponse('This skill is not purchasable', 400)
 
-  const sellerWallet = (agent.wallet_address as string | null)?.toLowerCase()
   if (!sellerWallet) return errorResponse('Seller agent has no wallet address configured', 400)
 
   const expectedAmount = skill.price as number | null
 
   // --- MPP/Tempo flow: Authorization: Payment ... ---
-  const mppEnabled = env.MPP_ENABLED === 'true'
-
   if (mppEnabled && (hasMppCredential(request) || !body.tx_hash)) {
     // MPP flow: use mppx SDK for challenge/verify
     let mppx
