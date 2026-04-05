@@ -99,6 +99,7 @@
         "summary": "Order a purchasable skill",
         "description": "Pay with USDC on Base (escrow or direct) or USDC.e on Tempo via MPP. Returns 402 if payment is missing.",
         "x-payment-info": {
+          "amount": "1000",
           "method": "tempo",
           "intent": "charge",
           "currency": "0x20c000000000000000000000b9537d11c60e8b50",
