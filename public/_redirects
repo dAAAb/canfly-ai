@@ -1,3 +1,6 @@
+# MPP discovery: proxy to dynamic OpenAPI endpoint
+/openapi.json /api/openapi.json 200
+
 # SPA catch-all: only for non-asset paths
 # Cloudflare Pages serves static files first, then falls back to this
 /* /index.html 200
