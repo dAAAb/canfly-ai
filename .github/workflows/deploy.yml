@@ -32,7 +32,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=canfly-ai --commit-dirty=true --commit-message="deploy ${{ github.sha }}"
+          command: pages deploy dist --project-name=canfly-ai --commit-dirty=true --commit-message="deploy ${{ github.sha }}" --compatibility-flags=nodejs_compat --compatibility-date=2024-09-23
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
