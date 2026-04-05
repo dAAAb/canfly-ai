@@ -30,7 +30,9 @@ export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
     const sla = r.sla as string | null
     const amountAtomic = String(Math.round(price * 1_000_000))
 
-    const path = `/api/agents/${agent}/tasks?skill=${slug}`
+    // Use slug or slugified skill name to create unique path per skill
+    const skillSlug = slug || skillName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+    const path = `/api/agents/${agent}/tasks/${skillSlug}`
 
     skillPaths[path] = {
       post: {
