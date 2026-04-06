@@ -129,6 +129,7 @@ interface AgentData {
   history?: HistoryData
   heartbeat?: HeartbeatData
   trust?: TrustData | null
+  commerce?: { escrow_contract: string | null }
 }
 
 export default function AgentCardPage({ free, subdomainUsername }: { free?: boolean; subdomainUsername?: string }) {
@@ -952,6 +953,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                                     skillName: skill.name,
                                     price: skill.price!,
                                     currency: skill.currency || 'USDC',
+                                    escrowContract: agent.commerce?.escrow_contract || undefined,
                                   })}
                                   disabled={!escrow.hasWallet}
                                   className="w-full py-2.5 rounded-lg bg-yellow-500/20 text-yellow-300 hover:bg-yellow-500/30 border border-yellow-600/50 font-medium text-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed"

@@ -168,6 +168,9 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
       github,
     },
     trust: trustData,
+    commerce: {
+      escrow_contract: (env as unknown as Record<string, string>).TASK_ESCROW_CONTRACT || null,
+    },
   })
 }
 
