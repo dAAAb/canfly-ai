@@ -413,18 +413,33 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   const limit = intParam(url, 'limit', 20)
   const offset = intParam(url, 'offset', 0)
 
-  // Verify agent exists
+  // Verify agent exists (include owner info for wallet-based auth)
   const agent = await env.DB.prepare(
-    'SELECT name, is_public, api_key FROM agents WHERE name = ?1'
+    `SELECT a.name, a.is_public, a.api_key, a.wallet_address,
+            u.wallet_address as owner_wallet
+     FROM agents a
+     LEFT JOIN users u ON a.owner_username = u.username
+     WHERE a.name = ?1`
   ).bind(agentName).first()
 
   if (!agent) return errorResponse('Agent not found', 404)
   if (agent.is_public === 0) return errorResponse('Agent profile is private', 403)
 
-  // CAN-280: Check if caller is the seller (has valid Bearer token)
+  // CAN-280: Check if caller is the seller (API key) or agent owner (wallet match)
   const authHeader = request.headers.get('Authorization')
   const bearerKey = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
-  const isSellerAuth = !!(bearerKey && agent.api_key && agent.api_key === bearerKey)
+  const isApiKeyAuth = !!(bearerKey && agent.api_key && agent.api_key === bearerKey)
+
+  // Also check wallet-based ownership (X-Wallet-Address header from Privy frontend)
+  const callerWallet = (request.headers.get('X-Wallet-Address') || '').toLowerCase()
+  const agentWallet = ((agent.wallet_address as string) || '').toLowerCase()
+  const ownerWallet = ((agent.owner_wallet as string) || '').toLowerCase()
+  const isOwnerWallet = !!(callerWallet && (
+    (agentWallet && callerWallet === agentWallet) ||
+    (ownerWallet && callerWallet === ownerWallet)
+  ))
+
+  const isSellerAuth = isApiKeyAuth || isOwnerWallet
 
   // List tasks
   const statusFilter = url.searchParams.get('status') // optional filter: completed, paid, executing, all (pending_payment deprecated per CAN-232)
