@@ -1,17 +1,17 @@
 /**
  * Admin Wallet — CAN-286
  *
- * GET  /api/admin/wallet → return wallet address derived from MPP_PRIVATE_KEY
+ * GET  /api/admin/wallet → return wallet address + balance
  *
  * Auth: Bearer CRON_SECRET
  */
-import { privateKeyToAccount } from 'viem/accounts'
 import {
   type Env,
   json,
   errorResponse,
   handleOptions,
 } from '../../community/_helpers'
+import { getMPPAddress, getBalance } from './_lib'
 
 function requireAdmin(request: Request, env: Env): string | null {
   const authHeader = request.headers.get('Authorization')
@@ -27,10 +27,10 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request }) => {
   const authError = requireAdmin(request, env)
   if (authError) return errorResponse(authError, authError === 'Forbidden' ? 403 : 401)
 
-  const privateKey = env.MPP_PRIVATE_KEY
-  if (!privateKey) return errorResponse('MPP_PRIVATE_KEY not configured', 500)
-
-  const account = privateKeyToAccount(privateKey as `0x${string}`)
-
-  return json({ address: account.address })
+  try {
+    const balance = await getBalance(env)
+    return json(balance)
+  } catch (e: unknown) {
+    return errorResponse((e as Error).message, 500)
+  }
 }
