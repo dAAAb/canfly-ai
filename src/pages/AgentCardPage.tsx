@@ -1189,9 +1189,9 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                       <span className="w-2 h-2 rounded-full bg-green-400 shrink-0" />
                       <Wallet className="w-4 h-4 text-green-400 shrink-0" />
                       <span className="text-gray-500 text-sm w-20 shrink-0">Wallet</span>
-                      <div className="min-w-0 flex items-center gap-2">
+                      <div className="min-w-0 flex items-center gap-2 overflow-hidden">
                         {id.basename && (
-                          <span className="text-cyan-400 text-sm font-mono">{id.basename}</span>
+                          <span className="text-cyan-400 text-sm font-mono truncate">{id.basename}</span>
                         )}
                         {id.wallet && (
                           <a
@@ -1401,7 +1401,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                         </div>
                         <div className="flex items-center gap-2 mt-0.5">
                           {job.buyer && (
-                            <span className="text-xs text-gray-400">by {job.buyer}</span>
+                            <span className="text-xs text-gray-400">by {job.buyer.startsWith('0x') && job.buyer.length > 12 ? `${job.buyer.slice(0, 6)}…${job.buyer.slice(-4)}` : job.buyer}</span>
                           )}
                           {job.completed_at && (
                             <span className="text-xs text-gray-500">

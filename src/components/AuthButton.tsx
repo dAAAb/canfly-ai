@@ -85,7 +85,8 @@ export default function AuthButton() {
 
   // API result is authoritative; localStorage is only a fast hint before API responds
   const ownUsername = resolvedUsername || localUsername
-  const displayName = ownUsername || user?.google?.name || user?.email?.address?.split('@')[0] || 'User'
+  const isLookingUp = !lookupDone.current || (!resolvedUsername && !localUsername && (!!walletAddress || !!privyId))
+  const displayName = ownUsername || (isLookingUp ? null : (user?.google?.name || user?.email?.address?.split('@')[0] || 'User'))
 
   // Not ready yet — show nothing
   if (!ready) return null
@@ -113,7 +114,10 @@ export default function AuthButton() {
         style={{ background: walletGradient(walletAddress) }}
       >
         <span className={badge.color}>{badge.emoji}</span>
-        <span className="max-w-[120px] truncate">{displayName}</span>
+        {displayName
+          ? <span className="max-w-[120px] truncate">{displayName}</span>
+          : <span className="inline-block w-16 h-4 bg-white/20 rounded animate-pulse" />
+        }
       </button>
 
       {dropdownOpen && (
