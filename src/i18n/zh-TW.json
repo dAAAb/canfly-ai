@@ -7704,6 +7704,9 @@
       "video": "影片",
       "audio": "音訊",
       "markdown": "文件",
+      "model": "3D 模型",
+      "pdf": "PDF 文件",
+      "code": "程式碼",
       "unknown": "檔案"
     }
   },

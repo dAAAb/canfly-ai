@@ -1,14 +1,15 @@
 /**
- * ResultPreview — Multimedia result preview component (CAN-289).
+ * ResultPreview — Multimedia result preview component (CAN-289, CAN-290).
  *
  * Auto-detects content type from result_content_type or URL extension,
- * then renders the appropriate preview: image, video, audio, markdown, or
- * a fallback download card.
+ * then renders the appropriate preview: image, video, audio, markdown,
+ * 3D model, PDF, code, or a fallback download card.
  */
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Image, Film, Music, FileText, Download, AlertCircle, Loader2, Maximize2, X,
+  Box, FileCode, Copy, Check,
 } from 'lucide-react'
 
 /* ───── MIME / extension detection ───── */
@@ -19,6 +20,23 @@ const EXT_TO_MIME: Record<string, string> = {
   mp4: 'video/mp4', webm: 'video/webm', mov: 'video/quicktime',
   mp3: 'audio/mpeg', m4a: 'audio/mp4', wav: 'audio/wav', ogg: 'audio/ogg',
   md: 'text/markdown',
+  // 3D models
+  gltf: 'model/gltf+json', glb: 'model/gltf-binary',
+  // PDF
+  pdf: 'application/pdf',
+  // Code
+  js: 'text/javascript', jsx: 'text/javascript',
+  ts: 'text/typescript', tsx: 'text/typescript',
+  py: 'text/x-python', rs: 'text/x-rust', go: 'text/x-go',
+  sol: 'text/x-solidity', json: 'application/json',
+  yaml: 'text/yaml', yml: 'text/yaml', toml: 'text/toml', sh: 'text/x-sh',
+}
+
+/** Map file extensions to shiki language IDs */
+const EXT_TO_LANG: Record<string, string> = {
+  js: 'javascript', jsx: 'jsx', ts: 'typescript', tsx: 'tsx',
+  py: 'python', rs: 'rust', go: 'go', sol: 'solidity',
+  json: 'json', yaml: 'yaml', yml: 'yaml', toml: 'toml', sh: 'bash',
 }
 
 function extFromUrl(url: string): string | null {
@@ -32,7 +50,13 @@ function extFromUrl(url: string): string | null {
   }
 }
 
-type MediaCategory = 'image' | 'video' | 'audio' | 'markdown' | 'unknown'
+type MediaCategory = 'image' | 'video' | 'audio' | 'markdown' | 'model' | 'pdf' | 'code' | 'unknown'
+
+const CODE_MIMES = new Set([
+  'text/javascript', 'text/typescript', 'text/x-python', 'text/x-rust',
+  'text/x-go', 'text/x-solidity', 'application/json', 'text/yaml',
+  'text/toml', 'text/x-sh',
+])
 
 function categorise(contentType: string | null, url: string): MediaCategory {
   // 1. Use content type if available
@@ -41,7 +65,10 @@ function categorise(contentType: string | null, url: string): MediaCategory {
     if (ct.startsWith('image/')) return 'image'
     if (ct.startsWith('video/')) return 'video'
     if (ct.startsWith('audio/')) return 'audio'
+    if (ct.startsWith('model/')) return 'model'
+    if (ct === 'application/pdf') return 'pdf'
     if (ct === 'text/markdown' || ct === 'text/x-markdown') return 'markdown'
+    if (CODE_MIMES.has(ct)) return 'code'
   }
   // 2. Fallback: extension-based detection
   const ext = extFromUrl(url)
@@ -51,7 +78,10 @@ function categorise(contentType: string | null, url: string): MediaCategory {
       if (mime.startsWith('image/')) return 'image'
       if (mime.startsWith('video/')) return 'video'
       if (mime.startsWith('audio/')) return 'audio'
+      if (mime.startsWith('model/')) return 'model'
+      if (mime === 'application/pdf') return 'pdf'
       if (mime.startsWith('text/markdown')) return 'markdown'
+      if (CODE_MIMES.has(mime)) return 'code'
     }
   }
   return 'unknown'
@@ -179,6 +209,142 @@ function MarkdownPreview({ url }: { url: string }) {
   )
 }
 
+/* ───── Lazy-loaded heavy previews (CAN-290) ───── */
+
+function ModelPreview({ url }: { url: string }) {
+  const [error, setError] = useState(false)
+
+  useEffect(() => {
+    // Ensure model-viewer custom element is registered
+    import('@google/model-viewer').catch(() => setError(true))
+  }, [])
+
+  if (error) return <ErrorFallback url={url} />
+
+  return (
+    <div className="p-4">
+      {/* @ts-expect-error model-viewer is a web component */}
+      <model-viewer
+        src={url}
+        auto-rotate
+        camera-controls
+        shadow-intensity="1"
+        environment-image="neutral"
+        style={{ width: '100%', height: '400px', borderRadius: '1rem', background: '#111' }}
+        onError={() => setError(true)}
+      />
+    </div>
+  )
+}
+
+function PdfPreview({ url }: { url: string }) {
+  const { t } = useTranslation()
+  const [fullscreen, setFullscreen] = useState(false)
+
+  return (
+    <div className="p-4">
+      <div className="relative rounded-2xl overflow-hidden bg-black" style={{ height: fullscreen ? '80vh' : '500px' }}>
+        <iframe
+          src={url}
+          title="PDF preview"
+          className="w-full h-full border-0"
+          sandbox="allow-same-origin allow-scripts"
+        />
+        <button
+          onClick={() => setFullscreen(f => !f)}
+          className="absolute top-3 right-3 p-2 rounded-lg bg-gray-800/80 hover:bg-gray-700 text-white transition-colors"
+          title={fullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+        >
+          {fullscreen ? <X className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+        </button>
+      </div>
+      <div className="mt-2 text-center">
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
+        >
+          {t('resultPreview.download', 'Download File')}
+        </a>
+      </div>
+    </div>
+  )
+}
+
+function CodePreview({ url }: { url: string }) {
+  const { t } = useTranslation()
+  const [html, setHtml] = useState<string | null>(null)
+  const [rawCode, setRawCode] = useState('')
+  const [error, setError] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [copied, setCopied] = useState(false)
+
+  const ext = extFromUrl(url)
+  const lang = (ext && EXT_TO_LANG[ext]) || 'text'
+
+  useEffect(() => {
+    let cancelled = false
+    async function load() {
+      try {
+        const [res, shikiModule] = await Promise.all([
+          fetch(url),
+          import('shiki'),
+        ])
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        const code = await res.text()
+        if (cancelled) return
+        setRawCode(code)
+        const highlighter = await shikiModule.createHighlighter({
+          themes: ['github-dark'],
+          langs: [lang],
+        })
+        const highlighted = highlighter.codeToHtml(code, { lang, theme: 'github-dark' })
+        if (!cancelled) setHtml(highlighted)
+      } catch {
+        if (!cancelled) setError(true)
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    }
+    load()
+    return () => { cancelled = true }
+  }, [url, lang])
+
+  const handleCopy = useCallback(() => {
+    navigator.clipboard.writeText(rawCode).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }, [rawCode])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-8 text-gray-400">
+        <Loader2 className="w-5 h-5 animate-spin mr-2" />
+        {t('resultPreview.loading', 'Loading...')}
+      </div>
+    )
+  }
+  if (error || html === null) return <ErrorFallback url={url} />
+
+  return (
+    <div className="relative">
+      <button
+        onClick={handleCopy}
+        className="absolute top-3 right-3 z-10 p-2 rounded-lg bg-gray-800/80 hover:bg-gray-700 text-gray-300 hover:text-white transition-colors"
+        title="Copy code"
+      >
+        {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
+      </button>
+      <div
+        className="overflow-auto max-h-[500px] text-sm [&_pre]:p-4 [&_pre]:m-0 [&_code]:leading-relaxed"
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+    </div>
+  )
+}
+
 function ErrorFallback({ url }: { url: string }) {
   const { t } = useTranslation()
   return (
@@ -252,6 +418,9 @@ const CATEGORY_ICON: Record<MediaCategory, typeof Image> = {
   video: Film,
   audio: Music,
   markdown: FileText,
+  model: Box,
+  pdf: FileText,
+  code: FileCode,
   unknown: Download,
 }
 
@@ -260,6 +429,9 @@ const CATEGORY_LABEL: Record<MediaCategory, string> = {
   video: 'Video',
   audio: 'Audio',
   markdown: 'Document',
+  model: '3D Model',
+  pdf: 'PDF',
+  code: 'Code',
   unknown: 'File',
 }
 
@@ -286,7 +458,23 @@ export default function ResultPreview({ url, contentType, loading }: ResultPrevi
           {category === 'video' && <VideoPreview url={url} />}
           {category === 'audio' && <AudioPreview url={url} />}
           {category === 'markdown' && <MarkdownPreview url={url} />}
-          {category === 'unknown' && <DownloadCard url={url} contentType={contentType} />}
+          {category === 'model' && (
+            <Suspense fallback={<PreviewSkeleton />}>
+              <ModelPreview url={url} />
+            </Suspense>
+          )}
+          {category === 'pdf' && (
+            <Suspense fallback={<PreviewSkeleton />}>
+              <PdfPreview url={url} />
+            </Suspense>
+          )}
+          {category === 'code' && (
+            <Suspense fallback={<PreviewSkeleton />}>
+              <CodePreview url={url} />
+            </Suspense>
+          )}
+          {/* Always show download card below preview */}
+          <DownloadCard url={url} contentType={contentType} />
         </>
       )}
     </div>

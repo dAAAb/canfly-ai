@@ -7696,6 +7696,9 @@
       "video": "Video",
       "audio": "Audio",
       "markdown": "Document",
+      "model": "3D Model",
+      "pdf": "PDF",
+      "code": "Code",
       "unknown": "File"
     }
   },

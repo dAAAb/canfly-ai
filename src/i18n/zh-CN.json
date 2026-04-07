@@ -7721,6 +7721,9 @@
       "video": "视频",
       "audio": "音频",
       "markdown": "文档",
+      "model": "3D 模型",
+      "pdf": "PDF 文档",
+      "code": "代码",
       "unknown": "文件"
     }
   },
