@@ -338,7 +338,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false))
-  }, [agentName, navigate, free, username])
+  }, [agentName, navigate, free, username, walletAddress, isAuthenticated])
 
   if (loading) {
     return (
