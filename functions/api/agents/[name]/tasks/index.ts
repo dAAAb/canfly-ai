@@ -10,6 +10,7 @@
  */
 import { type Env, json, errorResponse, handleOptions, parseBody, intParam } from '../../../community/_helpers'
 import { getMppx, hasMppCredential, extractPayerWallet } from '../../../../lib/mpp'
+import { deriveViewToken } from '../../../../api/_crypto'
 
 const USDC_CONTRACT = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'
 const BASE_RPC_DEFAULT = 'https://mainnet.base.org'
@@ -474,25 +475,33 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   ).bind(agentName).first()
 
   // CAN-280: Public view returns limited fields (no task ID, buyer info, or result_url)
+  // For seller auth: include share_token so frontend can build token-based links
   const tasks = isSellerAuth
-    ? result.results.map((t) => ({
-        id: t.id,
-        buyer: t.buyer_agent || null,
-        buyer_email: t.buyer_email || null,
-        skill: t.skill_name,
-        status: t.status,
-        amount: t.amount,
-        currency: t.currency,
-        payment_tx: t.payment_tx || null,
-        payment_chain: t.payment_chain || null,
-        channel: t.channel,
-        result_url: t.status === 'completed' ? (t.result_url || null) : null,
-        escrow_tx: t.escrow_tx || null,
-        escrow_status: t.escrow_status || 'none',
-        created_at: t.created_at,
-        paid_at: t.paid_at || null,
-        completed_at: t.completed_at || null,
-        basescan_url: t.payment_tx ? `https://basescan.org/tx/${t.payment_tx}` : null,
+    ? await Promise.all(result.results.map(async (t) => {
+        let shareToken: string | null = null
+        if (env.ENCRYPTION_KEY && t.id) {
+          try { shareToken = await deriveViewToken(t.id as string, env.ENCRYPTION_KEY) } catch { /* ignore */ }
+        }
+        return {
+          id: t.id,
+          share_token: shareToken,
+          buyer: t.buyer_agent || null,
+          buyer_email: t.buyer_email || null,
+          skill: t.skill_name,
+          status: t.status,
+          amount: t.amount,
+          currency: t.currency,
+          payment_tx: t.payment_tx || null,
+          payment_chain: t.payment_chain || null,
+          channel: t.channel,
+          result_url: t.status === 'completed' ? (t.result_url || null) : null,
+          escrow_tx: t.escrow_tx || null,
+          escrow_status: t.escrow_status || 'none',
+          created_at: t.created_at,
+          paid_at: t.paid_at || null,
+          completed_at: t.completed_at || null,
+          basescan_url: t.payment_tx ? `https://basescan.org/tx/${t.payment_tx}` : null,
+        }
       }))
     : result.results.map((t) => ({
         skill: t.skill_name,

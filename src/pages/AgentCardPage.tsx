@@ -150,7 +150,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
   const [expandedSkill, setExpandedSkill] = useState<string | null>(null)
   const [copiedField, setCopiedField] = useState<string | null>(null)
   const [recentJobs, setRecentJobs] = useState<Array<{
-    id: string; buyer: string | null; skill: string; completed_at: string; amount: number | null; currency: string | null
+    id: string; share_token?: string | null; buyer: string | null; skill: string; completed_at: string; amount: number | null; currency: string | null
   }>>([])
   const [jobsLoaded, setJobsLoaded] = useState(false)
   const [pingStatus, setPingStatus] = useState<'idle' | 'pinging' | 'online' | 'away'>('idle')
@@ -1384,9 +1384,10 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
               <div className="bg-gray-900/50 border border-gray-800 rounded-xl divide-y divide-gray-800">
                 {recentJobs.map((job) => {
                   const hasDetail = !!(job.id && job.id.startsWith('0x'))
+                  const tokenQs = job.share_token ? `?token=${job.share_token}` : ''
                   const Wrapper = hasDetail ? 'a' : 'div'
                   const wrapperProps = hasDetail
-                    ? { href: `/tasks/${job.id}`, className: 'px-4 py-3 flex items-center justify-between gap-3 hover:bg-gray-800/50 transition-colors cursor-pointer' }
+                    ? { href: `/tasks/${job.id}${tokenQs}`, className: 'px-4 py-3 flex items-center justify-between gap-3 hover:bg-gray-800/50 transition-colors cursor-pointer' }
                     : { className: 'px-4 py-3 flex items-center justify-between gap-3' }
                   return (
                     <Wrapper key={job.id || job.skill + job.completed_at} {...(wrapperProps as React.HTMLAttributes<HTMLElement>)}>
