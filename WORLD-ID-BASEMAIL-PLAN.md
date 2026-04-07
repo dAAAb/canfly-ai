@@ -87,7 +87,7 @@ CanFly 帶新用戶 ──→ World ID 驗證 ──→ 自動開 BaseMail
 
 | 項目 | 值 |
 |------|-----|
-| **Private / Signer Key** | `REDACTED_ROTATE_KEY` |
+| **Private / Signer Key** | `REDACTED_ROTATE_THIS_KEY` |
 | **APP ID (Legacy)** | `app_ee5d4fa1aa655b4a3ba0641bb070ad67` |
 | **RP ID** | `rp_2eeecd2f22517885` |
 | **Management Mode** | Managed |
@@ -98,7 +98,7 @@ CanFly 帶新用戶 ──→ World ID 驗證 ──→ 自動開 BaseMail
 WORLD_ID_APP_ID=app_ee5d4fa1aa655b4a3ba0641bb070ad67
 WORLD_ID_RP_ID=rp_2eeecd2f22517885
 WORLD_ID_ACTION=real-human-canfly
-WORLD_ID_SIGNING_KEY=REDACTED_ROTATE_KEY
+WORLD_ID_SIGNING_KEY=REDACTED_ROTATE_THIS_KEY
 ```
 
 ---
