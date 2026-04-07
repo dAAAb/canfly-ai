@@ -77,6 +77,14 @@ export function useEscrowPayment() {
     }
 
     try {
+      // Ensure wallet is on Base chain before any transactions
+      try {
+        await wallet.switchChain(base.id)
+      } catch (switchErr) {
+        // If switchChain fails, the wallet may not support it or user rejected
+        console.warn('switchChain failed, attempting anyway:', switchErr)
+      }
+
       // Get an EIP-1193 provider and create a viem wallet client
       const provider = await wallet.getEthereumProvider()
       const walletClient = createWalletClient({
