@@ -64,6 +64,11 @@ export function isValidUsername(username: string): boolean {
   return /^[a-zA-Z0-9_-]{2,30}$/.test(username)
 }
 
+/** Validate Ethereum wallet address: 0x + 40 hex chars */
+export function isValidWalletAddress(address: string): boolean {
+  return /^0x[0-9a-fA-F]{40}$/.test(address)
+}
+
 /** Validate agent name (slug format): lowercase alphanumeric + hyphens, 2-40 chars */
 export function isValidAgentName(name: string): boolean {
   return /^[a-z0-9][a-z0-9-]{0,38}[a-z0-9]$/.test(name) && !name.includes('--')

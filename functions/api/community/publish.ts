@@ -10,6 +10,7 @@ import {
   generateEditToken,
   isValidUsername,
   isValidAgentName,
+  isValidWalletAddress,
   parseBody,
 } from './_helpers'
 
@@ -52,6 +53,12 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
   }
   if (!isValidAgentName(agent.name)) {
     return errorResponse('Invalid agent name', 400)
+  }
+  if (agent.walletAddress && !isValidWalletAddress(agent.walletAddress)) {
+    return errorResponse('Invalid wallet address: must be 0x + 40 hex characters', 400)
+  }
+  if (user.walletAddress && !isValidWalletAddress(user.walletAddress)) {
+    return errorResponse('Invalid wallet address: must be 0x + 40 hex characters', 400)
   }
 
   // Verify edit token — user must already exist

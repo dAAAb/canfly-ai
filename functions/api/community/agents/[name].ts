@@ -2,7 +2,7 @@
  * GET  /api/community/agents/:name — Single agent with owner info + skills
  * PUT  /api/community/agents/:name — Update agent profile (requires edit token)
  */
-import { type Env, json, errorResponse, handleOptions, parseBody } from '../_helpers'
+import { type Env, json, errorResponse, handleOptions, parseBody, isValidWalletAddress } from '../_helpers'
 import { authenticateRequest } from '../../_auth'
 
 export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
@@ -263,6 +263,9 @@ export const onRequestPut: PagesFunction<Env> = async ({ env, params, request })
     paramIdx++
   }
   if (body.walletAddress !== undefined) {
+    if (body.walletAddress && !isValidWalletAddress(body.walletAddress)) {
+      return errorResponse('Invalid wallet address: must be 0x + 40 hex characters', 400)
+    }
     updates.push(`wallet_address = ?${paramIdx}`)
     values.push(body.walletAddress || null)
     paramIdx++

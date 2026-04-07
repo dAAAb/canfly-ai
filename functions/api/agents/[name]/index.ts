@@ -7,7 +7,7 @@
  * Supports rename (once only), bio, model, platform, avatar, skills, portfolio.
  * Skills accept objects: { name, slug?, description?, url? }
  */
-import { type Env, json, errorResponse, handleOptions, parseBody, isValidAgentName } from '../../community/_helpers'
+import { type Env, json, errorResponse, handleOptions, parseBody, isValidAgentName, isValidWalletAddress } from '../../community/_helpers'
 
 interface SkillEntry {
   name: string
@@ -181,6 +181,9 @@ export const onRequestPut: PagesFunction<Env> = async ({ env, params, request })
     paramIdx++
   }
   if (body.walletAddress !== undefined) {
+    if (body.walletAddress && !isValidWalletAddress(body.walletAddress)) {
+      return errorResponse('Invalid wallet address: must be 0x + 40 hex characters', 400)
+    }
     updates.push(`wallet_address = ?${paramIdx}`)
     values.push(body.walletAddress || null)
     paramIdx++

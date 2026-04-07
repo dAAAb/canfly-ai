@@ -9,6 +9,7 @@ import {
   handleOptions,
   generateEditToken,
   isValidUsername,
+  isValidWalletAddress,
   parseBody,
   intParam,
 } from '../_helpers'
@@ -111,6 +112,9 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
   }
   if (avatarUrl && avatarUrl.length > 500) {
     return errorResponse('Avatar URL is too long.', 400)
+  }
+  if (walletAddress && !isValidWalletAddress(walletAddress)) {
+    return errorResponse('Invalid wallet address: must be 0x + 40 hex characters', 400)
   }
 
   // Check if username already exists (case-insensitive to prevent dAAAb vs daaab conflicts)
