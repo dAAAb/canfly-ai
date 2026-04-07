@@ -305,12 +305,22 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
           return
         }
         setAgent(agentResult)
-        // Fetch completed tasks for the agent
-        fetch(`/api/agents/${agentName}/tasks?limit=5`)
-          .then((r) => r.ok ? r.json() : null)
-          .then((d) => { if (d?.tasks) setRecentJobs(d.tasks) })
-          .catch(() => {})
-          .finally(() => setJobsLoaded(true))
+        // Fetch completed tasks for the agent (with auth if owner, to get task IDs)
+        ;(async () => {
+          try {
+            const headers: Record<string, string> = {}
+            try {
+              const authH = await getApiAuthHeaders({ getAccessToken, walletAddress, editToken: agentEditToken })
+              Object.assign(headers, authH)
+            } catch { /* not logged in — public view */ }
+            const r = await fetch(`/api/agents/${agentName}/tasks?limit=5`, { headers })
+            if (r.ok) {
+              const d = await r.json() as { tasks?: typeof recentJobs }
+              if (d?.tasks) setRecentJobs(d.tasks)
+            }
+          } catch { /* ignore */ }
+          setJobsLoaded(true)
+        })()
 
         // Fetch deployment data for this agent (for live status + Chat button)
         if (agentResult.owner_username) {
@@ -1372,33 +1382,45 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                 Recent Jobs ({recentJobs.length})
               </h2>
               <div className="bg-gray-900/50 border border-gray-800 rounded-xl divide-y divide-gray-800">
-                {recentJobs.map((job) => (
-                  <div key={job.id} className="px-4 py-3 flex items-center justify-between gap-3">
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-white truncate">{job.skill}</span>
-                        {job.amount != null && (
-                          <span className="text-xs font-mono text-yellow-400 shrink-0">
-                            {job.amount} {job.currency || 'USDC'}
-                          </span>
+                {recentJobs.map((job) => {
+                  const hasDetail = !!(job.id && job.id.startsWith('0x'))
+                  const Wrapper = hasDetail ? 'a' : 'div'
+                  const wrapperProps = hasDetail
+                    ? { href: `/tasks/${job.id}`, className: 'px-4 py-3 flex items-center justify-between gap-3 hover:bg-gray-800/50 transition-colors cursor-pointer' }
+                    : { className: 'px-4 py-3 flex items-center justify-between gap-3' }
+                  return (
+                    <Wrapper key={job.id || job.skill + job.completed_at} {...(wrapperProps as React.HTMLAttributes<HTMLElement>)}>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-white truncate">{job.skill}</span>
+                          {job.amount != null && (
+                            <span className="text-xs font-mono text-yellow-400 shrink-0">
+                              {job.amount} {job.currency || 'USDC'}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          {job.buyer && (
+                            <span className="text-xs text-gray-400">by {job.buyer}</span>
+                          )}
+                          {job.completed_at && (
+                            <span className="text-xs text-gray-500">
+                              {new Date(job.completed_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="px-2 py-0.5 text-xs rounded-full bg-green-600/20 text-green-400 border border-green-600/30">
+                          completed
+                        </span>
+                        {hasDetail && (
+                          <ExternalLink className="w-3.5 h-3.5 text-gray-500" />
                         )}
                       </div>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        {job.buyer && (
-                          <span className="text-xs text-gray-400">by {job.buyer}</span>
-                        )}
-                        {job.completed_at && (
-                          <span className="text-xs text-gray-500">
-                            {new Date(job.completed_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <span className="shrink-0 px-2 py-0.5 text-xs rounded-full bg-green-600/20 text-green-400 border border-green-600/30">
-                      completed
-                    </span>
-                  </div>
-                ))}
+                    </Wrapper>
+                  )
+                })}
               </div>
             </section>
           )}
