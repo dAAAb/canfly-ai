@@ -1,14 +1,13 @@
 /**
- * System email notifications via Cloudflare Email Routing (CAN-283).
+ * System email notifications via BaseMail API (CAN-288).
  *
- * Sends buyer-facing emails from hi@canfly.ai when tasks are completed.
- * Requires `send_email` binding configured in wrangler.toml and
- * Cloudflare Email Routing enabled for the canfly.ai domain.
+ * Sends buyer-facing emails from canflyai@basemail.ai when tasks are completed.
+ * Requires `BASEMAIL_API_KEY` configured in environment.
  */
-import { createMimeMessage } from 'mimetext'
 import { deriveViewToken } from './_crypto'
 
-const SYSTEM_EMAIL = 'hi@canfly.ai'
+const BASEMAIL_API = 'https://api.basemail.ai'
+const SYSTEM_EMAIL = 'canflyai@basemail.ai'
 const SYSTEM_NAME = 'CanFly.ai'
 const DEFAULT_SITE_URL = 'https://canfly.ai'
 
@@ -152,15 +151,15 @@ function escapeHtml(s: string): string {
 /**
  * Send a task completion notification email to the buyer.
  *
- * Uses Cloudflare Email Routing via the `send_email` binding.
- * Falls back gracefully if the binding is not configured.
+ * Uses BaseMail API to send from canflyai@basemail.ai.
+ * Falls back gracefully if BASEMAIL_API_KEY is not configured.
  */
 export async function sendBuyerCompletionEmail(
-  env: { SEND_EMAIL?: { send: (msg: unknown) => Promise<void> }; CANFLY_SITE_URL?: string; ENCRYPTION_KEY?: string },
+  env: { BASEMAIL_API_URL?: string; BASEMAIL_API_KEY?: string; CANFLY_SITE_URL?: string; ENCRYPTION_KEY?: string },
   opts: Omit<TaskCompletionEmailOpts, 'siteUrl' | 'encryptionKey'>,
 ): Promise<{ sent: boolean; error?: string }> {
-  if (!env.SEND_EMAIL) {
-    return { sent: false, error: 'SEND_EMAIL binding not configured' }
+  if (!env.BASEMAIL_API_KEY) {
+    return { sent: false, error: 'BASEMAIL_API_KEY not configured' }
   }
 
   try {
@@ -169,19 +168,28 @@ export async function sendBuyerCompletionEmail(
 
     const fullOpts = { ...opts, siteUrl, resultPageUrl, encryptionKey: env.ENCRYPTION_KEY }
 
-    const msg = createMimeMessage()
-    msg.setSender({ name: SYSTEM_NAME, addr: SYSTEM_EMAIL })
-    msg.setRecipient(opts.buyerEmail)
-    msg.setSubject(`Your ${opts.skillName} task is complete!`)
-    msg.addMessage({ contentType: 'text/plain', data: buildTextBody(fullOpts) })
-    msg.addMessage({ contentType: 'text/html', data: buildHtmlBody(fullOpts) })
+    const apiUrl = env.BASEMAIL_API_URL || BASEMAIL_API
 
-    // Use the Cloudflare EmailMessage constructor from cloudflare:email
-    // The send_email binding expects an EmailMessage object
-    const { EmailMessage } = await import('cloudflare:email')
-    const emailMessage = new EmailMessage(SYSTEM_EMAIL, opts.buyerEmail, msg.asRaw())
+    const res = await fetch(`${apiUrl}/api/send`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${env.BASEMAIL_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: SYSTEM_EMAIL,
+        to: opts.buyerEmail,
+        subject: `Your ${opts.skillName} task is complete!`,
+        body: buildTextBody(fullOpts),
+        html: buildHtmlBody(fullOpts),
+      }),
+      signal: AbortSignal.timeout(10_000),
+    })
 
-    await env.SEND_EMAIL.send(emailMessage)
+    if (!res.ok) {
+      const errText = await res.text().catch(() => 'unknown error')
+      return { sent: false, error: `BaseMail API ${res.status}: ${errText}` }
+    }
 
     return { sent: true }
   } catch (err) {

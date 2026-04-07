@@ -22,10 +22,8 @@ bucket_name = "canfly-avatars"
 binding = "TASK_RESULTS"
 bucket_name = "canfly-task-results"
 
-# System email via Cloudflare Email Routing (CAN-283)
-# Requires Email Routing enabled for canfly.ai in Cloudflare dashboard
-[[send_email]]
-name = "SEND_EMAIL"
+# System email: switched to BaseMail API (CAN-288)
+# Previously used Cloudflare Email Routing (CAN-283)
 
 # SLA timeout cron — call POST /api/cron/sla-timeout every 10 minutes
 # Set CRON_SECRET in dashboard secrets; pass as Authorization: Bearer <secret>
