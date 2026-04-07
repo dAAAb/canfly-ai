@@ -1,5 +1,16 @@
 # CanFly 版本管理 & 回滾指南
 
+## Migration: 0035_task_result_fields (CAN-281)
+
+**Added columns:** `result_preview` TEXT, `result_note` TEXT on `tasks` table.
+
+**Rollback:**
+```bash
+wrangler d1 execute canfly-community --file=migrations/rollback/0035_task_result_fields_down.sql
+```
+
+---
+
 ## 版本歷史
 
 | 版本 | Git Tag | 日期 | 說明 |

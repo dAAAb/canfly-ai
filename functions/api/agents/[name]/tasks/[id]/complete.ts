@@ -17,11 +17,25 @@ const BASEMAIL_API = 'https://api.basemail.ai'
 interface CompleteBody {
   result_data?: Record<string, unknown>  // JSON result payload
   result_url?: string                     // External URL (e.g. ngrok)
+  resultUrl?: string                      // camelCase alias
   result_file?: string                    // Base64-encoded file to store in R2
   result_filename?: string                // Filename for R2 upload
   result_content_type?: string            // MIME type for R2 upload
+  result_preview?: string                 // Preview image URL (CAN-281)
+  resultPreview?: string                  // camelCase alias
+  result_note?: string                    // Seller note about the result (CAN-281)
+  resultNote?: string                     // camelCase alias
   status?: 'completed' | 'failed'        // Allow marking as failed too
   error_message?: string                 // Reason if failed
+}
+
+function isValidHttpUrl(s: string): boolean {
+  try {
+    const url = new URL(s)
+    return url.protocol === 'http:' || url.protocol === 'https:'
+  } catch {
+    return false
+  }
 }
 
 export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }) => {
@@ -68,8 +82,18 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     return errorResponse('status must be "completed" or "failed"', 400)
   }
 
-  let resultUrl: string | null = body.result_url || null
+  let resultUrl: string | null = body.result_url || body.resultUrl || null
   let resultData: string | null = body.result_data ? JSON.stringify(body.result_data) : null
+  const resultPreview: string | null = body.result_preview || body.resultPreview || null
+  const resultNote: string | null = body.result_note || body.resultNote || null
+
+  // Validate URL formats (CAN-281)
+  if (resultUrl && !isValidHttpUrl(resultUrl)) {
+    return errorResponse('resultUrl must be a valid http/https URL', 400)
+  }
+  if (resultPreview && !isValidHttpUrl(resultPreview)) {
+    return errorResponse('resultPreview must be a valid http/https URL', 400)
+  }
 
   // Upload result file to R2 if provided
   if (body.result_file && finalStatus === 'completed') {
@@ -111,7 +135,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   // For direct payment tasks: mark as completed immediately
   const escrowStatus = isEscrow ? 'completed' : (task.escrow_status as string || 'none')
 
-  // Update task
+  // Update task (CAN-281: added result_preview, result_note)
   await env.DB.prepare(
     `UPDATE tasks SET
        status = ?1,
@@ -119,7 +143,9 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
        result_data = ?3,
        completed_at = datetime('now'),
        started_at = COALESCE(started_at, ?4),
-       escrow_status = ?6
+       escrow_status = ?6,
+       result_preview = ?7,
+       result_note = ?8
      WHERE id = ?5`
   ).bind(
     finalStatus,
@@ -128,6 +154,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     startTime || completedAt,
     taskId,
     escrowStatus,
+    resultPreview,
+    resultNote,
   ).run()
 
   // Recalculate seller trust score (CAN-220)
@@ -157,6 +185,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     status: finalStatus,
     skill: task.skill_name,
     result_url: resultUrl,
+    result_preview: resultPreview,
+    result_note: resultNote,
     has_result_data: !!resultData,
     completed_at: completedAt,
     execution_time_ms: executionMs,
@@ -246,5 +276,8 @@ async function sendBasemailReply(
     return { sent: false, error: message }
   }
 }
+
+// CAN-281: Support PATCH as well as POST
+export const onRequestPatch: PagesFunction<Env> = onRequestPost
 
 export const onRequestOptions: PagesFunction<Env> = async () => handleOptions()

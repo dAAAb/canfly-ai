@@ -14,6 +14,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
 
   const task = await env.DB.prepare(
     `SELECT id, status, skill_name, result_url, result_data,
+            result_preview, result_note,
             buyer_agent, buyer_wallet,
             created_at, started_at, paid_at, completed_at
      FROM tasks WHERE id = ?1 AND seller_agent = ?2`
@@ -57,6 +58,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     skill: task.skill_name,
     status: 'completed',
     result_url: task.result_url,
+    result_preview: task.result_preview || null,
+    result_note: task.result_note || null,
     result_data: task.result_data ? JSON.parse(task.result_data as string) : null,
     metadata: {
       execution_time_ms: executionMs,

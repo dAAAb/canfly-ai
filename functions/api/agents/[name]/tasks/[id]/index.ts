@@ -15,6 +15,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     `SELECT id, buyer_agent, buyer_email, buyer_wallet, seller_agent, skill_name, params,
             status, payment_method, payment_chain, payment_tx,
             amount, currency, channel, result_url, result_data,
+            result_preview, result_note,
             escrow_tx, escrow_status, sla_deadline, confirmed_at, rejected_at, reject_reason,
             created_at, started_at, paid_at, completed_at
      FROM tasks WHERE id = ?1 AND seller_agent = ?2`
@@ -69,6 +70,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     completed_at: task.completed_at,
     execution_time_ms: executionMs,
     result_url: task.result_url || null,
+    result_preview: task.result_preview || null,
+    result_note: task.result_note || null,
     result_data: task.result_data ? JSON.parse(task.result_data as string) : null,
   })
 }
