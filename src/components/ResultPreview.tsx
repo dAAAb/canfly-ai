@@ -444,9 +444,21 @@ export default function ResultPreview({ url, contentType, loading }: ResultPrevi
   return (
     <div className="rounded-2xl border border-gray-800 overflow-hidden bg-gray-900">
       {/* Header */}
-      <div className="px-4 py-2 border-b border-gray-800 flex items-center gap-2 text-sm text-gray-400">
-        <Icon className="w-4 h-4" />
-        {t(`resultPreview.type.${category}`, label)}
+      <div className="px-4 py-2 border-b border-gray-800 flex items-center justify-between">
+        <div className="flex items-center gap-2 text-sm text-gray-400">
+          <Icon className="w-4 h-4" />
+          {t(`resultPreview.type.${category}`, label)}
+        </div>
+        <a
+          href={url}
+          download
+          target="_blank"
+          rel="noopener noreferrer"
+          className="p-1.5 rounded-lg hover:bg-gray-800 text-gray-500 hover:text-gray-300 transition-colors"
+          title={t('resultPreview.download', 'Download File')}
+        >
+          <Download className="w-4 h-4" />
+        </a>
       </div>
 
       {/* Content */}
@@ -473,8 +485,7 @@ export default function ResultPreview({ url, contentType, loading }: ResultPrevi
               <CodePreview url={url} />
             </Suspense>
           )}
-          {/* Always show download card below preview */}
-          <DownloadCard url={url} contentType={contentType} />
+          {category === 'unknown' && <DownloadCard url={url} contentType={contentType} />}
         </>
       )}
     </div>
