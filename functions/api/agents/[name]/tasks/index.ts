@@ -415,8 +415,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
 
   // Verify agent exists (include owner info for wallet-based auth)
   const agent = await env.DB.prepare(
-    `SELECT a.name, a.is_public, a.api_key, a.wallet_address,
-            u.wallet_address as owner_wallet
+    `SELECT a.name, a.is_public, a.api_key, a.wallet_address, a.edit_token as agent_edit_token,
+            u.wallet_address as owner_wallet, u.edit_token
      FROM agents a
      LEFT JOIN users u ON a.owner_username = u.username
      WHERE a.name = ?1`
@@ -425,12 +425,21 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   if (!agent) return errorResponse('Agent not found', 404)
   if (agent.is_public === 0) return errorResponse('Agent profile is private', 403)
 
-  // CAN-280: Check if caller is the seller (API key) or agent owner (wallet match)
+  // CAN-280: Check if caller is the seller (API key), owner (edit token), or owner (wallet)
   const authHeader = request.headers.get('Authorization')
   const bearerKey = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
   const isApiKeyAuth = !!(bearerKey && agent.api_key && agent.api_key === bearerKey)
 
-  // Also check wallet-based ownership (X-Wallet-Address header from Privy frontend)
+  // Edit token match (most reliable for Google login users)
+  const editToken = request.headers.get('X-Edit-Token')
+  const agentEditToken = (agent as Record<string, unknown>).agent_edit_token as string | null
+  const ownerEditToken = (agent as Record<string, unknown>).edit_token as string | null
+  const isEditTokenAuth = !!(editToken && (
+    (agentEditToken && editToken === agentEditToken) ||
+    (ownerEditToken && editToken === ownerEditToken)
+  ))
+
+  // Wallet-based ownership (X-Wallet-Address header from Privy frontend)
   const callerWallet = (request.headers.get('X-Wallet-Address') || '').toLowerCase()
   const agentWallet = ((agent.wallet_address as string) || '').toLowerCase()
   const ownerWallet = ((agent.owner_wallet as string) || '').toLowerCase()
@@ -439,7 +448,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     (ownerWallet && callerWallet === ownerWallet)
   ))
 
-  const isSellerAuth = isApiKeyAuth || isOwnerWallet
+  const isSellerAuth = isApiKeyAuth || isEditTokenAuth || isOwnerWallet
 
   // List tasks
   const statusFilter = url.searchParams.get('status') // optional filter: completed, paid, executing, all (pending_payment deprecated per CAN-232)

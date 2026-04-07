@@ -81,21 +81,36 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     }
   }
 
-  // 4. Agent owner wallet (seller's owner can view all their agent's tasks)
+  // 4. Agent owner: edit token, wallet match, or Privy embedded wallet
   if (!authorized) {
-    const callerWallet = (request.headers.get('X-Wallet-Address') || '').toLowerCase()
-    if (callerWallet) {
-      const sellerAgent = await env.DB.prepare(
-        `SELECT a.wallet_address, u.wallet_address as owner_wallet
-         FROM agents a LEFT JOIN users u ON a.owner_username = u.username
-         WHERE a.name = ?1`
-      ).bind(task.seller_agent).first()
-      if (sellerAgent) {
-        const agentWallet = ((sellerAgent.wallet_address as string) || '').toLowerCase()
-        const ownerWallet = ((sellerAgent.owner_wallet as string) || '').toLowerCase()
-        if ((agentWallet && callerWallet === agentWallet) ||
-            (ownerWallet && callerWallet === ownerWallet)) {
+    const sellerAgent = await env.DB.prepare(
+      `SELECT a.wallet_address, a.owner_username, a.edit_token as agent_edit_token,
+              u.wallet_address as owner_wallet, u.edit_token
+       FROM agents a LEFT JOIN users u ON a.owner_username = u.username
+       WHERE a.name = ?1`
+    ).bind(task.seller_agent).first()
+
+    if (sellerAgent) {
+      // 4a. Edit token match (most reliable for Google login users)
+      const editToken = request.headers.get('X-Edit-Token')
+      if (editToken) {
+        const agentET = (sellerAgent as Record<string, unknown>).agent_edit_token as string | null
+        const ownerET = (sellerAgent as Record<string, unknown>).edit_token as string | null
+        if ((agentET && editToken === agentET) || (ownerET && editToken === ownerET)) {
           authorized = true
+        }
+      }
+
+      // 4b. Wallet address match (Privy embedded wallet or agent wallet)
+      if (!authorized) {
+        const callerWallet = (request.headers.get('X-Wallet-Address') || '').toLowerCase()
+        if (callerWallet) {
+          const agentWallet = ((sellerAgent.wallet_address as string) || '').toLowerCase()
+          const ownerWallet = ((sellerAgent.owner_wallet as string) || '').toLowerCase()
+          if ((agentWallet && callerWallet === agentWallet) ||
+              (ownerWallet && callerWallet === ownerWallet)) {
+            authorized = true
+          }
         }
       }
     }

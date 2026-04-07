@@ -107,8 +107,20 @@ export default function TaskResultPage() {
         const headers: Record<string, string> = { 'Content-Type': 'application/json' }
 
         // Add auth headers if logged in (even with token, for share_token generation)
+        // Include any agent edit tokens from localStorage for owner access
         if (isAuthenticated) {
-          const authHeaders = await getApiAuthHeaders({ getAccessToken, walletAddress })
+          // Find any stored agent edit token (owner may have claimed the agent)
+          let editToken: string | null = null
+          try {
+            for (let i = 0; i < localStorage.length; i++) {
+              const key = localStorage.key(i)
+              if (key?.startsWith('canfly_agent_token_') || key?.startsWith('canfly_edit_token_')) {
+                editToken = localStorage.getItem(key)
+                if (editToken) break
+              }
+            }
+          } catch { /* ignore */ }
+          const authHeaders = await getApiAuthHeaders({ getAccessToken, walletAddress, editToken })
           Object.assign(headers, authHeaders)
         } else if (walletAddress) {
           headers['X-Wallet-Address'] = walletAddress
