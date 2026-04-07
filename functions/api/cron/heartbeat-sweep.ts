@@ -209,10 +209,10 @@ async function sendCompletionMail(
       'Authorization': `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      from: `${opts.fromHandle}@basemail.ai`,
       to: opts.to,
       subject: `Re: ${opts.skill} — Task Complete`,
       body,
+      from_handle: 'canflyai',
     }),
     signal: AbortSignal.timeout(10_000),
   }).catch(() => {})

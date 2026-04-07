@@ -273,10 +273,10 @@ async function sendBasemailReply(
         'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        from: `${opts.from}@basemail.ai`,
         to: opts.to,
         subject: `✅ Your ${opts.skill} task is complete!`,
         body,
+        from_handle: 'canflyai',
       }),
       signal: AbortSignal.timeout(10_000),
     })

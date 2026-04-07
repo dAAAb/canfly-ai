@@ -289,10 +289,10 @@ async function notifySeller(
       'Authorization': `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      from: 'canfly@basemail.ai',
       to: `${basemailHandle}@basemail.ai`,
       subject: `New paid task: ${payload.skill}`,
       body,
+      from_handle: 'canflyai',
     }),
     signal: AbortSignal.timeout(10_000),
   })

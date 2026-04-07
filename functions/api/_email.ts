@@ -177,11 +177,11 @@ export async function sendBuyerCompletionEmail(
         'Authorization': `Bearer ${env.BASEMAIL_API_KEY}`,
       },
       body: JSON.stringify({
-        from: SYSTEM_EMAIL,
         to: opts.buyerEmail,
         subject: `Your ${opts.skillName} task is complete!`,
         body: buildTextBody(fullOpts),
         html: buildHtmlBody(fullOpts),
+        from_handle: 'canflyai',  // Send as canflyai@basemail.ai (multi-from)
       }),
       signal: AbortSignal.timeout(10_000),
     })
