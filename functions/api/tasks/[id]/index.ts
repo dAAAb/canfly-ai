@@ -6,6 +6,10 @@
  */
 import { type Env, json, errorResponse, handleOptions } from '../../community/_helpers'
 import { deriveViewToken } from '../../_crypto'
+import { importKey, decrypt } from '../../lib/crypto'
+
+/** Auth levels for result file access (CAN-291) */
+type AuthLevel = 'owner' | 'token' | 'none'
 
 /** Resolve wallet address from Privy JWT */
 async function resolveWalletFromJwt(request: Request, env: Env): Promise<string | null> {
@@ -39,29 +43,29 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
 
   if (!task) return errorResponse('Task not found', 404)
 
-  // --- Auth check ---
-  let authorized = false
+  // --- Auth check (CAN-291: track auth level for credential masking) ---
+  let authLevel: AuthLevel = 'none'
 
-  // 1. Token-based access (HMAC view token)
+  // 1. Token-based access (HMAC view token) — "token" level
   if (viewToken && env.ENCRYPTION_KEY) {
     const expected = await deriveViewToken(taskId, env.ENCRYPTION_KEY)
-    if (viewToken === expected) authorized = true
+    if (viewToken === expected) authLevel = 'token'
   }
 
-  // 2. Buyer wallet header (case-insensitive match)
-  if (!authorized) {
+  // 2. Buyer wallet header (case-insensitive match) — "owner" level
+  if (authLevel === 'none') {
     const walletHeader = request.headers.get('X-Buyer-Wallet') || request.headers.get('X-Wallet-Address')
     if (
       walletHeader &&
       task.buyer_wallet &&
       walletHeader.toLowerCase() === (task.buyer_wallet as string).toLowerCase()
     ) {
-      authorized = true
+      authLevel = 'owner'
     }
   }
 
-  // 3. Bearer token matches seller or buyer agent API key
-  if (!authorized) {
+  // 3. Bearer token matches seller or buyer agent API key — "owner" level
+  if (authLevel === 'none') {
     const authHeader = request.headers.get('Authorization')
     const bearerKey = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
     if (bearerKey) {
@@ -69,20 +73,20 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
       const seller = await env.DB.prepare(
         'SELECT api_key FROM agents WHERE name = ?1'
       ).bind(task.seller_agent).first()
-      if (seller?.api_key && seller.api_key === bearerKey) authorized = true
+      if (seller?.api_key && seller.api_key === bearerKey) authLevel = 'owner'
 
       // Check buyer agent
-      if (!authorized && task.buyer_agent) {
+      if (authLevel === 'none' && task.buyer_agent) {
         const buyer = await env.DB.prepare(
           'SELECT api_key FROM agents WHERE name = ?1'
         ).bind(task.buyer_agent).first()
-        if (buyer?.api_key && buyer.api_key === bearerKey) authorized = true
+        if (buyer?.api_key && buyer.api_key === bearerKey) authLevel = 'owner'
       }
     }
   }
 
-  // 4. Agent owner: edit token, wallet match, or Privy embedded wallet
-  if (!authorized) {
+  // 4. Agent owner: edit token, wallet match, or Privy embedded wallet — "owner" level
+  if (authLevel === 'none') {
     const sellerAgent = await env.DB.prepare(
       `SELECT a.wallet_address, a.owner_username, a.edit_token as agent_edit_token,
               u.wallet_address as owner_wallet, u.edit_token
@@ -97,26 +101,26 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
         const agentET = (sellerAgent as Record<string, unknown>).agent_edit_token as string | null
         const ownerET = (sellerAgent as Record<string, unknown>).edit_token as string | null
         if ((agentET && editToken === agentET) || (ownerET && editToken === ownerET)) {
-          authorized = true
+          authLevel = 'owner'
         }
       }
 
       // 4b. Wallet address match (Privy embedded wallet or agent wallet)
-      if (!authorized) {
+      if (authLevel === 'none') {
         const callerWallet = (request.headers.get('X-Wallet-Address') || '').toLowerCase()
         if (callerWallet) {
           const agentWallet = ((sellerAgent.wallet_address as string) || '').toLowerCase()
           const ownerWallet = ((sellerAgent.owner_wallet as string) || '').toLowerCase()
           if ((agentWallet && callerWallet === agentWallet) ||
               (ownerWallet && callerWallet === ownerWallet)) {
-            authorized = true
+            authLevel = 'owner'
           }
         }
       }
     }
   }
 
-  if (!authorized) return errorResponse('Forbidden', 403)
+  if (authLevel === 'none') return errorResponse('Forbidden', 403)
 
   // --- Build response ---
   const startTime = task.started_at || task.paid_at || task.created_at
@@ -139,6 +143,64 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   let shareToken: string | null = null
   if (env.ENCRYPTION_KEY) {
     shareToken = await deriveViewToken(taskId, env.ENCRYPTION_KEY)
+  }
+
+  // CAN-291: Process result_data files based on auth level
+  let resultData = task.result_data ? JSON.parse(task.result_data as string) : null
+
+  if (resultData?.files && Array.isArray(resultData.files)) {
+    let cryptoKey: CryptoKey | null = null
+    if (env.ENCRYPTION_KEY) {
+      cryptoKey = await importKey(env.ENCRYPTION_KEY)
+    }
+
+    const processedFiles: Record<string, unknown>[] = []
+    for (const file of resultData.files as Record<string, unknown>[]) {
+      const isCredential = file.type === 'credential' || file.type === 'api_endpoint'
+
+      if (isCredential && authLevel === 'token') {
+        // Share token access: mask sensitive values
+        const masked: Record<string, unknown> = {
+          url: file.url,
+          type: file.type,
+          name: file.name,
+          auth: file.auth,
+          method: file.method,
+          expires_at: file.expires_at,
+        }
+        // Mask token: show first 8 + last 4 chars
+        if (file.encrypted_token && cryptoKey) {
+          const fullToken = await decrypt(file.encrypted_token as string, cryptoKey)
+          masked.token_masked = fullToken.length > 12
+            ? fullToken.slice(0, 8) + '****' + fullToken.slice(-4)
+            : '****'
+        }
+        processedFiles.push(masked)
+      } else if (isCredential && authLevel === 'owner') {
+        // Full access: decrypt and return complete values
+        const full: Record<string, unknown> = {
+          url: file.url,
+          type: file.type,
+          name: file.name,
+          auth: file.auth,
+          method: file.method,
+          expires_at: file.expires_at,
+        }
+        if (file.encrypted_token && cryptoKey) {
+          full.token = await decrypt(file.encrypted_token as string, cryptoKey)
+        }
+        if (file.encrypted_headers && cryptoKey) {
+          full.headers = JSON.parse(await decrypt(file.encrypted_headers as string, cryptoKey))
+        }
+        processedFiles.push(full)
+      } else if (!isCredential) {
+        // Non-credential files: always return as-is
+        processedFiles.push(file)
+      }
+      // Public (authLevel 'none') would have been rejected above, but
+      // credential files are stripped for 'token' auth with no crypto key
+    }
+    resultData = { ...resultData, files: processedFiles }
   }
 
   return json({
@@ -167,7 +229,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     result_preview: task.result_preview || null,
     result_note: task.result_note || null,
     result_content_type: task.result_content_type || null,
-    result_data: task.result_data ? JSON.parse(task.result_data as string) : null,
+    result_data: resultData,
     share_token: shareToken,
   })
 }

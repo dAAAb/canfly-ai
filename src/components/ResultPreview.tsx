@@ -9,7 +9,7 @@ import { useState, useEffect, lazy, Suspense, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Image, Film, Music, FileText, Download, AlertCircle, Loader2, Maximize2, X,
-  Box, FileCode, Copy, Check,
+  Box, FileCode, Copy, Check, Key, Clock, ExternalLink,
 } from 'lucide-react'
 
 /* ───── MIME / extension detection ───── */
@@ -401,6 +401,208 @@ function PreviewSkeleton() {
   return (
     <div className="p-4 animate-pulse">
       <div className="w-full h-64 rounded-2xl bg-gray-800" />
+    </div>
+  )
+}
+
+/* ───── CAN-291: Credential Card ───── */
+
+export interface ResultFile {
+  url: string
+  type: string
+  name: string
+  auth?: string
+  token?: string           // Full token (owner auth)
+  token_masked?: string    // Masked token (share token auth)
+  headers?: Record<string, string>
+  method?: string
+  expires_at?: string
+}
+
+function CredentialCard({ file }: { file: ResultFile }) {
+  const { t } = useTranslation()
+  const [copied, setCopied] = useState(false)
+
+  const displayToken = file.token || file.token_masked || '••••••••'
+  const isExpired = file.expires_at ? new Date(file.expires_at) < new Date() : false
+  const canCopy = !!file.token // Only full tokens can be copied
+
+  const handleCopy = useCallback(() => {
+    if (!file.token) return
+    navigator.clipboard.writeText(file.token).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }, [file.token])
+
+  return (
+    <div className="rounded-xl bg-gray-800/60 border border-gray-700/40 p-4">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <Key className="w-4 h-4 text-amber-400" />
+          <span className="text-sm font-medium text-gray-200">{file.name}</span>
+        </div>
+        {file.expires_at && (
+          <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ${
+            isExpired
+              ? 'bg-red-500/20 text-red-400 border border-red-700/40'
+              : 'bg-green-500/20 text-green-400 border border-green-700/40'
+          }`}>
+            <Clock className="w-3 h-3" />
+            {isExpired ? t('resultPreview.expired', 'Expired') : new Date(file.expires_at).toLocaleDateString()}
+          </span>
+        )}
+      </div>
+
+      <div className="space-y-2 text-sm">
+        <div className="flex items-center justify-between">
+          <span className="text-gray-500">Endpoint</span>
+          <a
+            href={file.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-1 truncate max-w-[70%]"
+          >
+            {file.url}
+            <ExternalLink className="w-3 h-3 shrink-0" />
+          </a>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <span className="text-gray-500">Token</span>
+          <div className="flex items-center gap-2">
+            <code className="text-xs bg-gray-900 px-2 py-1 rounded text-gray-300 font-mono">
+              {displayToken}
+            </code>
+            {canCopy && (
+              <button
+                onClick={handleCopy}
+                className="p-1 rounded hover:bg-gray-700 text-gray-400 hover:text-white transition-colors"
+                title={t('resultPreview.copyToken', 'Copy token')}
+              >
+                {copied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
+              </button>
+            )}
+          </div>
+        </div>
+
+        {file.method && (
+          <div className="flex items-center justify-between">
+            <span className="text-gray-500">Method</span>
+            <span className="text-gray-300">{file.method}</span>
+          </div>
+        )}
+
+        {file.auth && (
+          <div className="flex items-center justify-between">
+            <span className="text-gray-500">Auth</span>
+            <span className="text-gray-300">{file.auth}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/* ───── CAN-291: Result Gallery (multi-file) ───── */
+
+function GalleryItem({ file }: { file: ResultFile }) {
+  const isCredential = file.type === 'credential' || file.type === 'api_endpoint'
+  if (isCredential) return <CredentialCard file={file} />
+
+  const category = categorise(file.type, file.url)
+
+  if (category === 'image') return <ImagePreview url={file.url} />
+  if (category === 'video') return <VideoPreview url={file.url} />
+  if (category === 'audio') return <AudioPreview url={file.url} />
+
+  // Fallback: download card
+  return <DownloadCard url={file.url} contentType={file.type} />
+}
+
+export interface ResultGalleryProps {
+  files: ResultFile[]
+  loading?: boolean
+}
+
+export function ResultGallery({ files, loading }: ResultGalleryProps) {
+  const { t } = useTranslation()
+
+  if (loading) return <PreviewSkeleton />
+
+  const mediaFiles = files.filter(f => f.type !== 'credential' && f.type !== 'api_endpoint')
+  const credentialFiles = files.filter(f => f.type === 'credential' || f.type === 'api_endpoint')
+
+  // Count images for grid layout
+  const imageFiles = mediaFiles.filter(f => categorise(f.type, f.url) === 'image')
+  const nonImageMedia = mediaFiles.filter(f => categorise(f.type, f.url) !== 'image')
+
+  return (
+    <div className="space-y-4">
+      {/* Image grid */}
+      {imageFiles.length > 0 && (
+        <div className="rounded-2xl border border-gray-800 overflow-hidden bg-gray-900">
+          <div className="px-4 py-2 border-b border-gray-800 flex items-center gap-2 text-sm text-gray-400">
+            <Image className="w-4 h-4" />
+            {t('resultPreview.images', 'Images')} ({imageFiles.length})
+          </div>
+          <div className={`grid gap-2 p-2 ${
+            imageFiles.length === 1 ? 'grid-cols-1' :
+            imageFiles.length === 2 ? 'grid-cols-2' :
+            'grid-cols-2 md:grid-cols-3'
+          }`}>
+            {imageFiles.map((file, i) => (
+              <div key={i} className="rounded-xl overflow-hidden">
+                <ImagePreview url={file.url} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Non-image media (video, audio, etc.) — rendered sequentially */}
+      {nonImageMedia.map((file, i) => (
+        <div key={`media-${i}`} className="rounded-2xl border border-gray-800 overflow-hidden bg-gray-900">
+          <div className="px-4 py-2 border-b border-gray-800 flex items-center gap-2 text-sm text-gray-400">
+            {categorise(file.type, file.url) === 'video' && <Film className="w-4 h-4" />}
+            {categorise(file.type, file.url) === 'audio' && <Music className="w-4 h-4" />}
+            {!['video', 'audio'].includes(categorise(file.type, file.url)) && <FileText className="w-4 h-4" />}
+            {file.name}
+          </div>
+          <GalleryItem file={file} />
+        </div>
+      ))}
+
+      {/* Credential cards */}
+      {credentialFiles.length > 0 && (
+        <div className="space-y-3">
+          {credentialFiles.map((file, i) => (
+            <CredentialCard key={`cred-${i}`} file={file} />
+          ))}
+        </div>
+      )}
+
+      {/* Download All — show when more than 1 downloadable file */}
+      {mediaFiles.length > 1 && (
+        <div className="flex justify-center">
+          <button
+            onClick={() => {
+              mediaFiles.forEach(f => {
+                const a = document.createElement('a')
+                a.href = f.url
+                a.download = f.name
+                a.target = '_blank'
+                a.rel = 'noopener noreferrer'
+                a.click()
+              })
+            }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-sm text-gray-300 transition-colors"
+          >
+            <Download className="w-4 h-4" />
+            {t('resultPreview.downloadAll', 'Download All')} ({mediaFiles.length})
+          </button>
+        </div>
+      )}
     </div>
   )
 }

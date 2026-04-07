@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
 import { getApiAuthHeaders } from '../utils/apiAuth'
 import Navbar from '../components/Navbar'
-import ResultPreview from '../components/ResultPreview'
+import ResultPreview, { ResultGallery, type ResultFile } from '../components/ResultPreview'
 import {
   Loader2, AlertCircle, Clock, CheckCircle,
   Package, FileText, Share2, Copy, Check,
@@ -213,13 +213,15 @@ export default function TaskResultPage() {
               </span>
             </div>
 
-            {/* Result Preview (CAN-289: multimedia auto-detect) */}
-            {task.result_url && (
+            {/* Result Preview (CAN-289: multimedia auto-detect, CAN-291: multi-file gallery) */}
+            {task.result_data?.files && (task.result_data.files as ResultFile[]).length > 0 ? (
+              <ResultGallery files={task.result_data.files as ResultFile[]} />
+            ) : task.result_url ? (
               <ResultPreview
                 url={task.result_url}
                 contentType={task.result_content_type}
               />
-            )}
+            ) : null}
 
             {/* Result Note */}
             {task.result_note && (

@@ -12,8 +12,21 @@
 import { type Env, json, errorResponse, handleOptions, parseBody } from '../../../../community/_helpers'
 import { recalcTrustScore } from '../../../_trust'
 import { sendBuyerCompletionEmail } from '../../../../_email'
+import { importKey, encrypt } from '../../../../lib/crypto'
 
 const BASEMAIL_API = 'https://api.basemail.ai'
+
+/** A single file in a multi-file delivery (CAN-291) */
+interface ResultFileInput {
+  url: string                             // File URL or API endpoint
+  type: string                            // MIME type or "api_endpoint" / "credential"
+  name: string                            // Display name
+  auth?: 'bearer' | 'header' | 'query'   // Auth method (credential only)
+  token?: string                          // 🔐 Will be encrypted
+  headers?: Record<string, string>        // 🔐 Will be encrypted
+  method?: string                         // GET/POST (credential only)
+  expires_at?: string                     // ISO 8601 expiry (credential only)
+}
 
 interface CompleteBody {
   result_data?: Record<string, unknown>  // JSON result payload
@@ -26,6 +39,7 @@ interface CompleteBody {
   resultPreview?: string                  // camelCase alias
   result_note?: string                    // Seller note about the result (CAN-281)
   resultNote?: string                     // camelCase alias
+  result_files?: ResultFileInput[]        // Multi-file delivery (CAN-291)
   status?: 'completed' | 'failed'        // Allow marking as failed too
   error_message?: string                 // Reason if failed
 }
@@ -118,6 +132,65 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     resultUrl = `/api/agents/${agentName}/tasks/${taskId}/result/file`
     // Persist the content type from R2 upload if not explicitly set
     if (!resultContentType) resultContentType = contentType
+  }
+
+  // CAN-291: Multi-file delivery with credential encryption
+  if (body.result_files && body.result_files.length > 0) {
+    const files = body.result_files
+    const processedFiles: Record<string, unknown>[] = []
+
+    // Import encryption key for credential fields
+    let cryptoKey: CryptoKey | null = null
+    if (env.ENCRYPTION_KEY) {
+      cryptoKey = await importKey(env.ENCRYPTION_KEY)
+    }
+
+    for (const file of files) {
+      const processed: Record<string, unknown> = {
+        url: file.url,
+        type: file.type,
+        name: file.name,
+      }
+
+      // Credential-specific fields
+      const isCredential = file.type === 'credential' || file.type === 'api_endpoint'
+      if (isCredential) {
+        if (file.auth) processed.auth = file.auth
+        if (file.method) processed.method = file.method
+        if (file.expires_at) processed.expires_at = file.expires_at
+
+        // Encrypt sensitive fields
+        if (file.token) {
+          processed.encrypted_token = cryptoKey
+            ? await encrypt(file.token, cryptoKey)
+            : file.token  // Fallback: store plaintext if no key (dev only)
+        }
+        if (file.headers) {
+          processed.encrypted_headers = cryptoKey
+            ? await encrypt(JSON.stringify(file.headers), cryptoKey)
+            : JSON.stringify(file.headers)
+        }
+      }
+
+      processedFiles.push(processed)
+    }
+
+    // Merge files into result_data
+    const existingData = resultData ? JSON.parse(resultData) : {}
+    existingData.files = processedFiles
+    resultData = JSON.stringify(existingData)
+
+    // Set result_url to first non-credential file (for preview/backward compat)
+    if (!resultUrl) {
+      const previewFile = files.find(f => f.type !== 'credential' && f.type !== 'api_endpoint')
+      if (previewFile) resultUrl = previewFile.url
+    }
+
+    // Set content type from first file if not explicitly set
+    if (!resultContentType && files.length > 0) {
+      const firstNonCred = files.find(f => f.type !== 'credential' && f.type !== 'api_endpoint')
+      if (firstNonCred) resultContentType = firstNonCred.type
+    }
   }
 
   // Calculate execution time
