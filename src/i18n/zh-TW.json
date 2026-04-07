@@ -7694,6 +7694,19 @@
     "copyLink": "複製連結",
     "inProgress": "此任務仍在進行中，請稍後查看結果。"
   },
+  "resultPreview": {
+    "imageAlt": "任務成果",
+    "loading": "載入中...",
+    "loadError": "無法載入預覽，請聯繫賣方。",
+    "download": "下載檔案",
+    "type": {
+      "image": "圖片",
+      "video": "影片",
+      "audio": "音訊",
+      "markdown": "文件",
+      "unknown": "檔案"
+    }
+  },
   "tasksDashboard": {
     "title": "任務",
     "subtitle": "查看您的訂單和收到的任務。",

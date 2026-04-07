@@ -87,6 +87,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   let resultData: string | null = body.result_data ? JSON.stringify(body.result_data) : null
   const resultPreview: string | null = body.result_preview || body.resultPreview || null
   const resultNote: string | null = body.result_note || body.resultNote || null
+  let resultContentType: string | null = body.result_content_type || null
 
   // Validate URL formats (CAN-281)
   if (resultUrl && !isValidHttpUrl(resultUrl)) {
@@ -115,6 +116,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
 
     // Build public URL for the result
     resultUrl = `/api/agents/${agentName}/tasks/${taskId}/result/file`
+    // Persist the content type from R2 upload if not explicitly set
+    if (!resultContentType) resultContentType = contentType
   }
 
   // Calculate execution time
@@ -136,7 +139,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   // For direct payment tasks: mark as completed immediately
   const escrowStatus = isEscrow ? 'completed' : (task.escrow_status as string || 'none')
 
-  // Update task (CAN-281: added result_preview, result_note)
+  // Update task (CAN-281: added result_preview, result_note; CAN-289: added result_content_type)
   await env.DB.prepare(
     `UPDATE tasks SET
        status = ?1,
@@ -146,7 +149,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
        started_at = COALESCE(started_at, ?4),
        escrow_status = ?6,
        result_preview = ?7,
-       result_note = ?8
+       result_note = ?8,
+       result_content_type = ?9
      WHERE id = ?5`
   ).bind(
     finalStatus,
@@ -157,6 +161,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     escrowStatus,
     resultPreview,
     resultNote,
+    resultContentType,
   ).run()
 
   // Recalculate seller trust score (CAN-220)
@@ -202,6 +207,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     result_url: resultUrl,
     result_preview: resultPreview,
     result_note: resultNote,
+    result_content_type: resultContentType,
     has_result_data: !!resultData,
     completed_at: completedAt,
     execution_time_ms: executionMs,

@@ -11,9 +11,10 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
 import { getApiAuthHeaders } from '../utils/apiAuth'
 import Navbar from '../components/Navbar'
+import ResultPreview from '../components/ResultPreview'
 import {
-  Loader2, AlertCircle, ExternalLink, Clock, CheckCircle,
-  Package, Image, FileText, Share2, Copy, Check,
+  Loader2, AlertCircle, Clock, CheckCircle,
+  Package, FileText, Share2, Copy, Check,
 } from 'lucide-react'
 
 interface TaskResult {
@@ -45,6 +46,7 @@ interface TaskResult {
   completed_at: string | null
   execution_time_ms: number | null
   result_url: string | null
+  result_content_type: string | null
   result_preview: string | null
   result_note: string | null
   result_data: Record<string, unknown> | null
@@ -88,7 +90,6 @@ export default function TaskResultPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
-  const [previewError, setPreviewError] = useState(false)
 
   const urlToken = searchParams.get('token')
 
@@ -200,22 +201,12 @@ export default function TaskResultPage() {
               </span>
             </div>
 
-            {/* Result Preview Image */}
-            {task.result_preview && !previewError && (
-              <div className="rounded-xl border border-gray-800 overflow-hidden bg-gray-900">
-                <div className="px-4 py-2 border-b border-gray-800 flex items-center gap-2 text-sm text-gray-400">
-                  <Image className="w-4 h-4" />
-                  {t('taskResult.preview', 'Preview')}
-                </div>
-                <div className="p-4 flex justify-center">
-                  <img
-                    src={task.result_preview}
-                    alt={t('taskResult.previewAlt', 'Task result preview')}
-                    className="max-w-full max-h-[500px] rounded-lg object-contain"
-                    onError={() => setPreviewError(true)}
-                  />
-                </div>
-              </div>
+            {/* Result Preview (CAN-289: multimedia auto-detect) */}
+            {task.result_url && (
+              <ResultPreview
+                url={task.result_url}
+                contentType={task.result_content_type}
+              />
             )}
 
             {/* Result Note */}
@@ -227,22 +218,6 @@ export default function TaskResultPage() {
                 </div>
                 <p className="text-sm text-gray-200 whitespace-pre-wrap">{task.result_note}</p>
               </div>
-            )}
-
-            {/* Download / Result Link */}
-            {task.result_url && (
-              <a
-                href={task.result_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 rounded-xl border border-blue-700/40 bg-blue-500/10 hover:bg-blue-500/20 p-4 transition-colors"
-              >
-                <ExternalLink className="w-5 h-5 text-blue-400 shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-blue-300">{t('taskResult.downloadResult', 'Download Result')}</p>
-                  <p className="text-xs text-blue-400/60 truncate">{task.result_url}</p>
-                </div>
-              </a>
             )}
 
             {/* Task Details */}

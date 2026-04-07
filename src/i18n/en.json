@@ -7686,6 +7686,19 @@
     "copyLink": "Copy Link",
     "inProgress": "This task is still in progress. Check back later for results."
   },
+  "resultPreview": {
+    "imageAlt": "Task result",
+    "loading": "Loading...",
+    "loadError": "Unable to load preview. Please contact the seller.",
+    "download": "Download File",
+    "type": {
+      "image": "Image",
+      "video": "Video",
+      "audio": "Audio",
+      "markdown": "Document",
+      "unknown": "File"
+    }
+  },
   "tasksDashboard": {
     "title": "Tasks",
     "subtitle": "View your orders and received tasks.",
