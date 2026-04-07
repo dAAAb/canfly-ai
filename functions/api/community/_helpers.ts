@@ -23,6 +23,8 @@ export interface Env {
   MPP_ENABLED?: string
   MPP_SECRET_KEY?: string
   MPP_PRIVATE_KEY?: string
+  CANFLY_SITE_URL?: string
+  SEND_EMAIL?: { send: (msg: unknown) => Promise<void> }
 }
 
 /** Standard CORS headers for cross-origin access */

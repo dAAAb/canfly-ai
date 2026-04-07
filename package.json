@@ -22,7 +22,8 @@
     "scrape:discord": "npx tsx scripts/scrape-discord.ts",
     "scrape:discord:prod": "npx tsx scripts/scrape-discord.ts https://canfly.ai",
     "db:rollback:local": "wrangler d1 execute canfly-community --local --file=migrations/rollback/0001_initial_down.sql",
-    "db:tables:local": "wrangler d1 execute canfly-community --local --command \"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name\""
+    "db:tables:local": "wrangler d1 execute canfly-community --local --command \"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name\"",
+    "deliver": "bash scripts/deliver-to-r2.sh"
   },
   "dependencies": {
     "@paypal/react-paypal-js": "^9.0.1",
@@ -35,6 +36,7 @@
     "i18next": "^25.8.14",
     "i18next-browser-languagedetector": "^8.2.1",
     "lucide-react": "^0.577.0",
+    "mimetext": "^3.0.28",
     "mppx": "^0.5.5",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

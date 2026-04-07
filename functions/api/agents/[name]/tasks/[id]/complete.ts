@@ -11,6 +11,7 @@
  */
 import { type Env, json, errorResponse, handleOptions, parseBody } from '../../../../community/_helpers'
 import { recalcTrustScore } from '../../../_trust'
+import { sendBuyerCompletionEmail } from '../../../../_email'
 
 const BASEMAIL_API = 'https://api.basemail.ai'
 
@@ -180,6 +181,20 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     })
   }
 
+  // System email notification to buyer via Cloudflare Email Routing (CAN-283)
+  let systemEmail: { sent: boolean; error?: string } | null = null
+  if (finalStatus === 'completed' && task.buyer_email) {
+    systemEmail = await sendBuyerCompletionEmail(env, {
+      taskId,
+      skillName: task.skill_name as string,
+      sellerAgent: agentName,
+      completedAt,
+      executionMs,
+      resultUrl,
+      buyerEmail: task.buyer_email as string,
+    })
+  }
+
   return json({
     id: task.id,
     status: finalStatus,
@@ -191,6 +206,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     completed_at: completedAt,
     execution_time_ms: executionMs,
     basemail_reply: basemailReply,
+    system_email: systemEmail,
     ...(isEscrow ? {
       escrow: {
         status: 'completed',
