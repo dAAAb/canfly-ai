@@ -81,6 +81,26 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     }
   }
 
+  // 4. Agent owner wallet (seller's owner can view all their agent's tasks)
+  if (!authorized) {
+    const callerWallet = (request.headers.get('X-Wallet-Address') || '').toLowerCase()
+    if (callerWallet) {
+      const sellerAgent = await env.DB.prepare(
+        `SELECT a.wallet_address, u.wallet_address as owner_wallet
+         FROM agents a LEFT JOIN users u ON a.owner_username = u.username
+         WHERE a.name = ?1`
+      ).bind(task.seller_agent).first()
+      if (sellerAgent) {
+        const agentWallet = ((sellerAgent.wallet_address as string) || '').toLowerCase()
+        const ownerWallet = ((sellerAgent.owner_wallet as string) || '').toLowerCase()
+        if ((agentWallet && callerWallet === agentWallet) ||
+            (ownerWallet && callerWallet === ownerWallet)) {
+          authorized = true
+        }
+      }
+    }
+  }
+
   if (!authorized) return errorResponse('Forbidden', 403)
 
   // --- Build response ---
