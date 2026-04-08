@@ -306,6 +306,31 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
       .finally(() => setLoading(false))
   }, [username, navigate, subdomainUsername, isAuthenticated, getAccessToken, walletAddress])
 
+  // Auto-recover edit_token after login: if isOwner but no edit token in localStorage,
+  // call refresh-token API to restore it (CAN-294)
+  useEffect(() => {
+    if (!username || !user || !user.isOwner) return
+    if (localStorage.getItem(`canfly_edit_token_${user.username}`)) return
+
+    ;(async () => {
+      try {
+        const headers = await getApiAuthHeaders({ getAccessToken, walletAddress })
+        const res = await fetch(`/api/community/users/${user.username}/refresh-token`, {
+          method: 'POST',
+          headers,
+        })
+        if (res.ok) {
+          const data = await res.json() as { editToken: string }
+          if (data.editToken) {
+            localStorage.setItem(`canfly_edit_token_${user.username}`, data.editToken)
+          }
+        }
+      } catch {
+        // Non-blocking: edit token recovery is best-effort
+      }
+    })()
+  }, [user, username, getAccessToken, walletAddress])
+
   // Load pending agents when user can edit
   useEffect(() => {
     if (!username || !user) return
