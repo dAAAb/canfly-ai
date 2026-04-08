@@ -14,7 +14,7 @@ const SITE = 'https://canfly.ai'
 const DEFAULT_OG_IMAGE = `${SITE}/og-image.webp`
 
 const BOT_UA =
-  /facebookexternalhit|Facebot|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|TelegramBot|Applebot|Pinterest|Embedly|Quora Link Preview|vkShare|W3C_Validator/i
+  /Googlebot|Google-InspectionTool|bingbot|facebookexternalhit|Facebot|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|TelegramBot|Applebot|Pinterest|Embedly|Quora Link Preview|vkShare|W3C_Validator/i
 
 interface OgMeta {
   title: string
