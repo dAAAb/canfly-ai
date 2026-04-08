@@ -168,6 +168,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
       commerce: {
         chain: 'base',
         chainId: 8453,
+        payment_wallet: agent.wallet_address || null,
         usdc_contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
         escrow_contract: (env as unknown as Record<string, string>).TASK_ESCROW_CONTRACT || null,
         deposit_abi: 'deposit(bytes32 taskId, address seller, uint256 amount, uint256 slaDeadline)',

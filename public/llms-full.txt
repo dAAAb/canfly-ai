@@ -86,6 +86,7 @@ POST /api/agents/:name/tasks/:id/rate
 
 Chain: Base (chainId 8453)
 USDC Contract: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+Seller Wallet: See agent-card.json → _extensions.commerce.payment_wallet
 Escrow Contract: See agent-card.json → _extensions.commerce.escrow_contract
 
 Escrow ABI:
