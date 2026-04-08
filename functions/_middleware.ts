@@ -525,11 +525,24 @@ export const onRequest: PagesFunction = async (context) => {
   const strippedPath = stripLangPrefix(url.pathname)
   const meta = resolveMeta(strippedPath)
 
-  if (!meta) {
-    return response
-  }
-
+  // Always fix canonical for bots, even without matched meta
   const ogUrl = `${SITE}${url.pathname}`
+
+  if (!meta) {
+    // No specific meta for this route, but still fix the canonical URL
+    return new HTMLRewriter()
+      .on('link[rel="canonical"]', {
+        element(el) {
+          el.setAttribute('href', ogUrl)
+        },
+      })
+      .on('meta[property="og:url"]', {
+        element(el) {
+          el.setAttribute('content', ogUrl)
+        },
+      })
+      .transform(response)
+  }
   const ogType = meta.ogType || 'website'
   const ogImage = resolveOgImage(meta.ogImage)
 
