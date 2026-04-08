@@ -45,13 +45,16 @@ export default function PillBadge({
   size = 'md',
   highlightText,
 }: PillBadgeProps) {
+  const hasWallet = !!walletAddress && walletAddress.length >= 22
+
   return (
     <Link
       to={href}
       className={`inline-flex items-center rounded-full text-white font-medium
         transition-all duration-200 hover:brightness-125 hover:scale-105
+        ${!hasWallet ? 'border border-gray-600 bg-gray-800' : ''}
         ${SIZE_CLASSES[size]}`}
-      style={{ background: walletGradient(walletAddress) }}
+      style={hasWallet ? { background: walletGradient(walletAddress) } : undefined}
     >
       <span>{EMOJI[type]}</span>
       <span>{renderHighlighted(name, highlightText)}</span>

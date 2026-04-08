@@ -109,24 +109,12 @@ interface UpdateUserBody {
 
 export const onRequestPut: PagesFunction<Env> = async ({ env, params, request }) => {
   const username = params.username as string
-  const editToken = request.headers.get('X-Edit-Token')
 
-  if (!editToken) {
-    return errorResponse('X-Edit-Token header required', 401)
-  }
+  // Authenticate via Privy JWT, edit token, or wallet address
+  const auth = await authenticateRequest(request, env.DB, env.PRIVY_APP_ID)
 
-  // Verify edit token
-  const user = await env.DB.prepare(
-    'SELECT username, edit_token FROM users WHERE username = ?1'
-  )
-    .bind(username)
-    .first()
-
-  if (!user) {
-    return errorResponse('User not found', 404)
-  }
-  if (user.edit_token !== editToken) {
-    return errorResponse('Invalid edit token', 403)
+  if (!auth || auth.username.toLowerCase() !== username.toLowerCase()) {
+    return errorResponse('Unauthorized', 403)
   }
 
   const body = await parseBody<UpdateUserBody>(request)

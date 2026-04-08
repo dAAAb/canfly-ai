@@ -518,10 +518,10 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
     <>
       <Navbar />
       <main className="min-h-screen bg-black page-enter">
-        {/* Wallet Gradient Banner */}
+        {/* Profile Banner */}
         <div
           className="h-32 md:h-40"
-          style={{ background: walletGradient(user.wallet_address) }}
+          style={{ background: user.wallet_address ? walletGradient(user.wallet_address) : 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)' }}
         />
 
         <div className="max-w-4xl mx-auto px-6 -mt-16 pb-16">

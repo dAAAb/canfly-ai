@@ -8,7 +8,7 @@ import Navbar from '../components/Navbar'
 import WorldIdVerify from '../components/WorldIdVerify'
 import ReviewVideoPlayer from '../components/ReviewVideoPlayer'
 import { walletGradient } from '../utils/walletGradient'
-import { AlertCircle, Loader2, User, Save, Copy, Check, X, Link2, Sparkles, Shield } from 'lucide-react'
+import { AlertCircle, Loader2, User, Save, Copy, Check, X, Link2, Sparkles, Shield, Wallet } from 'lucide-react'
 
 interface UserLinks {
   x?: string
@@ -80,6 +80,8 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
   const [copied, setCopied] = useState(false)
   const [confirmingId, setConfirmingId] = useState<number | null>(null)
   const [rejectingId, setRejectingId] = useState<number | null>(null)
+
+  const [walletLinking, setWalletLinking] = useState(false)
 
   const editToken = username ? localStorage.getItem(`canfly_edit_token_${username}`) : null
   const isWalletOwner = !!(
@@ -165,6 +167,30 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
   useEffect(() => {
     loadAgentData()
   }, [loadAgentData])
+
+  // Sync newly linked wallet to backend
+  useEffect(() => {
+    if (!username || !walletAddress || !user || user.wallet_address) return
+
+    const syncWallet = async () => {
+      setWalletLinking(true)
+      try {
+        const headers = await getApiAuthHeaders({ getAccessToken, walletAddress, editToken })
+        const res = await fetch(`/api/community/users/${username}/link-wallet`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ walletAddress }),
+        })
+        if (res.ok) {
+          setUser((prev) => prev ? { ...prev, wallet_address: walletAddress } : prev)
+        }
+      } catch {
+        // Non-critical — wallet will show on next page load
+      }
+      setWalletLinking(false)
+    }
+    syncWallet()
+  }, [walletAddress, username, user?.wallet_address])
 
   const updateField = (field: keyof FormData, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }))
@@ -351,7 +377,7 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
       <main className="min-h-screen bg-black page-enter">
         <div
           className="h-24 md:h-32"
-          style={{ background: walletGradient(user.wallet_address) }}
+          style={{ background: user.wallet_address ? walletGradient(user.wallet_address) : 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)' }}
         />
 
         <div className="max-w-2xl mx-auto px-6 -mt-12 pb-16">
@@ -359,7 +385,7 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
           <div className="mb-8">
             <div
               className="w-24 h-24 rounded-full border-4 border-black flex items-center justify-center text-4xl"
-              style={{ background: walletGradient(user.wallet_address) }}
+              style={{ background: user.wallet_address ? walletGradient(user.wallet_address) : '#1e293b' }}
             >
               {form.avatarUrl ? (
                 <img
@@ -631,6 +657,33 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
               )
             })()}
           </div>
+
+          {/* ── Connect Wallet Section (for users without wallet) ── */}
+          {!user.wallet_address && (
+            <div className="mt-12 border-t border-gray-800 pt-10">
+              <h2 className="text-xl font-bold text-white flex items-center gap-2 mb-2">
+                <Wallet className="w-5 h-5 text-orange-400" />
+                {t('profile.connectWallet', 'Connect Wallet')}
+              </h2>
+              <p className="text-gray-500 text-sm mb-6">
+                {t('profile.connectWalletDesc', 'Link a crypto wallet to unlock your unique profile gradient, BaseMail verification, and on-chain features.')}
+              </p>
+              <button
+                onClick={() => privy.linkWallet()}
+                disabled={walletLinking}
+                className="px-5 py-2.5 bg-orange-600/20 hover:bg-orange-600/30 border border-orange-600/30 text-orange-400 font-medium rounded-xl transition-colors flex items-center gap-2 text-sm disabled:opacity-50"
+              >
+                {walletLinking ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Wallet className="w-4 h-4" />
+                )}
+                {walletLinking
+                  ? t('profile.connectWalletLinking', 'Linking...')
+                  : t('profile.connectWalletBtn', 'Connect Wallet')}
+              </button>
+            </div>
+          )}
 
           {/* ── Agent Binding Section ── */}
           <div className="mt-12 border-t border-gray-800 pt-10 space-y-10">
