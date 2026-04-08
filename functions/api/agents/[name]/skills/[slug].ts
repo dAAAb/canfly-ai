@@ -170,7 +170,12 @@ export const onRequestPut: PagesFunction<Env> = async ({ env, params, request })
       .bind(existing.id)
       .first()
 
-    return json({ skill: formatSkill(updated), created: false, updated: true })
+    const formattedUpdated = formatSkill(updated)
+    const resp: Record<string, unknown> = { skill: formattedUpdated, created: false, updated: true }
+    if (formattedUpdated && formattedUpdated.type === 'purchasable') {
+      resp.next_steps = buildNextSteps(agentName, slug, formattedUpdated)
+    }
+    return json(resp)
   } else {
     // Create new skill — name is required
     const skillName = body.name
@@ -202,7 +207,12 @@ export const onRequestPut: PagesFunction<Env> = async ({ env, params, request })
       .bind(agentName, slug)
       .first()
 
-    return json({ skill: formatSkill(created), created: true, updated: false }, 201)
+    const formattedCreated = formatSkill(created)
+    const resp: Record<string, unknown> = { skill: formattedCreated, created: true, updated: false }
+    if (formattedCreated && formattedCreated.type === 'purchasable') {
+      resp.next_steps = buildNextSteps(agentName, slug, formattedCreated)
+    }
+    return json(resp, 201)
   }
 }
 
@@ -229,6 +239,41 @@ export const onRequestDelete: PagesFunction<Env> = async ({ env, params, request
 }
 
 export const onRequestOptions: PagesFunction<Env> = async () => handleOptions()
+
+/** Build next_steps guidance for purchasable skills */
+function buildNextSteps(agentName: string, slug: string, skill: Record<string, unknown>) {
+  const base = `https://canfly.ai/api/agents/${agentName}`
+  return {
+    message: `🎉 Purchasable skill "${skill.name}" is live! Here's how buyers will pay you and how you fulfill orders.`,
+    your_agent_card: `${base}/agent-card.json`,
+    your_skill_page: `https://canfly.ai/u/*/agent/${agentName}`,
+    how_buyers_order: {
+      '1_discover': `Buyer reads ${base}/agent-card.json → finds skill "${slug}" with price ${skill.price} ${skill.currency}`,
+      '2_pay': `Buyer transfers ${skill.price} USDC to your wallet on Base (chainId 8453), gets tx_hash`,
+      '3_create_task': `POST ${base}/tasks { "skill": "${slug}", "params": {...}, "tx_hash": "0x...", "buyer": "BuyerName" }`,
+      '4_you_fulfill': `GET ${base}/tasks?status=paid → find new tasks → do the work → POST ${base}/tasks/{id}/complete { "result_url": "..." }`,
+      '5_buyer_gets_result': `GET ${base}/tasks/{id} → status: completed, result_url available`,
+    },
+    how_you_receive_tasks: {
+      poll: `GET ${base}/tasks?status=paid — check for new paid tasks periodically`,
+      webhook: 'Configure webhook URL in your agent profile to receive task notifications',
+      basemail: 'Register a basemailHandle to receive email notifications at {handle}@basemail.ai',
+    },
+    how_you_complete_tasks: {
+      endpoint: `POST ${base}/tasks/{task_id}/complete`,
+      auth: 'Authorization: Bearer {your_api_key}',
+      body: '{ "result_url": "https://..." } or { "result_data": {...} } or multipart file upload',
+    },
+    payment_info: {
+      chain: 'Base (chainId 8453)',
+      currency: 'USDC',
+      usdc_contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+      important: 'Make sure your agent has a wallet_address set — buyers need it to pay you!',
+      set_wallet: `PUT ${base} { "walletAddress": "0xYourWallet" }`,
+    },
+    full_api_docs: 'https://canfly.ai/llms-full.txt',
+  }
+}
 
 /** Format a skill row into a clean response object */
 function formatSkill(row: Record<string, unknown> | null) {

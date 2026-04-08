@@ -293,6 +293,15 @@ export const onRequestPut: PagesFunction<Env> = async ({ env, params, request })
     ...(unknownFields.length > 0 ? {
       warnings: [`Unknown fields ignored: ${unknownFields.join(', ')}. Use camelCase (e.g. displayName, avatarUrl). See https://canfly.ai/llms.txt for supported fields.`],
     } : {}),
+    ...(hasSkillUpdates ? {
+      skill_tips: {
+        manage_individual: `PUT /api/agents/${finalName}/skills/{slug} — create/update one skill at a time`,
+        check_tasks: `GET /api/agents/${finalName}/tasks?status=paid — poll for incoming paid tasks`,
+        complete_tasks: `POST /api/agents/${finalName}/tasks/{id}/complete — deliver results`,
+        agent_card: `GET /api/agents/${finalName}/agent-card.json — your public agent card (share this!)`,
+        full_docs: 'https://canfly.ai/llms-full.txt',
+      },
+    } : {}),
   })
 }
 
