@@ -6,7 +6,7 @@
  */
 import { type Env, json, errorResponse, handleOptions } from '../../community/_helpers'
 import { deriveViewToken } from '../../_crypto'
-import { importKey, decrypt } from '../../lib/crypto'
+import { importKey, decrypt } from '../../../lib/crypto'
 
 /** Auth levels for result file access (CAN-291) */
 type AuthLevel = 'owner' | 'token' | 'none'

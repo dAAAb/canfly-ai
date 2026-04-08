@@ -12,7 +12,7 @@
 import { type Env, json, errorResponse, handleOptions, parseBody } from '../../../../community/_helpers'
 import { recalcTrustScore } from '../../../_trust'
 import { sendBuyerCompletionEmail } from '../../../../_email'
-import { importKey, encrypt } from '../../../../lib/crypto'
+import { importKey, encrypt } from '../../../../../lib/crypto'
 
 const BASEMAIL_API = 'https://api.basemail.ai'
 
