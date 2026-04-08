@@ -21,7 +21,7 @@ const EXT_TO_MIME: Record<string, string> = {
   mp3: 'audio/mpeg', m4a: 'audio/mp4', wav: 'audio/wav', ogg: 'audio/ogg',
   md: 'text/markdown',
   // 3D models
-  gltf: 'model/gltf+json', glb: 'model/gltf-binary',
+  gltf: 'model/gltf+json', glb: 'model/gltf-binary', usdz: 'model/vnd.usdz+zip',
   // PDF
   pdf: 'application/pdf',
   // Code
@@ -211,8 +211,9 @@ function MarkdownPreview({ url }: { url: string }) {
 
 /* ───── Lazy-loaded heavy previews (CAN-290) ───── */
 
-function ModelPreview({ url }: { url: string }) {
+function ModelPreview({ url, usdzUrl }: { url: string; usdzUrl?: string }) {
   const [error, setError] = useState(false)
+  const isUsdz = url.toLowerCase().endsWith('.usdz')
 
   useEffect(() => {
     // Ensure model-viewer custom element is registered
@@ -221,11 +222,33 @@ function ModelPreview({ url }: { url: string }) {
 
   if (error) return <ErrorFallback url={url} />
 
+  // USDZ-only: show AR button for iOS, download for others
+  if (isUsdz && !usdzUrl) {
+    return (
+      <div className="p-4 flex flex-col items-center gap-3">
+        <div className="w-16 h-16 rounded-2xl bg-gray-800 flex items-center justify-center">
+          <Box className="w-8 h-8 text-cyan-400" />
+        </div>
+        <p className="text-sm text-gray-400">USDZ 3D Model</p>
+        <div className="flex gap-2">
+          {/* iOS AR Quick Look via a[rel=ar] */}
+          <a href={url} rel="ar" className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-medium transition-colors">
+            View in AR (iOS)
+          </a>
+          <a href={url} download className="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-200 text-sm font-medium transition-colors">
+            Download
+          </a>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="p-4">
       {/* @ts-expect-error model-viewer is a web component */}
       <model-viewer
         src={url}
+        {...((usdzUrl || isUsdz) ? { 'ios-src': usdzUrl || url, ar: true } : {})}
         auto-rotate
         camera-controls
         shadow-intensity="1"
@@ -506,7 +529,7 @@ function CredentialCard({ file }: { file: ResultFile }) {
 
 /* ───── CAN-291: Result Gallery (multi-file) ───── */
 
-function GalleryItem({ file }: { file: ResultFile }) {
+function GalleryItem({ file, usdzUrl }: { file: ResultFile; usdzUrl?: string }) {
   const isCredential = file.type === 'credential' || file.type === 'api_endpoint'
   if (isCredential) return <CredentialCard file={file} />
 
@@ -515,7 +538,7 @@ function GalleryItem({ file }: { file: ResultFile }) {
   if (category === 'image') return <ImagePreview url={file.url} />
   if (category === 'video') return <VideoPreview url={file.url} />
   if (category === 'audio') return <AudioPreview url={file.url} />
-  if (category === 'model') return <ModelPreview url={file.url} />
+  if (category === 'model') return <ModelPreview url={file.url} usdzUrl={usdzUrl} />
   if (category === 'pdf') return <PdfPreview url={file.url} />
 
   // Fallback: download card
@@ -563,7 +586,19 @@ export function ResultGallery({ files, loading }: ResultGalleryProps) {
       )}
 
       {/* Non-image media (video, audio, etc.) — rendered sequentially */}
-      {nonImageMedia.map((file, i) => (
+      {nonImageMedia.map((file, i) => {
+        // Pair GLB with USDZ for AR support
+        const isGlb = file.url.toLowerCase().endsWith('.glb') || file.type === 'model/gltf-binary'
+        const pairedUsdz = isGlb
+          ? mediaFiles.find(f => f.url.toLowerCase().endsWith('.usdz'))?.url
+          : undefined
+        // Skip standalone USDZ if already paired with a GLB
+        const isUsdz = file.url.toLowerCase().endsWith('.usdz') || file.type === 'model/vnd.usdz+zip'
+        const hasGlbPair = isUsdz && mediaFiles.some(f =>
+          f.url.toLowerCase().endsWith('.glb') || f.type === 'model/gltf-binary')
+        if (isUsdz && hasGlbPair) return null // rendered as ios-src on the GLB viewer
+
+        return (
         <div key={`media-${i}`} className="rounded-2xl border border-gray-800 overflow-hidden bg-gray-900">
           <div className="px-4 py-2 border-b border-gray-800 flex items-center gap-2 text-sm text-gray-400">
             {categorise(file.type, file.url) === 'video' && <Film className="w-4 h-4" />}
@@ -571,9 +606,10 @@ export function ResultGallery({ files, loading }: ResultGalleryProps) {
             {!['video', 'audio'].includes(categorise(file.type, file.url)) && <FileText className="w-4 h-4" />}
             {file.name}
           </div>
-          <GalleryItem file={file} />
+          <GalleryItem file={file} usdzUrl={pairedUsdz} />
         </div>
-      ))}
+        )
+      })}
 
       {/* Credential cards */}
       {credentialFiles.length > 0 && (

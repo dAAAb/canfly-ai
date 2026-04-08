@@ -33,7 +33,7 @@ const ALLOWED_TYPES = new Set([
   // Audio
   'audio/mpeg', 'audio/mp4', 'audio/wav', 'audio/ogg',
   // 3D
-  'model/gltf-binary', 'model/gltf+json',
+  'model/gltf-binary', 'model/gltf+json', 'model/vnd.usdz+zip',
   // Documents
   'application/pdf', 'text/markdown',
   // Data
