@@ -515,6 +515,8 @@ function GalleryItem({ file }: { file: ResultFile }) {
   if (category === 'image') return <ImagePreview url={file.url} />
   if (category === 'video') return <VideoPreview url={file.url} />
   if (category === 'audio') return <AudioPreview url={file.url} />
+  if (category === 'model') return <ModelPreview url={file.url} />
+  if (category === 'pdf') return <PdfPreview url={file.url} />
 
   // Fallback: download card
   return <DownloadCard url={file.url} contentType={file.type} />
