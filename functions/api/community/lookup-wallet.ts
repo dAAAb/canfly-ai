@@ -14,8 +14,21 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request }) => {
   const address = url.searchParams.get('address')
   const privyId = url.searchParams.get('privyId')
 
-  // Privy ID lookup: find user by external_ids.privy
+  // Privy ID lookup: check indexed privy_user_id column first, then external_ids.privy
   if (privyId) {
+    // Fast path: indexed column lookup
+    const userByColumn = await env.DB.prepare(
+      `SELECT username, wallet_address FROM users WHERE privy_user_id = ?1`
+    ).bind(privyId).first()
+
+    if (userByColumn) {
+      return json({
+        username: userByColumn.username,
+        walletAddress: userByColumn.wallet_address,
+      })
+    }
+
+    // Fallback: check external_ids.privy for legacy entries
     const rows = await env.DB.prepare(
       `SELECT username, wallet_address, external_ids FROM users WHERE external_ids IS NOT NULL`
     ).all()

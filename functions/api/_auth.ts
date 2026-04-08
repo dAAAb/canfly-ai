@@ -233,9 +233,12 @@ export async function authenticateRequest(
           ).bind(walletAddress).first<{ username: string }>()
 
           if (userByWallet) {
-            // Backfill privy_user_id for next time
+            // Backfill privy_user_id and external_ids.privy for next time
             await db.prepare(
-              'UPDATE users SET privy_user_id = ?1 WHERE username = ?2 AND privy_user_id IS NULL'
+              `UPDATE users
+               SET privy_user_id = ?1,
+                   external_ids = json_set(COALESCE(external_ids, '{}'), '$.privy', ?1)
+               WHERE username = ?2 AND privy_user_id IS NULL`
             ).bind(privyUserId, userByWallet.username).run()
 
             return {
