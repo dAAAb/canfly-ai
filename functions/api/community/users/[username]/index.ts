@@ -3,8 +3,9 @@
  * PUT  /api/community/users/:username — Update user profile (requires edit token)
  */
 import { type Env, json, errorResponse, handleOptions, parseBody } from '../../_helpers'
+import { authenticateRequest } from '../../../_auth'
 
-export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
+export const onRequestGet: PagesFunction<Env> = async ({ env, params, request }) => {
   const username = params.username as string
 
   const user = await env.DB.prepare(
@@ -25,6 +26,17 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
 
   // Use the canonical username from DB (preserves original case)
   const canonicalUsername = user.username as string
+
+  // Determine ownership: try to authenticate, compare username (non-blocking)
+  let isOwner = false
+  try {
+    const auth = await authenticateRequest(request, env.DB, env.PRIVY_APP_ID)
+    if (auth && auth.username.toLowerCase() === canonicalUsername.toLowerCase()) {
+      isOwner = true
+    }
+  } catch {
+    // Auth failure should never break the public GET
+  }
 
   // Get user's agents with their skills
   const agentsResult = await env.DB.prepare(
@@ -80,6 +92,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
     claimed: user.claimed as number,
     verification_level: user.verification_level as string,
     ownerInviteCode: user.owner_invite_code || null,
+    isOwner,
     agents,
     hardware: hardwareResult.results,
     deployments: deploymentsResult.results,
