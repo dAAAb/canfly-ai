@@ -25,6 +25,7 @@ interface UserData {
   avatar_url: string | null
   bio: string | null
   links: UserLinks
+  isOwner?: boolean
 }
 
 interface FormData {
@@ -51,7 +52,7 @@ interface PendingAgent {
 export default function ProfileEditPage({ subdomainUsername }: { subdomainUsername?: string } = {}) {
   const params = useParams<{ username: string }>(); const username = subdomainUsername || params.username
   const navigate = useNavigate()
-  const { walletAddress, getAccessToken } = useAuth()
+  const { walletAddress, getAccessToken, isAuthenticated } = useAuth()
   const { t } = useTranslation()
   const privy = usePrivy()
 
@@ -86,31 +87,57 @@ export default function ProfileEditPage({ subdomainUsername }: { subdomainUserna
     user?.wallet_address &&
     walletAddress.toLowerCase() === user.wallet_address.toLowerCase()
   )
-  const canEdit = !!editToken || isWalletOwner
+  const canEdit = !!(user?.isOwner) || !!editToken || isWalletOwner
 
   useEffect(() => {
     if (!username) return
-    fetch(`/api/community/users/${username}`)
-      .then((r) => {
-        if (!r.ok) throw new Error('not_found')
-        return r.json()
+
+    const applyUserData = (u: UserData) => {
+      setUser(u)
+      setForm({
+        displayName: u.display_name || '',
+        bio: u.bio || '',
+        avatarUrl: u.avatar_url || '',
+        linksX: u.links?.x || '',
+        linksGithub: u.links?.github || '',
+        linksWebsite: u.links?.website || '',
+        linksBasename: u.links?.basename || '',
       })
-      .then((data) => {
-        const u = data as UserData
-        setUser(u)
-        setForm({
-          displayName: u.display_name || '',
-          bio: u.bio || '',
-          avatarUrl: u.avatar_url || '',
-          linksX: u.links?.x || '',
-          linksGithub: u.links?.github || '',
-          linksWebsite: u.links?.website || '',
-          linksBasename: u.links?.basename || '',
+    }
+
+    // If authenticated, fetch with auth headers to get isOwner flag
+    if (isAuthenticated) {
+      getApiAuthHeaders({ getAccessToken, walletAddress })
+        .then((headers) =>
+          fetch(`/api/community/users/${username}`, { headers })
+        )
+        .then((r) => {
+          if (!r.ok) throw new Error('not_found')
+          return r.json()
         })
-      })
-      .catch(() => setError('User not found'))
-      .finally(() => setLoading(false))
-  }, [username])
+        .then((data) => applyUserData(data as UserData))
+        .catch(() => {
+          // Fallback to anonymous fetch
+          fetch(`/api/community/users/${username}`)
+            .then((r) => {
+              if (!r.ok) throw new Error('not_found')
+              return r.json()
+            })
+            .then((data) => applyUserData(data as UserData))
+            .catch(() => setError('User not found'))
+        })
+        .finally(() => setLoading(false))
+    } else {
+      fetch(`/api/community/users/${username}`)
+        .then((r) => {
+          if (!r.ok) throw new Error('not_found')
+          return r.json()
+        })
+        .then((data) => applyUserData(data as UserData))
+        .catch(() => setError('User not found'))
+        .finally(() => setLoading(false))
+    }
+  }, [username, isAuthenticated, getAccessToken, walletAddress])
 
   // Load pending agents and invite code
   const loadAgentData = useCallback(() => {

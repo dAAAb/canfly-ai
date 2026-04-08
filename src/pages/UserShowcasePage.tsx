@@ -211,6 +211,7 @@ interface UserData {
   hardware: Hardware[]
   deployments: Deployment[]
   ownerInviteCode: string | null
+  isOwner?: boolean
 }
 
 
@@ -228,7 +229,7 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
   const navigate = useNavigate()
   const { currentLang, switchLang } = useQueryLang()
   const { t } = useTranslation()
-  const { walletAddress, getAccessToken } = useAuth()
+  const { walletAddress, getAccessToken, isAuthenticated } = useAuth()
   const [user, setUser] = useState<UserData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -267,6 +268,18 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
     if (!username) return
     setLoading(true)
     setError(null)
+
+    const handleUserData = (data: unknown) => {
+      const userData = data as UserData
+      // Canonical redirect: if URL has wrong case, redirect to canonical username
+      if (userData.username !== username && !subdomainUsername) {
+        navigate(`/u/${userData.username}${window.location.search}`, { replace: true })
+        return
+      }
+      setUser(userData)
+    }
+
+    // Always fetch public data first (fast, no auth delay)
     fetch(`/api/community/users/${username}`)
       .then((r) => {
         if (r.status === 404) throw new Error('not_found')
@@ -275,17 +288,23 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
         return r.json()
       })
       .then((data) => {
-        const userData = data as UserData
-        // Canonical redirect: if URL has wrong case, redirect to canonical username
-        if (userData.username !== username && !subdomainUsername) {
-          navigate(`/u/${userData.username}${window.location.search}`, { replace: true })
-          return
+        handleUserData(data)
+        // If authenticated, re-fetch with auth headers to get isOwner flag
+        if (isAuthenticated) {
+          getApiAuthHeaders({ getAccessToken, walletAddress })
+            .then((headers) =>
+              fetch(`/api/community/users/${username}`, { headers })
+            )
+            .then((r) => (r.ok ? r.json() : null))
+            .then((authData) => {
+              if (authData) handleUserData(authData)
+            })
+            .catch(() => {}) // fallback: keep public data
         }
-        setUser(userData)
       })
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false))
-  }, [username, navigate, subdomainUsername])
+  }, [username, navigate, subdomainUsername, isAuthenticated, getAccessToken, walletAddress])
 
   // Load pending agents when user can edit
   useEffect(() => {
@@ -419,7 +438,7 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
     user.wallet_address &&
     walletAddress.toLowerCase() === user.wallet_address.toLowerCase()
   )
-  const canEdit = hasEditToken || isWalletOwner
+  const canEdit = user.isOwner || hasEditToken || isWalletOwner
   const isWorldIdVerified = !!(
     user.verification_level &&
     ['orb', 'device', 'worldid'].includes(user.verification_level.toLowerCase())
