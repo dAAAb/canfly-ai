@@ -91,6 +91,7 @@ async function authenticateUpload(
 }
 
 export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }) => {
+  try {
   const taskId = params.id as string
   if (!taskId) return errorResponse('Task ID required', 400)
 
@@ -186,6 +187,11 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     category,
     filename,
   })
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    const stack = err instanceof Error ? err.stack : undefined
+    return json({ error: 'Internal upload error', message, stack }, 500)
+  }
 }
 
 export const onRequestOptions: PagesFunction<Env> = async () => handleOptions()

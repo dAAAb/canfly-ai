@@ -64,6 +64,7 @@ async function authenticateDownload(
 }
 
 export const onRequestGet: PagesFunction<Env> = async ({ env, params, request }) => {
+  try {
   const taskId = params.id as string
   const filename = params.filename as string
 
@@ -113,6 +114,10 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
       'Content-Length': obj.size.toString(),
     },
   })
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    return json({ error: 'Internal file error', message }, 500)
+  }
 }
 
 export const onRequestOptions: PagesFunction<Env> = async () => handleOptions()
