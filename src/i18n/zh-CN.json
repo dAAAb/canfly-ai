@@ -7713,7 +7713,8 @@
     "shareLink": "分享此成果",
     "copied": "已复制！",
     "copyLink": "复制链接",
-    "inProgress": "此任务仍在进行中，请稍后查看结果。"
+    "inProgress": "此任务仍在进行中，请稍后查看结果。",
+    "emptyDelivery": "卖方已标记完成，但未附交付内容。请联系卖方确认。"
   },
   "resultPreview": {
     "imageAlt": "任务成果",

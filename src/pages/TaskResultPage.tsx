@@ -223,6 +223,16 @@ export default function TaskResultPage() {
               />
             ) : null}
 
+            {/* CAN-298: Empty delivery warning */}
+            {task.status === 'completed' && !task.result_url && !task.result_note && !task.result_data && !task.result_preview && (
+              <div className="rounded-xl border border-yellow-700/30 bg-yellow-500/10 p-4 text-center">
+                <AlertCircle className="w-8 h-8 text-yellow-400 mx-auto mb-2" />
+                <p className="text-sm text-yellow-300">
+                  {t('taskResult.emptyDelivery', 'The seller marked this task as completed but did not attach any deliverables. Please contact the seller.')}
+                </p>
+              </div>
+            )}
+
             {/* Result Note */}
             {task.result_note && (
               <div className="rounded-xl border border-gray-800 bg-gray-900/80 p-4">

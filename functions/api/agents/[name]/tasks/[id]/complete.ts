@@ -97,6 +97,21 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     return errorResponse('status must be "completed" or "failed"', 400)
   }
 
+  // CAN-298: Completed tasks must include at least one result field
+  if (finalStatus === 'completed') {
+    const hasResult = body.result_url || body.resultUrl
+      || body.result_data
+      || body.result_note || body.resultNote
+      || body.result_file
+      || (body.result_files && body.result_files.length > 0)
+    if (!hasResult) {
+      return errorResponse(
+        'Completed tasks must include at least one result field (result_url, result_data, result_note, result_file, or result_files)',
+        400,
+      )
+    }
+  }
+
   let resultUrl: string | null = body.result_url || body.resultUrl || null
   let resultData: string | null = body.result_data ? JSON.stringify(body.result_data) : null
   const resultPreview: string | null = body.result_preview || body.resultPreview || null

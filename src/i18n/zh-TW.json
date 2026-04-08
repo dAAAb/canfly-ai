@@ -7696,7 +7696,8 @@
     "shareLink": "分享此成果",
     "copied": "已複製！",
     "copyLink": "複製連結",
-    "inProgress": "此任務仍在進行中，請稍後查看結果。"
+    "inProgress": "此任務仍在進行中，請稍後查看結果。",
+    "emptyDelivery": "賣方已標記完成，但未附交付內容。請聯繫賣方確認。"
   },
   "resultPreview": {
     "imageAlt": "任務成果",

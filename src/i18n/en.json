@@ -7688,7 +7688,8 @@
     "shareLink": "Share this result",
     "copied": "Copied!",
     "copyLink": "Copy Link",
-    "inProgress": "This task is still in progress. Check back later for results."
+    "inProgress": "This task is still in progress. Check back later for results.",
+    "emptyDelivery": "The seller marked this task as completed but did not attach any deliverables. Please contact the seller."
   },
   "resultPreview": {
     "imageAlt": "Task result",
