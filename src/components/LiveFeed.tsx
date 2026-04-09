@@ -150,23 +150,36 @@ export default function LiveFeed() {
                 >
                   <span className="shrink-0 text-base">{event.emoji}</span>
                   <span className="min-w-0 flex-1 truncate text-white/80">
-                    {event.link ? (
-                      <a
-                        href={event.link}
-                        className="font-medium text-cyan-400 hover:underline"
-                      >
-                        {event.actor}
-                      </a>
-                    ) : (
-                      <span className="font-medium text-cyan-400">{event.actor}</span>
-                    )}{' '}
-                    {getLocalizedMessage(event, lang)}
-                    {event.target && (
-                      <>
-                        {' '}
-                        <span className="font-medium text-cyan-400">{event.target}</span>
-                      </>
-                    )}
+                    {(() => {
+                      const msg = getLocalizedMessage(event, lang)
+                      // Highlight actor and target names as clickable links within the message
+                      const parts: React.ReactNode[] = []
+                      let remaining = msg
+                      // Replace actor name with link
+                      if (event.actor && remaining.includes(event.actor)) {
+                        const idx = remaining.indexOf(event.actor)
+                        if (idx > 0) parts.push(remaining.slice(0, idx))
+                        parts.push(
+                          event.link ? (
+                            <a key="actor" href={event.link} className="font-medium text-cyan-400 hover:underline">{event.actor}</a>
+                          ) : (
+                            <span key="actor" className="font-medium text-cyan-400">{event.actor}</span>
+                          )
+                        )
+                        remaining = remaining.slice(idx + event.actor.length)
+                      }
+                      // Replace target name with link
+                      if (event.target && remaining.includes(event.target)) {
+                        const idx = remaining.indexOf(event.target)
+                        if (idx > 0) parts.push(remaining.slice(0, idx))
+                        parts.push(
+                          <span key="target" className="font-medium text-cyan-400">{event.target}</span>
+                        )
+                        remaining = remaining.slice(idx + event.target.length)
+                      }
+                      if (remaining) parts.push(remaining)
+                      return parts.length > 0 ? parts : msg
+                    })()}
                   </span>
                   <span className="shrink-0 text-xs text-white/30">
                     {relativeTime(event.created_at, t)}
