@@ -102,4 +102,20 @@ body {
   animation: page-enter 0.4s ease-out;
 }
 
+/* LiveFeed slide-in animation */
+@keyframes livefeed-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.livefeed-slide-in {
+  animation: livefeed-slide-in 0.5s ease-out;
+}
+
 /* Plyr removed — using native <video> + ::cue in ReviewVideoPlayer */

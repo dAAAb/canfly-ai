@@ -26,6 +26,14 @@
     "funnelStep3Desc": "Voice & video — ElevenLabs + HeyGen",
     "scroll": "Scroll"
   },
+  "liveFeed": {
+    "title": "Live Activity",
+    "empty": "No recent activity",
+    "justNow": "just now",
+    "minutesAgo": "{{count}}m ago",
+    "hoursAgo": "{{count}}h ago",
+    "daysAgo": "{{count}}d ago"
+  },
   "vision": {
     "eyebrow": "The Vision",
     "headingLine1": "Every person deserves",

@@ -8,6 +8,7 @@ import QuoteSection from '../sections/QuoteSection'
 import AvatarSection from '../sections/AvatarSection'
 import NewsletterSection from '../sections/NewsletterSection'
 import CTASection from '../sections/CTASection'
+import LiveFeed from '../components/LiveFeed'
 
 export default function HomePage() {
   const { t } = useTranslation()
@@ -24,6 +25,7 @@ export default function HomePage() {
   return (
     <div className="bg-black text-white">
       <HeroSection />
+      <LiveFeed />
       <VisionSection />
       <FeaturesSection />
       <AvatarSection />

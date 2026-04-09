@@ -26,6 +26,14 @@
     "funnelStep3Desc": "语音 & 视频 — ElevenLabs + HeyGen",
     "scroll": "Scroll"
   },
+  "liveFeed": {
+    "title": "实时动态",
+    "empty": "暂无近期活动",
+    "justNow": "刚刚",
+    "minutesAgo": "{{count}} 分钟前",
+    "hoursAgo": "{{count}} 小时前",
+    "daysAgo": "{{count}} 天前"
+  },
   "vision": {
     "eyebrow": "The Vision",
     "headingLine1": "Every person deserves",
