@@ -11,6 +11,7 @@
 import { type Env, json, errorResponse, handleOptions, parseBody, intParam } from '../../../community/_helpers'
 import { getMppx, hasMppCredential, extractPayerWallet } from '../../../../lib/mpp'
 import { deriveViewToken } from '../../../../api/_crypto'
+import { emitFeedEvent } from '../../../_feed'
 
 const USDC_CONTRACT = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'
 const BASE_RPC_DEFAULT = 'https://mainnet.base.org'
@@ -196,6 +197,18 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
       currency: 'USDC.e',
       payment_tx: `mpp_tempo:${payerWallet || 'unknown'}`,
     }).catch(() => {})
+
+    // Live feed event (CAN-300) — privacy: actor is "Someone"
+    emitFeedEvent(env.DB, {
+      event_type: 'task_purchased',
+      emoji: '💰',
+      actor: 'Someone',
+      target: skill.name as string,
+      link: `/community/agents/${agentName}`,
+      message_en: `Someone purchased ${skill.name} from ${agentName}`,
+      message_zh_tw: `有人向 ${agentName} 購買了 ${skill.name}`,
+      message_zh_cn: `有人向 ${agentName} 购买了 ${skill.name}`,
+    })
 
     const taskResponse = json({
       task_id: taskId,
@@ -384,6 +397,18 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
       currency,
       payment_tx: txHash,
     }).catch(() => {})
+
+    // Live feed event (CAN-300) — privacy: actor is "Someone"
+    emitFeedEvent(env.DB, {
+      event_type: 'task_purchased',
+      emoji: '💰',
+      actor: 'Someone',
+      target: skill.name as string,
+      link: `/community/agents/${agentName}`,
+      message_en: `Someone purchased ${skill.name} from ${agentName}`,
+      message_zh_tw: `有人向 ${agentName} 購買了 ${skill.name}`,
+      message_zh_cn: `有人向 ${agentName} 购买了 ${skill.name}`,
+    })
 
     const paymentInfo = isEscrowMode
       ? { escrow: { tx: txHash, status: 'deposited', contract: escrowContract, amount: transferredAmount, currency, chain: 'base', confirmations } }

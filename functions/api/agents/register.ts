@@ -18,6 +18,7 @@ import {
   parseBody,
 } from '../community/_helpers'
 import { slugify } from '../../lib/slugify'
+import { emitFeedEvent } from '../_feed'
 
 interface RegisterBody {
   name: string
@@ -129,6 +130,17 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
   )
     .bind(name, JSON.stringify({ platform: platform || 'other', status, hasOwnerInvite: !!owner_invite }))
     .run()
+
+  // Live feed event (CAN-300)
+  emitFeedEvent(env.DB, {
+    event_type: 'agent_created',
+    emoji: '🤖',
+    actor: name,
+    link: `/community/agents/${name}`,
+    message_en: `${name} joined as a new agent`,
+    message_zh_tw: `${name} 加入成為新 Agent`,
+    message_zh_cn: `${name} 加入成为新 Agent`,
+  })
 
   return json(
     {

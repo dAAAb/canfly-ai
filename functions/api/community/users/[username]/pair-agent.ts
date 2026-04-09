@@ -5,6 +5,7 @@
  */
 import { type Env, json, errorResponse, handleOptions, parseBody } from '../../_helpers'
 import { authenticateRequest } from '../../../_auth'
+import { emitFeedEvent } from '../../../_feed'
 
 interface PairBody {
   pairingCode: string
@@ -63,6 +64,18 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   )
     .bind(agent.name as string, JSON.stringify({ owner: username }))
     .run()
+
+  // Live feed event (CAN-300)
+  emitFeedEvent(env.DB, {
+    event_type: 'agent_paired',
+    emoji: '🔗',
+    actor: username,
+    target: agent.name as string,
+    link: `/community/agents/${agent.name}`,
+    message_en: `${username} paired with agent ${agent.name}`,
+    message_zh_tw: `${username} 與 ${agent.name} 配對成功`,
+    message_zh_cn: `${username} 与 ${agent.name} 配对成功`,
+  })
 
   return json({ paired: true, agentName: agent.name })
 }

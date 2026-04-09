@@ -16,6 +16,7 @@
  */
 import { type Env, json, errorResponse, handleOptions, parseBody } from '../../../community/_helpers'
 import { slugify } from '../../../../lib/slugify'
+import { emitFeedEvent } from '../../../_feed'
 
 interface SkillBody {
   name?: string
@@ -212,6 +213,19 @@ export const onRequestPut: PagesFunction<Env> = async ({ env, params, request })
     if (formattedCreated && formattedCreated.type === 'purchasable') {
       resp.next_steps = buildNextSteps(agentName, slug, formattedCreated)
     }
+
+    // Live feed event (CAN-300)
+    emitFeedEvent(env.DB, {
+      event_type: 'skill_added',
+      emoji: '🎯',
+      actor: agentName,
+      target: skillName,
+      link: `/community/agents/${agentName}`,
+      message_en: `${agentName} added a new skill: ${skillName}`,
+      message_zh_tw: `${agentName} 新增了技能：${skillName}`,
+      message_zh_cn: `${agentName} 新增了技能：${skillName}`,
+    })
+
     return json(resp, 201)
   }
 }

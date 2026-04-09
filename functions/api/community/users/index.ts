@@ -13,6 +13,7 @@ import {
   parseBody,
   intParam,
 } from '../_helpers'
+import { emitFeedEvent } from '../../_feed'
 
 // ── GET /api/community/users ────────────────────────────────────────────
 export const onRequestGet: PagesFunction<Env> = async ({ env, request }) => {
@@ -173,6 +174,19 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
       .run()
   } catch {
     // Activity logging is non-critical
+  }
+
+  // Live feed event (CAN-300) — only for real registrations, not scrapes
+  if (!isScraped) {
+    emitFeedEvent(env.DB, {
+      event_type: 'user_registered',
+      emoji: '🦞',
+      actor: username,
+      link: `/community/${username}`,
+      message_en: `${displayName || username} joined the community`,
+      message_zh_tw: `${displayName || username} 加入了社群`,
+      message_zh_cn: `${displayName || username} 加入了社区`,
+    })
   }
 
   return json({ username, editToken }, 201)

@@ -4,6 +4,7 @@
  */
 import { type Env, json, errorResponse, handleOptions, parseBody } from '../../_helpers'
 import { authenticateRequest } from '../../../_auth'
+import { emitFeedEvent } from '../../../_feed'
 
 export const onRequestGet: PagesFunction<Env> = async ({ env, params, request }) => {
   const username = params.username as string
@@ -157,6 +158,17 @@ export const onRequestPut: PagesFunction<Env> = async ({ env, params, request })
   )
     .bind(...values)
     .run()
+
+  // Live feed event (CAN-300)
+  emitFeedEvent(env.DB, {
+    event_type: 'profile_updated',
+    emoji: '⭐',
+    actor: username,
+    link: `/community/${username}`,
+    message_en: `${username} updated their profile`,
+    message_zh_tw: `${username} 更新了個人檔案`,
+    message_zh_cn: `${username} 更新了个人档案`,
+  })
 
   return json({ username, updated: true })
 }

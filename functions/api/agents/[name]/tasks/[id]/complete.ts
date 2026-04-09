@@ -13,6 +13,7 @@ import { type Env, json, errorResponse, handleOptions, parseBody } from '../../.
 import { recalcTrustScore } from '../../../_trust'
 import { sendBuyerCompletionEmail } from '../../../../_email'
 import { importKey, encrypt } from '../../../../../lib/crypto'
+import { emitFeedEvent } from '../../../../_feed'
 
 const BASEMAIL_API = 'https://api.basemail.ai'
 
@@ -255,6 +256,18 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   // Recalculate seller trust score (CAN-220)
   if (finalStatus === 'completed') {
     await recalcTrustScore(env, agentName)
+
+    // Live feed event (CAN-300)
+    emitFeedEvent(env.DB, {
+      event_type: 'task_completed',
+      emoji: '✅',
+      actor: agentName,
+      target: task.skill_name as string,
+      link: `/community/agents/${agentName}`,
+      message_en: `${agentName} completed a ${task.skill_name} task`,
+      message_zh_tw: `${agentName} 完成了 ${task.skill_name} 任務`,
+      message_zh_cn: `${agentName} 完成了 ${task.skill_name} 任务`,
+    })
   }
 
   // BaseMail auto-notify buyer on task completion (CAN-267)
