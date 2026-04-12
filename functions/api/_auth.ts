@@ -62,7 +62,7 @@ async function getPrivyPublicKeys(appId: string): Promise<{ cryptoKey: CryptoKey
     return cachedJWKS.keys.map((key, i) => ({ cryptoKey: key, kid: cachedJWKS!.jwks[i].kid }))
   }
 
-  const url = `https://auth.privy.io/api/v1/apps/${appId}/jwks`
+  const url = `https://auth.privy.io/api/v1/apps/${appId}/jwks.json`
   const res = await fetch(url, {
     headers: { 'Accept': 'application/json' },
   })
