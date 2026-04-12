@@ -194,7 +194,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     )
   }
 
-  // Query service ID (best-effort — status poller will retry if missing)
+  // deployTemplate returns project ID, not service ID — query services to get it
   let zeaburServiceId: string | null = null
   try {
     const servicesResult = await zeaburGQL(body.zeaburApiKey, `
@@ -208,58 +208,90 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     zeaburServiceId = services?.[0]?._id || null
   } catch { /* fallback: will be resolved during status poll */ }
 
-  // NOTE: Env vars, domain, restart are handled by the setting_up_init phase
-  // in the status poller. Doing them here was redundant and caused 502 errors
-  // due to too many sequential Zeabur API calls exceeding Worker CPU time.
+  // Step 3: Fix env vars IMMEDIATELY (before service fully starts)
+  // Template variables like ${ZEABUR_AI_HUB_API_KEY} don't expand via API deploy
+  if (zeaburServiceId) {
+    // Get environment ID
+    let envId: string | null = null
+    try {
+      const envResult = await zeaburGQL(body.zeaburApiKey, `
+        query { project(_id: "${zeaburProjectId}") { environments { _id } } }
+      `)
+      envId = (envResult.data?.project as { environments: Array<{ _id: string }> })?.environments?.[0]?._id || null
+    } catch { /* will retry in status poller */ }
+
+    if (envId) {
+      // Fix AI provider key (supports multiple providers)
+      const aiKey = body.aiProviderKey || body.aiHubKey || ''
+      const aiProvider = body.aiProvider || (body.aiHubKey ? 'zeabur-ai-hub' : '')
+      if (aiKey && aiProvider) {
+        const envVarName = aiProviderEnvVar(aiProvider)
+        await zeaburGQL(body.zeaburApiKey,
+          `mutation{updateSingleEnvironmentVariable(serviceID:"${zeaburServiceId}",environmentID:"${envId}",oldKey:"${envVarName}",newKey:"${envVarName}",value:"${aiKey}"){key}}`
+        ).catch(() => {})
+      }
+      // Fix ENABLE_CONTROL_UI
+      await zeaburGQL(body.zeaburApiKey,
+        `mutation{updateSingleEnvironmentVariable(serviceID:"${zeaburServiceId}",environmentID:"${envId}",oldKey:"ENABLE_CONTROL_UI",newKey:"ENABLE_CONTROL_UI",value:"true"){key}}`
+      ).catch(() => {})
+
+      // Add domain (zeabur.app via isGenerated=true)
+      try {
+        const slug = body.agentName.toLowerCase().replace(/[^a-z0-9-]/g, '-')
+        const domain = `${slug}-canfly`
+        await zeaburGQL(body.zeaburApiKey,
+          `mutation{addDomain(serviceID:"${zeaburServiceId}",environmentID:"${envId}",domain:"${domain}",isGenerated:true){domain}}`
+        ).catch(() => {})
+      } catch { /* domain will be added in status poller */ }
+
+      // Restart to apply env var changes (service may not be fully up yet, that's OK)
+      await zeaburGQL(body.zeaburApiKey,
+        `mutation{restartService(serviceID:"${zeaburServiceId}",environmentID:"${envId}")}`
+      ).catch(() => {})
+    }
+  }
 
   // Step 4: Record deployment in D1
   const deploymentId = generateUUID()
-  try {
-    // Pre-compute metadata (encrypt keys separately to isolate failures)
-    const cryptoKey = env.ENCRYPTION_KEY ? await importKey(env.ENCRYPTION_KEY) : null
-    const encryptedApiKey = cryptoKey ? await encrypt(body.zeaburApiKey, cryptoKey) : body.zeaburApiKey
-    const rawAiKey = body.aiProviderKey || body.aiHubKey || null
-    const encryptedAiKey = cryptoKey && rawAiKey ? await encrypt(rawAiKey, cryptoKey) : rawAiKey
+  await env.DB.prepare(
+    `INSERT INTO v3_zeabur_deployments
+      (id, owner_username, zeabur_project_id, zeabur_service_id, zeabur_environment,
+       template_id, status, metadata)
+    VALUES (?1, ?2, ?3, ?4, 'production', ?5, 'deploying', ?6)`
+  ).bind(
+    deploymentId,
+    username,
+    zeaburProjectId,
+    zeaburServiceId,
+    body.templateCode || null,
+    await (async () => {
+      const cryptoKey = env.ENCRYPTION_KEY ? await importKey(env.ENCRYPTION_KEY) : null
+      return JSON.stringify({
+        tier: body.tier,
+        agentName: body.agentName,
+        agentDisplayName: agentDisplayName,
+        agentBio: body.agentBio || null,
+        agentModel: body.agentModel || null,
+        aiProvider: body.aiProvider || (body.aiHubKey ? 'zeabur-ai-hub' : null),
+        aiProviderKey: cryptoKey && (body.aiProviderKey || body.aiHubKey)
+          ? await encrypt(body.aiProviderKey || body.aiHubKey!, cryptoKey)
+          : (body.aiProviderKey || body.aiHubKey || null),
+        serverNodeId: body.serverNodeId,
+        zeaburApiKey: cryptoKey ? await encrypt(body.zeaburApiKey, cryptoKey) : body.zeaburApiKey,
+      })
+    })(),
+  ).run()
 
-    const metadataJson = JSON.stringify({
-      tier: body.tier,
-      agentName: body.agentName,
-      agentDisplayName: agentDisplayName,
-      agentBio: body.agentBio || null,
-      agentModel: body.agentModel || null,
-      aiProvider: body.aiProvider || (body.aiHubKey ? 'zeabur-ai-hub' : null),
-      aiProviderKey: encryptedAiKey,
-      serverNodeId: body.serverNodeId,
-      zeaburApiKey: encryptedApiKey,
-    })
-
-    await env.DB.prepare(
-      `INSERT INTO v3_zeabur_deployments
-        (id, owner_username, zeabur_project_id, zeabur_service_id, zeabur_environment,
-         template_id, status, metadata)
-      VALUES (?1, ?2, ?3, ?4, 'production', ?5, 'deploying', ?6)`
-    ).bind(
-      deploymentId, username, zeaburProjectId, zeaburServiceId,
-      body.templateCode || null, metadataJson,
-    ).run()
-
-    // Log activity
-    await env.DB.prepare(
-      `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
-       VALUES ('deployment', ?1, 'zeabur_deploy_initiated', ?2)`
-    ).bind(deploymentId, JSON.stringify({
-      owner: username, tier: body.tier, agentName: body.agentName, zeaburProjectId,
-    })).run()
-  } catch (err) {
-    // Zeabur project was created but we failed to record it — return partial success
-    // so the user knows their project exists
-    return json({
-      deploymentId,
-      zeaburProjectId,
-      status: 'deploying',
-      warning: `Deployment started but recording failed: ${err instanceof Error ? err.message : 'unknown'}. Your Zeabur project was created.`,
-    }, 201)
-  }
+  // Log activity
+  await env.DB.prepare(
+    `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
+     VALUES ('deployment', ?1, 'zeabur_deploy_initiated', ?2)`
+  ).bind(deploymentId, JSON.stringify({
+    owner: username,
+    tier: body.tier,
+    agentName: body.agentName,
+    zeaburProjectId,
+  })).run()
 
   return json({
     deploymentId,
