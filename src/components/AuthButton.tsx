@@ -1,8 +1,38 @@
 import { useState, useRef, useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth, type WorldIdLevel } from '../hooks/useAuth'
 import { walletGradient } from '../utils/walletGradient'
 import { LogOut, User } from 'lucide-react'
+
+/**
+ * Session flag so we only auto-redirect a logged-in user to the register page
+ * once per browser session. If they intentionally leave register without
+ * finishing, we don't keep dragging them back.
+ */
+const AUTO_REDIRECT_FLAG = 'canfly_register_autoredirect_done'
+
+/** Paths where we must NOT auto-redirect (avoids loops / breaks legit flows). */
+function shouldAutoRedirect(pathname: string): boolean {
+  // Normalize to lowercase and strip /:lang prefix (en, zh-tw, zh-cn)
+  const p = pathname.toLowerCase().replace(/^\/(en|zh-tw|zh-cn)(\/|$)/, '/')
+
+  // Already on register (any lang) — no loop
+  if (p === '/community/register' || p.startsWith('/community/register/')) return false
+  // Profile edit pages handle their own auth
+  if (/^\/u\/[^/]+\/edit\/?$/.test(p)) return false
+  // Agent deploy / settings / register — don't interrupt wizards
+  if (/^\/u\/[^/]+\/agents?\//.test(p)) return false
+  if (/^\/u\/[^/]+\/agent\//.test(p)) return false
+  // Task / paperclip pages
+  if (/^\/u\/[^/]+\/(tasks|paperclip)/.test(p)) return false
+  // Checkout / tasks result
+  if (p.startsWith('/checkout') || p.startsWith('/tasks/')) return false
+  // Orders dashboard
+  if (p === '/orders' || p.startsWith('/orders/')) return false
+
+  return true
+}
 
 const TRUST_BADGE: Record<string, { emoji: string; color: string }> = {
   orb: { emoji: '👁️', color: 'text-yellow-400' },
@@ -21,6 +51,8 @@ function getBadge(worldIdLevel: WorldIdLevel, walletAddress: string | null) {
 export default function AuthButton() {
   const { t } = useTranslation()
   const { isAuthenticated, ready, login, logout, user, worldIdLevel, walletAddress } = useAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
@@ -87,6 +119,31 @@ export default function AuthButton() {
   const ownUsername = resolvedUsername || localUsername
   const isLookingUp = !lookupDone.current || (!resolvedUsername && !localUsername && (!!walletAddress || !!privyId))
   const displayName = ownUsername || (isLookingUp ? null : (user?.google?.name || user?.email?.address?.split('@')[0] || 'User'))
+
+  // Auto-redirect new users (no CanFly profile found) to the register page.
+  // Runs only once per browser session, and only on safe paths.
+  useEffect(() => {
+    if (!isAuthenticated || !ready) return
+    if (isLookingUp) return           // wait for lookup to finish
+    if (ownUsername) return            // user already has a profile
+    if (!walletAddress && !privyId) return // nothing to tie back to a profile
+
+    try {
+      if (sessionStorage.getItem(AUTO_REDIRECT_FLAG) === '1') return
+    } catch { /* sessionStorage not available */ }
+
+    if (!shouldAutoRedirect(location.pathname)) return
+
+    try { sessionStorage.setItem(AUTO_REDIRECT_FLAG, '1') } catch { /* ignore */ }
+    navigate('/community/register', { replace: false })
+  }, [isAuthenticated, ready, isLookingUp, ownUsername, walletAddress, privyId, location.pathname, navigate])
+
+  // Clear the one-shot redirect flag on logout so a future login can redirect again.
+  useEffect(() => {
+    if (!isAuthenticated) {
+      try { sessionStorage.removeItem(AUTO_REDIRECT_FLAG) } catch { /* ignore */ }
+    }
+  }, [isAuthenticated])
 
   // Not ready yet — show nothing
   if (!ready) return null

@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 
 // Mock useAuth
@@ -28,9 +28,11 @@ vi.mock('lucide-react', () => ({
 
 import AuthButton from './AuthButton'
 
+/** Render the button on a path where the auto-redirect guard is a no-op.
+ *  (The auto-redirect to /community/register is exercised in e2e, not here.) */
 function renderAuthButton() {
   return render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries={['/community/register']}>
       <AuthButton />
     </MemoryRouter>,
   )
@@ -40,6 +42,20 @@ describe('AuthButton', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     localStorage.clear()
+    try { sessionStorage.clear() } catch { /* ignore */ }
+
+    // Default: lookup returns 404 (no existing profile). Individual tests
+    // can override with their own mockResolvedValueOnce if needed.
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ error: 'No user found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    )
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
   })
 
   it('renders nothing when not ready', () => {
@@ -89,7 +105,7 @@ describe('AuthButton', () => {
     expect(mockLogin).toHaveBeenCalledOnce()
   })
 
-  it('shows orb badge for orb-verified user', () => {
+  it('shows orb badge for orb-verified user', async () => {
     mockUseAuth.mockReturnValue({
       isAuthenticated: true,
       ready: true,
@@ -102,7 +118,8 @@ describe('AuthButton', () => {
 
     renderAuthButton()
     expect(screen.getByText('👁️')).toBeInTheDocument()
-    expect(screen.getByText('TestUser')).toBeInTheDocument()
+    // Wait for lookup-wallet to resolve (404) before display name appears
+    await waitFor(() => expect(screen.getByText('TestUser')).toBeInTheDocument())
   })
 
   it('shows device badge for device-verified user', () => {
@@ -120,7 +137,7 @@ describe('AuthButton', () => {
     expect(screen.getByText('🌍')).toBeInTheDocument()
   })
 
-  it('shows wallet badge when wallet connected but no World ID', () => {
+  it('shows wallet badge when wallet connected but no World ID', async () => {
     mockUseAuth.mockReturnValue({
       isAuthenticated: true,
       ready: true,
@@ -133,7 +150,8 @@ describe('AuthButton', () => {
 
     renderAuthButton()
     expect(screen.getByText('🦊')).toBeInTheDocument()
-    expect(screen.getByText('test')).toBeInTheDocument() // email prefix
+    // Wait for lookup to settle before display name appears (email prefix)
+    await waitFor(() => expect(screen.getByText('test')).toBeInTheDocument())
   })
 
   it('shows generic badge when no wallet and no World ID', () => {
@@ -151,7 +169,7 @@ describe('AuthButton', () => {
     expect(screen.getByText('👤')).toBeInTheDocument()
   })
 
-  it('opens dropdown on pill click and shows profile + logout', () => {
+  it('opens dropdown on pill click and shows profile + logout', async () => {
     mockUseAuth.mockReturnValue({
       isAuthenticated: true,
       ready: true,
@@ -163,7 +181,8 @@ describe('AuthButton', () => {
     })
 
     renderAuthButton()
-    fireEvent.click(screen.getByText('TestUser'))
+    const pill = await screen.findByText('TestUser')
+    fireEvent.click(pill)
     expect(screen.getByText('Profile')).toBeInTheDocument()
     expect(screen.getByText('Logout')).toBeInTheDocument()
   })
@@ -188,7 +207,7 @@ describe('AuthButton', () => {
     expect(profileLink).toHaveAttribute('href', '/u/dAAAb')
   })
 
-  it('links to register page when no edit token exists', () => {
+  it('links to register page when no edit token exists', async () => {
     mockUseAuth.mockReturnValue({
       isAuthenticated: true,
       ready: true,
@@ -200,12 +219,13 @@ describe('AuthButton', () => {
     })
 
     renderAuthButton()
-    fireEvent.click(screen.getByText('TestUser'))
+    const pill = await screen.findByText('TestUser')
+    fireEvent.click(pill)
     const profileLink = screen.getByText('Profile').closest('a')
     expect(profileLink).toHaveAttribute('href', '/community/register')
   })
 
-  it('calls logout when logout button clicked', () => {
+  it('calls logout when logout button clicked', async () => {
     const mockLogout = vi.fn()
     mockUseAuth.mockReturnValue({
       isAuthenticated: true,
@@ -218,8 +238,57 @@ describe('AuthButton', () => {
     })
 
     renderAuthButton()
-    fireEvent.click(screen.getByText('TestUser'))
+    const pill = await screen.findByText('TestUser')
+    fireEvent.click(pill)
     fireEvent.click(screen.getByText('Logout'))
     expect(mockLogout).toHaveBeenCalledOnce()
+  })
+
+  it('auto-redirects new authenticated users without a profile to /community/register', async () => {
+    mockUseAuth.mockReturnValue({
+      isAuthenticated: true,
+      ready: true,
+      login: vi.fn(),
+      logout: vi.fn(),
+      user: { google: { name: 'NewUser', email: 'new@example.com' }, id: 'did:privy:new' },
+      worldIdLevel: null,
+      walletAddress: '0xNEW',
+    })
+
+    // Render on a neutral path (home) — auto-redirect should fire
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <AuthButton />
+      </MemoryRouter>,
+    )
+
+    // Wait for the lookup effect to run (will 404 per beforeEach default)
+    // Then the sessionStorage flag should be set to mark we redirected
+    await waitFor(() => {
+      expect(sessionStorage.getItem('canfly_register_autoredirect_done')).toBe('1')
+    })
+  })
+
+  it('does NOT auto-redirect when already on /community/register', async () => {
+    mockUseAuth.mockReturnValue({
+      isAuthenticated: true,
+      ready: true,
+      login: vi.fn(),
+      logout: vi.fn(),
+      user: { google: { name: 'NewUser', email: 'new@example.com' } },
+      worldIdLevel: null,
+      walletAddress: '0xNEW',
+    })
+
+    render(
+      <MemoryRouter initialEntries={['/community/register']}>
+        <AuthButton />
+      </MemoryRouter>,
+    )
+
+    // Give effects time to run
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    // Flag should NOT be set — we're already on register so no redirect needed
+    expect(sessionStorage.getItem('canfly_register_autoredirect_done')).toBeNull()
   })
 })

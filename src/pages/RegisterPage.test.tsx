@@ -63,7 +63,9 @@ describe('RegisterPage wallet→username lookup', () => {
     })
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith('/u/dAAAb', { replace: true })
+      // Already-registered users are sent to edit page (not public showcase),
+      // since they only land on /community/register if they wanted to change something.
+      expect(mockNavigate).toHaveBeenCalledWith('/u/dAAAb/edit', { replace: true })
     })
   })
 

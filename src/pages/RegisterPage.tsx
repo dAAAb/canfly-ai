@@ -29,6 +29,42 @@ interface FormData {
 
 type UsernameStatus = 'idle' | 'checking' | 'available' | 'taken' | 'invalid'
 
+/** Normalize an OAuth handle / basename / email local-part into a candidate CanFly username.
+ *  Rules: lowercase, strip .eth / .base.eth, replace illegal chars with '-', 2-30 chars. */
+function normalizeUsernameCandidate(raw: string | null | undefined): string {
+  if (!raw) return ''
+  let s = String(raw).trim().toLowerCase()
+  // Strip basename suffixes
+  s = s.replace(/\.base\.eth$/, '').replace(/\.eth$/, '')
+  // Replace illegal chars with '-', collapse repeats, trim edges
+  s = s.replace(/[^a-z0-9_-]+/g, '-').replace(/-+/g, '-').replace(/^[-_]+|[-_]+$/g, '')
+  // Enforce length
+  if (s.length > 30) s = s.slice(0, 30).replace(/[-_]+$/, '')
+  if (s.length < 2) return ''
+  return s
+}
+
+/** Check if a username is available (404 from /api/community/users/:name = free). */
+async function isUsernameAvailable(username: string): Promise<boolean> {
+  try {
+    const res = await fetch(`/api/community/users/${encodeURIComponent(username)}`)
+    return res.status === 404
+  } catch {
+    return false
+  }
+}
+
+/** Find the first available username by appending a numeric suffix. */
+async function findFirstAvailable(base: string, maxTries = 6): Promise<string | null> {
+  if (!base) return null
+  if (await isUsernameAvailable(base)) return base
+  for (let i = 1; i <= maxTries; i++) {
+    const candidate = `${base}${i}`.slice(0, 30)
+    if (await isUsernameAvailable(candidate)) return candidate
+  }
+  return null
+}
+
 export default function RegisterPage() {
   const { isAuthenticated, ready, login, walletAddress, worldIdLevel, user: privyUser, getAccessToken } = useAuth()
   const navigate = useNavigate()
@@ -48,6 +84,7 @@ export default function RegisterPage() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [checkingProfile, setCheckingProfile] = useState(true)
+  const [usernamePrefilled, setUsernamePrefilled] = useState(false)
 
   // Check if user already has a profile (by wallet address or Privy user ID)
   useEffect(() => {
@@ -75,7 +112,9 @@ export default function RegisterPage() {
       .then((data) => {
         if (data && (data as { username?: string }).username) {
           const username = (data as { username: string }).username
-          navigate(`/u/${username}`, { replace: true })
+          // Already-registered users land here by mistake → send them to edit
+          // (more useful than the public showcase, since they came wanting to change something)
+          navigate(`/u/${username}/edit`, { replace: true })
         }
       })
       .catch(() => {
@@ -83,6 +122,74 @@ export default function RegisterPage() {
       })
       .finally(() => setCheckingProfile(false))
   }, [isAuthenticated, walletAddress, privyUser?.id, navigate])
+
+  // Pre-fill username + display name from the OAuth provider the user logged in with.
+  // Runs once after we know the profile doesn't exist. Never overwrites manual input.
+  useEffect(() => {
+    if (!isAuthenticated || checkingProfile) return
+    if (usernamePrefilled) return
+    if (form.username) return // user already typed something
+
+    // Pick the first available candidate from linked accounts
+    type LinkedUser = {
+      google?: { name: string | null; email: string }
+      github?: { username: string | null; name: string | null }
+      twitter?: { username: string | null; name: string | null }
+      email?: { address: string }
+    }
+    const u = privyUser as LinkedUser | null
+    const candidates: string[] = []
+    const displayNameCandidates: string[] = []
+
+    if (u?.github?.username) {
+      candidates.push(u.github.username)
+      if (u.github.name) displayNameCandidates.push(u.github.name)
+    }
+    if (u?.twitter?.username) {
+      candidates.push(u.twitter.username)
+      if (u.twitter.name) displayNameCandidates.push(u.twitter.name)
+    }
+    if (u?.google?.email) {
+      candidates.push(u.google.email.split('@')[0])
+      if (u.google.name) displayNameCandidates.push(u.google.name)
+    }
+    if (u?.email?.address) {
+      candidates.push(u.email.address.split('@')[0])
+    }
+    // Basename stored on users.links (if we already have one on file via lookup),
+    // or the raw walletAddress prefix as last-resort hint.
+    if (walletAddress) {
+      candidates.push(walletAddress.slice(2, 10)) // e.g. "bf494bda"
+    }
+
+    // Find the first candidate that normalizes to something valid AND is available.
+    let cancelled = false
+    ;(async () => {
+      for (const raw of candidates) {
+        const base = normalizeUsernameCandidate(raw)
+        if (!base) continue
+        const pick = await findFirstAvailable(base, 4)
+        if (cancelled) return
+        if (pick) {
+          setForm((prev) => {
+            // Guard: if user started typing in the meantime, leave it alone
+            if (prev.username) return prev
+            return {
+              ...prev,
+              username: pick,
+              displayName: prev.displayName || displayNameCandidates[0] || prev.displayName,
+            }
+          })
+          setUsernamePrefilled(true)
+          return
+        }
+      }
+      // No candidate worked — mark as "tried" so we don't keep retrying
+      setUsernamePrefilled(true)
+    })()
+
+    return () => { cancelled = true }
+  }, [isAuthenticated, checkingProfile, usernamePrefilled, form.username, privyUser, walletAddress])
 
   // Debounced username availability check
   const checkUsername = useCallback(async (username: string) => {
