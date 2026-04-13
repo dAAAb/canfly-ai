@@ -138,7 +138,8 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
   const agentName = params.agentName
   const navigate = useNavigate()
   const { currentLang, switchLang } = useQueryLang()
-  const { walletAddress, getAccessToken, isAuthenticated, login } = useAuth()
+  const { user, walletAddress, getAccessToken, isAuthenticated, login } = useAuth()
+  const privyId = user?.id ?? null
   const { t } = useTranslation()
   const [agent, setAgent] = useState<AgentData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -253,16 +254,24 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
   })
 
   const handleClaimAgent = async () => {
-    if (!claimCode.trim() || !walletAddress) return
+    if (!claimCode.trim() || !isAuthenticated) return
     setClaimStatus('loading')
     setClaimMessage('')
     try {
-      // Look up user by wallet
-      const lookupRes = await fetch(`/api/community/lookup-wallet?address=${walletAddress}`)
+      // Look up user by wallet OR Privy ID (Google/email users have no wallet)
+      const params = new URLSearchParams()
+      if (walletAddress) params.set('address', walletAddress)
+      if (privyId) params.set('privyId', privyId)
+      if ([...params].length === 0) {
+        setClaimStatus('error')
+        setClaimMessage('Please sign in to claim this agent.')
+        return
+      }
+      const lookupRes = await fetch(`/api/community/lookup-wallet?${params.toString()}`)
       const lookupData = await lookupRes.json() as { username?: string; edit_token?: string }
       if (!lookupRes.ok || !lookupData.username) {
         setClaimStatus('error')
-        setClaimMessage('No CanFly profile found for your wallet. Register first.')
+        setClaimMessage('No CanFly profile found for your account. Register first.')
         return
       }
       const res = await fetch(`/api/community/users/${lookupData.username}/pair-agent`, {
@@ -1536,7 +1545,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                 <p className="text-gray-400 text-sm mb-4 text-center">
                   This is a free community agent. Enter the pairing code to claim ownership.
                 </p>
-                {walletAddress ? (
+                {isAuthenticated ? (
                   <div>
                     <div className="flex gap-3 max-w-md mx-auto">
                       <input
@@ -1575,7 +1584,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                   </div>
                 ) : (
                   <div className="text-center">
-                    <p className="text-gray-500 text-sm mb-3">Connect your wallet to claim this agent</p>
+                    <p className="text-gray-500 text-sm mb-3">Sign in to claim this agent</p>
                     <Link
                       to="/community/register"
                       className="inline-block px-6 py-2.5 bg-green-600 hover:bg-green-500 text-white font-medium rounded-xl transition-colors"
