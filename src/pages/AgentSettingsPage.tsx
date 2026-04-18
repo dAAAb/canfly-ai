@@ -227,11 +227,13 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
     setReconfigError(null)
     setReconfigResult(null)
     try {
-      // Always available repair path — owner-auth, no retry_count limit. Settings
-      // page's "Retry" is a maintenance action, not a count-limited deploy retry.
+      // Reconfigure runs multiple sequential Zeabur GraphQL calls (executeCommand
+      // is slow). Cap at 120s so a hanging Zeabur call surfaces as an error the
+      // user can react to rather than a permanent "Retrying..." spinner.
       const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/reconfigure`, {
         method: 'POST',
         headers: await getAuthHeaders(),
+        signal: AbortSignal.timeout(120_000),
       })
       const data = (await res.json()) as {
         success?: boolean

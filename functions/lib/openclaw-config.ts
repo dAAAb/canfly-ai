@@ -13,11 +13,16 @@ export async function zeaburGQL(
   apiKey: string,
   query: string,
   variables: Record<string, unknown> = {},
+  timeoutMs = 20000,
 ): Promise<{ data?: Record<string, unknown>; errors?: Array<{ message: string }> }> {
+  // Default 20s timeout — prevents reconfigure / status polls from hanging
+  // indefinitely when Zeabur's executeCommand is slow (e.g. during container
+  // restart or post-crash cooldown).
   const res = await fetch(ZEABUR_GRAPHQL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
     body: JSON.stringify({ query, variables }),
+    signal: AbortSignal.timeout(timeoutMs),
   })
   return res.json() as Promise<{ data?: Record<string, unknown>; errors?: Array<{ message: string }> }>
 }
