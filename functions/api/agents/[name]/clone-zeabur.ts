@@ -671,22 +671,22 @@ async function handleConfig(
   const newGatewayToken = await readGatewayToken(zeaburApiKey, newServiceId, newEnvId)
 
   // 3. Chat verify with backoff — see status.ts for rationale (probe WITHOUT
-  //    auth so we don't trigger the pi-agent-core race condition that crashes
-  //    the gateway for an hour).
+  //    auth to avoid the pi-agent-core crash; 30s window for SIGUSR1 settle).
   let chatReady = false
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 15; i++) {
     try {
       const testRes = await fetch(`${publicUrl}/v1/chat/completions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: '{}',
+        signal: AbortSignal.timeout(5000),
       })
       if (testRes.status === 401) {
         chatReady = true
         break
       }
     } catch { /* probe failed */ }
-    if (i < 4) await new Promise(r => setTimeout(r, 2000))
+    if (i < 14) await new Promise(r => setTimeout(r, 2000))
   }
 
   // Hard gate: both pieces must be present — otherwise chat proxy can't work.

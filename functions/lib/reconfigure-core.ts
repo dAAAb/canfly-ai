@@ -85,7 +85,9 @@ export async function runReconfigure(
   const gatewayToken = await readGatewayToken(zeaburApiKey, serviceId, envId)
 
   // Probe chat endpoint — multi-shot with backoff since OpenClaw can take
-  // several seconds to settle after SIGUSR1 reload.
+  // 20-30s to re-register routes after SIGUSR1 reload via fallback patch
+  // (observed: my-april-best-lobs probe caught the reload window and all
+  // 5 × 2s attempts failed, even though endpoint came up seconds later).
   //
   // CRITICAL: probe WITHOUT a valid Authorization header. A POST with valid auth
   // and a real `messages` payload invokes the agent run, which has hit a known
@@ -95,19 +97,20 @@ export async function runReconfigure(
   // POST returns 401 fast: 401 = endpoint registered (chatCompletions enabled),
   // 404 = not registered.
   let chatReady = false
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 15; i++) {
     try {
       const testRes = await fetch(`${publicUrl}/v1/chat/completions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: '{}',
+        signal: AbortSignal.timeout(5000),
       })
       if (testRes.status === 401) {
         chatReady = true
         break
       }
     } catch { /* probe failed */ }
-    if (i < 4) await new Promise(r => setTimeout(r, 2000))
+    if (i < 14) await new Promise(r => setTimeout(r, 2000))
   }
 
   let tokenStored = false

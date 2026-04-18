@@ -432,25 +432,25 @@ async function handleConfig(
   // 2. Read gateway token
   const gatewayToken = await readGatewayToken(zeaburApiKey, serviceId, prodEnvId)
 
-  // 3. Chat verify with backoff — OpenClaw needs a few seconds to settle after
-  //    SIGUSR1 reload. CRITICAL: probe WITHOUT auth so we don't actually invoke
-  //    the agent — pi-agent-core has a known race ("Agent listener invoked
-  //    outside active run") that crashes the gateway and triggers a 1-hour
-  //    cooldown. Auth check rejects fast: 401 = endpoint registered, 404 = not.
+  // 3. Chat verify with backoff — OpenClaw takes 20-30s to re-register routes
+  //    after SIGUSR1 reload via fallback patch. CRITICAL: probe WITHOUT auth
+  //    so we don't invoke the agent (pi-agent-core race condition crashes the
+  //    gateway for 1h). 401 = endpoint registered, 404 = not.
   let chatReady = false
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 15; i++) {
     try {
       const testRes = await fetch(`${publicUrl}/v1/chat/completions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: '{}',
+        signal: AbortSignal.timeout(5000),
       })
       if (testRes.status === 401) {
         chatReady = true
         break
       }
     } catch { /* probe failed */ }
-    if (i < 4) await new Promise(r => setTimeout(r, 2000))
+    if (i < 14) await new Promise(r => setTimeout(r, 2000))
   }
 
   // Hard gate: both pieces must be present — otherwise chat proxy can't work.
