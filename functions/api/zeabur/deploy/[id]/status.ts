@@ -307,27 +307,46 @@ async function handleWait(
 ) {
   const serviceId = deployment.zeabur_service_id!
   const prodEnvId = phaseData.prodEnvId as string
+  const publicUrl = phaseData.publicUrl as string
   const waitAttempts = (phaseData.waitAttempts as number) || 0
 
-  const ready = await checkServiceReady(zeaburApiKey, serviceId, prodEnvId)
+  // Two gates: container process alive AND public domain routable.
+  // Zeabur's subdomain provisioning (cert issuance + DNS propagation) can
+  // lag minutes behind container readiness. If we advance to config phase
+  // while the domain isn't routing yet, the chat probe against publicUrl
+  // 502s even though OpenClaw is fine internally.
+  const containerReady = await checkServiceReady(zeaburApiKey, serviceId, prodEnvId)
+  let domainReady = false
+  if (containerReady && publicUrl) {
+    try {
+      const res = await fetch(`${publicUrl}/health`, { method: 'GET', signal: AbortSignal.timeout(5000) })
+      domainReady = res.status === 200
+    } catch { /* not routing yet */ }
+  }
 
-  if (!ready) {
+  if (!containerReady || !domainReady) {
     const newAttempts = waitAttempts + 1
     if (newAttempts > 60) {
+      const reason = !containerReady
+        ? 'Service did not start within 5 minutes'
+        : 'Public domain did not become routable within 5 minutes (Zeabur subdomain provisioning)'
       await env.DB.prepare(
-        `UPDATE v3_zeabur_deployments SET status = 'failed', error_message = 'Service did not start within 5 minutes', updated_at = datetime('now') WHERE id = ?1`
-      ).bind(deploymentId).run()
-      return json({ deploymentId, status: 'failed', errorMessage: 'Service did not start within 5 minutes' })
+        `UPDATE v3_zeabur_deployments SET status = 'failed', error_message = ?1, updated_at = datetime('now') WHERE id = ?2`
+      ).bind(reason, deploymentId).run()
+      return json({ deploymentId, status: 'failed', errorMessage: reason })
     }
 
     await env.DB.prepare(
       `UPDATE v3_zeabur_deployments SET phase_data = ?1, updated_at = datetime('now') WHERE id = ?2`
     ).bind(JSON.stringify({ ...phaseData, waitAttempts: newAttempts }), deploymentId).run()
 
-    return json({ deploymentId, status: 'setting_up_wait', message: 'Waiting for service to start...', attempt: newAttempts })
+    const msg = !containerReady
+      ? 'Waiting for service to start...'
+      : 'Service up — waiting for public domain to route...'
+    return json({ deploymentId, status: 'setting_up_wait', message: msg, attempt: newAttempts, containerReady, domainReady })
   }
 
-  // Ready → transition to setting_up_config
+  // Both ready → transition to setting_up_config
   await env.DB.prepare(
     `UPDATE v3_zeabur_deployments
      SET status = 'setting_up_config', phase_data = ?1, phase_started_at = datetime('now'), updated_at = datetime('now')
