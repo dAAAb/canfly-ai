@@ -13,7 +13,7 @@
 import { type Env, json, errorResponse, handleOptions, parseBody } from '../../community/_helpers'
 import { authenticateRequest } from '../../_auth'
 import { importKey, decrypt } from '../../../lib/crypto'
-import { zeaburGQL, patchConfigViaCLI } from '../../../lib/openclaw-config'
+import { zeaburGQL, patchConfigViaCLI, execCommand } from '../../../lib/openclaw-config'
 
 interface ConnectTelegramBody {
   botToken: string
@@ -163,16 +163,18 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
       const patchResult = await patchConfigViaCLI(zeaburApiKey, deployment.zeabur_service_id, prodEnv._id, telegramPatch)
       if (patchResult.success) {
         gatewaySuccess = true
-        // Telegram plugin wasn't running before (channel wasn't enabled at boot),
-        // so SIGUSR1 reload alone won't spawn it. Trigger a service restart so
-        // the plugin initialises with the new config and starts polling Telegram.
-        // NB: this does re-run Zeabur's entrypoint, but telegram config now lives
-        // in the persisted config file so it survives the restart.
+        // Telegram plugin wasn't loaded at container boot (channel was disabled).
+        // Restart the gateway process *inside* the container via
+        // `openclaw gateway restart` — this reloads the plugin set without
+        // restarting the container, so Zeabur's entrypoint does NOT re-run and
+        // we avoid the dangerous-flags / pi-agent-core crash loop that
+        // `restartService` would trigger.
         try {
-          await zeaburGQL(zeaburApiKey,
-            `mutation{restartService(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}")}`,
+          await execCommand(
+            zeaburApiKey, deployment.zeabur_service_id, prodEnv._id,
+            ['sh', '-c', 'openclaw gateway restart 2>&1 || /home/node/.openclaw/bin/openclaw gateway restart 2>&1 || /usr/local/bin/openclaw gateway restart 2>&1 || true'],
           )
-        } catch { /* restart trigger is best-effort; config is already patched */ }
+        } catch { /* best-effort */ }
       } else {
         gatewayError = `Config patch failed (${patchResult.method}): ${patchResult.error || 'unknown'}`
       }
@@ -245,7 +247,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     status: 'pending',
     botUsername,
     connectionId,
-    message: `Telegram bot @${botUsername || 'unknown'} configured. The agent is restarting to load the plugin (~60s). Then send /start to the bot, copy the pairing code it returns, and paste it below to complete the connection.`,
+    message: `Telegram bot @${botUsername || 'unknown'} configured. Reloading the gateway (~15s), then send /start to the bot on Telegram, copy the pairing code it returns, and paste it below.`,
   })
 }
 
