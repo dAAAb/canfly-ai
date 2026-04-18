@@ -187,18 +187,30 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   const url = new URL(request.url)
   const cloneId = url.searchParams.get('cloneId')
 
-  // No cloneId → return available servers for backup
+  // No cloneId → return available servers for backup.
+  // `hasDeployment` = any deployment record exists (including failed / setting_up
+  // / pending) so the settings page can show Retry/Maintenance actions even
+  // when the lobster is broken. `canClone` still requires a running lobster
+  // because you can't clone something that isn't alive.
   if (!cloneId) {
     const dep = await env.DB.prepare(
-      `SELECT zeabur_project_id, metadata FROM v3_zeabur_deployments WHERE agent_name = ?1 AND status = 'running' ORDER BY created_at DESC LIMIT 1`
-    ).bind(agentName).first<{ zeabur_project_id: string; metadata: string }>()
+      `SELECT zeabur_project_id, metadata, status FROM v3_zeabur_deployments
+       WHERE agent_name = ?1 ORDER BY created_at DESC LIMIT 1`
+    ).bind(agentName).first<{ zeabur_project_id: string; metadata: string; status: string }>()
     if (!dep) return json({ servers: [], hasDeployment: false })
+
+    const isRunning = dep.status === 'running'
 
     const meta = JSON.parse(dep.metadata || '{}')
     const cryptoKey = env.ENCRYPTION_KEY ? await importKey(env.ENCRYPTION_KEY) : null
     const rawKey = meta.zeaburApiKey || ''
     const apiKey = cryptoKey && rawKey ? await decrypt(rawKey, cryptoKey) : rawKey
-    if (!apiKey) return json({ servers: [], hasDeployment: true })
+    if (!apiKey) return json({ servers: [], hasDeployment: true, deploymentStatus: dep.status, canClone: false })
+
+    // Non-running deployments can't be cloned — skip the Zeabur round-trip.
+    if (!isRunning) {
+      return json({ servers: [], hasDeployment: true, deploymentStatus: dep.status, canClone: false })
+    }
 
     try {
       const srvResult = await zeaburGQL(apiKey, '{ servers { _id name provider } }')
@@ -216,9 +228,9 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
         canClone = serviceCount <= 1
       } catch { /* default to canClone=true */ }
 
-      return json({ servers, hasDeployment: true, serviceCount, canClone })
+      return json({ servers, hasDeployment: true, deploymentStatus: dep.status, serviceCount, canClone })
     } catch {
-      return json({ servers: [], hasDeployment: true })
+      return json({ servers: [], hasDeployment: true, deploymentStatus: dep.status, canClone: false })
     }
   }
 

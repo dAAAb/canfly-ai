@@ -63,6 +63,7 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
 
   // Clone/Backup
   const [hasDeployment, setHasDeployment] = useState(false)
+  const [deploymentStatus, setDeploymentStatus] = useState<string | null>(null)
   const [canClone, setCanClone] = useState(true)
   const [cloneServers, setCloneServers] = useState<Array<{ _id: string; name: string; provider: string }>>([])
   const [loadingServers, setLoadingServers] = useState(false)
@@ -125,8 +126,9 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
         const headers = await getAuthHeaders()
         const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/clone-zeabur`, { headers })
         if (res.ok) {
-          const data = await res.json() as { servers?: Array<{ _id: string; name: string; provider: string }>; hasDeployment?: boolean; canClone?: boolean }
+          const data = await res.json() as { servers?: Array<{ _id: string; name: string; provider: string }>; hasDeployment?: boolean; canClone?: boolean; deploymentStatus?: string }
           setHasDeployment(!!data.hasDeployment)
+          setDeploymentStatus(data.deploymentStatus || null)
           setCanClone(data.canClone !== false)
           const servers = data.servers || []
           setCloneServers(servers)
@@ -670,8 +672,8 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
           </GlassCard>
         </div>
 
-        {/* Clone/Backup */}
-        {hasDeployment && (
+        {/* Clone/Backup — only meaningful when the lobster is actually running */}
+        {hasDeployment && deploymentStatus === 'running' && (
           <div className="mb-6">
             <h2 className="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-3">
               {t('settings.cloneTitle', 'Backup / Clone')}
