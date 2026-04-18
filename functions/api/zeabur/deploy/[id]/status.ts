@@ -87,7 +87,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
   }
 
   // Phase timeout check
-  if (['setting_up_init', 'setting_up_init_locked', 'setting_up_wait', 'setting_up_config'].includes(deployment.status)) {
+  const setupPhases = ['setting_up_init', 'setting_up_init_locked', 'setting_up_wait', 'setting_up_config', 'setting_up_config_locked']
+  if (setupPhases.includes(deployment.status)) {
     if (isPhaseTimedOut(deployment.phase_started_at)) {
       await env.DB.prepare(
         `UPDATE v3_zeabur_deployments SET status = 'failed', error_message = 'Setup timed out after 15 minutes', updated_at = datetime('now') WHERE id = ?1`
@@ -104,7 +105,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
   const phaseData = JSON.parse(deployment.phase_data || '{}')
 
   // All setup phases need a valid API key
-  if (['setting_up_init', 'setting_up_init_locked', 'setting_up_wait', 'setting_up_config'].includes(deployment.status)) {
+  if (setupPhases.includes(deployment.status)) {
     if (!zeaburApiKey) return errorResponse('Missing Zeabur API key for setup phase', 500)
   }
 
@@ -115,7 +116,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
   if (deployment.status === 'setting_up_wait') {
     return handleWait(env, deployment, zeaburApiKey, phaseData, deploymentId)
   }
-  if (deployment.status === 'setting_up_config') {
+  if (deployment.status === 'setting_up_config' || deployment.status === 'setting_up_config_locked') {
     return handleConfig(env, deployment, zeaburApiKey, metadata, phaseData, cryptoKey, deploymentId)
   }
 
@@ -353,6 +354,19 @@ async function handleConfig(
   const aiProvider = (phaseData.aiProvider as string) || ''
   const configRetryCount = (phaseData.configRetryCount as number) || 0
 
+  // Optimistic lock — concurrent CF polls used to stack parallel patchConfigViaCLI
+  // calls, each triggering a SIGUSR1 reload. That caused OpenClaw to thrash, fail
+  // its health check, restart, re-run the entrypoint (which re-enables the
+  // dangerous flags), and loop — the "post-deploy high CPU" we've seen on Zeabur.
+  // Single-flight the patch.
+  const lock = await env.DB.prepare(
+    `UPDATE v3_zeabur_deployments SET status = 'setting_up_config_locked', updated_at = datetime('now')
+     WHERE id = ?1 AND status = 'setting_up_config'`
+  ).bind(deploymentId).run()
+  if (!lock.meta?.changes) {
+    return json({ deploymentId, status: 'setting_up_config', message: 'Applying security settings...' })
+  }
+
   // 1a. Write auth-profiles.json for AI provider (env vars get stripped by OpenClaw sandbox)
   if (aiProvider && aiProvider !== 'zeabur-ai-hub') {
     const rawAiKey = (metadata.aiProviderKey || metadata.aiHubKey || '') as string
@@ -371,8 +385,9 @@ async function handleConfig(
 
   if (!patchResult.success) {
     if (configRetryCount < 3) {
+      // Release lock by resetting status so the next poll can acquire it.
       await env.DB.prepare(
-        `UPDATE v3_zeabur_deployments SET phase_data = ?1, updated_at = datetime('now') WHERE id = ?2`
+        `UPDATE v3_zeabur_deployments SET status = 'setting_up_config', phase_data = ?1, updated_at = datetime('now') WHERE id = ?2`
       ).bind(JSON.stringify({ ...phaseData, configRetryCount: configRetryCount + 1 }), deploymentId).run()
       return json({ deploymentId, status: 'setting_up_config', message: `Config patch attempt ${configRetryCount + 1}/3 failed, retrying...` })
     }
@@ -430,11 +445,11 @@ async function handleConfig(
     'UPDATE agents SET agent_card_override = ?1 WHERE name = ?2'
   ).bind(cardOverride, finalAgentName).run()
 
-  // 5. Update deployment → running (optimistic lock)
+  // 5. Update deployment → running (we hold the config lock, so no race here)
   await env.DB.prepare(
     `UPDATE v3_zeabur_deployments SET
       status = 'running', deploy_url = ?1, updated_at = datetime('now')
-    WHERE id = ?2 AND status = 'setting_up_config'`
+    WHERE id = ?2 AND status = 'setting_up_config_locked'`
   ).bind(publicUrl, deploymentId).run()
 
   return json({

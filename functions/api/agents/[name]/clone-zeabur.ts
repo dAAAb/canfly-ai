@@ -308,6 +308,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     case 'setting_up_wait':
       return handleWait(env, deployment, zeaburApiKey, phaseData, cloneId)
     case 'setting_up_config':
+    case 'setting_up_config_locked':
       return handleConfig(env, deployment, zeaburApiKey, phaseData, cryptoKey, cloneId, auth.username, agentName, metadata)
     default:
       return json({ cloneId, status: deployment.status, message: 'Unknown phase' })
@@ -580,15 +581,27 @@ async function handleConfig(
   const bakDisplayName = phaseData.bakDisplayName as string
   const configRetryCount = (phaseData.configRetryCount as number) || 0
 
+  // Optimistic lock — same reasoning as status.ts handleConfig:
+  // concurrent polls triggering parallel patchConfigViaCLI caused OpenClaw to
+  // thrash (SIGUSR1 reload storm → health check fail → restart → entrypoint
+  // re-adds dangerous flags → loop). Single-flight the patch.
+  const lock = await env.DB.prepare(
+    `UPDATE v3_zeabur_deployments SET status = 'setting_up_config_locked', updated_at = datetime('now')
+     WHERE id = ?1 AND status = 'setting_up_config'`
+  ).bind(cloneId).run()
+  if (!lock.meta?.changes) {
+    return json({ cloneId, status: 'setting_up_config', message: 'Applying security settings...' })
+  }
+
   // 1. Patch config (after final restart — entrypoint already ran, gateway is up)
   const patchPayload = buildConfigPatchPayload(publicUrl)
   const patchResult = await patchConfigViaCLI(zeaburApiKey, newServiceId, newEnvId, patchPayload)
 
   if (!patchResult.success) {
     if (configRetryCount < 3) {
-      // Retry on next poll
+      // Release lock by resetting status so the next poll can acquire it.
       await env.DB.prepare(
-        `UPDATE v3_zeabur_deployments SET phase_data = ?1, updated_at = datetime('now') WHERE id = ?2`
+        `UPDATE v3_zeabur_deployments SET status = 'setting_up_config', phase_data = ?1, updated_at = datetime('now') WHERE id = ?2`
       ).bind(JSON.stringify({ ...phaseData, configRetryCount: configRetryCount + 1 }), cloneId).run()
       return json({
         cloneId,
@@ -673,11 +686,11 @@ async function handleConfig(
     'UPDATE agents SET agent_card_override = ?1 WHERE name = ?2'
   ).bind(cardOverride, finalAgentName).run()
 
-  // 5. Update deployment → running (optimistic lock)
+  // 5. Update deployment → running (we hold the config lock, so no race here)
   const runTransition = await env.DB.prepare(
     `UPDATE v3_zeabur_deployments SET
       status = 'running', deploy_url = ?1, updated_at = datetime('now')
-    WHERE id = ?2 AND status = 'setting_up_config'`
+    WHERE id = ?2 AND status = 'setting_up_config_locked'`
   ).bind(publicUrl, cloneId).run()
 
   if (!runTransition.meta?.changes) {
