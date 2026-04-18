@@ -640,19 +640,26 @@ async function handleConfig(
   // 2. Read gateway token
   const newGatewayToken = await readGatewayToken(zeaburApiKey, newServiceId, newEnvId)
 
-  // 3. Single-shot chat endpoint verify
+  // 3. Chat verify with backoff — OpenClaw needs a few seconds to settle after
+  //    SIGUSR1 reload; single-shot probe would catch a transient failure window.
   let chatReady = false
-  try {
-    const testRes = await fetch(`${publicUrl}/v1/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(newGatewayToken ? { Authorization: `Bearer ${newGatewayToken}` } : {}),
-      },
-      body: JSON.stringify({ model: 'openclaw', messages: [{ role: 'user', content: 'ping' }], stream: false }),
-    })
-    chatReady = testRes.status === 200 || testRes.status === 401
-  } catch { /* not ready yet */ }
+  for (let i = 0; i < 5; i++) {
+    try {
+      const testRes = await fetch(`${publicUrl}/v1/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(newGatewayToken ? { Authorization: `Bearer ${newGatewayToken}` } : {}),
+        },
+        body: JSON.stringify({ model: 'openclaw', messages: [{ role: 'user', content: 'ping' }], stream: false }),
+      })
+      if (testRes.status === 200 || testRes.status === 401) {
+        chatReady = true
+        break
+      }
+    } catch { /* probe failed */ }
+    if (i < 4) await new Promise(r => setTimeout(r, 2000))
+  }
 
   // Hard gate: both pieces must be present — otherwise chat proxy can't work.
   if (!newGatewayToken || !chatReady) {
