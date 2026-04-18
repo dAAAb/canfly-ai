@@ -658,20 +658,18 @@ async function handleConfig(
   // 2. Read gateway token
   const newGatewayToken = await readGatewayToken(zeaburApiKey, newServiceId, newEnvId)
 
-  // 3. Chat verify with backoff — OpenClaw needs a few seconds to settle after
-  //    SIGUSR1 reload; single-shot probe would catch a transient failure window.
+  // 3. Chat verify with backoff — see status.ts for rationale (probe WITHOUT
+  //    auth so we don't trigger the pi-agent-core race condition that crashes
+  //    the gateway for an hour).
   let chatReady = false
   for (let i = 0; i < 5; i++) {
     try {
       const testRes = await fetch(`${publicUrl}/v1/chat/completions`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(newGatewayToken ? { Authorization: `Bearer ${newGatewayToken}` } : {}),
-        },
-        body: JSON.stringify({ model: 'openclaw', messages: [{ role: 'user', content: 'ping' }], stream: false }),
+        headers: { 'Content-Type': 'application/json' },
+        body: '{}',
       })
-      if (testRes.status === 200 || testRes.status === 401) {
+      if (testRes.status === 401) {
         chatReady = true
         break
       }

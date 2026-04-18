@@ -86,18 +86,23 @@ export async function runReconfigure(
 
   // Probe chat endpoint — multi-shot with backoff since OpenClaw can take
   // several seconds to settle after SIGUSR1 reload.
+  //
+  // CRITICAL: probe WITHOUT a valid Authorization header. A POST with valid auth
+  // and a real `messages` payload invokes the agent run, which has hit a known
+  // upstream pi-agent-core race condition ("Agent listener invoked outside
+  // active run") that crashes the gateway and triggers a 1-hour cooldown.
+  // Auth failure happens before the agent is invoked, so an unauthenticated
+  // POST returns 401 fast: 401 = endpoint registered (chatCompletions enabled),
+  // 404 = not registered.
   let chatReady = false
   for (let i = 0; i < 5; i++) {
     try {
       const testRes = await fetch(`${publicUrl}/v1/chat/completions`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(gatewayToken ? { Authorization: `Bearer ${gatewayToken}` } : {}),
-        },
-        body: JSON.stringify({ model: 'openclaw', messages: [{ role: 'user', content: 'ping' }], stream: false }),
+        headers: { 'Content-Type': 'application/json' },
+        body: '{}',
       })
-      if (testRes.status === 200 || testRes.status === 401) {
+      if (testRes.status === 401) {
         chatReady = true
         break
       }

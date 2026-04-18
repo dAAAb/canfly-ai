@@ -215,11 +215,18 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
     }
   }, [agentName, getAuthHeaders, t])
 
+  // "Retry" on settings — same smart-routing as the agent-list Retry button.
+  // Looks up the latest deployment for this agent then calls /api/zeabur/retry,
+  // which routes post-deploy failures (CHAT_ENDPOINT_DEAD, NO_GATEWAY_TOKEN,
+  // CONFIG_PATCH_FAILED, RECONFIGURE_INCOMPLETE, PHASE_TIMEOUT) through the
+  // reconfigure flow instead of doing a full restart-the-container redeploy.
   const handleReconfigure = useCallback(async () => {
     setReconfiguring(true)
     setReconfigError(null)
     setReconfigResult(null)
     try {
+      // Always available repair path — owner-auth, no retry_count limit. Settings
+      // page's "Retry" is a maintenance action, not a count-limited deploy retry.
       const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/reconfigure`, {
         method: 'POST',
         headers: await getAuthHeaders(),
@@ -232,7 +239,7 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
         tokenStored?: boolean
         error?: string
       }
-      if (!res.ok) throw new Error(data.error || `Reconfigure failed (${res.status})`)
+      if (!res.ok) throw new Error(data.error || `Retry failed (${res.status})`)
       setReconfigResult({
         success: !!data.success,
         patchMethod: data.patchMethod,

@@ -402,6 +402,43 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
     }
   }, [selectedServer, agentSlug, agentDisplayName, agentBio, zeaburApiKey, aiProvider, aiProviderKey, getAuthHeaders])
 
+  /* ── Retry: prefer existing deploymentId to avoid orphan Zeabur projects ── */
+  const retryDeploy = useCallback(async () => {
+    // No deployment record yet — must start fresh (will create a project).
+    if (!deploymentId) return startDeploy()
+
+    setDeploying(true)
+    setDeployError(null)
+
+    try {
+      const res = await fetch('/api/zeabur/retry', {
+        method: 'POST',
+        headers: await getAuthHeaders(),
+        body: JSON.stringify({ deploymentId }),
+      })
+      const data = (await res.json()) as {
+        status?: string
+        mode?: 'reconfigure' | 'redeploy'
+        errorMessage?: string
+        error?: string
+      }
+      if (!res.ok) throw new Error(data.error || `Retry failed (${res.status})`)
+      // status will be one of: 'running' (reconfigure success), 'failed'
+      // (reconfigure incomplete), 'pending' (redeploy reset). The poll
+      // useEffect picks it up from here.
+      setDeployStatus(data.status || 'pending')
+      if (data.status === 'failed') {
+        setDeployError(data.errorMessage || t('deploy.deployFailed'))
+        setDeploying(false)
+      } else if (data.status === 'running') {
+        setDeploying(false)
+      }
+    } catch (err) {
+      setDeployError((err as Error).message)
+      setDeploying(false)
+    }
+  }, [deploymentId, getAuthHeaders, startDeploy, t])
+
   /* ── Poll deployment status ── */
   useEffect(() => {
     if (!deploymentId || deployStatus === 'running' || deployStatus === 'failed') return
@@ -818,7 +855,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
                   <h2 className="text-lg font-semibold text-white">{t('deploy.errorTitle')}</h2>
                   <p className="text-sm text-red-400">{deployError}</p>
                   <button
-                    onClick={() => { setDeployError(null); startDeploy() }}
+                    onClick={() => { setDeployError(null); retryDeploy() }}
                     className="px-5 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-medium transition-colors"
                   >
                     {t('deploy.retryDeploy')}
