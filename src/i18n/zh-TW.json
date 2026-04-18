@@ -7798,7 +7798,7 @@
       "disconnectBtn": "斷開連結",
       "statusActive": "已連線",
       "statusNone": "未連線",
-      "statusFailed": "連線失敗",
+      "statusFailed": "未連線",
       "invalidToken": "Token 格式錯誤，請貼上 BotFather 給的完整 Token。"
     }
   },

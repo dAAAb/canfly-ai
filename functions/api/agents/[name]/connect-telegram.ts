@@ -163,6 +163,16 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
       const patchResult = await patchConfigViaCLI(zeaburApiKey, deployment.zeabur_service_id, prodEnv._id, telegramPatch)
       if (patchResult.success) {
         gatewaySuccess = true
+        // Telegram plugin wasn't running before (channel wasn't enabled at boot),
+        // so SIGUSR1 reload alone won't spawn it. Trigger a service restart so
+        // the plugin initialises with the new config and starts polling Telegram.
+        // NB: this does re-run Zeabur's entrypoint, but telegram config now lives
+        // in the persisted config file so it survives the restart.
+        try {
+          await zeaburGQL(zeaburApiKey,
+            `mutation{restartService(serviceID:"${deployment.zeabur_service_id}",environmentID:"${prodEnv._id}")}`,
+          )
+        } catch { /* restart trigger is best-effort; config is already patched */ }
       } else {
         gatewayError = `Config patch failed (${patchResult.method}): ${patchResult.error || 'unknown'}`
       }
@@ -232,7 +242,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     status: 'active',
     botUsername,
     connectionId,
-    message: `Telegram bot @${botUsername || 'unknown'} connected! Go to Telegram and send /start to begin.`,
+    message: `Telegram bot @${botUsername || 'unknown'} connected! The agent is restarting to load the Telegram plugin — give it ~60 seconds, then send /start to the bot.`,
   })
 }
 

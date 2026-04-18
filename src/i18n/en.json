@@ -7790,7 +7790,7 @@
       "disconnectBtn": "Disconnect",
       "statusActive": "Active",
       "statusNone": "Not connected",
-      "statusFailed": "Failed",
+      "statusFailed": "Not connected",
       "invalidToken": "Invalid token format. Paste the full token from BotFather."
     }
   },
