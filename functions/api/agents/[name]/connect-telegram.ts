@@ -181,9 +181,11 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     gatewayError = `Telegram setup failed: ${err instanceof Error ? err.message : String(err)}`
   }
 
-  // Store connection record
+  // Store connection record. "active" means the user completed pairing — not
+  // just "token was accepted". Until the user sends /start on Telegram and
+  // approves the pairing code back in Canfly, the connection is "pending".
   const connectionId = existing?.id as string || generateUUID()
-  const status = gatewaySuccess ? 'active' : 'failed'
+  const status = gatewaySuccess ? 'pending' : 'failed'
 
   if (existing) {
     await env.DB.prepare(
@@ -237,12 +239,80 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     }, 502)
   }
 
+  // Bot token + config are good, but pairing isn't done yet — return 'pending'.
   return json({
-    connected: true,
-    status: 'active',
+    connected: false,
+    status: 'pending',
     botUsername,
     connectionId,
-    message: `Telegram bot @${botUsername || 'unknown'} connected! The agent is restarting to load the Telegram plugin — give it ~60 seconds, then send /start to the bot.`,
+    message: `Telegram bot @${botUsername || 'unknown'} configured. The agent is restarting to load the plugin (~60s). Then send /start to the bot, copy the pairing code it returns, and paste it below to complete the connection.`,
+  })
+}
+
+// ── DELETE: Disconnect Telegram ────────────────────────────
+export const onRequestDelete: PagesFunction<Env> = async ({ env, params, request }) => {
+  const agentName = params.name as string
+
+  const auth = await authenticateRequest(request, env.DB, env.PRIVY_APP_ID)
+  if (!auth) return errorResponse('Authentication required', 401)
+
+  const agent = await env.DB.prepare(
+    'SELECT name, owner_username FROM agents WHERE name = ?1'
+  ).bind(agentName).first<{ name: string; owner_username: string | null }>()
+  if (!agent) return errorResponse('Agent not found', 404)
+  if (agent.owner_username !== auth.username) return errorResponse('Not authorized', 403)
+
+  const deployment = await env.DB.prepare(
+    `SELECT zeabur_project_id, zeabur_service_id, metadata FROM v3_zeabur_deployments
+     WHERE agent_name = ?1 ORDER BY updated_at DESC LIMIT 1`
+  ).bind(agentName).first<{
+    zeabur_project_id: string; zeabur_service_id: string | null; metadata: string
+  }>()
+
+  // Best-effort patch to disable Telegram channel + plugin on the lobster.
+  // If Zeabur is unavailable we still clear the DB row — the user can always
+  // reconnect a new bot later.
+  let gatewayPatched = false
+  if (deployment?.zeabur_service_id) {
+    try {
+      const metadata = JSON.parse(deployment.metadata || '{}') as Record<string, unknown>
+      const cryptoKey = env.ENCRYPTION_KEY ? await importKey(env.ENCRYPTION_KEY) : null
+      const rawKey = (metadata.zeaburApiKey as string) || ''
+      const zeaburApiKey = cryptoKey && rawKey ? await decrypt(rawKey, cryptoKey) : rawKey
+      if (zeaburApiKey) {
+        const envResult = await zeaburGQL(zeaburApiKey, `
+          query { project(_id: "${deployment.zeabur_project_id}") { environments { _id name } } }
+        `)
+        const envs = (envResult.data?.project as { environments: Array<{ _id: string; name: string }> })?.environments || []
+        const prodEnv = envs.find(e => e.name === 'production') || envs[0]
+        if (prodEnv) {
+          // JSON merge-patch: null deletes the key entirely.
+          const disablePatch = JSON.stringify({
+            channels: { telegram: null },
+            plugins: { entries: { telegram: null } },
+          })
+          const patchResult = await patchConfigViaCLI(zeaburApiKey, deployment.zeabur_service_id, prodEnv._id, disablePatch)
+          gatewayPatched = patchResult.success
+        }
+      }
+    } catch { /* ignore — DB cleanup still happens */ }
+  }
+
+  await env.DB.prepare(
+    'DELETE FROM v3_telegram_connections WHERE agent_name = ?1'
+  ).bind(agentName).run()
+
+  await env.DB.prepare(
+    `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
+     VALUES ('agent', ?1, 'telegram_disconnect', ?2)`
+  ).bind(agentName, JSON.stringify({ owner: auth.username, gatewayPatched })).run()
+
+  return json({
+    disconnected: true,
+    gatewayPatched,
+    message: gatewayPatched
+      ? 'Telegram disconnected. The bot has been removed from the lobster config.'
+      : 'Telegram record removed from CanFly. The bot may still receive messages until the lobster is restarted.',
   })
 }
 

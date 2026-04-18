@@ -7814,6 +7814,9 @@
       "failedTitle": "连接失败",
       "disconnectBtn": "断开连接",
       "statusActive": "已连线",
+      "statusPending": "等待配对",
+      "disconnectBtn": "断开连线",
+      "disconnectConfirm": "确定断开这只 Telegram 机器人吗？",
       "statusNone": "未连线",
       "statusFailed": "未连线",
       "invalidToken": "Token 格式错误，请粘贴 BotFather 给的完整 Token。"

@@ -7797,6 +7797,9 @@
       "failedTitle": "串接失敗",
       "disconnectBtn": "斷開連結",
       "statusActive": "已連線",
+      "statusPending": "等待配對",
+      "disconnectBtn": "斷開連線",
+      "disconnectConfirm": "確定斷開這隻 Telegram 機器人嗎？",
       "statusNone": "未連線",
       "statusFailed": "未連線",
       "invalidToken": "Token 格式錯誤，請貼上 BotFather 給的完整 Token。"

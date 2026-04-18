@@ -7789,6 +7789,9 @@
       "failedTitle": "Connection Failed",
       "disconnectBtn": "Disconnect",
       "statusActive": "Active",
+      "statusPending": "Waiting for pairing",
+      "disconnectBtn": "Disconnect",
+      "disconnectConfirm": "Disconnect the Telegram bot from this agent?",
       "statusNone": "Not connected",
       "statusFailed": "Not connected",
       "invalidToken": "Invalid token format. Paste the full token from BotFather."

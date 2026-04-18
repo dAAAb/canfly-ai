@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
 import { getApiAuthHeaders } from '../utils/apiAuth'
 import GlassCard from './GlassCard'
-import { Send, CheckCircle, XCircle, Loader2, ExternalLink, Key } from 'lucide-react'
+import { Send, CheckCircle, XCircle, Loader2, ExternalLink, Key, Unlink, Clock } from 'lucide-react'
 
 interface TelegramStatus {
   connected: boolean
@@ -37,6 +37,7 @@ export default function TelegramConnectCard({ agentName }: Props) {
   const [pairingCode, setPairingCode] = useState('')
   const [approvingPairing, setApprovingPairing] = useState(false)
   const [pairingSuccess, setPairingSuccess] = useState(false)
+  const [disconnecting, setDisconnecting] = useState(false)
 
   // Check current connection status on mount
   useEffect(() => {
@@ -44,8 +45,13 @@ export default function TelegramConnectCard({ agentName }: Props) {
       try {
         const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/connect-telegram`)
         if (res.ok) {
-          const data = await res.json()
-          setStatus(data as TelegramStatus)
+          const data = await res.json() as TelegramStatus
+          setStatus(data)
+          // If backend says we're mid-pairing, re-open the pairing step so the
+          // user can paste the code even after a page refresh.
+          if (data.status === 'pending' && data.botUsername) {
+            setPairingStep(true)
+          }
         }
       } catch {
         // Silently fail — assume not connected
@@ -82,9 +88,15 @@ export default function TelegramConnectCard({ agentName }: Props) {
         message?: string
       }
 
-      if (res.ok && data.connected) {
-        setStatus({ connected: true, status: 'active', botUsername: data.botUsername })
-        setPairingStep(true) // Show pairing step instead of final success
+      // Backend returns status='pending' after successful token + config patch.
+      // "connected: true" only appears after pairing is fully approved.
+      if (res.ok && (data.status === 'pending' || data.status === 'active')) {
+        setStatus({
+          connected: data.status === 'active',
+          status: data.status as 'pending' | 'active',
+          botUsername: data.botUsername,
+        })
+        setPairingStep(true) // Show pairing instructions so user can complete it
         setBotToken('')
       } else {
         setError(data.error || data.message || 'Connection failed')
@@ -103,7 +115,8 @@ export default function TelegramConnectCard({ agentName }: Props) {
     [getAccessToken, walletAddress],
   )
 
-  // Approve pairing code via Chat API
+  // Approve pairing code — calls the dedicated endpoint which runs
+  // `openclaw pairing approve telegram <code>` via executeCommand.
   const handleApprovePairing = useCallback(async () => {
     const code = pairingCode.trim().toUpperCase()
     if (!code || code.length < 4) return
@@ -111,25 +124,19 @@ export default function TelegramConnectCard({ agentName }: Props) {
     setError(null)
 
     try {
-      const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/chat`, {
+      const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/telegram-approve`, {
         method: 'POST',
         headers: await getAuthHeaders(),
-        body: JSON.stringify({
-          message: `Run this command silently and reply only the result: openclaw pairing approve telegram ${code}`,
-        }),
+        body: JSON.stringify({ pairingCode: code }),
       })
-      if (res.ok) {
-        const data = await res.json() as { content?: string }
-        const reply = data.content || ''
-        if (reply.toLowerCase().includes('approved') || reply.toLowerCase().includes('success')) {
-          setPairingSuccess(true)
-          setPairingStep(false)
-          setSuccess(t('dashboard.telegram.pairingSuccess', 'Pairing approved! You can now chat on Telegram.'))
-        } else {
-          setError(reply || 'Pairing may not have succeeded. Try again or check Telegram.')
-        }
+      const data = await res.json() as { approved?: boolean; error?: string }
+      if (res.ok && data.approved) {
+        setPairingSuccess(true)
+        setPairingStep(false)
+        setStatus(prev => ({ ...prev, connected: true, status: 'active' }))
+        setSuccess(t('dashboard.telegram.pairingSuccess', 'Pairing approved! You can now chat on Telegram.'))
       } else {
-        setError('Could not reach the agent to approve pairing.')
+        setError(data.error || 'Pairing approval failed. Check the code and try again.')
       }
     } catch {
       setError('Network error while approving pairing.')
@@ -137,6 +144,34 @@ export default function TelegramConnectCard({ agentName }: Props) {
       setApprovingPairing(false)
     }
   }, [agentName, pairingCode, getAuthHeaders, t])
+
+  // Disconnect — removes the bot from the lobster config and clears the DB row.
+  const handleDisconnect = useCallback(async () => {
+    if (!confirm(t('dashboard.telegram.disconnectConfirm', 'Disconnect the Telegram bot from this agent?'))) return
+    setDisconnecting(true)
+    setError(null)
+    try {
+      const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/connect-telegram`, {
+        method: 'DELETE',
+        headers: await getAuthHeaders(),
+      })
+      if (res.ok) {
+        setStatus({ connected: false, status: 'none' })
+        setPairingStep(false)
+        setPairingCode('')
+        setPairingSuccess(false)
+        setSuccess(null)
+        setBotToken('')
+      } else {
+        const data = await res.json().catch(() => ({})) as { error?: string }
+        setError(data.error || 'Disconnect failed')
+      }
+    } catch {
+      setError('Network error while disconnecting.')
+    } finally {
+      setDisconnecting(false)
+    }
+  }, [agentName, getAuthHeaders, t])
 
   if (checking) {
     return (
@@ -165,6 +200,12 @@ export default function TelegramConnectCard({ agentName }: Props) {
           <span className="flex items-center gap-1.5 text-xs font-medium text-green-400 bg-green-500/15 px-2.5 py-1 rounded-full">
             <CheckCircle className="w-3 h-3" />
             {t('dashboard.telegram.statusActive')}
+          </span>
+        )}
+        {status.status === 'pending' && (
+          <span className="flex items-center gap-1.5 text-xs font-medium text-amber-400 bg-amber-500/15 px-2.5 py-1 rounded-full">
+            <Clock className="w-3 h-3" />
+            {t('dashboard.telegram.statusPending', 'Waiting for pairing')}
           </span>
         )}
         {status.status === 'failed' && (
@@ -232,19 +273,43 @@ export default function TelegramConnectCard({ agentName }: Props) {
             @{status.botUsername}
           </p>
           {success && <p className="text-xs text-green-400 mt-1">{success}</p>}
-          <a
-            href={`https://t.me/${status.botUsername}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300 mt-2 transition-colors"
-          >
-            Open in Telegram <ExternalLink className="w-3 h-3" />
-          </a>
+          <div className="flex items-center gap-3 mt-2">
+            <a
+              href={`https://t.me/${status.botUsername}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300 transition-colors"
+            >
+              Open in Telegram <ExternalLink className="w-3 h-3" />
+            </a>
+            <button
+              onClick={handleDisconnect}
+              disabled={disconnecting}
+              className="inline-flex items-center gap-1 text-xs text-red-400 hover:text-red-300 transition-colors disabled:opacity-50"
+            >
+              {disconnecting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Unlink className="w-3 h-3" />}
+              {t('dashboard.telegram.disconnectBtn', 'Disconnect')}
+            </button>
+          </div>
         </div>
       )}
 
-      {/* Token input form (show when not connected) */}
-      {!status.connected && (
+      {/* Disconnect link during pending pairing — so user can bail out */}
+      {status.status === 'pending' && pairingStep && (
+        <div className="mt-3 flex justify-end">
+          <button
+            onClick={handleDisconnect}
+            disabled={disconnecting}
+            className="inline-flex items-center gap-1 text-xs text-red-400 hover:text-red-300 transition-colors disabled:opacity-50"
+          >
+            {disconnecting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Unlink className="w-3 h-3" />}
+            {t('dashboard.telegram.disconnectBtn', 'Disconnect')}
+          </button>
+        </div>
+      )}
+
+      {/* Token input form — only when there's no existing connection to work with. */}
+      {(status.status === 'none' || status.status === 'failed') && !pairingStep && (
         <div className="mt-3 space-y-3">
           <div>
             <label className="block text-xs text-gray-400 mb-1.5">
