@@ -7964,6 +7964,16 @@
     "cloneInProgress": "備份進行中⋯",
     "cloneSuccess": "備份完成！",
     "cloneChat": "聊天",
-    "cloneSettings": "設定"
+    "cloneSettings": "設定",
+    "reconfigureTitle": "維護",
+    "reconfigureHeading": "重新設定聊天",
+    "reconfigureDesc": "重跑 OpenClaw config patch 並重新同步 gateway token。當聊天顯示蝦蝦無法回應或連線金鑰不同步時使用。",
+    "reconfigureBtn": "立即重新設定",
+    "reconfiguring": "重新設定中⋯",
+    "reconfigureOk": "重新設定成功 — 現在應該可以聊天了。",
+    "reconfigurePartial": "部分修復 — 仍有檢查未通過。",
+    "reconfigurePatchMethod": "設定 Patch",
+    "reconfigureChat": "聊天端點",
+    "reconfigureToken": "Gateway Token"
   }
 }

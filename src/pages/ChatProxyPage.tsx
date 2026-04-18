@@ -215,7 +215,10 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
         if (res.status === 502 || !ct.includes('json')) {
           throw new Error('GATEWAY_ERROR')
         }
-        const err = await res.json() as { error?: string }
+        const err = await res.json() as { error?: string; code?: string }
+        if (err.code === 'NEEDS_RECONFIGURE') {
+          throw new Error('NEEDS_RECONFIGURE')
+        }
         throw new Error(err.error || `Error ${res.status}`)
       }
 
@@ -514,9 +517,11 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
             <div className="mx-6 mb-2 px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-lg text-sm">
               <div className="flex items-center gap-2 text-red-400">
                 <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                {error === 'GATEWAY_ERROR' ? t('chat.gatewayError') : error}
+                {error === 'GATEWAY_ERROR' || error === 'NEEDS_RECONFIGURE'
+                  ? t('chat.gatewayError')
+                  : error}
               </div>
-              {error === 'GATEWAY_ERROR' && (
+              {(error === 'GATEWAY_ERROR' || error === 'NEEDS_RECONFIGURE') && (
                 <div className="mt-2 ml-6 text-xs space-y-1.5">
                   <p className="text-gray-400">{t('chat.gatewayHint1')}</p>
                   <p className="text-gray-400">{t('chat.gatewayHint2')}</p>

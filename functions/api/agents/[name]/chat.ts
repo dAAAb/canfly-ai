@@ -181,7 +181,41 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   // Resolve agent gateway URL
   const gatewayUrl = await resolveGatewayUrl(env.DB, agentName)
   if (!gatewayUrl) {
+    // Distinguish "never deployed" from "deployment failed/incomplete":
+    // if a deployment row exists but it is stuck / failed, the owner needs
+    // to reconfigure, not redeploy.
+    const anyDeployment = await env.DB.prepare(
+      `SELECT status, error_code, error_message FROM v3_zeabur_deployments
+       WHERE agent_name = ?1 ORDER BY updated_at DESC LIMIT 1`
+    ).bind(agentName).first<{ status: string; error_code: string | null; error_message: string | null }>()
+    if (anyDeployment) {
+      return json({
+        error: anyDeployment.error_message || 'Agent setup is incomplete',
+        code: 'NEEDS_RECONFIGURE',
+        deployStatus: anyDeployment.status,
+        errorCode: anyDeployment.error_code,
+      }, 422)
+    }
     return errorResponse('Agent has no gateway URL configured — deploy the agent first', 422)
+  }
+
+  // Sanity: if the agent has no gateway_token saved, chat will 100% fail —
+  // signal this up front so the UI can point to reconfigure instead of showing
+  // an opaque gateway error.
+  const tokenProbe = await env.DB.prepare(
+    `SELECT agent_card_override FROM agents WHERE name = ?1`
+  ).bind(agentName).first<{ agent_card_override: string | null }>()
+  if (!tokenProbe?.agent_card_override) {
+    const latest = await env.DB.prepare(
+      `SELECT status, error_code, error_message FROM v3_zeabur_deployments
+       WHERE agent_name = ?1 ORDER BY updated_at DESC LIMIT 1`
+    ).bind(agentName).first<{ status: string; error_code: string | null; error_message: string | null }>()
+    return json({
+      error: latest?.error_message || 'Agent gateway token is missing',
+      code: 'NEEDS_RECONFIGURE',
+      deployStatus: latest?.status || 'unknown',
+      errorCode: latest?.error_code || 'NO_GATEWAY_TOKEN',
+    }, 422)
   }
 
   // Create/get session (scoped by channel — PM can't see owner sessions)

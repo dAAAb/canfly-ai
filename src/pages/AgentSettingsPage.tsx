@@ -101,6 +101,17 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
   const [removing, setRemoving] = useState(false)
   const [removeError, setRemoveError] = useState<string | null>(null)
 
+  // Reconfigure (repair broken config patch + gateway token)
+  const [reconfiguring, setReconfiguring] = useState(false)
+  const [reconfigResult, setReconfigResult] = useState<{
+    success: boolean
+    patchMethod?: string
+    patchError?: string | null
+    chatReady?: boolean
+    tokenStored?: boolean
+  } | null>(null)
+  const [reconfigError, setReconfigError] = useState<string | null>(null)
+
   const getAuthHeaders = useCallback(
     () => getApiAuthHeaders({ getAccessToken, walletAddress }),
     [getAccessToken, walletAddress],
@@ -203,6 +214,38 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
       setRegenerating(false)
     }
   }, [agentName, getAuthHeaders, t])
+
+  const handleReconfigure = useCallback(async () => {
+    setReconfiguring(true)
+    setReconfigError(null)
+    setReconfigResult(null)
+    try {
+      const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/reconfigure`, {
+        method: 'POST',
+        headers: await getAuthHeaders(),
+      })
+      const data = (await res.json()) as {
+        success?: boolean
+        patchMethod?: string
+        patchError?: string | null
+        chatReady?: boolean
+        tokenStored?: boolean
+        error?: string
+      }
+      if (!res.ok) throw new Error(data.error || `Reconfigure failed (${res.status})`)
+      setReconfigResult({
+        success: !!data.success,
+        patchMethod: data.patchMethod,
+        patchError: data.patchError,
+        chatReady: data.chatReady,
+        tokenStored: data.tokenStored,
+      })
+    } catch (err) {
+      setReconfigError((err as Error).message)
+    } finally {
+      setReconfiguring(false)
+    }
+  }, [agentName, getAuthHeaders])
 
   const handleDelete = useCallback(async () => {
     if (deleteConfirmText !== agentName) return
@@ -833,6 +876,73 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
                       </button>
                     </>
                   )}
+                </div>
+              </div>
+            </GlassCard>
+          </div>
+        )}
+
+        {/* Reconfigure — repair broken config patch / gateway token */}
+        {hasDeployment && (
+          <div className="mb-6">
+            <h2 className="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-3">
+              {t('settings.reconfigureTitle', 'Maintenance')}
+            </h2>
+            <GlassCard className="p-5">
+              <div className="flex items-start gap-4">
+                <div className="p-2 rounded-lg bg-cyan-500/10">
+                  <RefreshCw className="w-5 h-5 text-cyan-400" />
+                </div>
+                <div className="flex-1 space-y-3">
+                  <div>
+                    <h3 className="text-sm font-semibold text-white">
+                      {t('settings.reconfigureHeading', 'Reconfigure Chat')}
+                    </h3>
+                    <p className="text-gray-400 text-sm mt-1">
+                      {t('settings.reconfigureDesc', 'Re-apply OpenClaw config patch and re-sync the gateway token. Use this if chat says the lobster is unavailable or the connection key is out of sync.')}
+                    </p>
+                  </div>
+
+                  {reconfigError && (
+                    <div className="flex items-center gap-2 text-red-400 text-sm">
+                      <AlertCircle className="w-4 h-4 flex-shrink-0" /> {reconfigError}
+                    </div>
+                  )}
+
+                  {reconfigResult && (
+                    <div className={`p-3 rounded-lg border text-xs space-y-1 ${
+                      reconfigResult.success
+                        ? 'bg-green-500/10 border-green-500/30 text-green-300'
+                        : 'bg-yellow-500/10 border-yellow-500/30 text-yellow-300'
+                    }`}>
+                      <div className="flex items-center gap-2 font-medium">
+                        {reconfigResult.success ? (
+                          <><CheckCircle className="w-4 h-4" /> {t('settings.reconfigureOk', 'Reconfigured successfully — chat should work now.')}</>
+                        ) : (
+                          <><AlertCircle className="w-4 h-4" /> {t('settings.reconfigurePartial', 'Partial repair — some checks failed.')}</>
+                        )}
+                      </div>
+                      <div className="text-gray-400">
+                        {t('settings.reconfigurePatchMethod', 'Config patch')}: {reconfigResult.patchMethod || 'n/a'}
+                        {reconfigResult.patchError ? ` — ${reconfigResult.patchError}` : ''}
+                      </div>
+                      <div className="text-gray-400">
+                        {t('settings.reconfigureChat', 'Chat endpoint')}: {reconfigResult.chatReady ? '✓' : '✗'} · {t('settings.reconfigureToken', 'Gateway token')}: {reconfigResult.tokenStored ? '✓' : '✗'}
+                      </div>
+                    </div>
+                  )}
+
+                  <button
+                    onClick={handleReconfigure}
+                    disabled={reconfiguring}
+                    className="flex items-center gap-2 px-4 py-2 bg-cyan-600 text-white rounded-lg text-sm hover:bg-cyan-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {reconfiguring ? (
+                      <><Loader2 className="w-4 h-4 animate-spin" /> {t('settings.reconfiguring', 'Reconfiguring...')}</>
+                    ) : (
+                      <><RefreshCw className="w-4 h-4" /> {t('settings.reconfigureBtn', 'Reconfigure Now')}</>
+                    )}
+                  </button>
                 </div>
               </div>
             </GlassCard>

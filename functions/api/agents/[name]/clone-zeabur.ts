@@ -597,7 +597,10 @@ async function handleConfig(
         configRetryCount: configRetryCount + 1,
       })
     }
-    // Max retries — log but continue (config patch is best-effort, service still runs)
+    // Max retries exhausted — terminal failure. Chat proxy depends on the
+    // patch having enabled chatCompletions; running without it gives the user
+    // a broken lobster, so mark failed and let them reconfigure.
+    const errMsg = `Config patch failed after 3 retries: ${patchResult.error || 'unknown'}`
     await env.DB.prepare(
       `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
        VALUES ('agent', ?1, 'config_patch_failed', ?2)`
@@ -606,6 +609,19 @@ async function handleConfig(
       error: patchResult.error,
       configRetryCount,
     })).run()
+    await env.DB.prepare(
+      `UPDATE v3_zeabur_deployments SET status = 'failed', error_code = 'CONFIG_PATCH_FAILED', error_message = ?1, updated_at = datetime('now') WHERE id = ?2`
+    ).bind(errMsg, cloneId).run()
+    return json({
+      cloneId,
+      status: 'failed',
+      agentName: finalAgentName,
+      deployUrl: publicUrl,
+      error: errMsg,
+      errorCode: 'CONFIG_PATCH_FAILED',
+      canReconfigure: true,
+      canRetry: true,
+    })
   }
 
   // 2. Read gateway token
@@ -625,14 +641,37 @@ async function handleConfig(
     chatReady = testRes.status === 200 || testRes.status === 401
   } catch { /* not ready yet */ }
 
-  // 4. Store encrypted gateway token in agent_card_override
-  if (newGatewayToken) {
-    const encToken = cryptoKey ? await encrypt(newGatewayToken, cryptoKey) : newGatewayToken
-    const cardOverride = JSON.stringify({ url: publicUrl, gateway_token: encToken })
+  // Hard gate: both pieces must be present — otherwise chat proxy can't work.
+  if (!newGatewayToken || !chatReady) {
+    const errMsg = !newGatewayToken
+      ? 'Gateway token could not be read from OpenClaw'
+      : 'Chat endpoint /v1/chat/completions is not responding'
+    const errCode = !newGatewayToken ? 'NO_GATEWAY_TOKEN' : 'CHAT_ENDPOINT_DEAD'
     await env.DB.prepare(
-      'UPDATE agents SET agent_card_override = ?1 WHERE name = ?2'
-    ).bind(cardOverride, finalAgentName).run()
+      `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
+       VALUES ('agent', ?1, 'chat_readiness_failed', ?2)`
+    ).bind(finalAgentName, JSON.stringify({ chatReady, hasToken: !!newGatewayToken, patchMethod: patchResult.method })).run()
+    await env.DB.prepare(
+      `UPDATE v3_zeabur_deployments SET status = 'failed', error_code = ?1, error_message = ?2, updated_at = datetime('now') WHERE id = ?3`
+    ).bind(errCode, errMsg, cloneId).run()
+    return json({
+      cloneId,
+      status: 'failed',
+      agentName: finalAgentName,
+      deployUrl: publicUrl,
+      error: errMsg,
+      errorCode: errCode,
+      canReconfigure: true,
+      canRetry: true,
+    })
   }
+
+  // 4. Store encrypted gateway token in agent_card_override
+  const encToken = cryptoKey ? await encrypt(newGatewayToken, cryptoKey) : newGatewayToken
+  const cardOverride = JSON.stringify({ url: publicUrl, gateway_token: encToken })
+  await env.DB.prepare(
+    'UPDATE agents SET agent_card_override = ?1 WHERE name = ?2'
+  ).bind(cardOverride, finalAgentName).run()
 
   // 5. Update deployment → running (optimistic lock)
   const runTransition = await env.DB.prepare(

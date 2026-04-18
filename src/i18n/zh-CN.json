@@ -7981,6 +7981,16 @@
     "cloneInProgress": "备份进行中…",
     "cloneSuccess": "备份完成！",
     "cloneChat": "聊天",
-    "cloneSettings": "设置"
+    "cloneSettings": "设置",
+    "reconfigureTitle": "维护",
+    "reconfigureHeading": "重新设置聊天",
+    "reconfigureDesc": "重跑 OpenClaw config patch 并重新同步 gateway token。当聊天显示虾虾无法回应或连接密钥不同步时使用。",
+    "reconfigureBtn": "立即重新设置",
+    "reconfiguring": "重新设置中…",
+    "reconfigureOk": "重新设置成功 — 现在应该可以聊天了。",
+    "reconfigurePartial": "部分修复 — 仍有检查未通过。",
+    "reconfigurePatchMethod": "设置 Patch",
+    "reconfigureChat": "聊天端点",
+    "reconfigureToken": "Gateway Token"
   }
 }
