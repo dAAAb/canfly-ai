@@ -13,6 +13,7 @@
 import { type Env, json, errorResponse, handleOptions, parseBody } from '../../community/_helpers'
 import { authenticateRequest } from '../../_auth'
 import { importKey, decrypt } from '../../../lib/crypto'
+import { zeaburGQL, patchConfigViaCLI } from '../../../lib/openclaw-config'
 
 interface ConnectTelegramBody {
   botToken: string
@@ -85,39 +86,34 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     return errorResponse('Agent already has an active Telegram connection. Disconnect first.', 409)
   }
 
-  // Get agent's gateway URL + token from agent_card_override
-  let gatewayUrl: string | null = null
-  let gatewayToken: string | null = null
-  try {
-    const agentRow = await env.DB.prepare(
-      'SELECT agent_card_override FROM agents WHERE name = ?1'
-    ).bind(agentName).first<{ agent_card_override: string | null }>()
-    if (agentRow?.agent_card_override) {
-      const card = JSON.parse(agentRow.agent_card_override)
-      gatewayUrl = card.url || null
-      const rawToken = card.gateway_token || null
-      const cryptoKey = env.ENCRYPTION_KEY ? await importKey(env.ENCRYPTION_KEY) : null
-      gatewayToken = cryptoKey && rawToken ? await decrypt(rawToken, cryptoKey) : rawToken
-    }
-  } catch { /* ignore */ }
+  // Look up Zeabur deployment so we can patch OpenClaw config directly via CLI.
+  // The old flow POSTed a "please run these commands" message to /v1/chat/completions
+  // which invoked the LLM agent — slow, unreliable, and risked the known
+  // pi-agent-core crash. Direct config.patch RPC is the supported path.
+  const deployment = await env.DB.prepare(
+    `SELECT deploy_url, zeabur_project_id, zeabur_service_id, metadata
+     FROM v3_zeabur_deployments WHERE agent_name = ?1
+     ORDER BY updated_at DESC LIMIT 1`
+  ).bind(agentName).first<{
+    deploy_url: string | null
+    zeabur_project_id: string
+    zeabur_service_id: string | null
+    metadata: string
+  }>()
 
-  // Fallback: check v3_zeabur_deployments
-  if (!gatewayUrl) {
-    const deployment = await env.DB.prepare(
-      `SELECT deploy_url FROM v3_zeabur_deployments
-       WHERE agent_name = ?1 AND status = 'running'
-       ORDER BY updated_at DESC LIMIT 1`
-    ).bind(agentName).first()
-    if (deployment?.deploy_url) {
-      gatewayUrl = deployment.deploy_url as string
-    }
-  }
-
-  if (!gatewayUrl) {
+  if (!deployment || !deployment.zeabur_service_id) {
     return errorResponse(
-      'Cannot find agent gateway URL. Ensure the agent is deployed and running on Zeabur.',
+      'Cannot find agent Zeabur deployment. Ensure the agent is deployed.',
       422
     )
+  }
+
+  const metadata = JSON.parse(deployment.metadata || '{}') as Record<string, unknown>
+  const cryptoKey = env.ENCRYPTION_KEY ? await importKey(env.ENCRYPTION_KEY) : null
+  const rawKey = (metadata.zeaburApiKey as string) || ''
+  const zeaburApiKey = cryptoKey && rawKey ? await decrypt(rawKey, cryptoKey) : rawKey
+  if (!zeaburApiKey) {
+    return errorResponse('Missing Zeabur API key for this deployment', 500)
   }
 
   let gatewaySuccess = false
@@ -126,7 +122,9 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
 
   try {
     // Step 1: Verify the bot token with Telegram API
-    const tgResp = await fetch(`https://api.telegram.org/bot${botToken}/getMe`)
+    const tgResp = await fetch(`https://api.telegram.org/bot${botToken}/getMe`, {
+      signal: AbortSignal.timeout(10000),
+    })
     const tgData = await tgResp.json() as { ok: boolean; result?: { username?: string }; description?: string }
 
     if (!tgData.ok) {
@@ -137,47 +135,40 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     }
     botUsername = tgData.result?.username || null
 
-    // Step 2: Set TELEGRAM_BOT_TOKEN env var on Zeabur (if we have Zeabur access)
-    // Step 3: Patch OpenClaw config via /v1/chat/completions (ask the agent to configure itself)
-    // Strategy: Use the OpenAI-compatible endpoint to ask the agent to run openclaw commands
-    // Use AbortController to prevent gateway slowness from timing out the entire Function
-    const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 20000) // 20s timeout
-    const configPatchResponse = await fetch(`${gatewayUrl}/v1/chat/completions`, {
-      method: 'POST',
-      signal: controller.signal,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(gatewayToken ? { 'Authorization': `Bearer ${gatewayToken}` } : {}),
-      },
-      body: JSON.stringify({
-        model: 'openclaw',
-        messages: [{
-          role: 'user',
-          content: `Run this command silently and reply only "DONE" or "ERROR: reason":\n\nopenclaw config set channels.telegram.enabled true && openclaw config set channels.telegram.botToken "${botToken}" && openclaw config set channels.telegram.dmPolicy allowlist && openclaw config set plugins.entries.telegram.enabled true && echo CONFIGURED`,
-        }],
-      }),
-    })
-    clearTimeout(timeout)
-
-    if (configPatchResponse.ok) {
-      const result = await configPatchResponse.json() as {
-        choices?: Array<{ message?: { content?: string } }>
-      }
-      const reply = result.choices?.[0]?.message?.content || ''
-      if (reply.includes('DONE') || reply.includes('CONFIGURED') || reply.includes('done')) {
+    // Step 2: Resolve production environment for this Zeabur project
+    const envResult = await zeaburGQL(zeaburApiKey, `
+      query { project(_id: "${deployment.zeabur_project_id}") { environments { _id name } } }
+    `)
+    const envs = (envResult.data?.project as { environments: Array<{ _id: string; name: string }> })?.environments || []
+    const prodEnv = envs.find(e => e.name === 'production') || envs[0]
+    if (!prodEnv) {
+      gatewayError = 'No environment found for Zeabur project'
+    } else {
+      // Step 3: Patch OpenClaw config directly — channels.telegram + plugin entry.
+      // JSON merge-patch semantics: provided fields overwrite, null deletes.
+      const telegramPatch = JSON.stringify({
+        channels: {
+          telegram: {
+            enabled: true,
+            botToken,
+            dmPolicy: 'allowlist',
+          },
+        },
+        plugins: {
+          entries: {
+            telegram: { enabled: true },
+          },
+        },
+      })
+      const patchResult = await patchConfigViaCLI(zeaburApiKey, deployment.zeabur_service_id, prodEnv._id, telegramPatch)
+      if (patchResult.success) {
         gatewaySuccess = true
       } else {
-        gatewayError = `Agent responded but config may not be applied: ${reply.substring(0, 200)}`
-        // Still mark as partial success — the agent attempted the config
-        gatewaySuccess = reply.length > 0
+        gatewayError = `Config patch failed (${patchResult.method}): ${patchResult.error || 'unknown'}`
       }
-    } else {
-      const errText = await configPatchResponse.text().catch(() => 'Unknown error')
-      gatewayError = `Gateway chat API returned ${configPatchResponse.status}: ${errText.substring(0, 200)}`
     }
   } catch (err) {
-    gatewayError = `Gateway unreachable: ${err instanceof Error ? err.message : String(err)}`
+    gatewayError = `Telegram setup failed: ${err instanceof Error ? err.message : String(err)}`
   }
 
   // Store connection record

@@ -850,7 +850,7 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
                                 >
                                   {showAllServers
                                     ? t('settings.cloneHideServers', 'Hide other servers')
-                                    : t('settings.cloneShowServers', `Show all ${cloneServers.length} servers`)}
+                                    : t('settings.cloneShowServers', 'Show all {{count}} servers', { count: cloneServers.length })}
                                 </button>
                                 {showAllServers && cloneServers
                                   .filter(s => s._id !== selectedCloneServer)
