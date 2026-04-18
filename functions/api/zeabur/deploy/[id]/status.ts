@@ -90,10 +90,15 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
   const setupPhases = ['setting_up_init', 'setting_up_init_locked', 'setting_up_wait', 'setting_up_config', 'setting_up_config_locked']
   if (setupPhases.includes(deployment.status)) {
     if (isPhaseTimedOut(deployment.phase_started_at)) {
+      // Set error_code so retry.ts can classify this as a post-deploy recoverable
+      // failure (container is probably up, setup just stalled) and route through
+      // reconfigure instead of full redeploy.
       await env.DB.prepare(
-        `UPDATE v3_zeabur_deployments SET status = 'failed', error_message = 'Setup timed out after 15 minutes', updated_at = datetime('now') WHERE id = ?1`
+        `UPDATE v3_zeabur_deployments SET status = 'failed', error_code = 'PHASE_TIMEOUT',
+          error_message = 'Setup timed out after 15 minutes — click Retry to reconfigure.',
+          updated_at = datetime('now') WHERE id = ?1`
       ).bind(deploymentId).run()
-      return json({ deploymentId, status: 'failed', errorMessage: 'Setup timed out after 15 minutes' })
+      return json({ deploymentId, status: 'failed', errorCode: 'PHASE_TIMEOUT', errorMessage: 'Setup timed out after 15 minutes' })
     }
   }
 

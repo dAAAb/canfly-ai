@@ -170,7 +170,16 @@ export async function runReconfigure(
  */
 export function isPostDeployFailure(errorCode: string | null | undefined): boolean {
   if (!errorCode) return false
-  return ['CONFIG_PATCH_FAILED', 'NO_GATEWAY_TOKEN', 'CHAT_ENDPOINT_DEAD', 'RECONFIGURE_INCOMPLETE'].includes(errorCode)
+  return [
+    'CONFIG_PATCH_FAILED',
+    'NO_GATEWAY_TOKEN',
+    'CHAT_ENDPOINT_DEAD',
+    'RECONFIGURE_INCOMPLETE',
+    // PHASE_TIMEOUT: setup stalled, but container is likely alive. Reconfigure
+    // (no restart) is the right recovery — full redeploy would restart the
+    // container and re-trigger the entrypoint dangerous-flag cycle.
+    'PHASE_TIMEOUT',
+  ].includes(errorCode)
 }
 
 async function terminalFail(

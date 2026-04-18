@@ -284,9 +284,11 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   // Phase timeout check (applies to all in-progress phases)
   if (isPhaseTimedOut(deployment.phase_started_at)) {
     await env.DB.prepare(
-      `UPDATE v3_zeabur_deployments SET status = 'failed', error_message = 'Setup timed out after 15 minutes', updated_at = datetime('now') WHERE id = ?1`
+      `UPDATE v3_zeabur_deployments SET status = 'failed', error_code = 'PHASE_TIMEOUT',
+        error_message = 'Setup timed out after 15 minutes — click Retry to reconfigure.',
+        updated_at = datetime('now') WHERE id = ?1`
     ).bind(cloneId).run()
-    return json({ cloneId, status: 'failed', error: 'Setup timed out after 15 minutes' })
+    return json({ cloneId, status: 'failed', errorCode: 'PHASE_TIMEOUT', error: 'Setup timed out after 15 minutes' })
   }
 
   // Decrypt API key (guard empty string to avoid decrypt throw)
