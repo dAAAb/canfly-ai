@@ -91,7 +91,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   // which invoked the LLM agent — slow, unreliable, and risked the known
   // pi-agent-core crash. Direct config.patch RPC is the supported path.
   const deployment = await env.DB.prepare(
-    `SELECT deploy_url, zeabur_project_id, zeabur_service_id, metadata
+    `SELECT deploy_url, zeabur_project_id, zeabur_service_id, metadata, phase_data
      FROM v3_zeabur_deployments WHERE agent_name = ?1
      ORDER BY updated_at DESC LIMIT 1`
   ).bind(agentName).first<{
@@ -99,6 +99,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     zeabur_project_id: string
     zeabur_service_id: string | null
     metadata: string
+    phase_data: string | null
   }>()
 
   if (!deployment || !deployment.zeabur_service_id) {
@@ -148,13 +149,19 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
       })
     } catch { /* best-effort — polling will still work without this */ }
 
-    // Step 2: Resolve production environment for this Zeabur project
-    const envResult = await zeaburGQL(zeaburApiKey, `
-      query { project(_id: "${deployment.zeabur_project_id}") { environments { _id name } } }
-    `)
-    const envs = (envResult.data?.project as { environments: Array<{ _id: string; name: string }> })?.environments || []
-    const prodEnv = envs.find(e => e.name === 'production') || envs[0]
-    if (!prodEnv) {
+    // Step 2: Resolve production environment — prefer cached prodEnvId
+    // from phase_data (set during deploy) to save one Zeabur round-trip.
+    const phaseData = JSON.parse(deployment.phase_data || '{}') as Record<string, unknown>
+    let envId = (phaseData.prodEnvId as string) || ''
+    if (!envId) {
+      const envResult = await zeaburGQL(zeaburApiKey, `
+        query { project(_id: "${deployment.zeabur_project_id}") { environments { _id name } } }
+      `)
+      const envs = (envResult.data?.project as { environments: Array<{ _id: string; name: string }> })?.environments || []
+      const prodEnv = envs.find(e => e.name === 'production') || envs[0]
+      if (prodEnv) envId = prodEnv._id
+    }
+    if (!envId) {
       gatewayError = 'No environment found for Zeabur project'
     } else {
       // Step 3: Patch OpenClaw config directly — channels.telegram + plugin entry.
@@ -178,7 +185,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
           },
         },
       })
-      const patchResult = await patchConfigViaCLI(zeaburApiKey, deployment.zeabur_service_id, prodEnv._id, telegramPatch)
+      const patchResult = await patchConfigViaCLI(zeaburApiKey, deployment.zeabur_service_id, envId, telegramPatch)
       if (patchResult.success) {
         gatewaySuccess = true
         // Restart the gateway process inside the container so the Telegram
@@ -188,7 +195,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
         // / pi-agent-core crash loop that restartService would trigger.
         try {
           const restartRes = await execCommand(
-            zeaburApiKey, deployment.zeabur_service_id, prodEnv._id,
+            zeaburApiKey, deployment.zeabur_service_id, envId,
             ['sh', '-c', '(openclaw gateway restart 2>&1 || /home/node/.openclaw/bin/openclaw gateway restart 2>&1 || /usr/local/bin/openclaw gateway restart 2>&1) | head -c 500'],
           )
           gatewayRestartOutput = restartRes.output.slice(0, 500)

@@ -45,35 +45,42 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   if (!connection) return errorResponse('No Telegram connection to approve', 404)
 
   const deployment = await env.DB.prepare(
-    `SELECT zeabur_project_id, zeabur_service_id, metadata FROM v3_zeabur_deployments
+    `SELECT zeabur_project_id, zeabur_service_id, metadata, phase_data FROM v3_zeabur_deployments
      WHERE agent_name = ?1 ORDER BY updated_at DESC LIMIT 1`
   ).bind(agentName).first<{
-    zeabur_project_id: string; zeabur_service_id: string | null; metadata: string
+    zeabur_project_id: string; zeabur_service_id: string | null; metadata: string; phase_data: string | null
   }>()
   if (!deployment?.zeabur_service_id) {
     return errorResponse('Agent has no Zeabur deployment', 422)
   }
 
   const metadata = JSON.parse(deployment.metadata || '{}') as Record<string, unknown>
+  const phaseData = JSON.parse(deployment.phase_data || '{}') as Record<string, unknown>
   const cryptoKey = env.ENCRYPTION_KEY ? await importKey(env.ENCRYPTION_KEY) : null
   const rawKey = (metadata.zeaburApiKey as string) || ''
   const zeaburApiKey = cryptoKey && rawKey ? await decrypt(rawKey, cryptoKey) : rawKey
   if (!zeaburApiKey) return errorResponse('Missing Zeabur API key', 500)
 
-  const envResult = await zeaburGQL(zeaburApiKey, `
-    query { project(_id: "${deployment.zeabur_project_id}") { environments { _id name } } }
-  `)
-  const envs = (envResult.data?.project as { environments: Array<{ _id: string; name: string }> })?.environments || []
-  const prodEnv = envs.find(e => e.name === 'production') || envs[0]
-  if (!prodEnv) return errorResponse('No environment found', 500)
+  // Reuse cached prodEnvId from phase_data — saves one Zeabur round-trip.
+  // Fall back to the project→environments query only if not cached (old
+  // deployments from before this field was persisted).
+  let envId = (phaseData.prodEnvId as string) || ''
+  if (!envId) {
+    const envResult = await zeaburGQL(zeaburApiKey, `
+      query { project(_id: "${deployment.zeabur_project_id}") { environments { _id name } } }
+    `)
+    const envs = (envResult.data?.project as { environments: Array<{ _id: string; name: string }> })?.environments || []
+    const prodEnv = envs.find(e => e.name === 'production') || envs[0]
+    if (!prodEnv) return errorResponse('No environment found', 500)
+    envId = prodEnv._id
+  }
 
   // Single exec: try each known CLI path and run the approve command inline.
-  // Two round-trips (env lookup + this) fit safely inside CF Pages' 30s cap;
-  // the previous three-step flow (env + discovery + approve) routinely timed
-  // out and surfaced as "Network error" in the browser.
+  // With envId cached, this is the only Zeabur GQL call — well inside CF
+  // Pages' 30s wall-clock limit.
   const safeCode = code.replace(/[^A-Z0-9]/g, '') // already validated by regex, belt-and-braces
   const approveResult = await execCommand(
-    zeaburApiKey, deployment.zeabur_service_id, prodEnv._id,
+    zeaburApiKey, deployment.zeabur_service_id, envId,
     ['sh', '-c',
       `NO_COLOR=1 TERM=dumb; for bin in openclaw /home/node/.openclaw/bin/openclaw /usr/local/bin/openclaw; do ` +
       `command -v "$bin" >/dev/null 2>&1 || [ -x "$bin" ] || continue; ` +
