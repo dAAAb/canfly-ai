@@ -67,23 +67,23 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   const prodEnv = envs.find(e => e.name === 'production') || envs[0]
   if (!prodEnv) return errorResponse('No environment found', 500)
 
-  // Locate openclaw CLI (same discovery as patchConfigViaCLI).
-  let cliBin = ''
-  try {
-    const find = await execCommand(zeaburApiKey, deployment.zeabur_service_id, prodEnv._id,
-      ['sh', '-c', 'which openclaw 2>/dev/null || ls /home/node/.openclaw/bin/openclaw 2>/dev/null || ls /usr/local/bin/openclaw 2>/dev/null || echo NOT_FOUND'],
-    )
-    const path = find.output.trim().split('\n')[0]
-    if (path && !path.includes('NOT_FOUND')) cliBin = path
-  } catch { /* not found */ }
-  if (!cliBin) return errorResponse('OpenClaw CLI not found in container', 500)
-
-  // Run the pairing approval command.
+  // Single exec: try each known CLI path and run the approve command inline.
+  // Two round-trips (env lookup + this) fit safely inside CF Pages' 30s cap;
+  // the previous three-step flow (env + discovery + approve) routinely timed
+  // out and surfaced as "Network error" in the browser.
+  const safeCode = code.replace(/[^A-Z0-9]/g, '') // already validated by regex, belt-and-braces
   const approveResult = await execCommand(
     zeaburApiKey, deployment.zeabur_service_id, prodEnv._id,
-    [cliBin, 'pairing', 'approve', 'telegram', code],
+    ['sh', '-c',
+      `NO_COLOR=1 TERM=dumb; for bin in openclaw /home/node/.openclaw/bin/openclaw /usr/local/bin/openclaw; do ` +
+      `command -v "$bin" >/dev/null 2>&1 || [ -x "$bin" ] || continue; ` +
+      `"$bin" pairing approve telegram ${safeCode} 2>&1; exit $?; done; echo NO_CLI_FOUND; exit 127`,
+    ],
   )
-  const approved = /approved|success|ok/i.test(approveResult.output) && approveResult.exitCode === 0
+  const output = approveResult.output || ''
+  const approved = approveResult.exitCode === 0 &&
+    /approved|success|\bok\b/i.test(output) &&
+    !/error|failed|not found/i.test(output)
 
   if (!approved) {
     await env.DB.prepare(
@@ -92,11 +92,11 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     ).bind(agentName, JSON.stringify({
       owner: auth.username,
       exitCode: approveResult.exitCode,
-      output: approveResult.output.slice(0, 300),
+      output: output.slice(0, 300),
     })).run()
     return json({
       approved: false,
-      error: approveResult.output.slice(0, 300) || 'Pairing approval failed',
+      error: output.slice(0, 300) || `Pairing approval failed (exit ${approveResult.exitCode})`,
     }, 400)
   }
 

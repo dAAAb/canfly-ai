@@ -129,17 +129,22 @@ export default function TelegramConnectCard({ agentName }: Props) {
         headers: await getAuthHeaders(),
         body: JSON.stringify({ pairingCode: code }),
       })
-      const data = await res.json() as { approved?: boolean; error?: string }
+      // Read the body as text first so a non-JSON 5xx (timeout, worker crash)
+      // surfaces the real status + snippet instead of collapsing into a vague
+      // "Network error".
+      const raw = await res.text()
+      let data: { approved?: boolean; error?: string } = {}
+      try { data = JSON.parse(raw) } catch { /* non-JSON body */ }
       if (res.ok && data.approved) {
         setPairingSuccess(true)
         setPairingStep(false)
         setStatus(prev => ({ ...prev, connected: true, status: 'active' }))
         setSuccess(t('dashboard.telegram.pairingSuccess', 'Pairing approved! You can now chat on Telegram.'))
       } else {
-        setError(data.error || 'Pairing approval failed. Check the code and try again.')
+        setError(data.error || `Pairing failed (${res.status}): ${raw.slice(0, 200) || 'empty response'}`)
       }
-    } catch {
-      setError('Network error while approving pairing.')
+    } catch (err) {
+      setError(`Network error while approving pairing: ${err instanceof Error ? err.message : String(err)}`)
     } finally {
       setApprovingPairing(false)
     }

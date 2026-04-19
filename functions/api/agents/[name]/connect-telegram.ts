@@ -192,7 +192,12 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
             ['sh', '-c', '(openclaw gateway restart 2>&1 || /home/node/.openclaw/bin/openclaw gateway restart 2>&1 || /usr/local/bin/openclaw gateway restart 2>&1) | head -c 500'],
           )
           gatewayRestartOutput = restartRes.output.slice(0, 500)
-          gatewayRestarted = restartRes.exitCode === 0 && !/not found|command not|no such/i.test(restartRes.output)
+          // The CLI sometimes exits 0 while printing "Gateway service disabled. Start with: ..."
+          // because it fell through every restart strategy and ended on an
+          // informational message. Treat any sign of failure in the output as
+          // not-restarted so we don't falsely report success.
+          gatewayRestarted = restartRes.exitCode === 0 &&
+            !/not found|command not|no such|disabled|unavailable|error/i.test(restartRes.output)
         } catch (err) {
           gatewayRestartOutput = `exec failed: ${(err as Error).message}`
         }
