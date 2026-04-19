@@ -75,21 +75,46 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     envId = prodEnv._id
   }
 
-  // Single exec: try each known CLI path and run the approve command inline.
-  // With envId cached, this is the only Zeabur GQL call — well inside CF
-  // Pages' 30s wall-clock limit.
+  // Run pairing approve via gateway RPC (same WebSocket endpoint config.patch
+  // uses — known fast and reliable). Falls back to the wrapper command for
+  // older CLIs that don't expose pairing.approve directly. `timeout 18` caps
+  // each attempt so a hung CLI can't blow the CF Pages 30s budget; we then
+  // surface the real error instead of letting the worker 500.
   const safeCode = code.replace(/[^A-Z0-9]/g, '') // already validated by regex, belt-and-braces
-  const approveResult = await execCommand(
-    zeaburApiKey, deployment.zeabur_service_id, envId,
-    ['sh', '-c',
-      `NO_COLOR=1 TERM=dumb; for bin in openclaw /home/node/.openclaw/bin/openclaw /usr/local/bin/openclaw; do ` +
-      `command -v "$bin" >/dev/null 2>&1 || [ -x "$bin" ] || continue; ` +
-      `"$bin" pairing approve telegram ${safeCode} 2>&1; exit $?; done; echo NO_CLI_FOUND; exit 127`,
-    ],
-  )
-  const output = approveResult.output || ''
-  const approved = approveResult.exitCode === 0 &&
-    /approved|success|\bok\b/i.test(output) &&
+  const params = JSON.stringify({ channel: 'telegram', code: safeCode }).replace(/'/g, `'\\''`)
+  const script =
+    `NO_COLOR=1 TERM=dumb; ` +
+    `BIN=""; for b in openclaw /home/node/.openclaw/bin/openclaw /usr/local/bin/openclaw; do ` +
+    `  if command -v "$b" >/dev/null 2>&1; then BIN="$b"; break; fi; ` +
+    `done; ` +
+    `if [ -z "$BIN" ]; then echo NO_CLI_FOUND; exit 127; fi; ` +
+    // Try the RPC route first — single WebSocket call to the local gateway.
+    `OUT=$(timeout 18 "$BIN" gateway call pairing.approve --params '${params}' --json 2>&1); RC=$?; ` +
+    `if [ $RC -eq 0 ]; then echo "$OUT"; exit 0; fi; ` +
+    // Fallback: legacy wrapper, also bounded.
+    `timeout 18 "$BIN" pairing approve telegram ${safeCode} 2>&1; exit $?`
+
+  let approveResult: { exitCode: number; output: string }
+  try {
+    approveResult = await execCommand(zeaburApiKey, deployment.zeabur_service_id, envId, ['sh', '-c', script])
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    await env.DB.prepare(
+      `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
+       VALUES ('agent', ?1, 'telegram_pair_failed', ?2)`
+    ).bind(agentName, JSON.stringify({ owner: auth.username, transport: 'exec_failed', error: msg })).run()
+    return json({
+      approved: false,
+      error: `Could not reach the agent container: ${msg}. Disconnect and try again — the pairing code may also have expired.`,
+    }, 502)
+  }
+
+  const stripAnsi = (s: string) => s.replace(/\u001b\[[0-9;?]*[a-zA-Z]/g, '').replace(/[\r\u2500-\u257f\u25cb-\u25ff]/g, '')
+  const output = stripAnsi(approveResult.output || '')
+  // exit 124 == timeout(1) killed the process. Surface that distinctly.
+  const timedOut = approveResult.exitCode === 124
+  const approved = !timedOut && approveResult.exitCode === 0 &&
+    (/approved|success|"ok"\s*:\s*true|\bok\b/i.test(output)) &&
     !/error|failed|not found/i.test(output)
 
   if (!approved) {
@@ -99,12 +124,13 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     ).bind(agentName, JSON.stringify({
       owner: auth.username,
       exitCode: approveResult.exitCode,
-      output: output.slice(0, 300),
+      timedOut,
+      output: output.slice(0, 400),
     })).run()
-    return json({
-      approved: false,
-      error: output.slice(0, 300) || `Pairing approval failed (exit ${approveResult.exitCode})`,
-    }, 400)
+    const userMsg = timedOut
+      ? 'The agent container did not respond in time (gateway may be busy). Disconnect Telegram and try again — the pairing code may have expired too.'
+      : (output.slice(0, 300) || `Pairing approval failed (exit ${approveResult.exitCode})`)
+    return json({ approved: false, error: userMsg }, 400)
   }
 
   await env.DB.prepare(
