@@ -305,8 +305,15 @@ async function verifyConfigPatched(
 }
 
 /**
- * Fallback: patch config by directly writing openclaw.json, then send SIGUSR1
- * to the gateway process to trigger an in-process config reload.
+ * Fallback: apply the patch payload to openclaw.json via RFC 7396 JSON
+ * merge-patch semantics — only the keys present in the payload are touched,
+ * `null` means delete the key. Then SIGUSR1 the gateway to reload.
+ *
+ * Critical: this must be payload-agnostic. Earlier versions hardcoded the
+ * reconfigure payload (allowedOrigins always overwritten, telegram entries
+ * always deleted) which corrupted configs when called with a Telegram-only
+ * patch from connect-telegram (allowedOrigins got set to [] → gateway refused
+ * to start with "non-loopback Control UI requires explicit origins").
  */
 async function patchConfigViaFile(
   apiKey: string,
@@ -314,29 +321,38 @@ async function patchConfigViaFile(
   envId: string,
   patchPayload: string,
 ): Promise<PatchResult> {
-  // Parse the patch payload to build a file-write script
-  const patch = JSON.parse(patchPayload)
-  const origins = JSON.stringify(patch.gateway?.controlUi?.allowedOrigins || [])
-  const defaultModel = patch.agents?.defaults?.model?.primary
-
-  // Build the node script — try JSON.parse first, fall back to json5 if available
-  let script = `const fs=require('fs'),f='/home/node/.openclaw/openclaw.json';`
-  script += `function P(s){try{return JSON.parse(s)}catch{try{return require('json5').parse(s)}catch{return JSON.parse(s.replace(/\\/\\/.*$/gm,'').replace(/,\\s*([}\\]])/g,'$1'))}}};`
-  script += `try{const c=P(fs.readFileSync(f,'utf8'));`
-  script += `c.gateway.controlUi.allowedOrigins=${origins};`
-  script += `delete c.gateway.controlUi.dangerouslyAllowHostHeaderOriginFallback;`
-  script += `delete c.gateway.controlUi.allowInsecureAuth;`
-  script += `delete c.gateway.controlUi.dangerouslyDisableDeviceAuth;`
-  script += `if(!c.gateway.http)c.gateway.http={endpoints:{chatCompletions:{enabled:true}}};`
-  script += `else{c.gateway.http.endpoints=c.gateway.http.endpoints||{};c.gateway.http.endpoints.chatCompletions={enabled:true}};`
-  if (defaultModel) {
-    script += `c.agents=c.agents||{};c.agents.defaults=c.agents.defaults||{};c.agents.defaults.model=c.agents.defaults.model||{};c.agents.defaults.model.primary=${JSON.stringify(defaultModel)};`
-  }
-  script += `if(c.plugins&&c.plugins.entries){delete c.plugins.entries['@openclaw/plugin-telegram'];delete c.plugins.entries['plugin-telegram']};`
-  script += `if(c.channels){delete c.channels.telegram};`
-  script += `fs.writeFileSync(f,JSON.stringify(c,null,2));console.log('patched')`
-  script += `}catch(e){console.log('err:'+e.message)}`
-
+  // The merge function is inlined as a string so it executes inside the container.
+  // Embed the patch payload as a JSON string literal (JSON.stringify is safe for
+  // our config shape — no unsupported types).
+  const patchLiteral = JSON.stringify(patchPayload)
+  const script = `
+    const fs = require('fs');
+    const f = '/home/node/.openclaw/openclaw.json';
+    function P(s){try{return JSON.parse(s)}catch{try{return require('json5').parse(s)}catch{return JSON.parse(s.replace(/\\/\\/.*$/gm,'').replace(/,\\s*([}\\]])/g,'$1'))}}}
+    // RFC 7396 JSON merge-patch: for each key in patch, null deletes, object
+    // recurses, anything else overwrites. Unmentioned keys are left alone.
+    function merge(target, patch){
+      if (patch === null || typeof patch !== 'object' || Array.isArray(patch)) return patch;
+      if (target === null || typeof target !== 'object' || Array.isArray(target)) target = {};
+      for (const k of Object.keys(patch)) {
+        const pv = patch[k];
+        if (pv === null) { delete target[k]; continue; }
+        if (typeof pv === 'object' && !Array.isArray(pv)) {
+          target[k] = merge(target[k], pv);
+        } else {
+          target[k] = pv;
+        }
+      }
+      return target;
+    }
+    try {
+      const c = P(fs.readFileSync(f, 'utf8'));
+      const patch = JSON.parse(${patchLiteral});
+      const out = merge(c, patch);
+      fs.writeFileSync(f, JSON.stringify(out, null, 2));
+      console.log('patched');
+    } catch (e) { console.log('err:' + e.message); }
+  `
   const { output } = await execCommand(apiKey, serviceId, envId, ['node', '-e', script])
 
   if (!output.includes('patched')) {
