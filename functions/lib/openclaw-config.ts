@@ -246,11 +246,17 @@ export async function patchConfigViaCLI(
     }
   }
 
-  // Step 2: get current config hash
+  // Step 2: get current config hash. Wrap via `sh -c` with NO_COLOR + TERM=dumb
+  // so the CLI emits plain text (not ANSI escapes + cursor-movement + spinners
+  // that break string matching).
+  const runCli = async (args: string[]) => {
+    // Shell-quote single args safely: only cliBin and flags are trusted; params
+    // contain JSON which we pass via a here-doc-free heredoc by escaping.
+    const cmd = `NO_COLOR=1 TERM=dumb ` + args.map(a => `'${a.replace(/'/g, `'\\''`)}'`).join(' ')
+    return execCommand(apiKey, serviceId, envId, ['sh', '-c', cmd])
+  }
   try {
-    const getResult = await execCommand(apiKey, serviceId, envId,
-      [cliBin, 'gateway', 'call', 'config.get', '--json'],
-    )
+    const getResult = await runCli([cliBin, 'gateway', 'call', 'config.get', '--json'])
 
     const hashMatch = getResult.output.match(/"hash"\s*:\s*"([^"]+)"/)
     if (!hashMatch) {
@@ -260,21 +266,22 @@ export async function patchConfigViaCLI(
 
     // Step 3: call config.patch
     const patchParams = JSON.stringify({ raw: patchPayload, baseHash })
-    const patchResult = await execCommand(apiKey, serviceId, envId,
-      [cliBin, 'gateway', 'call', 'config.patch', '--params', patchParams],
-    )
+    const patchResult = await runCli([cliBin, 'gateway', 'call', 'config.patch', '--params', patchParams, '--json'])
 
-    // Strict success check: must contain "ok" in output (not just exitCode)
-    if (patchResult.output.includes('"ok"') || patchResult.output.includes('"ok":true')) {
-      // Step 4: verify — read back config to confirm flags are removed
-      const verified = await verifyConfigPatched(apiKey, serviceId, envId)
-      if (verified) {
-        return { success: true, method: 'cli' }
-      }
-      return { success: false, method: 'cli', error: 'config.patch reported ok but verification failed — dangerous flags still present' }
+    // Success detection: exitCode=0 is the authoritative signal. Also treat
+    // `"ok"` / `ok: true` in stripped output as success to handle CLIs that
+    // don't yet set exit codes properly. Strip ANSI escapes first — the CLI
+    // tried spinners/colors even with NO_COLOR in some versions.
+    const stripAnsi = (s: string) => s.replace(/\u001b\[[0-9;?]*[a-zA-Z]/g, '').replace(/[\r\u2500-\u257f\u25cb-\u25ff]/g, '')
+    const clean = stripAnsi(patchResult.output)
+    const looksOk = /"ok"\s*:\s*true|"ok"\s*$|\bok\b\s*$/mi.test(clean) || clean.trim() === 'ok'
+    const okByExit = patchResult.exitCode === 0 && !/error|failed/i.test(clean)
+
+    if (okByExit || looksOk) {
+      return { success: true, method: 'cli' }
     }
 
-    return { success: false, method: 'cli', error: `config.patch output: ${patchResult.output.slice(0, 300)}` }
+    return { success: false, method: 'cli', error: `config.patch output: ${clean.slice(0, 300)}` }
   } catch (cliError) {
     // CLI call failed — fallback to file write
     try {
@@ -285,24 +292,9 @@ export async function patchConfigViaCLI(
   }
 }
 
-/**
- * Verify config was patched: read back openclaw.json and check that
- * dangerouslyAllowHostHeaderOriginFallback is absent.
- */
-async function verifyConfigPatched(
-  apiKey: string,
-  serviceId: string,
-  envId: string,
-): Promise<boolean> {
-  try {
-    const { output } = await execCommand(apiKey, serviceId, envId,
-      ['node', '-e', `const fs=require('fs'),f='/home/node/.openclaw/openclaw.json';function P(s){try{return JSON.parse(s)}catch{try{return require('json5').parse(s)}catch{return JSON.parse(s.replace(/\\/\\/.*$/gm,'').replace(/,\\s*([}\\]])/g,'$1'))}}};try{const c=P(fs.readFileSync(f,'utf8'));console.log(JSON.stringify({hasDangerous:!!c.gateway?.controlUi?.dangerouslyAllowHostHeaderOriginFallback}))}catch(e){console.log('err:'+e.message)}`],
-    )
-    return output.includes('"hasDangerous":false')
-  } catch {
-    return false
-  }
-}
+// verifyConfigPatched removed — it checked dangerouslyAllowHostHeaderOriginFallback
+// absence, which is only meaningful for the reconfigure payload, and broke
+// any other patch (e.g. telegram-only). The CLI exitCode is now authoritative.
 
 /**
  * Fallback: apply the patch payload to openclaw.json via RFC 7396 JSON
