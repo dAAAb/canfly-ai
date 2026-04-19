@@ -81,7 +81,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   // each attempt so a hung CLI can't blow the CF Pages 30s budget; we then
   // surface the real error instead of letting the worker 500.
   const safeCode = code.replace(/[^A-Z0-9]/g, '') // already validated by regex, belt-and-braces
-  const params = JSON.stringify({ channel: 'telegram', code: safeCode }).replace(/'/g, `'\\''`)
+  const rpcParams = JSON.stringify({ channel: 'telegram', code: safeCode }).replace(/'/g, `'\\''`)
   const script =
     `NO_COLOR=1 TERM=dumb; ` +
     `BIN=""; for b in openclaw /home/node/.openclaw/bin/openclaw /usr/local/bin/openclaw; do ` +
@@ -89,7 +89,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     `done; ` +
     `if [ -z "$BIN" ]; then echo NO_CLI_FOUND; exit 127; fi; ` +
     // Try the RPC route first — single WebSocket call to the local gateway.
-    `OUT=$(timeout 18 "$BIN" gateway call pairing.approve --params '${params}' --json 2>&1); RC=$?; ` +
+    `OUT=$(timeout 18 "$BIN" gateway call pairing.approve --params '${rpcParams}' --json 2>&1); RC=$?; ` +
     `if [ $RC -eq 0 ]; then echo "$OUT"; exit 0; fi; ` +
     // Fallback: legacy wrapper, also bounded.
     `timeout 18 "$BIN" pairing approve telegram ${safeCode} 2>&1; exit $?`
