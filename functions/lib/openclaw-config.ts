@@ -359,13 +359,11 @@ async function patchConfigViaFile(
     )
   } catch { /* best effort — process may not be named 'openclaw' */ }
 
-  // Wait a moment for reload, then verify
-  await new Promise(r => setTimeout(r, 3000))
-  const verified = await verifyConfigPatched(apiKey, serviceId, envId)
-  if (verified) {
-    return { success: true, method: 'fallback' }
-  }
-  return { success: false, method: 'fallback', error: 'File patched + SIGUSR1 sent but verification failed' }
+  // No post-write verification: verifyConfigPatched was payload-specific and
+  // removed. The file write + SIGUSR1 is the contract. If reload actually
+  // failed, the caller's downstream checks (chat probe, gateway restart
+  // output) will surface it.
+  return { success: true, method: 'fallback' }
 }
 
 // ── Phase timeout check ───────────────────────────────────

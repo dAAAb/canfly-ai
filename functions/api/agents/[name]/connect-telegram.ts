@@ -159,12 +159,17 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     } else {
       // Step 3: Patch OpenClaw config directly — channels.telegram + plugin entry.
       // JSON merge-patch semantics: provided fields overwrite, null deletes.
+      //
+      // Do NOT set dmPolicy here. OpenClaw validates `allowlist` by requiring
+      // a non-empty allowFrom, which we can't populate until the user has
+      // paired (we only learn their Telegram user ID from /start). Leaving
+      // dmPolicy unset lets the gateway accept /start so pairing can happen;
+      // `openclaw pairing approve` then writes the sender ID into allowFrom.
       const telegramPatch = JSON.stringify({
         channels: {
           telegram: {
             enabled: true,
             botToken,
-            dmPolicy: 'allowlist',
           },
         },
         plugins: {
