@@ -689,29 +689,32 @@ async function handleConfig(
     if (i < 14) await new Promise(r => setTimeout(r, 2000))
   }
 
-  // Hard gate: both pieces must be present — otherwise chat proxy can't work.
-  if (!newGatewayToken || !chatReady) {
-    const errMsg = !newGatewayToken
-      ? 'Gateway token could not be read from OpenClaw'
-      : 'Chat endpoint /v1/chat/completions is not responding'
-    const errCode = !newGatewayToken ? 'NO_GATEWAY_TOKEN' : 'CHAT_ENDPOINT_DEAD'
+  // Only the token is a hard requirement. chatReady is advisory — see status.ts
+  // for rationale (probe often fires during SIGUSR1 reload window).
+  if (!newGatewayToken) {
     await env.DB.prepare(
       `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
        VALUES ('agent', ?1, 'chat_readiness_failed', ?2)`
-    ).bind(finalAgentName, JSON.stringify({ chatReady, hasToken: !!newGatewayToken, patchMethod: patchResult.method })).run()
+    ).bind(finalAgentName, JSON.stringify({ chatReady, hasToken: false, patchMethod: patchResult.method })).run()
     await env.DB.prepare(
-      `UPDATE v3_zeabur_deployments SET status = 'failed', error_code = ?1, error_message = ?2, updated_at = datetime('now') WHERE id = ?3`
-    ).bind(errCode, errMsg, cloneId).run()
+      `UPDATE v3_zeabur_deployments SET status = 'failed', error_code = 'NO_GATEWAY_TOKEN', error_message = 'Gateway token could not be read from OpenClaw', updated_at = datetime('now') WHERE id = ?1`
+    ).bind(cloneId).run()
     return json({
       cloneId,
       status: 'failed',
       agentName: finalAgentName,
       deployUrl: publicUrl,
-      error: errMsg,
-      errorCode: errCode,
+      error: 'Gateway token could not be read from OpenClaw',
+      errorCode: 'NO_GATEWAY_TOKEN',
       canReconfigure: true,
       canRetry: true,
     })
+  }
+  if (!chatReady) {
+    await env.DB.prepare(
+      `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
+       VALUES ('agent', ?1, 'chat_probe_missed_window', ?2)`
+    ).bind(finalAgentName, JSON.stringify({ patchMethod: patchResult.method, note: 'probe fired during SIGUSR1 reload; proceeding optimistically' })).run()
   }
 
   // 4. Store encrypted gateway token in agent_card_override

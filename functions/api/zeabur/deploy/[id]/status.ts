@@ -453,20 +453,29 @@ async function handleConfig(
     if (i < 14) await new Promise(r => setTimeout(r, 2000))
   }
 
-  // Hard gate: both pieces must be present — otherwise chat proxy can't work.
-  if (!gatewayToken || !chatReady) {
-    const errMsg = !gatewayToken
-      ? 'Gateway token could not be read from OpenClaw'
-      : 'Chat endpoint /v1/chat/completions is not responding'
-    const errCode = !gatewayToken ? 'NO_GATEWAY_TOKEN' : 'CHAT_ENDPOINT_DEAD'
+  // Only the token is a hard requirement here — the chat proxy literally needs
+  // it to authenticate. chatReady is advisory: the probe routinely lands
+  // inside OpenClaw's SIGUSR1 reload window where the chat route is briefly
+  // unavailable even though it comes back seconds later. We'd rather mark
+  // running optimistically and let the user click Retry if chat is actually
+  // dead (chat.ts returns NEEDS_RECONFIGURE at message time) than fail every
+  // fresh deploy.
+  if (!gatewayToken) {
     await env.DB.prepare(
       `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
        VALUES ('agent', ?1, 'chat_readiness_failed', ?2)`
-    ).bind(finalAgentName, JSON.stringify({ chatReady, hasToken: !!gatewayToken, patchMethod: patchResult.method })).run()
+    ).bind(finalAgentName, JSON.stringify({ chatReady, hasToken: false, patchMethod: patchResult.method })).run()
     await env.DB.prepare(
-      `UPDATE v3_zeabur_deployments SET status = 'failed', error_code = ?1, error_message = ?2, updated_at = datetime('now') WHERE id = ?3`
-    ).bind(errCode, errMsg, deploymentId).run()
-    return json({ deploymentId, status: 'failed', errorCode: errCode, errorMessage: errMsg, canReconfigure: true })
+      `UPDATE v3_zeabur_deployments SET status = 'failed', error_code = 'NO_GATEWAY_TOKEN', error_message = 'Gateway token could not be read from OpenClaw', updated_at = datetime('now') WHERE id = ?1`
+    ).bind(deploymentId).run()
+    return json({ deploymentId, status: 'failed', errorCode: 'NO_GATEWAY_TOKEN', errorMessage: 'Gateway token could not be read from OpenClaw', canReconfigure: true })
+  }
+  if (!chatReady) {
+    // Log for observability but still proceed to running.
+    await env.DB.prepare(
+      `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
+       VALUES ('agent', ?1, 'chat_probe_missed_window', ?2)`
+    ).bind(finalAgentName, JSON.stringify({ patchMethod: patchResult.method, note: 'probe fired during SIGUSR1 reload; proceeding optimistically' })).run()
   }
 
   // 4. Store gateway token (we know it's present at this point)

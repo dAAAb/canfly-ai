@@ -123,7 +123,13 @@ export async function runReconfigure(
     tokenStored = true
   }
 
-  const fullyRepaired = patchResult.success && chatReady && tokenStored
+  // Patch + token are the hard requirements (chat proxy literally can't work
+  // without them). chatReady is advisory only: the probe often fires inside
+  // the SIGUSR1 reload window where /v1/chat/completions briefly 404s even
+  // though it comes back seconds later. If chat turns out to actually be
+  // broken, chat.ts returns NEEDS_RECONFIGURE at message time and the user
+  // clicks Retry — much better than permanent deploy failure every time.
+  const fullyRepaired = patchResult.success && tokenStored
   let errorMessage: string | null = null
   if (fullyRepaired) {
     await env.DB.prepare(
@@ -135,8 +141,6 @@ export async function runReconfigure(
   } else {
     errorMessage = !patchResult.success
       ? `Config patch failed: ${patchResult.error || 'unknown'}`
-      : !chatReady
-      ? 'Chat endpoint /v1/chat/completions not responding after reconfigure'
       : 'Gateway token could not be read'
     await env.DB.prepare(
       `UPDATE v3_zeabur_deployments SET
