@@ -261,8 +261,38 @@ export default function TelegramConnectCard({ agentName }: Props) {
             </button>
           </div>
           {error && (
-            <div className="p-2.5 rounded-lg bg-red-500/10 border border-red-500/20">
+            <div className="p-2.5 rounded-lg bg-red-500/10 border border-red-500/20 space-y-2">
               <p className="text-xs text-red-400">{error}</p>
+              {/* Escape hatch: if the bot is actually responding on Telegram
+                  but our approve call keeps timing out, let the user confirm
+                  it manually so they aren't stuck. The endpoint marks the
+                  row 'active' without rerunning the CLI. */}
+              <button
+                onClick={async () => {
+                  setApprovingPairing(true); setError(null)
+                  try {
+                    const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/telegram-approve`, {
+                      method: 'PATCH',
+                      headers: await getAuthHeaders(),
+                      body: JSON.stringify({ confirmWorking: true }),
+                    })
+                    const data = await res.json().catch(() => ({})) as { approved?: boolean; error?: string }
+                    if (res.ok && data.approved) {
+                      setPairingSuccess(true); setPairingStep(false)
+                      setStatus(prev => ({ ...prev, connected: true, status: 'active' }))
+                      setSuccess(t('dashboard.telegram.pairingSuccess', 'Marked as active.'))
+                    } else {
+                      setError(data.error || 'Could not mark as active.')
+                    }
+                  } catch (err) {
+                    setError(`Failed to mark as active: ${err instanceof Error ? err.message : String(err)}`)
+                  } finally { setApprovingPairing(false) }
+                }}
+                disabled={approvingPairing}
+                className="text-xs text-amber-400 hover:text-amber-300 underline disabled:opacity-50"
+              >
+                {t('dashboard.telegram.markActiveBtn', "Bot responds on Telegram? Click to mark as active")}
+              </button>
             </div>
           )}
         </div>

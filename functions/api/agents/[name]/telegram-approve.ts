@@ -75,11 +75,13 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     envId = prodEnv._id
   }
 
-  // Run pairing approve via gateway RPC (same WebSocket endpoint config.patch
-  // uses — known fast and reliable). Falls back to the wrapper command for
-  // older CLIs that don't expose pairing.approve directly. `timeout 18` caps
-  // each attempt so a hung CLI can't blow the CF Pages 30s budget; we then
-  // surface the real error instead of letting the worker 500.
+  // Run pairing approve via gateway RPC — same WebSocket endpoint config.patch
+  // uses (known fast and reliable when gateway is up). Single attempt, 22s
+  // cap: two attempts × 18s each previously blew past CF Pages' 30s wall
+  // clock and surfaced as 500 + CF edge HTML.
+  //
+  // If the gateway RPC isn't available on this OpenClaw version, the CLI
+  // exits fast with a clear error that we surface to the user.
   const safeCode = code.replace(/[^A-Z0-9]/g, '') // already validated by regex, belt-and-braces
   const rpcParams = JSON.stringify({ channel: 'telegram', code: safeCode }).replace(/'/g, `'\\''`)
   const script =
@@ -88,11 +90,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     `  if command -v "$b" >/dev/null 2>&1; then BIN="$b"; break; fi; ` +
     `done; ` +
     `if [ -z "$BIN" ]; then echo NO_CLI_FOUND; exit 127; fi; ` +
-    // Try the RPC route first — single WebSocket call to the local gateway.
-    `OUT=$(timeout 18 "$BIN" gateway call pairing.approve --params '${rpcParams}' --json 2>&1); RC=$?; ` +
-    `if [ $RC -eq 0 ]; then echo "$OUT"; exit 0; fi; ` +
-    // Fallback: legacy wrapper, also bounded.
-    `timeout 18 "$BIN" pairing approve telegram ${safeCode} 2>&1; exit $?`
+    `timeout 22 "$BIN" gateway call pairing.approve --params '${rpcParams}' --json 2>&1; exit $?`
 
   let approveResult: { exitCode: number; output: string }
   try {
@@ -146,4 +144,45 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   ).bind(agentName, JSON.stringify({ owner: auth.username })).run()
 
   return json({ approved: true, status: 'active' })
+}
+
+// ── PATCH: Manual "mark as active" escape hatch ───────────
+/**
+ * When the CLI-based approve keeps timing out but the user can confirm the
+ * bot is responding on Telegram (e.g. received an LLM reply to /start), we
+ * trust them and flip the DB row to 'active' without rerunning the CLI.
+ * The functional state matters; the DB status is just UI bookkeeping.
+ */
+export const onRequestPatch: PagesFunction<Env> = async ({ env, params, request }) => {
+  const agentName = params.name as string
+
+  const auth = await authenticateRequest(request, env.DB, env.PRIVY_APP_ID)
+  if (!auth) return errorResponse('Authentication required', 401)
+
+  const agent = await env.DB.prepare(
+    'SELECT owner_username FROM agents WHERE name = ?1'
+  ).bind(agentName).first<{ owner_username: string | null }>()
+  if (!agent) return errorResponse('Agent not found', 404)
+  if (agent.owner_username !== auth.username) return errorResponse('Not authorized', 403)
+
+  const connection = await env.DB.prepare(
+    `SELECT id, status FROM v3_telegram_connections WHERE agent_name = ?1
+     ORDER BY updated_at DESC LIMIT 1`
+  ).bind(agentName).first<{ id: string; status: string }>()
+  if (!connection) return errorResponse('No Telegram connection to mark', 404)
+
+  await env.DB.prepare(
+    `UPDATE v3_telegram_connections SET status = 'active',
+      connected_at = COALESCE(connected_at, datetime('now')),
+      error_message = NULL,
+      updated_at = datetime('now')
+     WHERE id = ?1`
+  ).bind(connection.id).run()
+
+  await env.DB.prepare(
+    `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
+     VALUES ('agent', ?1, 'telegram_manually_activated', ?2)`
+  ).bind(agentName, JSON.stringify({ owner: auth.username, previousStatus: connection.status })).run()
+
+  return json({ approved: true, status: 'active', manual: true })
 }
