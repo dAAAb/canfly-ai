@@ -119,6 +119,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   let gatewaySuccess = false
   let gatewayError: string | null = null
   let botUsername: string | null = null
+  let gatewayRestarted = false
+  let gatewayRestartOutput = ''
 
   try {
     // Step 1: Verify the bot token with Telegram API
@@ -134,6 +136,17 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
       )
     }
     botUsername = tgData.result?.username || null
+
+    // Step 1b: Clear any stale webhook. If the bot was previously bound to a
+    // deleted lobster, Telegram would keep POSTing to the dead URL and the
+    // new lobster's long-polling plugin would see nothing. deleteWebhook is
+    // idempotent — safe to call even if no webhook exists.
+    try {
+      await fetch(`https://api.telegram.org/bot${botToken}/deleteWebhook?drop_pending_updates=true`, {
+        method: 'POST',
+        signal: AbortSignal.timeout(10000),
+      })
+    } catch { /* best-effort — polling will still work without this */ }
 
     // Step 2: Resolve production environment for this Zeabur project
     const envResult = await zeaburGQL(zeaburApiKey, `
@@ -163,18 +176,21 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
       const patchResult = await patchConfigViaCLI(zeaburApiKey, deployment.zeabur_service_id, prodEnv._id, telegramPatch)
       if (patchResult.success) {
         gatewaySuccess = true
-        // Telegram plugin wasn't loaded at container boot (channel was disabled).
-        // Restart the gateway process *inside* the container via
-        // `openclaw gateway restart` — this reloads the plugin set without
-        // restarting the container, so Zeabur's entrypoint does NOT re-run and
-        // we avoid the dangerous-flags / pi-agent-core crash loop that
-        // `restartService` would trigger.
+        // Restart the gateway process inside the container so the Telegram
+        // plugin (disabled at boot) actually loads. Use `openclaw gateway
+        // restart` — only touches the gateway process, not the container, so
+        // Zeabur's entrypoint does NOT re-run and we avoid the dangerous-flags
+        // / pi-agent-core crash loop that restartService would trigger.
         try {
-          await execCommand(
+          const restartRes = await execCommand(
             zeaburApiKey, deployment.zeabur_service_id, prodEnv._id,
-            ['sh', '-c', 'openclaw gateway restart 2>&1 || /home/node/.openclaw/bin/openclaw gateway restart 2>&1 || /usr/local/bin/openclaw gateway restart 2>&1 || true'],
+            ['sh', '-c', '(openclaw gateway restart 2>&1 || /home/node/.openclaw/bin/openclaw gateway restart 2>&1 || /usr/local/bin/openclaw gateway restart 2>&1) | head -c 500'],
           )
-        } catch { /* best-effort */ }
+          gatewayRestartOutput = restartRes.output.slice(0, 500)
+          gatewayRestarted = restartRes.exitCode === 0 && !/not found|command not|no such/i.test(restartRes.output)
+        } catch (err) {
+          gatewayRestartOutput = `exec failed: ${(err as Error).message}`
+        }
       } else {
         gatewayError = `Config patch failed (${patchResult.method}): ${patchResult.error || 'unknown'}`
       }
@@ -229,6 +245,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     botUsername,
     owner: agent.owner_username,
     error: gatewayError,
+    gatewayRestarted,
+    gatewayRestartOutput: gatewayRestartOutput.slice(0, 200),
   })).run()
 
   if (!gatewaySuccess) {
