@@ -158,8 +158,32 @@ OpenRouter FREE AI（28 model, 200 req/day）
 
 **前端**：
 - Deploy Wizard 加「🪅 Pinata FREE」選項
+- **Template Picker**（2026-04-23 新增）— 讓用戶從 Pinata Marketplace 選建蝦模板
+  - 已知 templates：Alchemy、ampersend、Tempo、**Polygon Agent CLI**（2026-04-22 Pinata 發布）
+  - CanFly 標記「推薦」（與 affiliate 對齊）
+  - 未來追加「CanFly 自行開發」template（見新增 Phase B）
 - Nest 頁顯示剩餘 runtime + 升級按鈕
 - Chat Proxy 支援 Pinata JSONL streaming
+
+### Phase B：CanFly 反向推 Template 到 Pinata Marketplace（2026-04-23 新增）
+
+**洞察**：Pinata marketplace 在快速擴充 templates（Alchemy、ampersend、Tempo、Polygon Agent CLI…）。這是 **雙向流量機會**。
+
+| CanFly Template | 內容 | 價值 |
+|----------------|------|------|
+| 🦞 **CanFly PM 蝦** | 預裝 Multica 四層抽象 + Paperclip-style PM 能力 | Pinata 用戶 → 一鍵嘗試「管蝦」→ 認識 CanFly 多蝦編排 |
+| 🎨 **CanFly 影像生成蝦** | 預裝 nano-banana-pro, Gemini, HeyGen skill | 展示 CanFly 的媒體生態 |
+| 📽 **CanFly HeyGen 影片蝦** | HeyGen + ZapCap 自動化 | 展示 CanFly 的 content pipeline |
+| 💼 **CanFly Sprint 自動化蝦** | 內建 Paperclip Bridge + workflow | 展示 CanFly multi-agent 編排 |
+
+**效果預計**：Pinata 已付費用戶看到 CanFly template → 點進去 → Layer 2 多蝦編排進漏斗。
+**行動對應**：等 Phase A 基礎整合完成後，把 template 格式研究清楚，反向推。
+
+### Phase C：Base Agent CLI（與 Polygon 競爭提案，2026-04-23 新增）
+
+**背景**：2026-04-22 Pinata 發布 Polygon Agent CLI（Matic 生態），幫蝦加鏈上錢包/付款/swap/identity 能力。但寶博、小龍蝦、CanFly 全部在 **Base 生態** 紮根（Basename、BaseMail、Base wallet、Basemail_ai…），Polygon 對我們價值不高。
+
+**提案**：做一個 **Base Agent CLI template**，當作 CanFly 對 Pinata marketplace 的旗艦貢獻。詳細分析見 `BASE-AGENT-CLI-RESEARCH.md`。
 
 **待確認**：
 - Pinata API 第三方代管機制（OAuth vs Service Account）
