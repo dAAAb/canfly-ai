@@ -59,10 +59,12 @@ interface OpenRouterModel {
   name?: string
 }
 
-// OpenRouter is behind Cloudflare too. Worker→Worker fetches without a
-// browser-shaped header set can hit CF's bot challenge (same root cause as
-// the Pinata 502 we saw 2026-04-26). Send browser-like headers defensively
-// so create/list/delete child key calls aren't broken in production.
+// OpenRouter is behind Cloudflare too. The CF Worker runtime auto-adds a
+// `CF-Connecting-IP` header to outbound fetches and CF-protected origins
+// (Pinata definitely, OpenRouter probably) can be configured to reject
+// any traffic carrying that header — which is what bit us with Pinata
+// (verified 2026-04-26). We override CF-Connecting-IP and X-Forwarded-For
+// to a placeholder to stop CF auto-injecting the real client IP.
 async function orFetch(
   managementKey: string,
   path: string,
@@ -76,6 +78,8 @@ async function orFetch(
       'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 CanFly/1.0',
       Accept: 'application/json',
       'Accept-Language': 'en-US,en;q=0.9',
+      'CF-Connecting-IP': '0.0.0.0',
+      'X-Forwarded-For': '0.0.0.0',
       ...(init?.headers || {}),
     },
   })
@@ -153,12 +157,14 @@ export async function getKeyUsage(
  *
  * Public endpoint — no auth required. Cached upstream by Cloudflare for ~1m.
  */
-// Browser-like headers for the public /v1/models endpoint to avoid CF bot
-// challenges when called from a Worker (same fix as orFetch).
+// Browser-like headers + CF-Connecting-IP override for the public /v1/models
+// endpoint to avoid CF bot challenges when called from a Worker.
 const PUBLIC_HEADERS: Record<string, string> = {
   'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 CanFly/1.0',
   Accept: 'application/json',
   'Accept-Language': 'en-US,en;q=0.9',
+  'CF-Connecting-IP': '0.0.0.0',
+  'X-Forwarded-For': '0.0.0.0',
 }
 
 export async function isModelFreeAndStable(modelId: string): Promise<boolean> {

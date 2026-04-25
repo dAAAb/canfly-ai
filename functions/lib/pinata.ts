@@ -30,14 +30,19 @@ export class PinataApiError extends Error {
   }
 }
 
-// Pinata's API hosts sit behind Cloudflare's bot management. Worker→Worker
-// fetches get challenged with a "Just a moment…" HTML page (verified
-// 2026-04-26 — production wizard hit this and our diagnostic surfaced the
-// <!DOCTYPE html> body in the 502 error).
+// Pinata's CF zone responds with `403 error code: 1000` to any incoming
+// request that carries the `CF-Connecting-IP` header (verified 2026-04-26
+// via header-by-header bisection from local: only that one header triggers
+// the block — `CF-Worker`, `CF-Ray`, `X-Forwarded-For`, `CF-IPCountry`, and
+// User-Agent variants all pass).
 //
-// Local curl from any IP works regardless of User-Agent, so the trigger is
-// CF's inter-network signals when the source is itself a Worker. We send a
-// browser-like header set to disguise the request enough to pass.
+// Cloudflare's Worker runtime automatically adds `CF-Connecting-IP` to
+// outbound fetches (set to the original visitor's IP). Pinata's zone then
+// treats those requests as suspicious proxied traffic and rejects them with
+// the "Just a moment…" HTML challenge that produced our 502.
+//
+// Setting the header explicitly in the outbound request lets us OVERRIDE
+// CF's auto-injection. We send `0.0.0.0` so Pinata's rule no longer matches.
 async function pinataFetch(
   jwt: string,
   path: string,
@@ -51,8 +56,8 @@ async function pinataFetch(
       'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 CanFly/1.0',
       Accept: 'application/json, text/plain, */*',
       'Accept-Language': 'en-US,en;q=0.9',
-      Origin: 'https://canfly.ai',
-      Referer: 'https://canfly.ai/',
+      'CF-Connecting-IP': '0.0.0.0',
+      'X-Forwarded-For': '0.0.0.0',
       ...(init?.headers || {}),
     },
   })
