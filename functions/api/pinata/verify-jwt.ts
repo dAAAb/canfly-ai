@@ -45,13 +45,21 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     })
   } catch (err) {
     if (err instanceof PinataApiError) {
-      // Map Pinata's status to a sensible client status
-      // 401/403 → "your JWT is bad", everything else → 502 upstream
+      // Log full upstream context so `wrangler pages deployment tail --format=json`
+      // surfaces it for debugging.
+      console.error(`[verify-jwt] Pinata ${err.status}: ${err.body?.slice(0, 300) || '(empty)'}`)
       if (err.status === 401 || err.status === 403) {
         return errorResponse(`Pinata rejected the JWT (${err.status})`, err.status)
       }
-      return errorResponse(`Pinata upstream error: ${err.status}`, 502)
+      // Echo Pinata's body snippet so the wizard can show the user what's wrong
+      // (rate limit, region block, account suspended, etc.) instead of a generic
+      // "couldn't reach Pinata".
+      const snippet = err.body?.slice(0, 200) || ''
+      return errorResponse(`Pinata upstream error (${err.status}): ${snippet}`, 502)
     }
-    return errorResponse('Failed to reach Pinata', 502)
+    // Truly unreachable / network-level failure
+    const msg = err instanceof Error ? err.message : 'unknown'
+    console.error(`[verify-jwt] non-API error:`, msg)
+    return errorResponse(`Failed to reach Pinata: ${msg}`, 502)
   }
 }

@@ -171,17 +171,28 @@ export default function DeployPinataWizardPage({ subdomainUsername }: DeployPina
         headers: await getAuthHeaders(),
         body: JSON.stringify({ jwt }),
       })
-      const data = (await res.json()) as VerifyJwtResponse & { error?: string }
+      // Read body once as text so a non-JSON 5xx (or empty body) surfaces a
+      // useful diagnostic instead of collapsing into a generic network error.
+      const raw = await res.text()
+      let data: (VerifyJwtResponse & { error?: string }) = { valid: false } as VerifyJwtResponse
+      try { data = JSON.parse(raw) } catch { /* non-JSON body */ }
+
       if (res.ok && data.valid) {
         setVerified(true)
         setPinataInfo(data)
+      } else if (res.status === 401 && /authentication required/i.test(raw)) {
+        // Our auth middleware (NOT Pinata's) — user lost their session
+        setStep1Error('Your CanFly session expired — refresh the page and log in again.')
       } else if (res.status === 401 || res.status === 403) {
         setStep1Error(t('pinata.wizard.errorJwt', 'Pinata JWT verification failed'))
       } else {
-        setStep1Error(data.error || t('pinata.wizard.errorJwtNetwork', 'Cannot reach Pinata, please retry'))
+        // Non-2xx that isn't a JWT issue — surface raw status + body snippet
+        // so the user can tell us what's wrong instead of seeing only "連不上".
+        const snippet = data.error || raw.slice(0, 200) || `HTTP ${res.status}`
+        setStep1Error(`Pinata check failed (${res.status}): ${snippet}`)
       }
-    } catch {
-      setStep1Error(t('pinata.wizard.errorJwtNetwork', 'Cannot reach Pinata, please retry'))
+    } catch (err) {
+      setStep1Error(`${t('pinata.wizard.errorJwtNetwork', 'Cannot reach Pinata, please retry')}: ${err instanceof Error ? err.message : String(err)}`)
     } finally {
       setVerifying(false)
     }
