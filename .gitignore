@@ -3,5 +3,8 @@ dist
 .env
 .env.local
 *.local
+.dev.vars
+.dev.vars.*
 reference/
 .wrangler/
+scripts/spike-pinata-create.ts

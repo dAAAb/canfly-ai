@@ -19,6 +19,10 @@ export interface Env {
   ZEABUR_WEBHOOK_SECRET?: string
   ZEABUR_ADMIN_API_KEY?: string
   ENCRYPTION_KEY?: string
+  // V4 Phase A — Pinata Lobster + OpenRouter managed keys (CAN-302)
+  // OpenRouter management key (sk-or-v1-...) used to provision per-lobster
+  // child keys with limit=0 so they can only call free models.
+  OPENROUTER_MANAGEMENT_KEY?: string
   // MPP (Machine Payments Protocol)
   MPP_ENABLED?: string
   MPP_SECRET_KEY?: string
