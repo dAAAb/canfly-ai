@@ -32,6 +32,7 @@ const TasksDashboardPage = lazy(() => import('./pages/TasksDashboardPage'))
 const PaperclipDashboardPage = lazy(() => import('./pages/PaperclipDashboardPage'))
 const ChatProxyPage = lazy(() => import('./pages/ChatProxyPage'))
 const DeployWizardPage = lazy(() => import('./pages/DeployWizardPage'))
+const DeployPinataWizardPage = lazy(() => import('./pages/DeployPinataWizardPage'))
 const BindZeaburPage = lazy(() => import('./pages/BindZeaburPage'))
 const AgentSettingsPage = lazy(() => import('./pages/AgentSettingsPage'))
 const TaskResultPage = lazy(() => import('./pages/TaskResultPage'))
@@ -126,6 +127,7 @@ function SubdomainRouter({ subdomain }: { subdomain: string }) {
               <Route path="/agent/:agentName/chat" element={<AutoLangSync><ChatProxyPage subdomainUsername={subdomain} /></AutoLangSync>} />
               <Route path="/agent/:agentName" element={<AutoLangSync><AgentCardPage subdomainUsername={subdomain} /></AutoLangSync>} />
               <Route path="/agents/new" element={<AutoLangSync><AgentRegisterPage subdomainUsername={subdomain} /></AutoLangSync>} />
+              <Route path="/agents/deploy-pinata" element={<AutoLangSync><DeployPinataWizardPage subdomainUsername={subdomain} /></AutoLangSync>} />
               <Route path="/tasks" element={<AutoLangSync><TasksDashboardPage subdomainUsername={subdomain} /></AutoLangSync>} />
               <Route path="/paperclip" element={<AutoLangSync><PaperclipDashboardPage subdomainUsername={subdomain} /></AutoLangSync>} />
               <Route path="/edit" element={<AutoLangSync><ProfileEditPage subdomainUsername={subdomain} /></AutoLangSync>} />
@@ -172,6 +174,7 @@ function App() {
               <Route path="/u/:username/agents/new" element={<AutoLangSync><AgentRegisterPage /></AutoLangSync>} />
               <Route path="/u/:username/agent/:agentName/settings" element={<AutoLangSync><AgentSettingsPage /></AutoLangSync>} />
               <Route path="/u/:username/agents/deploy" element={<AutoLangSync><DeployWizardPage /></AutoLangSync>} />
+              <Route path="/u/:username/agents/deploy-pinata" element={<AutoLangSync><DeployPinataWizardPage /></AutoLangSync>} />
               <Route path="/u/:username/agents/bind" element={<AutoLangSync><BindZeaburPage /></AutoLangSync>} />
               <Route path="/u/:username/agent/:agentName/chat" element={<AutoLangSync><ChatProxyPage /></AutoLangSync>} />
               <Route path="/u/:username/agent/:agentName" element={<AutoLangSync><AgentCardPage /></AutoLangSync>} />

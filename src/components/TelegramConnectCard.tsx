@@ -20,11 +20,25 @@ interface TelegramStatus {
 
 interface Props {
   agentName: string
+  /**
+   * Which deploy backend this lobster lives on. Determines which API
+   * endpoints to call.
+   *   - 'zeabur' (default): existing OpenClaw runtime, full pairing-code flow
+   *   - 'pinata': Pinata Agents — POST /api/agents/:name/pinata-telegram, no
+   *               pairing step (Pinata side handles auth itself)
+   */
+  provider?: 'zeabur' | 'pinata'
 }
 
 const TOKEN_PATTERN = /^\d+:[A-Za-z0-9_-]{35,}$/
 
-export default function TelegramConnectCard({ agentName }: Props) {
+export default function TelegramConnectCard({ agentName, provider = 'zeabur' }: Props) {
+  // Endpoint paths differ per provider. Pinata routes go through a thin
+  // CanFly proxy that calls Pinata's channels API on the user's behalf
+  // (using the JWT we already have stored encrypted in v3_pinata_deployments).
+  const connectEndpoint = provider === 'pinata'
+    ? `/api/agents/${encodeURIComponent(agentName)}/pinata-telegram`
+    : `/api/agents/${encodeURIComponent(agentName)}/connect-telegram`
   const { t } = useTranslation()
   const { walletAddress, getAccessToken } = useAuth()
   const [status, setStatus] = useState<TelegramStatus>({ connected: false, status: 'none' })
@@ -43,13 +57,13 @@ export default function TelegramConnectCard({ agentName }: Props) {
   useEffect(() => {
     async function checkStatus() {
       try {
-        const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/connect-telegram`)
+        const res = await fetch(connectEndpoint)
         if (res.ok) {
           const data = await res.json() as TelegramStatus
           setStatus(data)
-          // If backend says we're mid-pairing, re-open the pairing step so the
-          // user can paste the code even after a page refresh.
-          if (data.status === 'pending' && data.botUsername) {
+          // Zeabur flow has a pairing-code step after token submit.
+          // Pinata flow goes straight to active on success — no pairing.
+          if (provider === 'zeabur' && data.status === 'pending' && data.botUsername) {
             setPairingStep(true)
           }
         }
@@ -60,7 +74,7 @@ export default function TelegramConnectCard({ agentName }: Props) {
       }
     }
     checkStatus()
-  }, [agentName])
+  }, [agentName, connectEndpoint, provider])
 
   const handleConnect = async () => {
     const token = botToken.trim()
@@ -74,7 +88,7 @@ export default function TelegramConnectCard({ agentName }: Props) {
     setSuccess(null)
 
     try {
-      const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/connect-telegram`, {
+      const res = await fetch(connectEndpoint, {
         method: 'POST',
         headers: await getApiAuthHeaders({ getAccessToken, walletAddress }),
         body: JSON.stringify({ botToken: token }),
@@ -88,15 +102,18 @@ export default function TelegramConnectCard({ agentName }: Props) {
         message?: string
       }
 
-      // Backend returns status='pending' after successful token + config patch.
-      // "connected: true" only appears after pairing is fully approved.
+      // Zeabur returns status='pending' (waiting for pairing code).
+      // Pinata returns status='active' directly (channel handshake is server-side).
       if (res.ok && (data.status === 'pending' || data.status === 'active')) {
         setStatus({
           connected: data.status === 'active',
           status: data.status as 'pending' | 'active',
           botUsername: data.botUsername,
         })
-        setPairingStep(true) // Show pairing instructions so user can complete it
+        // Pairing only applies to Zeabur (pending state). Pinata jumps to active.
+        if (provider === 'zeabur') {
+          setPairingStep(true)
+        }
         setBotToken('')
       } else {
         setError(data.error || data.message || 'Connection failed')
@@ -156,7 +173,7 @@ export default function TelegramConnectCard({ agentName }: Props) {
     setDisconnecting(true)
     setError(null)
     try {
-      const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/connect-telegram`, {
+      const res = await fetch(connectEndpoint, {
         method: 'DELETE',
         headers: await getAuthHeaders(),
       })
@@ -176,7 +193,7 @@ export default function TelegramConnectCard({ agentName }: Props) {
     } finally {
       setDisconnecting(false)
     }
-  }, [agentName, getAuthHeaders, t])
+  }, [connectEndpoint, getAuthHeaders, t])
 
   if (checking) {
     return (

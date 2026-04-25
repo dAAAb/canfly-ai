@@ -81,6 +81,7 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
   // Display name editing
   const [displayName, setDisplayName] = useState('')
   const [displayNameLoaded, setDisplayNameLoaded] = useState(false)
+  const [agentHosting, setAgentHosting] = useState<string | null>(null)
   const [savingDisplayName, setSavingDisplayName] = useState(false)
   const [displayNameSaved, setDisplayNameSaved] = useState(false)
   const [displayNameError, setDisplayNameError] = useState<string | null>(null)
@@ -294,8 +295,9 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
       .then((r) => r.ok ? r.json() : null)
       .then((data) => {
         if (data) {
-          const d = data as { display_name?: string | null }
+          const d = data as { display_name?: string | null; hosting?: string | null }
           setDisplayName(d.display_name || '')
+          setAgentHosting(d.hosting || null)
         }
         setDisplayNameLoaded(true)
       })
@@ -496,7 +498,10 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
           <h2 className="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-3">
             {t('settings.integrationsTitle')}
           </h2>
-          <TelegramConnectCard agentName={agentName} />
+          <TelegramConnectCard
+            agentName={agentName}
+            provider={agentHosting === 'pinata' ? 'pinata' : 'zeabur'}
+          />
         </div>
 
 
