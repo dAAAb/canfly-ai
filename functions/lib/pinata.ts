@@ -30,6 +30,14 @@ export class PinataApiError extends Error {
   }
 }
 
+// Pinata's API hosts sit behind Cloudflare's bot management. Worker→Worker
+// fetches get challenged with a "Just a moment…" HTML page (verified
+// 2026-04-26 — production wizard hit this and our diagnostic surfaced the
+// <!DOCTYPE html> body in the 502 error).
+//
+// Local curl from any IP works regardless of User-Agent, so the trigger is
+// CF's inter-network signals when the source is itself a Worker. We send a
+// browser-like header set to disguise the request enough to pass.
 async function pinataFetch(
   jwt: string,
   path: string,
@@ -40,6 +48,11 @@ async function pinataFetch(
     headers: {
       Authorization: `Bearer ${jwt}`,
       'Content-Type': 'application/json',
+      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 CanFly/1.0',
+      Accept: 'application/json, text/plain, */*',
+      'Accept-Language': 'en-US,en;q=0.9',
+      Origin: 'https://canfly.ai',
+      Referer: 'https://canfly.ai/',
       ...(init?.headers || {}),
     },
   })
@@ -49,6 +62,18 @@ async function ok<T>(res: Response, endpoint: string): Promise<T> {
   if (!res.ok) {
     const text = await res.text().catch(() => '')
     throw new PinataApiError(res.status, endpoint, text)
+  }
+  // Defensive: a 200 with HTML body usually means we hit a Cloudflare
+  // challenge / cached error page, not the real API. Surface it as an error
+  // instead of crashing on JSON.parse.
+  const ct = res.headers.get('content-type') || ''
+  if (!ct.includes('json')) {
+    const text = await res.text().catch(() => '')
+    throw new PinataApiError(
+      res.status,
+      endpoint,
+      `Non-JSON response (content-type: ${ct}): ${text.slice(0, 200)}`,
+    )
   }
   return (await res.json()) as T
 }

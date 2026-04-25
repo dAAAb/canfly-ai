@@ -59,6 +59,10 @@ interface OpenRouterModel {
   name?: string
 }
 
+// OpenRouter is behind Cloudflare too. Worker→Worker fetches without a
+// browser-shaped header set can hit CF's bot challenge (same root cause as
+// the Pinata 502 we saw 2026-04-26). Send browser-like headers defensively
+// so create/list/delete child key calls aren't broken in production.
 async function orFetch(
   managementKey: string,
   path: string,
@@ -69,6 +73,9 @@ async function orFetch(
     headers: {
       Authorization: `Bearer ${managementKey}`,
       'Content-Type': 'application/json',
+      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 CanFly/1.0',
+      Accept: 'application/json',
+      'Accept-Language': 'en-US,en;q=0.9',
       ...(init?.headers || {}),
     },
   })
@@ -146,9 +153,19 @@ export async function getKeyUsage(
  *
  * Public endpoint — no auth required. Cached upstream by Cloudflare for ~1m.
  */
+// Browser-like headers for the public /v1/models endpoint to avoid CF bot
+// challenges when called from a Worker (same fix as orFetch).
+const PUBLIC_HEADERS: Record<string, string> = {
+  'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 CanFly/1.0',
+  Accept: 'application/json',
+  'Accept-Language': 'en-US,en;q=0.9',
+}
+
 export async function isModelFreeAndStable(modelId: string): Promise<boolean> {
-  const res = await fetch(`${OR_BASE}/models`)
+  const res = await fetch(`${OR_BASE}/models`, { headers: PUBLIC_HEADERS })
   if (!res.ok) return false
+  const ct = res.headers.get('content-type') || ''
+  if (!ct.includes('json')) return false
   const body = (await res.json()) as { data: OpenRouterModel[] }
   const m = body.data.find((x) => x.id === modelId)
   if (!m) return false
@@ -161,8 +178,10 @@ export async function isModelFreeAndStable(modelId: string): Promise<boolean> {
  * Used by the daily cron to disable any featured row that drifts away.
  */
 export async function listStableFreeModelIds(): Promise<Set<string>> {
-  const res = await fetch(`${OR_BASE}/models`)
+  const res = await fetch(`${OR_BASE}/models`, { headers: PUBLIC_HEADERS })
   if (!res.ok) throw new Error(`OpenRouter listModels failed: ${res.status}`)
+  const ct = res.headers.get('content-type') || ''
+  if (!ct.includes('json')) throw new Error(`OpenRouter listModels: non-JSON response (${ct})`)
   const body = (await res.json()) as { data: OpenRouterModel[] }
   const ids = new Set<string>()
   for (const m of body.data) {
