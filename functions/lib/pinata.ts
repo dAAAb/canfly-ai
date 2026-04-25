@@ -259,6 +259,72 @@ export async function pinataConnectTelegram(
   }
 }
 
+// ── Container exec + manifest + restart (verified 2026-04-26) ────────
+
+export interface ExecResult {
+  stdout: string
+  stderr: string
+  exitCode: number
+}
+
+/**
+ * Execute a shell command inside the agent's container.
+ * Verified endpoint: POST /v0/agents/{id}/console/exec body { command }
+ * Used to write /home/node/clawd/manifest.json which controls model.primary
+ * (POST /v0/agents and PUT /v0/agents/{id}/config don't accept model fields).
+ */
+export async function pinataExec(
+  jwt: string,
+  agentId: string,
+  command: string
+): Promise<ExecResult> {
+  const res = await pinataFetch(jwt, `/v0/agents/${agentId}/console/exec`, {
+    method: 'POST',
+    body: JSON.stringify({ command }),
+  })
+  return ok<ExecResult>(res, `POST /v0/agents/${agentId}/console/exec`)
+}
+
+/**
+ * Restart the agent's container so config / secret changes take effect.
+ * POST /v0/agents/{id}/restart → { success: true, message, previousProcessId }
+ */
+export async function pinataRestartAgent(jwt: string, agentId: string): Promise<void> {
+  const res = await pinataFetch(jwt, `/v0/agents/${agentId}/restart`, { method: 'POST' })
+  await ok(res, `POST /v0/agents/${agentId}/restart`)
+}
+
+/**
+ * Set the agent's default LLM model via `openclaw config set`.
+ *
+ * This MUST run AFTER pinataRestartAgent (so OPENROUTER_API_KEY is loaded
+ * into the runtime environment) and CANNOT be followed by another restart —
+ * Pinata's restart triggers an R2 snapshot restore that wipes /home/node/.openclaw/openclaw.json
+ * back to its baked default of `openrouter/auto`.
+ *
+ * `openrouter/auto` is OpenRouter's smart-routing model that picks the
+ * cheapest/best paid model and is therefore blocked by our limit=0 child
+ * keys. Setting an explicit free model id like `openrouter/nvidia/nemotron-3-super-120b-a12b:free`
+ * routes calls through that specific free model instead.
+ *
+ * @param modelSlug full slug, e.g. `openrouter/nvidia/nemotron-3-super-120b-a12b:free`
+ */
+export async function pinataSetDefaultModel(
+  jwt: string,
+  agentId: string,
+  modelSlug: string
+): Promise<void> {
+  // Reject anything that isn't a known free-tier shape, defense-in-depth.
+  if (!/^openrouter\/[A-Za-z0-9_./-]+:free$/.test(modelSlug)) {
+    throw new Error(`Refusing to set non-free model slug: ${modelSlug}`)
+  }
+  const cmd = `openclaw config set agents.defaults.model.primary ${modelSlug} 2>&1 && echo CFG_OK`
+  const res = await pinataExec(jwt, agentId, cmd)
+  if (!res.stdout.includes('CFG_OK')) {
+    throw new Error(`Failed to set default model: ${res.stderr || res.stdout}`)
+  }
+}
+
 export async function pinataDisconnectTelegram(jwt: string, agentId: string): Promise<void> {
   const res = await pinataFetch(jwt, `/v0/agents/${agentId}/channels/telegram`, {
     method: 'DELETE',

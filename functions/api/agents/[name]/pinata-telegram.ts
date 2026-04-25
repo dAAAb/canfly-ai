@@ -21,6 +21,8 @@ import {
   pinataConnectTelegram,
   pinataDisconnectTelegram,
   pinataGetAgent,
+  pinataRestartAgent,
+  pinataSetDefaultModel,
   PinataApiError,
 } from '../../../lib/pinata'
 
@@ -28,6 +30,7 @@ interface DeploymentRow {
   id: string
   owner_username: string
   pinata_agent_id: string | null
+  free_model_id: string
   metadata: string
 }
 
@@ -43,7 +46,7 @@ async function loadDeployment(
   username: string,
 ): Promise<{ deployment: DeploymentRow; jwt: string } | { error: string; status: number }> {
   const deployment = await env.DB.prepare(
-    `SELECT id, owner_username, pinata_agent_id, metadata
+    `SELECT id, owner_username, pinata_agent_id, free_model_id, metadata
      FROM v3_pinata_deployments
      WHERE agent_name = ?1 AND status NOT IN ('stopped', 'failed')
      ORDER BY created_at DESC
@@ -124,6 +127,22 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request, params }
       loaded.deployment.pinata_agent_id!,
       body.botToken,
     )
+
+    // Channel changes need an agent restart to take effect
+    // (per Pinata docs: "Changes to channels take effect after a gateway restart").
+    // Restart also wipes openclaw.json back to baseline (R2 snapshot restore),
+    // so we re-apply our free-model override afterwards.
+    try {
+      await pinataRestartAgent(loaded.jwt, loaded.deployment.pinata_agent_id!)
+      await new Promise((r) => setTimeout(r, 5000))
+      await pinataSetDefaultModel(
+        loaded.jwt,
+        loaded.deployment.pinata_agent_id!,
+        `openrouter/${loaded.deployment.free_model_id}`,
+      )
+    } catch {
+      // Don't fail the bind if restart hiccups; user can retry from settings
+    }
 
     await env.DB.prepare(
       `INSERT INTO activity_log (entity_type, entity_id, action, metadata)

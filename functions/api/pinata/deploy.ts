@@ -36,6 +36,8 @@ import {
   pinataDeleteAgent,
   pinataDeleteSecret,
   pinataAttachSecrets,
+  pinataSetDefaultModel,
+  pinataRestartAgent,
   PinataApiError,
 } from '../../lib/pinata'
 
@@ -191,6 +193,29 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     // Step E: attach the secret to the agent so OpenClaw runtime sees it as
     // OPENROUTER_API_KEY. POST /v0/agents/{id}/secrets body { secretIds: [...] }.
     await pinataAttachSecrets(body.pinataJwt, created.agentId, [secret.id])
+
+    // Step E.1: restart so the secret loads as an env var inside the container.
+    // Verified: before restart, env | grep OPENROUTER_API_KEY → 0 lines;
+    // after restart → 1 line. The runtime auto-detects the openrouter provider
+    // from this env var via /home/node/.openclaw/agents/main/agent/models.json.
+    await pinataRestartAgent(body.pinataJwt, created.agentId)
+    // Pinata's container needs a moment for the gateway process to come back.
+    await new Promise((r) => setTimeout(r, 5000))
+
+    // Step E.2: pin the default model to our chosen free model.
+    // Pinata's baseline `agents.defaults.model.primary` is `openrouter/auto`
+    // which routes to the cheapest paid model — that hits our `limit: 0` and
+    // returns 403. We override to a specific :free slug so calls succeed.
+    //
+    // ⚠️ MUST come AFTER restart and CANNOT be followed by another restart:
+    // Pinata's restart triggers an R2 snapshot restore that wipes openclaw.json
+    // back to baseline. Setting it last means the override is in effect for
+    // every subsequent agent turn until the user (or Pinata) restarts again.
+    await pinataSetDefaultModel(
+      body.pinataJwt,
+      created.agentId,
+      `openrouter/${body.freeModelId}`,
+    )
 
     // Step F: persist deployment row (encrypt sensitive fields)
     deploymentId = generateUUID()
