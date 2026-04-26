@@ -23,6 +23,12 @@ export interface Env {
   // OpenRouter management key (sk-or-v1-...) used to provision per-lobster
   // child keys with limit=0 so they can only call free models.
   OPENROUTER_MANAGEMENT_KEY?: string
+  // Deno Deploy edge URL that proxies CanFly Worker → Pinata. Pinata's CF zone
+  // blocks any incoming request carrying CF-Connecting-IP (auto-injected by
+  // Cloudflare on Worker outbound), so all Pinata calls must route through a
+  // non-Cloudflare relay. Set with `wrangler pages secret put PINATA_RELAY_URL`.
+  // See relay/README.md for deployment instructions.
+  PINATA_RELAY_URL?: string
   // MPP (Machine Payments Protocol)
   MPP_ENABLED?: string
   MPP_SECRET_KEY?: string

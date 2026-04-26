@@ -36,7 +36,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
   }
 
   try {
-    const data = await pinataListAgents(body.jwt)
+    const data = await pinataListAgents(env, body.jwt)
     return json({
       valid: true,
       agentLimit: data.agentLimit,

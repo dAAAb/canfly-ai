@@ -167,7 +167,7 @@ const deployHandler: PagesFunction<Env> = async ({ env, request }) => {
   try {
     // Step A: validate Pinata JWT and fetch capacity
     console.log('[deploy] step A: pinataListAgents')
-    const pinataAccount = await pinataListAgents(body.pinataJwt)
+    const pinataAccount = await pinataListAgents(env, body.pinataJwt)
     if (pinataAccount.agentLimit > 0 && (pinataAccount.agents?.length ?? 0) >= pinataAccount.agentLimit) {
       return errorResponse(
         `Your Pinata account is at its agent limit (${pinataAccount.agentLimit}). Upgrade to PICNIC or use CanFly Zeabur.`,
@@ -189,7 +189,7 @@ const deployHandler: PagesFunction<Env> = async ({ env, request }) => {
     // enum). We use OPENROUTER_API_KEY because that's what OpenClaw reads at
     // runtime (matches aiProviderEnvVar('openrouter') in zeabur/deploy.ts).
     console.log('[deploy] step C: pinataCreateSecret')
-    const secret = await pinataCreateSecret(body.pinataJwt, {
+    const secret = await pinataCreateSecret(env, body.pinataJwt, {
       name: 'OPENROUTER_API_KEY',
       value: orKey.key,
     })
@@ -200,7 +200,7 @@ const deployHandler: PagesFunction<Env> = async ({ env, request }) => {
     // configured separately (model via env var on the secret, template not
     // exposed via API yet, secrets via attach call below).
     console.log('[deploy] step D: pinataCreateAgent')
-    const created = await pinataCreateAgent(body.pinataJwt, {
+    const created = await pinataCreateAgent(env, body.pinataJwt, {
       name: agentDisplayName,
       description: body.agentBio,
       emoji: body.emoji,
@@ -211,14 +211,14 @@ const deployHandler: PagesFunction<Env> = async ({ env, request }) => {
     // Step E: attach the secret to the agent so OpenClaw runtime sees it as
     // OPENROUTER_API_KEY. POST /v0/agents/{id}/secrets body { secretIds: [...] }.
     console.log(`[deploy] step E: pinataAttachSecrets agent=${created.agentId}`)
-    await pinataAttachSecrets(body.pinataJwt, created.agentId, [secret.id])
+    await pinataAttachSecrets(env, body.pinataJwt, created.agentId, [secret.id])
 
     // Step E.1: restart so the secret loads as an env var inside the container.
     // Verified: before restart, env | grep OPENROUTER_API_KEY → 0 lines;
     // after restart → 1 line. The runtime auto-detects the openrouter provider
     // from this env var via /home/node/.openclaw/agents/main/agent/models.json.
     console.log('[deploy] step E.1: pinataRestartAgent')
-    await pinataRestartAgent(body.pinataJwt, created.agentId)
+    await pinataRestartAgent(env, body.pinataJwt, created.agentId)
     // Pinata's container needs a moment for the gateway process to come back.
     // Reduced from 5s → 2s to fit Pages Function 30s wall-clock budget.
     await new Promise((r) => setTimeout(r, 2000))
@@ -239,6 +239,7 @@ const deployHandler: PagesFunction<Env> = async ({ env, request }) => {
     console.log('[deploy] step E.2: pinataSetDefaultModel')
     try {
       await pinataSetDefaultModel(
+        env,
         body.pinataJwt,
         created.agentId,
         `openrouter/${body.freeModelId}`,
@@ -349,7 +350,7 @@ const deployHandler: PagesFunction<Env> = async ({ env, request }) => {
 
     if (pinataAgentId) {
       try {
-        await pinataDeleteAgent(body.pinataJwt, pinataAgentId)
+        await pinataDeleteAgent(env, body.pinataJwt, pinataAgentId)
       } catch (e) {
         rollbackErrors.push(`pinata agent ${pinataAgentId}: ${e instanceof Error ? e.message : 'fail'}`)
       }
@@ -357,7 +358,7 @@ const deployHandler: PagesFunction<Env> = async ({ env, request }) => {
 
     if (pinataSecretId) {
       try {
-        await pinataDeleteSecret(body.pinataJwt, pinataSecretId)
+        await pinataDeleteSecret(env, body.pinataJwt, pinataSecretId)
       } catch (e) {
         rollbackErrors.push(`pinata secret ${pinataSecretId}: ${e instanceof Error ? e.message : 'fail'}`)
       }

@@ -67,7 +67,7 @@ export const onRequestDelete: PagesFunction<Env> = async ({ env, request, params
   if (deployment.pinata_agent_id && meta.pinataJwt) {
     try {
       const jwt = await decrypt(meta.pinataJwt, cryptoKey)
-      await pinataDeleteAgent(jwt, deployment.pinata_agent_id)
+      await pinataDeleteAgent(env, jwt, deployment.pinata_agent_id)
     } catch (err) {
       cleanupErrors.push(`pinata: ${err instanceof Error ? err.message : 'fail'}`)
     }

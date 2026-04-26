@@ -82,7 +82,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
   if ('error' in loaded) return errorResponse(loaded.error, loaded.status)
 
   try {
-    const agent = await pinataGetAgent(loaded.jwt, loaded.deployment.pinata_agent_id!)
+    const agent = await pinataGetAgent(env, loaded.jwt, loaded.deployment.pinata_agent_id!)
     let channels: { telegram?: { connected?: boolean; botUsername?: string } } = {}
     try {
       channels = JSON.parse(agent.channelsJson || '{}')
@@ -123,6 +123,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request, params }
 
   try {
     const result = await pinataConnectTelegram(
+      env,
       loaded.jwt,
       loaded.deployment.pinata_agent_id!,
       body.botToken,
@@ -133,9 +134,10 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request, params }
     // Restart also wipes openclaw.json back to baseline (R2 snapshot restore),
     // so we re-apply our free-model override afterwards.
     try {
-      await pinataRestartAgent(loaded.jwt, loaded.deployment.pinata_agent_id!)
+      await pinataRestartAgent(env, loaded.jwt, loaded.deployment.pinata_agent_id!)
       await new Promise((r) => setTimeout(r, 5000))
       await pinataSetDefaultModel(
+        env,
         loaded.jwt,
         loaded.deployment.pinata_agent_id!,
         `openrouter/${loaded.deployment.free_model_id}`,
@@ -180,7 +182,7 @@ export const onRequestDelete: PagesFunction<Env> = async ({ env, request, params
   if ('error' in loaded) return errorResponse(loaded.error, loaded.status)
 
   try {
-    await pinataDisconnectTelegram(loaded.jwt, loaded.deployment.pinata_agent_id!)
+    await pinataDisconnectTelegram(env, loaded.jwt, loaded.deployment.pinata_agent_id!)
     await env.DB.prepare(
       `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
        VALUES ('agent', ?1, 'pinata_telegram_disconnected', ?2)`

@@ -5,18 +5,20 @@
  * their own Pinata JWT (CanFly does not own the Pinata account); we proxy on
  * their behalf for the lifetime of the lobster.
  *
- * Verified read endpoints (2026-04-19, see PINATA-API-CAPABILITIES.md):
- *   - GET /v0/agents
- *   - GET /v0/agents/{id}
- *   - GET /v0/agents/{id}/tasks
- *
- * Write endpoints (POST /v0/agents, /v0/secrets, channels) — payload shape is
- * NOT yet officially documented; helper signatures here are based on observed
- * GET response shapes and are pending verification by scripts/spike-pinata-create.ts.
- * Adjust this file once Step 8 spike completes.
+ * ⚠️ Every helper now takes `env` as the first arg so it can route through
+ * `env.PINATA_RELAY_URL` (a non-Cloudflare relay) when set. Pinata's CF zone
+ * blocks any incoming request carrying a `CF-Connecting-IP` header (verified
+ * 2026-04-26), and Cloudflare Workers auto-inject that header on every
+ * outbound subrequest with no documented way to suppress it. So Pages
+ * Functions cannot call agents.pinata.cloud directly. See relay/README.md.
  */
 
-const AGENTS_BASE = 'https://agents.pinata.cloud'
+const AGENTS_DIRECT = 'https://agents.pinata.cloud'
+
+/** Subset of Env we need — accepts the fuller community/_helpers Env via structural typing. */
+export interface PinataEnv {
+  PINATA_RELAY_URL?: string
+}
 
 /** Raised on any non-2xx response. Status preserved so callers can map to HTTP codes. */
 export class PinataApiError extends Error {
@@ -30,34 +32,28 @@ export class PinataApiError extends Error {
   }
 }
 
-// Pinata's CF zone responds with `403 error code: 1000` to any incoming
-// request that carries the `CF-Connecting-IP` header (verified 2026-04-26
-// via header-by-header bisection from local: only that one header triggers
-// the block — `CF-Worker`, `CF-Ray`, `X-Forwarded-For`, `CF-IPCountry`, and
-// User-Agent variants all pass).
-//
-// Cloudflare's Worker runtime automatically adds `CF-Connecting-IP` to
-// outbound fetches (set to the original visitor's IP). Pinata's zone then
-// treats those requests as suspicious proxied traffic and rejects them with
-// the "Just a moment…" HTML challenge that produced our 502.
-//
-// Setting the header explicitly in the outbound request lets us OVERRIDE
-// CF's auto-injection. We send `0.0.0.0` so Pinata's rule no longer matches.
+function pinataBase(env: PinataEnv): string {
+  const relay = env.PINATA_RELAY_URL
+  if (relay && /^https?:\/\//.test(relay)) {
+    return relay.replace(/\/$/, '')
+  }
+  return AGENTS_DIRECT
+}
+
 async function pinataFetch(
+  env: PinataEnv,
   jwt: string,
   path: string,
   init?: RequestInit
 ): Promise<Response> {
-  return fetch(`${AGENTS_BASE}${path}`, {
+  const base = pinataBase(env)
+  return fetch(`${base}${path}`, {
     ...init,
     headers: {
       Authorization: `Bearer ${jwt}`,
       'Content-Type': 'application/json',
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 CanFly/1.0',
+      'User-Agent': 'CanFly/1.0 (+https://canfly.ai)',
       Accept: 'application/json, text/plain, */*',
-      'Accept-Language': 'en-US,en;q=0.9',
-      'CF-Connecting-IP': '0.0.0.0',
-      'X-Forwarded-For': '0.0.0.0',
       ...(init?.headers || {}),
     },
   })
@@ -68,9 +64,9 @@ async function ok<T>(res: Response, endpoint: string): Promise<T> {
     const text = await res.text().catch(() => '')
     throw new PinataApiError(res.status, endpoint, text)
   }
-  // Defensive: a 200 with HTML body usually means we hit a Cloudflare
-  // challenge / cached error page, not the real API. Surface it as an error
-  // instead of crashing on JSON.parse.
+  // Defensive: 200 with HTML body usually means we hit a Cloudflare challenge
+  // / cached error page, not the real API. Surface it as a typed error
+  // instead of crashing on JSON.parse downstream.
   const ct = res.headers.get('content-type') || ''
   if (!ct.includes('json')) {
     const text = await res.text().catch(() => '')
@@ -116,13 +112,13 @@ export interface PinataAgentsList {
   timeCredits: PinataTimeCredits | null
 }
 
-export async function pinataListAgents(jwt: string): Promise<PinataAgentsList> {
-  const res = await pinataFetch(jwt, '/v0/agents')
+export async function pinataListAgents(env: PinataEnv, jwt: string): Promise<PinataAgentsList> {
+  const res = await pinataFetch(env, jwt, '/v0/agents')
   return ok<PinataAgentsList>(res, 'GET /v0/agents')
 }
 
-export async function pinataGetAgent(jwt: string, agentId: string): Promise<PinataAgentSummary> {
-  const res = await pinataFetch(jwt, `/v0/agents/${agentId}`)
+export async function pinataGetAgent(env: PinataEnv, jwt: string, agentId: string): Promise<PinataAgentSummary> {
+  const res = await pinataFetch(env, jwt, `/v0/agents/${agentId}`)
   return ok<PinataAgentSummary>(res, `GET /v0/agents/${agentId}`)
 }
 
@@ -167,10 +163,11 @@ export interface CreatedAgent {
 
 /** POST /v0/secrets → { success, secret: { id, name, type, ... } } */
 export async function pinataCreateSecret(
+  env: PinataEnv,
   jwt: string,
   payload: CreateSecretPayload
 ): Promise<{ id: string; name: string }> {
-  const res = await pinataFetch(jwt, '/v0/secrets', {
+  const res = await pinataFetch(env, jwt, '/v0/secrets', {
     method: 'POST',
     body: JSON.stringify(payload),
   })
@@ -184,10 +181,11 @@ export async function pinataCreateSecret(
  * The created agent is automatically `status: 'running'`.
  */
 export async function pinataCreateAgent(
+  env: PinataEnv,
   jwt: string,
   payload: CreateAgentPayload
 ): Promise<CreatedAgent> {
-  const res = await pinataFetch(jwt, '/v0/agents', {
+  const res = await pinataFetch(env, jwt, '/v0/agents', {
     method: 'POST',
     body: JSON.stringify(payload),
   })
@@ -196,8 +194,8 @@ export async function pinataCreateAgent(
 }
 
 /** Idempotent — 404 swallowed so rollback paths can call freely. */
-export async function pinataDeleteAgent(jwt: string, agentId: string): Promise<void> {
-  const res = await pinataFetch(jwt, `/v0/agents/${agentId}`, { method: 'DELETE' })
+export async function pinataDeleteAgent(env: PinataEnv, jwt: string, agentId: string): Promise<void> {
+  const res = await pinataFetch(env, jwt, `/v0/agents/${agentId}`, { method: 'DELETE' })
   if (!res.ok && res.status !== 404) {
     const text = await res.text().catch(() => '')
     throw new PinataApiError(res.status, `DELETE /v0/agents/${agentId}`, text)
@@ -205,8 +203,8 @@ export async function pinataDeleteAgent(jwt: string, agentId: string): Promise<v
 }
 
 /** Idempotent — 404 swallowed. */
-export async function pinataDeleteSecret(jwt: string, secretId: string): Promise<void> {
-  const res = await pinataFetch(jwt, `/v0/secrets/${secretId}`, { method: 'DELETE' })
+export async function pinataDeleteSecret(env: PinataEnv, jwt: string, secretId: string): Promise<void> {
+  const res = await pinataFetch(env, jwt, `/v0/secrets/${secretId}`, { method: 'DELETE' })
   if (!res.ok && res.status !== 404) {
     const text = await res.text().catch(() => '')
     throw new PinataApiError(res.status, `DELETE /v0/secrets/${secretId}`, text)
@@ -218,28 +216,17 @@ export async function pinataDeleteSecret(jwt: string, secretId: string): Promise
  * POST /v0/agents/{id}/secrets body: { secretIds: ["...", ...] }
  */
 export async function pinataAttachSecrets(
+  env: PinataEnv,
   jwt: string,
   agentId: string,
   secretIds: string[]
 ): Promise<{ attached: number }> {
-  const res = await pinataFetch(jwt, `/v0/agents/${agentId}/secrets`, {
+  const res = await pinataFetch(env, jwt, `/v0/agents/${agentId}/secrets`, {
     method: 'POST',
     body: JSON.stringify({ secretIds }),
   })
   const body = await ok<{ success: boolean; attached: number }>(res, `POST /v0/agents/${agentId}/secrets`)
   return { attached: body.attached }
-}
-
-/**
- * @deprecated Use pinataAttachSecrets which matches Pinata's actual schema.
- * Kept for backward compatibility with earlier draft callers. Will be removed.
- */
-export async function pinataAttachSecret(
-  jwt: string,
-  agentId: string,
-  secretId: string
-): Promise<void> {
-  await pinataAttachSecrets(jwt, agentId, [secretId])
 }
 
 // ── Channels (verified 2026-04-25; Telegram only for V4 Phase A) ──────
@@ -258,8 +245,8 @@ export interface ConnectTelegramResult {
 }
 
 /** Read all channel bindings on an agent in one call. */
-export async function pinataGetChannels(jwt: string, agentId: string): Promise<AgentChannels> {
-  const res = await pinataFetch(jwt, `/v0/agents/${agentId}/channels`)
+export async function pinataGetChannels(env: PinataEnv, jwt: string, agentId: string): Promise<AgentChannels> {
+  const res = await pinataFetch(env, jwt, `/v0/agents/${agentId}/channels`)
   return ok<AgentChannels>(res, `GET /v0/agents/${agentId}/channels`)
 }
 
@@ -272,16 +259,15 @@ export async function pinataGetChannels(jwt: string, agentId: string): Promise<A
  * (no separate pairing step like the Zeabur OpenClaw flow).
  */
 export async function pinataConnectTelegram(
+  env: PinataEnv,
   jwt: string,
   agentId: string,
   botToken: string
 ): Promise<ConnectTelegramResult> {
-  const res = await pinataFetch(jwt, `/v0/agents/${agentId}/channels/telegram`, {
+  const res = await pinataFetch(env, jwt, `/v0/agents/${agentId}/channels/telegram`, {
     method: 'POST',
     body: JSON.stringify({ botToken }),
   })
-  // Pinata responses confirmed via spike to include botUsername; status field
-  // is inferred — if absent we synthesize 'active' since the call is sync.
   const body = await ok<Record<string, unknown>>(res, `POST /v0/agents/${agentId}/channels/telegram`)
   return {
     botUsername: typeof body.botUsername === 'string' ? body.botUsername : '',
@@ -289,7 +275,17 @@ export async function pinataConnectTelegram(
   }
 }
 
-// ── Container exec + manifest + restart (verified 2026-04-26) ────────
+export async function pinataDisconnectTelegram(env: PinataEnv, jwt: string, agentId: string): Promise<void> {
+  const res = await pinataFetch(env, jwt, `/v0/agents/${agentId}/channels/telegram`, {
+    method: 'DELETE',
+  })
+  if (!res.ok && res.status !== 404) {
+    const text = await res.text().catch(() => '')
+    throw new PinataApiError(res.status, `DELETE /v0/agents/${agentId}/channels/telegram`, text)
+  }
+}
+
+// ── Container exec + restart + model selection (verified 2026-04-26) ──
 
 export interface ExecResult {
   stdout: string
@@ -300,15 +296,14 @@ export interface ExecResult {
 /**
  * Execute a shell command inside the agent's container.
  * Verified endpoint: POST /v0/agents/{id}/console/exec body { command }
- * Used to write /home/node/clawd/manifest.json which controls model.primary
- * (POST /v0/agents and PUT /v0/agents/{id}/config don't accept model fields).
  */
 export async function pinataExec(
+  env: PinataEnv,
   jwt: string,
   agentId: string,
   command: string
 ): Promise<ExecResult> {
-  const res = await pinataFetch(jwt, `/v0/agents/${agentId}/console/exec`, {
+  const res = await pinataFetch(env, jwt, `/v0/agents/${agentId}/console/exec`, {
     method: 'POST',
     body: JSON.stringify({ command }),
   })
@@ -319,48 +314,34 @@ export async function pinataExec(
  * Restart the agent's container so config / secret changes take effect.
  * POST /v0/agents/{id}/restart → { success: true, message, previousProcessId }
  */
-export async function pinataRestartAgent(jwt: string, agentId: string): Promise<void> {
-  const res = await pinataFetch(jwt, `/v0/agents/${agentId}/restart`, { method: 'POST' })
+export async function pinataRestartAgent(env: PinataEnv, jwt: string, agentId: string): Promise<void> {
+  const res = await pinataFetch(env, jwt, `/v0/agents/${agentId}/restart`, { method: 'POST' })
   await ok(res, `POST /v0/agents/${agentId}/restart`)
 }
 
 /**
  * Set the agent's default LLM model via `openclaw config set`.
  *
- * This MUST run AFTER pinataRestartAgent (so OPENROUTER_API_KEY is loaded
- * into the runtime environment) and CANNOT be followed by another restart —
- * Pinata's restart triggers an R2 snapshot restore that wipes /home/node/.openclaw/openclaw.json
- * back to its baked default of `openrouter/auto`.
- *
- * `openrouter/auto` is OpenRouter's smart-routing model that picks the
- * cheapest/best paid model and is therefore blocked by our limit=0 child
- * keys. Setting an explicit free model id like `openrouter/nvidia/nemotron-3-super-120b-a12b:free`
- * routes calls through that specific free model instead.
+ * MUST run AFTER pinataRestartAgent (so OPENROUTER_API_KEY is loaded into the
+ * runtime env) and CANNOT be followed by another restart — Pinata's restart
+ * triggers an R2 snapshot restore that wipes /home/node/.openclaw/openclaw.json
+ * back to baseline `openrouter/auto` (which routes to a paid model and trips
+ * our limit=0 child key).
  *
  * @param modelSlug full slug, e.g. `openrouter/nvidia/nemotron-3-super-120b-a12b:free`
  */
 export async function pinataSetDefaultModel(
+  env: PinataEnv,
   jwt: string,
   agentId: string,
   modelSlug: string
 ): Promise<void> {
-  // Reject anything that isn't a known free-tier shape, defense-in-depth.
   if (!/^openrouter\/[A-Za-z0-9_./-]+:free$/.test(modelSlug)) {
     throw new Error(`Refusing to set non-free model slug: ${modelSlug}`)
   }
   const cmd = `openclaw config set agents.defaults.model.primary ${modelSlug} 2>&1 && echo CFG_OK`
-  const res = await pinataExec(jwt, agentId, cmd)
+  const res = await pinataExec(env, jwt, agentId, cmd)
   if (!res.stdout.includes('CFG_OK')) {
     throw new Error(`Failed to set default model: ${res.stderr || res.stdout}`)
-  }
-}
-
-export async function pinataDisconnectTelegram(jwt: string, agentId: string): Promise<void> {
-  const res = await pinataFetch(jwt, `/v0/agents/${agentId}/channels/telegram`, {
-    method: 'DELETE',
-  })
-  if (!res.ok && res.status !== 404) {
-    const text = await res.text().catch(() => '')
-    throw new PinataApiError(res.status, `DELETE /v0/agents/${agentId}/channels/telegram`, text)
   }
 }
