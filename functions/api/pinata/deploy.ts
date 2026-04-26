@@ -94,7 +94,7 @@ export const onRequestPost: PagesFunction<Env> = async (ctx) => {
   }
 }
 
-const deployHandler: PagesFunction<Env> = async ({ env, request }) => {
+const deployHandler: PagesFunction<Env> = async ({ env, request, waitUntil }) => {
   // Guard 1: feature flag
   if (!(await isFeatureEnabled(env.DB, 'v3_pinata_deploy'))) {
     return errorResponse('Pinata deploy is currently disabled', 503)
@@ -213,42 +213,10 @@ const deployHandler: PagesFunction<Env> = async ({ env, request }) => {
     console.log(`[deploy] step E: pinataAttachSecrets agent=${created.agentId}`)
     await pinataAttachSecrets(env, body.pinataJwt, created.agentId, [secret.id])
 
-    // Step E.1: restart so the secret loads as an env var inside the container.
-    // Verified: before restart, env | grep OPENROUTER_API_KEY → 0 lines;
-    // after restart → 1 line. The runtime auto-detects the openrouter provider
-    // from this env var via /home/node/.openclaw/agents/main/agent/models.json.
-    console.log('[deploy] step E.1: pinataRestartAgent')
-    await pinataRestartAgent(env, body.pinataJwt, created.agentId)
-    // Pinata's container needs a moment for the gateway process to come back.
-    // Reduced from 5s → 2s to fit Pages Function 30s wall-clock budget.
-    await new Promise((r) => setTimeout(r, 2000))
-
-    // Step E.2: pin the default model to our chosen free model.
-    // Pinata's baseline `agents.defaults.model.primary` is `openrouter/auto`
-    // which routes to the cheapest paid model — that hits our `limit: 0` and
-    // returns 403. We override to a specific :free slug so calls succeed.
-    //
-    // ⚠️ MUST come AFTER restart and CANNOT be followed by another restart:
-    // Pinata's restart triggers an R2 snapshot restore that wipes openclaw.json
-    // back to baseline. Setting it last means the override is in effect for
-    // every subsequent agent turn until the user (or Pinata) restarts again.
-    //
-    // Best-effort: if console/exec hiccups (slow container start), we still
-    // ship the deploy as success — the user can retry from settings later
-    // if their first chat returns "Key limit exceeded".
-    console.log('[deploy] step E.2: pinataSetDefaultModel')
-    try {
-      await pinataSetDefaultModel(
-        env,
-        body.pinataJwt,
-        created.agentId,
-        `openrouter/${body.freeModelId}`,
-      )
-    } catch (e) {
-      console.warn('[deploy] setDefaultModel failed (non-fatal):', e instanceof Error ? e.message : e)
-    }
-
     // Step F: persist deployment row (encrypt sensitive fields)
+    // ⚠️ Must run BEFORE the slow restart+setDefaultModel so we always have a
+    // DB row even if Cloudflare cuts us off at the 30s wall-clock. The slow
+    // steps run via waitUntil() AFTER we return success to the user.
     deploymentId = generateUUID()
     const encryptedJwt = await encrypt(body.pinataJwt, cryptoKey)
     const encryptedKey = await encrypt(orKey.key, cryptoKey)
@@ -325,6 +293,44 @@ const deployHandler: PagesFunction<Env> = async ({ env, request }) => {
       freeModelId: body.freeModelId,
     })).run()
 
+    // Step H (background, via ctx.waitUntil): restart so the OPENROUTER_API_KEY
+    // env var loads inside the container, then `openclaw config set` to pin
+    // the default model away from `openrouter/auto` (which would hit our
+    // limit=0 child key and 403 on first chat). These two calls take 10-20
+    // seconds combined which exceeds the 30s wall-clock budget once we add
+    // earlier steps + relay overhead — so we let them run after returning
+    // success to the user.
+    //
+    // Worst case if the background work fails: user's first chat returns
+    // "Key limit exceeded" (paid model attempted). They retry from the
+    // lobster settings page (TODO endpoint) or we surface a "finalize"
+    // button next to the lobster.
+    const finalizeAgentId = created.agentId
+    const finalizeJwt = body.pinataJwt
+    const finalizeModel = `openrouter/${body.freeModelId}`
+    waitUntil((async () => {
+      try {
+        console.log('[deploy/bg] restart')
+        await pinataRestartAgent(env, finalizeJwt, finalizeAgentId)
+        await new Promise((r) => setTimeout(r, 5000))
+        console.log('[deploy/bg] setDefaultModel', finalizeModel)
+        await pinataSetDefaultModel(env, finalizeJwt, finalizeAgentId, finalizeModel)
+        await env.DB.prepare(
+          `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
+           VALUES ('deployment', ?1, 'pinata_deploy_finalized', ?2)`
+        ).bind(deploymentId, JSON.stringify({ model: finalizeModel })).run().catch(() => null)
+      } catch (e) {
+        console.warn('[deploy/bg] finalize failed (lobster created but using openrouter/auto):',
+          e instanceof Error ? e.message : e)
+        await env.DB.prepare(
+          `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
+           VALUES ('deployment', ?1, 'pinata_deploy_finalize_failed', ?2)`
+        ).bind(deploymentId, JSON.stringify({
+          error: e instanceof Error ? e.message : String(e),
+        })).run().catch(() => null)
+      }
+    })())
+
     return json({
       deploymentId,
       agentName: slug,
@@ -333,7 +339,7 @@ const deployHandler: PagesFunction<Env> = async ({ env, request }) => {
       pairingCode,
       apiKey,
       status: 'running',
-      message: 'Pinata lobster ready. Visit settings to optionally connect a Telegram bot.',
+      message: 'Pinata lobster ready. Default model is being applied in the background; visit settings to bind Telegram.',
     }, 201)
   } catch (err) {
     // ── Rollback in reverse creation order ─────────────────────────
