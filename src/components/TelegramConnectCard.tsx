@@ -316,24 +316,31 @@ export default function TelegramConnectCard({ agentName, provider = 'zeabur' }: 
       )}
 
       {/* Active connection — fully paired */}
-      {status.connected && status.botUsername && !pairingStep && (
+      {/* botUsername is optional: Pinata's channelsJson may not surface it
+          on every account. As long as the connection is active, render the
+          pairing UI so the owner can approve new TG users. */}
+      {status.connected && !pairingStep && (
         <div className="mt-3 p-3 rounded-lg bg-green-500/10 border border-green-500/20">
           <p className="text-sm text-green-300">
             {pairingSuccess ? '🎉 ' : ''}{t('dashboard.telegram.successTitle')}
           </p>
-          <p className="text-xs text-green-400/70 mt-1">
-            @{status.botUsername}
-          </p>
+          {status.botUsername && (
+            <p className="text-xs text-green-400/70 mt-1">
+              @{status.botUsername}
+            </p>
+          )}
           {success && <p className="text-xs text-green-400 mt-1">{success}</p>}
           <div className="flex items-center gap-3 mt-2">
-            <a
-              href={`https://t.me/${status.botUsername}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300 transition-colors"
-            >
-              Open in Telegram <ExternalLink className="w-3 h-3" />
-            </a>
+            {status.botUsername && (
+              <a
+                href={`https://t.me/${status.botUsername}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                Open in Telegram <ExternalLink className="w-3 h-3" />
+              </a>
+            )}
             <button
               onClick={handleDisconnect}
               disabled={disconnecting}

@@ -83,17 +83,27 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request, params })
 
   try {
     const agent = await pinataGetAgent(env, loaded.jwt, loaded.deployment.pinata_agent_id!)
-    let channels: { telegram?: { connected?: boolean; botUsername?: string } } = {}
+    let channels: Record<string, unknown> = {}
     try {
-      channels = JSON.parse(agent.channelsJson || '{}')
+      channels = JSON.parse(agent.channelsJson || '{}') as Record<string, unknown>
     } catch { /* malformed channelsJson — treat as empty */ }
-    const telegram = channels.telegram
 
-    if (telegram?.botUsername && telegram.connected !== false) {
+    // Pinata's exact field shape isn't fully documented. We treat any
+    // truthy `telegram` entry that isn't explicitly `{ connected: false }`
+    // as an active configuration, and probe several plausible keys for
+    // the bot username (the dashboard shows it but the API field name
+    // may vary across Pinata versions).
+    const telegram = channels.telegram as Record<string, unknown> | null | undefined
+
+    if (telegram && typeof telegram === 'object' && telegram.connected !== false) {
+      const username = (telegram.botUsername as string) ||
+                       (telegram.bot_username as string) ||
+                       (telegram.username as string) ||
+                       null
       return json({
         connected: true,
         status: 'active',
-        botUsername: telegram.botUsername,
+        botUsername: username,
       })
     }
     return json({ connected: false, status: 'none' })
