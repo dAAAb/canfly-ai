@@ -41,7 +41,7 @@ async function pinataFetch(
   env: PinataEnv,
   jwt: string,
   path: string,
-  init?: RequestInit
+  init?: RequestInit & { timeoutMs?: number }
 ): Promise<Response> {
   const headers = {
     Authorization: `Bearer ${jwt}`,
@@ -51,12 +51,12 @@ async function pinataFetch(
   }
 
   // Hard timeout per call. POST /v0/agents takes ~47s in normal operation
-  // (Pinata cold-starts the agent runtime synchronously), so we can't be
-  // too aggressive — 8s killed real successes. 60s is below CF Pages'
-  // 100s wall-clock and lets the slow create endpoints complete while
-  // still bounding genuine hangs.
+  // (Pinata cold-starts the agent runtime synchronously). /restart is even
+  // slower because Pinata waits for the agent to come back. 60s default
+  // works for most calls; callers can override via init.timeoutMs.
+  const timeoutMs = init?.timeoutMs ?? 60000
   const ac = new AbortController()
-  const t = setTimeout(() => ac.abort(new Error('pinataFetch timeout')), 60000)
+  const t = setTimeout(() => ac.abort(new Error('pinataFetch timeout')), timeoutMs)
 
   try {
     // Optional escape hatch: route through a non-CF relay (Deno Deploy etc.)
@@ -68,7 +68,7 @@ async function pinataFetch(
     return await fetchViaSockets(`${AGENTS_DIRECT}${path}`, { ...init, headers })
   } catch (err) {
     if ((err as Error)?.name === 'AbortError' || /timeout/.test((err as Error)?.message || '')) {
-      throw new PinataApiError(504, path, `Upstream timeout after 60s (relay or Pinata not responding)`)
+      throw new PinataApiError(504, path, `Upstream timeout after ${Math.round(timeoutMs / 1000)}s (relay or Pinata not responding)`)
     }
     throw err
   } finally {
@@ -363,7 +363,9 @@ export async function pinataExec(
  * POST /v0/agents/{id}/restart → { success: true, message, previousProcessId }
  */
 export async function pinataRestartAgent(env: PinataEnv, jwt: string, agentId: string): Promise<void> {
-  const res = await pinataFetch(env, jwt, `/v0/agents/${agentId}/restart`, { method: 'POST' })
+  // Restart waits for the agent to come back up — verified ~60-90s in
+  // production. Use 90s timeout (within CF Pages 100s wall-clock).
+  const res = await pinataFetch(env, jwt, `/v0/agents/${agentId}/restart`, { method: 'POST', timeoutMs: 90000 })
   await ok(res, `POST /v0/agents/${agentId}/restart`)
 }
 
