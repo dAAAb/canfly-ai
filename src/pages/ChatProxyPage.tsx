@@ -80,7 +80,7 @@ interface AgentInfo {
   model: string | null
   heartbeat_status: string | null
   hosting: string | null
-  capabilities: string | null
+  capabilities: string | Record<string, unknown> | null
 }
 
 interface ChatProxyPageProps {
@@ -544,8 +544,10 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
           {agent?.hosting === 'pinata' && (() => {
             let pinataAgentId: string | null = null
             try {
-              const caps = JSON.parse(agent.capabilities || '{}')
-              pinataAgentId = caps.pinataAgentId ?? null
+              const caps = typeof agent.capabilities === 'string'
+                ? JSON.parse(agent.capabilities || '{}')
+                : (agent.capabilities ?? {})
+              pinataAgentId = (caps as Record<string, unknown>).pinataAgentId as string ?? null
             } catch { /* ignore */ }
             return (
               <div className="mx-6 mb-2 px-4 py-4 bg-cyan-500/5 border border-cyan-500/30 rounded-lg space-y-3">
