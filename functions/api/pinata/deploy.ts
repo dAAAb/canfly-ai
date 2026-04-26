@@ -234,6 +234,7 @@ const deployHandler: PagesFunction<Env> = async ({ env, request }) => {
       orKey.hash,
       JSON.stringify({
         pinataJwt: encryptedJwt,
+        pinataSecretId: secret.id,
         openrouterKey: encryptedKey,
         openrouterKeyLabel: orKey.label,
         agentLimit: pinataAccount.agentLimit,

@@ -138,6 +138,20 @@ export async function pinataGetAgent(env: PinataEnv, jwt: string, agentId: strin
   return ok<PinataAgentSummary>(res, `GET /v0/agents/${agentId}`)
 }
 
+export interface PinataSecretSummary {
+  id: string
+  name: string
+  type?: string
+}
+
+/** GET /v0/secrets — list workspace-level secrets (Secrets Vault). */
+export async function pinataListSecrets(env: PinataEnv, jwt: string): Promise<PinataSecretSummary[]> {
+  const res = await pinataFetch(env, jwt, '/v0/secrets')
+  const body = await ok<{ secrets?: PinataSecretSummary[] } | PinataSecretSummary[]>(res, 'GET /v0/secrets')
+  if (Array.isArray(body)) return body
+  return body.secrets || []
+}
+
 // ── Write (verified 2026-04-25 via scripts/spike-pinata-create.ts) ────
 
 /**
@@ -177,16 +191,33 @@ export interface CreatedAgent {
   hostProvider: string
 }
 
-/** POST /v0/secrets → { success, secret: { id, name, type, ... } } */
+/**
+ * POST /v0/secrets → { success, secret: { id, name, type, ... } }
+ *
+ * Pinata Secrets Vault is workspace-level: a name like "OPENROUTER_API_KEY"
+ * collides with any leftover from earlier deploys (or from the "Connect"
+ * flow in Pinata's UI). On 409 we transparently look up the existing secret
+ * by name, delete it, and retry — keeping deploys idempotent without
+ * forcing the user to clean up the vault by hand.
+ */
 export async function pinataCreateSecret(
   env: PinataEnv,
   jwt: string,
   payload: CreateSecretPayload
 ): Promise<{ id: string; name: string }> {
-  const res = await pinataFetch(env, jwt, '/v0/secrets', {
+  const attempt = async () => pinataFetch(env, jwt, '/v0/secrets', {
     method: 'POST',
     body: JSON.stringify(payload),
   })
+
+  let res = await attempt()
+  if (res.status === 409) {
+    const existing = (await pinataListSecrets(env, jwt)).find((s) => s.name === payload.name)
+    if (existing) {
+      await pinataDeleteSecret(env, jwt, existing.id)
+      res = await attempt()
+    }
+  }
   const body = await ok<{ success: boolean; secret: { id: string; name: string } }>(res, 'POST /v0/secrets')
   return { id: body.secret.id, name: body.secret.name }
 }

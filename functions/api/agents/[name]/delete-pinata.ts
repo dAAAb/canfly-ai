@@ -12,7 +12,7 @@ import { type Env, json, errorResponse, handleOptions } from '../../community/_h
 import { authenticateRequest } from '../../_auth'
 import { importKey, decrypt } from '../../../lib/crypto'
 import { revokeManagedKey } from '../../../lib/openrouter'
-import { pinataDeleteAgent } from '../../../lib/pinata'
+import { pinataDeleteAgent, pinataDeleteSecret, pinataListSecrets } from '../../../lib/pinata'
 
 interface DeploymentRow {
   id: string
@@ -25,6 +25,7 @@ interface DeploymentRow {
 
 interface DeploymentMetadata {
   pinataJwt?: string
+  pinataSecretId?: string
   openrouterKey?: string
   openrouterKeyLabel?: string
 }
@@ -63,13 +64,33 @@ export const onRequestDelete: PagesFunction<Env> = async ({ env, request, params
 
   const cleanupErrors: string[] = []
 
-  // Step 2: delete Pinata agent
-  if (deployment.pinata_agent_id && meta.pinataJwt) {
-    try {
-      const jwt = await decrypt(meta.pinataJwt, cryptoKey)
-      await pinataDeleteAgent(env, jwt, deployment.pinata_agent_id)
-    } catch (err) {
-      cleanupErrors.push(`pinata: ${err instanceof Error ? err.message : 'fail'}`)
+  // Step 2: delete Pinata agent + the workspace-level secret it depended on.
+  // Pinata Secrets Vault is workspace-scoped, so leaving OPENROUTER_API_KEY
+  // behind blocks any future deploy with a 409 conflict. We delete by stored
+  // ID when we have it, fall back to list-and-match by name otherwise.
+  if (meta.pinataJwt) {
+    let jwt: string | null = null
+    try { jwt = await decrypt(meta.pinataJwt, cryptoKey) } catch { /* corrupt metadata */ }
+
+    if (jwt && deployment.pinata_agent_id) {
+      try {
+        await pinataDeleteAgent(env, jwt, deployment.pinata_agent_id)
+      } catch (err) {
+        cleanupErrors.push(`pinata agent: ${err instanceof Error ? err.message : 'fail'}`)
+      }
+    }
+
+    if (jwt) {
+      try {
+        let secretId = meta.pinataSecretId
+        if (!secretId) {
+          const found = (await pinataListSecrets(env, jwt)).find((s) => s.name === 'OPENROUTER_API_KEY')
+          secretId = found?.id
+        }
+        if (secretId) await pinataDeleteSecret(env, jwt, secretId)
+      } catch (err) {
+        cleanupErrors.push(`pinata secret: ${err instanceof Error ? err.message : 'fail'}`)
+      }
     }
   }
 
