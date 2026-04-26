@@ -79,6 +79,8 @@ interface AgentInfo {
   wallet_address: string | null
   model: string | null
   heartbeat_status: string | null
+  hosting: string | null
+  capabilities: string | null
 }
 
 interface ChatProxyPageProps {
@@ -154,7 +156,7 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
         })
         const data: { sessions?: ChatSession[] } = await res.json()
         setSessions(data.sessions || [])
-      } catch {}
+      } catch { /* sessions are optional UI; ignore failures */ }
     })()
   }, [agentName, isAuthenticated, getAuthHeaders])
 
@@ -536,7 +538,50 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
             </div>
           )}
 
-          {/* Input Area */}
+          {/* Pinata-hosted lobster: chat doesn't proxy through CanFly. Show
+              Telegram / Pinata-dashboard CTA in place of (and again above) the
+              input area so users know where to actually talk to the lobster. */}
+          {agent?.hosting === 'pinata' && (() => {
+            let pinataAgentId: string | null = null
+            try {
+              const caps = JSON.parse(agent.capabilities || '{}')
+              pinataAgentId = caps.pinataAgentId ?? null
+            } catch { /* ignore */ }
+            return (
+              <div className="mx-6 mb-2 px-4 py-4 bg-cyan-500/5 border border-cyan-500/30 rounded-lg space-y-3">
+                <div className="flex items-start gap-2 text-cyan-200">
+                  <span className="text-base">🪅</span>
+                  <div className="text-sm">
+                    <div className="font-medium">這是 Pinata 蝦</div>
+                    <div className="text-xs text-gray-400 mt-1">
+                      Pinata 蝦的聊天走 WebSocket（CanFly 還沒做 proxy）。請改走以下任一條：
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Link
+                    to={subdomainUsername ? `/agent/${agentName}/settings` : `/u/${username}/agent/${agentName}/settings`}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-medium"
+                  >
+                    📨 綁 Telegram bot
+                  </Link>
+                  {pinataAgentId && (
+                    <a
+                      href={`https://app.pinata.cloud/agents/${pinataAgentId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-medium"
+                    >
+                      🪅 Pinata Dashboard ↗
+                    </a>
+                  )}
+                </div>
+              </div>
+            )
+          })()}
+
+          {/* Input Area — hidden for Pinata-hosted lobsters (use Telegram instead) */}
+          {agent?.hosting !== 'pinata' && (
           <div className="px-6 py-4 border-t border-gray-800">
             <div className="flex items-end gap-3">
               <textarea
@@ -574,6 +619,7 @@ export default function ChatProxyPage({ subdomainUsername }: ChatProxyPageProps)
               {t('chat.disclaimer')}
             </p>
           </div>
+          )}
         </div>
       </div>
     </div>

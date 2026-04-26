@@ -17,7 +17,7 @@
  *
  * GET /api/agents/:name/chat?sessionId=xxx&channel=canfly — Fetch chat history
  */
-import { type Env, json, errorResponse, handleOptions, CORS_HEADERS } from '../../community/_helpers'
+import { type Env, json, errorResponse, handleOptions } from '../../community/_helpers'
 import { authenticateRequest } from '../../_auth'
 import { importKey, decrypt } from '../../../lib/crypto'
 
@@ -178,7 +178,29 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     return errorResponse('Message too long (max 4000 characters)', 400)
   }
 
-  // Resolve agent gateway URL
+  // If this is a Pinata-hosted lobster, the existing Zeabur-style chat proxy
+  // doesn't apply — Pinata's runtime exposes WebSocket chat with a challenge-
+  // response handshake we don't proxy yet. Tell the user how to actually chat.
+  const agentRow = await env.DB.prepare(
+    `SELECT hosting, capabilities FROM agents WHERE name = ?1`
+  ).bind(agentName).first<{ hosting: string | null; capabilities: string | null }>()
+  if (agentRow?.hosting === 'pinata') {
+    let pinataAgentId: string | null = null
+    try {
+      const caps = JSON.parse(agentRow.capabilities || '{}')
+      pinataAgentId = caps.pinataAgentId ?? null
+    } catch { /* ignore malformed capabilities */ }
+    return json({
+      error: 'This is a Pinata-hosted lobster. Chat via Telegram (bind a bot in settings) or open the Pinata dashboard directly.',
+      code: 'PINATA_CHAT_UNSUPPORTED',
+      hosting: 'pinata',
+      pinataAgentId,
+      pinataDashboardUrl: pinataAgentId ? `https://app.pinata.cloud/agents/${pinataAgentId}` : null,
+      hint: 'Pinata uses WebSocket chat with a challenge-response handshake that CanFly does not proxy. Use Telegram or the Pinata dashboard.',
+    }, 422)
+  }
+
+  // Resolve agent gateway URL (Zeabur path)
   const gatewayUrl = await resolveGatewayUrl(env.DB, agentName)
   if (!gatewayUrl) {
     // Distinguish "never deployed" from "deployment failed/incomplete":
