@@ -5,13 +5,18 @@
  * their own Pinata JWT (CanFly does not own the Pinata account); we proxy on
  * their behalf for the lifetime of the lobster.
  *
- * ⚠️ Every helper now takes `env` as the first arg so it can route through
- * `env.PINATA_RELAY_URL` (a non-Cloudflare relay) when set. Pinata's CF zone
- * blocks any incoming request carrying a `CF-Connecting-IP` header (verified
- * 2026-04-26), and Cloudflare Workers auto-inject that header on every
- * outbound subrequest with no documented way to suppress it. So Pages
- * Functions cannot call agents.pinata.cloud directly. See relay/README.md.
+ * ⚠️ Why this uses `cloudflare:sockets` instead of fetch():
+ *   Pinata's CF zone rejects any incoming request carrying CF-Connecting-IP
+ *   (verified 2026-04-26 via header bisection). CF Workers' fetch() auto-injects
+ *   that header on cross-zone subrequests. Cloudflare's Smart Shield docs note
+ *   `connect()` and `fetch()` use different egress paths — `connect()` is raw
+ *   TCP without the auto-injection, so we use that via fetchViaSockets().
+ *
+ * Optional: setting env.PINATA_RELAY_URL still routes through a non-CF relay
+ * (see relay/README.md) — useful as a fallback if cloudflare:sockets ever
+ * stops working or has issues in a specific edge.
  */
+import { fetchViaSockets } from './pinata-sockets'
 
 const AGENTS_DIRECT = 'https://agents.pinata.cloud'
 
@@ -32,31 +37,26 @@ export class PinataApiError extends Error {
   }
 }
 
-function pinataBase(env: PinataEnv): string {
-  const relay = env.PINATA_RELAY_URL
-  if (relay && /^https?:\/\//.test(relay)) {
-    return relay.replace(/\/$/, '')
-  }
-  return AGENTS_DIRECT
-}
-
 async function pinataFetch(
   env: PinataEnv,
   jwt: string,
   path: string,
   init?: RequestInit
 ): Promise<Response> {
-  const base = pinataBase(env)
-  return fetch(`${base}${path}`, {
-    ...init,
-    headers: {
-      Authorization: `Bearer ${jwt}`,
-      'Content-Type': 'application/json',
-      'User-Agent': 'CanFly/1.0 (+https://canfly.ai)',
-      Accept: 'application/json, text/plain, */*',
-      ...(init?.headers || {}),
-    },
-  })
+  const headers = {
+    Authorization: `Bearer ${jwt}`,
+    'Content-Type': 'application/json',
+    Accept: 'application/json, text/plain, */*',
+    ...(init?.headers || {}),
+  }
+
+  // Optional escape hatch: route through a non-CF relay (Deno Deploy etc.)
+  // if PINATA_RELAY_URL is set. Default path uses cloudflare:sockets.
+  const relay = env.PINATA_RELAY_URL
+  if (relay && /^https?:\/\//.test(relay)) {
+    return fetch(`${relay.replace(/\/$/, '')}${path}`, { ...init, headers })
+  }
+  return fetchViaSockets(`${AGENTS_DIRECT}${path}`, { ...init, headers })
 }
 
 async function ok<T>(res: Response, endpoint: string): Promise<T> {
