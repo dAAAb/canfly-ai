@@ -80,7 +80,21 @@ async function isFreeModelInWhitelist(db: D1Database, modelId: string): Promise<
 
 export const onRequestOptions: PagesFunction<Env> = () => handleOptions()
 
-export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
+export const onRequestPost: PagesFunction<Env> = async (ctx) => {
+  try {
+    return await deployHandler(ctx)
+  } catch (outerErr) {
+    // Last-resort safety net so we always return JSON and never let the runtime
+    // serve a generic HTML 502 — that crash mode left orphaned Pinata agents
+    // and OR keys because our inner rollback never ran (verified 2026-04-26).
+    const msg = outerErr instanceof Error ? outerErr.message : String(outerErr)
+    const stack = outerErr instanceof Error ? outerErr.stack : ''
+    console.error('[pinata/deploy] uncaught at top level:', msg, stack?.slice(0, 500))
+    return errorResponse(`Deploy crashed: ${msg}`, 500)
+  }
+}
+
+const deployHandler: PagesFunction<Env> = async ({ env, request }) => {
   // Guard 1: feature flag
   if (!(await isFeatureEnabled(env.DB, 'v3_pinata_deploy'))) {
     return errorResponse('Pinata deploy is currently disabled', 503)
@@ -152,6 +166,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
 
   try {
     // Step A: validate Pinata JWT and fetch capacity
+    console.log('[deploy] step A: pinataListAgents')
     const pinataAccount = await pinataListAgents(body.pinataJwt)
     if (pinataAccount.agentLimit > 0 && (pinataAccount.agents?.length ?? 0) >= pinataAccount.agentLimit) {
       return errorResponse(
@@ -161,6 +176,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     }
 
     // Step B: provision OpenRouter child key (limit=0 → free-only)
+    console.log('[deploy] step B: createManagedKey')
     const orKey = await createManagedKey(
       env.OPENROUTER_MANAGEMENT_KEY,
       `canfly-${username}-${slug}`,
@@ -172,6 +188,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     // Pinata stores secrets as plain env-var-style key→value pairs (no provider
     // enum). We use OPENROUTER_API_KEY because that's what OpenClaw reads at
     // runtime (matches aiProviderEnvVar('openrouter') in zeabur/deploy.ts).
+    console.log('[deploy] step C: pinataCreateSecret')
     const secret = await pinataCreateSecret(body.pinataJwt, {
       name: 'OPENROUTER_API_KEY',
       value: orKey.key,
@@ -182,6 +199,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     // accepts { name, description, vibe, emoji } — model/template/secrets are
     // configured separately (model via env var on the secret, template not
     // exposed via API yet, secrets via attach call below).
+    console.log('[deploy] step D: pinataCreateAgent')
     const created = await pinataCreateAgent(body.pinataJwt, {
       name: agentDisplayName,
       description: body.agentBio,
@@ -192,15 +210,18 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
 
     // Step E: attach the secret to the agent so OpenClaw runtime sees it as
     // OPENROUTER_API_KEY. POST /v0/agents/{id}/secrets body { secretIds: [...] }.
+    console.log(`[deploy] step E: pinataAttachSecrets agent=${created.agentId}`)
     await pinataAttachSecrets(body.pinataJwt, created.agentId, [secret.id])
 
     // Step E.1: restart so the secret loads as an env var inside the container.
     // Verified: before restart, env | grep OPENROUTER_API_KEY → 0 lines;
     // after restart → 1 line. The runtime auto-detects the openrouter provider
     // from this env var via /home/node/.openclaw/agents/main/agent/models.json.
+    console.log('[deploy] step E.1: pinataRestartAgent')
     await pinataRestartAgent(body.pinataJwt, created.agentId)
     // Pinata's container needs a moment for the gateway process to come back.
-    await new Promise((r) => setTimeout(r, 5000))
+    // Reduced from 5s → 2s to fit Pages Function 30s wall-clock budget.
+    await new Promise((r) => setTimeout(r, 2000))
 
     // Step E.2: pin the default model to our chosen free model.
     // Pinata's baseline `agents.defaults.model.primary` is `openrouter/auto`
@@ -211,11 +232,20 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     // Pinata's restart triggers an R2 snapshot restore that wipes openclaw.json
     // back to baseline. Setting it last means the override is in effect for
     // every subsequent agent turn until the user (or Pinata) restarts again.
-    await pinataSetDefaultModel(
-      body.pinataJwt,
-      created.agentId,
-      `openrouter/${body.freeModelId}`,
-    )
+    //
+    // Best-effort: if console/exec hiccups (slow container start), we still
+    // ship the deploy as success — the user can retry from settings later
+    // if their first chat returns "Key limit exceeded".
+    console.log('[deploy] step E.2: pinataSetDefaultModel')
+    try {
+      await pinataSetDefaultModel(
+        body.pinataJwt,
+        created.agentId,
+        `openrouter/${body.freeModelId}`,
+      )
+    } catch (e) {
+      console.warn('[deploy] setDefaultModel failed (non-fatal):', e instanceof Error ? e.message : e)
+    }
 
     // Step F: persist deployment row (encrypt sensitive fields)
     deploymentId = generateUUID()
