@@ -343,6 +343,36 @@ export default function TelegramConnectCard({ agentName, provider = 'zeabur' }: 
               {t('dashboard.telegram.disconnectBtn', 'Disconnect')}
             </button>
           </div>
+
+          {/* OpenClaw pairing approve — required per Telegram user even when
+              the bot's webhook is already configured. Bot replies with a
+              pairing code on first /start; user pastes it here to approve. */}
+          <div className="mt-3 pt-3 border-t border-green-500/20">
+            <p className="text-xs text-gray-400 mb-2">
+              第一次跟 bot 講話時，bot 會回一組 <span className="font-mono text-cyan-400">Pairing code</span>（例如 ABC12DEF）。把那組碼貼進來核可：
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={pairingCode}
+                onChange={(e) => { setPairingCode(e.target.value.toUpperCase()); setError(null) }}
+                placeholder="e.g. KHNE9UHV"
+                className="flex-1 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 font-mono tracking-wider"
+                disabled={approvingPairing}
+              />
+              <button
+                onClick={handleApprovePairing}
+                disabled={approvingPairing || pairingCode.trim().length < 4}
+                className="px-3 py-2 rounded-lg bg-green-600 hover:bg-green-500 disabled:bg-gray-700 disabled:text-gray-500 text-white text-xs font-medium transition-colors flex items-center gap-1.5"
+              >
+                {approvingPairing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Key className="w-3.5 h-3.5" />}
+                {t('dashboard.telegram.approveBtn', '核可')}
+              </button>
+            </div>
+            {error && (
+              <p className="text-xs text-red-400 mt-2 break-all">{error}</p>
+            )}
+          </div>
         </div>
       )}
 
