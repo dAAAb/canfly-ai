@@ -8014,7 +8014,8 @@
     "reconfigurePartial": "Partial repair — some checks failed.",
     "reconfigurePatchMethod": "Config patch",
     "reconfigureChat": "Chat endpoint",
-    "reconfigureToken": "Gateway token"
+    "reconfigureToken": "Gateway token",
+    "deleteDescriptionPinata": "Permanently remove this lobster + its Pinata agent + the associated OpenRouter child key. This cannot be undone."
   },
   "pinata": {
     "wizard": {

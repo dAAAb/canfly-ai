@@ -265,7 +265,13 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
     setDeleteError(null)
 
     try {
-      const res = await fetch(`/api/agents/${encodeURIComponent(agentName)}/delete-deployment`, {
+      // Route by hosting: Pinata lobsters tear down via delete-pinata which
+      // also deletes the Pinata agent + secret + revokes the OpenRouter
+      // managed key. Zeabur lobsters use the existing delete-deployment.
+      const endpoint = agentHosting === 'pinata'
+        ? `/api/agents/${encodeURIComponent(agentName)}/delete-pinata`
+        : `/api/agents/${encodeURIComponent(agentName)}/delete-deployment`
+      const res = await fetch(endpoint, {
         method: 'DELETE',
         headers: await getAuthHeaders(),
       })
@@ -286,7 +292,7 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
     } finally {
       setDeleting(false)
     }
-  }, [agentName, deleteConfirmText, getAuthHeaders, navigate, username, subdomainUsername])
+  }, [agentName, agentHosting, deleteConfirmText, getAuthHeaders, navigate, username, subdomainUsername])
 
   // Load current display name
   useEffect(() => {
@@ -1104,7 +1110,11 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="text-sm font-semibold text-white">{t('settings.deleteTitle')}</h3>
-                <p className="text-xs text-gray-400 mt-1">{t('settings.deleteDescription')}</p>
+                <p className="text-xs text-gray-400 mt-1">
+                  {agentHosting === 'pinata'
+                    ? t('settings.deleteDescriptionPinata', '永久移除此蝦蝦及其 Pinata agent + 對應的 OpenRouter 子 key。此操作無法復原。')
+                    : t('settings.deleteDescription')}
+                </p>
 
                 {!showDeleteConfirm ? (
                   <button

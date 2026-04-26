@@ -8022,7 +8022,8 @@
     "reconfigurePartial": "部分修復 — 仍有檢查未通過。",
     "reconfigurePatchMethod": "設定 Patch",
     "reconfigureChat": "聊天端點",
-    "reconfigureToken": "Gateway Token"
+    "reconfigureToken": "Gateway Token",
+    "deleteDescriptionPinata": "永久移除此蝦蝦及其 Pinata agent + 對應的 OpenRouter 子 key。此操作無法復原。"
   },
   "pinata": {
     "wizard": {
