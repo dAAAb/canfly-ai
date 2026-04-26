@@ -237,9 +237,15 @@ export default function DeployPinataWizardPage({ subdomainUsername }: DeployPina
           initialTask: initialTask.trim() || undefined,
         }),
       })
-      const data = (await res.json()) as DeployResponse & { error?: string }
+      // Read body as text first so a non-JSON 5xx (CF generic 502 page,
+      // upstream bot-challenge HTML, …) surfaces the real status + body
+      // snippet instead of a generic "Unexpected token '<'" parse error.
+      const raw = await res.text()
+      let data: DeployResponse & { error?: string } = {} as DeployResponse
+      try { data = JSON.parse(raw) } catch { /* non-JSON body */ }
       if (!res.ok) {
-        setDeployError(data.error || `Deploy failed (${res.status})`)
+        const snippet = data.error || raw.slice(0, 250) || `HTTP ${res.status}`
+        setDeployError(`Deploy failed (${res.status}): ${snippet}`)
         return
       }
       setDeployResult(data)
