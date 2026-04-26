@@ -50,12 +50,13 @@ async function pinataFetch(
     ...(init?.headers || {}),
   }
 
-  // Hard timeout per call. Without this, a hanging relay/upstream lets the
-  // CF Pages Function consume its full 30s wall-clock — CF then returns a
-  // generic 502 HTML page BEFORE our catch can run, so OpenRouter keys
-  // created earlier in the flow leak. 8s is plenty for a healthy Pinata call.
+  // Hard timeout per call. POST /v0/agents takes ~47s in normal operation
+  // (Pinata cold-starts the agent runtime synchronously), so we can't be
+  // too aggressive — 8s killed real successes. 60s is below CF Pages'
+  // 100s wall-clock and lets the slow create endpoints complete while
+  // still bounding genuine hangs.
   const ac = new AbortController()
-  const t = setTimeout(() => ac.abort(new Error('pinataFetch timeout')), 8000)
+  const t = setTimeout(() => ac.abort(new Error('pinataFetch timeout')), 60000)
 
   try {
     // Optional escape hatch: route through a non-CF relay (Deno Deploy etc.)
@@ -67,7 +68,7 @@ async function pinataFetch(
     return await fetchViaSockets(`${AGENTS_DIRECT}${path}`, { ...init, headers })
   } catch (err) {
     if ((err as Error)?.name === 'AbortError' || /timeout/.test((err as Error)?.message || '')) {
-      throw new PinataApiError(504, path, `Upstream timeout after 8s (relay or Pinata not responding)`)
+      throw new PinataApiError(504, path, `Upstream timeout after 60s (relay or Pinata not responding)`)
     }
     throw err
   } finally {

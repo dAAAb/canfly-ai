@@ -92,7 +92,7 @@ export const onRequestPost: PagesFunction<Env> = async (ctx) => {
   }
 }
 
-const deployHandler: PagesFunction<Env> = async ({ env, request }) => {
+const deployHandler: PagesFunction<Env> = async ({ env, request, waitUntil }) => {
   // Guard 1: feature flag
   if (!(await isFeatureEnabled(env.DB, 'v3_pinata_deploy'))) {
     return errorResponse('Pinata deploy is currently disabled', 503)
@@ -315,51 +315,50 @@ const deployHandler: PagesFunction<Env> = async ({ env, request }) => {
       message: 'Pinata lobster ready. Default model is being applied in the background; visit settings to bind Telegram.',
     }, 201)
   } catch (err) {
-    // ── Rollback in reverse creation order ─────────────────────────
+    // ── Return JSON immediately, run rollback in the background ─────
+    // Each Pinata rollback call can take up to 8s if upstream hangs. Doing
+    // them inline burns the same wall-clock that already failed once, so CF
+    // serves a generic HTML 502 and the user gets no actionable error. We
+    // ship the JSON error first, then let waitUntil() finish the cleanup.
     const errMsg = err instanceof Error ? err.message : 'unknown error'
-    const rollbackErrors: string[] = []
+    console.error('[pinata/deploy] failed:', errMsg)
 
-    if (agentRowInserted) {
-      try {
-        await env.DB.prepare(`DELETE FROM agents WHERE name = ?1`).bind(slug).run()
-      } catch (e) {
-        rollbackErrors.push(`agents row: ${e instanceof Error ? e.message : 'fail'}`)
+    waitUntil((async () => {
+      const rollbackErrors: string[] = []
+      if (agentRowInserted) {
+        try { await env.DB.prepare(`DELETE FROM agents WHERE name = ?1`).bind(slug).run() }
+        catch (e) { rollbackErrors.push(`agents row: ${e instanceof Error ? e.message : 'fail'}`) }
       }
-    }
-
-    if (pinataAgentId) {
-      try {
-        await pinataDeleteAgent(env, body.pinataJwt, pinataAgentId)
-      } catch (e) {
-        rollbackErrors.push(`pinata agent ${pinataAgentId}: ${e instanceof Error ? e.message : 'fail'}`)
+      if (pinataAgentId) {
+        try { await pinataDeleteAgent(env, body.pinataJwt, pinataAgentId) }
+        catch (e) { rollbackErrors.push(`pinata agent ${pinataAgentId}: ${e instanceof Error ? e.message : 'fail'}`) }
       }
-    }
-
-    if (pinataSecretId) {
-      try {
-        await pinataDeleteSecret(env, body.pinataJwt, pinataSecretId)
-      } catch (e) {
-        rollbackErrors.push(`pinata secret ${pinataSecretId}: ${e instanceof Error ? e.message : 'fail'}`)
+      if (pinataSecretId) {
+        try { await pinataDeleteSecret(env, body.pinataJwt, pinataSecretId) }
+        catch (e) { rollbackErrors.push(`pinata secret ${pinataSecretId}: ${e instanceof Error ? e.message : 'fail'}`) }
       }
-    }
-
-    if (openrouterKeyHash) {
-      try {
-        await revokeManagedKey(env.OPENROUTER_MANAGEMENT_KEY, openrouterKeyHash)
-      } catch (e) {
-        rollbackErrors.push(`openrouter key ${openrouterKeyHash}: ${e instanceof Error ? e.message : 'fail'}`)
+      if (openrouterKeyHash) {
+        try { await revokeManagedKey(env.OPENROUTER_MANAGEMENT_KEY, openrouterKeyHash) }
+        catch (e) { rollbackErrors.push(`openrouter key ${openrouterKeyHash}: ${e instanceof Error ? e.message : 'fail'}`) }
       }
-    }
-
-    if (deploymentId) {
+      if (deploymentId) {
+        try {
+          await env.DB.prepare(
+            `UPDATE v3_pinata_deployments
+             SET status='failed', error_message=?1, updated_at=datetime('now')
+             WHERE id=?2`
+          ).bind(`${errMsg}${rollbackErrors.length ? ` | rollback issues: ${rollbackErrors.join('; ')}` : ''}`, deploymentId).run()
+        } catch { /* ignore */ }
+      }
       try {
         await env.DB.prepare(
-          `UPDATE v3_pinata_deployments
-           SET status='failed', error_message=?1, updated_at=datetime('now')
-           WHERE id=?2`
-        ).bind(`${errMsg}${rollbackErrors.length ? ` | rollback issues: ${rollbackErrors.join('; ')}` : ''}`, deploymentId).run()
+          `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
+           VALUES ('deployment', ?1, 'pinata_deploy_failed', ?2)`
+        ).bind(deploymentId || slug, JSON.stringify({
+          owner: username, agentName: slug, error: errMsg, rollbackErrors,
+        })).run()
       } catch { /* ignore */ }
-    }
+    })())
 
     // Map upstream errors to client-facing status
     if (err instanceof PinataApiError) {
