@@ -362,8 +362,21 @@ const deployHandler: PagesFunction<Env> = async ({ env, request, waitUntil }) =>
 
     // Map upstream errors to client-facing status
     if (err instanceof PinataApiError) {
+      const lower = errMsg.toLowerCase()
+      if (lower.includes('free trial') || lower.includes('time exhausted') || lower.includes('upgrade your plan')) {
+        return errorResponse(
+          `Pinata FREE trial time exhausted (you get 2 hr/month). Upgrade to PICNIC, use a different Pinata account, or wait for monthly reset.`,
+          402,
+        )
+      }
+      if (lower.includes('agent limit') || lower.includes('agentlimit')) {
+        return errorResponse(
+          `Pinata agent limit reached (FREE tier = 1 agent). Delete an existing one or upgrade.`,
+          402,
+        )
+      }
       if (err.status === 401 || err.status === 403) {
-        return errorResponse(`Pinata rejected the JWT (${err.status}). Re-paste a fresh admin-scope key.`, err.status)
+        return errorResponse(`Pinata rejected the JWT (${err.status}). The key may lack admin scope, or your account may have hit a plan limit. Body: ${errMsg}`, err.status)
       }
       return errorResponse(`Pinata upstream error: ${errMsg}`, 502)
     }
