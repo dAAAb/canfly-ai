@@ -323,6 +323,52 @@ export async function pinataConnectTelegram(
   }
 }
 
+/**
+ * Add a Telegram user ID to the agent's allowlist via openclaw config set.
+ *
+ * Pinata's OpenClaw runtime ships with `channels.telegram.dmPolicy = "pairing"`
+ * but `channels.telegram.allowFrom = []`, so messages get silently dropped
+ * (verified via the doctor warning on a fresh deploy 2026-04-26). Approving
+ * a pairing code via `openclaw pairing approve` does NOT update allowFrom on
+ * this OpenClaw build — the user ID has to be written there directly.
+ *
+ * We read the current array, append if missing, then write it back as JSON.
+ * Idempotent; safe to call repeatedly.
+ */
+export async function pinataAddTelegramAllowedUser(
+  env: PinataEnv,
+  jwt: string,
+  agentId: string,
+  telegramUserId: string,
+): Promise<{ allowFrom: string[]; alreadyPresent: boolean }> {
+  if (!/^\d+$/.test(telegramUserId)) {
+    throw new Error('Telegram user IDs must be numeric')
+  }
+
+  const readCmd = `openclaw config get channels.telegram.allowFrom --json 2>/dev/null || echo "[]"`
+  const readResult = await pinataExec(env, jwt, agentId, readCmd)
+  const readOutput = (readResult.stdout || '').trim() || '[]'
+
+  let current: string[] = []
+  try {
+    const parsed = JSON.parse(readOutput)
+    if (Array.isArray(parsed)) current = parsed.map(String)
+  } catch { /* fall through with empty list */ }
+
+  if (current.includes(telegramUserId)) {
+    return { allowFrom: current, alreadyPresent: true }
+  }
+
+  const next = [...current, telegramUserId]
+  const writeCmd = `openclaw config set channels.telegram.allowFrom '${JSON.stringify(next)}'`
+  const writeResult = await pinataExec(env, jwt, agentId, writeCmd)
+  const writeOutput = ((writeResult.stdout || '') + (writeResult.stderr || '')).toLowerCase()
+  if (writeResult.exitCode != null && writeResult.exitCode !== 0 && /error|failed/.test(writeOutput)) {
+    throw new Error(`openclaw config set failed: ${writeOutput.slice(0, 300)}`)
+  }
+  return { allowFrom: next, alreadyPresent: false }
+}
+
 export async function pinataDisconnectTelegram(env: PinataEnv, jwt: string, agentId: string): Promise<void> {
   const res = await pinataFetch(env, jwt, `/v0/agents/${agentId}/channels/telegram`, {
     method: 'DELETE',

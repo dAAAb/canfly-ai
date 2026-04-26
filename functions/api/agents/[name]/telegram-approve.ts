@@ -14,9 +14,14 @@ import { type Env, json, errorResponse, handleOptions, parseBody } from '../../c
 import { authenticateRequest } from '../../_auth'
 import { importKey, decrypt } from '../../../lib/crypto'
 import { zeaburGQL, execCommand } from '../../../lib/openclaw-config'
-import { pinataExec } from '../../../lib/pinata'
+import { pinataAddTelegramAllowedUser } from '../../../lib/pinata'
 
-interface ApproveBody { pairingCode: string }
+interface ApproveBody {
+  /** Zeabur path: pairing code from `/start` (e.g. "ABC12DEF") */
+  pairingCode?: string
+  /** Pinata path: numeric Telegram user ID (e.g. "403535178") */
+  telegramUserId?: string
+}
 
 export const onRequestOptions: PagesFunction<Env> = () => handleOptions()
 
@@ -33,15 +38,23 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   if (agent.owner_username !== auth.username) return errorResponse('Not authorized', 403)
 
   const body = await parseBody<ApproveBody>(request)
-  const code = (body?.pairingCode || '').trim().toUpperCase()
-  // OpenClaw pairing codes look like ABC12DEF — accept 4-16 alnum chars.
-  if (!/^[A-Z0-9]{4,16}$/.test(code)) {
-    return errorResponse('Invalid pairing code format', 400)
+
+  // ── Pinata path: write the user ID into channels.telegram.allowFrom ──
+  // Pinata's OpenClaw build silently drops messages from anyone not on the
+  // allowlist (verified via doctor warning). Pairing approve does NOT update
+  // allowFrom on this build, so we take the user ID directly.
+  if (agent.hosting === 'pinata') {
+    const tgUserId = (body?.telegramUserId || '').trim()
+    if (!/^\d{4,15}$/.test(tgUserId)) {
+      return errorResponse('Telegram user ID required (numeric, e.g. 403535178). Ask the bot for it after /start.', 400)
+    }
+    return await approveOnPinata(env, agentName, auth.username, tgUserId)
   }
 
-  // ── Pinata path: run `openclaw pairing approve` via pinataExec ──
-  if (agent.hosting === 'pinata') {
-    return await approveOnPinata(env, agentName, auth.username, code)
+  // ── Zeabur path: validate pairing code ──
+  const code = (body?.pairingCode || '').trim().toUpperCase()
+  if (!/^[A-Z0-9]{4,16}$/.test(code)) {
+    return errorResponse('Invalid pairing code format', 400)
   }
 
   const connection = await env.DB.prepare(
@@ -167,7 +180,7 @@ async function approveOnPinata(
   env: Env,
   agentName: string,
   username: string,
-  code: string,
+  telegramUserId: string,
 ): Promise<Response> {
   const deployment = await env.DB.prepare(
     `SELECT id, pinata_agent_id, metadata FROM v3_pinata_deployments
@@ -182,49 +195,34 @@ async function approveOnPinata(
   if (!meta.pinataJwt) return errorResponse('Deployment metadata missing JWT', 500)
   const jwt = await decrypt(meta.pinataJwt, cryptoKey)
 
-  const safeCode = code.replace(/[^A-Z0-9]/g, '')
-  const command = `openclaw pairing approve telegram ${safeCode}`
-
-  let result: { stdout?: string; stderr?: string; exitCode?: number; output?: string }
   try {
-    result = await pinataExec(env, jwt, deployment.pinata_agent_id, command)
+    const allowResult = await pinataAddTelegramAllowedUser(env, jwt, deployment.pinata_agent_id, telegramUserId)
+
+    await env.DB.prepare(
+      `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
+       VALUES ('agent', ?1, 'telegram_paired', ?2)`
+    ).bind(agentName, JSON.stringify({
+      owner: username, transport: 'pinata_allowfrom', telegramUserId,
+      alreadyPresent: allowResult.alreadyPresent, allowFromCount: allowResult.allowFrom.length,
+    })).run()
+
+    return json({
+      approved: true,
+      status: 'active',
+      alreadyPresent: allowResult.alreadyPresent,
+      allowFromCount: allowResult.allowFrom.length,
+    })
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
     await env.DB.prepare(
       `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
        VALUES ('agent', ?1, 'telegram_pair_failed', ?2)`
-    ).bind(agentName, JSON.stringify({ owner: username, transport: 'pinata_exec_failed', error: msg })).run()
+    ).bind(agentName, JSON.stringify({ owner: username, transport: 'pinata_allowfrom', error: msg })).run()
     return json({
       approved: false,
-      error: `Could not reach the Pinata agent: ${msg}. The pairing code may also have expired — message the bot again to get a new one.`,
+      error: `Could not add user to allowlist: ${msg}`,
     }, 502)
   }
-
-  const stripAnsi = (s: string) => s.replace(/\[[0-9;?]*[a-zA-Z]/g, '')
-  const output = stripAnsi((result.stdout || '') + (result.stderr || '') + (result.output || ''))
-  const approved = (result.exitCode === 0 || result.exitCode == null) &&
-    /approved|success|"ok"\s*:\s*true|\bok\b/i.test(output) &&
-    !/error|failed|not found|expired/i.test(output)
-
-  if (!approved) {
-    await env.DB.prepare(
-      `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
-       VALUES ('agent', ?1, 'telegram_pair_failed', ?2)`
-    ).bind(agentName, JSON.stringify({
-      owner: username, exitCode: result.exitCode, output: output.slice(0, 400),
-    })).run()
-    return json({
-      approved: false,
-      error: output.slice(0, 300) || `Pairing approval failed (exit ${result.exitCode})`,
-    }, 400)
-  }
-
-  await env.DB.prepare(
-    `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
-     VALUES ('agent', ?1, 'telegram_paired', ?2)`
-  ).bind(agentName, JSON.stringify({ owner: username, transport: 'pinata' })).run()
-
-  return json({ approved: true, status: 'active' })
 }
 
 export const onRequestPatch: PagesFunction<Env> = async ({ env, params, request }) => {
