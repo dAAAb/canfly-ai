@@ -36,8 +36,6 @@ import {
   pinataDeleteAgent,
   pinataDeleteSecret,
   pinataAttachSecrets,
-  pinataSetDefaultModel,
-  pinataRestartAgent,
   PinataApiError,
 } from '../../lib/pinata'
 
@@ -94,7 +92,7 @@ export const onRequestPost: PagesFunction<Env> = async (ctx) => {
   }
 }
 
-const deployHandler: PagesFunction<Env> = async ({ env, request, waitUntil }) => {
+const deployHandler: PagesFunction<Env> = async ({ env, request }) => {
   // Guard 1: feature flag
   if (!(await isFeatureEnabled(env.DB, 'v3_pinata_deploy'))) {
     return errorResponse('Pinata deploy is currently disabled', 503)
@@ -293,44 +291,18 @@ const deployHandler: PagesFunction<Env> = async ({ env, request, waitUntil }) =>
       freeModelId: body.freeModelId,
     })).run()
 
-    // Step H (background, via ctx.waitUntil): restart so the OPENROUTER_API_KEY
-    // env var loads inside the container, then `openclaw config set` to pin
-    // the default model away from `openrouter/auto` (which would hit our
-    // limit=0 child key and 403 on first chat). These two calls take 10-20
-    // seconds combined which exceeds the 30s wall-clock budget once we add
-    // earlier steps + relay overhead — so we let them run after returning
-    // success to the user.
+    // Step H is now a SEPARATE endpoint: POST /api/agents/:name/finalize-pinata
     //
-    // Worst case if the background work fails: user's first chat returns
-    // "Key limit exceeded" (paid model attempted). They retry from the
-    // lobster settings page (TODO endpoint) or we surface a "finalize"
-    // button next to the lobster.
-    const finalizeAgentId = created.agentId
-    const finalizeJwt = body.pinataJwt
-    const finalizeModel = `openrouter/${body.freeModelId}`
-    waitUntil((async () => {
-      try {
-        console.log('[deploy/bg] restart')
-        await pinataRestartAgent(env, finalizeJwt, finalizeAgentId)
-        await new Promise((r) => setTimeout(r, 5000))
-        console.log('[deploy/bg] setDefaultModel', finalizeModel)
-        await pinataSetDefaultModel(env, finalizeJwt, finalizeAgentId, finalizeModel)
-        await env.DB.prepare(
-          `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
-           VALUES ('deployment', ?1, 'pinata_deploy_finalized', ?2)`
-        ).bind(deploymentId, JSON.stringify({ model: finalizeModel })).run().catch(() => null)
-      } catch (e) {
-        console.warn('[deploy/bg] finalize failed (lobster created but using openrouter/auto):',
-          e instanceof Error ? e.message : e)
-        await env.DB.prepare(
-          `INSERT INTO activity_log (entity_type, entity_id, action, metadata)
-           VALUES ('deployment', ?1, 'pinata_deploy_finalize_failed', ?2)`
-        ).bind(deploymentId, JSON.stringify({
-          error: e instanceof Error ? e.message : String(e),
-        })).run().catch(() => null)
-      }
-    })())
-
+    // Tried using ctx.waitUntil() here originally, but CF Pages Functions
+    // appear to apply a single 30s wall-clock budget across the entire
+    // request lifecycle including waitUntil work. With the relay round-trips
+    // for restart + 5s sleep + `openclaw config set` exec, the background
+    // finalize never completed (verified: activity_log only got
+    // `pinata_deploy_completed`, never `pinata_deploy_finalized`).
+    //
+    // The wizard frontend calls /finalize-pinata immediately after this
+    // endpoint returns 201 (in a fresh request, fresh budget). Settings page
+    // and Telegram bind also re-apply the same finalize.
     return json({
       deploymentId,
       agentName: slug,

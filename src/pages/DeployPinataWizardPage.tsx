@@ -243,6 +243,20 @@ export default function DeployPinataWizardPage({ subdomainUsername }: DeployPina
         return
       }
       setDeployResult(data)
+
+      // Chain the finalize call (restart + setDefaultModel via openclaw config
+      // set) on a SEPARATE endpoint so each request gets its own 30s CF
+      // wall-clock budget. We skip the restart on this first finalize since
+      // the secret was already attached BEFORE the agent was created — the
+      // env var is loaded at boot, no restart needed for it.
+      // Fire-and-forget: don't block the redirect on it. If it fails, the
+      // user can re-apply from settings (TODO button) and Telegram bind also
+      // re-applies as a side effect.
+      fetch(`/api/agents/${encodeURIComponent(data.agentName)}/finalize-pinata?skipRestart=1`, {
+        method: 'POST',
+        headers: await getAuthHeaders(),
+      }).catch(() => { /* finalize is best-effort */ })
+
       // Hold the success line in the terminal for ~2.5s so user sees the
       // ✓ confirmation before we redirect.
       setTimeout(() => {
