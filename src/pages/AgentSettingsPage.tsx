@@ -86,6 +86,11 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
   const [displayNameSaved, setDisplayNameSaved] = useState(false)
   const [displayNameError, setDisplayNameError] = useState<string | null>(null)
 
+  // Pinata: re-apply free model (re-runs finalize-pinata if first run timed out)
+  const [reapplyingModel, setReapplyingModel] = useState(false)
+  const [reapplyResult, setReapplyResult] = useState<string | null>(null)
+  const [reapplyError, setReapplyError] = useState<string | null>(null)
+
   // Regenerate pairing code
   const [regenPairingLoading, setRegenPairingLoading] = useState(false)
   const [regenPairingResult, setRegenPairingResult] = useState<{ code: string; expiresAt: string } | null>(null)
@@ -293,6 +298,28 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
       setDeleting(false)
     }
   }, [agentName, agentHosting, deleteConfirmText, getAuthHeaders, navigate, username, subdomainUsername])
+
+  const handleReapplyModel = useCallback(async (skipRestart: boolean) => {
+    setReapplyingModel(true)
+    setReapplyResult(null)
+    setReapplyError(null)
+    try {
+      const url = `/api/agents/${encodeURIComponent(agentName)}/finalize-pinata${skipRestart ? '?skipRestart=1' : ''}`
+      const res = await fetch(url, { method: 'POST', headers: await getAuthHeaders() })
+      const raw = await res.text()
+      let data: { ok?: boolean; defaultModel?: string; restartError?: string | null; error?: string } = {}
+      try { data = JSON.parse(raw) } catch { /* non-JSON */ }
+      if (!res.ok) {
+        throw new Error(data.error || raw.slice(0, 200) || `HTTP ${res.status}`)
+      }
+      const note = data.restartError ? ` (restart 沒回 ack 但模型已套用)` : ''
+      setReapplyResult(`✓ 預設模型已套用：${data.defaultModel}${note}`)
+    } catch (err) {
+      setReapplyError((err as Error).message)
+    } finally {
+      setReapplyingModel(false)
+    }
+  }, [agentName, getAuthHeaders])
 
   // Load current display name
   useEffect(() => {
@@ -509,6 +536,51 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
             provider={agentHosting === 'pinata' ? 'pinata' : 'zeabur'}
           />
         </div>
+
+        {/* Pinata: re-apply free model (idempotent; fixes the case where deploy
+            finalize timed out or Pinata's R2 snapshot restored openrouter/auto). */}
+        {agentHosting === 'pinata' && (
+          <div className="mb-6">
+            <h2 className="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-3">
+              預設模型
+            </h2>
+            <GlassCard className="p-5">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center flex-shrink-0">
+                  <Key className="w-5 h-5 text-cyan-400" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm font-semibold text-white">重新套用免費模型</h3>
+                  <p className="text-xs text-gray-400 mt-1 mb-3">
+                    如果在 Pinata Dashboard 看到 Model 還是 <code className="text-cyan-400">openrouter/auto</code>、或聊天時報「No API key found for provider openrouter」，按這個重套一次。
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={() => handleReapplyModel(false)}
+                      disabled={reapplyingModel}
+                      className="px-3 py-1.5 text-xs font-medium rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 disabled:opacity-50"
+                    >
+                      {reapplyingModel ? '套用中…' : '重啟 + 套用模型 (~60-90 秒)'}
+                    </button>
+                    <button
+                      onClick={() => handleReapplyModel(true)}
+                      disabled={reapplyingModel}
+                      className="px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-700/40 hover:bg-gray-700/60 text-gray-300 border border-gray-600 disabled:opacity-50"
+                    >
+                      只套用模型 (跳過重啟)
+                    </button>
+                  </div>
+                  {reapplyResult && (
+                    <p className="text-xs text-emerald-400 mt-3">{reapplyResult}</p>
+                  )}
+                  {reapplyError && (
+                    <p className="text-xs text-red-400 mt-3 break-all">✗ {reapplyError}</p>
+                  )}
+                </div>
+              </div>
+            </GlassCard>
+          </div>
+        )}
 
 
         {/* API Key Management */}
