@@ -277,12 +277,20 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   }
 
   // Bot token + config are good, but pairing isn't done yet — return 'pending'.
+  // Surface whether the gateway restart was actually confirmed: if not, the
+  // Telegram plugin may not have loaded, so /start could be silently dropped.
+  // Telling the user lets them recover (re-run / manual restart) instead of
+  // staring at a dead bot that the UI claims is "configured" (audit H12).
+  const restartNote = gatewayRestarted
+    ? ''
+    : ' Note: we could not confirm the gateway reloaded — if the bot does not reply to /start within a minute, retry connecting or restart the agent.'
   return json({
     connected: false,
     status: 'pending',
     botUsername,
     connectionId,
-    message: `Telegram bot @${botUsername || 'unknown'} configured. Reloading the gateway (~15s), then send /start to the bot on Telegram, copy the pairing code it returns, and paste it below.`,
+    gatewayRestarted,
+    message: `Telegram bot @${botUsername || 'unknown'} configured. Reloading the gateway (~15s), then send /start to the bot on Telegram, copy the pairing code it returns, and paste it below.${restartNote}`,
   })
 }
 

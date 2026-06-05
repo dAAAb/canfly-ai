@@ -128,11 +128,11 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
 
   for (const project of projects) {
     const detailResult = await zeaburGQL(body.zeaburApiKey, `
-      query { project(_id: "${project._id}") {
+      query ($pid: ObjectID!) { project(_id: $pid) {
         services { _id name }
         environments { _id name }
       } }
-    `)
+    `, { pid: project._id })
     const detail = detailResult.data?.project as {
       services: Array<{ _id: string; name: string }>
       environments: Array<{ _id: string; name: string }>
@@ -144,8 +144,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     for (const service of detail.services) {
       try {
         const tokenResult = await zeaburGQL(body.zeaburApiKey,
-          `mutation Exec($cmd:[String!]!){executeCommand(serviceID:"${service._id}",environmentID:"${prodEnv._id}",command:$cmd){exitCode output}}`,
-          { cmd: ['node', '-e', 'console.log(process.env.OPENCLAW_GATEWAY_TOKEN)'] }
+          `mutation Exec($sid: ObjectID!, $eid: ObjectID!, $cmd:[String!]!){executeCommand(serviceID:$sid,environmentID:$eid,command:$cmd){exitCode output}}`,
+          { sid: service._id, eid: prodEnv._id, cmd: ['node', '-e', 'console.log(process.env.OPENCLAW_GATEWAY_TOKEN)'] }
         )
         const envToken = ((tokenResult.data?.executeCommand as { output?: string })?.output || '').replace(/[\r\n\s]+$/g, '')
 

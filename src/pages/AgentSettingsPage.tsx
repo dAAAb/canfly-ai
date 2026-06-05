@@ -90,6 +90,21 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
   const [reapplyingModel, setReapplyingModel] = useState(false)
   const [reapplyResult, setReapplyResult] = useState<string | null>(null)
   const [reapplyError, setReapplyError] = useState<string | null>(null)
+  // Set by the deploy wizard when the async finalize (restart + set-model)
+  // failed or partially completed, so we proactively prompt a re-apply instead
+  // of silently shipping a model-less lobster (security/UX audit H10).
+  const [finalizeWarn, setFinalizeWarn] = useState(false)
+
+  useEffect(() => {
+    if (!agentName) return
+    try {
+      const key = `canfly_pinata_finalize_warn_${agentName}`
+      if (sessionStorage.getItem(key) === '1') {
+        setFinalizeWarn(true)
+        sessionStorage.removeItem(key)
+      }
+    } catch { /* sessionStorage unavailable */ }
+  }, [agentName])
 
   // Regenerate pairing code
   const [regenPairingLoading, setRegenPairingLoading] = useState(false)
@@ -551,6 +566,11 @@ export default function AgentSettingsPage({ subdomainUsername }: AgentSettingsPa
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm font-semibold text-white">重新套用免費模型</h3>
+                  {finalizeWarn && (
+                    <p className="text-xs text-amber-300 mt-1 mb-2 bg-amber-500/10 border border-amber-500/30 rounded-lg px-3 py-2">
+                      ⚠️ 部署時的模型設定可能尚未完成。如果你的小龍蝦沒有回應，請按下方「重啟 + 套用模型」完成設定。
+                    </p>
+                  )}
                   <p className="text-xs text-gray-400 mt-1 mb-3">
                     如果在 Pinata Dashboard 看到 Model 還是 <code className="text-cyan-400">openrouter/auto</code>、或聊天時報「No API key found for provider openrouter」，按這個重套一次。
                   </p>

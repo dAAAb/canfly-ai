@@ -52,11 +52,16 @@ function validateA2ACard(card: A2AAgentCard): string | null {
       }
     }
   }
-  if (card.defaultInputModes && !Array.isArray(card.defaultInputModes)) {
-    return '"defaultInputModes" must be an array of MIME types'
+  const MIME_RE = /^[a-z0-9][a-z0-9!#$&^_.+-]*\/[a-z0-9][a-z0-9!#$&^_.+-]*$/i
+  if (card.defaultInputModes !== undefined) {
+    if (!Array.isArray(card.defaultInputModes)) return '"defaultInputModes" must be an array of MIME types'
+    const bad = card.defaultInputModes.find((m) => typeof m !== 'string' || !MIME_RE.test(m))
+    if (bad !== undefined) return `"defaultInputModes" contains an invalid MIME type: ${String(bad)}`
   }
-  if (card.defaultOutputModes && !Array.isArray(card.defaultOutputModes)) {
-    return '"defaultOutputModes" must be an array of MIME types'
+  if (card.defaultOutputModes !== undefined) {
+    if (!Array.isArray(card.defaultOutputModes)) return '"defaultOutputModes" must be an array of MIME types'
+    const bad = card.defaultOutputModes.find((m) => typeof m !== 'string' || !MIME_RE.test(m))
+    if (bad !== undefined) return `"defaultOutputModes" contains an invalid MIME type: ${String(bad)}`
   }
   if (card.authentication?.schemes && !Array.isArray(card.authentication.schemes)) {
     return '"authentication.schemes" must be an array'

@@ -443,7 +443,21 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
   useEffect(() => {
     if (!deploymentId || deployStatus === 'running' || deployStatus === 'failed') return
 
+    // Cap polling so a network outage / stuck deploy can't spin forever (the
+    // old `catch { keep polling }` had no exit and left users on a frozen
+    // spinner). ~5 min at 3s intervals, then surface a recoverable timeout.
+    const MAX_ATTEMPTS = 100
+    let attempts = 0
     const interval = setInterval(async () => {
+      attempts++
+      if (attempts > MAX_ATTEMPTS) {
+        clearInterval(interval)
+        setDeploying(false)
+        setDeployError(
+          t('deploy.deployTimeout', 'Setup is taking longer than expected. You can check status later in your agent settings, or click Retry to redeploy.')
+        )
+        return
+      }
       try {
         const res = await fetch(`/api/zeabur/deploy/${deploymentId}/status`, {
           headers: await getAuthHeaders(),
@@ -467,7 +481,7 @@ export default function DeployWizardPage({ subdomainUsername }: DeployWizardPage
           setDeploying(false)
           clearInterval(interval)
         }
-      } catch { /* keep polling */ }
+      } catch { /* transient network error — keep polling until MAX_ATTEMPTS */ }
     }, 3000)
 
     return () => clearInterval(interval)

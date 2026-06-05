@@ -92,49 +92,54 @@ export const onRequestPut: PagesFunction<Env> = async ({ env, params, request })
 
     finalName = body.name
 
-    // Rename: read old row, insert new, update FKs, delete old
-    // (SQLite doesn't allow UPDATE on PK)
+    // Rename = recreate the row under the new primary key, then repoint every
+    // child table that references agents(name), then delete the old row.
+    // (SQLite can't UPDATE a TEXT PK in place while children still reference it.)
     const oldAgent = await env.DB.prepare('SELECT * FROM agents WHERE name = ?1')
-      .bind(currentName).first()
+      .bind(currentName).first<Record<string, unknown>>()
     if (!oldAgent) return errorResponse('Agent disappeared during rename', 500)
 
-    // Insert new row with new name
-    await env.DB.prepare(
-      `INSERT INTO agents (name, owner_username, wallet_address, basename, platform,
-                           avatar_url, bio, model, hosting, capabilities, erc8004_url,
-                           is_public, edit_token, source, api_key, pairing_code,
-                           pairing_code_expires, registration_source, created_at,
-                           updated_at, discovered_at, rename_count)
-       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19, datetime('now'), ?20, ?21)`
-    ).bind(
+    // Copy EVERY column the row actually has (so no field is ever dropped —
+    // display_name, agentbook_*, webhook_url, basemail_*, birthday, heartbeat_*,
+    // …, including columns added by future migrations). We key off whatever
+    // SELECT * returned, overriding only: name (new PK), updated_at (now), and
+    // rename_count (+1, if that column exists). A column not present in the live
+    // schema is simply never referenced. Column names come from the schema, not
+    // user input, so the interpolation is injection-safe.
+    const cols = Object.keys(oldAgent).filter((c) => c !== 'name' && c !== 'updated_at')
+    const insertCols = ['name', 'updated_at', ...cols]
+    const valueSql = ['?1', "datetime('now')", ...cols.map((_, i) => `?${i + 2}`)]
+    const binds: unknown[] = [
       finalName,
-      oldAgent.owner_username,
-      oldAgent.wallet_address,
-      oldAgent.basename,
-      oldAgent.platform,
-      oldAgent.avatar_url,
-      oldAgent.bio,
-      oldAgent.model,
-      oldAgent.hosting,
-      oldAgent.capabilities,
-      oldAgent.erc8004_url,
-      oldAgent.is_public,
-      oldAgent.edit_token,
-      oldAgent.source,
-      oldAgent.api_key,
-      oldAgent.pairing_code,
-      oldAgent.pairing_code_expires,
-      oldAgent.registration_source,
-      oldAgent.created_at,
-      oldAgent.discovered_at,
-      ((oldAgent.rename_count as number) || 0) + 1,
-    ).run()
+      ...cols.map((c) => (c === 'rename_count' ? ((oldAgent.rename_count as number) || 0) + 1 : oldAgent[c])),
+    ]
+    await env.DB.prepare(
+      `INSERT INTO agents (${insertCols.join(', ')}) VALUES (${valueSql.join(', ')})`
+    ).bind(...binds).run()
 
-    // Update FKs and delete old row
+    // Repoint ALL child references, then delete the old row. The new row is
+    // inserted first so finalName is a valid parent before children move to it,
+    // and the old row is deleted last (no child references it by then), so this
+    // is safe whether or not D1 enforces foreign keys. Missing any table here
+    // would orphan that data (escrow tasks, chats, deployments, …).
     await env.DB.batch([
       env.DB.prepare('UPDATE skills SET agent_name = ?1 WHERE agent_name = ?2')
         .bind(finalName, currentName),
       env.DB.prepare('UPDATE agent_pending_bindings SET agent_name = ?1 WHERE agent_name = ?2')
+        .bind(finalName, currentName),
+      env.DB.prepare('UPDATE milestones SET agent_name = ?1 WHERE agent_name = ?2')
+        .bind(finalName, currentName),
+      env.DB.prepare('UPDATE tasks SET seller_agent = ?1 WHERE seller_agent = ?2')
+        .bind(finalName, currentName),
+      env.DB.prepare('UPDATE tasks SET buyer_agent = ?1 WHERE buyer_agent = ?2')
+        .bind(finalName, currentName),
+      env.DB.prepare('UPDATE v3_telegram_connections SET agent_name = ?1 WHERE agent_name = ?2')
+        .bind(finalName, currentName),
+      env.DB.prepare('UPDATE v3_chat_sessions SET agent_name = ?1 WHERE agent_name = ?2')
+        .bind(finalName, currentName),
+      env.DB.prepare('UPDATE v3_zeabur_deployments SET agent_name = ?1 WHERE agent_name = ?2')
+        .bind(finalName, currentName),
+      env.DB.prepare('UPDATE v3_pinata_deployments SET agent_name = ?1 WHERE agent_name = ?2')
         .bind(finalName, currentName),
       env.DB.prepare('UPDATE activity_log SET entity_id = ?1 WHERE entity_type = \'agent\' AND entity_id = ?2')
         .bind(finalName, currentName),

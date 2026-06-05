@@ -42,8 +42,18 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   const obj = await env.TASK_RESULTS.get(listed.objects[0].key)
   if (!obj) return errorResponse('Result file not found in storage', 404)
 
+  // Security (audit H/M-34): the seller controls the stored Content-Type, so a
+  // result uploaded as text/html (or SVG/XML/JS) would otherwise execute as
+  // script in the canfly.ai origin (stored XSS). Neutralize active types and
+  // always send X-Content-Type-Options: nosniff so the browser can't sniff one.
+  const rawType = obj.httpMetadata?.contentType || 'application/octet-stream'
+  const DANGEROUS_TYPE = /text\/html|xhtml|image\/svg|javascript|ecmascript|\bxml\b/i
+  const isDangerous = DANGEROUS_TYPE.test(rawType)
+
   const headers = new Headers(CORS_HEADERS)
-  headers.set('Content-Type', obj.httpMetadata?.contentType || 'application/octet-stream')
+  headers.set('Content-Type', isDangerous ? 'application/octet-stream' : rawType)
+  headers.set('X-Content-Type-Options', 'nosniff')
+  if (isDangerous) headers.set('Content-Disposition', 'attachment; filename="result"')
   headers.set('Cache-Control', 'public, max-age=86400')
 
   return new Response(obj.body, { headers })

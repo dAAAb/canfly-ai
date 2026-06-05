@@ -5,6 +5,7 @@ import { useQueryLang } from '../hooks/useLanguage'
 import { useAuth } from '../hooks/useAuth'
 import { useLiveStatus, STATUS_CONFIG } from '../hooks/useLiveStatus'
 import { getApiAuthHeaders } from '../utils/apiAuth'
+import { hasIntegrationTutorial } from '../utils/tutorials'
 import { useHead } from '../hooks/useHead'
 import SmartAvatar from '../components/SmartAvatar'
 import Navbar from '../components/Navbar'
@@ -967,7 +968,7 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
                 <div className="flex flex-wrap justify-center gap-2">
                   {user.agents
                     .flatMap((a) => a.skills)
-                    .filter((s) => s.slug)
+                    .filter((s) => hasIntegrationTutorial(s.slug))
                     .map((skill) => (
                       <Link
                         key={skill.slug}

@@ -12,7 +12,7 @@
  *
  * CAN-265: Escrow auto-release after buyer inaction (7-day timeout)
  */
-import { type Env, json, errorResponse, handleOptions } from '../community/_helpers'
+import { type Env, json, errorResponse, handleOptions, requireCronSecret } from '../community/_helpers'
 import { recalcTrustScore } from '../agents/_trust'
 
 const AUTO_RELEASE_DAYS = 7
@@ -27,19 +27,18 @@ interface ReleaseResult {
 }
 
 export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
-  // Auth: require CRON_SECRET header or Bearer token
-  const cronSecret = (env as unknown as Record<string, string>).CRON_SECRET
-  if (cronSecret) {
-    const authHeader = request.headers.get('Authorization')
-    const cronHeader = request.headers.get('X-Cron-Secret')
-    const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : cronHeader
-    if (token !== cronSecret) {
-      return errorResponse('Unauthorized', 401)
-    }
-  }
+  // Auth: require CRON_SECRET (fail-closed — denies access if secret is unset)
+  const denied = requireCronSecret(env, request)
+  if (denied) return denied
 
   // 1. Find completed escrow tasks where buyer hasn't confirmed within 7 days
   const cutoff = new Date(Date.now() - AUTO_RELEASE_DAYS * 24 * 60 * 60 * 1000).toISOString()
+  // NOTE: no sla_deadline gate here. This cron only releases tasks the seller
+  // already DELIVERED (escrow_status='completed') after 7 days of buyer silence.
+  // The sla-timeout cron is disjoint — it refunds only UNDELIVERED tasks
+  // (escrow_status='deposited') past their deadline — so the two never collide.
+  // Gating auto-release on the SLA would strand funds for a task that was
+  // delivered slightly late: it would match neither cron and lock forever.
   const stale = await env.DB.prepare(
     `SELECT id, seller_agent, buyer_agent, amount, currency, completed_at
      FROM tasks

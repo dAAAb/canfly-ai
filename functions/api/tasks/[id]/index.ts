@@ -6,22 +6,11 @@
  */
 import { type Env, json, errorResponse, handleOptions } from '../../community/_helpers'
 import { deriveViewToken } from '../../_crypto'
+import { verifyPrivyToken } from '../../_auth'
 import { importKey, decrypt } from '../../../lib/crypto'
 
 /** Auth levels for result file access (CAN-291) */
 type AuthLevel = 'owner' | 'token' | 'none'
-
-/** Resolve wallet address from Privy JWT */
-async function resolveWalletFromJwt(request: Request, env: Env): Promise<string | null> {
-  const authHeader = request.headers.get('Authorization')
-  if (!authHeader?.startsWith('Bearer ')) return null
-
-  // Look up the Privy user's wallet via the privy_user_id stored in users table
-  // For now, we accept the X-Wallet-Address header as a hint when JWT is present
-  // (The real verification happens via Privy SDK on backend, but for this read-only
-  //  endpoint the wallet header is sufficient since we're just checking ownership)
-  return null
-}
 
 export const onRequestGet: PagesFunction<Env> = async ({ env, params, request }) => {
   const taskId = params.id as string
@@ -46,19 +35,32 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
   // --- Auth check (CAN-291: track auth level for credential masking) ---
   let authLevel: AuthLevel = 'none'
 
+  // Resolve a CRYPTOGRAPHICALLY-VERIFIED caller (Privy JWT → privy_user_id →
+  // users row). All wallet/ownership checks below use THIS, never the raw
+  // X-Wallet-Address / X-Buyer-Wallet headers — those can be forged, which
+  // previously let anyone read a buyer's decrypted credentials (IDOR).
+  let verifiedUser: { username: string; wallet_address: string | null } | null = null
+  {
+    const identity = await verifyPrivyToken(request, env.PRIVY_APP_ID)
+    if (identity) {
+      verifiedUser = await env.DB.prepare(
+        'SELECT username, wallet_address FROM users WHERE privy_user_id = ?1'
+      ).bind(identity.privyUserId).first<{ username: string; wallet_address: string | null }>()
+    }
+  }
+
   // 1. Token-based access (HMAC view token) — "token" level
   if (viewToken && env.ENCRYPTION_KEY) {
     const expected = await deriveViewToken(taskId, env.ENCRYPTION_KEY)
     if (viewToken === expected) authLevel = 'token'
   }
 
-  // 2. Buyer wallet header (case-insensitive match) — "owner" level
+  // 2. Buyer ownership — verified wallet must match the task's buyer wallet.
   if (authLevel === 'none') {
-    const walletHeader = request.headers.get('X-Buyer-Wallet') || request.headers.get('X-Wallet-Address')
     if (
-      walletHeader &&
+      verifiedUser?.wallet_address &&
       task.buyer_wallet &&
-      walletHeader.toLowerCase() === (task.buyer_wallet as string).toLowerCase()
+      verifiedUser.wallet_address.toLowerCase() === (task.buyer_wallet as string).toLowerCase()
     ) {
       authLevel = 'owner'
     }
@@ -85,7 +87,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     }
   }
 
-  // 4. Agent owner: edit token, wallet match, or Privy embedded wallet — "owner" level
+  // 4. Seller-agent owner: edit token, or verified ownership/wallet — "owner" level
   if (authLevel === 'none') {
     const sellerAgent = await env.DB.prepare(
       `SELECT a.wallet_address, a.owner_username, a.edit_token as agent_edit_token,
@@ -95,7 +97,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
     ).bind(task.seller_agent).first()
 
     if (sellerAgent) {
-      // 4a. Edit token match (most reliable for Google login users)
+      // 4a. Edit token match (most reliable for Google login users) — DB-verified secret
       const editToken = request.headers.get('X-Edit-Token')
       if (editToken) {
         const agentET = (sellerAgent as Record<string, unknown>).agent_edit_token as string | null
@@ -105,16 +107,18 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params, request })
         }
       }
 
-      // 4b. Wallet address match (Privy embedded wallet or agent wallet)
-      if (authLevel === 'none') {
-        const callerWallet = (request.headers.get('X-Wallet-Address') || '').toLowerCase()
-        if (callerWallet) {
-          const agentWallet = ((sellerAgent.wallet_address as string) || '').toLowerCase()
-          const ownerWallet = ((sellerAgent.owner_wallet as string) || '').toLowerCase()
-          if ((agentWallet && callerWallet === agentWallet) ||
-              (ownerWallet && callerWallet === ownerWallet)) {
-            authLevel = 'owner'
-          }
+      // 4b. Verified owner: the JWT identity owns the seller agent, or its
+      // verified wallet matches the agent/owner wallet. (No raw-header trust.)
+      if (authLevel === 'none' && verifiedUser) {
+        const ownerUsername = ((sellerAgent.owner_username as string) || '').toLowerCase()
+        const agentWallet = ((sellerAgent.wallet_address as string) || '').toLowerCase()
+        const ownerWallet = ((sellerAgent.owner_wallet as string) || '').toLowerCase()
+        const callerWallet = (verifiedUser.wallet_address || '').toLowerCase()
+        if (
+          (ownerUsername && verifiedUser.username.toLowerCase() === ownerUsername) ||
+          (callerWallet && (callerWallet === agentWallet || callerWallet === ownerWallet))
+        ) {
+          authLevel = 'owner'
         }
       }
     }

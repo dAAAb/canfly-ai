@@ -9,7 +9,7 @@
  *
  * DELETE THIS FILE after all existing deployments are fixed.
  */
-import { type Env, json, errorResponse, handleOptions } from '../community/_helpers'
+import { type Env, json, errorResponse, handleOptions, requireCronSecret } from '../community/_helpers'
 import { importKey, decrypt, encrypt } from '../../lib/crypto'
 import {
   zeaburGQL,
@@ -22,13 +22,9 @@ import {
 export const onRequestOptions: PagesFunction<Env> = () => handleOptions()
 
 export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
-  // Auth
-  const cronSecret = (env as unknown as Record<string, string>).CRON_SECRET
-  if (cronSecret) {
-    const authHeader = request.headers.get('Authorization')
-    const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
-    if (token !== cronSecret) return errorResponse('Unauthorized', 401)
-  }
+  // Auth: require CRON_SECRET (fail-closed — denies access if secret is unset)
+  const denied = requireCronSecret(env, request)
+  if (denied) return denied
 
   const body = await request.json() as { agentName?: string }
   if (!body?.agentName) return errorResponse('agentName is required', 400)
