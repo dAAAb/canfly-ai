@@ -273,23 +273,42 @@ export async function authenticateRequest(
     }
   }
 
-  // ── Method 3: Wallet Address (DEPRECATED — no cryptographic verification) ──
-  if (walletAddress) {
-    const user = await db.prepare(
-      'SELECT username, wallet_address FROM users WHERE LOWER(wallet_address) = LOWER(?1)'
-    ).bind(walletAddress).first<{ username: string; wallet_address: string | null }>()
-
-    if (user) {
-      // Log deprecation warning (non-blocking)
-      console.warn(`[auth] DEPRECATED: Request authenticated via bare X-Wallet-Address for user ${user.username}. Migrate to Privy JWT.`)
-      return {
-        username: user.username,
-        method: 'wallet-address',
-        walletAddress: user.wallet_address,
-        privyUserId: null,
-      }
-    }
+  // ── Method 3: Wallet Address — REMOVED (CAN-278 hardening) ──
+  // Bare X-Wallet-Address auth granted access with NO cryptographic proof of
+  // wallet ownership, allowing trivial wallet-address spoofing → account
+  // takeover. It is no longer accepted as an authentication method. The
+  // verified-JWT path above (Method 1) still uses X-Wallet-Address purely as a
+  // lookup *hint*, gated behind a valid Privy JWT signature, so spoofing the
+  // header alone can never authenticate a request.
+  if (walletAddress && !authHeader.startsWith('Bearer ')) {
+    console.warn('[auth] Ignoring bare X-Wallet-Address (unauthenticated, deprecated/removed). Send a Privy JWT.')
   }
 
   return null
+}
+
+/**
+ * Verify a Privy JWT from the request and return its core identity claims
+ * WITHOUT requiring a matching `users` row.
+ *
+ * Needed for the initial profile-claim flow, where a brand-new Privy user has
+ * no users row yet (so `authenticateRequest` would return null) but we still
+ * must cryptographically prove they are a real, signed-in Privy identity before
+ * letting them take ownership of a profile.
+ *
+ * Returns null when there is no valid, signature-verified Privy JWT.
+ */
+export async function verifyPrivyToken(
+  request: Request,
+  appId: string | undefined,
+): Promise<{ privyUserId: string } | null> {
+  if (!appId) return null
+  const authHeader = request.headers.get('Authorization') || ''
+  // Must be a Privy JWT, not a CanFly agent API key (cfa_…).
+  if (!authHeader.startsWith('Bearer ') || authHeader.startsWith('Bearer cfa_')) return null
+  const token = authHeader.slice(7)
+  if (!token.includes('.')) return null
+  const payload = await verifyPrivyJWT(token, appId)
+  if (!payload?.sub) return null
+  return { privyUserId: payload.sub }
 }

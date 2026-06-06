@@ -45,8 +45,10 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   // allowFrom on this build, so we take the user ID directly.
   if (agent.hosting === 'pinata') {
     const tgUserId = (body?.telegramUserId || '').trim()
-    if (!/^\d{4,15}$/.test(tgUserId)) {
-      return errorResponse('Telegram user ID required (numeric, e.g. 403535178). Ask the bot for it after /start.', 400)
+    // Real Telegram user IDs are positive integers with no leading zeros;
+    // disallow leading zeros to avoid ambiguous/duplicate allowlist entries.
+    if (!/^[1-9]\d{3,14}$/.test(tgUserId)) {
+      return errorResponse('Telegram user ID required (numeric, no leading zeros, e.g. 403535178). Ask the bot for it after /start.', 400)
     }
     return await approveOnPinata(env, agentName, auth.username, tgUserId)
   }

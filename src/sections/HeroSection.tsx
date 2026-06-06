@@ -47,10 +47,10 @@ export default function HeroSection() {
             {t('nav.community')}
           </Link>
           <Link to={localePath('/blog')} className="text-sm text-gray-300 hover:text-white transition-colors">
-            Blog
+            {t('nav.blog')}
           </Link>
-          <a href="/api/docs" className="text-sm text-gray-300 hover:text-white transition-colors">
-            API
+          <a href="/api/openapi.json" className="text-sm text-gray-300 hover:text-white transition-colors">
+            {t('nav.api')}
           </a>
           <LanguageSwitcher />
           <AuthButton />
@@ -83,10 +83,10 @@ export default function HeroSection() {
             {t('nav.community')}
           </Link>
           <Link to={localePath('/blog')} onClick={() => setMobileNavOpen(false)} className="block text-sm text-gray-300 hover:text-white transition-colors">
-            Blog
+            {t('nav.blog')}
           </Link>
-          <a href="/api/docs" onClick={() => setMobileNavOpen(false)} className="block text-sm text-gray-300 hover:text-white transition-colors">
-            API
+          <a href="/api/openapi.json" onClick={() => setMobileNavOpen(false)} className="block text-sm text-gray-300 hover:text-white transition-colors">
+            {t('nav.api')}
           </a>
           <LanguageSwitcher />
           <AuthButton />

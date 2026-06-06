@@ -16,6 +16,37 @@ const WINDOW_SECONDS = 3600 // 1 hour
 const DEFAULT_LIMIT = 300   // requests per window (anonymous/IP — enough for normal browsing)
 const AGENT_LIMIT = 600     // requests per window (authenticated agent)
 
+const CANONICAL_ORIGIN = 'https://canfly.ai'
+
+/**
+ * Resolve a safe Access-Control-Allow-Origin (security audit P1/H6).
+ *
+ * The shared helpers emit `Access-Control-Allow-Origin: *` for every endpoint.
+ * Here — at the single /api chokepoint — we replace that blanket wildcard with
+ * an allowlisted reflection: first-party canfly.ai (+ subdomains) and localhost
+ * dev are reflected; everything else falls back to the canonical origin so a
+ * third-party site cannot read authenticated API responses in a browser.
+ * (No Access-Control-Allow-Credentials is set, so this is purely defence-in-depth.)
+ */
+function resolveAllowedOrigin(request: Request): string {
+  const origin = request.headers.get('origin') || ''
+  try {
+    const host = new URL(origin).hostname.toLowerCase()
+    if (host === 'canfly.ai' || host.endsWith('.canfly.ai') ||
+        host === 'localhost' || host === '127.0.0.1') {
+      return origin
+    }
+  } catch { /* no/!valid Origin header (server-side caller) — CORS irrelevant */ }
+  return CANONICAL_ORIGIN
+}
+
+/** Overwrite the wildcard CORS origin on a response with the allowlisted value. */
+function applyCorsOrigin(response: Response, request: Request): void {
+  response.headers.set('Access-Control-Allow-Origin', resolveAllowedOrigin(request))
+  const vary = response.headers.get('Vary')
+  response.headers.set('Vary', vary ? `${vary}, Origin` : 'Origin')
+}
+
 /** Endpoints exempt from rate limiting */
 function isExempt(path: string, request: Request): boolean {
   // Cron endpoints are protected by CRON_SECRET, no need for rate limiting
@@ -104,8 +135,12 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     }
   } catch {
     // If rate limiting fails (e.g., table doesn't exist yet), allow the request
-    // Don't block legitimate traffic due to rate limiting infrastructure issues
-    return context.next()
+    // Don't block legitimate traffic due to rate limiting infrastructure issues.
+    // Still scope the CORS origin so this fallback path matches the normal one.
+    const resp = await context.next()
+    const fallback = new Response(resp.body, resp)
+    applyCorsOrigin(fallback, context.request)
+    return fallback
   }
 
   const rateLimitHeaders: Record<string, string> = {
@@ -115,7 +150,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
   }
 
   if (!allowed) {
-    return new Response(
+    const limited = new Response(
       JSON.stringify({
         error: 'Too Many Requests',
         message: `Rate limit exceeded. Maximum ${limit} requests per hour.`,
@@ -131,6 +166,8 @@ export const onRequest: PagesFunction<Env> = async (context) => {
         },
       }
     )
+    applyCorsOrigin(limited, context.request)
+    return limited
   }
 
   // Allow the request, then append rate limit headers to the response
@@ -141,6 +178,8 @@ export const onRequest: PagesFunction<Env> = async (context) => {
   for (const [k, v] of Object.entries(rateLimitHeaders)) {
     newResponse.headers.set(k, v)
   }
+  // Tighten the wildcard CORS origin to the allowlisted value (H6).
+  applyCorsOrigin(newResponse, context.request)
 
   return newResponse
 }

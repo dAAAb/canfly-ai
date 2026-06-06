@@ -244,7 +244,7 @@ export default function FreeAgentsPage() {
                 {t('freeAgents.cta.browseCommunity')}
               </Link>
               <Link
-                to="/community/register"
+                to={localePath('/community/register')}
                 className="inline-block px-6 py-3 rounded-lg bg-green-600 text-white font-medium hover:bg-green-500 transition-colors"
               >
                 {t('freeAgents.cta.register')}

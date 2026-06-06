@@ -134,6 +134,24 @@ export function pairingCodeExpires(): string {
   return new Date(Date.now() + PAIRING_CODE_TTL_MS).toISOString().replace('T', ' ').slice(0, 19)
 }
 
+/**
+ * Require CRON_SECRET bearer auth for admin/cron endpoints (FAIL-CLOSED).
+ *
+ * Accepts the secret via `Authorization: Bearer <secret>` or `X-Cron-Secret`.
+ * Returns an error Response when the request is NOT authorized, or null when it
+ * is. Unlike the old `if (cronSecret) {…}` pattern, this DENIES access when
+ * CRON_SECRET is unset/misconfigured (503) instead of leaving the endpoint open.
+ */
+export function requireCronSecret(env: Env, request: Request): Response | null {
+  const cronSecret = env.CRON_SECRET
+  if (!cronSecret) return errorResponse('CRON_SECRET not configured', 503)
+  const authHeader = request.headers.get('Authorization')
+  const cronHeader = request.headers.get('X-Cron-Secret')
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : cronHeader
+  if (token !== cronSecret) return errorResponse('Unauthorized', 401)
+  return null
+}
+
 /** Parse integer query param with default */
 export function intParam(url: URL, key: string, defaultValue: number): number {
   const val = url.searchParams.get(key)

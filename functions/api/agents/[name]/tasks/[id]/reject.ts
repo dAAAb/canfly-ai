@@ -7,6 +7,7 @@
  * CAN-216: Task confirm/reject API
  */
 import { type Env, json, errorResponse, handleOptions, parseBody } from '../../../../community/_helpers'
+import { authenticateRequest } from '../../../../_auth'
 import { recalcTrustScore, recalcBuyerTrustScore } from '../../../_trust'
 
 const BASE_RPC_DEFAULT = 'https://mainnet.base.org'
@@ -34,13 +35,6 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   const agentName = params.name as string
   const taskId = params.id as string
 
-  // Auth: Bearer {apiKey} — buyer authenticates with their own API key
-  const authHeader = request.headers.get('Authorization')
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return errorResponse('Authorization: Bearer {apiKey} required', 401)
-  }
-  const apiKey = authHeader.slice(7)
-
   // Get task
   const task = await env.DB.prepare(
     `SELECT id, buyer_agent, seller_agent, status, escrow_tx, escrow_status,
@@ -50,15 +44,38 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
 
   if (!task) return errorResponse('Task not found', 404)
 
-  // Verify buyer identity via API key
+  // Verify buyer identity
   if (!task.buyer_agent) return errorResponse('Task has no buyer agent', 400)
 
   const buyer = await env.DB.prepare(
-    'SELECT name, api_key FROM agents WHERE name = ?1'
-  ).bind(task.buyer_agent).first()
+    'SELECT name, api_key, owner_username FROM agents WHERE name = ?1'
+  ).bind(task.buyer_agent).first<{ name: string; api_key: string | null; owner_username: string | null }>()
 
   if (!buyer) return errorResponse('Buyer agent not found', 404)
-  if (!buyer.api_key || buyer.api_key !== apiKey) return errorResponse('Invalid API key — only the buyer can reject', 403)
+
+  // Authorize: the buyer agent's own API key (agent-to-agent), OR the buyer
+  // agent's human owner via Privy JWT / edit token (the buyer dashboard).
+  const authHeader = request.headers.get('Authorization') || ''
+  const bearer = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null
+  let authorized = !!(bearer && buyer.api_key && bearer === buyer.api_key)
+  if (!authorized) {
+    const auth = await authenticateRequest(request, env.DB, env.PRIVY_APP_ID)
+    authorized = !!(auth && buyer.owner_username &&
+      auth.username.toLowerCase() === buyer.owner_username.toLowerCase())
+  }
+  if (!authorized) {
+    return errorResponse('Only the buyer (or its owner) may reject this task', 403)
+  }
+
+  // Idempotency: if the escrow is already rejected, return success instead of a
+  // confusing state error when a retried/duplicate reject arrives.
+  if (task.escrow_status === 'rejected') {
+    return json({
+      id: task.id,
+      status: 'completed',
+      escrow: { status: 'rejected', message: 'Already rejected. Escrow funds refunded to buyer.' },
+    }, 200)
+  }
 
   // Validate task state
   if (task.status !== 'completed') {

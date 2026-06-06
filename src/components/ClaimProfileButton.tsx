@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
+import { getApiAuthHeaders } from '../utils/apiAuth'
 import { ShieldCheck } from 'lucide-react'
 
 interface ClaimProfileButtonProps {
@@ -17,7 +18,7 @@ const LEVEL_CONFIG = {
 
 export default function ClaimProfileButton({ username, onClaimed }: ClaimProfileButtonProps) {
   const { t } = useTranslation()
-  const { isAuthenticated, ready, login, worldIdLevel, walletAddress } = useAuth()
+  const { isAuthenticated, ready, login, worldIdLevel, walletAddress, getAccessToken } = useAuth()
   const [claiming, setClaiming] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -37,15 +38,15 @@ export default function ClaimProfileButton({ username, onClaimed }: ClaimProfile
     setClaiming(true)
     setError(null)
 
-    const verificationLevel = getVerificationLevel()
-
     try {
+      // Send the verified Privy JWT (Authorization: Bearer). The backend derives
+      // the verification level server-side, so it is no longer sent in the body.
+      const headers = await getApiAuthHeaders({ getAccessToken, walletAddress })
       const res = await fetch(`/api/community/users/${username}/claim`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           walletAddress: walletAddress || undefined,
-          verificationLevel,
         }),
       })
 

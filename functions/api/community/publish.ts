@@ -8,6 +8,9 @@ import {
   errorResponse,
   handleOptions,
   generateEditToken,
+  generateApiKey,
+  generatePairingCode,
+  pairingCodeExpires,
   isValidUsername,
   isValidAgentName,
   isValidWalletAddress,
@@ -122,10 +125,15 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
       .run()
   } else {
     const agentEditToken = generateEditToken()
+    // Provision API key + pairing code so a published agent can self-update via
+    // Bearer auth (otherwise it is locked out of PUT /api/agents/:name etc.).
+    const apiKey = generateApiKey()
+    const pairingCode = generatePairingCode()
     await env.DB.prepare(
       `INSERT INTO agents (name, owner_username, wallet_address, basename, platform,
-                           avatar_url, bio, model, hosting, capabilities, erc8004_url, edit_token)
-       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)`
+                           avatar_url, bio, model, hosting, capabilities, erc8004_url, edit_token,
+                           api_key, pairing_code, pairing_code_expires, registration_source)
+       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, 'published')`
     )
       .bind(
         agent.name,
@@ -139,7 +147,10 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
         agent.hosting || null,
         JSON.stringify(agent.capabilities || {}),
         agent.erc8004Url || null,
-        agentEditToken
+        agentEditToken,
+        apiKey,
+        pairingCode,
+        pairingCodeExpires()
       )
       .run()
   }

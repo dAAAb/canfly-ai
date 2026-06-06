@@ -254,11 +254,28 @@ export default function DeployPinataWizardPage({ subdomainUsername }: DeployPina
       // set) on a SEPARATE endpoint so each request gets its own 30s CF
       // wall-clock budget. The restart is REQUIRED — Pinata attaches secrets
       // *after* agent creation, so OPENROUTER_API_KEY is not in env until the
-      // agent restarts. Fire-and-forget: don't block the redirect.
-      fetch(`/api/agents/${encodeURIComponent(data.agentName)}/finalize-pinata`, {
+      // agent restarts. We don't block the redirect on it (restart can take
+      // 60-90s), but we DO record the outcome: on failure/partial-success we
+      // flag it so the settings page prompts the owner to re-apply the model
+      // instead of silently shipping a model-less lobster (audit H10/H13).
+      const finalizeAgent = data.agentName
+      const finalizeHeaders = await getAuthHeaders()
+      const flagIncomplete = () => {
+        try { sessionStorage.setItem(`canfly_pinata_finalize_warn_${finalizeAgent}`, '1') } catch { /* ignore */ }
+      }
+      fetch(`/api/agents/${encodeURIComponent(finalizeAgent)}/finalize-pinata`, {
         method: 'POST',
-        headers: await getAuthHeaders(),
-      }).catch(() => { /* finalize is best-effort */ })
+        headers: finalizeHeaders,
+      })
+        .then(async (r) => {
+          let ok = r.ok
+          try {
+            const d = (await r.json()) as { ok?: boolean; restartError?: string | null }
+            ok = !!d.ok && !d.restartError
+          } catch { /* keep r.ok */ }
+          if (!ok) flagIncomplete()
+        })
+        .catch(() => flagIncomplete())
 
       // Hold the success line in the terminal for ~2.5s so user sees the
       // ✓ confirmation before we redirect.

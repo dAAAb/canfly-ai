@@ -361,6 +361,14 @@ export default function PaperclipDashboardPage({ subdomainUsername }: { subdomai
         </div>
 
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 space-y-8">
+          {/* Preview notice: this dashboard currently renders sample data until
+              the Paperclip bridge API ships — be honest rather than implying the
+              numbers are live (audit #40). */}
+          <div className="flex items-start gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-xs text-amber-300">
+            <span aria-hidden>🧪</span>
+            <span>{t('dashboard.previewNotice', 'Preview — this dashboard shows sample data while the Paperclip integration is in beta. Live data is coming soon.')}</span>
+          </div>
+
           {/* Kanban Board */}
           <section>
             <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">

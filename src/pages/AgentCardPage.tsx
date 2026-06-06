@@ -8,6 +8,7 @@ import { walletGradient } from '../utils/walletGradient'
 import SmartAvatar from '../components/SmartAvatar'
 import TrustBadge from '../components/TrustBadge'
 import { getTrustLevel } from '../utils/trustLevel'
+import { hasIntegrationTutorial } from '../utils/tutorials'
 import AgentAvatarCall from '../components/AgentAvatarCall'
 import { useAuth } from '../hooks/useAuth'
 import { getApiAuthHeaders } from '../utils/apiAuth'
@@ -664,29 +665,24 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
             </section>
           )}
 
-          {/* Interactive Video Call Section */}
+          {/* Interactive Video Call Section — only shown when actually wired up
+              (we don't ship a "coming soon" placeholder for unconfigured agents). */}
           {agent.capabilities?.videoCall && (() => {
             const vc = agent.capabilities.videoCall
             const hasAvatar = typeof vc === 'object' && vc.avatarId && vc.connectUrl
+            if (!hasAvatar) return null
             return (
               <section className="mb-12">
                 <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                   <Video className="w-5 h-5 text-cyan-400" />
                   Video Call
                 </h2>
-                {hasAvatar ? (
-                  <AgentAvatarCall
-                    agentName={agent.name}
-                    avatarId={vc.avatarId}
-                    connectUrl={vc.connectUrl}
-                    platformEmoji={platformEmoji}
-                  />
-                ) : (
-                  <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-8 text-center">
-                    <div className="text-4xl mb-3">{platformEmoji}</div>
-                    <p className="text-gray-400 text-sm">Video call coming soon.</p>
-                  </div>
-                )}
+                <AgentAvatarCall
+                  agentName={agent.name}
+                  avatarId={vc.avatarId}
+                  connectUrl={vc.connectUrl}
+                  platformEmoji={platformEmoji}
+                />
               </section>
             )
           })()}
@@ -784,7 +780,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                                 : isExpanded ? 'Close' : 'Order'}
                             </button>
                           )}
-                          {skill.slug && (
+                          {hasIntegrationTutorial(skill.slug) && (
                             <Link
                               to={`/learn/${skill.slug}-integration`}
                               className="text-cyan-400 hover:text-cyan-300 transition-colors"
@@ -1505,7 +1501,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
           )}
 
           {/* CTA — "I want this agent's setup" */}
-          {agent.skills.some((s) => s.slug) && (
+          {agent.skills.some((s) => hasIntegrationTutorial(s.slug)) && (
             <section className="mb-12">
               <div className="bg-gradient-to-r from-cyan-900/20 to-purple-900/20 border border-cyan-800/30 rounded-2xl p-6 text-center">
                 <h3 className="text-lg font-bold text-white mb-2 flex items-center justify-center gap-2">
@@ -1517,7 +1513,7 @@ export default function AgentCardPage({ free, subdomainUsername }: { free?: bool
                 </p>
                 <div className="flex flex-wrap justify-center gap-2">
                   {agent.skills
-                    .filter((s) => s.slug)
+                    .filter((s) => hasIntegrationTutorial(s.slug))
                     .map((skill) => (
                       <Link
                         key={skill.slug}

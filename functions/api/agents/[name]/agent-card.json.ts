@@ -237,11 +237,15 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
         if (PRIVATE_FIELDS.has(key)) continue // Never expose secrets in public agent card
         agentCard[key] = override[key]
       }
-      // Merge any user _extensions with CanFly _extensions (CanFly wins on conflicts)
+      // Merge any user _extensions with CanFly _extensions (CanFly wins on conflicts).
+      // SECURITY (audit #32): reject user keys that start with the reserved
+      // "canfly" prefix so a self-managed agent cannot inject fields that
+      // masquerade as trusted CanFly-issued metadata (e.g. fake canfly_verified).
       if (override._extensions && typeof override._extensions === 'object') {
         const userExt = override._extensions as Record<string, unknown>
         const mergedExt = canflyExtensions as Record<string, unknown>
         for (const key of Object.keys(userExt)) {
+          if (key.toLowerCase().startsWith('canfly')) continue
           if (!(key in mergedExt)) {
             mergedExt[key] = userExt[key]
           }

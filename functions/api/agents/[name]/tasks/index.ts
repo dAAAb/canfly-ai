@@ -162,6 +162,13 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
         return mppResult.challenge
       }
 
+      // Only a 2xx from the mppx SDK means the payment was actually settled.
+      // Anything else (4xx/5xx) must NOT mint a paid task — previously any
+      // non-402 status fell through and created the task as 'paid'.
+      if (typeof mppResult.status !== 'number' || mppResult.status < 200 || mppResult.status >= 300) {
+        return errorResponse(`MPP payment not verified (status ${mppResult.status})`, 402)
+      }
+
       // Payment verified → extract payer and create task
       const payerWallet = extractPayerWallet(request)
       if (!payerWallet) return errorResponse('Invalid MPP credential: could not extract payer wallet', 400)
@@ -255,6 +262,14 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
   const txHash = body.tx_hash.toLowerCase()
   if (!/^0x[a-f0-9]{64}$/.test(txHash)) return errorResponse('Invalid tx_hash format', 400)
 
+  // Replay protection: a single on-chain payment may fund exactly one task.
+  // Early-out before the (expensive) RPC verification. A UNIQUE index on
+  // payment_tx (migration 0039) is the race-proof backstop below.
+  const dupTx = await env.DB.prepare(
+    'SELECT id FROM tasks WHERE payment_tx = ?1 LIMIT 1'
+  ).bind(txHash).first()
+  if (dupTx) return errorResponse('This payment transaction has already been used to create a task', 409)
+
   // CAN-235: Accept pre-generated task_id (bytes32) for on-chain consistency
   if (body.task_id && !BYTES32_RE.test(body.task_id.toLowerCase())) {
     return errorResponse('Invalid task_id format: must be 0x-prefixed bytes32 hex', 400)
@@ -293,6 +308,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     let transferredAmount: number
     let onChainTaskId: string | null = null
     let buyerWallet: string | null = null
+    let slaDeadline: string | null = null
 
     // Auto-detect escrow mode: if tx has a Deposited event from our escrow contract, use escrow flow
     if (!isEscrowMode && escrowContract) {
@@ -328,10 +344,20 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
         }
       }
 
-      // data = abi.encode(uint256 amount, uint256 slaDeadline) — first 32 bytes = amount
+      // data = abi.encode(uint256 amount, uint256 slaDeadline)
+      //   bytes [2,66)  = amount (first 32-byte word)
+      //   bytes [66,130) = slaDeadline (second 32-byte word, unix seconds)
       const amountHex = '0x' + depositLog.data.slice(2, 66)
       const depositedRaw = BigInt(amountHex)
       transferredAmount = Number(depositedRaw) / Math.pow(10, USDC_DECIMALS)
+
+      // Persist the on-chain SLA deadline so the sla-timeout cron can auto-refund
+      // expired escrow tasks. Previously this was never extracted/stored, so
+      // sla_deadline was always NULL and escrow funds could lock up indefinitely.
+      if (depositLog.data.length >= 130) {
+        const slaRaw = BigInt('0x' + depositLog.data.slice(66, 130))
+        if (slaRaw > 0n) slaDeadline = new Date(Number(slaRaw) * 1000).toISOString()
+      }
 
       if (expectedAmount != null && transferredAmount < expectedAmount) {
         return errorResponse(`Insufficient escrow deposit: ${transferredAmount} USDC, expected ${expectedAmount} USDC`, 400)
@@ -363,28 +389,39 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, params, request }
     // CAN-235: Use provided task_id, or on-chain taskId from event, or generate new
     const taskId = body.task_id?.toLowerCase() || onChainTaskId || generateTaskId()
 
-    await env.DB.prepare(
-      `INSERT INTO tasks (id, buyer_agent, buyer_email, seller_agent, skill_name, params,
-                          status, payment_method, payment_chain, payment_tx,
-                          amount, currency, channel, escrow_tx, escrow_status,
-                          buyer_wallet, paid_at, started_at)
-       VALUES (?1, ?2, ?3, ?4, ?5, ?6, 'paid', ?7, 'base', ?8, ?9, ?10, 'api', ?11, ?12,
-               ?13, datetime('now'), datetime('now'))`
-    ).bind(
-      taskId,
-      body.buyer || null,
-      body.buyer_email || null,
-      agentName,
-      skill.name,
-      body.params ? JSON.stringify(body.params) : null,
-      paymentMethod,
-      txHash,
-      transferredAmount,
-      currency,
-      isEscrowMode ? txHash : null,
-      isEscrowMode ? 'deposited' : 'none',
-      buyerWallet,
-    ).run()
+    try {
+      await env.DB.prepare(
+        `INSERT INTO tasks (id, buyer_agent, buyer_email, seller_agent, skill_name, params,
+                            status, payment_method, payment_chain, payment_tx,
+                            amount, currency, channel, escrow_tx, escrow_status,
+                            buyer_wallet, sla_deadline, paid_at, started_at)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, 'paid', ?7, 'base', ?8, ?9, ?10, 'api', ?11, ?12,
+                 ?13, ?14, datetime('now'), datetime('now'))`
+      ).bind(
+        taskId,
+        body.buyer || null,
+        body.buyer_email || null,
+        agentName,
+        skill.name,
+        body.params ? JSON.stringify(body.params) : null,
+        paymentMethod,
+        txHash,
+        transferredAmount,
+        currency,
+        isEscrowMode ? txHash : null,
+        isEscrowMode ? 'deposited' : 'none',
+        buyerWallet,
+        slaDeadline,
+      ).run()
+    } catch (insErr) {
+      // Race-proof replay backstop: the UNIQUE index on payment_tx (migration
+      // 0039) rejects a second task for the same on-chain payment.
+      const msg = insErr instanceof Error ? insErr.message : ''
+      if (/UNIQUE|constraint/i.test(msg)) {
+        return errorResponse('This payment transaction has already been used to create a task', 409)
+      }
+      throw insErr
+    }
 
     // CAN-226: Notify seller (fire-and-forget)
     notifySeller(env, agent, {

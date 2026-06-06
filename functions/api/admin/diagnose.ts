@@ -5,19 +5,16 @@
  * Body: { projectId: string } or { agentName: string }
  * Auth: Bearer CRON_SECRET
  */
-import { type Env, json, errorResponse, handleOptions } from '../community/_helpers'
+import { type Env, json, errorResponse, handleOptions, requireCronSecret } from '../community/_helpers'
 import { importKey, decrypt } from '../../lib/crypto'
 import { zeaburGQL, execCommand } from '../../lib/openclaw-config'
 
 export const onRequestOptions: PagesFunction<Env> = () => handleOptions()
 
 export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
-  const cronSecret = (env as unknown as Record<string, string>).CRON_SECRET
-  if (cronSecret) {
-    const authHeader = request.headers.get('Authorization')
-    const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
-    if (token !== cronSecret) return errorResponse('Unauthorized', 401)
-  }
+  // Auth: require CRON_SECRET (fail-closed — denies access if secret is unset)
+  const denied = requireCronSecret(env, request)
+  if (denied) return denied
 
   const body = await request.json() as { projectId?: string; agentName?: string }
 

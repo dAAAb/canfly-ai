@@ -8,19 +8,12 @@
  *
  * Protected by CRON_SECRET env var.
  */
-import { type Env, json, errorResponse, handleOptions } from '../community/_helpers'
+import { type Env, json, errorResponse, handleOptions, requireCronSecret } from '../community/_helpers'
 
 export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
-  // Auth: require CRON_SECRET header or Bearer token
-  const cronSecret = (env as unknown as Record<string, string>).CRON_SECRET
-  if (cronSecret) {
-    const authHeader = request.headers.get('Authorization')
-    const cronHeader = request.headers.get('X-Cron-Secret')
-    const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : cronHeader
-    if (token !== cronSecret) {
-      return errorResponse('Unauthorized', 401)
-    }
-  }
+  // Auth: require CRON_SECRET (fail-closed — denies access if secret is unset)
+  const denied = requireCronSecret(env, request)
+  if (denied) return denied
 
   // Find pending_payment tasks older than 24 hours
   const stale = await env.DB.prepare(

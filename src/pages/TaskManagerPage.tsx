@@ -7,8 +7,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
+import { getApiAuthHeaders } from '../utils/apiAuth'
 import Navbar from '../components/Navbar'
-import { CheckCircle, XCircle, Loader2, Clock, AlertCircle, Package, Star } from 'lucide-react'
+import { CheckCircle, XCircle, Loader2, Clock, AlertCircle, Package } from 'lucide-react'
 
 type EscrowStatus = 'none' | 'deposited' | 'completed' | 'released' | 'refunded' | 'rejected'
 
@@ -56,7 +57,7 @@ function formatDate(iso: string): string {
 
 export default function TaskManagerPage() {
   const { t } = useTranslation()
-  const { isAuthenticated, login, walletAddress } = useAuth()
+  const { isAuthenticated, login, walletAddress, getAccessToken } = useAuth()
   const [tasks, setTasks] = useState<Task[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -85,9 +86,10 @@ export default function TaskManagerPage() {
   const confirmTask = async (task: Task) => {
     setActionLoading(task.id)
     try {
+      const headers = await getApiAuthHeaders({ getAccessToken, walletAddress })
       const res = await fetch(`/api/agents/${task.seller_agent}/tasks/${task.id}/confirm`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
       })
       if (!res.ok) {
         const data = await res.json().catch(() => ({})) as { error?: string }
@@ -106,9 +108,10 @@ export default function TaskManagerPage() {
     if (!reason) return
     setActionLoading(task.id)
     try {
+      const headers = await getApiAuthHeaders({ getAccessToken, walletAddress })
       const res = await fetch(`/api/agents/${task.seller_agent}/tasks/${task.id}/reject`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ reason }),
       })
       if (!res.ok) {

@@ -8,6 +8,9 @@ import {
   errorResponse,
   handleOptions,
   generateEditToken,
+  generateApiKey,
+  generatePairingCode,
+  pairingCodeExpires,
   isValidAgentName,
   toAgentSlug,
   parseBody,
@@ -142,11 +145,17 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
   }
 
   const editToken = generateEditToken()
+  // Provision the agent's own API key + pairing code so it can use Bearer auth
+  // for self-update endpoints (PUT /api/agents/:name, /capabilities, …). Without
+  // these, community-registered agents were locked out of those 16 endpoints.
+  const apiKey = generateApiKey()
+  const pairingCode = generatePairingCode()
 
   await env.DB.prepare(
     `INSERT INTO agents (name, display_name, owner_username, wallet_address, basename, platform,
-                         avatar_url, bio, birthday, model, hosting, capabilities, erc8004_url, edit_token)
-     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14)`
+                         avatar_url, bio, birthday, model, hosting, capabilities, erc8004_url, edit_token,
+                         api_key, pairing_code, pairing_code_expires, registration_source)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, 'community')`
   )
     .bind(
       name,
@@ -162,7 +171,10 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
       hosting || null,
       JSON.stringify(capabilities || {}),
       erc8004Url || null,
-      editToken
+      editToken,
+      apiKey,
+      pairingCode,
+      pairingCodeExpires()
     )
     .run()
 
@@ -186,7 +198,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
     .bind(name, JSON.stringify({ ownerUsername: ownerUsername || null }))
     .run()
 
-  return json({ name, displayName, editToken }, 201)
+  return json({ name, displayName, editToken, apiKey, pairingCode }, 201)
 }
 
 // ── OPTIONS (CORS preflight) ────────────────────────────────────────────

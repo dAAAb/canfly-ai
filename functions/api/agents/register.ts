@@ -65,26 +65,37 @@ export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
 
   const status = owner_invite ? 'pending_confirmation' : 'free'
 
-  // Insert agent — owner_username is NULL (self-registered, no owner yet)
-  await env.DB.prepare(
-    `INSERT INTO agents (name, owner_username, platform, avatar_url, bio, model,
-                         capabilities, is_public, edit_token, source,
-                         api_key, pairing_code, pairing_code_expires, registration_source)
-     VALUES (?1, NULL, ?2, ?3, ?4, ?5, ?6, 1, ?7, 'registered', ?8, ?9, ?10, 'self')`
-  )
-    .bind(
-      name,
-      platform || 'other',
-      avatarUrl || null,
-      bio || null,
-      model || null,
-      JSON.stringify({ portfolio: portfolio || [] }),
-      apiKey, // edit_token doubles as fallback; real auth is api_key
-      apiKey,
-      pairingCode,
-      expires
+  // Insert agent — owner_username is NULL (self-registered, no owner yet).
+  // The pre-check above is best-effort; the name PRIMARY KEY is the real guard
+  // against the check-then-insert race, so translate a constraint violation
+  // from a concurrent duplicate into a clean 409 instead of an opaque 500.
+  try {
+    await env.DB.prepare(
+      `INSERT INTO agents (name, owner_username, platform, avatar_url, bio, model,
+                           capabilities, is_public, edit_token, source,
+                           api_key, pairing_code, pairing_code_expires, registration_source)
+       VALUES (?1, NULL, ?2, ?3, ?4, ?5, ?6, 1, ?7, 'registered', ?8, ?9, ?10, 'self')`
     )
-    .run()
+      .bind(
+        name,
+        platform || 'other',
+        avatarUrl || null,
+        bio || null,
+        model || null,
+        JSON.stringify({ portfolio: portfolio || [] }),
+        apiKey, // edit_token doubles as fallback; real auth is api_key
+        apiKey,
+        pairingCode,
+        expires
+      )
+      .run()
+  } catch (insErr) {
+    const msg = insErr instanceof Error ? insErr.message : ''
+    if (/UNIQUE|constraint|PRIMARY KEY/i.test(msg)) {
+      return errorResponse('Agent name already taken', 409)
+    }
+    throw insErr
+  }
 
   // Insert skills if provided (support strings or objects)
   if (skills && skills.length > 0) {
