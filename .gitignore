@@ -8,3 +8,4 @@ dist
 reference/
 .wrangler/
 scripts/spike-pinata-create.ts
+RESCUE-NOTE.md
