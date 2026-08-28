@@ -18,16 +18,22 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-[100dvh] w-full overflow-x-hidden flex items-center justify-center">
+      {/* Zen sky base — visible while the video loads or if it fails to play */}
+      <div className="absolute inset-0 z-0 hero-sky" aria-hidden="true" />
       {/* Video background */}
       <video
         ref={videoRef}
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 z-0 w-full h-full object-cover"
         autoPlay
         loop
         muted
         playsInline
       />
-      <div className="absolute inset-0 bg-black/50" />
+      {/* Golden-hour atmosphere over the video: horizon sun glow, drifting
+          clouds, and a legibility vignette (replaces the old flat overlay) */}
+      <div className="absolute inset-0 z-0 hero-sun" aria-hidden="true" />
+      <div className="absolute inset-0 z-0 hero-clouds" aria-hidden="true" />
+      <div className="absolute inset-0 z-0 hero-vignette" aria-hidden="true" />
 
       {/* Nav */}
       <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between py-6 sm:py-10" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
