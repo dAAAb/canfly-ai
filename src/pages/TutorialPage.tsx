@@ -2702,7 +2702,7 @@ export default function TutorialPage() {
   const [completedSteps, setCompletedSteps] = useState<number[]>([])
 
   useHead(tutorial ? {
-    title: `${tutorial.title} — Canfly`,
+    title: `${tutorial.title} — CanFly.ai`,
     description: tutorial.subtitle,
     canonical: `https://canfly.ai${localePath(`/learn/${slug}`)}`,
     ogType: 'article',

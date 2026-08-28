@@ -104,7 +104,7 @@ export default function ProductPage() {
   const pid = product?.id ?? ''
 
   useHead(product ? {
-    title: `${product.name} — Canfly`,
+    title: `${product.name} — CanFly.ai`,
     description: t(`product.products.${pid}.description`, { defaultValue: product.description }),
     canonical: `https://canfly.ai${localePath(`/apps/${product.category}/${slug}`)}`,
     ogImage: product.ogImage ? `https://canfly.ai${product.ogImage}` : product.heroImage ? `https://canfly.ai${product.heroImage}` : product.icon ? `https://canfly.ai${product.icon}` : undefined,
@@ -375,7 +375,7 @@ zeabur deploy --template openclaw`}
                 ...(product.tutorial ? { "softwareHelp": { "@type": "CreativeWork", "url": `https://canfly.ai${product.tutorial}` } } : {}),
                 "provider": {
                   "@type": "Organization",
-                  "name": "Canfly",
+                  "name": "CanFly.ai",
                   "url": "https://canfly.ai"
                 }
               })}

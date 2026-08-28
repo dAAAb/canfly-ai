@@ -42,7 +42,7 @@
     "headingLine2": "一個",
     "headingHighlight": "AI Agent。",
     "descLeft1": "AI Agent 市場正在爆發 — 從個人助理到企業自動化，2026 是人人都能擁有 AI 夥伴的元年。但大多數人不知道從哪裡開始。",
-    "descLeft2": "硬體怎麼選？軟體怎麼裝？OpenClaw Agent 怎麼跑？這些問題，Canfly 一次解決。",
+    "descLeft2": "硬體怎麼選？軟體怎麼裝？OpenClaw Agent 怎麼跑？這些問題，CanFly 一次解決。",
     "descRight1": "我們是 OpenClaw 小龍蝦 AI Agent 世界的知識嚮導。從免費體驗到硬體導購，從白手套設定到社群互助 — 帶你從零開始起飛。",
     "descRight2": "不只是工具平台，更是一個社群。每位使用者都有自己的飛行日誌，展示你的 AI Agent、分享你的配置、啟發更多人。",
     "stat1Value": "$300B",
@@ -50,7 +50,7 @@
     "stat2Value": "87%",
     "stat2Label": "想用 AI 但不知如何開始",
     "stat3Value": "5 min",
-    "stat3Label": "用 Canfly 從零到起飛"
+    "stat3Label": "用 CanFly 從零到起飛"
   },
   "features": {
     "eyebrow": "功能特色",
@@ -83,7 +83,7 @@
     "line1": "AI 不會取代你，",
     "line2": "但擁有 AI 的人會。",
     "line3": "現在，你也能飛。",
-    "attribution": "Canfly"
+    "attribution": "CanFly"
   },
   "newsletter": {
     "badge": "電子報",
@@ -96,8 +96,8 @@
   },
   "subscribeConfirmed": {
     "meta": {
-      "title": "訂閱確認 — Canfly",
-      "description": "你已成功訂閱 Canfly 電子報，歡迎加入！"
+      "title": "訂閱確認 — CanFly",
+      "description": "你已成功訂閱 CanFly 電子報，歡迎加入！"
     },
     "heading": "訂閱成功！歡迎加入。",
     "desc": "你的訂閱已確認。我們會寄給你 AI 教學、工具評測和最新動態——絕不寄垃圾信。",
@@ -310,7 +310,7 @@
     }
   },
   "footer": {
-    "copyright": "© 2026 Canfly",
+    "copyright": "© 2026 CanFly",
     "tagline": "有了 OpenClaw 小龍蝦 AI，你也能飛",
     "affiliateDisclosure": "作為 Amazon Associates 聯盟夥伴，CanFly.ai 可能透過符合條件的購買獲得佣金。"
   },
@@ -772,7 +772,7 @@
     "integrationComingSoon": "整合即將推出",
     "review": "評測",
     "notifyTitle": "上線時通知我",
-    "notifyDescription": "當 {{name}} 在 Canfly 上架時，我們會寄 Email 通知你。",
+    "notifyDescription": "當 {{name}} 在 CanFly 上架時，我們會寄 Email 通知你。",
     "notifyButton": "通知我",
     "notifySuccess": "已加入等候清單！",
     "notifySuccessDescription": "{{name}} 上架時我們會通知你。"
@@ -1058,7 +1058,7 @@
           "tips": [
             "所有模型都是免費使用",
             "你的資料永遠不會離開你的電腦",
-            "加入 Canfly 育苗場社群，和其他使用者交流"
+            "加入 CanFly 育苗場社群，和其他使用者交流"
           ],
           "nextStepCards": [
             {
@@ -1356,7 +1356,7 @@
             {
               "emoji": "🦞",
               "title": "加入社群",
-              "desc": "在 Canfly 社群中分享你的部署，啟發其他人將 AI 帶到雲端。",
+              "desc": "在 CanFly 社群中分享你的部署，啟發其他人將 AI 帶到雲端。",
               "cta": "加入社群",
               "link": "https://blog.juchunko.com",
               "external": true
@@ -1530,7 +1530,7 @@
             {
               "emoji": "⭐",
               "title": "升級到入門方案",
-              "desc": "取得 30,000 字元、高級語音和商業用途。透過 22% 推薦佣金支持 Canfly。",
+              "desc": "取得 30,000 字元、高級語音和商業用途。透過 22% 推薦佣金支持 CanFly。",
               "cta": "立即升級",
               "link": "https://try.elevenlabs.io/clawhub?utm_source=canfly&utm_medium=web&utm_campaign=elevenlabs",
               "external": true
@@ -1955,7 +1955,7 @@
             {
               "emoji": "⭐",
               "title": "升級到創作者方案",
-              "desc": "取得每月 15 點數、API 存取和商業用途。透過 20% 推薦佣金支持 Canfly。",
+              "desc": "取得每月 15 點數、API 存取和商業用途。透過 20% 推薦佣金支持 CanFly。",
               "cta": "立即升級",
               "link": "https://www.heygen.com/?sid=rewardful&via=clawhub&utm_source=canfly&utm_medium=web&utm_campaign=heygen",
               "external": true
@@ -7109,7 +7109,7 @@
     }
   },
   "hardwareCompare": {
-    "pageTitle": "硬體比較 — Canfly",
+    "pageTitle": "硬體比較 — CanFly",
     "title": "AI 硬體導購指南",
     "subtitle": "Umbrel Home vs Mac mini vs Raspberry Pi — 哪一台最適合你？比較價格、難度、適合對象。",
     "feature": "功能",
@@ -7223,7 +7223,7 @@
   },
   "onboarding": {
     "meta": {
-      "title": "開始使用 — Canfly",
+      "title": "開始使用 — CanFly",
       "description": "選擇你的路線，5 分鐘內擁有自己的 AI Agent。從零開始的新手友善教學。"
     },
     "eyebrow": "開始使用",
@@ -7898,7 +7898,7 @@
   },
   "bind": {
     "pageTitle": "綁定 Zeabur 蝦蝦",
-    "pageDesc": "將已部署在 Zeabur 上的 OpenClaw 蝦蝦連結至你的 Canfly 代理。",
+    "pageDesc": "將已部署在 Zeabur 上的 OpenClaw 蝦蝦連結至你的 CanFly 代理。",
     "loginRequired": "需要登入",
     "loginDesc": "連結錢包以綁定既有的 Zeabur 蝦蝦。",
     "loginBtn": "連結錢包",
@@ -7906,9 +7906,9 @@
     "step2Label": "API 金鑰",
     "step3Label": "綁定",
     "step1Title": "選擇代理",
-    "step1Desc": "選擇要綁定到你 Zeabur 蝦蝦的 Canfly 代理。",
+    "step1Desc": "選擇要綁定到你 Zeabur 蝦蝦的 CanFly 代理。",
     "step2Title": "Zeabur API 金鑰",
-    "step2Desc": "輸入你的 Zeabur API 金鑰，讓 Canfly 能掃描你的服務。",
+    "step2Desc": "輸入你的 Zeabur API 金鑰，讓 CanFly 能掃描你的服務。",
     "step3Title": "貼上閘道資訊",
     "step3Desc": "從 Zeabur 服務頁面複製以下任一種：Gateway Token、Web UI 網址、或「複製 AI 提示詞」的內容。",
     "apiKeyPlaceholder": "sk-...",

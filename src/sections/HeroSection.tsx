@@ -33,7 +33,7 @@ export default function HeroSection() {
       <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between py-6 sm:py-10" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
         <Link to={localePath('/')} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <span className="text-xl">🦞</span>
-          <span className="font-bold text-xl tracking-tight">Canfly</span>
+          <span className="font-bold text-xl tracking-tight">CanFly.ai</span>
         </Link>
         {/* Desktop nav */}
         <div className="hidden sm:flex items-center gap-5">
