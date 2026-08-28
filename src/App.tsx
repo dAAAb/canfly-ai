@@ -4,6 +4,7 @@ import { useEffect, lazy, Suspense } from 'react'
 import Footer from './sections/Footer'
 import ErrorBoundary from './components/ErrorBoundary'
 import { langFromPrefix, loadLanguage, detectLanguageAuto } from './i18n'
+import { detectSubdomain } from './utils/subdomain'
 
 const HomePage = lazy(() => import('./pages/HomePage'))
 const AppsPage = lazy(() => import('./pages/AppsPage'))
@@ -100,21 +101,6 @@ function AutoLangSync({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
 
-/** Detect if we're on a user subdomain (e.g. dAAAb.canfly.ai) */
-function detectSubdomain(): string | null {
-  const host = window.location.hostname.toLowerCase()
-  const mainDomain = 'canfly.ai'
-  const suffix = `.${mainDomain}`
-  if (host.endsWith(suffix)) {
-    const sub = host.slice(0, -suffix.length)
-    const reserved = new Set(['www', 'api', 'mail', 'cdn', 'staging', 'dev', 'admin'])
-    if (sub && !sub.includes('.') && !reserved.has(sub)) {
-      return sub
-    }
-  }
-  return null
-}
-
 /** On subdomain, render user pages directly without /u/ prefix in URL */
 function SubdomainRouter({ subdomain }: { subdomain: string }) {
   return (
@@ -142,7 +128,7 @@ function SubdomainRouter({ subdomain }: { subdomain: string }) {
 }
 
 function App() {
-  const subdomain = detectSubdomain()
+  const subdomain = detectSubdomain(window.location.hostname)
   if (subdomain) return <SubdomainRouter subdomain={subdomain} />
 
   return (

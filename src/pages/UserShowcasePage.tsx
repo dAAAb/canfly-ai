@@ -14,6 +14,7 @@ import { walletGradient } from '../utils/walletGradient'
 import TrustBadge from '../components/TrustBadge'
 import ClaimProfileButton from '../components/ClaimProfileButton'
 import { getTrustLevel } from '../utils/trustLevel'
+import { profilePathUrl, profileSubdomainUrl } from '../utils/subdomain'
 import AgentBookRegister from '../components/AgentBookRegister'
 import ReviewVideoPlayer from '../components/ReviewVideoPlayer'
 import {
@@ -235,6 +236,7 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [snippetCopied, setSnippetCopied] = useState(false)
+  const [shareCopied, setShareCopied] = useState(false)
   const [pairingCode, setPairingCode] = useState('')
   const [pairingStatus, setPairingStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [pairingMessage, setPairingMessage] = useState('')
@@ -256,11 +258,20 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
   const [retryingDeployment, setRetryingDeployment] = useState<string | null>(null)
 
   // useHead must be called before any early returns (React hooks rule)
-  const profileUrl = username ? `https://canfly.ai/u/${username}` : undefined
+  const shareUrl = user
+    ? profileSubdomainUrl(user.username)
+    : username
+      ? profileSubdomainUrl(username)
+      : undefined
+  const pathUrl = user
+    ? profilePathUrl(user.username)
+    : username
+      ? profilePathUrl(username)
+      : undefined
   useHead({
     title: user ? `${user.display_name || user.username} — CanFly.ai` : 'CanFly.ai',
     description: user?.bio || (user ? `${user.display_name || user.username}'s AI agent profile on CanFly.ai` : 'AI Agent Profile'),
-    canonical: profileUrl,
+    canonical: shareUrl,
     ogType: 'profile',
     ogImage: user?.avatar_url || undefined,
   })
@@ -599,6 +610,29 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
 
             {user.display_name && (
               <h1 className="text-2xl font-bold text-white mt-2">{user.display_name}</h1>
+            )}
+
+            {shareUrl && (
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <a
+                  href={shareUrl}
+                  className="text-sm font-mono text-cyan-400 hover:text-cyan-300 transition-colors"
+                >
+                  {shareUrl.replace(/^https:\/\//, '').replace(/\/$/, '')}
+                </a>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(shareUrl)
+                    setShareCopied(true)
+                    setTimeout(() => setShareCopied(false), 2000)
+                  }}
+                  className="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white transition-colors"
+                  title="Copy"
+                >
+                  {shareCopied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
+                </button>
+              </div>
             )}
 
             {/* Basename / ENS */}
@@ -1000,10 +1034,13 @@ export default function UserShowcasePage({ subdomainUsername }: { subdomainUsern
               "mainEntity": {
                 "@type": "Person",
                 "name": user.display_name || user.username,
-                "url": profileUrl,
+                "url": shareUrl,
                 ...(user.avatar_url ? { "image": user.avatar_url } : {}),
                 ...(user.bio ? { "description": user.bio } : {}),
-                ...(user.links?.website ? { "sameAs": [user.links.website] } : {}),
+                "sameAs": [
+                  pathUrl,
+                  ...(user.links?.website ? [user.links.website] : []),
+                ].filter(Boolean),
               },
               "isPartOf": {
                 "@type": "WebSite",

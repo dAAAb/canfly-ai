@@ -5,6 +5,7 @@ import { useLanguage } from '../hooks/useLanguage'
 import LanguageSwitcher from './LanguageSwitcher'
 import AuthButton from './AuthButton'
 import { Menu, X } from 'lucide-react'
+import { isUserSubdomain } from '../utils/subdomain'
 
 interface NavbarProps {
   /** Show search box */
@@ -22,22 +23,25 @@ export default function Navbar({ search, children }: NavbarProps) {
   const { localePath } = useLanguage()
   const [mobileOpen, setMobileOpen] = useState(false)
 
-  // On subdomains (e.g. daaab.canfly.ai), nav links should point to main domain
-  const isSubdomain = (() => {
-    const host = window.location.hostname.toLowerCase()
-    const main = 'canfly.ai'
-    return host.endsWith(`.${main}`) && host !== `www.${main}`
-  })()
+  // On user hosts (e.g. peter.canfly.ai), nav links should point to the apex
+  const isSubdomain = isUserSubdomain(window.location.hostname)
   const mainBase = isSubdomain ? 'https://canfly.ai' : ''
 
   return (
-    <div className="border-b border-gray-800 bg-black/80 backdrop-blur-md sticky top-0 z-50">
+    <div className="border-b border-white/8 bg-black/70 backdrop-blur-xl sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6 md:px-8 py-4 flex items-center justify-between">
-        {/* Logo */}
-        <Link to={localePath('/')} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <span className="text-xl">🦞</span>
-          <span className="font-bold text-lg tracking-tight text-white">CanFly.ai</span>
-        </Link>
+        {/* Logo — on a user subdomain the wordmark returns to the product site */}
+        {isSubdomain ? (
+          <a href="https://canfly.ai" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <span className="text-xl">🦞</span>
+            <span className="font-bold text-lg tracking-tight text-white">CanFly.ai</span>
+          </a>
+        ) : (
+          <Link to={localePath('/')} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <span className="text-xl">🦞</span>
+            <span className="font-bold text-lg tracking-tight text-white">CanFly.ai</span>
+          </Link>
+        )}
 
         {/* Desktop right side */}
         <div className="hidden sm:flex items-center gap-4">
