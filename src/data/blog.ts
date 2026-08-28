@@ -13,6 +13,17 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'why-canfly-exists',
+    titleKey: 'blog.posts.whyCanflyExists.title',
+    summaryKey: 'blog.posts.whyCanflyExists.summary',
+    contentKey: 'blog.posts.whyCanflyExists.content',
+    category: 'insight',
+    date: '2026-08-28',
+    readingTime: '6',
+    tags: ['canfly', 'ai-agent', 'openclaw', 'why', 'empowerment'],
+    relatedProducts: ['ollama', 'zeabur'],
+  },
+  {
     slug: 'local-ai-privacy-2026',
     titleKey: 'blog.posts.localAiPrivacy.title',
     summaryKey: 'blog.posts.localAiPrivacy.summary',

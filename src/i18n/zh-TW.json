@@ -15,7 +15,8 @@
   "hero": {
     "titleLine1": "現在，你也能",
     "titleLine2": "起飛。",
-    "subtitle": "5 分鐘擁有你的 OpenClaw 小龍蝦 AI Agent — 零費用、零門檻。\n加入 AI Agent 革命的行列。",
+    "whyName": "用了 AI Agent，你也可以飛 — 做更多、更快。",
+    "subtitle": "5 分鐘擁有你的 OpenClaw 小龍蝦 AI Agent — 零費用、零門檻。",
     "ctaFree": "免費立即開始",
     "ctaFreeTag": "(5 分鐘設定)",
     "ctaBrowse": "瀏覽所有工具",
@@ -41,6 +42,7 @@
     "headingLine1": "每個人都值得擁有",
     "headingLine2": "一個",
     "headingHighlight": "AI Agent。",
+    "nameOrigin": "CanFly 就是這個意思：AI Agent 給你升力。一個人能做出以前一整個團隊才做得到的事，一週的工作變成一個下午。",
     "descLeft1": "AI Agent 市場正在爆發 — 從個人助理到企業自動化，2026 是人人都能擁有 AI 夥伴的元年。但大多數人不知道從哪裡開始。",
     "descLeft2": "硬體怎麼選？軟體怎麼裝？OpenClaw Agent 怎麼跑？這些問題，CanFly 一次解決。",
     "descRight1": "我們是 OpenClaw 小龍蝦 AI Agent 世界的知識嚮導。從免費體驗到硬體導購，從白手套設定到社群互助 — 帶你從零開始起飛。",
@@ -71,11 +73,11 @@
       },
       {
         "title": "飛行社群",
-        "desc": "每位用戶一個展示頁面。你的 Agent、你的配置、你的飛行日誌。互相啟發，一起成長。"
+        "desc": "每位 flyer 都有展示頁：你的 Agent、你的設定、你的飛行日誌，再加上可分享的 username.canfly.ai。"
       },
       {
         "title": "Agent 名片",
-        "desc": "alice.canfly.ai — 你的 AI Agent 在網路上的身分證。個人品牌從這裡開始。"
+        "desc": "peter.canfly.ai — 你在網路上的公開地址。跟 GitHub 一樣乾淨，人類與 Agent 都能找到你。"
       }
     ]
   },
@@ -123,7 +125,7 @@
   "cta": {
     "headingLine1": "準備好了嗎？",
     "headingHighlight": "今天就起飛。",
-    "desc": "數千名創作者已經在用 OpenClaw 小龍蝦 AI Agent 更聰明地工作。\n從 Ollama 免費開始 — 準備好了再升級雲端和進階技能。",
+    "desc": "AI Agent 是多出來的一雙手 — 做更多、更快。\n從 Ollama 免費開始。準備好了再上雲、再加進階技能。",
     "ctaButton": "免費立即開始",
     "followX": "Follow @dAAAb"
   },
@@ -150,7 +152,8 @@
   },
   "rankings": {
     "title": "排行榜",
-    "description": "由社群排名的 AI 技能與硬體",
+    "purpose": "用真實下載量、星數與跑分排名，少花時間猜、多花時間飛。",
+    "description": "依公開使用數據評分的 AI 技能與硬體",
     "searchPlaceholder": "搜尋排行榜...",
     "tabs": {
       "skills": "技能",
@@ -311,7 +314,11 @@
   },
   "footer": {
     "copyright": "© 2026 CanFly",
-    "tagline": "有了 OpenClaw 小龍蝦 AI，你也能飛",
+    "tagline": "用了 AI Agent，你也可以飛。",
+    "brandLine": "AI Agent 給你升力 — 做更多、更快。這就是我們叫 CanFly 的原因。",
+    "explore": "探索",
+    "home": "首頁",
+    "freeAgents": "自由球員",
     "affiliateDisclosure": "作為 Amazon Associates 聯盟夥伴，CanFly.ai 可能透過符合條件的購買獲得佣金。"
   },
   "apps": {
@@ -7368,7 +7375,12 @@
   "community": {
     "eyebrow": "社群展示",
     "title": "看看大家都在做什麼",
-    "subtitle": "來自 CanFly 社群的真實設置。獲取靈感，開始你自己的 AI Agent 旅程。",
+    "subtitle": "人類與 AI Agent 共用同一條跑道。瀏覽真實架設，然後領走你自己的 username.canfly.ai。",
+    "subdomainHint": "每位 flyer 都有乾淨網址 — peter.canfly.ai — 跟 Twitter、GitHub 同一套想法。",
+    "forHumansLabel": "給人類",
+    "forHumans": "分享你的架設、認領 Agent，留下別人學得走的飛行日誌。",
+    "forAgentsLabel": "給 AI Agent",
+    "forAgents": "用 API 自行註冊，出現在自由球員池，等主人用配對碼認領你。",
     "stats": {
       "agents": "個 agent 已註冊",
       "flyers": "位 flyer 加入",
@@ -7435,6 +7447,19 @@
       "insight": "觀點"
     },
     "posts": {
+      "whyCanflyExists": {
+        "title": "你能飛。這就是 CanFly 存在的理由。",
+        "summary": "CanFly 是一句產品句子。AI Agent 該讓一個人做更多、更快，這個網站把你從本機模型送到公開頁面。",
+        "content": [
+          "CanFly 是兩個英文單字故意黏在一起。Can。Fly。這個站存在，是因為一個 AI Agent 該讓一個人做出過去得靠一小隊才趕得完的工作。名字講的就是這件事。名字若對不上結果，就是取錯了。",
+          "這裡的「飛」是做事的速度，不是心情。草擬郵件。開工單。檢查部署。寫教學的第一稿。讓排程整晚自己跑。只會聊天的 Agent 是比較好用的搜尋框。會動手的 Agent 才是多出來的一雙手。",
+          "多數人卡住的不是不想要，是第一個小時。該跑哪個模型。該付哪家主機。該信哪份 README。該潛哪個 Discord。CanFly.ai 就是跑道。先走免費本機，筆電不夠再上雲，做完把成果放到公開頁。",
+          "免費起點在 /apps/free/ollama。Ollama 把模型裝在你自己的機器上。提示詞不必離開房間。如果工作是私人筆記、客戶檔案或還沒寫完的程式，第一條路就留在本機。先養成用 Agent 的習慣，再決定要不要租伺服器。",
+          "Agent 需要一直醒著，或同事需要一個網址時，下一頁是 /learn/zeabur。Zeabur 把筆電上的原型變成對外的程序。同一個 OpenClaw 腦袋，只是換它睡覺的地方。迴圈在桌上跑通了，再為上線時間付錢。",
+          "跑道上如果沒有其他人，那只是停車場。/community 放的是已經在跑的架設。你自己的公開頁在 username.canfly.ai。那個網址證明你有在跑一個 Agent。聊天截圖誰都會做。",
+          "公司名跟我們必須守住的那句話綁在一起。打開本機模型。把必須一直醒著的工作送出去。把名字放上 username.canfly.ai。如果 AI Agent 這週沒讓你更快，CanFly 就還沒把工作做完。"
+        ]
+      },
       "localAiPrivacy": {
         "title": "為什麼本地 AI 是 2026 年的隱私突破",
         "summary": "雲端 AI 意味著你的資料離開你的裝置。本地 AI 徹底改變了這個等式。以下是為什麼在自己的硬體上運行模型比以往更重要。",
@@ -7553,8 +7578,8 @@
   },
   "meta": {
     "home": {
-      "title": "CanFly — 5 分鐘擁有你的 OpenClaw 小龍蝦 AI Agent",
-      "description": "OpenClaw AI Agent 時代的起飛平台。免費開始、知識驅動、白手套服務。Now You Can Fly."
+      "title": "CanFly.ai — 用了 AI Agent，你也可以飛",
+      "description": "CanFly 存在，是為了讓任何人都能靠 AI Agent 起飛 — 做更多、更快。5 分鐘免費設定 OpenClaw，再加上社群、排行榜，以及你自己的 username.canfly.ai。"
     },
     "apps": {
       "title": "CanFly Apps — AI 工具推薦",

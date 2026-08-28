@@ -297,6 +297,31 @@
 
   <!-- Blog posts -->
   <url>
+    <loc>https://canfly.ai/blog/why-canfly-exists</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/blog/why-canfly-exists" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/blog/why-canfly-exists" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/blog/why-canfly-exists" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/blog/why-canfly-exists" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/blog/why-canfly-exists</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/blog/why-canfly-exists" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/blog/why-canfly-exists" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/blog/why-canfly-exists" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/blog/why-canfly-exists</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/blog/why-canfly-exists" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/blog/why-canfly-exists" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/blog/why-canfly-exists" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://canfly.ai/blog/local-ai-privacy-2026</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/blog/local-ai-privacy-2026" />
     <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/blog/local-ai-privacy-2026" />
