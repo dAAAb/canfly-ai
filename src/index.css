@@ -191,8 +191,8 @@ body {
   background:
     radial-gradient(
       ellipse at 40% 45%,
-      rgba(255, 244, 228, 0.42) 0%,
-      rgba(255, 220, 190, 0.16) 42%,
+      rgba(255, 248, 236, 0.72) 0%,
+      rgba(255, 228, 200, 0.32) 42%,
       rgba(255, 220, 190, 0) 70%
     );
   filter: blur(var(--blur, 12px));
@@ -203,12 +203,12 @@ body {
   pointer-events: none;
 }
 
-.hero-puff-a { --x: -18vw; --w: 48vw; --h: 20vh; --dur: 52s; --delay: 0s;   --op: 0.55; --blur: 14px; }
-.hero-puff-b { --x: 22vw;  --w: 40vw; --h: 16vh; --dur: 44s; --delay: -12s; --op: 0.48; --blur: 16px; }
-.hero-puff-c { --x: 2vw;   --w: 56vw; --h: 22vh; --dur: 60s; --delay: -24s; --op: 0.40; --blur: 18px; }
-.hero-puff-d { --x: -28vw; --w: 36vw; --h: 14vh; --dur: 38s; --delay: -8s;  --op: 0.50; --blur: 12px; }
-.hero-puff-e { --x: 30vw;  --w: 34vw; --h: 14vh; --dur: 56s; --delay: -32s; --op: 0.36; --blur: 20px; }
-.hero-puff-f { --x: -6vw;  --w: 28vw; --h: 12vh; --dur: 34s; --delay: -18s; --op: 0.44; --blur: 10px; }
+.hero-puff-a { --x: -18vw; --w: 56vw; --h: 24vh; --dur: 40s; --delay: 0s;   --op: 0.78; --blur: 10px; }
+.hero-puff-b { --x: 22vw;  --w: 48vw; --h: 20vh; --dur: 34s; --delay: -10s; --op: 0.70; --blur: 12px; }
+.hero-puff-c { --x: 2vw;   --w: 64vw; --h: 26vh; --dur: 46s; --delay: -18s; --op: 0.62; --blur: 14px; }
+.hero-puff-d { --x: -28vw; --w: 42vw; --h: 18vh; --dur: 30s; --delay: -6s;  --op: 0.74; --blur: 9px; }
+.hero-puff-e { --x: 30vw;  --w: 40vw; --h: 17vh; --dur: 42s; --delay: -24s; --op: 0.58; --blur: 16px; }
+.hero-puff-f { --x: -6vw;  --w: 36vw; --h: 15vh; --dur: 26s; --delay: -14s; --op: 0.68; --blur: 8px; }
 
 @keyframes cloud-approach {
   0% {
