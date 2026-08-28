@@ -110,7 +110,7 @@ export default function LiveFeed() {
   return (
     <section
       className="relative z-10 w-full bg-black"
-      style={{ paddingLeft: '8%', paddingRight: '8%', marginTop: '-14vh', paddingTop: '6vh' }}
+      style={{ paddingLeft: '8%', paddingRight: '8%', marginTop: '-12vh' }}
     >
       <div
         className="mx-auto mb-12 max-w-5xl overflow-hidden rounded-2xl border border-white/10 p-6 md:p-8"

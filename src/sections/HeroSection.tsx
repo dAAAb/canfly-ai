@@ -17,7 +17,7 @@ export default function HeroSection() {
   )
 
   return (
-    <section className="hero-section relative flex w-full items-center justify-center overflow-x-hidden bg-black">
+    <section className="hero-section relative flex w-full flex-col overflow-x-hidden bg-black">
       {/* Media is masked out at the bottom so the Mux frame never ends as a knife-edge. */}
       <div className="hero-media absolute inset-0 z-0" aria-hidden="true">
         <div className="absolute inset-0 hero-sky" />
@@ -107,7 +107,7 @@ export default function HeroSection() {
       )}
 
       {/* Content */}
-      <div className="relative z-10 text-center max-w-5xl mx-auto pt-28 pb-20" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
+      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-1 flex-col justify-center pt-28 pb-6 text-center" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
         <h1
           className="font-black tracking-tight"
           style={{
@@ -198,15 +198,16 @@ export default function HeroSection() {
             </Link>
           </div>
         </div>
-      </div>
 
-      {/* Scroll hint — no Tailwind bounce; that reads as the page snapping back */}
-      <div className="hero-scroll-hint absolute bottom-[22%] left-1/2 z-20 flex -translate-x-1/2 flex-col items-center">
-        <span className="mb-2 text-xs tracking-widest uppercase">{t('hero.scroll')}</span>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M12 5v14M5 12l7 7 7-7" />
-        </svg>
+        <div className="hero-scroll-hint mt-8 flex flex-col items-center">
+          <span className="mb-2 text-xs tracking-widest uppercase">{t('hero.scroll')}</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 5v14M5 12l7 7 7-7" />
+          </svg>
+        </div>
       </div>
+      {/* Empty black band so the next section overlaps paint, not funnel cards. */}
+      <div className="hero-fade-spacer pointer-events-none relative z-0 h-[26vh] shrink-0" aria-hidden="true" />
     </section>
   )
 }
