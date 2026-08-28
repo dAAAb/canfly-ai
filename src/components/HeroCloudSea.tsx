@@ -57,14 +57,16 @@ float head(vec2 uv, vec2 c, float s, float squash, float seed) {
 
 vec3 skyColor(vec3 rd, vec3 sunDir) {
   float h = rd.y;
-  vec3 zenith = vec3(0.020, 0.031, 0.086);
-  vec3 mid = vec3(0.145, 0.102, 0.302);
-  vec3 hor = vec3(0.96, 0.58, 0.38);
-  vec3 col = mix(hor, mid, smoothstep(-0.02, 0.24, h));
-  col = mix(col, zenith, smoothstep(0.14, 0.72, h));
+  // Magic hour / blue hour: sun is on the rim. Deep indigo above,
+  // a thin warm band at the horizon — not a bright late-afternoon sky.
+  vec3 zenith = vec3(0.010, 0.014, 0.045);
+  vec3 mid = vec3(0.055, 0.042, 0.125);
+  vec3 hor = vec3(0.42, 0.20, 0.22);
+  vec3 col = mix(hor, mid, smoothstep(-0.06, 0.18, h));
+  col = mix(col, zenith, smoothstep(0.08, 0.62, h));
   float sun = max(dot(rd, sunDir), 0.0);
-  col += vec3(1.00, 0.78, 0.42) * pow(sun, 26.0) * 1.15;
-  col += vec3(0.98, 0.64, 0.36) * pow(sun, 4.5) * 0.32;
+  col += vec3(0.92, 0.48, 0.28) * pow(sun, 48.0) * 0.55;
+  col += vec3(0.62, 0.28, 0.22) * pow(sun, 6.0) * 0.16;
   return col;
 }
 
@@ -76,12 +78,13 @@ void main() {
   vec3 rgt = normalize(cross(fw, vec3(0.0, 1.0, 0.0)));
   vec3 upv = cross(rgt, fw);
   vec3 rd = normalize(uv.x * rgt + uv.y * upv + 1.25 * fw);
-  vec3 sunDir = normalize(vec3(0.48, 0.22, 0.82));
+  // Sun sits on the horizon rim — last light, not late afternoon.
+  vec3 sunDir = normalize(vec3(0.52, 0.045, 0.84));
   vec3 col = skyColor(rd, sunDir);
 
-  // Particle cloud sea: each head stays round (PX PUSH / sprite-plane
-  // family). Depth wraps toward the camera — far = small at a low
-  // horizon, near = large and cropped by the section bottom.
+  // Particle cloud sea. Depth *increases* with time so heads grow
+  // from the horizon toward the camera (forward flight). The old
+  // `rnd - t` shrank them back to the horizon (reverse).
   float horizon = -0.24;
   float cover = 0.0;
   float lit = 0.5;
@@ -89,7 +92,7 @@ void main() {
     float id = float(i);
     float rnd = hash21(vec2(id, 1.7));
     float rnd2 = hash21(vec2(id, 6.3));
-    float depth = fract(rnd - t * 0.09);
+    float depth = fract(rnd + t * 0.09);
     float x = (hash21(vec2(id, 2.9)) - 0.5) * mix(2.15, 3.05, depth);
     float y = mix(horizon, -0.66, depth * depth);
     float s = mix(0.05, 0.30, depth * depth);
@@ -103,13 +106,13 @@ void main() {
     }
   }
   if (cover > 0.02) {
-    vec3 shade = mix(vec3(0.42, 0.30, 0.38), vec3(1.06, 0.97, 0.90), lit);
-    shade = mix(shade, vec3(1.0, 0.74, 0.46), lit * 0.22);
+    vec3 shade = mix(vec3(0.22, 0.16, 0.26), vec3(0.86, 0.72, 0.68), lit);
+    shade = mix(shade, vec3(0.92, 0.52, 0.36), lit * 0.28);
     col = mix(col, shade, clamp(cover, 0.0, 1.0));
   }
 
-  col += vec3(1.0, 0.5, 0.26) * pow(max(dot(rd, sunDir), 0.0), 3.0) * 0.10;
-  col = pow(col, vec3(0.94));
+  col += vec3(0.70, 0.28, 0.16) * pow(max(dot(rd, sunDir), 0.0), 4.0) * 0.06;
+  col = pow(col, vec3(1.02));
   gl_FragColor = vec4(col, 1.0);
 }
 `
