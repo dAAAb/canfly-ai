@@ -40,6 +40,19 @@ export default function VisionSection() {
           </span>
         </h2>
 
+        <p
+          className="stagger-child stagger-3 mx-auto text-center text-white/70"
+          style={{
+            maxWidth: '40rem',
+            marginTop: 'clamp(28px, 3vw, 44px)',
+            fontSize: 'clamp(17px, 1.6vw, 24px)',
+            lineHeight: 1.55,
+            letterSpacing: '-0.01em',
+          }}
+        >
+          {t('vision.nameOrigin')}
+        </p>
+
         {/* Description */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-14 md:gap-20" style={{ marginTop: 'clamp(48px, 5vw, 80px)' }}>
           <div className="stagger-child stagger-3">

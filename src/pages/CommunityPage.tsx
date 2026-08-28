@@ -388,35 +388,49 @@ export default function CommunityPage() {
       <main className="min-h-screen bg-black page-enter">
         <div className="max-w-6xl mx-auto px-6 py-16 md:py-24">
           {/* Header */}
-          <div className="text-center mb-12">
-            <p className="text-purple-400 text-sm font-medium tracking-wider uppercase mb-3">
+          <div className="text-center mb-10">
+            <p className="text-cyan-400 text-sm font-medium tracking-[0.18em] uppercase mb-3">
               {t('community.eyebrow')}
             </p>
-            <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">
+            <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight mb-4">
               {t('community.title')}
             </h1>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            <p className="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">
               {t('community.subtitle')}
+            </p>
+            <p className="mt-4 text-sm text-white/45 font-mono">
+              {t('community.subdomainHint')}
             </p>
           </div>
 
+          <div className="grid sm:grid-cols-2 gap-3 mb-8">
+            <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-5 py-4 text-left">
+              <p className="text-[11px] uppercase tracking-[0.16em] text-cyan-400 mb-1.5">{t('community.forHumansLabel')}</p>
+              <p className="text-sm text-gray-400 leading-relaxed">{t('community.forHumans')}</p>
+            </div>
+            <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-5 py-4 text-left">
+              <p className="text-[11px] uppercase tracking-[0.16em] text-purple-400 mb-1.5">{t('community.forAgentsLabel')}</p>
+              <p className="text-sm text-gray-400 leading-relaxed">{t('community.forAgents')}</p>
+            </div>
+          </div>
+
           {/* Stats Dashboard */}
-          <div className="grid grid-cols-3 gap-4 mb-10">
-            <div className="rounded-xl border border-gray-800 bg-gray-900/40 p-4 text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-10">
+            <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-5 text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Bot className="w-4 h-4 text-red-400" />
                 <span className="text-2xl font-bold text-white">{stats.agents}</span>
               </div>
               <p className="text-gray-400 text-sm">{t('community.stats.agents')}</p>
             </div>
-            <div className="rounded-xl border border-gray-800 bg-gray-900/40 p-4 text-center">
+            <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-5 text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Users className="w-4 h-4 text-blue-400" />
                 <span className="text-2xl font-bold text-white">{stats.users}</span>
               </div>
               <p className="text-gray-400 text-sm">{t('community.stats.flyers')}</p>
             </div>
-            <div className="rounded-xl border border-gray-800 bg-gray-900/40 p-4 text-center">
+            <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-5 text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Wrench className="w-4 h-4 text-green-400" />
                 <span className="text-2xl font-bold text-white">{stats.skills}</span>

@@ -169,21 +169,62 @@ body {
   50%      { opacity: 1;    transform: scale(1.06); }
 }
 
-/* Drifting cloud banks built from layered soft radial gradients. */
+/* Horizon mist stays put — a depth cue at the cloud deck. */
 .hero-clouds {
+  overflow: hidden;
+  pointer-events: none;
   background:
-    radial-gradient(38% 22% at 18% 78%, rgba(255, 236, 214, 0.16), rgba(255, 236, 214, 0) 70%),
-    radial-gradient(46% 26% at 72% 84%, rgba(255, 224, 198, 0.14), rgba(255, 224, 198, 0) 72%),
-    radial-gradient(30% 18% at 46% 70%, rgba(226, 232, 255, 0.10), rgba(226, 232, 255, 0) 70%);
+    radial-gradient(42% 24% at 20% 88%, rgba(255, 236, 214, 0.22), rgba(255, 236, 214, 0) 72%),
+    radial-gradient(50% 28% at 78% 92%, rgba(255, 224, 198, 0.18), rgba(255, 224, 198, 0) 74%),
+    radial-gradient(36% 20% at 50% 82%, rgba(226, 232, 255, 0.10), rgba(226, 232, 255, 0) 70%);
   background-repeat: no-repeat;
-  animation: cloud-drift 46s linear infinite;
-  will-change: transform;
 }
 
-@keyframes cloud-drift {
-  0%   { transform: translate3d(-3%, 0, 0); }
-  50%  { transform: translate3d(3%, -1.5%, 0); }
-  100% { transform: translate3d(-3%, 0, 0); }
+/* Discrete puffs that grow toward the camera — slow forward flight. */
+.hero-puff {
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  width: var(--w, 42vw);
+  height: var(--h, 18vh);
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      ellipse at 40% 45%,
+      rgba(255, 244, 228, 0.42) 0%,
+      rgba(255, 220, 190, 0.16) 42%,
+      rgba(255, 220, 190, 0) 70%
+    );
+  filter: blur(var(--blur, 12px));
+  transform-origin: 50% 80%;
+  animation: cloud-approach var(--dur, 48s) linear infinite;
+  animation-delay: var(--delay, 0s);
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+.hero-puff-a { --x: -18vw; --w: 48vw; --h: 20vh; --dur: 52s; --delay: 0s;   --op: 0.55; --blur: 14px; }
+.hero-puff-b { --x: 22vw;  --w: 40vw; --h: 16vh; --dur: 44s; --delay: -12s; --op: 0.48; --blur: 16px; }
+.hero-puff-c { --x: 2vw;   --w: 56vw; --h: 22vh; --dur: 60s; --delay: -24s; --op: 0.40; --blur: 18px; }
+.hero-puff-d { --x: -28vw; --w: 36vw; --h: 14vh; --dur: 38s; --delay: -8s;  --op: 0.50; --blur: 12px; }
+.hero-puff-e { --x: 30vw;  --w: 34vw; --h: 14vh; --dur: 56s; --delay: -32s; --op: 0.36; --blur: 20px; }
+.hero-puff-f { --x: -6vw;  --w: 28vw; --h: 12vh; --dur: 34s; --delay: -18s; --op: 0.44; --blur: 10px; }
+
+@keyframes cloud-approach {
+  0% {
+    transform: translate3d(var(--x), 16vh, 0) scale(0.22);
+    opacity: 0;
+  }
+  8% {
+    opacity: var(--op);
+  }
+  70% {
+    opacity: calc(var(--op) * 0.65);
+  }
+  100% {
+    transform: translate3d(var(--x), -42vh, 0) scale(2.85);
+    opacity: 0;
+  }
 }
 
 /* Legibility vignette: darken the top (nav) and bottom edges while
@@ -204,8 +245,12 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .hero-sky,
   .hero-sun,
-  .hero-clouds {
+  .hero-puff {
     animation: none;
+  }
+  .hero-puff {
+    opacity: 0.28;
+    transform: translate3d(var(--x), 4vh, 0) scale(1.1);
   }
 }
 
