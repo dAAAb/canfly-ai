@@ -1,42 +1,23 @@
 import { useState } from 'react'
-import { useVideoBackground } from '../hooks/useVideoBackground'
 import { Link } from 'react-router-dom'
 import { ArrowRight, PlayCircle, Menu, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useLanguage } from '../hooks/useLanguage'
 import LanguageSwitcher from '../components/LanguageSwitcher'
 import AuthButton from '../components/AuthButton'
+import HeroCloudSea from '../components/HeroCloudSea'
 import { trackCTAClick } from '../utils/analytics'
 
 export default function HeroSection() {
   const { t } = useTranslation()
   const { localePath } = useLanguage()
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
-  const videoRef = useVideoBackground(
-    'https://stream.mux.com/JNJEOYI6B3EffB9f5ZhpGbuxzc6gSyJcXaCBbCgZKRg.m3u8'
-  )
 
   return (
     <section className="relative min-h-[100dvh] w-full overflow-x-hidden flex items-center justify-center">
-      {/* Zen sky base — visible while the video loads or if it fails to play */}
+      {/* CSS sky fallback while WebGL inits, or if the context fails */}
       <div className="absolute inset-0 z-0 hero-sky" aria-hidden="true" />
-      {/* Video background */}
-      <video
-        ref={videoRef}
-        className="absolute inset-0 z-0 w-full h-full object-cover hero-video"
-        autoPlay
-        loop
-        muted
-        playsInline
-      />
-      {/* Golden-hour atmosphere: horizon sun, clouds receding toward the
-          camera (forward-flight), and a legibility vignette */}
-      <div className="absolute inset-0 z-0 hero-sun" aria-hidden="true" />
-      <div className="absolute inset-0 z-0 hero-clouds" aria-hidden="true">
-        {(['a', 'b', 'c', 'd', 'e', 'f', 'g'] as const).map((id) => (
-          <div key={id} className={`hero-cloud hero-cloud-${id}`} />
-        ))}
-      </div>
+      <HeroCloudSea />
       <div className="absolute inset-0 z-0 hero-vignette" aria-hidden="true" />
 
       {/* Nav */}

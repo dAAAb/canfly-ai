@@ -119,16 +119,10 @@ body {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Hero "Zen sky" atmosphere — above the clouds at golden hour.
-   Additive layers behind/over the existing video background:
-   a slow-drifting sky gradient, a soft horizon sun glow, and
-   gentle cloud banks. All motion respects prefers-reduced-motion,
-   and every layer is pure CSS (no extra network cost).
+   Hero atmosphere: CSS sky is the fallback; the live look is the
+   WebGL cloud-sea canvas (first-person flight over a deck).
    ───────────────────────────────────────────────────────────── */
 
-/* Base sky: deep night-indigo at the top easing into a warm
-   sunrise/sunset horizon. Sits behind the video so the hero is
-   still beautiful while the stream loads or if it fails. */
 .hero-sky {
   background:
     linear-gradient(
@@ -141,124 +135,28 @@ body {
       #ef8a5a 91%,
       #f6bd7a 100%
     );
-  background-size: 100% 200%;
-  background-position: 0% 0%;
-  animation: sky-drift 32s ease-in-out infinite alternate;
 }
 
-@keyframes sky-drift {
-  0%   { background-position: 0% 0%; }
-  100% { background-position: 0% 30%; }
-}
-
-/* Soft sun/horizon glow low-center, like light spilling over a cloud deck. */
-.hero-sun {
-  background:
-    radial-gradient(
-      60% 42% at 50% 96%,
-      rgba(255, 214, 150, 0.55) 0%,
-      rgba(255, 168, 120, 0.30) 34%,
-      rgba(255, 140, 120, 0.12) 55%,
-      rgba(255, 140, 120, 0) 72%
-    );
-  animation: sun-breathe 9s ease-in-out infinite;
-}
-
-@keyframes sun-breathe {
-  0%, 100% { opacity: 0.75; transform: scale(1); }
-  50%      { opacity: 1;    transform: scale(1.06); }
-}
-
-/* Keep the Mux footage as texture, not the silhouette.
-   Full-opacity it reads as a glowing wave / ridge. */
-.hero-video {
-  opacity: 0.38;
-}
-
-/* Cloud field: lumpy cumulus clusters that grow toward the camera.
-   Each cloud is several overlapping circles — not a wide ellipse,
-   which reads as a horizon wave. */
-.hero-clouds {
-  overflow: hidden;
+.hero-cloud-sea {
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.7s ease;
 }
 
-.hero-cloud {
-  position: absolute;
-  left: 50%;
-  top: 48%;
-  width: var(--w, 22vw);
-  height: var(--h, 13vw);
-  margin-left: calc(var(--w, 22vw) / -2);
-  margin-top: calc(var(--h, 13vw) / -2);
-  background: var(--cloud) center / contain no-repeat;
-  animation: cloud-approach var(--dur, 36s) linear infinite;
-  animation-delay: var(--delay, 0s);
-  will-change: transform, opacity;
-  pointer-events: none;
-  filter: drop-shadow(0 10px 18px rgba(255, 220, 180, 0.18));
+.hero-cloud-sea.is-ready {
+  opacity: 1;
 }
 
-.hero-cloud-a,
-.hero-cloud-d,
-.hero-cloud-g { --cloud: url('/clouds/cumulus-a.svg'); }
-
-.hero-cloud-b,
-.hero-cloud-e { --cloud: url('/clouds/cumulus-b.svg'); }
-
-.hero-cloud-c,
-.hero-cloud-f { --cloud: url('/clouds/cumulus-c.svg'); }
-
-.hero-cloud-a { --x: -22vw; --w: 26vw; --h: 16vw; --dur: 38s; --delay: 0s;   --op: 0.92; }
-.hero-cloud-b { --x: 20vw;  --w: 22vw; --h: 14vw; --dur: 32s; --delay: -8s;  --op: 0.86; }
-.hero-cloud-c { --x: -4vw;  --w: 28vw; --h: 17vw; --dur: 44s; --delay: -16s; --op: 0.80; }
-.hero-cloud-d { --x: -32vw; --w: 20vw; --h: 13vw; --dur: 28s; --delay: -5s;  --op: 0.88; }
-.hero-cloud-e { --x: 30vw;  --w: 18vw; --h: 12vw; --dur: 40s; --delay: -22s; --op: 0.78; }
-.hero-cloud-f { --x: 8vw;   --w: 23vw; --h: 15vw; --dur: 24s; --delay: -12s; --op: 0.90; }
-.hero-cloud-g { --x: -14vw; --w: 17vw; --h: 11vw; --dur: 36s; --delay: -28s; --op: 0.74; }
-
-@keyframes cloud-approach {
-  0% {
-    transform: translate3d(var(--x), 22vh, 0) scale(0.16);
-    opacity: 0;
-  }
-  8% {
-    opacity: var(--op);
-  }
-  72% {
-    opacity: calc(var(--op) * 0.7);
-  }
-  100% {
-    transform: translate3d(var(--x), -34vh, 0) scale(2.35);
-    opacity: 0;
-  }
-}
-
-/* Legibility vignette: darken the top (nav) and bottom edges while
-   keeping the warm sky visible through the middle. Replaces the old
-   flat bg-black/50 overlay. */
+/* Darken only the nav band. Leave the lower third open so cloud
+   tops peek at the section bottom. */
 .hero-vignette {
   background:
     linear-gradient(
       to bottom,
-      rgba(3, 6, 20, 0.72) 0%,
-      rgba(3, 6, 20, 0.30) 24%,
-      rgba(3, 6, 20, 0.18) 52%,
-      rgba(10, 6, 24, 0.42) 82%,
-      rgba(10, 6, 24, 0.66) 100%
+      rgba(3, 6, 20, 0.55) 0%,
+      rgba(3, 6, 20, 0.18) 22%,
+      transparent 40%
     );
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-sky,
-  .hero-sun,
-  .hero-cloud {
-    animation: none;
-  }
-  .hero-cloud {
-    opacity: 0.4;
-    transform: translate3d(var(--x), 6vh, 0) scale(1);
-  }
 }
 
 /* Plyr removed — using native <video> + ::cue in ReviewVideoPlayer */
