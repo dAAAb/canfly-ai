@@ -31,10 +31,14 @@ uniform vec2 uResolution;
 uniform float uTime;
 uniform float uQuality;
 
-float hash(vec3 p) {
+float hash13(vec3 p) {
   p = fract(p * 0.3183099 + vec3(0.11, 0.17, 0.13));
   p *= 17.0;
   return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+}
+
+float hash21(vec2 p) {
+  return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
 }
 
 float noise(vec3 x) {
@@ -42,10 +46,10 @@ float noise(vec3 x) {
   vec3 f = fract(x);
   f = f * f * (3.0 - 2.0 * f);
   return mix(
-    mix(mix(hash(i + vec3(0,0,0)), hash(i + vec3(1,0,0)), f.x),
-        mix(hash(i + vec3(0,1,0)), hash(i + vec3(1,1,0)), f.x), f.y),
-    mix(mix(hash(i + vec3(0,0,1)), hash(i + vec3(1,0,1)), f.x),
-        mix(hash(i + vec3(0,1,1)), hash(i + vec3(1,1,1)), f.x), f.y),
+    mix(mix(hash13(i + vec3(0,0,0)), hash13(i + vec3(1,0,0)), f.x),
+        mix(hash13(i + vec3(0,1,0)), hash13(i + vec3(1,1,0)), f.x), f.y),
+    mix(mix(hash13(i + vec3(0,0,1)), hash13(i + vec3(1,0,1)), f.x),
+        mix(hash13(i + vec3(0,1,1)), hash13(i + vec3(1,1,1)), f.x), f.y),
     f.z
   );
 }
@@ -53,7 +57,7 @@ float noise(vec3 x) {
 float fbm(vec3 p) {
   float a = 0.0;
   float w = 0.5;
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 4; i++) {
     a += w * noise(p);
     p = p * 2.11 + vec3(1.7, 9.2, 3.4);
     w *= 0.5;
@@ -61,11 +65,32 @@ float fbm(vec3 p) {
   return a;
 }
 
-// Noisy height of the cloud deck. Ridges poke up as sunlit tops.
-float deckHeight(vec2 xz) {
-  float n = fbm(vec3(xz.x * 0.21, 0.4, xz.y * 0.21));
-  float detail = fbm(vec3(xz.x * 0.62, 1.7, xz.y * 0.62));
-  return n * 0.72 + detail * 0.22;
+// Cellular billows — distinct cumulus heads, not a flat sheet.
+float cumulus(vec2 xz, float freq) {
+  vec2 p = xz * freq;
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  float m = 0.0;
+  for (int y = -1; y <= 1; y++) {
+    for (int x = -1; x <= 1; x++) {
+      vec2 g = vec2(float(x), float(y));
+      vec2 id = i + g;
+      vec2 o = vec2(hash21(id), hash21(id + 19.7));
+      vec2 r = g + 0.22 + 0.62 * o - f;
+      float d = length(r);
+      float blob = smoothstep(1.05, 0.18, d);
+      m = max(m, blob * (0.62 + 0.38 * o.x));
+    }
+  }
+  float wrinkle = fbm(vec3(xz * freq * 2.4, 0.6));
+  return clamp(m * (0.78 + 0.32 * wrinkle), 0.0, 1.0);
+}
+
+float deck(vec2 xz, float tHit) {
+  float freq = mix(0.07, 0.13, smoothstep(3.0, 22.0, tHit));
+  float big = cumulus(xz, freq);
+  float small = cumulus(xz + vec2(8.2, 3.1), freq * 1.7);
+  return clamp(max(big, small * 0.72), 0.0, 1.0);
 }
 
 vec3 skyColor(vec3 rd, vec3 sunDir) {
@@ -73,8 +98,8 @@ vec3 skyColor(vec3 rd, vec3 sunDir) {
   vec3 zenith = vec3(0.020, 0.031, 0.086);
   vec3 mid = vec3(0.145, 0.102, 0.302);
   vec3 hor = vec3(0.96, 0.58, 0.38);
-  vec3 col = mix(hor, mid, smoothstep(-0.06, 0.22, h));
-  col = mix(col, zenith, smoothstep(0.12, 0.70, h));
+  vec3 col = mix(hor, mid, smoothstep(-0.02, 0.24, h));
+  col = mix(col, zenith, smoothstep(0.14, 0.72, h));
   float sun = max(dot(rd, sunDir), 0.0);
   col += vec3(1.00, 0.78, 0.42) * pow(sun, 26.0) * 1.15;
   col += vec3(0.98, 0.64, 0.36) * pow(sun, 4.5) * 0.32;
@@ -85,65 +110,38 @@ void main() {
   vec2 uv = (gl_FragCoord.xy - 0.5 * uResolution) / uResolution.y;
 
   float t = uTime;
-  // Cockpit just above the deck; slight downward look so fluffy tops
-  // occupy the lower third and peek at the section bottom.
-  vec3 ro = vec3(0.22 * sin(t * 0.06), 1.18 + 0.04 * sin(t * 0.31), t * 0.55);
-  vec3 fw = normalize(vec3(0.03 * sin(t * 0.09), -0.30, 1.0));
+  // Horizon sits just below center so the headline stays in sky.
+  // Lower third looks down onto nearby tops.
+  vec3 ro = vec3(0.18 * sin(t * 0.05), 1.42 + 0.03 * sin(t * 0.27), t * 0.62);
+  vec3 fw = normalize(vec3(0.025 * sin(t * 0.08), -0.155, 1.0));
   vec3 rt = normalize(cross(fw, vec3(0.0, 1.0, 0.0)));
-  vec3 up = cross(rt, fw);
-  vec3 rd = normalize(uv.x * rt + uv.y * up + 1.22 * fw);
+  vec3 upv = cross(rt, fw);
+  vec3 rd = normalize(uv.x * rt + uv.y * upv + 1.18 * fw);
 
-  vec3 sunDir = normalize(vec3(0.42, 0.16, 0.86));
+  vec3 sunDir = normalize(vec3(0.46, 0.20, 0.84));
   vec3 col = skyColor(rd, sunDir);
 
-  // Height-field cloud sea (flight-sim / layered-plane family).
-  // Looking down hits a continuous deck of billows that recede to
-  // the horizon — this is the airplane-over-cloud-tops read.
-  if (rd.y < -0.018) {
-    float tHit = (0.12 - ro.y) / rd.y;
-    if (tHit > 0.35 && tHit < 48.0) {
+  if (rd.y < -0.012) {
+    float tHit = (0.08 - ro.y) / rd.y;
+    if (tHit > 0.8 && tHit < 55.0) {
       vec2 xz = (ro + rd * tHit).xz;
-      float h = deckHeight(xz);
-      float hN = deckHeight(xz + vec2(0.35, 0.0));
-      float hS = deckHeight(xz + vec2(0.0, 0.35));
-      float slope = clamp(0.55 + (h - hN) * 1.6 + (h - hS) * 0.4, 0.0, 1.0);
-      float cover = smoothstep(0.22, 0.46, h);
-      vec3 shade = mix(vec3(0.55, 0.42, 0.52), vec3(1.02, 0.96, 0.90), slope);
-      shade = mix(shade, vec3(1.0, 0.78, 0.52), 0.22 * max(dot(rd, sunDir), 0.0));
-      float fog = 1.0 - exp(-0.0078 * tHit * tHit);
-      vec3 cloud = mix(shade, col, fog * 0.72);
-      // Near field (bottom of the frame) stays more opaque so tops peek.
-      float near = smoothstep(18.0, 3.2, tHit);
-      float alpha = cover * mix(0.78, 0.98, near) * (1.0 - fog * 0.28);
+      float h = deck(xz, tHit);
+      float hX = deck(xz + vec2(0.9, 0.0), tHit);
+      float hZ = deck(xz + vec2(0.0, 0.9), tHit);
+      vec3 N = normalize(vec3(h - hX, 0.42, h - hZ));
+      float ndotl = clamp(dot(N, sunDir) * 0.65 + 0.35, 0.0, 1.0);
+      vec3 shade = mix(vec3(0.40, 0.30, 0.40), vec3(1.06, 0.98, 0.90), ndotl);
+      shade = mix(shade, vec3(1.0, 0.72, 0.42), pow(ndotl, 4.0) * 0.28);
+      float fog = 1.0 - exp(-0.0048 * tHit * tHit);
+      vec3 cloud = mix(shade, col, fog * 0.78);
+      float cover = smoothstep(0.18, 0.48, h);
+      float near = smoothstep(20.0, 2.8, tHit);
+      float alpha = cover * mix(0.82, 1.0, near) * (1.0 - fog * 0.22);
       col = mix(col, cloud, clamp(alpha, 0.0, 1.0));
     }
   }
 
-  // Soft volumetric fluff just above the deck so nearby tops feel 3D.
-  vec4 sum = vec4(0.0);
-  float jitter = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453);
-  float dist = 0.25 + jitter * 0.08;
-  float stepMul = mix(1.85, 1.05, uQuality);
-  for (int i = 0; i < 36; i++) {
-    if (float(i) > mix(16.0, 36.0, uQuality)) break;
-    vec3 p = ro + rd * dist;
-    if (p.y < -0.4 || p.y > 1.8 || sum.a > 0.92) break;
-    float top = deckHeight(p.xz);
-    float d = smoothstep(0.0, 0.28, top - (p.y + 0.08) * 0.85);
-    if (d > 0.04) {
-      float dif = clamp(0.35 + 0.75 * (top - deckHeight(p.xz + sunDir.xz * 0.4)), 0.0, 1.0);
-      vec3 lin = vec3(0.62, 0.55, 0.64) + vec3(0.95, 0.78, 0.5) * dif;
-      vec3 albedo = mix(vec3(0.72, 0.62, 0.68), vec3(1.0, 0.97, 0.92), 1.0 - d * 0.35);
-      vec3 c = albedo * lin;
-      c = mix(c, col, 1.0 - exp(-0.014 * dist * dist));
-      float a = d * 0.22;
-      sum += vec4(c * a, a) * (1.0 - sum.a);
-    }
-    dist += max(0.07, 0.05 * dist) * stepMul;
-  }
-
-  col = col * (1.0 - sum.a) + sum.rgb;
-  col += vec3(1.0, 0.5, 0.26) * pow(max(dot(rd, sunDir), 0.0), 3.0) * 0.12;
+  col += vec3(1.0, 0.5, 0.26) * pow(max(dot(rd, sunDir), 0.0), 3.0) * 0.10;
   col = pow(col, vec3(0.94));
   gl_FragColor = vec4(col, 1.0);
 }
