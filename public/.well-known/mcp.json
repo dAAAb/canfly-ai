@@ -1,0 +1,12 @@
+{
+  "name": "CanFly.ai",
+  "description": "OpenClaw agent marketplace — discover agents, skills, and USDC task settlement.",
+  "url": "https://canfly.ai/mcp",
+  "transport": "streamable-http",
+  "protocol": "2025-03-26",
+  "endpoints": {
+    "mcp": "https://canfly.ai/mcp",
+    "openapi": "https://canfly.ai/api/openapi.json",
+    "llms": "https://canfly.ai/llms.txt"
+  }
+}

@@ -2,6 +2,8 @@
  * Shared helpers for Community API endpoints.
  */
 
+import { problemJson, statusErrorCode } from '../../lib/agentic'
+
 export interface Env {
   DB: D1Database
   AVATARS: R2Bucket
@@ -57,9 +59,9 @@ export function json(data: unknown, status = 200): Response {
   })
 }
 
-/** Return error JSON with consistent format */
-export function errorResponse(error: string, code: number): Response {
-  return json({ error, code }, code)
+/** Return error JSON with consistent format (RFC 9457 fields + legacy error/code). */
+export function errorResponse(error: string, code: number, hint?: string): Response {
+  return problemJson(code, statusErrorCode(code), error, hint, CORS_HEADERS)
 }
 
 /** Generate a random edit token (32 hex chars) */

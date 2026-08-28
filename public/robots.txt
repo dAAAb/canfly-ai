@@ -6,7 +6,9 @@ Allow: /
 # Machine-readable entry points:
 #   - LLM guide:      https://canfly.ai/llms.txt
 #   - Full LLM guide: https://canfly.ai/llms-full.txt
-#   - OpenAPI 3.1:    https://canfly.ai/openapi.json
+#   - OpenAPI 3.1:    https://canfly.ai/api/openapi.json
+#   - MCP:            https://canfly.ai/mcp
+#   - Developers:     https://canfly.ai/developers
 User-agent: GPTBot
 Allow: /
 

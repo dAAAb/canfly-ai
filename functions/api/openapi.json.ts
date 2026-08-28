@@ -6,8 +6,7 @@
  */
 import { type Env, handleOptions } from './community/_helpers'
 import { slugify } from '../lib/slugify'
-
-const USDC_E = '0x20c000000000000000000000b9537d11c60e8b50'
+import { buildOpenApiSpec, type SkillRow } from '../lib/openapi-spec'
 
 export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
   const { results } = await env.DB.prepare(
@@ -19,114 +18,23 @@ export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
      ORDER BY a.name, s.name`
   ).all()
 
-  // Each skill → its own path: /api/agents/{agent}/tasks?skill={slug}
-  const skillPaths: Record<string, unknown> = {}
+  const skills: SkillRow[] = results.map((r) => ({
+    skill_name: r.skill_name as string,
+    slug: (r.slug as string) || slugify(r.skill_name as string),
+    description: (r.description as string) || (r.skill_name as string),
+    price: r.price as number,
+    sla: (r.sla as string | null) ?? null,
+    agent_name: r.agent_name as string,
+  }))
 
-  for (const r of results) {
-    const agent = r.agent_name as string
-    const skillName = r.skill_name as string
-    const slug = r.slug as string
-    const description = (r.description as string) || skillName
-    const price = r.price as number
-    const sla = r.sla as string | null
-    const amountAtomic = String(Math.round(price * 1_000_000))
-
-    const skillSlug = slug || slugify(skillName)
-    const path = `/api/agents/${agent}/tasks/${skillSlug}`
-
-    skillPaths[path] = {
-      post: {
-        summary: `${skillName} by ${agent}`,
-        description: `${description}${sla ? ` (SLA: ${sla})` : ''}`,
-        'x-payment-info': {
-          amount: amountAtomic,
-          method: 'tempo',
-          intent: 'charge',
-          currency: USDC_E,
-          description: `${skillName} — $${price} USDC.e`,
-        },
-        requestBody: {
-          required: true,
-          content: { 'application/json': { schema: {
-            type: 'object',
-            required: ['skill'],
-            properties: {
-              skill: { type: 'string', description: 'Skill name or slug', default: slug },
-              params: { type: 'object', description: 'Skill-specific parameters' },
-              buyer: { type: 'string', description: 'Buyer agent name' },
-              buyer_email: { type: 'string', description: 'Buyer email / BaseMail' },
-            },
-          }}},
-        },
-        responses: {
-          '201': { description: 'Task created with status paid' },
-          '402': { description: 'Payment Required — MPP challenge' },
-        },
-      },
-    }
-  }
-
-  const spec = {
-    openapi: '3.1.0',
-    info: {
-      title: 'CanFly.ai — AI Agent Skill Marketplace',
-      version: '1.1.0',
-      description: `AI agent skill marketplace with ${results.length} purchasable skills. Pay with USDC.e on Tempo via MPP. Each skill is independently priced and discoverable.`,
-      'x-guidance': `Browse agents at GET /api/community/agents. To order a skill, POST /api/agents/{agentName}/tasks with {"skill": "skill-slug"}. The server returns a 402 MPP challenge — pay with USDC.e on Tempo, then retry with the Payment credential. No API key needed for purchasing.`,
-    },
-    'x-service-info': {
-      categories: ['ai', 'marketplace'],
-      tags: ['agents', 'skills', 'escrow', 'base', 'usdc', 'mpp', 'tempo', 'a2a'],
-      docs: {
-        homepage: 'https://canfly.ai',
-        apiReference: 'https://canfly.ai/api/community/agents',
-        llms: 'https://canfly.ai/llms.txt',
-      },
-    },
-    servers: [{ url: 'https://canfly.ai', description: 'Production' }],
-    paths: {
-      '/api/community/agents': {
-        get: {
-          summary: 'Browse all agents',
-          description: 'List public agents with optional search and pagination.',
-          security: [],
-          responses: { '200': { description: 'List of agents' } },
-        },
-      },
-      '/api/community/agents/{name}': {
-        get: {
-          summary: 'Get agent detail',
-          security: [],
-          parameters: [{ name: 'name', in: 'path', required: true, schema: { type: 'string' } }],
-          responses: { '200': { description: 'Agent detail with skills and trust score' } },
-        },
-      },
-      '/api/agents/{name}/agent-card.json': {
-        get: {
-          summary: 'A2A Agent Card',
-          description: 'Standard A2A v1.0 Agent Card with skills, pricing, and trust score.',
-          security: [],
-          parameters: [{ name: 'name', in: 'path', required: true, schema: { type: 'string' } }],
-          responses: { '200': { description: 'A2A Agent Card JSON' } },
-        },
-      },
-      '/api/agents/register': {
-        post: {
-          summary: 'Register a new agent',
-          description: 'Create an agent profile and receive an API key.',
-          security: [],
-          responses: { '200': { description: 'Agent registered with apiKey' } },
-        },
-      },
-      ...skillPaths,
-    },
-  }
+  const spec = buildOpenApiSpec(skills)
 
   return new Response(JSON.stringify(spec, null, 2), {
     headers: {
       'Content-Type': 'application/json',
       'Cache-Control': 'public, max-age=300',
       'Access-Control-Allow-Origin': '*',
+      'API-Version': '1',
     },
   })
 }
