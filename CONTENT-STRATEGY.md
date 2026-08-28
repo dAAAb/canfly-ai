@@ -106,16 +106,24 @@ CanFly 最特別之處：**同一份內容同時服務人類與 AI Agent**。
   Meta-ExternalAgent…）並在註解指向 llms.txt / llms-full.txt / openapi.json。
 - `llms.txt` 更新日期、明說「雙受眾」模型、補上 Zeabur/Pinata 外部部署 connector。
 
-### 3.3 提升分數的後續建議（Phase 2）
-- **`/.well-known/` discovery**：新增 `/.well-known/ai-plugin.json`（或 agent manifest）
-  與 `/.well-known/llms.txt` 轉址，是多數 agentic scanner 會探測的路徑。
-- **每個實體都有機器可讀端點**：確保 blog/tutorial 也有 `.json`/JSON-LD 版本，
-  讓 agent 不必解析 HTML。
-- **回應標頭**：對 `/api/*` 補 `X-Agent-*` 或 `Link: <.../llms.txt>; rel="llms"` 提示。
-- **一致的錯誤/付費語意**：確保所有付費端點都回 402 + `WWW-Authenticate`/MPP 標頭。
+### 3.3 提升分數的後續建議（Phase 2，含後端深度盤點結果）
+
+**Phase 1 已修**（見 §2.2）：sitemap 產品 URL 缺 category 段（`/apps/ollama`→`/apps/free/ollama` 等）與 2 個過期教學 slug（`ollama-setup`→`ollama`、`zeabur-deployment`→`zeabur`）——這些原本會 404、傷 SEO；ProductPage JSON-LD `url` 也補上 category 與 canonical 對齊。
+
+**尚待處理（後端 agentic 稽核發現，依優先序）：**
+
+- **P0 — OpenAPI 路徑與實作不符**：`/api/openapi.json` 文件宣告 `POST /api/agents/{agent}/tasks/{skillSlug}`，但實際路由是 `POST /api/agents/{name}/tasks`（skill 放 body），`[id]` 路由是給 taskId 用。Agent/MPPScan 依 spec 呼叫會 404/405。需讓 spec 與實作對齊（改 spec 或補 route handler）。屬後端行為變更，獨立 PR 處理。
+- **P1 — robots 連結 llms.txt**：`index.html` 加 `<link rel="alternate" type="text/plain" href="/llms.txt">`（robots 已於 Phase 1 開放 AI 爬蟲並註解指向）。
+- **P1 — `.well-known` 覆蓋**：目前 `functions/_middleware.ts` 只對 `/@{user}` 與 subdomain 做 `.well-known/agent.json` 改寫，但站內實際路由是 `/u/:username`。應補 `/u/...` 的改寫，並新增靜態 `/.well-known/ai-plugin.json`（agent manifest）。
+- **P1 — 隱藏的 `ai-only` JSON-LD**：Blog/Tutorial 的 JSON-LD 放在 `display:none` 的 `ai-only` div，需 JS 執行才可見；非 JS 爬蟲讀不到。建議比照 middleware 對 bot 注入 OG 的做法，對 AI/搜尋 bot 伺服端注入 JSON-LD。
+- **P1 — BOT_UA 未含 AI 爬蟲**：middleware 的 `BOT_UA` 只含社群/搜尋 bot（Googlebot、Facebook…），未含 GPTBot/ClaudeBot/PerplexityBot/Google-Extended；可選擇性納入以提供 canonical/meta。
+- **P2 — 每頁 JSON-LD 覆蓋**：HomePage/AppsPage/RankingsPage/FreeAgentsPage 尚無 JSON-LD（見 §2.3）。
+- **P2 — 動態 sitemap**：由 D1（agents/products/tutorials）自動產生 sitemap + `lastmod`，杜絕手動維護漂移（Phase 1 是手動修正）。
+- **P2 — 刷新 `public/api/docs/index.html`**（停在 2026-03-25）與 `llms.txt` 內文速率限制數字對齊實作。
+- 一致的錯誤/付費語意：確保所有付費端點回 402 + `WWW-Authenticate`/MPP 標頭（現況大致已具備）。
 - （註：is-agentic 掃描訊息提到 `basemail.ai`，若那是關聯站，同樣套用以上原則。）
 
-> 背景已派一支 explore subagent 做後端 agentic 端點的深度盤點，其結果會補充到本節。
+> 後端 agentic 端點的完整盤點由背景 explore subagent 產出，以上為其可執行結論摘要。
 
 ---
 
