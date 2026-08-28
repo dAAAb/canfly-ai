@@ -1,6 +1,21 @@
 # SOP: 新增 CanFly.ai App 頁面 + 教學
 
-每次寶博要加新的工具/app 到 CanFly.ai，照這個流程做。
+每次要把新的工具 / app / 硬體加進 CanFly.ai，照這個流程做。
+選題與每日佇列見 `content/QUEUE.md`；影片規格見 `VIDEO-RULES.md`。
+
+---
+
+## 0️⃣ 先決定「該不該加」（軟體為主、硬體為輔）
+
+新東西出來 → **先入佇列，再寫**。不要看到新聞就直接開一篇。
+
+1. 對過 `src/data/products.ts` 與 `content/QUEUE.md`「已有、不要重開」
+2. 軟體優先：能接 OpenClaw / 本地 AI / Agent 工作流，且有官方文件
+3. 硬體次之：能讓本地推論或部署明顯更好；未上市只寫預告，不硬做導購
+4. 已有相近 SKU（例如 Mac mini）→ **更新舊頁**，不要互搶 SEO
+5. 當天發布很多 → 一次寫 2–3 篇；沒有好題 → 只掃描、不灌水
+
+研究來源：官方 blog、Product Hunt、GitHub、ClawHub、Apple / NVIDIA / Arduino 新聞室。掃完把題目寫進 `content/QUEUE.md` 待寫表。
 
 ---
 
@@ -144,25 +159,32 @@ sessions_spawn → label: "app-i18n-zhCN" → 寫 zh-CN JSON
 
 ## 6️⃣ HeyGen 橫式寶博 Review 影片（必做！）
 
-每個 app 都要有寶博的 review 影片 + 三語字幕。
+每個 app 都要有寶博的 review 影片。預設規格（2026-08-28 寶博確認）：
+
+- **口白：英文發音**（英文稿，技術名詞保持原名）
+- **軟字幕：繁中 + 英文雙語**（同一條 cue 兩行，繁中在上、英文在下）
+- 另外仍產出獨立 EN / zh-TW / zh-CN VTT，給播放器切換
+- **API 金鑰只放環境變數 `HEYGEN_API_KEY`**（或本機 `~/.clawdbot`），**絕對不要寫進 repo / commit / 聊天紀錄**
+
+完整檔名與播放器規則見 `VIDEO-RULES.md`。教學文結構可對照 `createOllamaTutorial()`。
 
 ### 6a. 撰寫 Review 稿
 
-- **語言**：中文為主，技術名詞保留英文
-- **長度**：30-90 秒（~150-400 字）
+- **口白語言**：英文（HeyGen voice language = `en`）
+- **長度**：30-90 秒（約 80–180 個英文詞）
 - **結構**：
-  1. 開場自介（「大家好，我是葛如鈞」）
-  2. 痛點描述（沒有這工具之前的問題）
+  1. 開場（"Hi, I'm JU CHUN KO."）
+  2. 痛點（沒有這工具之前的問題）
   3. 工具亮點（2-3 個核心功能）
   4. 跟 OpenClaw 的連動
   5. 安裝簡易度
-  6. CTA（「我在 CanFly.ai 準備了教學，歡迎試試！」）
+  6. CTA（"I made a tutorial on CanFly.ai — go try it."）
 
 ### 6b. HeyGen 生成影片
 
 ```bash
-# 橫式寶博設定
-HEYGEN_API_KEY=$(cat ~/.clawdbot/clawdbot.json | python3 -c "import sys,json; print(json.load(sys.stdin)['skills']['entries']['heygen']['apiKey'])")
+# 金鑰：環境變數，不要 echo、不要寫進 git
+# 本機後備：~/.clawdbot/clawdbot.json → skills.entries.heygen.apiKey
 
 HEYGEN_API_KEY="$HEYGEN_API_KEY" python3 /Users/vitalik/clawd/skills/heygen/scripts/generate_video.py \
   --text "$(cat /tmp/{slug}-review-script.txt)" \
@@ -193,41 +215,51 @@ ffmpeg -i /tmp/{slug}-review-heygen.mp4 \
 - `baseline -level 3.1` = 最大相容性
 - `+faststart` = 串流播放友善
 
-### 6d. Whisper 轉錄 → zh-TW VTT
+### 6d. Whisper 轉錄 → 英文字幕底稿
+
+口白是英文，Whisper 用 `language=en`：
 
 ```bash
-# 先抽音軌
 ffmpeg -i /tmp/{slug}-review-final.mp4 -vn -acodec aac -b:a 128k /tmp/{slug}-audio.m4a -y
 
-# Whisper API 取 VTT
 curl -s https://api.openai.com/v1/audio/transcriptions \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -F file="@/tmp/{slug}-audio.m4a" \
   -F model="whisper-1" \
-  -F language="zh" \
+  -F language="en" \
   -F response_format="vtt" \
-  -F prompt="葛如鈞 OpenClaw 小龍蝦 {工具名稱} {關鍵技術詞}" \
-  -o /tmp/{slug}-review-zh-TW.vtt
+  -F prompt="JU CHUN KO OpenClaw CanFly.ai {product name} {key terms}" \
+  -o /tmp/{slug}-review.en.vtt
 ```
 
 **⚠️ Whisper 常見錯字修正：**
-- `葛如君` → `葛如鈞`（每次都要查）
-- `Olama` → `Ollama`
-- 技術名詞要確認拼寫
+- `JU CHUN KO` / `葛如鈞`（不要寫成葛如君）
+- `CanFly.ai`、`OpenClaw`、`Ollama` 等專有名詞
 
-### 6e. 翻譯 EN + zh-CN VTT
+### 6e. 翻譯並做雙語軟字幕
 
-- **保持完全相同的時間戳**（只翻譯文字，不動時間）
-- EN：自然英文翻譯（不是逐字翻）
-- zh-CN：繁體 → 簡體（記憶體→内存、快取→缓存、並發→并发 等）
+- **保持完全相同的時間戳**（只改文字）
+- `{slug}-review.en.vtt`：英文（口白對白）
+- `{slug}-review.zh-TW.vtt`：自然繁中（不是逐字）
+- `{slug}-review.zh-CN.vtt`：繁→簡（記憶體→内存、快取→缓存）
+- `{slug}-review.bilingual.vtt`：**預設軟字幕**，同一 cue 兩行：
+
+```
+00:00:01.000 --> 00:00:04.000
+嗨，我是葛如鈞。
+Hi, I'm JU CHUN KO.
+```
+
+繁中在上、英文在下。這就是站上預設要燒進播放器的「雙語軟字幕」。
 
 ### 6f. 複製到專案
 
 ```bash
-cp /tmp/{slug}-review-final.mp4  public/videos/reviews/{slug}-review.mp4
-cp /tmp/{slug}-review-zh-TW.vtt  public/videos/reviews/{slug}-review-zh-TW.vtt
-cp /tmp/{slug}-review-en.vtt     public/videos/reviews/{slug}-review-en.vtt
-cp /tmp/{slug}-review-zh-CN.vtt  public/videos/reviews/{slug}-review-zh-CN.vtt
+cp /tmp/{slug}-review-final.mp4       public/videos/reviews/{slug}-review.mp4
+cp /tmp/{slug}-review.en.vtt          public/videos/reviews/{slug}-review.en.vtt
+cp /tmp/{slug}-review.zh-TW.vtt       public/videos/reviews/{slug}-review.zh-TW.vtt
+cp /tmp/{slug}-review.zh-CN.vtt       public/videos/reviews/{slug}-review.zh-CN.vtt
+cp /tmp/{slug}-review.bilingual.vtt   public/videos/reviews/{slug}-review.bilingual.vtt
 ```
 
 ## 7️⃣ Build + 驗證
@@ -246,8 +278,8 @@ npm run build  # 必須通過 i18n validation
 - [ ] commands 可複製
 - [ ] modelTable 顯示（如有）
 - [ ] FAQ 可展開
-- [ ] **Review video 播放正常**
-- [ ] **字幕切換正常（EN / zh-TW / zh-CN）**
+- [ ] **Review video 播放正常（英文口白）**
+- [ ] **預設軟字幕是繁中+英文雙語；也可切 EN / zh-TW / zh-CN**
 - [ ] **手機版不爆版**（code block、長連結）
 - [ ] **nextStepCards 連結可點且正確**
 
@@ -292,4 +324,6 @@ git push
 | Script | generate_video.py 路徑 |
 | Re-encode | `-c:v libx264 -profile:v baseline -level 3.1 -movflags +faststart` |
 | Whisper | `model=whisper-1`, `language=zh`, `response_format=vtt` |
-| VTT 三語 | zh-TW (Whisper) + EN (翻譯) + zh-CN (繁→簡) |
+| 口白 | 英文發音（HeyGen language=en） |
+| 預設軟字幕 | bilingual VTT：繁中在上、英文在下 |
+| VTT | EN（Whisper）+ zh-TW + zh-CN + bilingual |

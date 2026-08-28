@@ -16,8 +16,9 @@
   首頁 Zen 天空氛圍、robots 對 AI 爬蟲開放、llms.txt 更新、sitemap 補齊。
 - **內容更新頻率建議（§5）**：採「**核心週更 + 長青月度深耕 + 資料每日/每週自動刷新**」
   的混合節奏，而非固定單一頻率。詳見節奏表。
-- **自動化（§6）**：建議用**現有 Content Writer agent** + **Cursor scheduled automation（每日 06:00 台北時間掃描選題、每週二/五產稿）**，
-  搭配 git commit → CEO review → push 的既有流程。附可直接貼上的 automation prompt。
+- **自動化（§6）**：選題 inbox 已落地為 `content/QUEUE.md`。每日掃描寫進佇列；週二／五產稿。
+  Cursor Automation **還要在 Cursor → Automations 貼上 §6 prompt 才會真的每天跑**（repo 無法遠端建立排程）。
+  產稿仍走 git commit → CEO review → push。
 
 ---
 
@@ -172,10 +173,12 @@ CanFly 最特別之處：**同一份內容同時服務人類與 AI Agent**。
 | **首頁/落地頁文案** | 每季檢視 | 避免頻繁改動傷穩定度 | — |
 
 ### 5.2 節奏總覽
-- **每日**：資料刷新（rankings scrape、featured free models）+ 選題掃描（產生候選清單，不自動發）。
-- **每週 ×2**：Blog 短文上稿（週二、週五）。
+- **每日**：資料刷新（rankings scrape、featured free models）+ 選題掃描（寫進 `content/QUEUE.md`，不自動發）。
+- **每週 ×2**：從佇列取最高優先產稿（週二、週五）。當天資訊多，一次寫 2–3 篇；沒好題就只掃不寫。
 - **每月**：2–4 篇長青教學 + 1–2 篇導購 + 回訪更新 1–2 篇舊文（補新資訊、更新日期）。
 - **每季**：落地頁/導航資訊架構檢視。
+
+選題規則（軟體為主、硬體為輔）與現行列隊見 `content/QUEUE.md`。教學寫法見 `SOP-NEW-APP.md`（對照 `createOllamaTutorial()`）。影片見 `VIDEO-RULES.md`（英文口白 + 繁中／英文雙語軟字幕）。
 
 > 這個節奏可持續、對 SEO 友善、且不會用低質內容稀釋站點品質。
 
@@ -187,15 +190,19 @@ CanFly 最特別之處：**同一份內容同時服務人類與 AI Agent**。
 沿用 `AGENTS.md` 的角色與「agent commit → CEO review → CEO push」流程，**不讓 agent 直接 push**：
 
 ```
-[Cursor scheduled automation]  ── 每日 06:00 (Asia/Taipei) ─▶  選題掃描 → 產生候選 issue（Paperclip）
-                               ── 每週二/五 09:00 ─▶  Content Writer agent 產稿
+[Cursor scheduled automation]  ── 每日 06:00 (Asia/Taipei) ─▶  選題掃描 → 寫入 content/QUEUE.md + Paperclip
+                               ── 每週二/五 09:00 ─▶  Content Writer agent 從 QUEUE 取最高優先產稿
                                                         ├─ 產 en / zh-TW / zh-CN 三語（key 同步）
+                                                        ├─ 產品/教學走 SOP-NEW-APP.md；影片走 VIDEO-RULES.md
                                                         ├─ 加 JSON-LD（Article/HowTo/FAQ）
                                                         ├─ npm run check-i18n && npm run build（自我驗證）
                                                         ├─ git commit（不 push）
                                                         └─ Paperclip comment 回報 CEO
                                ── CEO heartbeat ─▶  review → 通過 → git push origin main → Cloudflare 部署
 ```
+
+**現況（2026-08-28）**：`content/QUEUE.md` 已是 inbox，寶博點名的 Grok Bot / Perplexity Computer 等已入列。
+Cursor → Automations 的排程**還沒在帳號裡按下去**——把下面兩段 prompt 貼上並設 cron，每天功課才會自動跑。
 
 - **資料刷新**（rankings）獨立排程：每日跑 `npm run scrape` 系列（純資料、低風險、可自動 commit）。
 
@@ -241,7 +248,7 @@ Grok 適合做「即時熱點掃描 + 選題」，Cursor automation 適合做「
 |---|---|---|
 | **1（本 PR）** | 品牌/SEO 一致性、JSON-LD、首頁 Zen 天空、robots/llms/sitemap（AIEO）、本報告 | ✅ 已完成並測試 |
 | 2 | Community/Rankings 版面重整 + RWD、每頁 JSON-LD、動態 sitemap、Privy 延遲載入 | 規劃中（§4、§2.3）|
-| 3 | 內容自動化落地（Cursor automation + 資料 scrape 排程）、教學/導購擴充 | 規劃中（§5、§6）|
+| 3 | 內容自動化落地（Cursor automation + 資料 scrape 排程）、教學/導購擴充 | **佇列已建立**（`content/QUEUE.md`）；Cursor Automation 仍待在帳號裡啟用（§5、§6）|
 
 ---
 
