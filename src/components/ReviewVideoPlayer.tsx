@@ -1,20 +1,36 @@
 import { useRef, useState, useEffect } from 'react'
 
-interface SubtitleTrack {
+export interface SubtitleTrack {
   label: string
   srclang: string
   src: string
+}
+
+/** Standard review tracks: bilingual default + EN / zh-TW / zh-CN. */
+export function reviewSubtitleTracks(videoSrc: string): SubtitleTrack[] {
+  const base = videoSrc.replace(/\.mp4$/i, '')
+  return [
+    { label: '雙語', srclang: 'bilingual', src: `${base}.bilingual.vtt` },
+    { label: 'English', srclang: 'en', src: `${base}.en.vtt` },
+    { label: '繁體中文', srclang: 'zh-TW', src: `${base}.zh-TW.vtt` },
+    { label: '简体中文', srclang: 'zh-CN', src: `${base}.zh-CN.vtt` },
+  ]
 }
 
 interface ReviewVideoPlayerProps {
   src: string
   poster?: string
   subtitles?: SubtitleTrack[]
+  /** Prefer this track on first play. Use `bilingual` when that VTT exists. */
+  defaultLang?: string | null
 }
 
-export default function ReviewVideoPlayer({ src, poster, subtitles = [] }: ReviewVideoPlayerProps) {
+export default function ReviewVideoPlayer({ src, poster, subtitles = [], defaultLang }: ReviewVideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const [activeTrack, setActiveTrack] = useState<string | null>(null)
+  const preferred =
+    defaultLang ??
+    (subtitles.some((sub) => sub.srclang === 'bilingual') ? 'bilingual' : null)
+  const [activeTrack, setActiveTrack] = useState<string | null>(preferred)
 
   // Apply track modes AFTER render (React re-creates <track> elements on re-render)
   useEffect(() => {

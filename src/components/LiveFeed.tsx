@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useFadeIn } from '../hooks/useFadeIn'
 
 interface FeedEvent {
   id: number
@@ -40,7 +39,6 @@ function getLocalizedMessage(event: FeedEvent, lang: string): string {
 
 export default function LiveFeed() {
   const { t, i18n } = useTranslation()
-  const fadeRef = useFadeIn()
   const [allEvents, setAllEvents] = useState<FeedEvent[]>([])
   const [displayEvents, setDisplayEvents] = useState<FeedEvent[]>([])
   const [loading, setLoading] = useState(true)
@@ -111,12 +109,11 @@ export default function LiveFeed() {
 
   return (
     <section
-      ref={fadeRef}
-      className="fade-section w-full"
-      style={{ paddingLeft: '8%', paddingRight: '8%' }}
+      className="relative z-10 w-full bg-black"
+      style={{ paddingLeft: '8%', paddingRight: '8%', marginTop: '-12vh' }}
     >
       <div
-        className="mx-auto my-12 max-w-5xl overflow-hidden rounded-2xl border border-white/10 p-6 md:p-8"
+        className="mx-auto mb-12 max-w-5xl overflow-hidden rounded-2xl border border-white/10 p-6 md:p-8"
         style={{
           background: '#0A0E1A',
           boxShadow: '0 0 40px rgba(96, 165, 250, 0.06), inset 0 1px 0 rgba(255,255,255,0.05)',

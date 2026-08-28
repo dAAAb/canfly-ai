@@ -99,7 +99,7 @@ export function useHead({ title, description, ogImage, canonical, ogType }: Head
     }
 
     return () => {
-      if (title) document.title = 'CanFly — OpenClaw AI Agent | Now You Can Fly'
+      if (title) document.title = 'CanFly.ai — Your OpenClaw AI Agent in 5 Minutes | Now You Can Fly'
     }
   }, [title, description, ogImage, canonical, ogType])
 }

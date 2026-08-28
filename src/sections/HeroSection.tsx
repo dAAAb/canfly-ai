@@ -17,23 +17,29 @@ export default function HeroSection() {
   )
 
   return (
-    <section className="relative min-h-[100dvh] w-full overflow-x-hidden flex items-center justify-center">
-      {/* Video background */}
-      <video
-        ref={videoRef}
-        className="absolute inset-0 w-full h-full object-cover"
-        autoPlay
-        loop
-        muted
-        playsInline
-      />
-      <div className="absolute inset-0 bg-black/50" />
+    <section className="hero-section relative flex w-full flex-col overflow-x-hidden bg-black">
+      {/* Media is masked out at the bottom so the Mux frame never ends as a knife-edge. */}
+      <div className="hero-media absolute inset-0 z-0" aria-hidden="true">
+        <div className="absolute inset-0 hero-sky" />
+        <video
+          ref={videoRef}
+          className="absolute inset-0 h-full w-full object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
+        />
+        <div className="absolute inset-0 hero-sun" />
+        <div className="absolute inset-0 hero-clouds" />
+      </div>
+      <div className="absolute inset-0 z-0 hero-vignette" aria-hidden="true" />
+      <div className="hero-bottom-fade pointer-events-none absolute inset-x-0 bottom-0 z-[1]" aria-hidden="true" />
 
       {/* Nav */}
       <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between py-6 sm:py-10" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
         <Link to={localePath('/')} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <span className="text-xl">🦞</span>
-          <span className="font-bold text-xl tracking-tight">Canfly</span>
+          <span className="font-bold text-xl tracking-tight">CanFly.ai</span>
         </Link>
         {/* Desktop nav */}
         <div className="hidden sm:flex items-center gap-5">
@@ -101,7 +107,7 @@ export default function HeroSection() {
       )}
 
       {/* Content */}
-      <div className="relative z-10 text-center max-w-5xl mx-auto pt-28 pb-20" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
+      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-1 flex-col justify-center pt-28 pb-6 text-center" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
         <h1
           className="font-black tracking-tight"
           style={{
@@ -118,16 +124,25 @@ export default function HeroSection() {
         </h1>
 
         <p
-          className="mt-8 mx-auto opacity-80"
+          className="mt-7 mx-auto font-medium text-cyan-100/90"
           style={{
-            fontSize: 'clamp(16px, 2vw, 28px)',
-            lineHeight: 1.5,
+            fontSize: 'clamp(18px, 2.2vw, 30px)',
+            lineHeight: 1.35,
+            letterSpacing: '-0.01em',
+          }}
+        >
+          {t('hero.whyName')}
+        </p>
+
+        <p
+          className="mt-5 mx-auto opacity-75"
+          style={{
+            fontSize: 'clamp(16px, 1.8vw, 22px)',
+            lineHeight: 1.55,
             textAlign: 'center',
           }}
         >
-          {t('hero.subtitle').split('\n').map((line, i) => (
-            <span key={i}>{line}{i === 0 && <br />}</span>
-          ))}
+          {t('hero.subtitle')}
         </p>
 
         {/* CTA Buttons */}
@@ -157,7 +172,7 @@ export default function HeroSection() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-stretch max-w-3xl mx-auto">
             <Link
               to={localePath('/apps/free/ollama')}
-              className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 hover:bg-white/10 transition-colors text-left"
+              className="flex-1 bg-white/[0.06] border border-white/12 rounded-xl px-4 py-3.5 hover:bg-white/12 hover:border-white/20 transition-all text-left backdrop-blur-sm"
               onClick={() => trackCTAClick('funnel_step1_ollama', 'hero_funnel')}
             >
               <span className="text-green-400 font-semibold text-sm">{t('hero.funnelStep1')}</span>
@@ -166,7 +181,7 @@ export default function HeroSection() {
             <span className="hidden sm:flex items-center text-gray-500">→</span>
             <Link
               to={localePath('/learn/zeabur')}
-              className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 hover:bg-white/10 transition-colors text-left"
+              className="flex-1 bg-white/[0.06] border border-white/12 rounded-xl px-4 py-3.5 hover:bg-white/12 hover:border-white/20 transition-all text-left backdrop-blur-sm"
               onClick={() => trackCTAClick('funnel_step2_zeabur', 'hero_funnel')}
             >
               <span className="text-blue-400 font-semibold text-sm">{t('hero.funnelStep2')}</span>
@@ -175,7 +190,7 @@ export default function HeroSection() {
             <span className="hidden sm:flex items-center text-gray-500">→</span>
             <Link
               to={localePath('/apps/skills')}
-              className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 hover:bg-white/10 transition-colors text-left"
+              className="flex-1 bg-white/[0.06] border border-white/12 rounded-xl px-4 py-3.5 hover:bg-white/12 hover:border-white/20 transition-all text-left backdrop-blur-sm"
               onClick={() => trackCTAClick('funnel_step3_skills', 'hero_funnel')}
             >
               <span className="text-purple-400 font-semibold text-sm">{t('hero.funnelStep3')}</span>
@@ -183,15 +198,16 @@ export default function HeroSection() {
             </Link>
           </div>
         </div>
-      </div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center opacity-40 animate-bounce">
-        <span className="text-xs tracking-widest uppercase mb-2">{t('hero.scroll')}</span>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M12 5v14M5 12l7 7 7-7" />
-        </svg>
+        <div className="hero-scroll-hint mt-8 flex flex-col items-center">
+          <span className="mb-2 text-xs tracking-widest uppercase">{t('hero.scroll')}</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 5v14M5 12l7 7 7-7" />
+          </svg>
+        </div>
       </div>
+      {/* Empty black band so the next section overlaps paint, not funnel cards. */}
+      <div className="hero-fade-spacer pointer-events-none relative z-0 h-[26vh] shrink-0" aria-hidden="true" />
     </section>
   )
 }

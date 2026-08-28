@@ -1,5 +1,6 @@
 import { createContext, useMemo, useCallback } from 'react'
 import { PrivyProvider, usePrivy } from '@privy-io/react-auth'
+import { isUserSubdomain } from '../utils/subdomain'
 
 export type WorldIdLevel = null | 'device' | 'orb'
 
@@ -105,8 +106,8 @@ export default function PrivyAuthProvider({ children }: { children: React.ReactN
 
   // Skip Privy on subdomains (e.g. daaab.canfly.ai) — Privy doesn't support wildcard origins.
   // Subdomains are public-only showcase pages; login happens on canfly.ai.
-  const host = typeof window !== 'undefined' ? window.location.hostname.toLowerCase() : ''
-  const isSubdomain = host.endsWith('.canfly.ai') && host !== 'www.canfly.ai'
+  const host = typeof window !== 'undefined' ? window.location.hostname : ''
+  const isSubdomain = isUserSubdomain(host)
   if (isSubdomain) {
     return <AuthContext.Provider value={defaultAuth}>{children}</AuthContext.Provider>
   }

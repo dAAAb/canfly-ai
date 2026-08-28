@@ -216,7 +216,7 @@ export default function HardwareComparePage() {
             "url": "https://canfly.ai/learn/hardware-compare",
             "publisher": {
               "@type": "Organization",
-              "name": "Canfly",
+              "name": "CanFly.ai",
               "url": "https://canfly.ai"
             }
           })}
