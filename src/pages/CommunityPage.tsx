@@ -346,7 +346,7 @@ export default function CommunityPage() {
           {title}
           <span className="text-gray-500 text-sm font-normal">({userList.length})</span>
         </h2>
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-3 rounded-2xl border border-gray-800/60 bg-gray-900/25 p-4 sm:p-5">
           {userList.map((user) => (
             <div key={user.username} className="flex items-center gap-2">
               <PillBadge
@@ -645,7 +645,7 @@ export default function CommunityPage() {
                 /* Sorted flat list */
                 <section className="mb-10">
                   {sortedUsers.length > 0 ? (
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-wrap gap-3 rounded-2xl border border-gray-800/60 bg-gray-900/25 p-4 sm:p-5">
                       {sortedUsers.map(renderUserPill)}
                     </div>
                   ) : (
@@ -666,7 +666,7 @@ export default function CommunityPage() {
                     {t('community.sections.agents')}
                     <span className="text-gray-500 text-sm font-normal">({filteredAgents.length})</span>
                   </h2>
-                  <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-wrap gap-3 rounded-2xl border border-gray-800/60 bg-gray-900/25 p-4 sm:p-5">
                     {filteredAgents.map((agent) => (
                       <div key={agent.name} className="flex items-center gap-2">
                         <PillBadge
