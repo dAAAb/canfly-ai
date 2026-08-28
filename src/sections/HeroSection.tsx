@@ -34,9 +34,7 @@ export default function HeroSection() {
       <div className="absolute inset-0 z-0 hero-sun" aria-hidden="true" />
       <div className="absolute inset-0 z-0 hero-clouds" aria-hidden="true">
         {(['a', 'b', 'c', 'd', 'e', 'f', 'g'] as const).map((id) => (
-          <div key={id} className={`hero-cloud hero-cloud-${id}`}>
-            <span /><span /><span /><span /><span />
-          </div>
+          <div key={id} className={`hero-cloud hero-cloud-${id}`} />
         ))}
       </div>
       <div className="absolute inset-0 z-0 hero-vignette" aria-hidden="true" />
