@@ -119,48 +119,94 @@ body {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Hero atmosphere: CSS sky is the fallback; the live look is the
-   WebGL cloud-sea canvas (first-person flight over a deck).
+   Hero "Zen sky" atmosphere — above the clouds at golden hour.
+   Additive layers behind/over the existing video background:
+   a slow-drifting sky gradient, a soft horizon sun glow, and
+   gentle cloud banks. All motion respects prefers-reduced-motion,
+   and every layer is pure CSS (no extra network cost).
    ───────────────────────────────────────────────────────────── */
 
+/* Base sky: deep night-indigo at the top easing into a warm
+   sunrise/sunset horizon. Sits behind the video so the hero is
+   still beautiful while the stream loads or if it fails. */
 .hero-sky {
   background:
     linear-gradient(
       to bottom,
-      #02040e 0%,
-      #070814 22%,
-      #0e0c24 48%,
-      #2a1834 68%,
-      #6b2e38 86%,
-      #8a3d32 100%
+      #050816 0%,
+      #0b1030 24%,
+      #241a4d 46%,
+      #5b3a73 64%,
+      #b5556e 80%,
+      #ef8a5a 91%,
+      #f6bd7a 100%
     );
+  background-size: 100% 200%;
+  background-position: 0% 0%;
+  animation: sky-drift 32s ease-in-out infinite alternate;
 }
 
-.hero-cloud-sea {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.7s ease;
+@keyframes sky-drift {
+  0%   { background-position: 0% 0%; }
+  100% { background-position: 0% 30%; }
 }
 
-.hero-cloud-sea.is-ready {
-  opacity: 1;
+/* Soft sun/horizon glow low-center, like light spilling over a cloud deck. */
+.hero-sun {
+  background:
+    radial-gradient(
+      60% 42% at 50% 96%,
+      rgba(255, 214, 150, 0.55) 0%,
+      rgba(255, 168, 120, 0.30) 34%,
+      rgba(255, 140, 120, 0.12) 55%,
+      rgba(255, 140, 120, 0) 72%
+    );
+  animation: sun-breathe 9s ease-in-out infinite;
 }
 
-/* Darken only the nav band. Leave the lower third open so cloud
-   tops peek at the section bottom. */
+@keyframes sun-breathe {
+  0%, 100% { opacity: 0.75; transform: scale(1); }
+  50%      { opacity: 1;    transform: scale(1.06); }
+}
+
+/* Drifting cloud banks built from layered soft radial gradients. */
+.hero-clouds {
+  background:
+    radial-gradient(38% 22% at 18% 78%, rgba(255, 236, 214, 0.16), rgba(255, 236, 214, 0) 70%),
+    radial-gradient(46% 26% at 72% 84%, rgba(255, 224, 198, 0.14), rgba(255, 224, 198, 0) 72%),
+    radial-gradient(30% 18% at 46% 70%, rgba(226, 232, 255, 0.10), rgba(226, 232, 255, 0) 70%);
+  background-repeat: no-repeat;
+  animation: cloud-drift 46s linear infinite;
+  will-change: transform;
+}
+
+@keyframes cloud-drift {
+  0%   { transform: translate3d(-3%, 0, 0); }
+  50%  { transform: translate3d(3%, -1.5%, 0); }
+  100% { transform: translate3d(-3%, 0, 0); }
+}
+
+/* Legibility vignette: darken the top (nav) and bottom edges while
+   keeping the warm sky visible through the middle. Replaces the old
+   flat bg-black/50 overlay. */
 .hero-vignette {
   background:
     linear-gradient(
       to bottom,
-      rgba(3, 6, 20, 0.55) 0%,
-      rgba(3, 6, 20, 0.18) 22%,
-      transparent 40%
+      rgba(3, 6, 20, 0.72) 0%,
+      rgba(3, 6, 20, 0.30) 24%,
+      rgba(3, 6, 20, 0.18) 52%,
+      rgba(10, 6, 24, 0.42) 82%,
+      rgba(10, 6, 24, 0.66) 100%
     );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-sky,
+  .hero-sun,
+  .hero-clouds {
+    animation: none;
+  }
 }
 
 /* Plyr removed — using native <video> + ::cue in ReviewVideoPlayer */
