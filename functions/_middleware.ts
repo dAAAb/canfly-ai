@@ -10,11 +10,13 @@
  * lookup so every locale gets the same preview metadata.
  */
 
+import { crawlerInnerHtml, negotiateAgentic, withVaryAccept } from './lib/agentic'
+
 const SITE = 'https://canfly.ai'
 const DEFAULT_OG_IMAGE = `${SITE}/og-image.webp`
 
 const BOT_UA =
-  /Googlebot|Google-InspectionTool|bingbot|facebookexternalhit|Facebot|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|TelegramBot|Applebot|Pinterest|Embedly|Quora Link Preview|vkShare|W3C_Validator/i
+  /Googlebot|Google-InspectionTool|bingbot|facebookexternalhit|Facebot|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|TelegramBot|Applebot|Pinterest|Embedly|Quora Link Preview|vkShare|W3C_Validator|GPTBot|ChatGPT-User|OAI-SearchBot|ClaudeBot|Claude-Web|anthropic-ai|PerplexityBot|Perplexity-User|Google-Extended|Applebot-Extended|Bytespider|CCBot|cohere-ai|Meta-ExternalAgent/i
 
 interface OgMeta {
   title: string
@@ -87,6 +89,24 @@ const ROUTE_META: Record<string, OgMeta> = {
     title: 'Blog — CanFly',
     description:
       'Guides, tutorials, and insights on running your own AI agents.',
+  },
+  '/about': {
+    title: 'About CanFly.ai',
+    description:
+      'CanFly.ai is the launchpad for OpenClaw AI agents — humans and software agents use the same site.',
+  },
+  '/contact': {
+    title: 'Contact CanFly.ai',
+    description: 'Email juchunko@gmail.com for partnership, security, and account questions.',
+  },
+  '/privacy': {
+    title: 'Privacy — CanFly.ai',
+    description: 'How CanFly.ai collects and uses account, agent, cookie, and payment data.',
+  },
+  '/developers': {
+    title: 'CanFly.ai developer resources',
+    description:
+      'OpenAPI, MCP, CLI, and versioning for the CanFly.ai agent marketplace API.',
   },
   '/learn/ollama-openclaw': {
     title: 'Free Local AI in 5 Minutes — Ollama Tutorial',
@@ -469,14 +489,18 @@ export const onRequest: PagesFunction = async (context) => {
 
   // ── Language auto-redirect (before bot check) ──
   // Only for non-bot, non-static, paths WITHOUT a language prefix
-  const hasLangPrefix = path.startsWith('/en') || path.startsWith('/zh-tw') || path.startsWith('/zh-cn')
+  const early = negotiateAgentic(path, context.request.headers.get('accept'))
+  if (early) return early
+
+  const hasLangPrefix = /^\/(en|zh-tw|zh-cn)(\/|$)/i.test(path)
   const isStatic = STATIC_EXT.test(path)
-  const isApi = path.startsWith('/api/')
+  const isApi = path === '/api' || path.startsWith('/api/')
+  const isMcp = path === '/mcp' || path.startsWith('/mcp/')
   const isBot = BOT_UA.test(ua)
 
   // /u/ routes use cookie-based i18n (no lang prefix, like Twitter profiles)
   const isUserRoute = path.startsWith('/u/')
-  if (!hasLangPrefix && !isStatic && !isApi && !isBot && !isUserRoute) {
+  if (!hasLangPrefix && !isStatic && !isApi && !isMcp && !isBot && !isUserRoute) {
     // If user manually chose a language before, respect it
     const cookieLang = getCookie(context.request, 'canfly_lang')
 
@@ -509,12 +533,26 @@ export const onRequest: PagesFunction = async (context) => {
     }
   }
 
-  // ── OG meta injection for social crawlers ──
-  if (!isBot) {
-    return context.next()
+  const spaResponse = await context.next()
+  const htmlType = spaResponse.headers.get('content-type') || ''
+  let response = spaResponse
+  if (htmlType.includes('text/html')) {
+    const inner = crawlerInnerHtml(path)
+    if (inner) {
+      response = new HTMLRewriter()
+        .on('#root', {
+          element(el) {
+            el.setInnerContent(inner, { html: true })
+          },
+        })
+        .transform(response)
+    }
+    response = withVaryAccept(response)
   }
 
-  const response = await context.next()
+  if (!isBot) {
+    return response
+  }
 
   // Only rewrite HTML responses
   const contentType = response.headers.get('content-type') || ''

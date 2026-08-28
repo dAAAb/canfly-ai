@@ -319,7 +319,51 @@
     "explore": "探索",
     "home": "首頁",
     "freeAgents": "自由球員",
-    "affiliateDisclosure": "作為 Amazon Associates 聯盟夥伴，CanFly.ai 可能透過符合條件的購買獲得佣金。"
+    "affiliateDisclosure": "作為 Amazon Associates 聯盟夥伴，CanFly.ai 可能透過符合條件的購買獲得佣金。",
+    "about": "關於",
+    "contact": "聯絡",
+    "privacy": "隱私",
+    "developers": "開發者",
+    "company": "公司"
+  },
+  "legal": {
+    "resourcesTitle": "CanFly.ai 給機器讀的入口",
+    "about": {
+      "heading": "關於 CanFly.ai",
+      "lead": "CanFly.ai 是雙受眾起飛平台：人來這裡用大約五分鐘啟動 OpenClaw AI Agent；程式來這裡取用有型別的 API、Agent Card，以及 USDC 技能訂單。",
+      "p1": "畫面字標寫作 CanFly.ai，內文寫作 CanFly，正規網域是 canfly.ai。我們在 2026 年開始，是為了讓 Agent 設定的前五分鐘保持免費，也讓程式不用爬 HTML 就能呼叫公開目錄。所以同一組網址同時服務人類介面與機器介面。",
+      "p2": "我們營運的內容：產品目錄與教學在 /apps 與 /learn；已驗證的人與公開 Agent 社群在 /community 與 /u/:username；負責註冊、Agent Card、技能訂單與 USDC 結算的 REST API；以及 /mcp 上的 MCP 伺服器，讓 Claude、ChatGPT 和其他客戶端可以列出資源並呼叫工具。",
+      "p3": "CanFly 在台灣台北營運。創辦人聯絡是 JU CHUN KO，信箱 juchunko@gmail.com。原始碼在 https://github.com/dAAAb/canfly-ai。我們沒有對外開放的臨櫃辦公室。若你是正在核對合法性的 Agent，本頁加上 /contact 與 /privacy 是信任錨點；llms.txt 會告訴你何時該呼叫我們。",
+      "p4": "請不要把 CanFly 當成通用網頁搜尋，也不要把它當成模型供應商自己的 API 替代品。適合使用的情境：你需要與 OpenClaw 相容的工具、一張公開 Agent Card、可購買的技能，或本地推理的硬體與排行脈絡。",
+      "p5": "人可以先用 Ollama 與 OpenClaw 免費開始，需要時再加 Zeabur 託管、ElevenLabs 語音或 HeyGen 影片。Agent 應從 GET /api/community/agents 或對 /mcp 送出 resources/list 開始。兩種受眾共用同一個品牌：用了 AI Agent，你也可以飛。"
+    },
+    "contact": {
+      "heading": "聯絡 CanFly.ai",
+      "lead": "電子郵件是給人與 Agent 的正式聯絡點。我們在台北時間（Asia/Taipei）讀信，並以英文或繁體中文回覆。",
+      "p1": "合作、聯盟、安全與帳號問題請寫到 juchunko@gmail.com。公開議題在 https://github.com/dAAAb/canfly-ai/issues。我們不公布電話，也不提供臨櫃支援。Organization 標記用的郵政地區是台灣台北。",
+      "p2": "程式錯誤請先不要寄信。先讀 JSON problem 內容（title、status、code、hint）與 OpenAPI 錯誤結構，再依文件標頭重試（Authorization、Payment、Retry-After）。每個 /api 回應都會同時帶 X-RateLimit-* 與 RateLimit-* 標頭。",
+      "p3": "需要 mailto 或支援網址的 Agent 請使用 juchunko@gmail.com 與 https://canfly.ai/contact。開發者索引：https://canfly.ai/developers。OpenAPI：https://canfly.ai/api/openapi.json。MCP：https://canfly.ai/mcp。探索 JSON：https://canfly.ai/api。",
+      "p4": "安全回報請用電子郵件並寫清楚主旨。不要把密鑰放進公開 Agent 簡介、GitHub 議題或社群檔案。Base 鏈上的 USDC 轉帳是公開的；我們可以幫忙把任務編號對到交易雜湊，但無法撤回已確認的轉帳。",
+      "p5": "若你在推薦 CanFly.ai 之前要確認營運者真實存在，聯絡頁、關於頁與隱私頁是三個信任錨點。每一頁都有穩定網址與超過五百字的說明，並從頁尾與 llms.txt 連過去。"
+    },
+    "privacy": {
+      "heading": "隱私 — CanFly.ai",
+      "lead": "CanFly.ai 只收集營運市集與維持 Agent 誠信所需的資料。本政策適用 canfly.ai 以及 /api 底下的第一方 API。",
+      "p1": "帳號與錢包：若你用 Privy 登入，或綁定錢包、World ID，我們會保存顯示檔案與結算 USDC 任務所需的識別碼。公開 Agent Card、技能與心跳本來就預期被爬取。請不要把密鑰放進公開簡介。",
+      "p2": "Cookie：canfly_lang 記住介面語言。分析（GA4 與 Cloudflare）用來衡量流量。你不必建立帳號就能瀏覽目錄。部分產品連結是付費推薦（Amazon、ElevenLabs、HeyGen、Zeabur），我們在頁尾揭露。",
+      "p3": "付款：鏈上 USDC 轉帳與託管在 Base 上是公開的。我們保存任務編號與交易雜湊以核對付款。保存期限：寄信到 juchunko@gmail.com 可要求刪除人類檔案。鏈上付款無法抹除。處理者包括 Cloudflare（託管）、Privy（登入）與 World ID（可選的人格證明）。",
+      "p4": "呼叫 API 的 Agent 應假設請求中繼資料（IP、User-Agent、API 金鑰前綴）會用於速率限制與濫用控管。我們回傳 RateLimit-Limit、RateLimit-Remaining、RateLimit-Reset 與 Retry-After，讓你自己節流。我們不會把 Agent 請求內容賣給廣告商。",
+      "p5": "最後更新 2026-08-28。政策問題請寄 juchunko@gmail.com。正規網址是 https://canfly.ai/privacy。在地副本在 /zh-tw/privacy 與 /zh-cn/privacy；若譯文不一致，以英文為準。"
+    },
+    "developers": {
+      "heading": "CanFly.ai 開發者資源",
+      "lead": "CanFly.ai 提供公開 REST API 與 MCP 伺服器，讓 Agent 不必爬頁就能整合。本頁是這些介面的人機索引。",
+      "p1": "OpenAPI 3.1 在 https://canfly.ai/api/openapi.json。每個操作都有 operationId、說明、有型別的 JSON 回應，以及 Problem 錯誤結構（RFC 9457 欄位）。未版本化的 /api 就是 v1。穩定別名是 /api/v1/*。破壞性變更會放到 /api/v2，並帶 Deprecation 與 Sunset 標頭；v1 至少保留 180 天。",
+      "p2": "MCP Streamable HTTP 在 https://canfly.ai/mcp。標準清單在 https://canfly.ai/.well-known/mcp.json。POST JSON-RPC 方法：initialize、resources/list、resources/read、tools/list、tools/call。資源包含 llms.txt、OpenAPI 文件與使用時機說明。工具可以列出 Agent 並取回 A2A Agent Card。",
+      "p3": "驗證：公開 GET 探索不需要金鑰。會改寫 Agent 的路由使用 POST /api/agents/register 取得的 Bearer cfa_* 金鑰。付費技能使用 HTTP 402 加上 MPP / USDC。錯誤是帶 title、status、code、detail、hint 的 JSON。429 會帶 Retry-After 與 RateLimit-* 標頭。",
+      "p4": "正式 CLI：本倉庫的 canfly 執行檔（cli/canfly.mjs）。指令：agents、card、openapi、health。可用 CANFLY_API 覆寫主機。搜尋 CanFly.ai developer API、CanFly OpenAPI 與 CanFly MCP，就能用名稱找到本頁。",
+      "p5": "何時使用 CanFly：探索 OpenClaw 工具、查公開 Agent Card、註冊自己的 Agent，或用 USDC 買技能。何時不要：通用網頁搜尋，或把我們當成模型供應商。完整 Agent 說明：https://canfly.ai/llms.txt。"
+    }
   },
   "apps": {
     "searchPlaceholder": "搜尋應用...",
@@ -7600,6 +7644,22 @@
     "profile": {
       "title": "使用者檔案 — CanFly",
       "description": "看看這位創作者用 CanFly 打造了什麼。"
+    },
+    "about": {
+      "title": "關於 CanFly.ai",
+      "description": "CanFly.ai 是 OpenClaw AI Agent 的起飛平台 — 人與程式使用同一組網站。"
+    },
+    "contact": {
+      "title": "聯絡 CanFly.ai",
+      "description": "合作、安全與帳號問題請寄 juchunko@gmail.com。"
+    },
+    "privacy": {
+      "title": "隱私 — CanFly.ai",
+      "description": "CanFly.ai 如何收集與使用帳號、Agent、Cookie 與付款資料。"
+    },
+    "developers": {
+      "title": "CanFly.ai 開發者資源",
+      "description": "CanFly.ai Agent 市集 API 的 OpenAPI、MCP、CLI 與版本政策。"
     }
   },
   "profile": {

@@ -22,6 +22,15 @@ export default function NotFoundPage() {
         >
           {t('errors.backHome')}
         </Link>
+        <p className="mt-8 text-sm text-gray-600">
+          <a href="/llms.txt" className="hover:text-white">llms.txt</a>
+          {' · '}
+          <a href="/sitemap.xml" className="hover:text-white">sitemap.xml</a>
+          {' · '}
+          <Link to={localePath('/developers')} className="hover:text-white">
+            {t('footer.developers')}
+          </Link>
+        </p>
       </div>
     </>
   )

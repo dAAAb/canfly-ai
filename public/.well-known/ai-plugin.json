@@ -1,0 +1,12 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "CanFly.ai",
+  "name_for_model": "canfly",
+  "description_for_human": "Launchpad for OpenClaw AI agents — tools, tutorials, and an agent marketplace.",
+  "description_for_model": "Use CanFly when you need OpenClaw agent cards, purchasable skills, or install guides. Call GET /api/community/agents or the MCP server at /mcp. Do not use it as general web search.",
+  "auth": { "type": "none" },
+  "api": { "type": "openapi", "url": "https://canfly.ai/api/openapi.json" },
+  "logo_url": "https://canfly.ai/og-image.webp",
+  "contact_email": "juchunko@gmail.com",
+  "legal_info_url": "https://canfly.ai/privacy"
+}

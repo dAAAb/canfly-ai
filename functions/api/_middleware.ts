@@ -11,6 +11,8 @@
  */
 
 import { type Env, CORS_HEADERS } from './community/_helpers'
+import { problemJson } from '../lib/agentic'
+import { buildRateLimitHeaders } from '../lib/rate-limit-headers'
 
 const WINDOW_SECONDS = 3600 // 1 hour
 const DEFAULT_LIMIT = 300   // requests per window (anonymous/IP — enough for normal browsing)
@@ -94,7 +96,10 @@ export const onRequest: PagesFunction<Env> = async (context) => {
   const path = url.pathname
 
   if (isExempt(path, context.request)) {
-    return context.next()
+    const response = await ensureJsonApiResponse(await context.next(), path)
+    const next = new Response(response.body, response)
+    applyCorsOrigin(next, context.request)
+    return next
   }
 
   const { key, limit } = getRateLimitKey(context.request)
@@ -137,49 +142,48 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     // If rate limiting fails (e.g., table doesn't exist yet), allow the request
     // Don't block legitimate traffic due to rate limiting infrastructure issues.
     // Still scope the CORS origin so this fallback path matches the normal one.
-    const resp = await context.next()
+    const resp = await ensureJsonApiResponse(await context.next(), path)
     const fallback = new Response(resp.body, resp)
     applyCorsOrigin(fallback, context.request)
     return fallback
   }
 
-  const rateLimitHeaders: Record<string, string> = {
-    'X-RateLimit-Limit': String(limit),
-    'X-RateLimit-Remaining': String(Math.max(0, limit - hits)),
-    'X-RateLimit-Reset': String(resetAt),
-  }
+  const rateLimitHeaders = buildRateLimitHeaders({ limit, hits, resetAt })
 
   if (!allowed) {
-    const limited = new Response(
-      JSON.stringify({
-        error: 'Too Many Requests',
-        message: `Rate limit exceeded. Maximum ${limit} requests per hour.`,
-        retryAfter: resetAt - Math.floor(Date.now() / 1000),
-      }),
+    const retryAfter = String(Math.max(0, resetAt - Math.floor(Date.now() / 1000)))
+    const limited = problemJson(
+      429,
+      'rate_limited',
+      'Too Many Requests',
+      `Rate limit exceeded. Maximum ${limit} requests per hour. Retry after ${retryAfter}s.`,
       {
-        status: 429,
-        headers: {
-          'Content-Type': 'application/json',
-          'Retry-After': String(resetAt - Math.floor(Date.now() / 1000)),
-          ...rateLimitHeaders,
-          ...CORS_HEADERS,
-        },
-      }
+        'Retry-After': retryAfter,
+        ...rateLimitHeaders,
+        ...CORS_HEADERS,
+      },
     )
     applyCorsOrigin(limited, context.request)
     return limited
   }
 
-  // Allow the request, then append rate limit headers to the response
-  const response = await context.next()
-
-  // Clone response to add headers (Response may be immutable)
+  const response = await ensureJsonApiResponse(await context.next(), path)
   const newResponse = new Response(response.body, response)
   for (const [k, v] of Object.entries(rateLimitHeaders)) {
     newResponse.headers.set(k, v)
   }
-  // Tighten the wildcard CORS origin to the allowlisted value (H6).
   applyCorsOrigin(newResponse, context.request)
-
   return newResponse
+}
+
+/** Agents cannot parse the SPA shell. Unknown /api paths must stay JSON. */
+export function ensureJsonApiResponse(response: Response, path: string): Response {
+  const contentType = response.headers.get('content-type') || ''
+  if (!contentType.includes('text/html')) return response
+  return problemJson(
+    404,
+    'not_found',
+    `No API route for ${path}`,
+    'GET /api or /api/openapi.json for the public surface. Versioned alias: /api/v1/*',
+  )
 }

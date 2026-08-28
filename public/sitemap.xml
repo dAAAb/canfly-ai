@@ -584,4 +584,57 @@
     <priority>0.7</priority>
   </url>
 
+  <url>
+    <loc>https://canfly.ai/about</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/about" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/about" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/about" />
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/about</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/about" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/about" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/about" />
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/about</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/about" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/about" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/about" />
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/contact</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/contact" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/contact" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/contact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/contact" />
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/privacy" />
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/developers</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/developers" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/developers" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/developers" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/developers" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
 </urlset>
