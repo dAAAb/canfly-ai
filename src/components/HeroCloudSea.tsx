@@ -82,17 +82,17 @@ void main() {
   // Particle cloud sea: each head stays round (PX PUSH / sprite-plane
   // family). Depth wraps toward the camera — far = small at a low
   // horizon, near = large and cropped by the section bottom.
-  float horizon = -0.30;
+  float horizon = -0.24;
   float cover = 0.0;
   float lit = 0.5;
   for (int i = 0; i < 48; i++) {
     float id = float(i);
     float rnd = hash21(vec2(id, 1.7));
     float rnd2 = hash21(vec2(id, 6.3));
-    float depth = fract(rnd - t * 0.075);
+    float depth = fract(rnd - t * 0.09);
     float x = (hash21(vec2(id, 2.9)) - 0.5) * mix(2.15, 3.05, depth);
-    float y = mix(horizon, -0.82, depth * depth);
-    float s = mix(0.045, 0.26, depth * depth);
+    float y = mix(horizon, -0.66, depth * depth);
+    float s = mix(0.05, 0.30, depth * depth);
     float a = head(uv, vec2(x, y), s, 0.80, rnd * 8.0);
     float a2 = head(uv, vec2(x + (rnd2 - 0.5) * s * 0.95, y + s * 0.20), s * 0.64, 0.84, rnd2 * 8.0);
     float a3 = head(uv, vec2(x - (rnd - 0.5) * s * 0.7, y + s * 0.08), s * 0.48, 0.86, rnd * 5.1);
@@ -179,8 +179,11 @@ export default function HeroCloudSea() {
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, quality < 1 ? 1 : 1.4)
-      const w = Math.max(1, Math.floor(canvas.clientWidth * dpr))
-      const h = Math.max(1, Math.floor(canvas.clientHeight * dpr))
+      const parent = canvas.parentElement
+      const cssW = parent?.clientWidth || canvas.clientWidth || window.innerWidth
+      const cssH = parent?.clientHeight || canvas.clientHeight || window.innerHeight
+      const w = Math.max(1, Math.floor(cssW * dpr))
+      const h = Math.max(1, Math.floor(cssH * dpr))
       if (canvas.width !== w || canvas.height !== h) {
         canvas.width = w
         canvas.height = h
@@ -237,6 +240,7 @@ export default function HeroCloudSea() {
     <canvas
       ref={canvasRef}
       className={`absolute inset-0 z-0 h-full w-full hero-cloud-sea${ready ? ' is-ready' : ''}`}
+      style={{ width: '100%', height: '100%' }}
       aria-hidden="true"
     />
   )
