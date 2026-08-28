@@ -505,4 +505,58 @@
     <priority>0.7</priority>
   </url>
 
+  <!-- Rankings -->
+  <url>
+    <loc>https://canfly.ai/rankings</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/rankings" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/rankings" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/rankings" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/rankings" />
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/rankings</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/rankings" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/rankings" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/rankings" />
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/rankings</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/rankings" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/rankings" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/rankings" />
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Free Agents -->
+  <url>
+    <loc>https://canfly.ai/free</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/free" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/free" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/free" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/free" />
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/free</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/free" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/free" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/free" />
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/free</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/free" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/free" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/free" />
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
 </urlset>
