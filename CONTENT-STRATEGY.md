@@ -16,9 +16,9 @@
   首頁 Zen 天空氛圍、robots 對 AI 爬蟲開放、llms.txt 更新、sitemap 補齊。
 - **內容更新頻率建議（§5）**：採「**核心週更 + 長青月度深耕 + 資料每日/每週自動刷新**」
   的混合節奏，而非固定單一頻率。詳見節奏表。
-- **自動化（§6）**：選題 inbox 已落地為 `content/QUEUE.md`。每日掃描寫進佇列；週二／五產稿。
-  Cursor Automation **還要在 Cursor → Automations 貼上 §6 prompt 才會真的每天跑**（repo 無法遠端建立排程）。
-  產稿仍走 git commit → CEO review → push。
+- **自動化（§6）**：選題 SOP 在 `content/SCAN.md`，inbox 在 `content/QUEUE.md`。
+  每日掃描必須：沿用上次找題策略、看 GA／analytics 報告、去重重排、至少新增 1 項。
+  週二／五 Content Writer 只拿「下一步寫」第 1 名。產稿仍走 git commit → CEO review → push。
 
 ---
 
@@ -201,43 +201,60 @@ CanFly 最特別之處：**同一份內容同時服務人類與 AI Agent**。
                                ── CEO heartbeat ─▶  review → 通過 → git push origin main → Cloudflare 部署
 ```
 
-**現況（2026-08-28）**：`content/QUEUE.md` 已是 inbox，寶博點名的 Grok Bot / Perplexity Computer 等已入列。
-Cursor → Automations 的排程**還沒在帳號裡按下去**——把下面兩段 prompt 貼上並設 cron，每天功課才會自動跑。
+**現況（2026-08-28）**：`content/QUEUE.md` 已有「優先策略」與「下一步寫」。掃描 SOP 在 `content/SCAN.md`。把下面兩段 prompt 貼上 Cursor → Automations。
 
 - **資料刷新**（rankings）獨立排程：每日跑 `npm run scrape` 系列（純資料、低風險、可自動 commit）。
 
-### 6.2 可直接貼上的 Cursor Automation（Content Writer · 每週產稿）
+### 6.2 可直接貼上的 Cursor Automation（選題掃描 · 每日）
+> Schedule：`0 22 * * *` UTC（台北 06:00）。完整規則以 `content/SCAN.md` 為準。若這段 prompt 跟 SCAN.md 打架，聽 SCAN.md。
+
+```
+你是 CanFly.ai 的選題掃描。不要寫完整文章，不要 push 產品頁。
+
+每次必做：
+1. 學習前面怎麼找題。讀 content/SCAN.md、content/QUEUE.md 的「優先策略」「掃描紀錄」、skills/topic-scan/SKILL.md。沿用已驗證的來源與夠格標準，不要重發明規則。
+2. 去 GA 看哪個受歡迎。讀最新 reports/analytics-*.md。有 GA4（G-N200MSSJG8）或 Cloudflare Analytics 憑證就拉 28 天 /learn /apps /blog。沒憑證就用報告。熱頁只加權排序。
+3. 掃新產品（軟體為主、硬體為輔）：xAI/Grok、Perplexity、OpenAI、Anthropic、Google、Product Hunt、GitHub、ClawHub、Apple / NVIDIA / Arduino。
+4. 去重後重排。對 QUEUE、src/data/products.ts、TutorialPage tutorial id、src/data/blog.ts。同產品合併或改「更新舊頁」。整表依「優先策略」重排「下一步寫」，不要只把新題丟表尾。
+5. 每次至少新增 1 筆待寫或更新舊頁（先前不在佇列，或舊列沒寫到這次才成立的理由）。禁止灌水。沒新品就回訪分數最高的過期舊頁。
+6. 掃描紀錄加一行：日期、看了什麼、GA 看了哪份、入列幾題、重排後第 1 名。
+7. 有檔案變更就 git commit。不要為了湊數寫文章。
+```
+
+### 6.3 可直接貼上的 Cursor Automation（Content Writer · 每週產稿）
 > 在 Cursor → Automations 新增排程，貼上以下 prompt。Schedule：`0 9 * * 2,5`（週二/五 09:00，Asia/Taipei）。
 
 ```
-你是 CanFly.ai 的 Content Writer agent。目標：產出 1 篇高品質 blog 文章（不直接 push）。
+你是 CanFly.ai 的 Content Writer agent。目標：產出 1 篇高品質內容（不直接 push）。
 
 步驟：
-1. 讀 CONTENT-STRATEGY.md §5 與 data/blog.ts 既有主題，避免重複。從 Paperclip 待辦選題挑最高優先，
-   或依「本週 AI Agent / 本地 AI / OpenClaw 生態」熱點自選一題（商業或工具導向優先）。
-2. 撰寫文章，遵守：
+1. 讀 content/QUEUE.md「下一步寫」第 1 名。那就是本題。不要自選，不要改拿第 2 名，除非第 1 名已經有進行中的 PR。
+2. 讀 CONTENT-STRATEGY.md §5、SOP-NEW-APP.md、data/blog.ts，避免重複 slug。
+3. 撰寫，遵守：
    - 三語同步：src/i18n（en / zh-TW / zh-CN）新增對應 key，數量必須一致。
    - 品牌一律用 CanFly.ai / CanFly（駝峰），domain 小寫 canfly.ai。
-   - 內文交叉連結相關 /apps 產品頁與 /learn 教學（強化導購與內鏈）。
-   - 加入 JSON-LD（Article：headline/author/datePublished/inLanguage）。
+   - 內文交叉連結相關 /apps 產品頁與 /learn 教學。
+   - 加入 JSON-LD（Article 或 HowTo/FAQ）。
    - 若新增路由，同步更新 public/sitemap.xml（含 hreflang + lastmod）。
-3. 自我驗證：npm run check-i18n && npm run build 必須通過。
-4. git add + git commit（訊息：`content: <slug> blog post (en/zh-TW/zh-CN)`）。**不要 push。**
-5. 在 Paperclip 開/更新 issue，comment 回報 CEO：「已完成，請 review」。
+4. 自我驗證：npm run check-i18n && npm run build 必須通過。
+5. 寫完把 QUEUE 該列改成 done，並把「下一步寫」往上遞補。
+6. git add + git commit（訊息：`content: <slug> (en/zh-TW/zh-CN)`）。不要 push。
+7. 在 Paperclip comment 回報 CEO：「已完成，請 review」。
 
 限制：只新增內容與必要的 sitemap/i18n，不改動既有功能與樣式。若 build 失敗，修好再交。
 ```
 
-### 6.3 Grok 定時排程（替代/並行方案）
+### 6.4 Grok 定時排程（替代/並行方案）
 若要用 Grok 的 scheduled tasks：建立一個「每日 06:00 選題」任務，輸出候選主題 + 關鍵字 +
 建議內鏈到 Paperclip / GitHub issue；再由 Cursor automation 或人工觸發 Content Writer 產稿。
 Grok 適合做「即時熱點掃描 + 選題」，Cursor automation 適合做「進 repo 產稿 + 驗證 + commit」。
 
-### 6.4 防呆與品質護欄
+### 6.5 防呆與品質護欄
 - **絕不自動 push**：一律走 CEO review。
 - **每次產稿必跑** `check-i18n` + `build`，失敗不交件。
 - **三語 key 數必須一致**（CI 已強制）。
-- **重複偵測**：產稿前比對既有 slug/標題，避免內容自我競爭（cannibalization）。
+- **重複偵測**：產稿前比對既有 slug/標題，避免內容自我競爭（cannibalization）。掃描每次去重並重排 QUEUE。
+- **掃描至少 +1**：每日掃描必須新增 1 筆待寫或更新舊頁，規則見 `content/SCAN.md`。
 - **E-E-A-T**：每篇標註作者/日期，導購文揭露 affiliate（站上已有 disclosure 文案）。
 
 ---
