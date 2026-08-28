@@ -17,21 +17,23 @@ export default function HeroSection() {
   )
 
   return (
-    <section className="relative min-h-[100dvh] w-full overflow-x-hidden flex items-center justify-center">
-      {/* Zen sky base — visible while the video loads or if it fails to play */}
-      <div className="absolute inset-0 z-0 hero-sky" aria-hidden="true" />
-      <video
-        ref={videoRef}
-        className="absolute inset-0 z-0 w-full h-full object-cover"
-        autoPlay
-        loop
-        muted
-        playsInline
-      />
-      {/* Golden-hour atmosphere: horizon sun, drifting cloud banks, vignette */}
-      <div className="absolute inset-0 z-0 hero-sun" aria-hidden="true" />
-      <div className="absolute inset-0 z-0 hero-clouds" aria-hidden="true" />
+    <section className="hero-section relative flex w-full flex-col overflow-x-hidden bg-black">
+      {/* Media is masked out at the bottom so the Mux frame never ends as a knife-edge. */}
+      <div className="hero-media absolute inset-0 z-0" aria-hidden="true">
+        <div className="absolute inset-0 hero-sky" />
+        <video
+          ref={videoRef}
+          className="absolute inset-0 h-full w-full object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
+        />
+        <div className="absolute inset-0 hero-sun" />
+        <div className="absolute inset-0 hero-clouds" />
+      </div>
       <div className="absolute inset-0 z-0 hero-vignette" aria-hidden="true" />
+      <div className="hero-bottom-fade pointer-events-none absolute inset-x-0 bottom-0 z-[1]" aria-hidden="true" />
 
       {/* Nav */}
       <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between py-6 sm:py-10" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
@@ -105,7 +107,7 @@ export default function HeroSection() {
       )}
 
       {/* Content */}
-      <div className="relative z-10 text-center max-w-5xl mx-auto pt-28 pb-20" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
+      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-1 flex-col justify-center pt-28 pb-6 text-center" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
         <h1
           className="font-black tracking-tight"
           style={{
@@ -196,15 +198,16 @@ export default function HeroSection() {
             </Link>
           </div>
         </div>
-      </div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center opacity-40 animate-bounce">
-        <span className="text-xs tracking-widest uppercase mb-2">{t('hero.scroll')}</span>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M12 5v14M5 12l7 7 7-7" />
-        </svg>
+        <div className="hero-scroll-hint mt-8 flex flex-col items-center">
+          <span className="mb-2 text-xs tracking-widest uppercase">{t('hero.scroll')}</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 5v14M5 12l7 7 7-7" />
+          </svg>
+        </div>
       </div>
+      {/* Empty black band so the next section overlaps paint, not funnel cards. */}
+      <div className="hero-fade-spacer pointer-events-none relative z-0 h-[26vh] shrink-0" aria-hidden="true" />
     </section>
   )
 }

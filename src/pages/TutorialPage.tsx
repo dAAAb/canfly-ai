@@ -2749,7 +2749,12 @@ export default function TutorialPage() {
                 <ReviewVideoPlayer
                   src={videoSrc}
                   subtitles={subtitleEntries.map(([sLang, sUrl]) => ({
-                    label: sLang === 'en' ? 'English' : sLang === 'zh-TW' ? '繁體中文' : '简体中文',
+                    label:
+                      sLang === 'bilingual' ? '雙語'
+                        : sLang === 'en' ? 'English'
+                          : sLang === 'zh-TW' ? '繁體中文'
+                            : sLang === 'zh-CN' ? '简体中文'
+                              : sLang,
                     srclang: sLang,
                     src: sUrl,
                   }))}
