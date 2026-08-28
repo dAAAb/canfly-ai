@@ -4,7 +4,7 @@
 > 每天先掃、先排隊；當天資訊多就一次寫幾篇，資訊少就寫一篇或只更新舊文。
 > 產稿走 `SOP-NEW-APP.md`（產品＋教學）或既有 blog 結構；**不要直接 push**。
 
-最後掃描：2026-08-28（寶博點名批次 + 每日選題掃描）
+最後掃描：2026-08-29（每日選題掃描，06:00 Taipei）
 
 ---
 
@@ -76,6 +76,8 @@
 | P1 | Nemotron 3.5 Lightning | 軟體／models | NVIDIA 點名 OpenClaw harness。30B MoE、3B active。跟現有 Super（120B / 12B）不是同一張卡 | `/apps/models/nemotron-3-5-lightning` + Super 頁加家族連結 | queued |
 | P1 | Arduino UNO Q（4GB） | 硬體 | 已上市。官方部落格講本機 agent + OpenClaw。跟 VENTUNO Q 不是同一塊板 | `/apps/hardware`；SKU 用 4GB / 32GB eMMC | queued |
 | P2 | TaskMarket | 軟體／skills | Base 上 USDC 結算的 agent 打工市場。有 CLI 與 OpenClaw skill。掃描時市場還小（約 19 題） | `/learn/taskmarket` | queued |
+| P1 | Firecrawl（含 Developer Index） | 軟體／skills | 官方有 OpenClaw 接法：`firecrawl init --agent openclaw`，也可 `npx -y firecrawl-cli@latest setup developer-index`。70M+ repo README／issue／PR／OpenAPI，給 coding agent 用，不是一般網搜。跟現有 `brave-search`、`perplexity` 不是同一頁 | `/apps/skills/firecrawl` + `/learn/firecrawl` | queued |
+| P2 | screenpipe | 軟體／skills | 官方文件 `docs.screenpi.pe/openclaw`：`npx -y screenpipe@latest agent setup openclaw`。把螢幕／語音記錄接進 OpenClaw。站上沒有相近頁。要寫權限與 clipboard 風險 | `/apps/skills/screenpipe` + `/learn/screenpipe` | queued |
 
 ---
 
@@ -84,7 +86,7 @@
 | 現有頁 | 為什麼要改 |
 |---|---|
 | `/apps/skills/perplexity` + `/learn/perplexity` | 官方 [Perplexity with OpenClaw](https://docs.perplexity.ai/docs/getting-started/integrations/openclaw)：Search plugin、Agent API（`openai-responses` + `https://api.perplexity.ai/v1`）、遠端 MCP。Sonar Chat Completions 撐到 2026-09-27。現有頁還停在「AI 搜尋引擎」。Computer 要不要另開頁見待決。 |
-| `/apps/models/google-gemini` + `/learn/google-gemini` | 一般用戶 Gemini CLI 2026-06-18 已停。Google 改推 Antigravity CLI（`agy`）與 Managed Agents。現有頁還在講 2M context / Gems / Veo。 |
+| `/apps/models/google-gemini` + `/learn/google-gemini` | 一般用戶 Gemini CLI 2026-06-18 已停。Google 改推 Antigravity CLI（`agy`）與 Managed Agents。現有頁還在講 2M context / Gems / Veo。PH 8/28 上的 Gemini Omni 1.1 Flash（影片生成／剪輯）補進這頁，不要另開。 |
 | `/apps/hardware/mac-mini-m4` | 見上方「新款 Mac mini」。 |
 | OpenClaw 產品卡 | 文案寫 300K+ stars。GitHub 2026-08-26 約 388K。Custodian skill library 是新能力。 |
 | `/learn/nemotron-3-super` | 加 Lightning 家族連結。Super 給重推理，Lightning 給長跑執行層。 |
@@ -102,8 +104,10 @@
 | Google Antigravity 獨立頁 | Gemini 舊頁更新就夠講 CLI 搬家。先看它跟 OpenClaw 會不會互踩 | I/O 後續文件 |
 | OpenAI AgentKit | 2026-11-30 下線 | 不要寫 |
 | Product Hunt（8/27–8/28）Skydive、Enter Pro、Traccia、Speko、CTRL Micro、Clipto MCP、Vercel Eve | 沒有可重現的 OpenClaw 安裝步驟，或跟現有頁重疊 | 下週 PH |
+| Product Hunt 8/28 PageIndex、Caddi、Microduck、Almanac、Aramb、OpenTag、SuperIntern、Lightfield | SaaS agent／RPA／玩具機器人，沒看到 OpenClaw 安裝步驟。Aramb 還在 private beta | 下週 PH |
 | Gemini 3.5 Transcribe | 跟 Whisper 頁重疊 | 有獨立 API 教學需求再看 |
 | Grok Voice Agent Builder | 跟 ElevenLabs 重疊 | 有 OpenClaw 接法再看 |
+| Workato Otto | 企業 superagent，走 Workato MCP，不是 OpenClaw 技能 | 有官方 OpenClaw 接法再看 |
 
 ---
 
@@ -111,13 +115,14 @@
 
 | slug / 頁 | 備註 |
 |---|---|
-| `perplexity` | 搜尋產品已在。Agent API／OpenClaw 接法先更新這頁。Computer / Portable 是否另開見待決 |
+| `perplexity` | 搜尋產品已在。Agent API／OpenClaw 接法先更新這頁。Computer / Portable 是否另開見待決。Firecrawl 另開，不要把 Developer Index 塞進來 |
 | `mac-mini-m4` | 新款 mini 先更新這頁 |
-| `google-gemini` | 更新 CLI → Antigravity，不要另開 Gemini 頁 |
+| `google-gemini` | 更新 CLI → Antigravity，不要另開 Gemini 頁。Omni 1.1 Flash 也寫這頁 |
 | `nemotron-3-super` | 不要改寫成 Lightning；加家族連結 |
 | `openclaw` | 更新星數與 custodian skills，不要重開 |
 | `heygen` / `elevenlabs` / `ollama` / `omlx` / `zeabur` / `openrouter` | 教學已在，只在有大改版時回訪 |
-| `whisper` / `brave-search` / `umbrel` / `pinata` / `switchbot-ai-hub` | 同上 |
+| `brave-search` | 一般網搜頁已在。Firecrawl／Developer Index 另開 |
+| `whisper` / `umbrel` / `pinata` / `switchbot-ai-hub` | 同上 |
 | `basemail` / `agentmail` / `agentcard` / `worldid` / `agentbook` | 同上 |
 | `utm` / `virtual-buddy` | 同上 |
 | `macbook-neo` / `geekom-a8` / `beelink-ser5-max` / `raspberry-pi-5` / `elgato-stream-deck` / `fifine-am8` / `hdmi-dummy-plug` / `even-g2-bridge` | 硬體／技能已在 |
@@ -130,6 +135,7 @@
 |---|---|---|---|
 | 2026-08-28 | Cloud agent（依寶博點名） | 7 | 建立佇列；尚未產稿 |
 | 2026-08-28 | 每日選題掃描 | 待寫 +6（Grok 4.6、Claude Code/Codex、ClawHub、Lightning、UNO Q、TaskMarket）；更新舊頁 6 | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI/Grok、Perplexity 官方 OpenClaw 文件、OpenAI、Anthropic、Google、Product Hunt 8/27–8/28、GitHub/OpenClaw、ClawHub、Apple、NVIDIA、Arduino。沒寫文章。與寶博點名列的分歧見待決。 |
+| 2026-08-29 | 每日選題掃描 | 待寫 +2（Firecrawl、screenpipe）；更新舊頁 +Gemini Omni 1.1 Flash | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI/Grok 4.6（已入列）、Perplexity Portable（已入列）、OpenAI HF 事故報告（不寫產品）、Anthropic／Google Antigravity（更新舊頁）、PH 8/28、GitHub OpenClaw ~388K、ClawHub、Apple mini/Studio（已入列）、NVIDIA Jetson Orin Nano 2 官方寫 H1 2027 才出、Arduino VENTUNO Q（已入列）。沒寫文章。 |
 
 ---
 
@@ -141,7 +147,7 @@
 |---|---|---|---|
 | Grok Bot | P0 寫產品＋教學 | 放觀察。早 beta、Grok only、綁 SuperGrok Heavy / Cursor Ultra，是 OpenClaw 對手不是技能 | 要不要做競品對照頁，還是不做 |
 | Perplexity Computer / Portable / Comet | P0 另開產品頁 | 放觀察。連動寫進現有 Perplexity 頁，不要再開三頁互搶 | 更新舊頁夠不夠，要不要獨立 Computer 頁 |
-| Jetson Orin Nano 2 | P1 硬體頁 | Jetson / DGX Spark 放觀察，還沒對上現有 Amazon 帶 | 現在寫還是等有導購連結 |
+| Jetson Orin Nano 2 | P1 硬體頁 | Jetson / DGX Spark 放觀察，還沒對上現有 Amazon 帶。NVIDIA 官方 8/25：模組與開發套件預計 2027 上半年才出，價格未公布 | 現在寫預告，還是等有導購／出貨日 |
 | Mac Studio 512GB / M5 Ultra | P2 預告文 | 價位 $2,499–$5,499，超出目前 Mini / 迷你 PC / Pi 帶 | 預告文要不要寫 |
 | Arduino | P1 VENTUNO Q（未上市取向） | P1 UNO Q 4GB（已上市、官方 OpenClaw 文） | 先寫哪一塊板，或兩塊都寫 |
 
