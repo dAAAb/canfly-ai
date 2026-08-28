@@ -4,13 +4,10 @@ import { useEffect, useRef, useState } from 'react'
  * First-person flight over a procedural cloud sea.
  *
  * Technique (not a copy of any one repo):
- * - Horizontal FBM density slab + fixed-step raymarch — the same family
- *   as IQ's Shadertoy "Clouds", the 42yeah writeup, and xbdev's
- *   "Flying Through Clouds". Camera sits just above the deck and looks
- *   slightly down, so fluffy tops occupy the lower third of the frame.
+ * - Screen-space particle heads (PX PUSH / sprite-plane family).
+ *   Each cumulus stays round; depth wraps toward the camera so far
+ *   heads sit small on a low horizon and near ones peek at the bottom.
  * - Fullscreen WebGL1 fragment shader. No Three.js, no SVG, no images.
- * - IQ's original shader is CC BY-NC-SA; this GLSL is our own noise,
- *   lighting, and golden-hour palette.
  */
 
 const VERT = `
@@ -31,66 +28,31 @@ uniform vec2 uResolution;
 uniform float uTime;
 uniform float uQuality;
 
-float hash13(vec3 p) {
-  p = fract(p * 0.3183099 + vec3(0.11, 0.17, 0.13));
-  p *= 17.0;
-  return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
-}
-
 float hash21(vec2 p) {
   return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
 }
 
-float noise(vec3 x) {
-  vec3 i = floor(x);
-  vec3 f = fract(x);
-  f = f * f * (3.0 - 2.0 * f);
-  return mix(
-    mix(mix(hash13(i + vec3(0,0,0)), hash13(i + vec3(1,0,0)), f.x),
-        mix(hash13(i + vec3(0,1,0)), hash13(i + vec3(1,1,0)), f.x), f.y),
-    mix(mix(hash13(i + vec3(0,0,1)), hash13(i + vec3(1,0,1)), f.x),
-        mix(hash13(i + vec3(0,1,1)), hash13(i + vec3(1,1,1)), f.x), f.y),
-    f.z
-  );
-}
-
-float fbm(vec3 p) {
-  float a = 0.0;
-  float w = 0.5;
-  for (int i = 0; i < 4; i++) {
-    a += w * noise(p);
-    p = p * 2.11 + vec3(1.7, 9.2, 3.4);
-    w *= 0.5;
-  }
-  return a;
-}
-
-// Cellular billows — distinct cumulus heads, not a flat sheet.
-float cumulus(vec2 xz, float freq) {
-  vec2 p = xz * freq;
+float noise2(vec2 p) {
   vec2 i = floor(p);
   vec2 f = fract(p);
-  float m = 0.0;
-  for (int y = -1; y <= 1; y++) {
-    for (int x = -1; x <= 1; x++) {
-      vec2 g = vec2(float(x), float(y));
-      vec2 id = i + g;
-      vec2 o = vec2(hash21(id), hash21(id + 19.7));
-      vec2 r = g + 0.22 + 0.62 * o - f;
-      float d = length(r);
-      float blob = smoothstep(1.05, 0.18, d);
-      m = max(m, blob * (0.62 + 0.38 * o.x));
-    }
-  }
-  float wrinkle = fbm(vec3(xz * freq * 2.4, 0.6));
-  return clamp(m * (0.78 + 0.32 * wrinkle), 0.0, 1.0);
+  f = f * f * (3.0 - 2.0 * f);
+  float a = hash21(i);
+  float b = hash21(i + vec2(1.0, 0.0));
+  float c = hash21(i + vec2(0.0, 1.0));
+  float d = hash21(i + vec2(1.0, 1.0));
+  return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
 }
 
-float deck(vec2 xz, float tHit) {
-  float freq = mix(0.07, 0.13, smoothstep(3.0, 22.0, tHit));
-  float big = cumulus(xz, freq);
-  float small = cumulus(xz + vec2(8.2, 3.1), freq * 1.7);
-  return clamp(max(big, small * 0.72), 0.0, 1.0);
+// Irregular lumpy head — noise on the silhouette so it is a
+// cumulus, not a bokeh circle.
+float head(vec2 uv, vec2 c, float s, float squash, float seed) {
+  vec2 d = (uv - c) / vec2(s, s * squash);
+  float r = length(d);
+  float n = noise2(d * 3.4 + seed);
+  r += (n - 0.5) * 0.34;
+  float body = smoothstep(1.08, 0.28, r);
+  float lumps = 0.58 + 0.42 * noise2(d * 2.2 + seed * 1.7);
+  return body * lumps;
 }
 
 vec3 skyColor(vec3 rd, vec3 sunDir) {
@@ -110,35 +72,40 @@ void main() {
   vec2 uv = (gl_FragCoord.xy - 0.5 * uResolution) / uResolution.y;
 
   float t = uTime;
-  // Horizon sits just below center so the headline stays in sky.
-  // Lower third looks down onto nearby tops.
-  vec3 ro = vec3(0.18 * sin(t * 0.05), 1.42 + 0.03 * sin(t * 0.27), t * 0.62);
-  vec3 fw = normalize(vec3(0.025 * sin(t * 0.08), -0.155, 1.0));
-  vec3 rt = normalize(cross(fw, vec3(0.0, 1.0, 0.0)));
-  vec3 upv = cross(rt, fw);
-  vec3 rd = normalize(uv.x * rt + uv.y * upv + 1.18 * fw);
-
-  vec3 sunDir = normalize(vec3(0.46, 0.20, 0.84));
+  vec3 fw = normalize(vec3(0.02 * sin(t * 0.08), -0.12, 1.0));
+  vec3 rgt = normalize(cross(fw, vec3(0.0, 1.0, 0.0)));
+  vec3 upv = cross(rgt, fw);
+  vec3 rd = normalize(uv.x * rgt + uv.y * upv + 1.25 * fw);
+  vec3 sunDir = normalize(vec3(0.48, 0.22, 0.82));
   vec3 col = skyColor(rd, sunDir);
 
-  if (rd.y < -0.012) {
-    float tHit = (0.08 - ro.y) / rd.y;
-    if (tHit > 0.8 && tHit < 55.0) {
-      vec2 xz = (ro + rd * tHit).xz;
-      float h = deck(xz, tHit);
-      float hX = deck(xz + vec2(0.9, 0.0), tHit);
-      float hZ = deck(xz + vec2(0.0, 0.9), tHit);
-      vec3 N = normalize(vec3(h - hX, 0.42, h - hZ));
-      float ndotl = clamp(dot(N, sunDir) * 0.65 + 0.35, 0.0, 1.0);
-      vec3 shade = mix(vec3(0.40, 0.30, 0.40), vec3(1.06, 0.98, 0.90), ndotl);
-      shade = mix(shade, vec3(1.0, 0.72, 0.42), pow(ndotl, 4.0) * 0.28);
-      float fog = 1.0 - exp(-0.0048 * tHit * tHit);
-      vec3 cloud = mix(shade, col, fog * 0.78);
-      float cover = smoothstep(0.18, 0.48, h);
-      float near = smoothstep(20.0, 2.8, tHit);
-      float alpha = cover * mix(0.82, 1.0, near) * (1.0 - fog * 0.22);
-      col = mix(col, cloud, clamp(alpha, 0.0, 1.0));
+  // Particle cloud sea: each head stays round (PX PUSH / sprite-plane
+  // family). Depth wraps toward the camera — far = small at a low
+  // horizon, near = large and cropped by the section bottom.
+  float horizon = -0.30;
+  float cover = 0.0;
+  float lit = 0.5;
+  for (int i = 0; i < 48; i++) {
+    float id = float(i);
+    float rnd = hash21(vec2(id, 1.7));
+    float rnd2 = hash21(vec2(id, 6.3));
+    float depth = fract(rnd - t * 0.075);
+    float x = (hash21(vec2(id, 2.9)) - 0.5) * mix(2.15, 3.05, depth);
+    float y = mix(horizon, -0.82, depth * depth);
+    float s = mix(0.045, 0.26, depth * depth);
+    float a = head(uv, vec2(x, y), s, 0.80, rnd * 8.0);
+    float a2 = head(uv, vec2(x + (rnd2 - 0.5) * s * 0.95, y + s * 0.20), s * 0.64, 0.84, rnd2 * 8.0);
+    float a3 = head(uv, vec2(x - (rnd - 0.5) * s * 0.7, y + s * 0.08), s * 0.48, 0.86, rnd * 5.1);
+    float puff = max(a, max(a2, a3));
+    if (puff > cover) {
+      cover = puff;
+      lit = 0.35 + 0.65 * rnd2;
     }
+  }
+  if (cover > 0.02) {
+    vec3 shade = mix(vec3(0.42, 0.30, 0.38), vec3(1.06, 0.97, 0.90), lit);
+    shade = mix(shade, vec3(1.0, 0.74, 0.46), lit * 0.22);
+    col = mix(col, shade, clamp(cover, 0.0, 1.0));
   }
 
   col += vec3(1.0, 0.5, 0.26) * pow(max(dot(rd, sunDir), 0.0), 3.0) * 0.10;
