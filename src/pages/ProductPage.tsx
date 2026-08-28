@@ -357,7 +357,7 @@ zeabur deploy --template openclaw`}
                 "@type": "SoftwareApplication",
                 "name": product.name,
                 "description": product.description,
-                "url": `https://canfly.ai/apps/${slug}`,
+                "url": `https://canfly.ai/apps/${product.category}/${slug}`,
                 "applicationCategory": product.category === 'free' ? 'DeveloperApplication' :
                   product.category === 'skills' ? 'MultimediaApplication' :
                   product.category === 'hosting' ? 'WebApplication' : 'DesktopApplication',
