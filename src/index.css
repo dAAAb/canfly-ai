@@ -169,60 +169,83 @@ body {
   50%      { opacity: 1;    transform: scale(1.06); }
 }
 
-/* Horizon mist stays put — a depth cue at the cloud deck. */
+/* Cloud field: lumpy cumulus clusters that grow toward the camera.
+   Each cloud is several overlapping circles — not a wide ellipse,
+   which reads as a horizon wave. */
 .hero-clouds {
   overflow: hidden;
   pointer-events: none;
-  background:
-    radial-gradient(42% 24% at 20% 88%, rgba(255, 236, 214, 0.22), rgba(255, 236, 214, 0) 72%),
-    radial-gradient(50% 28% at 78% 92%, rgba(255, 224, 198, 0.18), rgba(255, 224, 198, 0) 74%),
-    radial-gradient(36% 20% at 50% 82%, rgba(226, 232, 255, 0.10), rgba(226, 232, 255, 0) 70%);
-  background-repeat: no-repeat;
 }
 
-/* Discrete puffs that grow toward the camera — slow forward flight. */
-.hero-puff {
+.hero-cloud {
   position: absolute;
   left: 50%;
-  top: 58%;
-  width: var(--w, 42vw);
-  height: var(--h, 18vh);
-  border-radius: 50%;
-  background:
-    radial-gradient(
-      ellipse at 40% 45%,
-      rgba(255, 248, 236, 0.72) 0%,
-      rgba(255, 228, 200, 0.32) 42%,
-      rgba(255, 220, 190, 0) 70%
-    );
-  filter: blur(var(--blur, 12px));
-  transform-origin: 50% 80%;
-  animation: cloud-approach var(--dur, 48s) linear infinite;
+  top: 48%;
+  width: var(--w, 22vw);
+  height: var(--h, 13vw);
+  margin-left: calc(var(--w, 22vw) / -2);
+  margin-top: calc(var(--h, 13vw) / -2);
+  animation: cloud-approach var(--dur, 36s) linear infinite;
   animation-delay: var(--delay, 0s);
   will-change: transform, opacity;
   pointer-events: none;
+  filter: blur(1.5px);
 }
 
-.hero-puff-a { --x: -18vw; --w: 56vw; --h: 24vh; --dur: 40s; --delay: 0s;   --op: 0.78; --blur: 10px; }
-.hero-puff-b { --x: 22vw;  --w: 48vw; --h: 20vh; --dur: 34s; --delay: -10s; --op: 0.70; --blur: 12px; }
-.hero-puff-c { --x: 2vw;   --w: 64vw; --h: 26vh; --dur: 46s; --delay: -18s; --op: 0.62; --blur: 14px; }
-.hero-puff-d { --x: -28vw; --w: 42vw; --h: 18vh; --dur: 30s; --delay: -6s;  --op: 0.74; --blur: 9px; }
-.hero-puff-e { --x: 30vw;  --w: 40vw; --h: 17vh; --dur: 42s; --delay: -24s; --op: 0.58; --blur: 16px; }
-.hero-puff-f { --x: -6vw;  --w: 36vw; --h: 15vh; --dur: 26s; --delay: -14s; --op: 0.68; --blur: 8px; }
+.hero-cloud span {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle at 36% 30%,
+      rgba(255, 252, 248, 0.95) 0%,
+      rgba(255, 236, 214, 0.62) 46%,
+      rgba(255, 224, 198, 0.16) 70%,
+      transparent 76%
+    );
+}
+
+/* Default cumulus pile: a fat center + four side lobes. */
+.hero-cloud span:nth-child(1) { width: 52%; height: 78%; left: 6%;  top: 20%; }
+.hero-cloud span:nth-child(2) { width: 48%; height: 92%; left: 24%; top: 0; }
+.hero-cloud span:nth-child(3) { width: 46%; height: 80%; left: 48%; top: 14%; }
+.hero-cloud span:nth-child(4) { width: 40%; height: 64%; left: 16%; top: 38%; }
+.hero-cloud span:nth-child(5) { width: 38%; height: 58%; left: 58%; top: 40%; }
+
+.hero-cloud-b span:nth-child(1) { width: 44%; height: 70%; left: 2%;  top: 28%; }
+.hero-cloud-b span:nth-child(2) { width: 56%; height: 88%; left: 18%; top: 4%; }
+.hero-cloud-b span:nth-child(3) { width: 42%; height: 74%; left: 52%; top: 18%; }
+.hero-cloud-b span:nth-child(4) { width: 36%; height: 60%; left: 36%; top: 42%; }
+.hero-cloud-b span:nth-child(5) { width: 32%; height: 52%; left: 64%; top: 34%; }
+
+.hero-cloud-c span:nth-child(1) { width: 40%; height: 68%; left: 10%; top: 26%; }
+.hero-cloud-c span:nth-child(2) { width: 50%; height: 90%; left: 28%; top: 2%; }
+.hero-cloud-c span:nth-child(3) { width: 44%; height: 72%; left: 50%; top: 20%; }
+.hero-cloud-c span:nth-child(4) { width: 34%; height: 56%; left: 8%;  top: 44%; }
+.hero-cloud-c span:nth-child(5) { width: 36%; height: 54%; left: 60%; top: 42%; }
+
+.hero-cloud-a { --x: -22vw; --w: 24vw; --h: 14vw; --dur: 38s; --delay: 0s;   --op: 0.88; }
+.hero-cloud-b { --x: 20vw;  --w: 20vw; --h: 12vw; --dur: 32s; --delay: -8s;  --op: 0.82; }
+.hero-cloud-c { --x: -4vw;  --w: 26vw; --h: 15vw; --dur: 44s; --delay: -16s; --op: 0.76; }
+.hero-cloud-d { --x: -32vw; --w: 18vw; --h: 11vw; --dur: 28s; --delay: -5s;  --op: 0.84; }
+.hero-cloud-e { --x: 30vw;  --w: 17vw; --h: 10vw; --dur: 40s; --delay: -22s; --op: 0.72; }
+.hero-cloud-f { --x: 8vw;   --w: 21vw; --h: 13vw; --dur: 24s; --delay: -12s; --op: 0.86; }
+.hero-cloud-g { --x: -14vw; --w: 16vw; --h: 10vw; --dur: 36s; --delay: -28s; --op: 0.70; }
 
 @keyframes cloud-approach {
   0% {
-    transform: translate3d(var(--x), 16vh, 0) scale(0.22);
+    transform: translate3d(var(--x), 22vh, 0) scale(0.16);
     opacity: 0;
   }
   8% {
     opacity: var(--op);
   }
-  70% {
-    opacity: calc(var(--op) * 0.65);
+  72% {
+    opacity: calc(var(--op) * 0.7);
   }
   100% {
-    transform: translate3d(var(--x), -42vh, 0) scale(2.85);
+    transform: translate3d(var(--x), -34vh, 0) scale(2.35);
     opacity: 0;
   }
 }
@@ -245,12 +268,12 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .hero-sky,
   .hero-sun,
-  .hero-puff {
+  .hero-cloud {
     animation: none;
   }
-  .hero-puff {
-    opacity: 0.28;
-    transform: translate3d(var(--x), 4vh, 0) scale(1.1);
+  .hero-cloud {
+    opacity: 0.4;
+    transform: translate3d(var(--x), 6vh, 0) scale(1);
   }
 }
 
