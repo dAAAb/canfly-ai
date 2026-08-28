@@ -82,9 +82,9 @@ void main() {
   vec3 sunDir = normalize(vec3(0.52, 0.045, 0.84));
   vec3 col = skyColor(rd, sunDir);
 
-  // Particle cloud sea. Depth *increases* with time so heads grow
-  // from the horizon toward the camera (forward flight). The old
-  // `rnd - t` shrank them back to the horizon (reverse).
+  // Particle cloud sea. Depth increases with time so heads grow
+  // from the horizon toward the camera (forward flight). Subtracting
+  // time used to shrink them back to the horizon (reverse).
   float horizon = -0.24;
   float cover = 0.0;
   float lit = 0.5;
