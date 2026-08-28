@@ -484,10 +484,13 @@ export default function RankingsPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 md:py-12">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
+            <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight mb-3">
               {t('rankings.title')}
             </h1>
-            <p className="text-gray-400">
+            <p className="text-gray-300 text-lg max-w-2xl leading-relaxed">
+              {t('rankings.purpose')}
+            </p>
+            <p className="text-gray-500 text-sm mt-2">
               {t('rankings.description')}
             </p>
           </div>

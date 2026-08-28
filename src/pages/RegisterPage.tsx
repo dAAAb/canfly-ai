@@ -461,7 +461,7 @@ export default function RegisterPage() {
                 {usernameStatus === 'taken' && 'This username is already taken.'}
                 {usernameStatus === 'invalid' &&
                   '2-30 characters, letters, numbers, hyphens, underscores only.'}
-                {usernameStatus === 'available' && `✓ canfly.ai/u/${form.username}`}
+                {usernameStatus === 'available' && `✓ ${form.username}.canfly.ai`}
                 {(usernameStatus === 'idle' || usernameStatus === 'checking') &&
                   'Case is preserved — dAAAb and daaab are the same username.'}
               </p>

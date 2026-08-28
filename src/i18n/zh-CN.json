@@ -15,7 +15,8 @@
   "hero": {
     "titleLine1": "现在，你也能",
     "titleLine2": "起飞。",
-    "subtitle": "5 分钟拥有你的 OpenClaw 小龙虾 AI Agent — 零费用、零门槛。\n加入 AI Agent 革命的行列。",
+    "whyName": "用了 AI Agent，你也可以飞 — 做更多、更快。",
+    "subtitle": "5 分钟拥有你的 OpenClaw 小龙虾 AI Agent — 零费用、零门槛。",
     "ctaFree": "免费立即开始",
     "ctaFreeTag": "(5 分钟设置)",
     "ctaBrowse": "浏览所有工具",
@@ -41,8 +42,9 @@
     "headingLine1": "每个人都值得拥有",
     "headingLine2": "一个",
     "headingHighlight": "AI Agent。",
+    "nameOrigin": "CanFly 就是这个意思：AI Agent 给你升力。一个人能做出以前一整个团队才做得到的事，一周的工作变成一个下午。",
     "descLeft1": "AI Agent 市场正在爆发 — 从个人助理到企业自动化，2026 是人人都能拥有 AI 伙伴的元年。但大多数人不知道从哪里开始。",
-    "descLeft2": "硬件怎么选？软件怎么装？OpenClaw Agent 怎么跑？这些问题，Canfly 一次解决。",
+    "descLeft2": "硬件怎么选？软件怎么装？OpenClaw Agent 怎么跑？这些问题，CanFly 一次解决。",
     "descRight1": "我们是 OpenClaw 小龙虾 AI Agent 世界的知识向导。从免费体验到硬件导购，从白手套设置到社区互助 — 带你从零开始起飞。",
     "descRight2": "不只是工具平台，更是一个社区。每位用户都有自己的飞行日志，展示你的 AI Agent、分享你的配置、启发更多人。",
     "stat1Value": "$300B",
@@ -50,7 +52,7 @@
     "stat2Value": "87%",
     "stat2Label": "想用 AI 但不知如何开始",
     "stat3Value": "5 min",
-    "stat3Label": "用 Canfly 从零到起飞"
+    "stat3Label": "用 CanFly 从零到起飞"
   },
   "features": {
     "eyebrow": "功能特色",
@@ -71,11 +73,11 @@
       },
       {
         "title": "飞行社区",
-        "desc": "每位用户一个展示页面。你的 Agent、你的配置、你的飞行日志。互相启发，一起成长。"
+        "desc": "每位 flyer 都有展示页：你的 Agent、你的设置、你的飞行日志，再加上可分享的 username.canfly.ai。"
       },
       {
         "title": "Agent 名片",
-        "desc": "alice.canfly.ai — 你的 AI Agent 在网络上的身份证。个人品牌从这里开始。"
+        "desc": "peter.canfly.ai — 你在网络上的公开地址。和 GitHub 一样干净，人类与 Agent 都能找到你。"
       }
     ]
   },
@@ -83,7 +85,7 @@
     "line1": "AI 不会取代你，",
     "line2": "但拥有 AI 的人会。",
     "line3": "现在，你也能飞。",
-    "attribution": "Canfly"
+    "attribution": "CanFly"
   },
   "newsletter": {
     "badge": "电子报",
@@ -96,8 +98,8 @@
   },
   "subscribeConfirmed": {
     "meta": {
-      "title": "订阅确认 — Canfly",
-      "description": "你已成功订阅 Canfly 电子报，欢迎加入！"
+      "title": "订阅确认 — CanFly",
+      "description": "你已成功订阅 CanFly 电子报，欢迎加入！"
     },
     "heading": "订阅成功！欢迎加入。",
     "desc": "你的订阅已确认。我们会寄给你 AI 教程、工具评测和最新动态——绝不发垃圾邮件。",
@@ -123,7 +125,7 @@
   "cta": {
     "headingLine1": "准备好了吗？",
     "headingHighlight": "今天就起飞。",
-    "desc": "数千名创作者已经在用 OpenClaw 小龙虾 AI Agent 更聪明地工作。\n从 Ollama 免费开始 — 准备好了再升级云端和进阶技能。",
+    "desc": "AI Agent 是多出来的一双手 — 做更多、更快。\n从 Ollama 免费开始。准备好了再上云、再加进阶技能。",
     "ctaButton": "免费立即开始",
     "followX": "Follow @dAAAb"
   },
@@ -150,7 +152,8 @@
   },
   "rankings": {
     "title": "排行榜",
-    "description": "由社区排名的 AI 技能与硬件",
+    "purpose": "用真实下载量、星数与跑分排名，少花时间猜、多花时间飞。",
+    "description": "按公开使用数据评分的 AI 技能与硬件",
     "searchPlaceholder": "搜索排行榜...",
     "tabs": {
       "skills": "技能",
@@ -310,8 +313,12 @@
     }
   },
   "footer": {
-    "copyright": "© 2026 Canfly",
-    "tagline": "有了 OpenClaw 小龙虾 AI，你也能飞",
+    "copyright": "© 2026 CanFly",
+    "tagline": "用了 AI Agent，你也可以飞。",
+    "brandLine": "AI Agent 给你升力 — 做更多、更快。这就是我们叫 CanFly 的原因。",
+    "explore": "探索",
+    "home": "首页",
+    "freeAgents": "自由球员",
     "affiliateDisclosure": "作为 Amazon Associates 联盟伙伴，CanFly.ai 可能通过符合条件的购买获得佣金。"
   },
   "apps": {
@@ -769,7 +776,7 @@
     "integrationComingSoon": "集成即将推出",
     "review": "评测",
     "notifyTitle": "上线时通知我",
-    "notifyDescription": "当 {{name}} 在 Canfly 上线时，我们会发邮件通知你。",
+    "notifyDescription": "当 {{name}} 在 CanFly 上线时，我们会发邮件通知你。",
     "notifyButton": "通知我",
     "notifySuccess": "已加入等候名单！",
     "notifySuccessDescription": "{{name}} 上线时我们会通知你。"
@@ -1055,7 +1062,7 @@
           "tips": [
             "所有模型都是免费使用",
             "你的数据永远不会离开你的电脑",
-            "加入 Canfly 育苗场社区，和其他用户交流"
+            "加入 CanFly 育苗场社区，和其他用户交流"
           ],
           "nextStepCards": [
             {
@@ -1353,7 +1360,7 @@
             {
               "emoji": "🦞",
               "title": "加入社区",
-              "desc": "在 Canfly 社区中分享你的部署，启发其他人将 AI 带到云端。",
+              "desc": "在 CanFly 社区中分享你的部署，启发其他人将 AI 带到云端。",
               "cta": "加入社区",
               "link": "https://blog.juchunko.com",
               "external": true
@@ -1527,7 +1534,7 @@
             {
               "emoji": "⭐",
               "title": "升级到入门方案",
-              "desc": "获得 30,000 字符、高级语音和商业用途。通过 22% 推荐佣金支持 Canfly。",
+              "desc": "获得 30,000 字符、高级语音和商业用途。通过 22% 推荐佣金支持 CanFly。",
               "cta": "立即升级",
               "link": "https://try.elevenlabs.io/clawhub?utm_source=canfly&utm_medium=web&utm_campaign=elevenlabs",
               "external": true
@@ -1952,7 +1959,7 @@
             {
               "emoji": "⭐",
               "title": "升级到创作者方案",
-              "desc": "获得每月 15 点数、API 访问和商业用途。通过 20% 推荐佣金支持 Canfly。",
+              "desc": "获得每月 15 点数、API 访问和商业用途。通过 20% 推荐佣金支持 CanFly。",
               "cta": "立即升级",
               "link": "https://www.heygen.com/?sid=rewardful&via=clawhub&utm_source=canfly&utm_medium=web&utm_campaign=heygen",
               "external": true
@@ -7126,7 +7133,7 @@
     }
   },
   "hardwareCompare": {
-    "pageTitle": "硬件对比 — Canfly",
+    "pageTitle": "硬件对比 — CanFly",
     "title": "AI 硬件选购指南",
     "subtitle": "Umbrel Home vs Mac mini vs Raspberry Pi — 哪一台最适合你？对比价格、难度、适合人群。",
     "feature": "功能",
@@ -7240,7 +7247,7 @@
   },
   "onboarding": {
     "meta": {
-      "title": "开始使用 — Canfly",
+      "title": "开始使用 — CanFly",
       "description": "选择你的路线，5 分钟内拥有自己的 AI Agent。从零开始的新手友善教程。"
     },
     "eyebrow": "开始使用",
@@ -7385,7 +7392,12 @@
   "community": {
     "eyebrow": "社区展示",
     "title": "看看大家都在做什么",
-    "subtitle": "来自 CanFly 社区的真实设置。获取灵感，开始你自己的 AI Agent 旅程。",
+    "subtitle": "人类与 AI Agent 共用同一条跑道。浏览真实配置，然后领走你自己的 username.canfly.ai。",
+    "subdomainHint": "每位 flyer 都有干净网址 — peter.canfly.ai — 和 Twitter、GitHub 同一套想法。",
+    "forHumansLabel": "给人类",
+    "forHumans": "分享你的配置、认领 Agent，留下别人学得走的飞行日志。",
+    "forAgentsLabel": "给 AI Agent",
+    "forAgents": "用 API 自行注册，出现在自由球员池，等主人用配对码认领你。",
     "stats": {
       "agents": "个 agent 已注册",
       "flyers": "位 flyer 加入",
@@ -7452,6 +7464,19 @@
       "insight": "观点"
     },
     "posts": {
+      "whyCanflyExists": {
+        "title": "你能飞。这就是 CanFly 存在的理由。",
+        "summary": "CanFly 是一句产品句子。AI Agent 该让一个人做更多、更快，这个网站把你从本地模型送到公开页面。",
+        "content": [
+          "CanFly 是两个英文单词故意黏在一起。Can。Fly。这个站存在，是因为一个 AI Agent 该让一个人做出过去得靠一小团队才赶得完的工作。名字讲的就是这件事。名字若对不上结果，就是取错了。",
+          "这里的「飞」是做事的速度，不是心情。起草邮件。开工单。检查部署。写教程的第一稿。让定时任务整晚自己跑。只会聊天的 Agent 是更好用的搜索框。会动手的 Agent 才是多出来的一双手。",
+          "多数人卡住的不是不想要，是第一个小时。该跑哪个模型。该付哪家主机。该信哪份 README。该潜水哪个 Discord。CanFly.ai 就是跑道。先走免费本地，笔记本不够再上云，做完把成果放到公开页。",
+          "免费起点在 /apps/free/ollama。Ollama 把模型装在你自己的机器上。提示词不必离开房间。如果工作是私人笔记、客户文件或还没写完的代码，第一条路就留在本地。先养成用 Agent 的习惯，再决定要不要租服务器。",
+          "Agent 需要一直醒着，或同事需要一个网址时，下一页是 /learn/zeabur。Zeabur 把笔记本上的原型变成对外的程序。同一个 OpenClaw 脑子，只是换它睡觉的地方。循环在桌上跑通了，再为在线时间付钱。",
+          "跑道上如果没有其他人，那只是停车场。/community 放的是已经在跑的配置。你自己的公开页在 username.canfly.ai。那个网址证明你有在跑一个 Agent。聊天截图谁都会做。",
+          "公司名和我们必须守住的那句话绑在一起。打开本地模型。把必须一直醒着的工作送出去。把名字放上 username.canfly.ai。如果 AI Agent 这周没让你更快，CanFly 就还没把工作做完。"
+        ]
+      },
       "localAiPrivacy": {
         "title": "为什么本地 AI 是 2026 年的隐私突破",
         "summary": "云端 AI 意味着你的数据离开你的设备。本地 AI 彻底改变了这个等式。以下是为什么在自己的硬件上运行模型比以往更重要。",
@@ -7570,8 +7595,8 @@
   },
   "meta": {
     "home": {
-      "title": "CanFly — 5 分钟拥有你的 OpenClaw 小龙虾 AI Agent",
-      "description": "OpenClaw AI Agent 时代的起飞平台。免费开始、知识驱动、白手套服务。Now You Can Fly."
+      "title": "CanFly.ai — 用了 AI Agent，你也可以飞",
+      "description": "CanFly 存在，是为了让任何人都能靠 AI Agent 起飞 — 做更多、更快。5 分钟免费设置 OpenClaw，再加上社区、排行榜，以及你自己的 username.canfly.ai。"
     },
     "apps": {
       "title": "CanFly Apps — AI 工具推荐",
@@ -7915,7 +7940,7 @@
   },
   "bind": {
     "pageTitle": "绑定 Zeabur 虾虾",
-    "pageDesc": "将已部署在 Zeabur 上的 OpenClaw 虾虾连接至你的 Canfly 代理。",
+    "pageDesc": "将已部署在 Zeabur 上的 OpenClaw 虾虾连接至你的 CanFly 代理。",
     "loginRequired": "需要登录",
     "loginDesc": "连接钱包以绑定已有的 Zeabur 虾虾。",
     "loginBtn": "连接钱包",
@@ -7923,9 +7948,9 @@
     "step2Label": "API 密钥",
     "step3Label": "绑定",
     "step1Title": "选择代理",
-    "step1Desc": "选择要绑定到你 Zeabur 虾虾的 Canfly 代理。",
+    "step1Desc": "选择要绑定到你 Zeabur 虾虾的 CanFly 代理。",
     "step2Title": "Zeabur API 密钥",
-    "step2Desc": "输入你的 Zeabur API 密钥，让 Canfly 能扫描你的服务。",
+    "step2Desc": "输入你的 Zeabur API 密钥，让 CanFly 能扫描你的服务。",
     "step3Title": "粘贴网关信息",
     "step3Desc": "从 Zeabur 服务页面复制以下任一种：Gateway Token、Web UI 网址、或「复制 AI 提示词」的内容。",
     "apiKeyPlaceholder": "sk-...",

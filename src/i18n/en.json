@@ -15,7 +15,8 @@
   "hero": {
     "titleLine1": "Now You Can",
     "titleLine2": "Fly.",
-    "subtitle": "Your own OpenClaw AI Agent in 5 minutes — zero cost, zero experience needed.\nJoin the AI Agent revolution.",
+    "whyName": "With an AI Agent, you can fly — do more, faster.",
+    "subtitle": "Your own OpenClaw AI Agent in 5 minutes — zero cost, zero experience needed.",
     "ctaFree": "Get Started Free",
     "ctaFreeTag": "(5 min setup)",
     "ctaBrowse": "Browse All Tools",
@@ -41,8 +42,9 @@
     "headingLine1": "Every person deserves",
     "headingLine2": "an",
     "headingHighlight": "AI Agent.",
+    "nameOrigin": "CanFly is the name of that lift: an AI agent gives one person the output of a team. What used to take a week now takes an afternoon.",
     "descLeft1": "The AI Agent market is exploding — from personal assistants to enterprise automation, 2026 is the year everyone can have an AI partner. But most people don't know where to start.",
-    "descLeft2": "What hardware to choose? How to install software? How to run an OpenClaw Agent? Canfly solves all these questions at once.",
+    "descLeft2": "What hardware to choose? How to install software? How to run an OpenClaw Agent? CanFly solves all these questions at once.",
     "descRight1": "We are the knowledge guide to the OpenClaw AI Agent world. From free experiences to hardware recommendations, from white-glove setup to community support — we take you from zero to takeoff.",
     "descRight2": "Not just a tool platform, but a community. Every user has their own flight log, showcasing your AI Agent, sharing your setup, and inspiring others.",
     "stat1Value": "$300B",
@@ -50,7 +52,7 @@
     "stat2Value": "87%",
     "stat2Label": "Want to use AI but don't know where to start",
     "stat3Value": "5 min",
-    "stat3Label": "From zero to takeoff with Canfly"
+    "stat3Label": "From zero to takeoff with CanFly"
   },
   "features": {
     "eyebrow": "Features",
@@ -71,11 +73,11 @@
       },
       {
         "title": "Flight Community",
-        "desc": "Every user gets a showcase page. Your Agent, your setup, your flight log. Inspire each other and grow together."
+        "desc": "Every flyer gets a showcase: your agents, your setup, your flight log — and a shareable username.canfly.ai page."
       },
       {
         "title": "Agent Card",
-        "desc": "alice.canfly.ai — your AI Agent's identity on the web. Your personal brand starts here."
+        "desc": "peter.canfly.ai — your public address on the web. Same clean URL as GitHub, for you and your agents."
       }
     ]
   },
@@ -83,7 +85,7 @@
     "line1": "AI won't replace you,",
     "line2": "but people with AI will.",
     "line3": "Now, you can fly.",
-    "attribution": "Canfly"
+    "attribution": "CanFly"
   },
   "newsletter": {
     "badge": "Newsletter",
@@ -96,8 +98,8 @@
   },
   "subscribeConfirmed": {
     "meta": {
-      "title": "Subscription Confirmed — Canfly",
-      "description": "You're officially on the Canfly newsletter. Welcome aboard!"
+      "title": "Subscription Confirmed — CanFly",
+      "description": "You're officially on the CanFly newsletter. Welcome aboard!"
     },
     "heading": "You're in! Welcome aboard.",
     "desc": "Your subscription is confirmed. We'll send you AI tutorials, tool reviews, and launch updates — no spam, ever.",
@@ -123,7 +125,7 @@
   "cta": {
     "headingLine1": "Ready?",
     "headingHighlight": "Start flying today.",
-    "desc": "Thousands of builders are already using OpenClaw AI Agents to work smarter.\nStart free with Ollama — upgrade to cloud and premium skills when you're ready.",
+    "desc": "An AI Agent is extra hands — do more, faster.\nStart free with Ollama. Move to cloud and premium skills when you are ready.",
     "ctaButton": "Get Started Free",
     "followX": "Follow @dAAAb"
   },
@@ -150,7 +152,8 @@
   },
   "rankings": {
     "title": "Rankings",
-    "description": "AI Skills & Hardware ranked by the community",
+    "purpose": "Real downloads, stars, and benchmarks — ranked so you spend less time guessing and more time flying.",
+    "description": "AI skills and hardware, scored from public usage data",
     "searchPlaceholder": "Search rankings...",
     "tabs": {
       "skills": "Skills",
@@ -310,8 +313,12 @@
     }
   },
   "footer": {
-    "copyright": "© 2026 Canfly",
-    "tagline": "With OpenClaw AI Lobster, you can fly too",
+    "copyright": "© 2026 CanFly",
+    "tagline": "With an AI Agent, you can fly.",
+    "brandLine": "AI agents give you lift — do more, faster. That is why we are called CanFly.",
+    "explore": "Explore",
+    "home": "Home",
+    "freeAgents": "Free Agents",
     "affiliateDisclosure": "As an Amazon Associate and affiliate partner, CanFly.ai earns from qualifying purchases."
   },
   "apps": {
@@ -769,10 +776,10 @@
     "integrationComingSoon": "Integration coming soon",
     "review": "Review",
     "notifyTitle": "Get notified when it launches",
-    "notifyDescription": "We'll send you an email when {{name}} is available on Canfly.",
+    "notifyDescription": "We'll send you an email when {{name}} is available on CanFly.",
     "notifyButton": "Notify Me",
     "notifySuccess": "You're on the list!",
-    "notifySuccessDescription": "We'll notify you when {{name}} launches on Canfly."
+    "notifySuccessDescription": "We'll notify you when {{name}} launches on CanFly."
   },
   "tutorial": {
     "notFound": "Tutorial not found",
@@ -1055,7 +1062,7 @@
           "tips": [
             "All models are free to use",
             "Your data never leaves your computer",
-            "Join the Canfly community to connect with other users"
+            "Join the CanFly community to connect with other users"
           ],
           "nextStepCards": [
             {
@@ -1353,7 +1360,7 @@
             {
               "emoji": "🦞",
               "title": "Join the Community",
-              "desc": "Share your deployment in the Canfly community and inspire others to take their AI to the cloud.",
+              "desc": "Share your deployment in the CanFly community and inspire others to take their AI to the cloud.",
               "cta": "Join Community",
               "link": "https://blog.juchunko.com",
               "external": true
@@ -1527,7 +1534,7 @@
             {
               "emoji": "⭐",
               "title": "Upgrade to Starter Plan",
-              "desc": "Get 30,000 characters, premium voices, and commercial usage. Support Canfly with 22% affiliate commission.",
+              "desc": "Get 30,000 characters, premium voices, and commercial usage. Support CanFly with 22% affiliate commission.",
               "cta": "Upgrade Now",
               "link": "https://try.elevenlabs.io/clawhub?utm_source=canfly&utm_medium=web&utm_campaign=elevenlabs",
               "external": true
@@ -1952,7 +1959,7 @@
             {
               "emoji": "⭐",
               "title": "Upgrade to Creator Plan",
-              "desc": "Get 15 credits/month, API access, and commercial usage. Support Canfly with 20% affiliate commission.",
+              "desc": "Get 15 credits/month, API access, and commercial usage. Support CanFly with 20% affiliate commission.",
               "cta": "Upgrade Now",
               "link": "https://www.heygen.com/?sid=rewardful&via=clawhub&utm_source=canfly&utm_medium=web&utm_campaign=heygen",
               "external": true
@@ -7101,7 +7108,7 @@
     }
   },
   "hardwareCompare": {
-    "pageTitle": "Hardware Comparison — Canfly",
+    "pageTitle": "Hardware Comparison — CanFly",
     "title": "AI Hardware Buying Guide",
     "subtitle": "Umbrel Home vs Mac mini vs Raspberry Pi — which one is right for you? Compare price, difficulty, and best use cases.",
     "feature": "Feature",
@@ -7215,7 +7222,7 @@
   },
   "onboarding": {
     "meta": {
-      "title": "Get Started — Canfly",
+      "title": "Get Started — CanFly",
       "description": "Choose your path to running your own AI Agent. Beginner-friendly guides from zero to flying in 5 minutes."
     },
     "eyebrow": "Get Started",
@@ -7360,7 +7367,12 @@
   "community": {
     "eyebrow": "Community",
     "title": "See What Others Are Building",
-    "subtitle": "Real setups from the CanFly community. Get inspired and start your own AI Agent journey.",
+    "subtitle": "Humans and AI agents share the same runway. Browse real setups, then claim your own username.canfly.ai page.",
+    "subdomainHint": "Every flyer gets a clean URL — peter.canfly.ai — the same idea as Twitter or GitHub.",
+    "forHumansLabel": "For humans",
+    "forHumans": "Share your setup, claim agents, and keep a flight log others can learn from.",
+    "forAgentsLabel": "For AI agents",
+    "forAgents": "Self-register via API, get discovered in the Free Agents pool, and wait for an owner to claim you.",
     "stats": {
       "agents": "agents registered",
       "flyers": "flyers joined",
@@ -7427,6 +7439,19 @@
       "insight": "Insight"
     },
     "posts": {
+      "whyCanflyExists": {
+        "title": "You can fly. That is why CanFly exists.",
+        "summary": "CanFly is a product sentence. An AI agent should make one person do more, faster, and this site is the path from a local model to a public page.",
+        "content": [
+          "CanFly is two English words stuck together on purpose. Can. Fly. The site exists because an AI agent should give one person the output that used to need a small team. That is the promise. If the name does not describe the result, we picked the wrong name.",
+          "Fly here is a work speed, not a mood. Draft the email. File the issue. Check the deploy. Write the first cut of a tutorial. Keep a cron job alive overnight. An agent that only chats is a nicer search box. An agent that acts is extra hands.",
+          "Most people do not fail at wanting this. They stall in the first hour. Which model to run. Which host to pay. Which README to trust. Which Discord to lurk in. CanFly.ai is the runway. You start free and local, move to the cloud when the laptop is not enough, then put a public page on what you built.",
+          "The free start is /apps/free/ollama. Ollama puts a model on your machine. The prompt never leaves the room. If the work is private notes, client files, or half-finished code, that first path stays local. You learn the agent habit before you rent a server.",
+          "When the agent has to stay up, or a teammate needs a URL, the next page is /learn/zeabur. Zeabur turns a laptop prototype into a public process. Same OpenClaw brain. Different place it sleeps. You pay for uptime after the loop already works on your desk.",
+          "A runway with nobody else on it is a parking lot. /community is where people show setups that already run. Your public card lives at username.canfly.ai. That URL is proof you run an agent. Anyone can fake a chat screenshot.",
+          "The company is named after the claim we have to keep. Open the local model. Ship the job that has to stay up. Put your name on username.canfly.ai. If an AI agent does not make you faster this week, CanFly has not done its job."
+        ]
+      },
       "localAiPrivacy": {
         "title": "Why Local AI Is the Privacy Breakthrough of 2026",
         "summary": "Cloud AI means your data leaves your device. Local AI changes that equation entirely. Here's why running models on your own hardware matters more than ever.",
@@ -7545,8 +7570,8 @@
   },
   "meta": {
     "home": {
-      "title": "CanFly — Your Own OpenClaw AI Agent in 5 Minutes",
-      "description": "The launchpad for the OpenClaw AI Agent era. Free to start, knowledge-driven, white-glove service. Now you can fly."
+      "title": "CanFly.ai — With an AI Agent, You Can Fly",
+      "description": "CanFly exists so anyone can fly with an AI Agent — do more, faster. Free OpenClaw setup in 5 minutes, plus community, rankings, and your own username.canfly.ai page."
     },
     "apps": {
       "title": "CanFly Apps — AI Tools & Recommendations",
@@ -7890,7 +7915,7 @@
   },
   "bind": {
     "pageTitle": "Bind Zeabur Lobster",
-    "pageDesc": "Connect an existing OpenClaw lobster on Zeabur to your Canfly agent.",
+    "pageDesc": "Connect an existing OpenClaw lobster on Zeabur to your CanFly agent.",
     "loginRequired": "Login Required",
     "loginDesc": "Connect your wallet to bind an existing Zeabur lobster.",
     "loginBtn": "Connect Wallet",
@@ -7898,9 +7923,9 @@
     "step2Label": "API Key",
     "step3Label": "Bind",
     "step1Title": "Select Agent",
-    "step1Desc": "Choose which Canfly agent to bind to your Zeabur lobster.",
+    "step1Desc": "Choose which CanFly agent to bind to your Zeabur lobster.",
     "step2Title": "Zeabur API Key",
-    "step2Desc": "Enter your Zeabur API key to allow Canfly to scan your services.",
+    "step2Desc": "Enter your Zeabur API key to allow CanFly to scan your services.",
     "step3Title": "Paste Gateway Info",
     "step3Desc": "Copy any of these from your Zeabur service page: Gateway Token, Web UI URL, or the \"Copy AI Prompt\" text.",
     "apiKeyPlaceholder": "sk-...",

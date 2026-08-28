@@ -5,7 +5,7 @@
  * Route: /u/{username}/agents/bind
  *
  * Steps:
- *   1. Select which Canfly agent to bind
+ *   1. Select which CanFly agent to bind
  *   2. Enter Zeabur API Key
  *   3. Paste Gateway Token / URL / AI prompt → scan & bind
  */
@@ -175,7 +175,7 @@ export default function BindZeaburPage({ subdomainUsername }: BindZeaburPageProp
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-white mb-2">{t('bind.pageTitle', 'Bind Zeabur Lobster')}</h1>
-          <p className="text-gray-400">{t('bind.pageDesc', 'Connect an existing OpenClaw lobster on Zeabur to your Canfly agent.')}</p>
+          <p className="text-gray-400">{t('bind.pageDesc', 'Connect an existing OpenClaw lobster on Zeabur to your CanFly agent.')}</p>
         </div>
 
         {/* Progress Bar */}
@@ -248,7 +248,7 @@ export default function BindZeaburPage({ subdomainUsername }: BindZeaburPageProp
             {step === 1 && (
               <div className="space-y-4">
                 <h2 className="text-lg font-semibold text-white">{t('bind.step1Title', 'Select Agent')}</h2>
-                <p className="text-sm text-gray-400">{t('bind.step1Desc', 'Choose which Canfly agent to bind to your Zeabur lobster.')}</p>
+                <p className="text-sm text-gray-400">{t('bind.step1Desc', 'Choose which CanFly agent to bind to your Zeabur lobster.')}</p>
 
                 {loadingAgents ? (
                   <div className="flex items-center justify-center py-8">
@@ -289,7 +289,7 @@ export default function BindZeaburPage({ subdomainUsername }: BindZeaburPageProp
             {step === 2 && (
               <div className="space-y-4">
                 <h2 className="text-lg font-semibold text-white">{t('bind.step2Title', 'Zeabur API Key')}</h2>
-                <p className="text-sm text-gray-400">{t('bind.step2Desc', 'Enter your Zeabur API key to allow Canfly to scan your services.')}</p>
+                <p className="text-sm text-gray-400">{t('bind.step2Desc', 'Enter your Zeabur API key to allow CanFly to scan your services.')}</p>
                 <div>
                   <input
                     type="password"

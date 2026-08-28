@@ -29,7 +29,7 @@ export default function QuoteSlide() {
             <span className="opacity-40">&rdquo;</span>
           </blockquote>
           <p className="mt-[4%]" style={{ fontSize: 'clamp(13px, 1.2vw, 22px)', opacity: 0.6 }}>
-            🦞 Canfly
+            🦞 CanFly
           </p>
         </div>
       </div>
