@@ -17,7 +17,7 @@ export default function HeroSection() {
   )
 
   return (
-    <section className="relative min-h-[100dvh] w-full overflow-x-hidden flex items-center justify-center">
+    <section className="hero-section relative w-full overflow-x-hidden flex items-center justify-center">
       {/* Zen sky base — visible while the video loads or if it fails to play */}
       <div className="absolute inset-0 z-0 hero-sky" aria-hidden="true" />
       <video
@@ -32,6 +32,7 @@ export default function HeroSection() {
       <div className="absolute inset-0 z-0 hero-sun" aria-hidden="true" />
       <div className="absolute inset-0 z-0 hero-clouds" aria-hidden="true" />
       <div className="absolute inset-0 z-0 hero-vignette" aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[36vh] hero-bottom-fade" aria-hidden="true" />
 
       {/* Nav */}
       <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between py-6 sm:py-10" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
@@ -198,9 +199,9 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center opacity-40 animate-bounce">
-        <span className="text-xs tracking-widest uppercase mb-2">{t('hero.scroll')}</span>
+      {/* Scroll hint — no Tailwind bounce; that reads as the page snapping back */}
+      <div className="hero-scroll-hint absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center">
+        <span className="mb-2 text-xs tracking-widest uppercase">{t('hero.scroll')}</span>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M12 5v14M5 12l7 7 7-7" />
         </svg>
