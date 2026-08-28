@@ -92,7 +92,7 @@ void main() {
     float id = float(i);
     float rnd = hash21(vec2(id, 1.7));
     float rnd2 = hash21(vec2(id, 6.3));
-    float depth = fract(rnd + t * 0.09);
+    float depth = fract(rnd + t * 0.12);
     float x = (hash21(vec2(id, 2.9)) - 0.5) * mix(2.15, 3.05, depth);
     float y = mix(horizon, -0.66, depth * depth);
     float s = mix(0.05, 0.30, depth * depth);
