@@ -229,15 +229,16 @@ export function notFoundResponse(accept: string | null): Response {
   <meta charset="utf-8" />
   <title>404 — CanFly.ai</title>
   <meta name="robots" content="noindex" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
-<body>
-  <h1>404 — Not found</h1>
+<body style="margin:0;background:#000;color:#e5e5e5;font-family:system-ui,sans-serif;padding:4rem 1.5rem;line-height:1.6">
+  <h1 style="color:#fff;font-size:2rem">404 — Not found</h1>
   <p>This path does not exist on CanFly.ai.</p>
   <ul>
-    <li><a href="/llms.txt">llms.txt</a></li>
-    <li><a href="/sitemap.xml">sitemap.xml</a></li>
-    <li><a href="/developers">developers</a></li>
-    <li><a href="/api/openapi.json">OpenAPI</a></li>
+    <li><a href="/llms.txt" style="color:#60a5fa">llms.txt</a></li>
+    <li><a href="/sitemap.xml" style="color:#60a5fa">sitemap.xml</a></li>
+    <li><a href="/developers" style="color:#60a5fa">developers</a></li>
+    <li><a href="/api/openapi.json" style="color:#60a5fa">OpenAPI</a></li>
   </ul>
 </body>
 </html>`
