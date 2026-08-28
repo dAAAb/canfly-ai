@@ -28,6 +28,30 @@ body {
   min-height: 100vh;
 }
 
+.crawler-fallback {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 6rem;
+  color: #d4d4d4;
+  line-height: 1.65;
+}
+
+.crawler-fallback h1 {
+  font-size: 2rem;
+  color: #fff;
+  margin: 0 0 1rem;
+}
+
+.crawler-fallback h2 {
+  font-size: 1.25rem;
+  color: #fff;
+  margin: 1.75rem 0 0.75rem;
+}
+
+.crawler-fallback p {
+  margin: 0.75rem 0;
+}
+
 /* Scroll-triggered fade-in animation */
 .fade-section {
   opacity: 0;

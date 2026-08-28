@@ -37,6 +37,7 @@ const DeployPinataWizardPage = lazy(() => import('./pages/DeployPinataWizardPage
 const BindZeaburPage = lazy(() => import('./pages/BindZeaburPage'))
 const AgentSettingsPage = lazy(() => import('./pages/AgentSettingsPage'))
 const TaskResultPage = lazy(() => import('./pages/TaskResultPage'))
+const LegalPage = lazy(() => import('./pages/LegalPage'))
 
 /** Strip /:lang prefix and redirect to the unprefixed community path */
 function StripLangRedirect() {
@@ -54,6 +55,12 @@ function StripLangRedirect() {
  *  Loads translation bundle first, then switches language so React
  *  renders with translations already available (no flash of English). */
 const VALID_LANG_PREFIXES = new Set(['en', 'zh-tw', 'zh-cn'])
+
+function LangGuard({ children }: { children: React.ReactNode }) {
+  const { lang } = useParams<{ lang?: string }>()
+  if (!lang || !VALID_LANG_PREFIXES.has(lang)) return <NotFoundPage />
+  return <LangSync>{children}</LangSync>
+}
 
 function LangSync({ children }: { children: React.ReactNode }) {
   const { lang } = useParams<{ lang?: string }>()
@@ -174,30 +181,41 @@ function App() {
               <Route path="/rankings" element={<AutoLangSync><RankingsPage /></AutoLangSync>} />
               <Route path="/rankings/brand/:brandName" element={<AutoLangSync><BrandPage /></AutoLangSync>} />
 
-              {/* Language-prefixed homepage */}
-              <Route path="/:lang" element={<LangSync><HomePage /></LangSync>} />
-              <Route path="/:lang/apps" element={<LangSync><AppsPage /></LangSync>} />
-              <Route path="/:lang/apps/:category" element={<LangSync><AppsPage /></LangSync>} />
-              <Route path="/:lang/apps/:category/:slug" element={<LangSync><ProductPage /></LangSync>} />
-              <Route path="/:lang/learn/hardware-compare" element={<LangSync><HardwareComparePage /></LangSync>} />
-              <Route path="/:lang/learn/:slug" element={<LangSync><TutorialPage /></LangSync>} />
-              <Route path="/:lang/get-started" element={<LangSync><GetStartedPage /></LangSync>} />
-              <Route path="/:lang/checkout" element={<LangSync><CheckoutPage /></LangSync>} />
-              <Route path="/:lang/pricing" element={<LangSync><PricingPage /></LangSync>} />
-              <Route path="/:lang/community/register" element={<LangSync><RegisterPage /></LangSync>} />
-              <Route path="/:lang/community" element={<LangSync><CommunityPage /></LangSync>} />
-              <Route path="/:lang/subscribe/confirmed" element={<LangSync><SubscribeConfirmedPage /></LangSync>} />
-              <Route path="/:lang/orders" element={<LangSync><TaskManagerPage /></LangSync>} />
-              <Route path="/:lang/tasks/:taskId" element={<LangSync><TaskResultPage /></LangSync>} />
-              <Route path="/:lang/blog" element={<LangSync><BlogListPage /></LangSync>} />
-              <Route path="/:lang/blog/:slug" element={<LangSync><BlogPostPage /></LangSync>} />
+              <Route path="/about" element={<AutoLangSync><LegalPage page="about" /></AutoLangSync>} />
+              <Route path="/contact" element={<AutoLangSync><LegalPage page="contact" /></AutoLangSync>} />
+              <Route path="/privacy" element={<AutoLangSync><LegalPage page="privacy" /></AutoLangSync>} />
+              <Route path="/developers" element={<AutoLangSync><LegalPage page="developers" /></AutoLangSync>} />
+              <Route path="/docs" element={<Navigate to="/developers" replace />} />
+
+              {/* Language-prefixed homepage — :lang is only en|zh-tw|zh-cn */}
+              <Route path="/:lang" element={<LangGuard><HomePage /></LangGuard>} />
+              <Route path="/:lang/apps" element={<LangGuard><AppsPage /></LangGuard>} />
+              <Route path="/:lang/apps/:category" element={<LangGuard><AppsPage /></LangGuard>} />
+              <Route path="/:lang/apps/:category/:slug" element={<LangGuard><ProductPage /></LangGuard>} />
+              <Route path="/:lang/learn/hardware-compare" element={<LangGuard><HardwareComparePage /></LangGuard>} />
+              <Route path="/:lang/learn/:slug" element={<LangGuard><TutorialPage /></LangGuard>} />
+              <Route path="/:lang/get-started" element={<LangGuard><GetStartedPage /></LangGuard>} />
+              <Route path="/:lang/checkout" element={<LangGuard><CheckoutPage /></LangGuard>} />
+              <Route path="/:lang/pricing" element={<LangGuard><PricingPage /></LangGuard>} />
+              <Route path="/:lang/community/register" element={<LangGuard><RegisterPage /></LangGuard>} />
+              <Route path="/:lang/community" element={<LangGuard><CommunityPage /></LangGuard>} />
+              <Route path="/:lang/subscribe/confirmed" element={<LangGuard><SubscribeConfirmedPage /></LangGuard>} />
+              <Route path="/:lang/orders" element={<LangGuard><TaskManagerPage /></LangGuard>} />
+              <Route path="/:lang/tasks/:taskId" element={<LangGuard><TaskResultPage /></LangGuard>} />
+              <Route path="/:lang/blog" element={<LangGuard><BlogListPage /></LangGuard>} />
+              <Route path="/:lang/blog/:slug" element={<LangGuard><BlogPostPage /></LangGuard>} />
+              <Route path="/:lang/about" element={<LangGuard><LegalPage page="about" /></LangGuard>} />
+              <Route path="/:lang/contact" element={<LangGuard><LegalPage page="contact" /></LangGuard>} />
+              <Route path="/:lang/privacy" element={<LangGuard><LegalPage page="privacy" /></LangGuard>} />
+              <Route path="/:lang/developers" element={<LangGuard><LegalPage page="developers" /></LangGuard>} />
+              <Route path="/:lang/docs" element={<LangGuard><Navigate to="/developers" replace /></LangGuard>} />
 
               {/* /free — lang prefix supported */}
-              <Route path="/:lang/free/agent/:agentName" element={<LangSync><AgentCardPage free /></LangSync>} />
-              <Route path="/:lang/free" element={<LangSync><FreeAgentsPage /></LangSync>} />
+              <Route path="/:lang/free/agent/:agentName" element={<LangGuard><AgentCardPage free /></LangGuard>} />
+              <Route path="/:lang/free" element={<LangGuard><FreeAgentsPage /></LangGuard>} />
 
-              <Route path="/:lang/rankings/brand/:brandName" element={<LangSync><BrandPage /></LangSync>} />
-              <Route path="/:lang/rankings" element={<LangSync><RankingsPage /></LangSync>} />
+              <Route path="/:lang/rankings/brand/:brandName" element={<LangGuard><BrandPage /></LangGuard>} />
+              <Route path="/:lang/rankings" element={<LangGuard><RankingsPage /></LangGuard>} />
 
               {/* 404 catch-all */}
               <Route path="*" element={<NotFoundPage />} />

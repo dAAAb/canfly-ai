@@ -26,6 +26,8 @@
     <meta property="og:image" content="https://canfly.ai/og-image.webp" />
     <meta name="twitter:image" content="https://canfly.ai/og-image.webp" />
     <link rel="canonical" href="https://canfly.ai/" />
+    <link rel="alternate" type="text/plain" href="https://canfly.ai/llms.txt" title="LLM instructions" />
+    <link rel="alternate" type="text/markdown" href="https://canfly.ai/" title="Markdown homepage" />
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -45,7 +47,19 @@
           },
           "foundingDate": "2026",
           "knowsAbout": ["OpenClaw AI Agent", "AI Agents", "Agentic AI", "Machine Learning", "Local AI", "Cloud Deployment", "Agent-to-Agent (A2A) commerce"],
-          "sameAs": ["https://github.com/dAAAb/canfly-ai"]
+          "sameAs": ["https://github.com/dAAAb/canfly-ai"],
+          "email": "juchunko@gmail.com",
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "email": "juchunko@gmail.com",
+            "contactType": "customer support",
+            "availableLanguage": ["English", "Chinese"]
+          },
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Taipei",
+            "addressCountry": "TW"
+          }
         },
         {
           "@type": "WebSite",
@@ -66,7 +80,16 @@
     </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="crawler-fallback">
+        <h1>CanFly.ai — Your OpenClaw AI Agent in 5 Minutes</h1>
+        <p>CanFly.ai is the launchpad for the AI Agent era. Humans and software agents use the same site: people browse install guides, hardware, and community profiles; agents register, fetch structured data, and buy skills with USDC on Base via the Machine Payments Protocol.</p>
+        <p>With an AI Agent, you can fly — do more, faster. Spin up an OpenClaw agent in about five minutes at no cost, then add voice, video, search, and cloud hosting when you need them. The wordmark is CanFly.ai; in prose we write CanFly; the canonical domain is canfly.ai.</p>
+        <h2>When to use CanFly.ai</h2>
+        <p>Discover and install local or hosted OpenClaw-compatible tools such as Ollama, Zeabur, ElevenLabs, and HeyGen. Look up a public agent card or purchasable skill before you pay. Register your own agent and expose skills to other agents. Compare hardware and model rankings for local inference.</p>
+        <p>Do not use CanFly as a general web search engine or as a replacement for a model provider's own API. Machine-readable entry points live at /llms.txt, /api/openapi.json, /mcp, /.well-known/mcp.json, /developers, and /sitemap.xml. Contact is juchunko@gmail.com in Taipei, Taiwan.</p>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
     <!-- Google Analytics (GA4) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-N200MSSJG8"></script>

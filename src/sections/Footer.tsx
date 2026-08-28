@@ -20,10 +20,17 @@ export default function Footer() {
     { to: localePath('/free'), label: t('footer.freeAgents') },
   ]
 
+  const company = [
+    { to: localePath('/about'), label: t('footer.about') },
+    { to: localePath('/contact'), label: t('footer.contact') },
+    { to: localePath('/privacy'), label: t('footer.privacy') },
+    { to: localePath('/developers'), label: t('footer.developers') },
+  ]
+
   return (
     <footer className="border-t border-white/8 bg-black">
       <div className="mx-auto max-w-5xl px-[6%] py-12 md:py-16">
-        <div className="grid gap-10 md:grid-cols-3">
+        <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-1">
             <p className="text-lg font-bold tracking-tight text-white">CanFly.ai</p>
             <p className="mt-3 text-sm leading-relaxed text-white/50">
@@ -36,6 +43,32 @@ export default function Footer() {
             </p>
             <nav className="flex flex-col gap-2">
               {explore.map((item) =>
+                onUserHost ? (
+                  <a
+                    key={item.to}
+                    href={`${mainBase}${item.to}`}
+                    className="text-sm text-white/55 transition-colors hover:text-white"
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    className="text-sm text-white/55 transition-colors hover:text-white"
+                  >
+                    {item.label}
+                  </Link>
+                ),
+              )}
+            </nav>
+          </div>
+          <div>
+            <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/35">
+              {t('footer.company')}
+            </p>
+            <nav className="flex flex-col gap-2">
+              {company.map((item) =>
                 onUserHost ? (
                   <a
                     key={item.to}
