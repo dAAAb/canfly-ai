@@ -17,7 +17,7 @@ export default function HeroSection() {
   )
 
   return (
-    <section className="hero-section relative flex w-full flex-col overflow-x-hidden bg-black">
+    <section className="hero-section relative flex w-full flex-col bg-black">
       {/* Media is masked out at the bottom so the Mux frame never ends as a knife-edge. */}
       <div className="hero-media absolute inset-0 z-0" aria-hidden="true">
         <div className="absolute inset-0 hero-sky" />
