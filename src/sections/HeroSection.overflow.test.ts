@@ -2,22 +2,35 @@ import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
+function stripComments(css: string) {
+  return css.replace(/\/\*[\s\S]*?\*\//g, '')
+}
+
 describe('hero overflow', () => {
-  it('does not put overflow-x-hidden on the hero section', () => {
+  it('does not put overflow utilities on the hero section', () => {
     const tsx = readFileSync(resolve(process.cwd(), 'src/sections/HeroSection.tsx'), 'utf8')
     const open = tsx.match(/<section className="hero-section[^"]*"/)?.[0] ?? ''
     expect(open).toContain('hero-section')
     expect(open).not.toContain('overflow-x-hidden')
+    expect(open).not.toContain('overflow-x-clip')
     expect(open).not.toMatch(/\boverflow-hidden\b/)
     expect(open).not.toContain('overflow-y-auto')
   })
 
-  it('clips horizontal bleed in CSS without creating a scrollport', () => {
-    const css = readFileSync(resolve(process.cwd(), 'src/index.css'), 'utf8')
-    const block = css.match(/\.hero-section\s*\{[^}]+\}/)?.[0] ?? ''
-    const decls = block.replace(/\/\*[\s\S]*?\*\//g, '')
-    expect(decls).toMatch(/overflow-x:\s*clip/)
-    expect(decls).not.toMatch(/overflow-x:\s*hidden/)
-    expect(decls).not.toMatch(/overflow-y:\s*auto/)
+  it('keeps overflow off the hero and clips only at the viewport and media layer', () => {
+    const css = stripComments(readFileSync(resolve(process.cwd(), 'src/index.css'), 'utf8'))
+    const hero = css.match(/\.hero-section\s*\{[^}]*\}/)?.[0] ?? ''
+    const media = css.match(/\.hero-media\s*\{[^}]*\}/)?.[0] ?? ''
+    const html = css.match(/^html\s*\{[^}]*\}/m)?.[0] ?? ''
+
+    expect(hero).not.toMatch(/overflow\s*:/)
+    expect(hero).not.toMatch(/overflow-x\s*:/)
+    expect(hero).not.toMatch(/overflow-y\s*:/)
+
+    expect(media).toMatch(/overflow:\s*hidden/)
+
+    expect(html).toMatch(/overflow-x:\s*clip/)
+    expect(html).toMatch(/overflow-y:\s*scroll/)
+    expect(html).toMatch(/scrollbar-gutter:\s*stable/)
   })
 })

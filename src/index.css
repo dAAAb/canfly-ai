@@ -8,9 +8,34 @@ html {
      feels like the hero is catching, especially next to a nested
      scrollport. */
   scroll-behavior: auto;
+  /* Clip horizontal bleed at the viewport — the one place overflow
+     is allowed to live. `scroll` + `stable` keeps a single gutter
+     so the first wheel does not pop a second overlay bar or reflow. */
+  overflow-x: clip;
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: #3a3a3a #000;
   background: #000;
   color: #fff;
   font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+html::-webkit-scrollbar {
+  width: 10px;
+}
+
+html::-webkit-scrollbar-track {
+  background: #000;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: 8px;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 body {
@@ -264,11 +289,9 @@ body {
 .hero-section {
   min-height: 100vh;
   min-height: 100svh;
-  /* `overflow-x: hidden` makes overflow-y compute to `auto`. The 26vh
-     fade spacer then becomes an inner scrollport — two scrollbars on
-     the first wheel, and a hitch before the page moves. `clip` hides
-     horizontal bleed from cloud motion without creating a scroller. */
-  overflow-x: clip;
+  /* Do not set overflow here. `hidden` (and in some engines `clip`)
+     turns the 26vh fade spacer into a second scrollport — two bars
+     on the first wheel. Cloud motion is clipped on `.hero-media`. */
 }
 
 .hero-scroll-hint {
