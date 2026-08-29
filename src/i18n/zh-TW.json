@@ -16,7 +16,7 @@
   },
   "boarding": {
     "eyebrow": "CanFly 登機",
-    "title": "你的 Agent 已獲准起飛。",
+    "title": "你的 Agent 已經可以起飛。",
     "subtitle": "把登機證滑進閘門。另一側是你的機艙，也是更快完成工作的方式。",
     "passLabel": "登機證",
     "passAction": "向右滑動登機證掃描，或按 Enter",
@@ -357,7 +357,7 @@
     "departure": "出發地",
     "destination": "目的地",
     "cabinNote": "機艙提醒",
-    "status": "獲准起飛"
+    "status": "可以起飛"
   },
   "legal": {
     "resourcesTitle": "CanFly.ai 給機器讀的入口",

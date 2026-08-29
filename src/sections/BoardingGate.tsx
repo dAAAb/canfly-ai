@@ -9,6 +9,7 @@ import {
 import { ArrowRight, Check, ScanLine } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import FlightMark from '../components/FlightMark'
+import { boardingProgress } from './BoardingGate.logic'
 
 type BoardingPhase = 'ready' | 'dragging' | 'scanning' | 'departing'
 
@@ -20,19 +21,11 @@ const ACCEPT_THRESHOLD = 0.62
 const SCAN_DURATION_MS = 420
 const DEPARTURE_DURATION_MS = 760
 
-function clamp(value: number, min: number, max: number) {
-  return Math.min(Math.max(value, min), max)
-}
-
-export function boardingProgress(offset: number, travel: number) {
-  if (travel <= 0) return 0
-  return clamp(offset / travel, 0, 1)
-}
-
 export default function BoardingGate({ onBoarded }: BoardingGateProps) {
   const { t } = useTranslation()
   const [phase, setPhase] = useState<BoardingPhase>('ready')
   const [offset, setOffset] = useState(0)
+  const [progress, setProgress] = useState(0)
   const offsetRef = useRef(0)
   const trackRef = useRef<HTMLDivElement>(null)
   const passRef = useRef<HTMLDivElement>(null)
@@ -47,15 +40,19 @@ export default function BoardingGate({ onBoarded }: BoardingGateProps) {
     return Math.max(0, track.clientWidth - pass.clientWidth - 18)
   }, [])
 
-  const movePass = useCallback((nextOffset: number) => {
-    offsetRef.current = nextOffset
-    setOffset(nextOffset)
+  const movePass = useCallback((nextOffset: number, travel: number) => {
+    const nextProgress = boardingProgress(nextOffset, travel)
+    const boundedOffset = travel * nextProgress
+    offsetRef.current = boundedOffset
+    setOffset(boundedOffset)
+    setProgress(nextProgress)
   }, [])
 
   const beginBoarding = useCallback(() => {
     if (phase === 'scanning' || phase === 'departing') return
 
-    movePass(getTravel())
+    const travel = getTravel()
+    movePass(travel, travel)
     setPhase('scanning')
 
     const departTimer = window.setTimeout(() => {
@@ -71,12 +68,13 @@ export default function BoardingGate({ onBoarded }: BoardingGateProps) {
   useEffect(() => {
     const root = document.documentElement
     const previousOverflowY = root.style.overflowY
+    const timers = timersRef.current
     window.scrollTo(0, 0)
     root.style.overflowY = 'hidden'
 
     return () => {
       root.style.overflowY = previousOverflowY
-      for (const timer of timersRef.current) window.clearTimeout(timer)
+      for (const timer of timers) window.clearTimeout(timer)
     }
   }, [])
 
@@ -91,7 +89,7 @@ export default function BoardingGate({ onBoarded }: BoardingGateProps) {
   function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
     if (phase !== 'dragging') return
     const travel = getTravel()
-    movePass(clamp(startOffsetRef.current + event.clientX - dragStartRef.current, 0, travel))
+    movePass(startOffsetRef.current + event.clientX - dragStartRef.current, travel)
   }
 
   function finishDrag(event: PointerEvent<HTMLDivElement>) {
@@ -106,7 +104,7 @@ export default function BoardingGate({ onBoarded }: BoardingGateProps) {
       return
     }
 
-    movePass(0)
+    movePass(0, travel)
     setPhase('ready')
   }
 
@@ -116,7 +114,6 @@ export default function BoardingGate({ onBoarded }: BoardingGateProps) {
     beginBoarding()
   }
 
-  const progress = boardingProgress(offset, getTravel())
   const status =
     phase === 'scanning' || phase === 'departing'
       ? t('boarding.accepted')

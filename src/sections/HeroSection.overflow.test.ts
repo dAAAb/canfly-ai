@@ -9,7 +9,7 @@ function stripComments(css: string) {
 describe('hero overflow', () => {
   it('does not put overflow utilities on the hero section', () => {
     const tsx = readFileSync(resolve(process.cwd(), 'src/sections/HeroSection.tsx'), 'utf8')
-    const open = tsx.match(/<section className="hero-section[^"]*"/)?.[0] ?? ''
+    const open = tsx.match(/className=\{`hero-section[^`]*`\}/)?.[0] ?? ''
     expect(open).toContain('hero-section')
     expect(open).not.toContain('overflow-x-hidden')
     expect(open).not.toContain('overflow-x-clip')
