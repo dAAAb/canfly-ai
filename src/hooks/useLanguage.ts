@@ -3,6 +3,12 @@ import { useTranslation } from 'react-i18next'
 import { useEffect, useRef } from 'react'
 import { langFromPrefix, prefixForLang, loadLanguage, detectLanguageAuto, type SupportedLang } from '../i18n'
 
+export function langPrefixFromPath(pathname: string): string | undefined {
+  const segment = pathname.split('/')[1]
+  if (segment === 'en' || segment === 'zh-tw' || segment === 'zh-cn') return segment
+  return undefined
+}
+
 /** Syncs i18next language from the URL :lang param and provides helpers. */
 export function useLanguage() {
   const { lang } = useParams<{ lang?: string }>()
@@ -11,9 +17,11 @@ export function useLanguage() {
   const navigate = useNavigate()
   const switchingRef = useRef(false)
 
-  // If no lang param in URL, use cookie/browser detection
-  const currentLang = lang ? langFromPrefix(lang) : detectLanguageAuto()
-  const hasLangPrefix = !!lang
+  // Shared layout components can render outside <Routes>, where useParams()
+  // has no :lang even though the current URL has a language prefix.
+  const langPrefix = lang ?? langPrefixFromPath(location.pathname)
+  const currentLang = langPrefix ? langFromPrefix(langPrefix) : detectLanguageAuto()
+  const hasLangPrefix = !!langPrefix
 
   useEffect(() => {
     // Skip sync-back when switchLang is actively navigating
