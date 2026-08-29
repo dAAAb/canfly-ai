@@ -5,12 +5,41 @@
     "rankings": "排行榜",
     "community": "社区",
     "blog": "博客",
-    "api": "API"
+    "api": "API",
+    "primary": "主要导航",
+    "toggleMenu": "打开或关闭菜单"
   },
   "auth": {
     "joinCommunity": "加入 Flight 社区",
     "profile": "个人资料",
     "logout": "退出登录"
+  },
+  "boarding": {
+    "eyebrow": "CanFly 登机",
+    "title": "你的 Agent 已获准起飞。",
+    "subtitle": "把登机牌滑进闸门。另一侧是你的机舱，也是更快完成工作的方式。",
+    "passLabel": "登机牌",
+    "passAction": "向右滑动登机牌扫描，或按 Enter",
+    "oneWay": "单程",
+    "routeFromCode": "YOU",
+    "routeFrom": "现在的你",
+    "routeToCode": "AI",
+    "routeTo": "Agent 加速",
+    "flight": "航班",
+    "gate": "登机口",
+    "seat": "准备时间",
+    "scannerReady": "等待扫描",
+    "accepted": "登机完成",
+    "dragHint": "把登机牌滑进扫描器",
+    "enterCabin": "直接进入机舱"
+  },
+  "cabin": {
+    "status": "机舱已就绪 · AI Agent 在线",
+    "altitude": "巡航高度",
+    "route": "TPE → AI",
+    "localTime": "当地时间 09:41",
+    "closeShade": "关闭舷窗遮光板",
+    "openShade": "打开舷窗遮光板"
   },
   "hero": {
     "titleLine1": "现在，你也能",
@@ -324,7 +353,11 @@
     "contact": "联络",
     "privacy": "隐私",
     "developers": "开发者",
-    "company": "公司"
+    "company": "公司",
+    "departure": "出发地",
+    "destination": "目的地",
+    "cabinNote": "机舱提示",
+    "status": "获准起飞"
   },
   "legal": {
     "resourcesTitle": "CanFly.ai 给机器读的入口",

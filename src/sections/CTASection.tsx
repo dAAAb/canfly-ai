@@ -19,54 +19,29 @@ export default function CTASection() {
   const { localePath } = useLanguage()
 
   return (
-    <section
-      className="relative"
-      style={{ paddingLeft: '8%', paddingRight: '8%', paddingTop: '12vh', paddingBottom: '14vh' }}
-    >
-      <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-950 to-black" />
+    <section className="home-section home-cta">
+      <div className="home-cta__runway" aria-hidden="true">
+        <span />
+      </div>
 
-      <div
-        ref={ref}
-        className="fade-section relative z-10"
-        style={{ maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto', textAlign: 'center' }}
-      >
-        <h2
-          className="font-bold stagger-child stagger-1"
-          style={{
-            fontSize: 'clamp(36px, 6vw, 96px)',
-            lineHeight: 1.05,
-            letterSpacing: '-0.03em',
-          }}
-        >
+      <div ref={ref} className="fade-section home-cta__content">
+        <p className="flight-eyebrow">FINAL CALL · CF 001</p>
+        <h2 className="stagger-child stagger-1">
           {t('cta.headingLine1')}
           <br />
-          <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent">
-            {t('cta.headingHighlight')}
-          </span>
+          <span>{t('cta.headingHighlight')}</span>
         </h2>
 
-        <p
-          className="stagger-child stagger-2"
-          style={{
-            fontSize: 'clamp(16px, 1.5vw, 24px)',
-            lineHeight: 1.7,
-            opacity: 0.7,
-            maxWidth: '560px',
-            marginLeft: 'auto',
-            marginRight: 'auto',
-            marginTop: 'clamp(24px, 3vw, 48px)',
-          }}
-        >
+        <p className="home-cta__description stagger-child stagger-2">
           {t('cta.desc').split('\n').map((line, i) => (
             <span key={i}>{line}{i === 0 && <br />}</span>
           ))}
         </p>
 
-        {/* Primary CTA */}
-        <div className="stagger-child stagger-3" style={{ marginTop: 'clamp(32px, 4vw, 56px)' }}>
+        <div className="home-cta__primary stagger-child stagger-3">
           <Link
             to={localePath('/apps/free/ollama')}
-            className="inline-flex items-center gap-3 bg-green-600 hover:bg-green-700 px-8 py-4 rounded-xl text-lg font-semibold transition-all hover:scale-105 cta-glow"
+            className="flight-button flight-button--primary"
             onClick={() => trackCTAClick('start_free', 'cta_section')}
           >
             <PlayCircle className="w-6 h-6" />
@@ -74,30 +49,14 @@ export default function CTASection() {
           </Link>
         </div>
 
-        {/* Secondary CTAs */}
-        <div
-          className="stagger-child stagger-4"
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-            gap: 'clamp(16px, 2vw, 24px)',
-            marginTop: 'clamp(24px, 3vw, 40px)',
-          }}
-        >
+        <div className="home-cta__secondary stagger-child stagger-4">
           <a
             href="mailto:hi@canfly.ai"
             onClick={() => trackCTAClick('email_contact', 'cta_section')}
-            className="inline-flex items-center gap-4 rounded-2xl no-underline text-white transition-all hover:scale-105 hover:shadow-[0_4px_24px_rgba(255,255,255,0.08)]"
-            style={{
-              background: 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04))',
-              border: '1px solid rgba(255,255,255,0.15)',
-              backdropFilter: 'blur(20px)',
-              padding: 'clamp(16px, 2vw, 24px) clamp(28px, 3vw, 44px)',
-            }}
+            className="flight-button flight-button--secondary"
           >
             <Mail className="w-5 h-5 opacity-70 flex-shrink-0" />
-            <span style={{ fontSize: 'clamp(15px, 1.2vw, 20px)' }}>hi@canfly.ai</span>
+            <span>hi@canfly.ai</span>
           </a>
 
           <a
@@ -105,16 +64,10 @@ export default function CTASection() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackCTAClick('follow_x', 'cta_section')}
-            className="inline-flex items-center gap-4 rounded-2xl no-underline text-white transition-all hover:scale-105 hover:shadow-[0_4px_24px_rgba(255,255,255,0.08)]"
-            style={{
-              background: 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04))',
-              border: '1px solid rgba(255,255,255,0.15)',
-              backdropFilter: 'blur(20px)',
-              padding: 'clamp(16px, 2vw, 24px) clamp(28px, 3vw, 44px)',
-            }}
+            className="flight-button flight-button--secondary"
           >
             <XIcon />
-            <span style={{ fontSize: 'clamp(15px, 1.2vw, 20px)' }}>{t('cta.followX')}</span>
+            <span>{t('cta.followX')}</span>
           </a>
         </div>
       </div>

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useLanguage } from '../hooks/useLanguage'
 import { isUserSubdomain } from '../utils/subdomain'
+import FlightMark from '../components/FlightMark'
 
 declare const __APP_VERSION__: string
 
@@ -28,26 +29,48 @@ export default function Footer() {
   ]
 
   return (
-    <footer className="border-t border-white/8 bg-black">
-      <div className="mx-auto max-w-5xl px-[6%] py-12 md:py-16">
-        <div className="grid gap-10 md:grid-cols-4">
-          <div className="md:col-span-1">
-            <p className="text-lg font-bold tracking-tight text-white">CanFly.ai</p>
-            <p className="mt-3 text-sm leading-relaxed text-white/50">
+    <footer className="flight-footer">
+      <div className="flight-footer__horizon" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+      </div>
+
+      <div className="flight-footer__inner">
+        <div className="flight-footer__route">
+          <div>
+            <span>{t('footer.departure', 'Departure')}</span>
+            <strong>TPE</strong>
+          </div>
+          <div className="flight-footer__route-line">
+            <FlightMark />
+          </div>
+          <div>
+            <span>{t('footer.destination', 'Destination')}</span>
+            <strong>AI</strong>
+          </div>
+        </div>
+
+        <div className="flight-footer__grid">
+          <div className="flight-footer__brand">
+            <p>
+              <FlightMark />
+              <span>CanFly.ai</span>
+            </p>
+            <p>
               {t('footer.brandLine')}
             </p>
           </div>
           <div>
-            <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/35">
+            <p className="flight-footer__label">
               {t('footer.explore')}
             </p>
-            <nav className="flex flex-col gap-2">
+            <nav className="flight-footer__links">
               {explore.map((item) =>
                 onUserHost ? (
                   <a
                     key={item.to}
                     href={`${mainBase}${item.to}`}
-                    className="text-sm text-white/55 transition-colors hover:text-white"
                   >
                     {item.label}
                   </a>
@@ -55,7 +78,6 @@ export default function Footer() {
                   <Link
                     key={item.to}
                     to={item.to}
-                    className="text-sm text-white/55 transition-colors hover:text-white"
                   >
                     {item.label}
                   </Link>
@@ -64,16 +86,15 @@ export default function Footer() {
             </nav>
           </div>
           <div>
-            <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/35">
+            <p className="flight-footer__label">
               {t('footer.company')}
             </p>
-            <nav className="flex flex-col gap-2">
+            <nav className="flight-footer__links">
               {company.map((item) =>
                 onUserHost ? (
                   <a
                     key={item.to}
                     href={`${mainBase}${item.to}`}
-                    className="text-sm text-white/55 transition-colors hover:text-white"
                   >
                     {item.label}
                   </a>
@@ -81,7 +102,6 @@ export default function Footer() {
                   <Link
                     key={item.to}
                     to={item.to}
-                    className="text-sm text-white/55 transition-colors hover:text-white"
                   >
                     {item.label}
                   </Link>
@@ -89,17 +109,19 @@ export default function Footer() {
               )}
             </nav>
           </div>
-          <div>
-            <p className="text-sm leading-relaxed text-white/45">
-              {t('footer.tagline')} 🦞
+          <div className="flight-footer__note">
+            <span>{t('footer.cabinNote', 'Cabin note')}</span>
+            <p>
+              {t('footer.tagline')}
             </p>
-            <p className="mt-4 text-xs leading-relaxed text-white/30">
+            <p>
               {t('footer.affiliateDisclosure')}
             </p>
           </div>
         </div>
-        <div className="mt-10 border-t border-white/6 pt-6 text-xs text-white/30">
-          {t('footer.copyright')} · v{__APP_VERSION__}
+        <div className="flight-footer__bottom">
+          <span>{t('footer.copyright')} · v{__APP_VERSION__}</span>
+          <span>CF 001 · {t('footer.status', 'Cleared for takeoff')}</span>
         </div>
       </div>
     </footer>

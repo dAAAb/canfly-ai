@@ -32,17 +32,16 @@ export default function AvatarSection() {
   }
 
   return (
-    <section className="py-16 bg-gradient-to-b from-black via-gray-950 to-black">
-      <div className="max-w-4xl mx-auto px-4 text-center">
-        {/* Section header */}
-        <div className="mb-8">
-          <span className="inline-block px-3 py-1 text-xs font-medium text-cyan-400 bg-cyan-900/20 border border-cyan-800/30 rounded-full mb-4">
+    <section className="home-section home-avatar">
+      <div className="home-avatar__inner">
+        <div className="home-avatar__header">
+          <span className="flight-eyebrow">
             🦞 {t('avatar.badge', 'AI Assistant')}
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+          <h2>
             {t('avatar.title', 'Talk to LittleLobster')}
           </h2>
-          <p className="text-gray-400 text-lg max-w-xl mx-auto mb-4">
+          <p>
             {t('avatar.subtitle', 'Have questions about AI agents? Chat face-to-face with our AI assistant — powered by Runway Characters.')}
           </p>
           {/* Owner + Agent PillBadges */}
@@ -150,9 +149,9 @@ export default function AvatarSection() {
             </div>
           </div>
         ) : !isCallActive ? (
-          <div className="relative max-w-4xl mx-auto cursor-pointer group" onClick={() => setIsCallActive(true)}>
+          <div className="home-avatar__screen cursor-pointer group" onClick={() => setIsCallActive(true)}>
             {/* Placeholder image — looks like a video call waiting screen */}
-            <div className="rounded-2xl overflow-hidden shadow-2xl shadow-cyan-900/20">
+            <div className="home-avatar__screen-frame">
               <img
                 src="/images/avatar-placeholder.webp"
                 alt="LittleLobster video call"
@@ -161,7 +160,7 @@ export default function AvatarSection() {
               {/* CTA overlay — positioned at bottom to avoid covering the face */}
               <div className="absolute bottom-0 left-0 right-0 pb-8 pt-16 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col items-center">
                 <button
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-cyan-600/90 hover:bg-cyan-500 text-white font-semibold rounded-2xl transition-all duration-300 shadow-lg shadow-cyan-900/50 group-hover:scale-105 backdrop-blur-sm"
+                  className="flight-button flight-button--primary"
                 >
                   <MessageCircle className="w-6 h-6" />
                   <span className="text-lg">{t('avatar.startCall', 'Start Video Call with 🦞')}</span>

@@ -1,6 +1,9 @@
 import { useTranslation } from 'react-i18next'
+import { useState } from 'react'
 import { useHead } from '../hooks/useHead'
 import { useLanguage } from '../hooks/useLanguage'
+import Navbar from '../components/Navbar'
+import BoardingGate from '../sections/BoardingGate'
 import HeroSection from '../sections/HeroSection'
 import VisionSection from '../sections/VisionSection'
 import FeaturesSection from '../sections/FeaturesSection'
@@ -13,6 +16,7 @@ import LiveFeed from '../components/LiveFeed'
 export default function HomePage() {
   const { t } = useTranslation()
   const { localePath } = useLanguage()
+  const [boarded, setBoarded] = useState(false)
 
   useHead({
     title: t('meta.home.title'),
@@ -23,15 +27,22 @@ export default function HomePage() {
   })
 
   return (
-    <div className="bg-black text-white">
-      <HeroSection />
-      <LiveFeed />
-      <VisionSection />
-      <FeaturesSection />
-      <AvatarSection />
-      <QuoteSection />
-      <NewsletterSection />
-      <CTASection />
+    <div className={`site-home ${boarded ? 'site-home--boarded' : ''}`}>
+      {!boarded && <BoardingGate onBoarded={() => setBoarded(true)} />}
+
+      <div className="site-home__cabin" aria-hidden={!boarded} inert={!boarded}>
+        <Navbar variant="hero" />
+        <main>
+          <HeroSection />
+          <LiveFeed />
+          <VisionSection />
+          <FeaturesSection />
+          <AvatarSection />
+          <QuoteSection />
+          <NewsletterSection />
+          <CTASection />
+        </main>
+      </div>
     </div>
   )
 }

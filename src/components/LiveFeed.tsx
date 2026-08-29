@@ -108,45 +108,43 @@ export default function LiveFeed() {
   const lang = i18n.language
 
   return (
-    <section
-      className="relative z-10 w-full bg-black"
-      style={{ paddingLeft: '8%', paddingRight: '8%', marginTop: '-12vh' }}
-    >
-      <div
-        className="mx-auto mb-12 max-w-5xl overflow-hidden rounded-2xl border border-white/10 p-6 md:p-8"
-        style={{
-          background: '#0A0E1A',
-          boxShadow: '0 0 40px rgba(96, 165, 250, 0.06), inset 0 1px 0 rgba(255,255,255,0.05)',
-        }}
-      >
-        <h3 className="mb-4 text-sm font-semibold tracking-widest uppercase text-cyan-400">
-          {t('liveFeed.title')}
-        </h3>
+    <section className="home-flight-board">
+      <div className="home-flight-board__panel">
+        <header className="home-flight-board__header">
+          <div>
+            <span className="home-flight-board__signal" />
+            <h3>{t('liveFeed.title')}</h3>
+          </div>
+          <span>LIVE · CF NETWORK</span>
+        </header>
 
         {loading ? (
-          <div className="space-y-3">
+          <div className="home-flight-board__loading">
             {Array.from({ length: 3 }).map((_, i) => (
               <div
                 key={i}
-                className="h-8 animate-pulse rounded-lg bg-white/5"
+                className="animate-pulse"
               />
             ))}
           </div>
         ) : displayEvents.length === 0 ? (
-          <p className="text-sm text-white/40">{t('liveFeed.empty')}</p>
+          <p className="home-flight-board__empty">{t('liveFeed.empty')}</p>
         ) : (
-          <ul className="space-y-1">
+          <ul className="home-flight-board__events">
             {displayEvents
               .slice(0, typeof window !== 'undefined' && window.innerWidth < 768 ? MOBILE_VISIBLE : DESKTOP_VISIBLE)
               .map((event) => (
                 <li
                   key={event.id}
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-white/5 ${
+                  className={`${
                     enteringId === event.id ? 'livefeed-slide-in' : ''
                   }`}
                 >
-                  <span className="shrink-0 text-base">{event.emoji}</span>
-                  <span className="min-w-0 flex-1 truncate text-white/80">
+                  <span className="home-flight-board__event-code">
+                    CF-{String(event.id).slice(-3).padStart(3, '0')}
+                  </span>
+                  <span className="home-flight-board__event-emoji">{event.emoji}</span>
+                  <span className="home-flight-board__event-message">
                     {(() => {
                       const msg = getLocalizedMessage(event, lang)
                       // Highlight actor and target names as clickable links within the message
@@ -158,9 +156,9 @@ export default function LiveFeed() {
                         if (idx > 0) parts.push(remaining.slice(0, idx))
                         parts.push(
                           event.link ? (
-                            <a key="actor" href={event.link} className="font-medium text-cyan-400 hover:underline">{event.actor}</a>
+                            <a key="actor" href={event.link}>{event.actor}</a>
                           ) : (
-                            <span key="actor" className="font-medium text-cyan-400">{event.actor}</span>
+                            <strong key="actor">{event.actor}</strong>
                           )
                         )
                         remaining = remaining.slice(idx + event.actor.length)
@@ -170,7 +168,7 @@ export default function LiveFeed() {
                         const idx = remaining.indexOf(event.target)
                         if (idx > 0) parts.push(remaining.slice(0, idx))
                         parts.push(
-                          <span key="target" className="font-medium text-cyan-400">{event.target}</span>
+                          <strong key="target">{event.target}</strong>
                         )
                         remaining = remaining.slice(idx + event.target.length)
                       }
@@ -178,7 +176,7 @@ export default function LiveFeed() {
                       return parts.length > 0 ? parts : msg
                     })()}
                   </span>
-                  <span className="shrink-0 text-xs text-white/30">
+                  <span className="home-flight-board__event-time">
                     {relativeTime(event.created_at, t)}
                   </span>
                 </li>

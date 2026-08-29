@@ -1,0 +1,241 @@
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type PointerEvent,
+} from 'react'
+import { ArrowRight, Check, ScanLine } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import FlightMark from '../components/FlightMark'
+
+type BoardingPhase = 'ready' | 'dragging' | 'scanning' | 'departing'
+
+interface BoardingGateProps {
+  onBoarded: () => void
+}
+
+const ACCEPT_THRESHOLD = 0.62
+const SCAN_DURATION_MS = 420
+const DEPARTURE_DURATION_MS = 760
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max)
+}
+
+export function boardingProgress(offset: number, travel: number) {
+  if (travel <= 0) return 0
+  return clamp(offset / travel, 0, 1)
+}
+
+export default function BoardingGate({ onBoarded }: BoardingGateProps) {
+  const { t } = useTranslation()
+  const [phase, setPhase] = useState<BoardingPhase>('ready')
+  const [offset, setOffset] = useState(0)
+  const offsetRef = useRef(0)
+  const trackRef = useRef<HTMLDivElement>(null)
+  const passRef = useRef<HTMLDivElement>(null)
+  const dragStartRef = useRef(0)
+  const startOffsetRef = useRef(0)
+  const timersRef = useRef<number[]>([])
+
+  const getTravel = useCallback(() => {
+    const track = trackRef.current
+    const pass = passRef.current
+    if (!track || !pass) return 0
+    return Math.max(0, track.clientWidth - pass.clientWidth - 18)
+  }, [])
+
+  const movePass = useCallback((nextOffset: number) => {
+    offsetRef.current = nextOffset
+    setOffset(nextOffset)
+  }, [])
+
+  const beginBoarding = useCallback(() => {
+    if (phase === 'scanning' || phase === 'departing') return
+
+    movePass(getTravel())
+    setPhase('scanning')
+
+    const departTimer = window.setTimeout(() => {
+      setPhase('departing')
+    }, SCAN_DURATION_MS)
+    const completeTimer = window.setTimeout(() => {
+      onBoarded()
+    }, SCAN_DURATION_MS + DEPARTURE_DURATION_MS)
+
+    timersRef.current.push(departTimer, completeTimer)
+  }, [getTravel, movePass, onBoarded, phase])
+
+  useEffect(() => {
+    const root = document.documentElement
+    const previousOverflowY = root.style.overflowY
+    window.scrollTo(0, 0)
+    root.style.overflowY = 'hidden'
+
+    return () => {
+      root.style.overflowY = previousOverflowY
+      for (const timer of timersRef.current) window.clearTimeout(timer)
+    }
+  }, [])
+
+  function handlePointerDown(event: PointerEvent<HTMLDivElement>) {
+    if (phase === 'scanning' || phase === 'departing') return
+    event.currentTarget.setPointerCapture(event.pointerId)
+    dragStartRef.current = event.clientX
+    startOffsetRef.current = offset
+    setPhase('dragging')
+  }
+
+  function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
+    if (phase !== 'dragging') return
+    const travel = getTravel()
+    movePass(clamp(startOffsetRef.current + event.clientX - dragStartRef.current, 0, travel))
+  }
+
+  function finishDrag(event: PointerEvent<HTMLDivElement>) {
+    if (phase !== 'dragging') return
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+
+    const travel = getTravel()
+    if (boardingProgress(offsetRef.current, travel) >= ACCEPT_THRESHOLD) {
+      beginBoarding()
+      return
+    }
+
+    movePass(0)
+    setPhase('ready')
+  }
+
+  function handlePassKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key !== 'Enter' && event.key !== ' ') return
+    event.preventDefault()
+    beginBoarding()
+  }
+
+  const progress = boardingProgress(offset, getTravel())
+  const status =
+    phase === 'scanning' || phase === 'departing'
+      ? t('boarding.accepted')
+      : t('boarding.scannerReady')
+
+  return (
+    <section
+      className={`boarding-gate boarding-gate--${phase}`}
+      aria-label={t('boarding.title')}
+    >
+      <div className="boarding-gate__sky" aria-hidden="true">
+        <span className="boarding-gate__cloud boarding-gate__cloud--one" />
+        <span className="boarding-gate__cloud boarding-gate__cloud--two" />
+        <span className="boarding-gate__cloud boarding-gate__cloud--three" />
+      </div>
+
+      <header className="boarding-gate__header">
+        <div className="boarding-wordmark">
+          <FlightMark />
+          <span>CanFly.ai</span>
+        </div>
+        <span className="boarding-gate__flight">CF 001 · TPE → AI</span>
+      </header>
+
+      <div className="boarding-gate__content">
+        <div className="boarding-gate__copy">
+          <p className="flight-eyebrow">{t('boarding.eyebrow')}</p>
+          <h1>{t('boarding.title')}</h1>
+          <p>{t('boarding.subtitle')}</p>
+        </div>
+
+        <div className="boarding-track" ref={trackRef}>
+          <div
+            ref={passRef}
+            className="boarding-pass"
+            role="button"
+            tabIndex={phase === 'scanning' || phase === 'departing' ? -1 : 0}
+            aria-label={t('boarding.passAction')}
+            onKeyDown={handlePassKeyDown}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={finishDrag}
+            onPointerCancel={finishDrag}
+            style={{
+              transform: `translate3d(${offset}px, 0, 0) rotate(${progress * 1.2}deg)`,
+              opacity: 1 - progress * 0.16,
+            }}
+          >
+            <div className="boarding-pass__stub">
+              <FlightMark />
+              <span>{t('boarding.passLabel')}</span>
+              <strong>CF</strong>
+            </div>
+            <div className="boarding-pass__main">
+              <div className="boarding-pass__topline">
+                <span>CANFLY.AI</span>
+                <span>{t('boarding.oneWay')}</span>
+              </div>
+              <div className="boarding-pass__route">
+                <div>
+                  <strong>{t('boarding.routeFromCode')}</strong>
+                  <span>{t('boarding.routeFrom')}</span>
+                </div>
+                <div className="boarding-pass__route-line">
+                  <FlightMark />
+                </div>
+                <div>
+                  <strong>{t('boarding.routeToCode')}</strong>
+                  <span>{t('boarding.routeTo')}</span>
+                </div>
+              </div>
+              <dl className="boarding-pass__details">
+                <div>
+                  <dt>{t('boarding.flight')}</dt>
+                  <dd>CF 001</dd>
+                </div>
+                <div>
+                  <dt>{t('boarding.gate')}</dt>
+                  <dd>AI</dd>
+                </div>
+                <div>
+                  <dt>{t('boarding.seat')}</dt>
+                  <dd>5M</dd>
+                </div>
+              </dl>
+              <div className="boarding-pass__barcode" aria-hidden="true" />
+            </div>
+          </div>
+
+          <div className="boarding-scanner" aria-live="polite">
+            <div className="boarding-scanner__screen">
+              {phase === 'scanning' || phase === 'departing' ? (
+                <Check aria-hidden="true" />
+              ) : (
+                <ScanLine aria-hidden="true" />
+              )}
+              <span>{status}</span>
+            </div>
+            <div className="boarding-scanner__slot" aria-hidden="true">
+              <span />
+            </div>
+            <span className="boarding-scanner__label">CANFLY GATE 01</span>
+          </div>
+        </div>
+
+        <div className="boarding-gate__instructions">
+          <span className="boarding-gate__gesture">
+            <ArrowRight aria-hidden="true" />
+            {t('boarding.dragHint')}
+          </span>
+          <button type="button" onClick={beginBoarding}>
+            {t('boarding.enterCabin')}
+          </button>
+        </div>
+      </div>
+
+      <div className="boarding-gate__status" aria-hidden="true">
+        <span style={{ width: `${Math.max(7, progress * 100)}%` }} />
+      </div>
+    </section>
+  )
+}

@@ -5,12 +5,41 @@
     "rankings": "Rankings",
     "community": "Community",
     "blog": "Blog",
-    "api": "API"
+    "api": "API",
+    "primary": "Primary navigation",
+    "toggleMenu": "Toggle menu"
   },
   "auth": {
     "joinCommunity": "Join Flight Community",
     "profile": "Profile",
     "logout": "Logout"
+  },
+  "boarding": {
+    "eyebrow": "CanFly boarding",
+    "title": "Your agent is cleared for takeoff.",
+    "subtitle": "Slide your boarding pass into the gate. Your cabin and a faster way to work are waiting on the other side.",
+    "passLabel": "Boarding pass",
+    "passAction": "Slide boarding pass right to scan, or press Enter",
+    "oneWay": "One way",
+    "routeFromCode": "YOU",
+    "routeFrom": "Right now",
+    "routeToCode": "AI",
+    "routeTo": "Agent powered",
+    "flight": "Flight",
+    "gate": "Gate",
+    "seat": "Ready in",
+    "scannerReady": "Ready to scan",
+    "accepted": "Boarding accepted",
+    "dragHint": "Slide the pass into the scanner",
+    "enterCabin": "Enter cabin"
+  },
+  "cabin": {
+    "status": "Cabin ready · AI Agent online",
+    "altitude": "Cruising altitude",
+    "route": "TPE → AI",
+    "localTime": "Local time 09:41",
+    "closeShade": "Close window shade",
+    "openShade": "Open window shade"
   },
   "hero": {
     "titleLine1": "Now You Can",
@@ -324,7 +353,11 @@
     "contact": "Contact",
     "privacy": "Privacy",
     "developers": "Developers",
-    "company": "Company"
+    "company": "Company",
+    "departure": "Departure",
+    "destination": "Destination",
+    "cabinNote": "Cabin note",
+    "status": "Cleared for takeoff"
   },
   "legal": {
     "resourcesTitle": "CanFly.ai machine-readable entry points",

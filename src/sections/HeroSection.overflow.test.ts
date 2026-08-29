@@ -17,17 +17,19 @@ describe('hero overflow', () => {
     expect(open).not.toContain('overflow-y-auto')
   })
 
-  it('keeps overflow off the hero and clips only at the viewport and media layer', () => {
+  it('keeps overflow off the hero and clips only at the viewport and visual layers', () => {
     const css = stripComments(readFileSync(resolve(process.cwd(), 'src/index.css'), 'utf8'))
     const hero = css.match(/\.hero-section\s*\{[^}]*\}/)?.[0] ?? ''
-    const media = css.match(/\.hero-media\s*\{[^}]*\}/)?.[0] ?? ''
+    const cabinRoof = css.match(/\.cabin-hero__roof\s*\{[^}]*\}/)?.[0] ?? ''
+    const cabinWindow = css.match(/\.cabin-window__inner\s*\{[^}]*\}/)?.[0] ?? ''
     const html = css.match(/^html\s*\{[^}]*\}/m)?.[0] ?? ''
 
     expect(hero).not.toMatch(/overflow\s*:/)
     expect(hero).not.toMatch(/overflow-x\s*:/)
     expect(hero).not.toMatch(/overflow-y\s*:/)
 
-    expect(media).toMatch(/overflow:\s*hidden/)
+    expect(cabinRoof).toMatch(/overflow:\s*hidden/)
+    expect(cabinWindow).toMatch(/overflow:\s*hidden/)
 
     expect(html).toMatch(/overflow-x:\s*clip/)
     expect(html).toMatch(/overflow-y:\s*scroll/)
