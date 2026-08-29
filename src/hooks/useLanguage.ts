@@ -83,7 +83,6 @@ export function useLanguage() {
 export function useQueryLang() {
   const { i18n } = useTranslation()
   const [searchParams, setSearchParams] = useSearchParams()
-  const location = useLocation()
   const switchingRef = useRef(false)
 
   // Get language from query param, normalize case
