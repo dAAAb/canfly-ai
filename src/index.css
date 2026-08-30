@@ -1829,9 +1829,10 @@ body {
   background: linear-gradient(
     to bottom,
     transparent 0%,
-    rgba(238, 234, 227, 0.84) 24%,
-    rgba(75, 89, 101, 0.72) 52%,
-    rgba(7, 20, 38, 0.82) 78%,
+    rgba(238, 234, 227, 0.94) 20%,
+    #c9c8c4 34%,
+    #78818a 52%,
+    #34465a 70%,
     var(--flight-ink) 100%
   );
   filter: blur(10px);
