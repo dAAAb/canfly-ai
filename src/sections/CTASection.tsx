@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useLanguage } from '../hooks/useLanguage'
 import { trackCTAClick } from '../utils/analytics'
+import { useEffect, useRef } from 'react'
+import { takeoffPointPercent, takeoffProgress } from './CTASection.logic'
 
 function XIcon() {
   return (
@@ -15,11 +17,45 @@ function XIcon() {
 
 export default function CTASection() {
   const ref = useFadeIn()
+  const sectionRef = useRef<HTMLElement>(null)
   const { t } = useTranslation()
   const { localePath } = useLanguage()
 
+  useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+
+    let animationFrame = 0
+
+    function updateTakeoffPosition() {
+      animationFrame = 0
+      const bounds = section.getBoundingClientRect()
+      const progress = takeoffProgress({
+        sectionTop: bounds.top,
+        sectionHeight: bounds.height,
+        viewportHeight: window.innerHeight,
+      })
+      section.style.setProperty('--takeoff-y', `${takeoffPointPercent(progress)}%`)
+    }
+
+    function requestUpdate() {
+      if (animationFrame !== 0) return
+      animationFrame = window.requestAnimationFrame(updateTakeoffPosition)
+    }
+
+    updateTakeoffPosition()
+    window.addEventListener('scroll', requestUpdate, { passive: true })
+    window.addEventListener('resize', requestUpdate)
+
+    return () => {
+      window.removeEventListener('scroll', requestUpdate)
+      window.removeEventListener('resize', requestUpdate)
+      if (animationFrame !== 0) window.cancelAnimationFrame(animationFrame)
+    }
+  }, [])
+
   return (
-    <section className="home-section home-cta">
+    <section ref={sectionRef} className="home-section home-cta">
       <div className="home-cta__runway" aria-hidden="true">
         <span />
       </div>
