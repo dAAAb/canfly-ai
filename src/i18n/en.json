@@ -30,7 +30,7 @@
     "seat": "Ready in",
     "scannerReady": "Ready to scan",
     "accepted": "Boarding accepted",
-    "dragHint": "Slide the pass into the scanner",
+    "dragHint": "Slide the pass, or scroll down to board",
     "enterCabin": "Enter cabin"
   },
   "cabin": {

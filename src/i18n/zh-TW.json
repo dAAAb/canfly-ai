@@ -30,7 +30,7 @@
     "seat": "準備時間",
     "scannerReady": "等待掃描",
     "accepted": "登機完成",
-    "dragHint": "把登機證滑進掃描器",
+    "dragHint": "滑動登機證，或向下捲動登機",
     "enterCabin": "直接進入機艙"
   },
   "cabin": {

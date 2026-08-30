@@ -59,4 +59,27 @@ describe('BoardingGate', () => {
     unmount()
     vi.mocked(window.scrollTo).mockRestore()
   })
+
+  it('boards when the visitor scrolls down on the gate', () => {
+    vi.useFakeTimers()
+    const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {})
+    const onBoarded = vi.fn()
+    const { container, unmount } = render(<BoardingGate onBoarded={onBoarded} />)
+    const gate = container.querySelector('.boarding-gate')
+
+    expect(gate).not.toBeNull()
+    if (!gate) throw new Error('boarding gate not rendered')
+    fireEvent.wheel(gate, { deltaY: 60 })
+    expect(screen.getByText('Ready to scan')).toBeInTheDocument()
+    fireEvent.wheel(gate, { deltaY: 60 })
+    expect(screen.getByText('Boarding accepted')).toBeInTheDocument()
+
+    act(() => {
+      vi.advanceTimersByTime(1_180)
+    })
+
+    expect(onBoarded).toHaveBeenCalledOnce()
+    unmount()
+    scrollTo.mockRestore()
+  })
 })

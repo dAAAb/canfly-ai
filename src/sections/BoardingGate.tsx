@@ -5,6 +5,7 @@ import {
   useState,
   type KeyboardEvent,
   type PointerEvent,
+  type WheelEvent,
 } from 'react'
 import { ArrowRight, Check, ScanLine } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -18,6 +19,7 @@ interface BoardingGateProps {
 }
 
 const ACCEPT_THRESHOLD = 0.62
+const SCROLL_BOARDING_THRESHOLD = 120
 const SCAN_DURATION_MS = 420
 const DEPARTURE_DURATION_MS = 760
 
@@ -31,6 +33,7 @@ export default function BoardingGate({ onBoarded }: BoardingGateProps) {
   const passRef = useRef<HTMLDivElement>(null)
   const dragStartRef = useRef(0)
   const startOffsetRef = useRef(0)
+  const wheelTravelRef = useRef(0)
   const timersRef = useRef<number[]>([])
 
   const getTravel = useCallback(() => {
@@ -80,6 +83,7 @@ export default function BoardingGate({ onBoarded }: BoardingGateProps) {
 
   function handlePointerDown(event: PointerEvent<HTMLDivElement>) {
     if (phase === 'scanning' || phase === 'departing') return
+    wheelTravelRef.current = 0
     event.currentTarget.setPointerCapture(event.pointerId)
     dragStartRef.current = event.clientX
     startOffsetRef.current = offset
@@ -105,6 +109,7 @@ export default function BoardingGate({ onBoarded }: BoardingGateProps) {
     }
 
     movePass(0, travel)
+    wheelTravelRef.current = 0
     setPhase('ready')
   }
 
@@ -112,6 +117,25 @@ export default function BoardingGate({ onBoarded }: BoardingGateProps) {
     if (event.key !== 'Enter' && event.key !== ' ') return
     event.preventDefault()
     beginBoarding()
+  }
+
+  function handleWheel(event: WheelEvent<HTMLElement>) {
+    if (phase === 'scanning' || phase === 'departing') return
+    event.preventDefault()
+
+    const nextScrollProgress = boardingProgress(
+      wheelTravelRef.current + event.deltaY,
+      SCROLL_BOARDING_THRESHOLD,
+    )
+    wheelTravelRef.current = nextScrollProgress * SCROLL_BOARDING_THRESHOLD
+
+    const travel = getTravel()
+    offsetRef.current = travel * nextScrollProgress
+    setOffset(offsetRef.current)
+    setProgress(nextScrollProgress)
+    setPhase(nextScrollProgress > 0 ? 'dragging' : 'ready')
+
+    if (nextScrollProgress >= 1) beginBoarding()
   }
 
   const status =
@@ -123,6 +147,7 @@ export default function BoardingGate({ onBoarded }: BoardingGateProps) {
     <section
       className={`boarding-gate boarding-gate--${phase}`}
       aria-label={t('boarding.title')}
+      onWheel={handleWheel}
     >
       <div className="boarding-gate__sky" aria-hidden="true">
         <span className="boarding-gate__cloud boarding-gate__cloud--one" />
