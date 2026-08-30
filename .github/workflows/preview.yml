@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - cursor/cabin-cloudsea-redesign-0b02
+      - cursor/runway-avatar-media-0b02
 
 concurrency:
   group: cabin-redesign-preview
