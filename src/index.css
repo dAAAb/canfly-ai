@@ -1496,6 +1496,7 @@ body {
 
 .cabin-window {
   --cabin-window-inset: clamp(0.9rem, 2vw, 1.6rem);
+  --cabin-shade-track: clamp(0.38rem, 0.75vw, 0.58rem);
   position: relative;
   isolation: isolate;
   width: min(100%, 34rem);
@@ -1694,7 +1695,7 @@ body {
 
 .cabin-window__shade {
   position: absolute;
-  inset: -5% -4% auto;
+  inset: -5% var(--cabin-shade-track) auto;
   z-index: 10;
   height: 114%;
   border: 1px solid rgba(7, 20, 38, 0.12);
@@ -1750,6 +1751,18 @@ body {
   box-shadow:
     0 0.8rem 1.3rem rgba(7, 20, 38, 0.18) inset,
     0 -0.35rem 0.8rem rgba(255, 255, 255, 0.44) inset;
+  content: "";
+}
+
+.cabin-window__bezel::after {
+  position: absolute;
+  inset: clamp(0.58rem, 1.15vw, 0.86rem);
+  border: clamp(0.2rem, 0.42vw, 0.32rem) solid rgba(250, 248, 243, 0.88);
+  border-radius: inherit;
+  box-shadow:
+    0 0 0 1px rgba(7, 20, 38, 0.22),
+    0 0.7rem 1.15rem rgba(7, 20, 38, 0.2) inset,
+    0 -0.28rem 0.7rem rgba(255, 255, 255, 0.5) inset;
   content: "";
 }
 
