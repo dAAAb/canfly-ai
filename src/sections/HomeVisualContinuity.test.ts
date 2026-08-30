@@ -39,4 +39,18 @@ describe('homepage visual continuity', () => {
     expect(window).toMatch(/border-radius:/)
     expect(clouds).not.toMatch(/filter:/)
   })
+
+  it('moves the hero cloud layers left on a seamless loop', () => {
+    const cloudSea = declarations('.cloud-sea')
+
+    expect(cloudSea).toMatch(/width:\s*200%/)
+    expect(cloudSea).toMatch(/background-repeat:\s*repeat-x/)
+    expect(cloudSea).toMatch(/background-size:\s*50%\s+100%/)
+
+    for (const selector of ['.cloud-sea--far', '.cloud-sea--middle', '.cloud-sea--near']) {
+      expect(declarations(selector)).toMatch(
+        /animation:\s*cloud-cruise-left\s+\S+\s+linear\s+infinite/,
+      )
+    }
+  })
 })

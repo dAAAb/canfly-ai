@@ -5,6 +5,7 @@ import {
   useState,
   type KeyboardEvent,
   type PointerEvent,
+  type TouchEvent,
   type WheelEvent,
 } from 'react'
 import { ArrowRight, Check, ScanLine } from 'lucide-react'
@@ -34,6 +35,8 @@ export default function BoardingGate({ onBoarded }: BoardingGateProps) {
   const dragStartRef = useRef(0)
   const startOffsetRef = useRef(0)
   const wheelTravelRef = useRef(0)
+  const touchStartYRef = useRef<number | null>(null)
+  const touchStartTravelRef = useRef(0)
   const timersRef = useRef<number[]>([])
 
   const getTravel = useCallback(() => {
@@ -119,12 +122,9 @@ export default function BoardingGate({ onBoarded }: BoardingGateProps) {
     beginBoarding()
   }
 
-  function handleWheel(event: WheelEvent<HTMLElement>) {
-    if (phase === 'scanning' || phase === 'departing') return
-    event.preventDefault()
-
+  function updateScrollBoarding(nextTravel: number) {
     const nextScrollProgress = boardingProgress(
-      wheelTravelRef.current + event.deltaY,
+      nextTravel,
       SCROLL_BOARDING_THRESHOLD,
     )
     wheelTravelRef.current = nextScrollProgress * SCROLL_BOARDING_THRESHOLD
@@ -138,6 +138,42 @@ export default function BoardingGate({ onBoarded }: BoardingGateProps) {
     if (nextScrollProgress >= 1) beginBoarding()
   }
 
+  function handleWheel(event: WheelEvent<HTMLElement>) {
+    if (phase === 'scanning' || phase === 'departing') return
+    event.preventDefault()
+    updateScrollBoarding(wheelTravelRef.current + event.deltaY)
+  }
+
+  function handleTouchStart(event: TouchEvent<HTMLElement>) {
+    if (phase === 'scanning' || phase === 'departing') return
+    if (
+      event.target instanceof Element
+      && event.target.closest('button, a, [role="button"]')
+    ) {
+      return
+    }
+
+    const touch = event.touches.item(0)
+    if (!touch) return
+    touchStartYRef.current = touch.clientY
+    touchStartTravelRef.current = wheelTravelRef.current
+  }
+
+  function handleTouchMove(event: TouchEvent<HTMLElement>) {
+    const startY = touchStartYRef.current
+    const touch = event.touches.item(0)
+    if (startY === null || !touch) return
+
+    updateScrollBoarding(
+      touchStartTravelRef.current + startY - touch.clientY,
+    )
+  }
+
+  function handleTouchEnd() {
+    touchStartYRef.current = null
+    touchStartTravelRef.current = wheelTravelRef.current
+  }
+
   const status =
     phase === 'scanning' || phase === 'departing'
       ? t('boarding.accepted')
@@ -148,6 +184,10 @@ export default function BoardingGate({ onBoarded }: BoardingGateProps) {
       className={`boarding-gate boarding-gate--${phase}`}
       aria-label={t('boarding.title')}
       onWheel={handleWheel}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
     >
       <div className="boarding-gate__sky" aria-hidden="true">
         <span className="boarding-gate__cloud boarding-gate__cloud--one" />

@@ -82,4 +82,31 @@ describe('BoardingGate', () => {
     unmount()
     scrollTo.mockRestore()
   })
+
+  it('boards when a mobile visitor swipes upward on empty gate space', () => {
+    vi.useFakeTimers()
+    const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {})
+    const onBoarded = vi.fn()
+    const { container, unmount } = render(<BoardingGate onBoarded={onBoarded} />)
+    const gate = container.querySelector('.boarding-gate')
+
+    if (!gate) throw new Error('boarding gate not rendered')
+
+    fireEvent.touchStart(gate, { touches: [{ clientY: 500 }] })
+    fireEvent.touchMove(gate, { touches: [{ clientY: 440 }] })
+    fireEvent.touchEnd(gate)
+    expect(screen.getByText('Ready to scan')).toBeInTheDocument()
+
+    fireEvent.touchStart(gate, { touches: [{ clientY: 500 }] })
+    fireEvent.touchMove(gate, { touches: [{ clientY: 440 }] })
+    expect(screen.getByText('Boarding accepted')).toBeInTheDocument()
+
+    act(() => {
+      vi.advanceTimersByTime(1_180)
+    })
+
+    expect(onBoarded).toHaveBeenCalledOnce()
+    unmount()
+    scrollTo.mockRestore()
+  })
 })

@@ -4,12 +4,52 @@ import { useTranslation } from 'react-i18next'
 import { useLanguage } from '../hooks/useLanguage'
 import { trackCTAClick } from '../utils/analytics'
 import FlightMark from '../components/FlightMark'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import {
+  CRUISING_ALTITUDES,
+  formatTaipeiTime,
+  nextAltitudeIndex,
+} from './HeroSection.logic'
+
+type AltitudeDirection = 'up' | 'down'
+
+interface AltitudeState {
+  index: number
+  direction: AltitudeDirection
+}
 
 export default function HeroSection() {
   const { t } = useTranslation()
   const { localePath } = useLanguage()
   const [shadeClosed, setShadeClosed] = useState(false)
+  const [altitude, setAltitude] = useState<AltitudeState>({ index: 0, direction: 'up' })
+  const [taipeiTime, setTaipeiTime] = useState(() => formatTaipeiTime(new Date()))
+
+  useEffect(() => {
+    const altitudeTimer = window.setInterval(() => {
+      setAltitude((current) => {
+        const nextIndex = nextAltitudeIndex(current.index)
+        return {
+          index: nextIndex,
+          direction:
+            CRUISING_ALTITUDES[nextIndex] >= CRUISING_ALTITUDES[current.index]
+              ? 'up'
+              : 'down',
+        }
+      })
+    }, 2_400)
+
+    const clockTimer = window.setInterval(() => {
+      setTaipeiTime(formatTaipeiTime(new Date()))
+    }, 1_000)
+
+    return () => {
+      window.clearInterval(altitudeTimer)
+      window.clearInterval(clockTimer)
+    }
+  }, [])
+
+  const cruisingAltitude = CRUISING_ALTITUDES[altitude.index]
 
   return (
     <section
@@ -94,7 +134,14 @@ export default function HeroSection() {
         <div className="cabin-view">
           <div className="cabin-view__sign">
             <span>{t('cabin.altitude')}</span>
-            <strong>38,000 FT</strong>
+            <strong
+              className={`cabin-view__altitude cabin-view__altitude--${altitude.direction}`}
+              aria-label={`${t('cabin.altitude')} ${cruisingAltitude.toLocaleString('en-US')} FT`}
+            >
+              <span key={altitude.index}>
+                {cruisingAltitude.toLocaleString('en-US')} FT
+              </span>
+            </strong>
           </div>
 
           <div className="cabin-window">
@@ -131,7 +178,7 @@ export default function HeroSection() {
           <div className="cabin-view__footer">
             <span>CF 001</span>
             <span>{t('cabin.route')}</span>
-            <span>{t('cabin.localTime')}</span>
+            <time>{t('cabin.localTime')} {taipeiTime}</time>
           </div>
         </div>
       </div>

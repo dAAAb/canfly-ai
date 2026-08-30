@@ -737,6 +737,8 @@ body {
   background:
     linear-gradient(112deg, rgba(255, 255, 255, 0.58), transparent 52%),
     var(--flight-cabin);
+  overscroll-behavior: contain;
+  touch-action: none;
   transform: translateY(0);
   transition: transform var(--boarding-departure, 760ms) cubic-bezier(0.76, 0, 0.24, 1);
 }
@@ -1490,8 +1492,57 @@ body {
   margin-bottom: 0.8rem;
 }
 
+.cabin-view__altitude {
+  display: block;
+  min-width: 5.4rem;
+  height: 1.35em;
+  overflow: hidden;
+  line-height: 1.35;
+  text-align: right;
+}
+
+.cabin-view__altitude span {
+  display: block;
+  will-change: transform, opacity;
+}
+
+.cabin-view__altitude--up span {
+  animation: cabin-data-roll-up 480ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cabin-view__altitude--down span {
+  animation: cabin-data-roll-down 480ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 .cabin-view__footer {
   margin-top: 1rem;
+}
+
+.cabin-view__footer time {
+  font: inherit;
+  letter-spacing: inherit;
+}
+
+@keyframes cabin-data-roll-up {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cabin-data-roll-down {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .cabin-window {
@@ -1619,10 +1670,13 @@ body {
 
 .cloud-sea {
   position: absolute;
-  left: -25%;
+  left: 0;
   z-index: 3;
-  width: 150%;
+  width: 200%;
+  background-repeat: repeat-x;
+  background-size: 50% 100%;
   pointer-events: none;
+  transform: translate3d(0, 0, 0);
   will-change: transform;
 }
 
@@ -1638,7 +1692,7 @@ body {
     linear-gradient(to bottom, transparent 45%, rgba(255, 255, 255, 0.92) 67%);
   filter: blur(2.8px);
   opacity: 0.78;
-  animation: clouds-far 32s ease-in-out infinite alternate;
+  animation: cloud-cruise-left 52s linear infinite;
 }
 
 .cloud-sea--middle {
@@ -1653,7 +1707,7 @@ body {
     radial-gradient(ellipse 20% 46% at 98% 66%, #f8fcff 0 44%, transparent 49%),
     linear-gradient(to bottom, transparent 43%, #f8fcff 70%);
   filter: drop-shadow(0 -0.5rem 1rem rgba(111, 179, 220, 0.22));
-  animation: clouds-middle 22s ease-in-out infinite alternate;
+  animation: cloud-cruise-left 34s linear infinite;
 }
 
 .cloud-sea--near {
@@ -1667,7 +1721,7 @@ body {
     radial-gradient(ellipse 27% 52% at 96% 40%, #fff 0 46%, transparent 51%),
     linear-gradient(to bottom, transparent 38%, #f8fcff 61%);
   filter: blur(0.5px) drop-shadow(0 -1rem 1.7rem rgba(80, 156, 204, 0.22));
-  animation: clouds-near 16s ease-in-out infinite alternate;
+  animation: cloud-cruise-left 22s linear infinite;
 }
 
 .cabin-window__plane {
@@ -1798,16 +1852,8 @@ body {
   50% { transform: translate3d(0.6rem, -0.35rem, 0) rotate(-1deg); }
 }
 
-@keyframes clouds-far {
-  to { transform: translate3d(4%, 0, 0); }
-}
-
-@keyframes clouds-middle {
-  to { transform: translate3d(-4%, 1%, 0); }
-}
-
-@keyframes clouds-near {
-  to { transform: translate3d(3%, -1%, 0) scale(1.02); }
+@keyframes cloud-cruise-left {
+  to { transform: translate3d(-50%, 0, 0); }
 }
 
 /* Live status board */
@@ -3107,6 +3153,7 @@ body {
   .boarding-pass,
   .boarding-gate__gesture svg,
   .boarding-scanner__slot span,
+  .cabin-view__altitude span,
   .cabin-window__plane,
   .cloud-sea,
   .home-quote__window > .flight-mark,
