@@ -7731,14 +7731,19 @@
     "emailPlaceholder": "Your email",
     "notify": "Notify me",
     "yourCamera": "Your camera preview",
-    "cameraLive": "Camera is on — LittleLobster can see this feed.",
+    "cameraLive": "Camera track is on.",
+    "mediaPublished": "Camera and microphone are published to the call.",
+    "microphoneLive": "Microphone is connected.",
     "cameraError": "The camera could not start. Close other camera apps, check permission, then retry.",
+    "microphoneError": "The microphone could not start. In Brave, set Microphone and Autoplay to Allow in site settings, then retry.",
     "retryCamera": "Retry camera",
+    "retryMicrophone": "Retry microphone",
     "mediaReady": "Camera vision and screen sharing are available in this browser.",
+    "customVoiceNoVision": "LittleLobster currently uses a custom Runway voice. Runway does not support webcam or screen visual understanding for custom-voice Characters. Switch the Character to a preset voice to enable it.",
     "secureContextRequired": "Camera and screen sharing require HTTPS.",
     "cameraUnavailable": "This browser is not exposing a camera API. You can continue with audio only.",
     "screenShareUnavailable": "Screen sharing is unavailable in this browser. Camera still works; use a supported desktop browser to share your screen.",
-    "braveMobileHint": "Brave mobile may block live camera playback. Allow Camera, Microphone, and Autoplay for canfly.ai; if it still fails, disable Shields for this site or open the call in Safari or Chrome. Mobile screen sharing may be unavailable."
+    "braveMobileHint": "Brave mobile may block the microphone even when camera preview works. Allow Camera, Microphone, and Autoplay for canfly.ai; if it still fails, disable Shields for this site or open the call in Safari or Chrome."
   },
   "agentAvatar": {
     "startCall": "Start Video Call with {{emoji}}",

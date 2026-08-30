@@ -11,6 +11,8 @@ import {
 import { useAvatarMediaCapabilities } from '../hooks/useAvatarMediaCapabilities'
 
 const AVATAR_ID = '47996119-0180-48cb-9e97-64e93e0478d8'
+// Runway currently disables webcam/screen visual context for custom-voice Characters.
+const VISUAL_CONTEXT_SUPPORTED = false
 const WALLET_ADDRESS = '0x4b039112Af5b46c9BC95b66dc8d6dCe75d10E689'
 const BASENAME = 'littl3lobst3r.base.eth'
 const BASESCAN_URL = `https://basescan.org/address/${WALLET_ADDRESS}`
@@ -69,7 +71,10 @@ export default function AvatarSection() {
               size="sm"
             />
           </div>
-          <AvatarMediaNotice capabilities={mediaCapabilities} />
+          <AvatarMediaNotice
+            capabilities={mediaCapabilities}
+            visualContextSupported={VISUAL_CONTEXT_SUPPORTED}
+          />
         </div>
 
         {/* Error state — friendly message */}
@@ -198,12 +203,15 @@ export default function AvatarSection() {
                 avatarId={AVATAR_ID}
                 connectUrl="/api/avatar/connect"
                 audio
-                video={mediaCapabilities.camera}
+                video={mediaCapabilities.camera && VISUAL_CONTEXT_SUPPORTED}
                 className="avatar-media-call"
                 onEnd={() => setIsCallActive(false)}
                 onError={handleError}
               >
-                <AvatarMediaExperience capabilities={mediaCapabilities} />
+                <AvatarMediaExperience
+                  capabilities={mediaCapabilities}
+                  visualContextSupported={VISUAL_CONTEXT_SUPPORTED}
+                />
               </AvatarCall>
             </div>
 

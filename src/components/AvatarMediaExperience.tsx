@@ -11,114 +11,181 @@ import type { AvatarMediaCapabilities } from '../utils/avatarMediaCapabilities'
 
 interface AvatarMediaNoticeProps {
   capabilities: AvatarMediaCapabilities
+  visualContextSupported?: boolean
 }
 
 export function AvatarMediaNotice({
   capabilities,
+  visualContextSupported = true,
 }: AvatarMediaNoticeProps) {
   const { t } = useTranslation()
+  const notices: Array<{
+    key: string
+    icon: 'camera' | 'screen' | 'shield'
+    tone: 'info' | 'ready' | 'warning'
+    text: string
+  }> = []
 
   if (!capabilities.secureContext) {
-    return (
-      <div className="avatar-media-notice avatar-media-notice--warning">
-        <ShieldAlert aria-hidden="true" />
-        <span>{t('avatar.secureContextRequired')}</span>
-      </div>
-    )
+    notices.push({
+      key: 'secure',
+      icon: 'shield',
+      tone: 'warning',
+      text: t('avatar.secureContextRequired'),
+    })
+  } else {
+    if (!visualContextSupported) {
+      notices.push({
+        key: 'voice',
+        icon: 'camera',
+        tone: 'warning',
+        text: t('avatar.customVoiceNoVision'),
+      })
+    }
+
+    if (capabilities.braveMobile) {
+      notices.push({
+        key: 'brave',
+        icon: 'shield',
+        tone: 'warning',
+        text: t('avatar.braveMobileHint'),
+      })
+    } else if (visualContextSupported && !capabilities.camera) {
+      notices.push({
+        key: 'camera',
+        icon: 'camera',
+        tone: 'warning',
+        text: t('avatar.cameraUnavailable'),
+      })
+    }
+
+    if (visualContextSupported && !capabilities.screenShare) {
+      notices.push({
+        key: 'screen',
+        icon: 'screen',
+        tone: 'info',
+        text: t('avatar.screenShareUnavailable'),
+      })
+    }
+
+    if (
+      visualContextSupported
+      && capabilities.camera
+      && capabilities.screenShare
+      && !capabilities.braveMobile
+    ) {
+      notices.push({
+        key: 'ready',
+        icon: 'camera',
+        tone: 'ready',
+        text: t('avatar.mediaReady'),
+      })
+    }
   }
 
-  if (capabilities.braveMobile) {
-    return (
-      <div className="avatar-media-notice avatar-media-notice--warning">
-        <ShieldAlert aria-hidden="true" />
-        <span>{t('avatar.braveMobileHint')}</span>
-      </div>
-    )
-  }
-
-  if (!capabilities.camera) {
-    return (
-      <div className="avatar-media-notice avatar-media-notice--warning">
-        <Camera aria-hidden="true" />
-        <span>{t('avatar.cameraUnavailable')}</span>
-      </div>
-    )
-  }
-
-  if (!capabilities.screenShare) {
-    return (
-      <div className="avatar-media-notice">
-        <MonitorUp aria-hidden="true" />
-        <span>{t('avatar.screenShareUnavailable')}</span>
-      </div>
-    )
-  }
+  if (notices.length === 0) return null
 
   return (
-    <div className="avatar-media-notice avatar-media-notice--ready">
-      <Camera aria-hidden="true" />
-      <span>{t('avatar.mediaReady')}</span>
+    <div className="avatar-media-notices">
+      {notices.map((notice) => {
+        const Icon =
+          notice.icon === 'camera'
+            ? Camera
+            : notice.icon === 'screen'
+              ? MonitorUp
+              : ShieldAlert
+
+        return (
+          <div
+            key={notice.key}
+            className={`avatar-media-notice avatar-media-notice--${notice.tone}`}
+          >
+            <Icon aria-hidden="true" />
+            <span>{notice.text}</span>
+          </div>
+        )
+      })}
     </div>
   )
 }
 
 interface AvatarMediaExperienceProps {
   capabilities: AvatarMediaCapabilities
+  visualContextSupported?: boolean
 }
 
 export function AvatarMediaExperience({
   capabilities,
+  visualContextSupported = true,
 }: AvatarMediaExperienceProps) {
   const { t } = useTranslation()
+  const cameraEnabled = capabilities.camera && visualContextSupported
+  const screenShareEnabled =
+    capabilities.screenShare && visualContextSupported
 
   return (
     <>
       <AvatarVideo className="avatar-remote-video" />
-      {capabilities.screenShare && (
+      {screenShareEnabled && (
         <ScreenShareVideo className="avatar-screen-preview" />
       )}
-      {capabilities.camera && (
+      {cameraEnabled && (
         <UserVideo
           className="avatar-local-preview"
           aria-label={t('avatar.yourCamera')}
         />
       )}
-      <AvatarCameraStatus />
+      <AvatarMediaStatus cameraExpected={cameraEnabled} />
       <ControlBar
-        showCamera={capabilities.camera}
-        showScreenShare={capabilities.screenShare}
+        showCamera={cameraEnabled}
+        showScreenShare={screenShareEnabled}
       />
     </>
   )
 }
 
-function AvatarCameraStatus() {
+function AvatarMediaStatus({ cameraExpected }: { cameraExpected: boolean }) {
   const { t } = useTranslation()
   const {
+    isMicEnabled,
     isCameraEnabled,
+    micError,
     cameraError,
+    retryMic,
     retryCamera,
   } = useLocalMedia()
 
-  if (cameraError) {
+  if (micError || cameraError) {
     return (
       <div className="avatar-camera-error" role="alert">
-        <Camera aria-hidden="true" />
-        <span>{t('avatar.cameraError')}</span>
-        <button type="button" onClick={() => void retryCamera()}>
-          <RefreshCw aria-hidden="true" />
-          {t('avatar.retryCamera')}
-        </button>
+        <ShieldAlert aria-hidden="true" />
+        <span>
+          {micError ? t('avatar.microphoneError') : t('avatar.cameraError')}
+        </span>
+        {micError && (
+          <button type="button" onClick={() => void retryMic()}>
+            <RefreshCw aria-hidden="true" />
+            {t('avatar.retryMicrophone')}
+          </button>
+        )}
+        {cameraError && (
+          <button type="button" onClick={() => void retryCamera()}>
+            <RefreshCw aria-hidden="true" />
+            {t('avatar.retryCamera')}
+          </button>
+        )}
       </div>
     )
   }
 
-  if (!isCameraEnabled) return null
+  if (!isMicEnabled && !(cameraExpected && isCameraEnabled)) return null
 
   return (
     <div className="avatar-camera-live" aria-live="polite">
       <span aria-hidden="true" />
-      {t('avatar.cameraLive')}
+      {cameraExpected && isCameraEnabled
+        ? t('avatar.mediaPublished')
+        : t('avatar.microphoneLive')}
     </div>
   )
 }
