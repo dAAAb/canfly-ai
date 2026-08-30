@@ -153,7 +153,7 @@ export default function BoardingGate({ onBoarded }: BoardingGateProps) {
       return
     }
 
-    const touch = event.touches.item(0)
+    const touch = event.touches[0]
     if (!touch) return
     touchStartYRef.current = touch.clientY
     touchStartTravelRef.current = wheelTravelRef.current
@@ -161,7 +161,7 @@ export default function BoardingGate({ onBoarded }: BoardingGateProps) {
 
   function handleTouchMove(event: TouchEvent<HTMLElement>) {
     const startY = touchStartYRef.current
-    const touch = event.touches.item(0)
+    const touch = event.touches[0]
     if (startY === null || !touch) return
 
     updateScrollBoarding(
