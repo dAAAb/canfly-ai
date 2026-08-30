@@ -7729,7 +7729,15 @@
     "tryAgain": "Try again",
     "notifyMessage": "Leave your email — I'll let you know when I'm back and ready to chat!",
     "emailPlaceholder": "Your email",
-    "notify": "Notify me"
+    "notify": "Notify me",
+    "yourCamera": "Your camera preview",
+    "cameraLive": "Camera is on — LittleLobster can see this feed.",
+    "cameraError": "The camera could not start. Close other camera apps, check permission, then retry.",
+    "retryCamera": "Retry camera",
+    "secureContextRequired": "Camera and screen sharing require HTTPS.",
+    "cameraUnavailable": "This browser is not exposing a camera API. You can continue with audio only.",
+    "screenShareUnavailable": "Screen sharing is unavailable in this browser. Camera still works; use a supported desktop browser to share your screen.",
+    "braveMobileHint": "Brave mobile may block live camera playback. Allow Camera, Microphone, and Autoplay for canfly.ai; if it still fails, disable Shields for this site or open the call in Safari or Chrome. Mobile screen sharing may be unavailable."
   },
   "agentAvatar": {
     "startCall": "Start Video Call with {{emoji}}",

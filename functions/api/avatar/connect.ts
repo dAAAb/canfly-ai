@@ -15,6 +15,15 @@ interface Env {
 const RUNWAY_API = 'https://api.dev.runwayml.com'
 const RUNWAY_VERSION = '2024-11-06'
 
+function noStoreJson(body: unknown, status = 200) {
+  return Response.json(body, {
+    status,
+    headers: {
+      'Cache-Control': 'no-store',
+    },
+  })
+}
+
 async function createSession(apiSecret: string, avatarId: string) {
   const res = await fetch(`${RUNWAY_API}/v1/realtime_sessions`, {
     method: 'POST',
@@ -105,19 +114,23 @@ async function consumeSession(sessionId: string, sessionKey: string) {
 export const onRequestPost: PagesFunction<Env> = async (context) => {
   const apiSecret = context.env.RUNWAYML_API_SECRET
   if (!apiSecret) {
-    return Response.json({ error: 'RUNWAYML_API_SECRET not configured' }, { status: 500 })
+    return noStoreJson({ error: 'RUNWAYML_API_SECRET not configured' }, 500)
   }
 
   let avatarId: string
   try {
-    const body = (await context.request.json()) as { avatarId?: string }
-    avatarId = body.avatarId || ''
+    const body: unknown = await context.request.json()
+    const value =
+      typeof body === 'object' && body !== null
+        ? Reflect.get(body, 'avatarId')
+        : null
+    avatarId = typeof value === 'string' ? value.trim() : ''
   } catch {
-    return Response.json({ error: 'Invalid request body' }, { status: 400 })
+    return noStoreJson({ error: 'Invalid request body' }, 400)
   }
 
   if (!avatarId) {
-    return Response.json({ error: 'avatarId is required' }, { status: 400 })
+    return noStoreJson({ error: 'avatarId is required' }, 400)
   }
 
   try {
@@ -131,14 +144,16 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     const { url, token, roomName } = await consumeSession(sessionId, sessionKey)
 
     // Step 4: Return full credentials to SDK
-    return Response.json({
+    return noStoreJson({
       sessionId,
       serverUrl: url,
       token,
       roomName,
     })
-  } catch (err: any) {
-    console.error('Avatar connect error:', err.message)
-    return Response.json({ error: err.message }, { status: 500 })
+  } catch (error: unknown) {
+    const message =
+      error instanceof Error ? error.message : 'Avatar session failed'
+    console.error('Avatar connect error:', message)
+    return noStoreJson({ error: message }, 500)
   }
 }
