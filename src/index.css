@@ -1495,11 +1495,13 @@ body {
 }
 
 .cabin-window {
+  --cabin-window-inset: clamp(0.9rem, 2vw, 1.6rem);
   position: relative;
+  isolation: isolate;
   width: min(100%, 34rem);
   border: 1px solid rgba(7, 20, 38, 0.12);
   border-radius: 46% 46% 42% 42% / 24% 24% 18% 18%;
-  padding: clamp(0.9rem, 2vw, 1.6rem);
+  padding: var(--cabin-window-inset);
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(184, 179, 170, 0.54)),
     var(--flight-cabin-deep);
@@ -1531,10 +1533,13 @@ body {
 
 .cabin-window__inner {
   position: relative;
+  z-index: 1;
+  isolation: isolate;
   aspect-ratio: 0.82;
   overflow: hidden;
   border: 1px solid rgba(7, 20, 38, 0.18);
   border-radius: 46% 46% 42% 42% / 24% 24% 18% 18%;
+  clip-path: inset(0 round 46% 46% 42% 42% / 24% 24% 18% 18%);
   background: #62baf3;
   box-shadow:
     0 0 0 0.45rem rgba(7, 20, 38, 0.12),
@@ -1689,10 +1694,11 @@ body {
 
 .cabin-window__shade {
   position: absolute;
-  inset: -2% 0 auto;
+  inset: -5% -4% auto;
   z-index: 10;
-  height: 104%;
-  border-bottom: 1px solid rgba(7, 20, 38, 0.18);
+  height: 114%;
+  border: 1px solid rgba(7, 20, 38, 0.12);
+  border-radius: 46% 46% 42% 42% / 24% 24% 18% 18%;
   background:
     repeating-linear-gradient(
       90deg,
@@ -1700,8 +1706,10 @@ body {
       transparent 1px 3px
     ),
     linear-gradient(150deg, #dcd7ce, #a9a49b);
-  box-shadow: 0 1.2rem 2.4rem rgba(7, 20, 38, 0.2);
-  transform: translateY(-95%);
+  box-shadow:
+    0 1.2rem 2.4rem rgba(7, 20, 38, 0.2),
+    0 0 0 0.35rem rgba(255, 255, 255, 0.08) inset;
+  transform: translateY(-96%);
   transition: transform 620ms cubic-bezier(0.76, 0, 0.24, 1);
 }
 
@@ -1717,14 +1725,28 @@ body {
 }
 
 .cabin-hero--shade-closed .cabin-window__shade {
-  transform: translateY(-1%);
+  transform: translateY(-3%);
+}
+
+.cabin-window__bezel {
+  position: absolute;
+  inset: var(--cabin-window-inset);
+  z-index: 2;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: 46% 46% 42% 42% / 24% 24% 18% 18%;
+  box-shadow:
+    0 0 0 0.42rem rgba(7, 20, 38, 0.11),
+    0 0 0 0.78rem rgba(255, 255, 255, 0.3),
+    0 1.1rem 1.6rem rgba(255, 255, 255, 0.26) inset,
+    0 -0.8rem 1.5rem rgba(7, 20, 38, 0.14) inset;
+  pointer-events: none;
 }
 
 .cabin-window__shade-toggle {
   position: absolute;
   right: 50%;
-  bottom: 0.95rem;
-  z-index: 12;
+  bottom: calc(var(--cabin-window-inset) + 0.75rem);
+  z-index: 3;
   display: inline-flex;
   min-height: 2.3rem;
   align-items: center;

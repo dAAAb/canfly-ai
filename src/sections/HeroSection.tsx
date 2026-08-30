@@ -110,21 +110,22 @@ export default function HeroSection() {
               <div className="cabin-window__shade" aria-hidden="true">
                 <span />
               </div>
-              <button
-                type="button"
-                className="cabin-window__shade-toggle"
-                aria-pressed={shadeClosed}
-                aria-label={
-                  shadeClosed
-                    ? t('cabin.openShade')
-                    : t('cabin.closeShade')
-                }
-                onClick={() => setShadeClosed((closed) => !closed)}
-              >
-                {shadeClosed ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
-                <span>{shadeClosed ? t('cabin.openShade') : t('cabin.closeShade')}</span>
-              </button>
             </div>
+            <div className="cabin-window__bezel" aria-hidden="true" />
+            <button
+              type="button"
+              className="cabin-window__shade-toggle"
+              aria-pressed={shadeClosed}
+              aria-label={
+                shadeClosed
+                  ? t('cabin.openShade')
+                  : t('cabin.closeShade')
+              }
+              onClick={() => setShadeClosed((closed) => !closed)}
+            >
+              {shadeClosed ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
+              <span>{shadeClosed ? t('cabin.openShade') : t('cabin.closeShade')}</span>
+            </button>
           </div>
 
           <div className="cabin-view__footer">
