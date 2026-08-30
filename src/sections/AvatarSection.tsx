@@ -1,9 +1,14 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AvatarCall, AvatarVideo, ControlBar } from '@runwayml/avatars-react'
+import { AvatarCall } from '@runwayml/avatars-react'
 import '@runwayml/avatars-react/styles.css'
 import { MessageCircle, X, Heart } from 'lucide-react'
 import PillBadge from '../components/PillBadge'
+import {
+  AvatarMediaExperience,
+  AvatarMediaNotice,
+} from '../components/AvatarMediaExperience'
+import { useAvatarMediaCapabilities } from '../hooks/useAvatarMediaCapabilities'
 
 const AVATAR_ID = '47996119-0180-48cb-9e97-64e93e0478d8'
 const WALLET_ADDRESS = '0x4b039112Af5b46c9BC95b66dc8d6dCe75d10E689'
@@ -12,6 +17,7 @@ const BASESCAN_URL = `https://basescan.org/address/${WALLET_ADDRESS}`
 
 export default function AvatarSection() {
   const { t } = useTranslation()
+  const mediaCapabilities = useAvatarMediaCapabilities()
   const [isCallActive, setIsCallActive] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -63,6 +69,7 @@ export default function AvatarSection() {
               size="sm"
             />
           </div>
+          <AvatarMediaNotice capabilities={mediaCapabilities} />
         </div>
 
         {/* Error state — friendly message */}
@@ -189,11 +196,13 @@ export default function AvatarSection() {
               <AvatarCall
                 avatarId={AVATAR_ID}
                 connectUrl="/api/avatar/connect"
+                audio
+                video={mediaCapabilities.camera}
+                className="avatar-media-call"
                 onEnd={() => setIsCallActive(false)}
                 onError={handleError}
               >
-                <AvatarVideo className="w-full aspect-video object-cover" />
-                <ControlBar />
+                <AvatarMediaExperience capabilities={mediaCapabilities} />
               </AvatarCall>
             </div>
 

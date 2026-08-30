@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AvatarCall, AvatarVideo, ControlBar } from '@runwayml/avatars-react'
+import { AvatarCall } from '@runwayml/avatars-react'
 import '@runwayml/avatars-react/styles.css'
 import { Video, X } from 'lucide-react'
+import { AvatarMediaExperience } from './AvatarMediaExperience'
+import { useAvatarMediaCapabilities } from '../hooks/useAvatarMediaCapabilities'
 
 interface AgentAvatarCallProps {
   agentName: string
@@ -13,6 +15,7 @@ interface AgentAvatarCallProps {
 
 export default function AgentAvatarCall({ agentName, avatarId, connectUrl, platformEmoji = '🤖' }: AgentAvatarCallProps) {
   const { t } = useTranslation()
+  const mediaCapabilities = useAvatarMediaCapabilities()
   const [isCallActive, setIsCallActive] = useState(false)
   const [error, setError] = useState<'quota' | 'generic' | null>(null)
 
@@ -114,11 +117,13 @@ export default function AgentAvatarCall({ agentName, avatarId, connectUrl, platf
         <AvatarCall
           avatarId={avatarId}
           connectUrl={connectUrl}
+          audio
+          video={mediaCapabilities.camera}
+          className="avatar-media-call"
           onEnd={() => setIsCallActive(false)}
           onError={handleError}
         >
-          <AvatarVideo className="w-full aspect-video object-cover" />
-          <ControlBar />
+          <AvatarMediaExperience capabilities={mediaCapabilities} />
         </AvatarCall>
       </div>
 
