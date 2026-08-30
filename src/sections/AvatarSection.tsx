@@ -165,14 +165,15 @@ export default function AvatarSection() {
                 className="w-full aspect-video object-cover group-hover:brightness-110 transition-all duration-300"
               />
               {/* CTA overlay — positioned at bottom to avoid covering the face */}
-              <div className="absolute bottom-0 left-0 right-0 pb-8 pt-16 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col items-center">
+              <div className="avatar-call-launcher">
                 <button
-                  className="flight-button flight-button--primary"
+                  type="button"
+                  className="avatar-call-launcher__button flight-button flight-button--primary"
                 >
                   <MessageCircle className="w-6 h-6" />
-                  <span className="text-lg">{t('avatar.startCall', 'Start Video Call with 🦞')}</span>
+                  <span>{t('avatar.startCall', 'Start Video Call with 🦞')}</span>
                 </button>
-                <span className="mt-2 text-xs text-gray-300/70">{t('avatar.clickToStart', 'Click anywhere to connect')}</span>
+                <span className="avatar-call-launcher__hint">{t('avatar.clickToStart', 'Click anywhere to connect')}</span>
               </div>
               {/* Pulse indicator — top right */}
               <span className="absolute top-4 right-4 flex h-4 w-4">

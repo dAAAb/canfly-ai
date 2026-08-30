@@ -2442,6 +2442,28 @@ body {
   width: 100%;
 }
 
+.avatar-call-launcher {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 5rem 1rem 1.5rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.4) 48%, transparent);
+}
+
+.avatar-call-launcher__button {
+  max-width: calc(100% - 1rem);
+}
+
+.avatar-call-launcher__hint {
+  margin-top: 0.5rem;
+  color: rgba(229, 231, 235, 0.7);
+  font-size: 0.75rem;
+}
+
 .avatar-media-notice {
   display: flex;
   max-width: 44rem;
@@ -2566,6 +2588,26 @@ body {
 }
 
 @media (max-width: 640px) {
+  .avatar-call-launcher {
+    justify-content: flex-end;
+    padding: 3.5rem 0.65rem 0.5rem;
+  }
+
+  .avatar-call-launcher__button {
+    min-height: 2.65rem;
+    padding: 0.65rem 1rem;
+    font-size: 0.82rem;
+  }
+
+  .avatar-call-launcher__button svg {
+    width: 1.05rem;
+    height: 1.05rem;
+  }
+
+  .avatar-call-launcher__hint {
+    display: none;
+  }
+
   .avatar-media-call {
     min-height: 55svh;
   }
