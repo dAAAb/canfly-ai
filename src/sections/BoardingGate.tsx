@@ -140,7 +140,6 @@ export default function BoardingGate({ onBoarded }: BoardingGateProps) {
 
   function handleWheel(event: WheelEvent<HTMLElement>) {
     if (phase === 'scanning' || phase === 'departing') return
-    event.preventDefault()
     updateScrollBoarding(wheelTravelRef.current + event.deltaY)
   }
 
