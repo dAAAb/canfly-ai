@@ -78,6 +78,25 @@ jobs:
           Disallow: /
           ROBOTS
 
+      - name: Enable Pages Functions compatibility for preview
+        run: |
+          node <<'NODE'
+          const { readFileSync, writeFileSync } = require('node:fs')
+
+          const path = 'wrangler.toml'
+          const marker = 'compatibility_flags = ["nodejs_compat"]'
+          const source = readFileSync(path, 'utf8')
+
+          if (!source.includes(marker)) {
+            throw new Error('wrangler.toml is missing the nodejs_compat marker')
+          }
+
+          writeFileSync(
+            path,
+            source.replace(marker, `${marker}\npages_build_output_dir = "dist"`),
+          )
+          NODE
+
       - name: Deploy Cloudflare Pages branch preview
         uses: cloudflare/wrangler-action@v3
         with:
