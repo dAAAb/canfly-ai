@@ -24,8 +24,11 @@ vi.mock('@runwayml/avatars-react', () => ({
     />
   ),
   useLocalMedia: () => ({
+    isMicEnabled: true,
     isCameraEnabled: true,
+    micError: null,
     cameraError: null,
+    retryMic: vi.fn(),
     retryCamera: vi.fn(),
   }),
 }))
@@ -52,7 +55,7 @@ describe('AvatarMediaExperience', () => {
       'true',
     )
     expect(
-      screen.getByText('Camera is on — LittleLobster can see this feed.'),
+      screen.getByText('Camera and microphone are published to the call.'),
     ).toBeInTheDocument()
   })
 
@@ -68,7 +71,7 @@ describe('AvatarMediaExperience', () => {
       />,
     )
 
-    expect(screen.getByText(/Brave mobile may block live camera playback/)).toBeInTheDocument()
+    expect(screen.getByText(/Brave mobile may block the microphone/)).toBeInTheDocument()
   })
 
   it('confirms camera vision and screen sharing on supported browsers', () => {
@@ -105,5 +108,40 @@ describe('AvatarMediaExperience', () => {
       'data-screen-share',
       'false',
     )
+  })
+
+  it('does not publish visual tracks for a custom-voice Character', () => {
+    render(
+      <>
+        <AvatarMediaNotice
+          capabilities={{
+            camera: true,
+            screenShare: true,
+            braveMobile: false,
+            secureContext: true,
+          }}
+          visualContextSupported={false}
+        />
+        <AvatarMediaExperience
+          capabilities={{
+            camera: true,
+            screenShare: true,
+            braveMobile: false,
+            secureContext: true,
+          }}
+          visualContextSupported={false}
+        />
+      </>,
+    )
+
+    expect(screen.getByText(/uses a custom Runway voice/)).toBeInTheDocument()
+    expect(screen.queryByTestId('user-video')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('screen-share-video')).not.toBeInTheDocument()
+    expect(screen.getByTestId('control-bar')).toHaveAttribute('data-camera', 'false')
+    expect(screen.getByTestId('control-bar')).toHaveAttribute(
+      'data-screen-share',
+      'false',
+    )
+    expect(screen.getByText('Microphone is connected.')).toBeInTheDocument()
   })
 })

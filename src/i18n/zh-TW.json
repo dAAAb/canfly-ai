@@ -7739,14 +7739,19 @@
     "emailPlaceholder": "你的 email",
     "notify": "通知我",
     "yourCamera": "你的攝影機預覽",
-    "cameraLive": "攝影機已開啟 — 小龍蝦看得到這個畫面。",
+    "cameraLive": "攝影機 track 已開啟。",
+    "mediaPublished": "攝影機與麥克風已發布到通話。",
+    "microphoneLive": "麥克風已連線。",
     "cameraError": "無法開啟攝影機。請關閉其他使用攝影機的 App、檢查權限後再試。",
+    "microphoneError": "無法開啟麥克風。使用 Brave 時，請在網站設定把麥克風與自動播放設為允許，再重試。",
     "retryCamera": "重試攝影機",
+    "retryMicrophone": "重試麥克風",
     "mediaReady": "這個瀏覽器可以使用攝影機視覺與螢幕分享。",
+    "customVoiceNoVision": "小龍蝦目前使用 Runway 自訂聲音。Runway 不支援使用自訂聲音的 Character 分析攝影機或分享畫面；必須改成 preset voice 才能啟用視覺理解。",
     "secureContextRequired": "攝影機與螢幕分享需要 HTTPS。",
     "cameraUnavailable": "這個瀏覽器沒有提供攝影機 API；你仍可只用語音通話。",
     "screenShareUnavailable": "這個瀏覽器不支援螢幕分享。攝影機仍可使用；如需分享螢幕，請改用支援的桌面瀏覽器。",
-    "braveMobileHint": "Brave 手機版可能阻擋即時攝影機畫面。請允許 canfly.ai 使用攝影機、麥克風與自動播放；若仍失敗，請關閉本站 Shields，或改用 Safari／Chrome 開啟通話。手機螢幕分享也可能無法使用。"
+    "braveMobileHint": "Brave 手機版可能在攝影機預覽正常時仍阻擋麥克風。請允許 canfly.ai 使用攝影機、麥克風與自動播放；若仍失敗，請關閉本站 Shields，或改用 Safari／Chrome 開啟通話。"
   },
   "agentAvatar": {
     "startCall": "開始視訊通話 {{emoji}}",
