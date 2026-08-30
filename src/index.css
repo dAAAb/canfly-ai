@@ -1821,16 +1821,21 @@ body {
 
 .home-flight-board::before {
   position: absolute;
-  inset: 0 0 auto;
+  top: -6rem;
+  right: 0;
+  left: 0;
   z-index: 0;
-  height: clamp(6rem, 12vw, 10rem);
+  height: clamp(14rem, 22vw, 18rem);
   background: linear-gradient(
     to bottom,
-    var(--flight-cabin) 0%,
-    rgba(238, 234, 227, 0.58) 18%,
-    rgba(7, 20, 38, 0.5) 68%,
+    transparent 0%,
+    rgba(238, 234, 227, 0.84) 24%,
+    rgba(75, 89, 101, 0.72) 52%,
+    rgba(7, 20, 38, 0.82) 78%,
     var(--flight-ink) 100%
   );
+  filter: blur(10px);
+  transform: scaleY(1.04);
   pointer-events: none;
   content: "";
 }
