@@ -1732,14 +1732,25 @@ body {
   position: absolute;
   inset: var(--cabin-window-inset);
   z-index: 2;
-  border: 1px solid rgba(255, 255, 255, 0.58);
+  border: clamp(0.35rem, 0.8vw, 0.58rem) solid rgba(247, 245, 239, 0.82);
   border-radius: 46% 46% 42% 42% / 24% 24% 18% 18%;
   box-shadow:
-    0 0 0 0.42rem rgba(7, 20, 38, 0.11),
-    0 0 0 0.78rem rgba(255, 255, 255, 0.3),
-    0 1.1rem 1.6rem rgba(255, 255, 255, 0.26) inset,
-    0 -0.8rem 1.5rem rgba(7, 20, 38, 0.14) inset;
+    0 0 0 0.16rem rgba(7, 20, 38, 0.16),
+    0 0 0 0.68rem rgba(255, 255, 255, 0.32),
+    0 1.2rem 1.7rem rgba(255, 255, 255, 0.38) inset,
+    0 -0.9rem 1.6rem rgba(7, 20, 38, 0.2) inset;
   pointer-events: none;
+}
+
+.cabin-window__bezel::before {
+  position: absolute;
+  inset: clamp(0.18rem, 0.45vw, 0.34rem);
+  border: 1px solid rgba(7, 20, 38, 0.2);
+  border-radius: inherit;
+  box-shadow:
+    0 0.8rem 1.3rem rgba(7, 20, 38, 0.18) inset,
+    0 -0.35rem 0.8rem rgba(255, 255, 255, 0.44) inset;
+  content: "";
 }
 
 .cabin-window__shade-toggle {
