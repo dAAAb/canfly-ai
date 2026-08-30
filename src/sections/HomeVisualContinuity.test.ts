@@ -30,4 +30,13 @@ describe('homepage visual continuity', () => {
       expect(transition).not.toMatch(/overflow:\s*hidden/)
     }
   })
+
+  it('keeps the quote clouds on the rounded window clipping path', () => {
+    const window = declarations('.home-quote__window')
+    const clouds = declarations('.home-quote__clouds')
+
+    expect(window).toMatch(/overflow:\s*hidden/)
+    expect(window).toMatch(/border-radius:/)
+    expect(clouds).not.toMatch(/filter:/)
+  })
 })

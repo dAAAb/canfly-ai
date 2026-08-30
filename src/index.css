@@ -2354,7 +2354,6 @@ body {
     radial-gradient(ellipse 28% 62% at 76% 52%, #eff8fc 0 44%, transparent 49%),
     radial-gradient(ellipse 22% 50% at 96% 59%, #dcecf5 0 45%, transparent 50%),
     linear-gradient(to bottom, transparent 35%, #dcecf5 60%);
-  filter: blur(1px);
 }
 
 .home-quote__window > .flight-mark {
