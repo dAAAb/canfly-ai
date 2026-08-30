@@ -31,7 +31,8 @@
     "scannerReady": "等待扫描",
     "accepted": "登机完成",
     "dragHint": "滑动登机牌，或向下滚动登机",
-    "enterCabin": "直接进入机舱"
+    "enterCabin": "直接进入机舱",
+    "skipNext": "下次跳过登机"
   },
   "cabin": {
     "status": "机舱已就绪 · AI Agent 在线",

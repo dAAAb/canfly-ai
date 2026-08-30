@@ -12,11 +12,20 @@ import AvatarSection from '../sections/AvatarSection'
 import NewsletterSection from '../sections/NewsletterSection'
 import CTASection from '../sections/CTASection'
 import LiveFeed from '../components/LiveFeed'
+import {
+  setSkipBoardingPreference,
+  shouldSkipBoarding,
+} from '../utils/boardingPreference'
 
 export default function HomePage() {
   const { t } = useTranslation()
   const { localePath } = useLanguage()
-  const [boarded, setBoarded] = useState(false)
+  const [boarded, setBoarded] = useState(shouldSkipBoarding)
+
+  function completeBoarding(skipNextTime: boolean) {
+    setSkipBoardingPreference(skipNextTime)
+    setBoarded(true)
+  }
 
   useHead({
     title: t('meta.home.title'),
@@ -28,7 +37,7 @@ export default function HomePage() {
 
   return (
     <div className={`site-home ${boarded ? 'site-home--boarded' : ''}`}>
-      {!boarded && <BoardingGate onBoarded={() => setBoarded(true)} />}
+      {!boarded && <BoardingGate onBoarded={completeBoarding} />}
 
       <div className="site-home__cabin" aria-hidden={!boarded} inert={!boarded}>
         <Navbar variant="hero" />

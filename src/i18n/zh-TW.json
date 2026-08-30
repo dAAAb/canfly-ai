@@ -31,7 +31,8 @@
     "scannerReady": "等待掃描",
     "accepted": "登機完成",
     "dragHint": "滑動登機證，或向下捲動登機",
-    "enterCabin": "直接進入機艙"
+    "enterCabin": "直接進入機艙",
+    "skipNext": "下次跳過登機"
   },
   "cabin": {
     "status": "機艙已就緒 · AI Agent 在線",

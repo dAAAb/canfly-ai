@@ -11,12 +11,13 @@ import {
 import { ArrowRight, Check, ScanLine } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import FlightMark from '../components/FlightMark'
+import { BoardingPreferenceSwitch } from '../components/BoardingPreferenceToggle'
 import { boardingProgress } from './BoardingGate.logic'
 
 type BoardingPhase = 'ready' | 'dragging' | 'scanning' | 'departing'
 
 interface BoardingGateProps {
-  onBoarded: () => void
+  onBoarded: (skipNextTime: boolean) => void
 }
 
 const ACCEPT_THRESHOLD = 0.62
@@ -29,6 +30,7 @@ export default function BoardingGate({ onBoarded }: BoardingGateProps) {
   const [phase, setPhase] = useState<BoardingPhase>('ready')
   const [offset, setOffset] = useState(0)
   const [progress, setProgress] = useState(0)
+  const [skipNextTime, setSkipNextTime] = useState(true)
   const offsetRef = useRef(0)
   const trackRef = useRef<HTMLDivElement>(null)
   const passRef = useRef<HTMLDivElement>(null)
@@ -65,11 +67,11 @@ export default function BoardingGate({ onBoarded }: BoardingGateProps) {
       setPhase('departing')
     }, SCAN_DURATION_MS)
     const completeTimer = window.setTimeout(() => {
-      onBoarded()
+      onBoarded(skipNextTime)
     }, SCAN_DURATION_MS + DEPARTURE_DURATION_MS)
 
     timersRef.current.push(departTimer, completeTimer)
-  }, [getTravel, movePass, onBoarded, phase])
+  }, [getTravel, movePass, onBoarded, phase, skipNextTime])
 
   useEffect(() => {
     const root = document.documentElement
@@ -147,7 +149,7 @@ export default function BoardingGate({ onBoarded }: BoardingGateProps) {
     if (phase === 'scanning' || phase === 'departing') return
     if (
       event.target instanceof Element
-      && event.target.closest('button, a, [role="button"]')
+      && event.target.closest('button, a, input, label, [role="button"]')
     ) {
       return
     }
@@ -288,9 +290,17 @@ export default function BoardingGate({ onBoarded }: BoardingGateProps) {
             <ArrowRight aria-hidden="true" />
             {t('boarding.dragHint')}
           </span>
-          <button type="button" onClick={beginBoarding}>
-            {t('boarding.enterCabin')}
-          </button>
+          <div className="boarding-gate__options">
+            <BoardingPreferenceSwitch
+              checked={skipNextTime}
+              onCheckedChange={setSkipNextTime}
+              label={t('boarding.skipNext')}
+              compact
+            />
+            <button type="button" onClick={beginBoarding}>
+              {t('boarding.enterCabin')}
+            </button>
+          </div>
         </div>
       </div>
 
