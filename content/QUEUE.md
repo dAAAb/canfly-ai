@@ -4,7 +4,7 @@
 > 每天先掃、先排隊；當天資訊多就一次寫幾篇，資訊少就寫一篇或只更新舊文。
 > 產稿走 `SOP-NEW-APP.md`（產品＋教學）或既有 blog 結構；**不要直接 push**。
 
-最後掃描：2026-08-29（每日選題掃描，06:00 Taipei）
+最後掃描：2026-08-31（每日選題掃描，06:00 Taipei）
 
 ---
 
@@ -78,6 +78,7 @@
 | P2 | TaskMarket | 軟體／skills | Base 上 USDC 結算的 agent 打工市場。有 CLI 與 OpenClaw skill。掃描時市場還小（約 19 題） | `/learn/taskmarket` | queued |
 | P1 | Firecrawl（含 Developer Index） | 軟體／skills | 官方有 OpenClaw 接法：`firecrawl init --agent openclaw`，也可 `npx -y firecrawl-cli@latest setup developer-index`。70M+ repo README／issue／PR／OpenAPI，給 coding agent 用，不是一般網搜。跟現有 `brave-search`、`perplexity` 不是同一頁 | `/apps/skills/firecrawl` + `/learn/firecrawl` | queued |
 | P2 | screenpipe | 軟體／skills | 官方文件 `docs.screenpi.pe/openclaw`：`npx -y screenpipe@latest agent setup openclaw`。把螢幕／語音記錄接進 OpenClaw。站上沒有相近頁。要寫權限與 clipboard 風險 | `/apps/skills/screenpipe` + `/learn/screenpipe` | queued |
+| P1 | Muse Glimmer | 軟體／models | Meta Superintelligence Labs 開源 30B 本地 agent 模型。官方 Ollama：`ollama launch openclaw --model muse-glimmer`（MLX 用 `muse-glimmer:30b-mlx`）。站上沒有這頁；不要折進 Ollama，Qwen 3.8 才留在 Ollama 頁 | `/apps/models/muse-glimmer` + `/learn/muse-glimmer`；寫完在 Ollama／OpenClaw 卡加家族連結 | queued |
 
 ---
 
@@ -91,6 +92,9 @@
 | OpenClaw 產品卡 | 文案寫 300K+ stars。GitHub 2026-08-26 約 388K。Custodian skill library 是新能力。 |
 | `/learn/nemotron-3-super` | 加 Lightning 家族連結。Super 給重推理，Lightning 給長跑執行層。 |
 | `/learn/agent-skills` | ClawHub 產品頁上線後，nextStepCards 要指過去。 |
+| `/apps/skills/agentmail` + `/learn/agentmail` | 官方已上 ClawHub：`openclaw plugins install clawhub:@agentmail/agentmail`（skill + email channel）。現有頁還停在舊接法。 |
+| `/learn/ollama` + `/learn/ollama-openclaw` + OpenClaw 卡 | Muse Glimmer 寫完後加 `ollama launch openclaw --model muse-glimmer` 連結。Qwen 3.8 不要另開。OpenClaw 2026.8.1-beta 已接 GPT-5.6 Sol/Terra/Luna，星數與 custodian 一併改。 |
+| `/learn/claude-code-codex`（待寫稿） | OpenAI 2026-08-28：Cursor 合約預計 2026-11-12 停供 OpenAI 模型。寫進 Codex 段備註，不要另開 Cursor 頁。 |
 
 ---
 
@@ -108,6 +112,16 @@
 | Gemini 3.5 Transcribe | 跟 Whisper 頁重疊 | 有獨立 API 教學需求再看 |
 | Grok Voice Agent Builder | 跟 ElevenLabs 重疊 | 有 OpenClaw 接法再看 |
 | Workato Otto | 企業 superagent，走 Workato MCP，不是 OpenClaw 技能 | 有官方 OpenClaw 接法再看 |
+| Context.dev | 官方 `openclaw plugins install clawhub:@contextdev/openclaw-context`，但跟 `brave-search`／已入列 Firecrawl 互搶網搜頁 | Firecrawl 寫完再決定要不要對照 |
+| Olostep（PH 8/30） | 官方 `clawhub install olostep` + MCP。跟 Firecrawl Developer Index 同一條「給 agent 抓網」漏斗，先不要第三頁 | Firecrawl 上線後再比 |
+| Tencent Hy4 preview | 770B MoE，vLLM／SGLang／OpenRouter，沒有 `ollama launch` | 有消費級本機路徑再看；否則只更新 OpenRouter |
+| Muse Spark 1.1／1.2 | Meta 雲端 API，權重不開。本機路線是 Glimmer | 折進 OpenRouter；不要跟 Glimmer 寫成同一頁 |
+| OpenAI × Cursor 停約 | 2026-11-12 截止，不是新產品 | 寫進 Claude Code／Codex 教學備註 |
+| Cloudways Managed OpenClaw | 託管跟 Zeabur 互搶 | 折進 Zeabur，不要另開 |
+| Qwen 3.8 獨立頁 | 本機模型，應留在 Ollama | 不要另開 |
+| Anthropic MHS | research preview，沒有穩定 OpenClaw 安裝步驟 | 出 GA／官方接法再看 |
+| Grok Bot + X（8/29） | 已入列 Grok Bot 的功能更新 | 寫 Grok Bot 時帶一句即可 |
+| Product Hunt 8/29–8/30（1752vc、Hy4、Cohere Parse、seendiff、Superagent、Maritime、oMLX 再發等） | 沒有可重現的 OpenClaw 安裝步驟，或已有頁（oMLX）／該折進 OpenRouter／Zeabur | 下週 PH |
 
 ---
 
@@ -120,7 +134,8 @@
 | `google-gemini` | 更新 CLI → Antigravity，不要另開 Gemini 頁。Omni 1.1 Flash 也寫這頁 |
 | `nemotron-3-super` | 不要改寫成 Lightning；加家族連結 |
 | `openclaw` | 更新星數與 custodian skills，不要重開 |
-| `heygen` / `elevenlabs` / `ollama` / `omlx` / `zeabur` / `openrouter` | 教學已在，只在有大改版時回訪 |
+| `heygen` / `elevenlabs` / `ollama` / `omlx` / `zeabur` / `openrouter` | 教學已在，只在有大改版時回訪。Qwen 3.8、Hy4、Muse Spark 折進 Ollama／OpenRouter，不要另開 |
+| `agentmail` | 更新 ClawHub 官方 plugin，不要重開 |
 | `brave-search` | 一般網搜頁已在。Firecrawl／Developer Index 另開 |
 | `whisper` / `umbrel` / `pinata` / `switchbot-ai-hub` | 同上 |
 | `basemail` / `agentmail` / `agentcard` / `worldid` / `agentbook` | 同上 |
@@ -136,6 +151,7 @@
 | 2026-08-28 | Cloud agent（依寶博點名） | 7 | 建立佇列；尚未產稿 |
 | 2026-08-28 | 每日選題掃描 | 待寫 +6（Grok 4.6、Claude Code/Codex、ClawHub、Lightning、UNO Q、TaskMarket）；更新舊頁 6 | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI/Grok、Perplexity 官方 OpenClaw 文件、OpenAI、Anthropic、Google、Product Hunt 8/27–8/28、GitHub/OpenClaw、ClawHub、Apple、NVIDIA、Arduino。沒寫文章。與寶博點名列的分歧見待決。 |
 | 2026-08-29 | 每日選題掃描 | 待寫 +2（Firecrawl、screenpipe）；更新舊頁 +Gemini Omni 1.1 Flash | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI/Grok 4.6（已入列）、Perplexity Portable（已入列）、OpenAI HF 事故報告（不寫產品）、Anthropic／Google Antigravity（更新舊頁）、PH 8/28、GitHub OpenClaw ~388K、ClawHub、Apple mini/Studio（已入列）、NVIDIA Jetson Orin Nano 2 官方寫 H1 2027 才出、Arduino VENTUNO Q（已入列）。沒寫文章。 |
+| 2026-08-31 | 每日選題掃描 | 待寫 +1（Muse Glimmer）；更新舊頁 +AgentMail ClawHub plugin、Ollama／OpenClaw 家族連結、Codex Cursor 截止備註 | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI/Grok Bot+X（已入列）、Perplexity Portable（已入列）、OpenAI Cursor 停約 11/12、Anthropic Cowork memory（仍無 OpenClaw 接法）、Google Antigravity（OpenClaw 明確不接 `agy` OAuth）、PH 8/29–8/30、GitHub OpenClaw 2026.8.1-beta.3／GPT-5.6、ClawHub（AgentMail、Context.dev）、Ollama Muse Glimmer 官方 `ollama launch openclaw`、Apple mini／NVIDIA Orin Nano 2／Arduino（已入列）。觀察：Olostep、Context.dev、Hy4、Muse Spark、Cloudways、Qwen 3.8。沒寫文章。 |
 
 ---
 
