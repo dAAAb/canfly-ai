@@ -39,6 +39,7 @@ describe('BoardingGate', () => {
     })
 
     expect(onBoarded).toHaveBeenCalledOnce()
+    expect(onBoarded).toHaveBeenCalledWith(true)
     unmount()
     expect(document.documentElement.style.overflowY).toBe('')
     scrollTo.mockRestore()
@@ -106,6 +107,26 @@ describe('BoardingGate', () => {
     })
 
     expect(onBoarded).toHaveBeenCalledOnce()
+    unmount()
+    scrollTo.mockRestore()
+  })
+
+  it('does not save the skip preference when the switch is turned off', () => {
+    vi.useFakeTimers()
+    const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {})
+    const onBoarded = vi.fn()
+    const { unmount } = render(<BoardingGate onBoarded={onBoarded} />)
+
+    fireEvent.click(
+      screen.getByRole('checkbox', { name: 'Skip boarding next time' }),
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Enter cabin' }))
+
+    act(() => {
+      vi.advanceTimersByTime(1_180)
+    })
+
+    expect(onBoarded).toHaveBeenCalledWith(false)
     unmount()
     scrollTo.mockRestore()
   })

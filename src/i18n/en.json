@@ -31,7 +31,8 @@
     "scannerReady": "Ready to scan",
     "accepted": "Boarding accepted",
     "dragHint": "Slide the pass, or scroll down to board",
-    "enterCabin": "Enter cabin"
+    "enterCabin": "Enter cabin",
+    "skipNext": "Skip boarding next time"
   },
   "cabin": {
     "status": "Cabin ready · AI Agent online",

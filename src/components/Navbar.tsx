@@ -7,6 +7,7 @@ import AuthButton from './AuthButton'
 import { Menu, X } from 'lucide-react'
 import { isUserSubdomain } from '../utils/subdomain'
 import FlightMark from './FlightMark'
+import BoardingPreferenceToggle from './BoardingPreferenceToggle'
 
 interface NavbarProps {
   search?: {
@@ -158,6 +159,11 @@ export default function Navbar({ search, children, variant = 'default' }: Navbar
           )}
           <a href={`${mainBase}/api/openapi.json`}>{t('nav.api')}</a>
           <LanguageSwitcher />
+          {!isSubdomain && (
+            <div className="flight-navbar__boarding-setting">
+              <BoardingPreferenceToggle compact />
+            </div>
+          )}
           {isSubdomain ? (
             <a href="https://canfly.ai" className="flight-navbar__account">
               {t('auth.joinCommunity', 'Join Flight Community')}

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useLanguage } from '../hooks/useLanguage'
 import { isUserSubdomain } from '../utils/subdomain'
 import FlightMark from '../components/FlightMark'
+import BoardingPreferenceToggle from '../components/BoardingPreferenceToggle'
 
 declare const __APP_VERSION__: string
 
@@ -121,6 +122,7 @@ export default function Footer() {
         </div>
         <div className="flight-footer__bottom">
           <span>{t('footer.copyright')} · v{__APP_VERSION__}</span>
+          {!onUserHost && <BoardingPreferenceToggle compact />}
           <span>CF 001 · {t('footer.status', 'Cleared for takeoff')}</span>
         </div>
       </div>
