@@ -113,7 +113,7 @@ function SubdomainRouter({ subdomain }: { subdomain: string }) {
   return (
     <Router>
       <ErrorBoundary>
-        <div className="bg-black text-white min-h-screen">
+        <div className="site-shell min-h-screen">
           <Suspense fallback={<div className="min-h-screen" />}>
             <Routes>
               <Route path="/" element={<AutoLangSync><UserShowcasePage subdomainUsername={subdomain} /></AutoLangSync>} />
@@ -141,7 +141,7 @@ function App() {
   return (
     <Router>
       <ErrorBoundary>
-        <div className="bg-black text-white min-h-screen">
+        <div className="site-shell min-h-screen">
           <Suspense fallback={<div className="min-h-screen" />}>
             <Routes>
               {/* Default (English) — no prefix */}

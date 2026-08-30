@@ -1,0 +1,113 @@
+name: Validate and deploy cabin redesign preview
+
+on:
+  push:
+    branches:
+      - cursor/cabin-cloudsea-redesign-0b02
+
+concurrency:
+  group: cabin-redesign-preview
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build and validate all locales
+        run: npm run build
+
+      - name: Run SEO and AI SEO regressions
+        run: >-
+          npx vitest run
+          index.html.test.ts
+          functions/lib/agentic.test.ts
+          src/pages/LegalPage.test.tsx
+          src/hooks/useLanguage.test.tsx
+
+      - name: Verify crawler assets and production canonicals
+        run: |
+          node <<'NODE'
+          const { existsSync, readFileSync } = require('node:fs')
+
+          const requiredFiles = [
+            'dist/robots.txt',
+            'dist/sitemap.xml',
+            'dist/llms.txt',
+            'dist/llms-full.txt',
+            'dist/_headers',
+          ]
+
+          for (const file of requiredFiles) {
+            if (!existsSync(file)) throw new Error(`Missing crawler asset: ${file}`)
+          }
+
+          const html = readFileSync('dist/index.html', 'utf8')
+          for (const expected of [
+            'rel="canonical" href="https://canfly.ai/"',
+            'property="og:url" content="https://canfly.ai"',
+            'CanFly.ai — Your OpenClaw AI Agent in 5 Minutes',
+          ]) {
+            if (!html.includes(expected)) throw new Error(`Missing production SEO marker: ${expected}`)
+          }
+          NODE
+
+      - name: Add preview-only indexing protection
+        run: |
+          cat >> dist/_headers <<'HEADERS'
+
+          /*
+            X-Robots-Tag: noindex, nofollow, noarchive
+          HEADERS
+
+          cat > dist/robots.txt <<'ROBOTS'
+          User-agent: *
+          Disallow: /
+          ROBOTS
+
+      - name: Enable Pages Functions compatibility for preview
+        run: |
+          node <<'NODE'
+          const { readFileSync, writeFileSync } = require('node:fs')
+
+          const path = 'wrangler.toml'
+          const marker = 'compatibility_flags = ["nodejs_compat"]'
+          const source = readFileSync(path, 'utf8')
+
+          if (!source.includes(marker)) {
+            throw new Error('wrangler.toml is missing the nodejs_compat marker')
+          }
+
+          writeFileSync(
+            path,
+            source.replace(marker, `${marker}\npages_build_output_dir = "dist"`),
+          )
+          NODE
+
+      - name: Deploy Cloudflare Pages branch preview
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          command: >-
+            pages deploy dist
+            --project-name=canfly-ai
+            --branch=${{ github.ref_name }}
+            --commit-dirty=true
+            --commit-message="preview ${{ github.sha }}"
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}

@@ -1,213 +1,187 @@
-import { useState } from 'react'
-import { useVideoBackground } from '../hooks/useVideoBackground'
 import { Link } from 'react-router-dom'
-import { ArrowRight, PlayCircle, Menu, X } from 'lucide-react'
+import { ArrowRight, PlayCircle, Sun, Moon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useLanguage } from '../hooks/useLanguage'
-import LanguageSwitcher from '../components/LanguageSwitcher'
-import AuthButton from '../components/AuthButton'
 import { trackCTAClick } from '../utils/analytics'
+import FlightMark from '../components/FlightMark'
+import { useEffect, useState } from 'react'
+import {
+  CRUISING_ALTITUDES,
+  formatTaipeiTime,
+  nextAltitudeIndex,
+} from './HeroSection.logic'
+
+type AltitudeDirection = 'up' | 'down'
+
+interface AltitudeState {
+  index: number
+  direction: AltitudeDirection
+}
 
 export default function HeroSection() {
   const { t } = useTranslation()
   const { localePath } = useLanguage()
-  const [mobileNavOpen, setMobileNavOpen] = useState(false)
-  const videoRef = useVideoBackground(
-    'https://stream.mux.com/JNJEOYI6B3EffB9f5ZhpGbuxzc6gSyJcXaCBbCgZKRg.m3u8'
-  )
+  const [shadeClosed, setShadeClosed] = useState(false)
+  const [altitude, setAltitude] = useState<AltitudeState>({ index: 0, direction: 'up' })
+  const [taipeiTime, setTaipeiTime] = useState(() => formatTaipeiTime(new Date()))
+
+  useEffect(() => {
+    const altitudeTimer = window.setInterval(() => {
+      setAltitude((current) => {
+        const nextIndex = nextAltitudeIndex(current.index)
+        return {
+          index: nextIndex,
+          direction:
+            CRUISING_ALTITUDES[nextIndex] >= CRUISING_ALTITUDES[current.index]
+              ? 'up'
+              : 'down',
+        }
+      })
+    }, 2_400)
+
+    const clockTimer = window.setInterval(() => {
+      setTaipeiTime(formatTaipeiTime(new Date()))
+    }, 1_000)
+
+    return () => {
+      window.clearInterval(altitudeTimer)
+      window.clearInterval(clockTimer)
+    }
+  }, [])
+
+  const cruisingAltitude = CRUISING_ALTITUDES[altitude.index]
 
   return (
-    <section className="hero-section relative flex w-full flex-col bg-black">
-      {/* Media is masked out at the bottom so the Mux frame never ends as a knife-edge. */}
-      <div className="hero-media absolute inset-0 z-0" aria-hidden="true">
-        <div className="absolute inset-0 hero-sky" />
-        <video
-          ref={videoRef}
-          className="absolute inset-0 h-full w-full object-cover"
-          autoPlay
-          loop
-          muted
-          playsInline
-        />
-        <div className="absolute inset-0 hero-sun" />
-        <div className="absolute inset-0 hero-clouds" />
+    <section
+      id="cabin"
+      className={`hero-section cabin-hero ${shadeClosed ? 'cabin-hero--shade-closed' : ''}`}
+    >
+      <div className="cabin-hero__roof" aria-hidden="true">
+        <span />
+        <span />
+        <span />
       </div>
-      <div className="absolute inset-0 z-0 hero-vignette" aria-hidden="true" />
-      <div className="hero-bottom-fade pointer-events-none absolute inset-x-0 bottom-0 z-[1]" aria-hidden="true" />
 
-      {/* Nav */}
-      <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between py-6 sm:py-10" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
-        <Link to={localePath('/')} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <span className="text-xl">🦞</span>
-          <span className="font-bold text-xl tracking-tight">CanFly.ai</span>
-        </Link>
-        {/* Desktop nav */}
-        <div className="hidden sm:flex items-center gap-5">
-          <Link to={localePath('/apps')} className="text-sm text-gray-300 hover:text-white transition-colors">
-            {t('nav.browseApps')}
-          </Link>
-          <Link to={localePath('/rankings')} className="text-sm text-gray-300 hover:text-white transition-colors">
-            {t('nav.rankings')}
-          </Link>
-          <Link to={localePath('/community')} className="text-sm text-gray-300 hover:text-white transition-colors">
-            {t('nav.community')}
-          </Link>
-          <Link to={localePath('/blog')} className="text-sm text-gray-300 hover:text-white transition-colors">
-            {t('nav.blog')}
-          </Link>
-          <a href="/api/openapi.json" className="text-sm text-gray-300 hover:text-white transition-colors">
-            {t('nav.api')}
-          </a>
-          <LanguageSwitcher />
-          <AuthButton />
-          <Link
-            to={localePath('/apps/free/ollama')}
-            className="text-sm bg-green-600/20 border border-green-600 px-3 py-1 rounded-full hover:bg-green-600/30 transition-colors"
-          >
-            {t('nav.startFree')}
-          </Link>
-        </div>
-        {/* Mobile hamburger */}
-        <button
-          onClick={() => setMobileNavOpen(!mobileNavOpen)}
-          className="sm:hidden p-2 text-gray-300 hover:text-white transition-colors"
-          aria-label="Toggle menu"
-        >
-          {mobileNavOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
-      </nav>
-      {/* Mobile dropdown */}
-      {mobileNavOpen && (
-        <div className="absolute top-16 left-0 right-0 z-20 bg-black/90 backdrop-blur-md border-b border-gray-800 px-[8%] py-4 sm:hidden space-y-3">
-          <Link to={localePath('/apps')} onClick={() => setMobileNavOpen(false)} className="block text-sm text-gray-300 hover:text-white transition-colors">
-            {t('nav.browseApps')}
-          </Link>
-          <Link to={localePath('/rankings')} onClick={() => setMobileNavOpen(false)} className="block text-sm text-gray-300 hover:text-white transition-colors">
-            {t('nav.rankings')}
-          </Link>
-          <Link to={localePath('/community')} onClick={() => setMobileNavOpen(false)} className="block text-sm text-gray-300 hover:text-white transition-colors">
-            {t('nav.community')}
-          </Link>
-          <Link to={localePath('/blog')} onClick={() => setMobileNavOpen(false)} className="block text-sm text-gray-300 hover:text-white transition-colors">
-            {t('nav.blog')}
-          </Link>
-          <a href="/api/openapi.json" onClick={() => setMobileNavOpen(false)} className="block text-sm text-gray-300 hover:text-white transition-colors">
-            {t('nav.api')}
-          </a>
-          <LanguageSwitcher />
-          <AuthButton />
-          <Link
-            to={localePath('/apps/free/ollama')}
-            onClick={() => setMobileNavOpen(false)}
-            className="inline-block text-sm bg-green-600/20 border border-green-600 px-3 py-1 rounded-full hover:bg-green-600/30 transition-colors"
-          >
-            {t('nav.startFree')}
-          </Link>
-        </div>
-      )}
+      <div className="cabin-hero__layout">
+        <div className="cabin-hero__copy">
+          <div className="cabin-hero__status">
+            <span className="cabin-hero__status-light" />
+            {t('cabin.status')}
+          </div>
 
-      {/* Content */}
-      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-1 flex-col justify-center pt-28 pb-6 text-center" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
-        <h1
-          className="font-black tracking-tight"
-          style={{
-            fontSize: 'clamp(40px, 8vw, 120px)',
-            lineHeight: 1.0,
-            letterSpacing: '-0.03em',
-          }}
-        >
-          {t('hero.titleLine1')}
-          <br />
-          <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent">
-            {t('hero.titleLine2')}
-          </span>
-        </h1>
+          <h1>
+            <span>{t('hero.titleLine1')}</span>
+            <strong>{t('hero.titleLine2')}</strong>
+          </h1>
 
-        <p
-          className="mt-7 mx-auto font-medium text-cyan-100/90"
-          style={{
-            fontSize: 'clamp(18px, 2.2vw, 30px)',
-            lineHeight: 1.35,
-            letterSpacing: '-0.01em',
-          }}
-        >
-          {t('hero.whyName')}
-        </p>
+          <p className="cabin-hero__why">{t('hero.whyName')}</p>
+          <p className="cabin-hero__subtitle">{t('hero.subtitle')}</p>
 
-        <p
-          className="mt-5 mx-auto opacity-75"
-          style={{
-            fontSize: 'clamp(16px, 1.8vw, 22px)',
-            lineHeight: 1.55,
-            textAlign: 'center',
-          }}
-        >
-          {t('hero.subtitle')}
-        </p>
-
-        {/* CTA Buttons */}
-        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Link
-            to={localePath('/apps/free/ollama')}
-            className="group flex items-center gap-3 bg-green-600 hover:bg-green-700 px-8 py-4 rounded-xl text-lg font-semibold transition-all hover:scale-105 cta-glow"
-            onClick={() => trackCTAClick('start_free', 'hero')}
-          >
-            <PlayCircle className="w-6 h-6" />
-            {t('hero.ctaFree')}
-            <span className="text-sm opacity-80">{t('hero.ctaFreeTag')}</span>
-          </Link>
-
-          <Link
-            to={localePath('/apps')}
-            className="group flex items-center gap-3 bg-white/10 border border-white/20 backdrop-blur-sm px-8 py-4 rounded-xl text-lg font-semibold transition-all hover:scale-105 hover:bg-white/15"
-            onClick={() => trackCTAClick('browse_apps', 'hero')}
-          >
-            {t('hero.ctaBrowse')}
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
-
-        <div className="mt-8 text-sm text-gray-300">
-          <p className="mb-4 text-xs uppercase tracking-widest opacity-60">{t('hero.funnel')}</p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center items-stretch max-w-3xl mx-auto">
+          <div className="cabin-hero__actions">
             <Link
               to={localePath('/apps/free/ollama')}
-              className="flex-1 bg-white/[0.06] border border-white/12 rounded-xl px-4 py-3.5 hover:bg-white/12 hover:border-white/20 transition-all text-left backdrop-blur-sm"
-              onClick={() => trackCTAClick('funnel_step1_ollama', 'hero_funnel')}
+              className="flight-button flight-button--primary"
+              onClick={() => trackCTAClick('start_free', 'hero')}
             >
-              <span className="text-green-400 font-semibold text-sm">{t('hero.funnelStep1')}</span>
-              <span className="block text-xs text-gray-400 mt-1">{t('hero.funnelStep1Desc')}</span>
+              <PlayCircle aria-hidden="true" />
+              <span>
+                {t('hero.ctaFree')}
+                <small>{t('hero.ctaFreeTag')}</small>
+              </span>
             </Link>
-            <span className="hidden sm:flex items-center text-gray-500">→</span>
+
             <Link
-              to={localePath('/learn/zeabur')}
-              className="flex-1 bg-white/[0.06] border border-white/12 rounded-xl px-4 py-3.5 hover:bg-white/12 hover:border-white/20 transition-all text-left backdrop-blur-sm"
-              onClick={() => trackCTAClick('funnel_step2_zeabur', 'hero_funnel')}
+              to={localePath('/apps')}
+              className="flight-button flight-button--secondary"
+              onClick={() => trackCTAClick('browse_apps', 'hero')}
             >
-              <span className="text-blue-400 font-semibold text-sm">{t('hero.funnelStep2')}</span>
-              <span className="block text-xs text-gray-400 mt-1">{t('hero.funnelStep2Desc')}</span>
+              {t('hero.ctaBrowse')}
+              <ArrowRight aria-hidden="true" />
             </Link>
-            <span className="hidden sm:flex items-center text-gray-500">→</span>
-            <Link
-              to={localePath('/apps/skills')}
-              className="flex-1 bg-white/[0.06] border border-white/12 rounded-xl px-4 py-3.5 hover:bg-white/12 hover:border-white/20 transition-all text-left backdrop-blur-sm"
-              onClick={() => trackCTAClick('funnel_step3_skills', 'hero_funnel')}
-            >
-              <span className="text-purple-400 font-semibold text-sm">{t('hero.funnelStep3')}</span>
-              <span className="block text-xs text-gray-400 mt-1">{t('hero.funnelStep3Desc')}</span>
-            </Link>
+          </div>
+
+          <div className="cabin-flight-plan">
+            <p>{t('hero.funnel')}</p>
+            <div className="cabin-flight-plan__stops">
+              <Link
+                to={localePath('/apps/free/ollama')}
+                onClick={() => trackCTAClick('funnel_step1_ollama', 'hero_funnel')}
+              >
+                <span>01</span>
+                <strong>{t('hero.funnelStep1')}</strong>
+                <small>{t('hero.funnelStep1Desc')}</small>
+              </Link>
+              <Link
+                to={localePath('/learn/zeabur')}
+                onClick={() => trackCTAClick('funnel_step2_zeabur', 'hero_funnel')}
+              >
+                <span>02</span>
+                <strong>{t('hero.funnelStep2')}</strong>
+                <small>{t('hero.funnelStep2Desc')}</small>
+              </Link>
+              <Link
+                to={localePath('/apps/skills')}
+                onClick={() => trackCTAClick('funnel_step3_skills', 'hero_funnel')}
+              >
+                <span>03</span>
+                <strong>{t('hero.funnelStep3')}</strong>
+                <small>{t('hero.funnelStep3Desc')}</small>
+              </Link>
+            </div>
           </div>
         </div>
 
-        <div className="hero-scroll-hint mt-8 flex flex-col items-center">
-          <span className="mb-2 text-xs tracking-widest uppercase">{t('hero.scroll')}</span>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M12 5v14M5 12l7 7 7-7" />
-          </svg>
+        <div className="cabin-view">
+          <div className="cabin-view__sign">
+            <span>{t('cabin.altitude')}</span>
+            <strong
+              className={`cabin-view__altitude cabin-view__altitude--${altitude.direction}`}
+              aria-label={`${t('cabin.altitude')} ${cruisingAltitude.toLocaleString('en-US')} FT`}
+            >
+              <span key={altitude.index}>
+                {cruisingAltitude.toLocaleString('en-US')} FT
+              </span>
+            </strong>
+          </div>
+
+          <div className="cabin-window">
+            <div className="cabin-window__inner">
+              <div className="cabin-window__sky" aria-hidden="true">
+                <span className="cabin-window__sun" />
+                <span className="cloud-sea cloud-sea--far" />
+                <span className="cloud-sea cloud-sea--middle" />
+                <span className="cloud-sea cloud-sea--near" />
+                <FlightMark className="cabin-window__plane" />
+              </div>
+              <div className="cabin-window__glass" aria-hidden="true" />
+              <div className="cabin-window__shade" aria-hidden="true">
+                <span />
+              </div>
+            </div>
+            <div className="cabin-window__bezel" aria-hidden="true" />
+            <button
+              type="button"
+              className="cabin-window__shade-toggle"
+              aria-pressed={shadeClosed}
+              aria-label={
+                shadeClosed
+                  ? t('cabin.openShade')
+                  : t('cabin.closeShade')
+              }
+              onClick={() => setShadeClosed((closed) => !closed)}
+            >
+              {shadeClosed ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
+              <span>{shadeClosed ? t('cabin.openShade') : t('cabin.closeShade')}</span>
+            </button>
+          </div>
+
+          <div className="cabin-view__footer">
+            <span>CF 001</span>
+            <span>{t('cabin.route')}</span>
+            <time>{t('cabin.localTime')} {taipeiTime}</time>
+          </div>
         </div>
       </div>
-      {/* Empty black band so the next section overlaps paint, not funnel cards. */}
-      <div className="hero-fade-spacer pointer-events-none relative z-0 h-[26vh] shrink-0" aria-hidden="true" />
     </section>
   )
 }

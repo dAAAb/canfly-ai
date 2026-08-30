@@ -153,7 +153,7 @@ export default function AuthButton() {
     return (
       <button
         onClick={login}
-        className="text-sm bg-sky-600/20 border border-sky-600 px-3 py-1.5 rounded-full hover:bg-sky-600/30 transition-all text-sky-400 hover:shadow-[0_0_16px_rgba(14,165,233,0.3)] cursor-pointer"
+        className="flight-navbar__account cursor-pointer"
       >
         {t('auth.joinCommunity', 'Join Flight Community')}
       </button>
@@ -167,7 +167,7 @@ export default function AuthButton() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setDropdownOpen(!dropdownOpen)}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm text-white font-medium transition-all duration-200 hover:brightness-125 hover:scale-105 cursor-pointer"
+        className="flight-navbar__profile cursor-pointer"
         style={{ background: walletGradient(walletAddress) }}
       >
         <span className={badge.color}>{badge.emoji}</span>
@@ -178,10 +178,10 @@ export default function AuthButton() {
       </button>
 
       {dropdownOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-gray-900 border border-gray-700 rounded-lg shadow-xl z-50 py-1 overflow-hidden">
+        <div className="flight-menu">
           <a
             href={ownUsername ? `/u/${ownUsername}` : '/community/register'}
-            className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+            className="flight-menu__item"
             onClick={() => setDropdownOpen(false)}
           >
             <User className="w-4 h-4" />
@@ -192,7 +192,7 @@ export default function AuthButton() {
               setDropdownOpen(false)
               logout()
             }}
-            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-300 hover:bg-gray-800 hover:text-white transition-colors cursor-pointer"
+            className="flight-menu__item w-full cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
             {t('auth.logout', 'Logout')}

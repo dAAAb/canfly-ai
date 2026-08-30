@@ -6,52 +6,60 @@ import LanguageSwitcher from './LanguageSwitcher'
 import AuthButton from './AuthButton'
 import { Menu, X } from 'lucide-react'
 import { isUserSubdomain } from '../utils/subdomain'
+import FlightMark from './FlightMark'
 
 interface NavbarProps {
-  /** Show search box */
   search?: {
     value: string
     onChange: (val: string) => void
     placeholder?: string
   }
-  /** Extra right-side elements */
   children?: React.ReactNode
+  variant?: 'default' | 'hero'
 }
 
-export default function Navbar({ search, children }: NavbarProps) {
+export default function Navbar({ search, children, variant = 'default' }: NavbarProps) {
   const { t } = useTranslation()
   const { localePath } = useLanguage()
   const [mobileOpen, setMobileOpen] = useState(false)
-
-  // On user hosts (e.g. peter.canfly.ai), nav links should point to the apex
   const isSubdomain = isUserSubdomain(window.location.hostname)
   const mainBase = isSubdomain ? 'https://canfly.ai' : ''
+  const navItems = [
+    { path: '/apps', label: t('nav.browseApps') },
+    { path: '/rankings', label: t('nav.rankings') },
+    { path: '/community', label: t('nav.community') },
+    { path: '/blog', label: t('nav.blog') },
+  ]
 
   return (
-    <div className="border-b border-white/8 bg-black/70 backdrop-blur-xl sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 md:px-8 py-4 flex items-center justify-between">
-        {/* Logo — on a user subdomain the wordmark returns to the product site */}
+    <header className={`flight-navbar flight-navbar--${variant}`}>
+      <div className="flight-navbar__route" aria-hidden="true">
+        <span>TPE</span>
+        <i />
+        <span>AI</span>
+      </div>
+
+      <div className="flight-navbar__inner">
         {isSubdomain ? (
-          <a href="https://canfly.ai" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <span className="text-xl">🦞</span>
-            <span className="font-bold text-lg tracking-tight text-white">CanFly.ai</span>
+          <a href="https://canfly.ai" className="flight-navbar__brand">
+            <FlightMark />
+            <span>CanFly.ai</span>
           </a>
         ) : (
-          <Link to={localePath('/')} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <span className="text-xl">🦞</span>
-            <span className="font-bold text-lg tracking-tight text-white">CanFly.ai</span>
+          <Link to={localePath('/')} className="flight-navbar__brand">
+            <FlightMark />
+            <span>CanFly.ai</span>
           </Link>
         )}
 
-        {/* Desktop right side */}
-        <div className="hidden sm:flex items-center gap-4">
+        <nav className="flight-navbar__desktop" aria-label={t('nav.primary', 'Primary navigation')}>
           {search && (
-            <div className="relative">
+            <label className="flight-navbar__search">
               <svg
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-4 h-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
@@ -60,57 +68,67 @@ export default function Navbar({ search, children }: NavbarProps) {
                 placeholder={search.placeholder || t('apps.searchPlaceholder')}
                 value={search.value}
                 onChange={(e) => search.onChange(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none w-56 text-sm"
               />
-            </div>
+            </label>
           )}
           {children}
+          <div className="flight-navbar__links">
+            {navItems.map((item) =>
+              isSubdomain ? (
+                <a key={item.path} href={`${mainBase}${localePath(item.path)}`}>
+                  {item.label}
+                </a>
+              ) : (
+                <Link key={item.path} to={localePath(item.path)}>
+                  {item.label}
+                </Link>
+              ),
+            )}
+            <a href={`${mainBase}/api/openapi.json`}>{t('nav.api')}</a>
+          </div>
+          <LanguageSwitcher />
           {isSubdomain ? (
-            <a href="https://canfly.ai" className="text-sm bg-sky-600/20 border border-sky-600 px-3 py-1.5 rounded-full hover:bg-sky-600/30 transition-all text-sky-400">{t('auth.joinCommunity', 'Join Flight Community')}</a>
+            <a href="https://canfly.ai" className="flight-navbar__account">
+              {t('auth.joinCommunity', 'Join Flight Community')}
+            </a>
           ) : (
             <AuthButton />
           )}
           {isSubdomain ? (
-            <>
-              <a href={`${mainBase}${localePath('/apps')}`} className="text-sm text-gray-400 hover:text-white transition-colors">{t('nav.browseApps')}</a>
-              <a href={`${mainBase}${localePath('/rankings')}`} className="text-sm text-gray-400 hover:text-white transition-colors">{t('nav.rankings')}</a>
-              <a href={`${mainBase}${localePath('/community')}`} className="text-sm text-gray-400 hover:text-white transition-colors">{t('nav.community')}</a>
-              <LanguageSwitcher />
-              <a href={`${mainBase}${localePath('/apps/free/ollama')}`} className="text-sm bg-green-600/20 border border-green-600 px-3 py-1.5 rounded-full hover:bg-green-600/30 transition-all text-green-400 hover:shadow-[0_0_16px_rgba(34,197,94,0.3)]">{t('nav.startFree')}</a>
-            </>
+            <a
+              href={`${mainBase}${localePath('/apps/free/ollama')}`}
+              className="flight-navbar__cta"
+            >
+              {t('nav.startFree')}
+              <ArrowIcon />
+            </a>
           ) : (
-            <>
-              <Link to={localePath('/apps')} className="text-sm text-gray-400 hover:text-white transition-colors">{t('nav.browseApps')}</Link>
-              <Link to={localePath('/rankings')} className="text-sm text-gray-400 hover:text-white transition-colors">{t('nav.rankings')}</Link>
-              <Link to={localePath('/community')} className="text-sm text-gray-400 hover:text-white transition-colors">{t('nav.community')}</Link>
-              <Link to={localePath('/blog')} className="text-sm text-gray-400 hover:text-white transition-colors">{t('nav.blog')}</Link>
-              <a href="/api/openapi.json" className="text-sm text-gray-400 hover:text-white transition-colors">{t('nav.api')}</a>
-              <LanguageSwitcher />
-              <Link to={localePath('/apps/free/ollama')} className="text-sm bg-green-600/20 border border-green-600 px-3 py-1.5 rounded-full hover:bg-green-600/30 transition-all text-green-400 hover:shadow-[0_0_16px_rgba(34,197,94,0.3)]">{t('nav.startFree')}</Link>
-            </>
+            <Link to={localePath('/apps/free/ollama')} className="flight-navbar__cta">
+              {t('nav.startFree')}
+              <ArrowIcon />
+            </Link>
           )}
-        </div>
+        </nav>
 
-        {/* Mobile hamburger */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="sm:hidden p-2 text-gray-400 hover:text-white transition-colors"
-          aria-label="Toggle menu"
+          className="flight-navbar__menu"
+          aria-label={t('nav.toggleMenu', 'Toggle menu')}
+          aria-expanded={mobileOpen}
         >
           {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
 
-      {/* Mobile menu */}
       {mobileOpen && (
-        <div className="sm:hidden border-t border-gray-800 bg-black/95 backdrop-blur-md px-6 py-4 space-y-4">
+        <nav className="flight-navbar__mobile" aria-label={t('nav.primary', 'Primary navigation')}>
           {search && (
-            <div className="relative">
+            <label className="flight-navbar__search">
               <svg
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-4 h-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
@@ -119,37 +137,62 @@ export default function Navbar({ search, children }: NavbarProps) {
                 placeholder={search.placeholder || t('apps.searchPlaceholder')}
                 value={search.value}
                 onChange={(e) => search.onChange(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none text-sm"
               />
-            </div>
+            </label>
           )}
           {children}
+          {navItems.map((item) =>
+            isSubdomain ? (
+              <a key={item.path} href={`${mainBase}${localePath(item.path)}`}>
+                {item.label}
+              </a>
+            ) : (
+              <Link
+                key={item.path}
+                to={localePath(item.path)}
+                onClick={() => setMobileOpen(false)}
+              >
+                {item.label}
+              </Link>
+            ),
+          )}
+          <a href={`${mainBase}/api/openapi.json`}>{t('nav.api')}</a>
+          <LanguageSwitcher />
           {isSubdomain ? (
-            <a href="https://canfly.ai" className="text-sm bg-sky-600/20 border border-sky-600 px-3 py-1.5 rounded-full hover:bg-sky-600/30 transition-all text-sky-400">{t('auth.joinCommunity', 'Join Flight Community')}</a>
+            <a href="https://canfly.ai" className="flight-navbar__account">
+              {t('auth.joinCommunity', 'Join Flight Community')}
+            </a>
           ) : (
             <AuthButton />
           )}
           {isSubdomain ? (
-            <>
-              <a href={`${mainBase}${localePath('/apps')}`} className="block text-sm text-gray-400 hover:text-white transition-colors">{t('nav.browseApps')}</a>
-              <a href={`${mainBase}${localePath('/rankings')}`} className="block text-sm text-gray-400 hover:text-white transition-colors">{t('nav.rankings')}</a>
-              <a href={`${mainBase}${localePath('/community')}`} className="block text-sm text-gray-400 hover:text-white transition-colors">{t('nav.community')}</a>
-              <LanguageSwitcher />
-              <a href={`${mainBase}${localePath('/apps/free/ollama')}`} className="inline-block text-sm bg-green-600/20 border border-green-600 px-3 py-1.5 rounded-full hover:bg-green-600/30 transition-all text-green-400">{t('nav.startFree')}</a>
-            </>
+            <a
+              href={`${mainBase}${localePath('/apps/free/ollama')}`}
+              className="flight-navbar__cta"
+            >
+              {t('nav.startFree')}
+              <ArrowIcon />
+            </a>
           ) : (
-            <>
-              <Link to={localePath('/apps')} onClick={() => setMobileOpen(false)} className="block text-sm text-gray-400 hover:text-white transition-colors">{t('nav.browseApps')}</Link>
-              <Link to={localePath('/rankings')} onClick={() => setMobileOpen(false)} className="block text-sm text-gray-400 hover:text-white transition-colors">{t('nav.rankings')}</Link>
-              <Link to={localePath('/community')} onClick={() => setMobileOpen(false)} className="block text-sm text-gray-400 hover:text-white transition-colors">{t('nav.community')}</Link>
-              <Link to={localePath('/blog')} onClick={() => setMobileOpen(false)} className="block text-sm text-gray-400 hover:text-white transition-colors">{t('nav.blog')}</Link>
-              <a href="/api/openapi.json" onClick={() => setMobileOpen(false)} className="block text-sm text-gray-400 hover:text-white transition-colors">{t('nav.api')}</a>
-              <LanguageSwitcher />
-              <Link to={localePath('/apps/free/ollama')} onClick={() => setMobileOpen(false)} className="inline-block text-sm bg-green-600/20 border border-green-600 px-3 py-1.5 rounded-full hover:bg-green-600/30 transition-all text-green-400">{t('nav.startFree')}</Link>
-            </>
+            <Link
+              to={localePath('/apps/free/ollama')}
+              onClick={() => setMobileOpen(false)}
+              className="flight-navbar__cta"
+            >
+              {t('nav.startFree')}
+              <ArrowIcon />
+            </Link>
           )}
-        </div>
+        </nav>
       )}
-    </div>
+    </header>
+  )
+}
+
+function ArrowIcon() {
+  return (
+    <svg viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M3 8h9M9 4l4 4-4 4" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   )
 }

@@ -5,12 +5,41 @@
     "rankings": "排行榜",
     "community": "社群",
     "blog": "部落格",
-    "api": "API"
+    "api": "API",
+    "primary": "主要導覽",
+    "toggleMenu": "開啟或關閉選單"
   },
   "auth": {
     "joinCommunity": "加入 Flight 社群",
     "profile": "個人檔案",
     "logout": "登出"
+  },
+  "boarding": {
+    "eyebrow": "CanFly 登機",
+    "title": "你的 Agent 已經可以起飛。",
+    "subtitle": "把登機證滑進閘門。另一側是你的機艙，也是更快完成工作的方式。",
+    "passLabel": "登機證",
+    "passAction": "向右滑動登機證掃描，或按 Enter",
+    "oneWay": "單程",
+    "routeFromCode": "YOU",
+    "routeFrom": "現在的你",
+    "routeToCode": "AI",
+    "routeTo": "Agent 加速",
+    "flight": "班次",
+    "gate": "登機門",
+    "seat": "準備時間",
+    "scannerReady": "等待掃描",
+    "accepted": "登機完成",
+    "dragHint": "滑動登機證，或向下捲動登機",
+    "enterCabin": "直接進入機艙"
+  },
+  "cabin": {
+    "status": "機艙已就緒 · AI Agent 在線",
+    "altitude": "巡航高度",
+    "route": "TPE → AI",
+    "localTime": "台北時間",
+    "closeShade": "關閉舷窗遮光板",
+    "openShade": "打開舷窗遮光板"
   },
   "hero": {
     "titleLine1": "現在，你也能",
@@ -324,7 +353,11 @@
     "contact": "聯絡",
     "privacy": "隱私",
     "developers": "開發者",
-    "company": "公司"
+    "company": "公司",
+    "departure": "出發地",
+    "destination": "目的地",
+    "cabinNote": "機艙提醒",
+    "status": "可以起飛"
   },
   "legal": {
     "resourcesTitle": "CanFly.ai 給機器讀的入口",

@@ -16,24 +16,23 @@ export default function LanguageSwitcher() {
   }, [])
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="flight-language">
       <button
         onClick={() => setOpen(!open)}
-        className="text-sm text-gray-400 hover:text-white transition-colors px-2 py-1 rounded border border-gray-700 hover:border-gray-500"
+        className="flight-language__trigger"
+        aria-haspopup="menu"
+        aria-expanded={open}
       >
         {LANG_LABELS[currentLang]}
       </button>
       {open && (
-        <div className="absolute right-0 top-full mt-1 bg-gray-900 border border-gray-700 rounded-lg overflow-hidden shadow-xl z-50 min-w-[80px]">
+        <div className="flight-language__menu" role="menu">
           {SUPPORTED_LANGS.map((lang: SupportedLang) => (
             <button
               key={lang}
               onClick={() => { switchLang(lang); setOpen(false) }}
-              className={`w-full text-left px-3 py-2 text-sm transition-colors ${
-                lang === currentLang
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-300 hover:bg-gray-800'
-              }`}
+              className={lang === currentLang ? 'is-active' : ''}
+              role="menuitem"
             >
               {LANG_LABELS[lang]}
             </button>
