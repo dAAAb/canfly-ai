@@ -71,6 +71,23 @@ describe('AvatarMediaExperience', () => {
     expect(screen.getByText(/Brave mobile may block live camera playback/)).toBeInTheDocument()
   })
 
+  it('confirms camera vision and screen sharing on supported browsers', () => {
+    render(
+      <AvatarMediaNotice
+        capabilities={{
+          camera: true,
+          screenShare: true,
+          braveMobile: false,
+          secureContext: true,
+        }}
+      />,
+    )
+
+    expect(
+      screen.getByText('Camera vision and screen sharing are available in this browser.'),
+    ).toBeInTheDocument()
+  })
+
   it('hides screen sharing when the browser does not expose it', () => {
     render(
       <AvatarMediaExperience

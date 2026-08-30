@@ -7759,6 +7759,7 @@
     "cameraLive": "摄像头已开启 — 小龙虾看得到这个画面。",
     "cameraError": "无法开启摄像头。请关闭其他使用摄像头的 App、检查权限后重试。",
     "retryCamera": "重试摄像头",
+    "mediaReady": "这个浏览器可以使用摄像头视觉与屏幕共享。",
     "secureContextRequired": "摄像头与屏幕共享需要 HTTPS。",
     "cameraUnavailable": "这个浏览器没有提供摄像头 API；你仍可只用语音通话。",
     "screenShareUnavailable": "这个浏览器不支持屏幕共享。摄像头仍可使用；如需共享屏幕，请改用支持的桌面浏览器。",

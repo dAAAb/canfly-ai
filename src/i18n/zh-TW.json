@@ -7742,6 +7742,7 @@
     "cameraLive": "攝影機已開啟 — 小龍蝦看得到這個畫面。",
     "cameraError": "無法開啟攝影機。請關閉其他使用攝影機的 App、檢查權限後再試。",
     "retryCamera": "重試攝影機",
+    "mediaReady": "這個瀏覽器可以使用攝影機視覺與螢幕分享。",
     "secureContextRequired": "攝影機與螢幕分享需要 HTTPS。",
     "cameraUnavailable": "這個瀏覽器沒有提供攝影機 API；你仍可只用語音通話。",
     "screenShareUnavailable": "這個瀏覽器不支援螢幕分享。攝影機仍可使用；如需分享螢幕，請改用支援的桌面瀏覽器。",

@@ -7734,6 +7734,7 @@
     "cameraLive": "Camera is on — LittleLobster can see this feed.",
     "cameraError": "The camera could not start. Close other camera apps, check permission, then retry.",
     "retryCamera": "Retry camera",
+    "mediaReady": "Camera vision and screen sharing are available in this browser.",
     "secureContextRequired": "Camera and screen sharing require HTTPS.",
     "cameraUnavailable": "This browser is not exposing a camera API. You can continue with audio only.",
     "screenShareUnavailable": "Screen sharing is unavailable in this browser. Camera still works; use a supported desktop browser to share your screen.",

@@ -54,7 +54,12 @@ export function AvatarMediaNotice({
     )
   }
 
-  return null
+  return (
+    <div className="avatar-media-notice avatar-media-notice--ready">
+      <Camera aria-hidden="true" />
+      <span>{t('avatar.mediaReady')}</span>
+    </div>
+  )
 }
 
 interface AvatarMediaExperienceProps {

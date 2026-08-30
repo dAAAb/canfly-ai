@@ -2464,6 +2464,12 @@ body {
   background: rgba(245, 158, 11, 0.1);
 }
 
+.avatar-media-notice--ready {
+  border-color: rgba(18, 138, 91, 0.22);
+  color: #11613f;
+  background: rgba(34, 197, 128, 0.09);
+}
+
 .avatar-media-notice svg {
   width: 1rem;
   height: 1rem;
