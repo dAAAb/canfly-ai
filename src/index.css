@@ -1821,11 +1821,11 @@ body {
 
 .home-flight-board::before {
   position: absolute;
-  top: -6rem;
+  top: -8rem;
   right: 0;
   left: 0;
   z-index: 0;
-  height: clamp(14rem, 22vw, 18rem);
+  height: clamp(18rem, 28vw, 22rem);
   background: linear-gradient(
     to bottom,
     transparent 0%,
@@ -1835,8 +1835,6 @@ body {
     #34465a 70%,
     var(--flight-ink) 100%
   );
-  filter: blur(10px);
-  transform: scaleY(1.04);
   pointer-events: none;
   content: "";
 }
