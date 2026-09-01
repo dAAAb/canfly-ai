@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160" role="img" aria-label="Grok Bot">
+  <defs>
+    <linearGradient id="gb-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2a2418"/>
+      <stop offset="100%" stop-color="#111010"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="144" height="144" rx="36" fill="url(#gb-bg)"/>
+  <rect x="8" y="8" width="144" height="144" rx="36" fill="none" stroke="#d4a017" stroke-opacity="0.45" stroke-width="2"/>
+  <circle cx="80" cy="78" r="34" fill="none" stroke="#f3e6c4" stroke-width="5"/>
+  <circle cx="68" cy="74" r="5" fill="#f3e6c4"/>
+  <circle cx="92" cy="74" r="5" fill="#f3e6c4"/>
+  <path d="M66 92c6 8 22 8 28 0" fill="none" stroke="#d4a017" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="54" cy="36" r="4" fill="#d4a017"/>
+  <circle cx="106" cy="36" r="4" fill="#d4a017"/>
+  <path d="M54 36V50M106 36V50" stroke="#d4a017" stroke-width="3" stroke-linecap="round"/>
+</svg>

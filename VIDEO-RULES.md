@@ -72,6 +72,7 @@ public/videos/reviews/
 | 5 | HeyGen | ✅ 完成 | ✅ | ✅ | ✅ | ✅ 有（舊版直式） | 待整理 | ✅ 橫式 | 同上 |
 | 6 | Perplexity | ✅ 完成 | ✅ | ✅ | ✅ | ❌ | — | ✅ 橫式 | 英文口白 JC Ko avatar |
 | 7 | Brave Search | ✅ 完成 | ✅ | ✅ | ✅ | ❌ | — | ✅ 橫式 | 英文口白 JC Ko avatar |
+| 8 | Grok Bot | ⏳ 待補 | ⏳ | ⏳ | ⏳ | ❌ | — | — | 文案已上；無 HEYGEN_API_KEY，口白稿在 content/scripts/grok-bot-review-en.txt |
 
 ### 現況摘要
 - **7 支影片全部完成重做** ✅：現有橫式版本其實是中文口白（但配了英文翻譯 VTT），Perplexity/Brave Search 甚至是直式的

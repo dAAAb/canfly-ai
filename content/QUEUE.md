@@ -63,7 +63,7 @@
 
 | 優先 | 題目 | 類型 | 為什麼現在寫 | 建議頁面 | 狀態 |
 |---|---|---|---|---|---|
-| P0 | Grok Bot | 軟體／產品 + 短教學 | 寶博點名。新 agent 入口，搜尋熱度高 | `/apps` + `/learn/grok-bot` + blog | queued |
+| P0 | Grok Bot | 軟體／產品 + 短教學 | 寶博點名。新 agent 入口，搜尋熱度高 | `/apps` + `/learn/grok-bot` + blog | drafted 2026-09-01；影片待補（無 HEYGEN_API_KEY） |
 | P0 | Perplexity Computer | 軟體／產品 | 寶博點名。新形態「AI 電腦」，跟現有 Perplexity 搜尋頁要分開 | `/apps` + blog 對照「Perplexity vs Perplexity Computer」 | queued |
 | P0 | Perplexity Portable Computer | 軟體／硬體交界 | 寶博點名。可攜版，長尾詞新 | blog 先寫，規格穩了再產品頁 | queued |
 | P1 | Arduino VENTUNO Q | 硬體 | 寶博點名。新開發板，可接本地／邊緣 Agent | `/apps/hardware` + `/learn` | queued |
@@ -133,6 +133,7 @@
 
 | slug / 頁 | 備註 |
 |---|---|
+| `grok-bot` | 2026-09-01 已上產品＋教學＋比較文。影片待補。不要跟 Grok 4.6 寫成同一頁 |
 | `perplexity` | 搜尋產品已在。Agent API／OpenClaw 接法先更新這頁。Computer / Portable 是否另開見待決。Firecrawl 另開，不要把 Developer Index 塞進來 |
 | `mac-mini-m4` | 新款 mini 先更新這頁 |
 | `google-gemini` | 更新 CLI → Antigravity，不要另開 Gemini 頁。Omni 1.1 Flash 也寫這頁 |
@@ -157,6 +158,7 @@
 | 2026-08-29 | 每日選題掃描 | 待寫 +2（Firecrawl、screenpipe）；更新舊頁 +Gemini Omni 1.1 Flash | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI/Grok 4.6（已入列）、Perplexity Portable（已入列）、OpenAI HF 事故報告（不寫產品）、Anthropic／Google Antigravity（更新舊頁）、PH 8/28、GitHub OpenClaw ~388K、ClawHub、Apple mini/Studio（已入列）、NVIDIA Jetson Orin Nano 2 官方寫 H1 2027 才出、Arduino VENTUNO Q（已入列）。沒寫文章。 |
 | 2026-08-31 | 每日選題掃描 | 待寫 +1（Muse Glimmer）；更新舊頁 +AgentMail ClawHub plugin、Ollama／OpenClaw 家族連結、Codex Cursor 截止備註 | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI/Grok Bot+X（已入列）、Perplexity Portable（已入列）、OpenAI Cursor 停約 11/12、Anthropic Cowork memory（仍無 OpenClaw 接法）、Google Antigravity（OpenClaw 明確不接 `agy` OAuth）、PH 8/29–8/30、GitHub OpenClaw 2026.8.1-beta.3／GPT-5.6、ClawHub（AgentMail、Context.dev）、Ollama Muse Glimmer 官方 `ollama launch openclaw`、Apple mini／NVIDIA Orin Nano 2／Arduino（已入列）。觀察：Olostep、Context.dev、Hy4、Muse Spark、Cloudways、Qwen 3.8。沒寫文章。 |
 | 2026-09-01 | 每日選題掃描 | 待寫 +0；更新舊頁 +OpenClaw 2.0（v2026.8.1） | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI/Grok（4.6／Bot 已入列）、Perplexity Computer／Portable（已入列）、OpenAI Workspace Agents（觀察）、Anthropic MHS／Cowork（仍無 OpenClaw 接法）、Google Antigravity 企業方案（更新舊頁即可）、PH 8/31–9/1、GitHub OpenClaw 2.0／~388K、ClawHub（無新官方 skill 頁）、Apple mini／NVIDIA Orin Nano 2／Arduino（已入列）。觀察：Workspace Agents、Agent 37／AgentSky／Murmell、Gemma 4。沒寫文章。 |
+| 2026-09-01 | Content Writer 週二產稿 | Grok Bot 產品＋教學＋blog | `/apps/free/grok-bot`、`/learn/grok-bot`、`/blog/grok-bot-vs-openclaw`。影片待補。未寫 P0 Perplexity Computer（待決）。 |
 
 ---
 
