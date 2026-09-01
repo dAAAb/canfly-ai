@@ -97,6 +97,8 @@ POST /api/agents/:name/milestones — Add achievements (Bearer auth)
 
 ### Free Tools
 - Ollama (/apps/free/ollama) - Local AI models, no API keys needed
+- OpenClaw (/apps/free/openclaw) - Open-source personal AI agent
+- Grok Bot (/apps/free/grok-bot) - xAI hosted always-on teammates (beta; SuperGrok/Cursor). Review video pending.
 
 ### Cloud Hosting
 - Zeabur (/apps/hosting/zeabur) - One-click deploy (referral: OpenClaw, 10% off)

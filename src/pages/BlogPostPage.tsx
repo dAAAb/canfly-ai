@@ -123,7 +123,7 @@ export default function BlogPostPage() {
               {relatedProducts.map((product) => (
                 <Link
                   key={product.id}
-                  to={localePath(`/apps/${product.id}`)}
+                  to={localePath(`/apps/${product.category}/${product.id}`)}
                   className="flex items-center gap-4 bg-white/5 border border-white/10 rounded-xl p-4 hover:border-white/30 transition-colors group"
                 >
                   <img

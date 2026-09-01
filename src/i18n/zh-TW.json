@@ -792,6 +792,21 @@
         "ctaPrimary": "安裝 OpenClaw",
         "ctaSecondary": "前往 openclaw.ai"
       },
+      "grok-bot": {
+        "tagline": "全天候 AI 隊友——自備雲端電腦",
+        "description": "Grok Bot 是 xAI 的早期測試版「永遠在線」代理人。你帳號上的 Bot 共用一台雲端電腦，有瀏覽器、檔案系統和終端機，能登入你已經在用的工具與網站，包含沒有乾淨 API 或 MCP 的平台。你像傳訊給同事一樣交辦，它做完才回來等你核可。這不是 OpenClaw 技能，而是託管式的對手產品。資格綁 SuperGrok／Cursor 方案，資料走雲端。想自己掌控硬體與模型，請從 CanFly.ai 的 OpenClaw 開始。",
+        "features": [
+          "共用雲端電腦：瀏覽器、檔案、終端機",
+          "可同時跑多個 Bot，彼此傳訊與群組協調",
+          "示範一次即可存成技能或例行工作",
+          "2026-08-29 起可用 X 連接器讀貼文、時間軸、提及",
+          "使用量與 Grok／Cursor 方案分開計算",
+          "桌機（macOS／Windows）與 iPhone（iOS 18+）",
+          "不是 OpenClaw 技能——本機路線是 OpenClaw + Ollama"
+        ],
+        "ctaPrimary": "開始教學",
+        "ctaSecondary": "官方 Grok Bot 文件"
+      },
       "openrouter": {
         "tagline": "一個 API 使用 200+ AI 模型 — 含免費額度",
         "description": "一個統一的 API 存取 Claude、GPT-4、LLaMA、Gemini 及 200+ 模型，來自 30+ 家供應商。只需一行程式碼切換模型 — 不用申請多把 API Key。免費版每日 50 次呼叫。可搭配 OpenClaw agent 進行智慧模型路由。",
@@ -7191,6 +7206,222 @@
           "a": "它是互補的。SwitchBot AI Hub 處理本地 AI + SwitchBot 裝置。也透過 Matter 橋接到 Apple Home/Google Home/Alexa。"
         }
       ]
+    },
+    "grokBot": {
+      "title": "Grok Bot — 把工作交給全天候隊友",
+      "subtitle": "xAI 託管代理人，共用一台雲端電腦。這不是 OpenClaw 技能——訂閱前先比較兩邊。",
+      "duration": "12 分鐘",
+      "difficulty": "入門",
+      "steps": [
+        {
+          "title": "先確認方案有沒有 Grok Bot",
+          "titleEn": "Check whether your plan includes Grok Bot",
+          "estimatedTime": "2 分鐘",
+          "content": "Grok Bot 仍是早期測試版。官方入門文件目前列出 SuperGrok Plus、SuperGrok Heavy、Cursor Pro+、Cursor Ultra，以及 Cursor Teams Standard 或 Premium。發表文也寫過 SuperGrok 與 Cursor Pro——資格還在變，請以官方開通頁為準。登入用 Cursor 帳號。Grok Bot 需要雲端資料儲存，Cursor 舊版隱私模式不支援。合格方案含每週用量，且與原本的 Grok／Cursor 額度分開計算。這頁不是 Grok 4.6 模型卡。",
+          "commands": [
+            "# 確認目前開通資格與方案名稱",
+            "open https://x.ai/bot",
+            "open https://docs.x.ai/grok-bot/get-started",
+            "open https://docs.x.ai/grok-bot/faq",
+            "",
+            "# 發表文（2026-08-11）— 方案名單比後續文件更寬",
+            "open https://x.ai/news/introducing-grok-bot"
+          ],
+          "expectedResult": "你知道自己的 SuperGrok 或 Cursor 方案能不能開 Grok Bot，也不會把它和 Grok 4.6 API 混成同一頁。",
+          "tips": [
+            "不要死記第三方寫的美元價——方案與用量會變。看官方開通頁。",
+            "若同時有 Cursor 與 SuperGrok，官方 FAQ：Grok Bot 用用量較多的那邊。",
+            "企業方案走候補／客戶團隊，不是自助開通。",
+            "想要沒有訂閱門檻的本機代理人？走 CanFly.ai 的 OpenClaw 教學。"
+          ],
+          "troubleshooting": {
+            "title": "開通問題",
+            "items": [
+              {
+                "q": "App 說我沒有資格。",
+                "a": "打開官方開通頁。文件與發表文對 SuperGrok／Plus、Cursor Pro／Pro+ 的寫法不一致。只有即時頁面列出你的方案再升級。"
+              },
+              {
+                "q": "Cursor 舊版隱私模式擋住設定。",
+                "a": "官方文件：Grok Bot 需要雲端資料儲存。先把 Cursor 帳號改成支援的資料設定，Bot 才能啟動。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "安裝桌機或 iOS App",
+          "titleEn": "Install the desktop or iOS app",
+          "estimatedTime": "3 分鐘",
+          "content": "桌機用 macOS（Apple 晶片或 Intel）或 Windows（x64 或 Arm64）；手機用 iPhone、iOS 18 或更新版的配套 App。發表當下不支援 Linux 桌機、Android 與 iPad。請從官方開通頁下載，選對晶片版本。同一個 Bot 與對話會在已登入裝置同步。筆電闔上後，工作仍在雲端電腦跑。",
+          "commands": [
+            "# 官方下載／開通頁",
+            "open https://x.ai/bot",
+            "",
+            "# macOS：蘋果選單 → 關於這台 Mac",
+            "# 看到晶片欄位 = Apple 晶片版；看到處理器欄位 = Intel 版",
+            "# 把 Grok Bot 拖進應用程式，Gatekeeper 詢問時選打開",
+            "",
+            "# Windows：設定 → 系統 → 關於 → 系統類型",
+            "# 安裝 x64 或 Arm64，再從開始功能表開啟 Grok Bot"
+          ],
+          "expectedResult": "Grok Bot 已安裝，看得到歡迎或登入畫面。",
+          "tips": [
+            "App 會自動檢查更新。設定 → Beta 也有檢查更新。",
+            "iPhone 是配套端：同一個 Bot 名單，不是另一組。",
+            "目前沒有官方 Linux 桌機 App。Linux 上的本機替代是 OpenClaw。"
+          ],
+          "troubleshooting": {
+            "title": "安裝問題",
+            "items": [
+              {
+                "q": "macOS 打不開 App。",
+                "a": "用官方磁碟映像。系統詢問時選打開。Apple 晶片與 Intel 請從開通頁下載，不要用鏡像站。"
+              },
+              {
+                "q": "我只有 Linux。",
+                "a": "官方 FAQ：發表當下不支援 Linux 桌機。今天就要在 Linux 跑代理人，請用 CanFly.ai 的 OpenClaw + Ollama。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "登入並建立專注的第一個 Bot",
+          "titleEn": "Sign in and create a focused first Bot",
+          "estimatedTime": "3 分鐘",
+          "content": "選 Get started，在瀏覽器完成 Sign in with Cursor。第一次使用會介紹 Bot、共用電腦與例行工作，並問你常用哪些工具——這些答案只影響建議，不會立刻連接工具。自己建立 Bot 時給短名稱、一個主工作，以及寫死的界線（不要改正式環境、送出前先問）。官方建議：專注的 Bot 比一隻包山包海的 Bot 更能累積有用上下文。之後用 New → Create new agent 再加。",
+          "commands": [
+            "# 官方第一隻 Bot 的寫法（請改成你的工作）",
+            "# Name: Piper",
+            "# Job: Product performance",
+            "# Description: Investigate product-performance questions.",
+            "# Preserve links and screenshots. Separate evidence from guesses.",
+            "# Return a short summary with the highest-impact issue first.",
+            "# Never change production settings.",
+            "",
+            "open https://docs.x.ai/grok-bot/get-started"
+          ],
+          "expectedResult": "你有一隻具名 Bot，只做一件主工作，並且寫了界線。",
+          "tips": [
+            "Bot 是持久的具名隊友——記憶與角色留在那一隻。",
+            "同一個帳號的 Bot 共用一台電腦。第二隻 Bot 不是安全隔離牆。",
+            "之後可以分享 Bot 的公開複本。先清掉祕密；複本不含你的電腦或登入。"
+          ],
+          "troubleshooting": {
+            "title": "登入與建立問題",
+            "items": [
+              {
+                "q": "公司 SSO 登入失敗。",
+                "a": "在瀏覽器視窗走完原本的 Cursor 組織登入，再回到 App。"
+              },
+              {
+                "q": "我做了一隻什麼都管的 Bot。",
+                "a": "角色分開就拆開。官方說法：專注的 Bot 比較能累積有用上下文。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "交辦第一件事，並把核可關緊",
+          "titleEn": "Hand off a first task and keep approvals tight",
+          "estimatedTime": "3 分鐘",
+          "content": "好的第一個請求要寫清結果、來源、限制、交付物，以及何時停下來等你。先從附加檔案開始——不用登入——再試一個真實工具。網站要密碼、通行密鑰、兩步驟或 CAPTCHA 時，自己接管電腦，不要叫 Bot 繞過。工作階段留在共用電腦上，其他 Bot 也可能重用這次登入。有連接器就從 Settings → Plugins 裝。2026-08-29 xAI 上了 X 連接器：接上 X、必要時自動開開發者帳號，付費使用者有入門 X API 點數。第一版偏讀取（搜貼文、時間軸、提及），不是發文機器人。",
+          "commands": [
+            "# 安全的第一個任務（不用連接器、不用網站登入）",
+            "# Summarize this document in five bullets.",
+            "# List every date, decision, and open question in a separate section.",
+            "# Cite the page or section. Do not change the source file.",
+            "",
+            "# X 連接器（2026-08-29）— 第一版，偏讀取",
+            "open https://x.ai/news/grok-bot-and-x",
+            "",
+            "# 送出／購買／改正式環境前先看核可與隱私",
+            "open https://docs.x.ai/grok-bot/faq"
+          ],
+          "expectedResult": "Bot 做完一件有界線的工作、停下來給你看，而且你明白共用電腦的登入風險。",
+          "tips": [
+            "把長期界線寫進 Bot 說明：未詢問前不要送出、發布、刪除、購買或改正式環境。",
+            "Teach a task（若已開放）最多錄十分鐘瀏覽器流程，並草擬技能。",
+            "技能是怎麼做；例行工作是把這件事排給某一隻 Bot、照時間或事件跑。",
+            "刪掉 Bot 會拿掉它的設定與例行工作；共用電腦上的檔案與登入可能還在。"
+          ],
+          "troubleshooting": {
+            "title": "交辦問題",
+            "items": [
+              {
+                "q": "Bot 卡在登入或 CAPTCHA。",
+                "a": "打開 Agent Computer，接管並完成只有人能做的步驟，再交還控制。官方 FAQ：這些步驟應該交給你。"
+              },
+              {
+                "q": "能不能用第二隻 Bot 隔離危險登入？",
+                "a": "不能。官方文件：電腦是依使用者、不是依 Bot。檔案與工作階段對帳號上每一隻 Bot 都看得到。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "下一步：託管 Grok Bot 還是本機 OpenClaw",
+          "titleEn": "Next steps: hosted Grok Bot vs local OpenClaw",
+          "estimatedTime": "自由探索",
+          "content": "你已經在付 SuperGrok 或 Cursor、又希望闔上筆電工作還在跑時，Grok Bot 是託管的全天候路線。想自己掌控硬體、模型選擇、沒有廠商門檻時，CanFly.ai 的預設是 OpenClaw。工具沒有 API、必須在真實瀏覽器收尾，用 Grok Bot。提示詞必須留在本機，用 OpenClaw + Ollama。英文口白加雙語字幕的評論影片尚待補——今天以文字教學為準。",
+          "tips": [
+            "改方案只為了 Grok Bot 之前，先讀 CanFly.ai 的比較文。",
+            "Grok 4.6 是佇列裡另一張模型／API 頁——不要和這篇教學寫成同一頁。",
+            "流程穩定後，請 Bot 先存技能，再做成例行工作——技能要先實測一次。"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "在本機安裝 OpenClaw",
+              "desc": "同樣的代理人習慣，硬體是你的。一行指令：ollama launch openclaw。",
+              "cta": "OpenClaw 教學",
+              "link": "/learn/ollama-openclaw"
+            },
+            {
+              "emoji": "🦙",
+              "title": "先跑 Ollama",
+              "desc": "先有本機模型，再決定要不要租託管隊友。",
+              "cta": "Ollama 教學",
+              "link": "/learn/ollama"
+            },
+            {
+              "emoji": "🔍",
+              "title": "用 Perplexity 做研究",
+              "desc": "帶引文的網頁答案，幫你決定託管還是本機。",
+              "cta": "Perplexity 教學",
+              "link": "/learn/perplexity"
+            },
+            {
+              "emoji": "📰",
+              "title": "Grok Bot 對上 OpenClaw",
+              "desc": "何時訂閱，何時自己架。",
+              "cta": "讀比較文",
+              "link": "/blog/grok-bot-vs-openclaw"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Grok Bot 是 OpenClaw 技能嗎？",
+          "a": "不是。它是 xAI 的託管代理人產品。OpenClaw 是 CanFly.ai 上的開源本機／雲端代理人。兩邊當比較，不要當成同一條安裝路徑。"
+        },
+        {
+          "q": "筆電闔上後 Grok Bot 還會做嗎？",
+          "a": "會。官方 FAQ：工作跑在雲端電腦。關掉桌機 App、筆電或 iPhone，不會停掉背景回合或例行工作。"
+        },
+        {
+          "q": "我的 Bot 共用一台電腦嗎？",
+          "a": "是。帳號上每一隻 Bot 共用檔案、瀏覽器工作階段與登入。官方文件：不要把多一隻 Bot 當成安全邊界。"
+        },
+        {
+          "q": "X 連接器現在能做什麼？",
+          "a": "2026-08-29 第一版偏讀取 X：搜貼文、讀時間軸、看提及、整理正在發生的事。在 Grok Bot 裡連接 X。付費使用者有入門 X API 點數。寫入權限請以官方新聞為準，不要假設能發文。"
+        },
+        {
+          "q": "支援哪些平台？",
+          "a": "macOS（Apple 晶片與 Intel）、Windows（x64 與 Arm64）、iOS 18 以上的 iPhone。發表當下不支援 Linux、Android、iPad。"
+        }
+      ]
     }
   },
   "hardwareCompare": {
@@ -7525,6 +7756,19 @@
       "insight": "觀點"
     },
     "posts": {
+      "grokBotVsOpenclaw": {
+        "title": "Grok Bot 對上 OpenClaw：租隊友，還是自己養代理人",
+        "summary": "xAI 在 2026 年 8 月推出 Grok Bot：全天候 Bot，共用一台雲端電腦。CanFly.ai 仍從 OpenClaw 起步。這篇幫你選邊，也不要把 Grok Bot 和 Grok 4.6 寫成同一頁。",
+        "content": [
+          "Grok Bot 不是多一個聊天分頁。xAI 在 2026 年 8 月 11 日把它當早期測試版推出：具名 Bot 共用一台持久的雲端電腦，登入你已經在用的工具，筆電闔上後工作還在跑。你像傳訊給同事一樣交辦。它在真實 App 裡做完——包含沒有乾淨 API 或 MCP 的網站——只有要核可時才叫你。",
+          "CanFly.ai 仍把 OpenClaw 當預設代理人。OpenClaw 開源，模型自己選，提示詞留在你控制的機器，安裝是 ollama launch openclaw。Grok Bot 是有訂閱門檻的託管產品。它不是 OpenClaw 技能，也不是 Grok 4.6 的 API 頁。三個名字混在一起，搜尋與設定都會壞。",
+          "目前官方入門文件列出 SuperGrok Plus、SuperGrok Heavy、Cursor Pro+、Cursor Ultra，以及 Cursor Teams Standard 或 Premium。發表文也寫過 SuperGrok 與 Cursor Pro。資格還在變。升級前先看 https://x.ai/bot。用量與一般 Grok／Cursor 額度分開。合格方案含每週用量；額外隨需用量依模型與 token 計費。Cursor 舊版隱私模式不支援，因為 Bot 需要雲端儲存。",
+          "最重要的安全句很容易漏掉。同一個帳號的 Bot 共用一台電腦。檔案、瀏覽器工作階段與登入是依使用者，不是依 Bot。第二隻 Bot 不是沙盒。網站要密碼、通行密鑰、兩步驟或 CAPTCHA 時，你自己接管電腦。官方文件寫：這些步驟應該交給你，不要繞過。",
+          "2026 年 8 月 29 日，xAI 加上更緊的 X 連接器。在 Grok Bot 裡連接 X，沒有開發者帳號會幫你開，付費使用者有入門 X API 點數。第一版偏讀取：搜貼文、讀時間軸、看提及、整理正在發生的事。官方新聞沒寫能發文、回覆或私訊之前，不要當成發文機器人。",
+          "已經在付合格的 SuperGrok 或 Cursor、又要在雜亂的瀏覽器工具裡全天候收尾、也接受雲端儲存與共用電腦，就用 Grok Bot。Linux 很重要、檔案不能離開房間、或你想用任何模型——本機 Ollama 或雲端 API——又不想被 Bot 方案擋住，就用 OpenClaw。目前平台：macOS、Windows、iOS 18 以上的 iPhone。發表當下沒有 Linux、Android、iPad。",
+          "CanFly.ai 現在有產品卡 /apps/free/grok-bot，以及短教學 /learn/grok-bot。本機路線仍是 /apps/free/openclaw 與 /learn/ollama-openclaw。從沒在自己機器跑過模型，先看 /learn/ollama。英文口白加繁中／英文雙語字幕的評論影片標為待補，等有 HeyGen 金鑰再做。今天以文字步驟為準。"
+        ]
+      },
       "whyCanflyExists": {
         "title": "你能飛。這就是 CanFly 存在的理由。",
         "summary": "CanFly 是一句產品句子。AI Agent 該讓一個人做更多、更快，這個網站把你從本機模型送到公開頁面。",
