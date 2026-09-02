@@ -4,7 +4,7 @@
 > 每天先掃、先排隊；當天資訊多就一次寫幾篇，資訊少就寫一篇或只更新舊文。
 > 產稿走 `SOP-NEW-APP.md`（產品＋教學）或既有 blog 結構；**不要直接 push**。
 
-最後掃描：2026-09-02（每日選題掃描，06:00 Taipei）
+最後掃描：2026-09-03（每日選題掃描，06:00 Taipei）
 
 ---
 
@@ -87,7 +87,7 @@
 | 現有頁 | 為什麼要改 |
 |---|---|
 | `/apps/skills/perplexity` + `/learn/perplexity` | 官方 [Perplexity with OpenClaw](https://docs.perplexity.ai/docs/getting-started/integrations/openclaw)：Search plugin、Agent API（`openai-responses` + `https://api.perplexity.ai/v1`）、遠端 MCP。Sonar Chat Completions 撐到 2026-09-27。現有頁還停在「AI 搜尋引擎」。Computer 要不要另開頁見待決。 |
-| `/apps/models/google-gemini` + `/learn/google-gemini` | 一般用戶 Gemini CLI 2026-06-18 已停。Google 改推 Antigravity CLI（`agy`）與 Managed Agents。現有頁還在講 2M context / Gems / Veo。PH 8/28 上的 Gemini Omni 1.1 Flash（影片生成／剪輯）補進這頁，不要另開。 |
+| `/apps/models/google-gemini` + `/learn/google-gemini` | 一般用戶 Gemini CLI 2026-06-18 已停。Google 改推 Antigravity CLI（`agy`）與 Managed Agents。現有頁還在講 2M context / Gems / Veo。PH 8/28 上的 Gemini Omni 1.1 Flash（影片生成／剪輯）補進這頁，不要另開。2026-09-02 官方 [Gemini 3.8 Flash](https://blog.google/innovation-and-ai/models-and-research/gemini-models/3-8-flash-and-3-8-flash-cyber/)：agentic／coding workhorse，$0.75/$3.75 到 2026-12-31，OpenRouter 已有 `google/gemini-3.8-flash`。寫進這頁，不要另開。Flash Cyber 走 Fairwind trusted access，見觀察。 |
 | `/apps/hardware/mac-mini-m4` | 見上方「新款 Mac mini」。 |
 | OpenClaw 產品卡 + `/learn/ollama-openclaw` | **優先改。** 官方便 2026-08-31 出 v2026.8.1（AKA OpenClaw 2.0）；2026-09-01 再出穩定補丁 [v2026.8.2](https://docs.openclaw.ai/releases/2026.8.2)：Linux `.deb`／AppImage 桌面伴、Home dock（`Cmd/Ctrl+Shift+H`）、背景 session、Chrome extension 可在 Gateway 沒開時喚醒 relay。2.0 重點仍是：引導式 setup、重建 Control UI、Shared Cloud Sessions、SQLite session、breaking：OpenProse 拿掉、`codex/*` → `openai/*`，升級走 `openclaw doctor --fix`。文案還寫 300K+ stars；GitHub 仍約 388K。Custodian 一併改。不要另開 2.0 或 8.2 產品頁。 |
 | `/learn/nemotron-3-super` | 加 Lightning 家族連結。Super 給重推理，Lightning 給長跑執行層。 |
@@ -126,11 +126,16 @@
 | Product Hunt 8/31–9/1（Video Agent、BrandJet、Interactive Sessions、Viktor、Topview、Murfy、Orato、FrameOS） | SaaS 影片／銷售／Slack coworker，沒有官方 OpenClaw 安裝步驟 | 下週 PH |
 | Agent 37 Cloud／AgentSky／Murmell | 託管 OpenClaw／多 harness 雲。跟 Zeabur／Pinata 互搶，沒有獨立 skill 安裝路徑 | 折進 Zeabur；不要另開 |
 | Gemma 4 獨立頁 | 2026-04 就有，`ollama launch openclaw --model gemma4:26b`。跟 Qwen 3.8 一樣留在 Ollama | 不要另開 |
-| Grok 4.7 | 傳聞／Wikipedia 寫 9/2；xAI [release notes](https://docs.x.ai/developers/release-notes) 仍停在 4.6，沒有 model ID、定價、benchmark | 官方 model card 上線再決定是更新 Grok 4.6 稿還是另開 |
+| Grok 4.7 | Musk 9/2 說約 10 天（約 9/12）。xAI [release notes](https://docs.x.ai/developers/release-notes) 與 [model card](https://docs.x.ai/developers/grok-4-6) 仍停在 4.6，沒有 `grok-4.7` ID、定價、benchmark | 官方 model card 上線再決定是更新 Grok 4.6 稿還是另開 |
 | ChatGPT Healthcare／EHR（9/1） | Epic 接病歷＋Healthcare Public Data plugin。企業醫療，沒有 OpenClaw 安裝步驟 | 不要寫 |
 | Anthropic EFS／Mythos 5.1 | EFS 今秋才 GA；Mythos 只給 trusted cyber／生命科學。Fable 5.1 折進 Claude Code 稿就夠 | 不要另開 |
 | Product Hunt 9/1（Kilo Code JetBrains、TrustedRouter、Keiki、Tovel、Cosmic Agent Plugins、Naseem、Happy Shrimp、ThunderPhone） | SaaS／IDE agent／OpenRouter 競品／Mac-native 對手。Naseem 是 Swift harness，沒有官方 OpenClaw skill。Murmell 已在上方觀察 | 下週 PH |
 | OpenClaw Google Meet plugin | 官方 `openclaw plugins install clawhub:@openclaw/google-meet`，min host 2026.4.20，不是新品 | 寫 ClawHub 頁時帶一句；不要另開 |
+| OpenAI Astra | 未上市內部模型；官方只談 Preparedness／Critical cyber，沒有 API slug、定價、OpenClaw 接法 | 出 GA／model card 再看；不要寫產品頁 |
+| Perplexity PII-TRACE／PII-Tracer | 官方 [研究文](https://www.perplexity.ai/hub/blog/pii-trace-detecting-personal-data-before-it-leaves-the-device)：0.6B 本機 PII 偵測，寫「即將釋出」。沒有 OpenClaw 安裝步驟 | 權重／安裝指令上線再決定是折進 Perplexity 舊頁還是本機技能 |
+| Gemini 3.8 Flash Cyber | Fairwind trusted access，跟 Mythos 同一類 | 不要另開；一般 3.8 Flash 折進 Gemini 舊頁 |
+| Product Hunt 9/2（Monid、Dial、Browzer、Articos、CleanShot 5、GhostReply、Onset MCP、Porte、Doop、Userlens） | SaaS／MCP／Mac 工具。Monid 是通用 `SKILL.md` 工具市集，跟 OpenRouter／Firecrawl 互搶。Dial 的 CLI 有 `dial onboard --agent openclaw`，但跟官方 `@openclaw/voice-call` 重疊，沒有獨立 OpenClaw 文件頁。OpenClaw 2.0／Fable 5.1 已在佇列 | 下週 PH；Dial 有獨立 OpenClaw 文件再比 |
+| Muse Code／DeepSeek Harness | Ollama 已有 `ollama launch muse`／`ollama launch dsh`，是對手 harness，不是 OpenClaw 技能 | 折進 Ollama／Muse Glimmer 頁帶一句；不要另開 |
 
 ---
 
@@ -163,6 +168,7 @@
 | 2026-08-31 | 每日選題掃描 | 待寫 +1（Muse Glimmer）；更新舊頁 +AgentMail ClawHub plugin、Ollama／OpenClaw 家族連結、Codex Cursor 截止備註 | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI/Grok Bot+X（已入列）、Perplexity Portable（已入列）、OpenAI Cursor 停約 11/12、Anthropic Cowork memory（仍無 OpenClaw 接法）、Google Antigravity（OpenClaw 明確不接 `agy` OAuth）、PH 8/29–8/30、GitHub OpenClaw 2026.8.1-beta.3／GPT-5.6、ClawHub（AgentMail、Context.dev）、Ollama Muse Glimmer 官方 `ollama launch openclaw`、Apple mini／NVIDIA Orin Nano 2／Arduino（已入列）。觀察：Olostep、Context.dev、Hy4、Muse Spark、Cloudways、Qwen 3.8。沒寫文章。 |
 | 2026-09-01 | 每日選題掃描 | 待寫 +0；更新舊頁 +OpenClaw 2.0（v2026.8.1） | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI/Grok（4.6／Bot 已入列）、Perplexity Computer／Portable（已入列）、OpenAI Workspace Agents（觀察）、Anthropic MHS／Cowork（仍無 OpenClaw 接法）、Google Antigravity 企業方案（更新舊頁即可）、PH 8/31–9/1、GitHub OpenClaw 2.0／~388K、ClawHub（無新官方 skill 頁）、Apple mini／NVIDIA Orin Nano 2／Arduino（已入列）。觀察：Workspace Agents、Agent 37／AgentSky／Murmell、Gemma 4。沒寫文章。 |
 | 2026-09-02 | 每日選題掃描 | 待寫 +0；更新舊頁 +OpenClaw v2026.8.2、Claude Fable 5.1（折進 Claude Code 稿）、Ollama per-token 價 | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI docs（仍 4.6；4.7 無 model card）、Perplexity OpenClaw 文件（已排更新）、OpenAI Healthcare／EHR（觀察）、Anthropic Fable 5.1／Mythos 5.1／EFS、Google Antigravity（更新舊頁即可）、PH 9/1（Kilo Code、TrustedRouter、Naseem、Keiki 等）、GitHub OpenClaw 2026.8.2／~388K、ClawHub（Google Meet 等官方 plugin 非新品）、Apple mini／Studio（已入列，9/22 出貨）、NVIDIA Orin Nano 2（H1 2027）、Arduino VENTUNO Q／UNO Q（已入列）。觀察：Grok 4.7、Healthcare、EFS／Mythos、PH 9/1、Naseem。沒寫文章。 |
+| 2026-09-03 | 每日選題掃描 | 待寫 +0；更新舊頁 +Gemini 3.8 Flash | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI docs（仍 4.6；Musk 說 4.7 約 9/12）、Perplexity PII-Tracer（未釋出）、OpenAI Astra（未上市）、Anthropic（Fable／EFS 已記）、Google 3.8 Flash（折進 Gemini 舊頁）、PH 9/2（Monid、Dial、Browzer 等）、GitHub OpenClaw 仍 2026.8.2／~388K、ClawHub（無新官方 skill 頁）、Ollama（無新 `ollama launch openclaw` 模型）、Apple mini／Studio（9/22）、NVIDIA Orin Nano 2（H1 2027）、Arduino VENTUNO Q／UNO Q（已入列）。觀察：Astra、PII-Tracer、Flash Cyber、PH 9/2、Dial／Monid、Muse Code／DSH。沒寫文章。 |
 
 ---
 
