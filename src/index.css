@@ -2608,7 +2608,7 @@ body {
 @media (max-width: 640px) {
   .avatar-call-launcher {
     justify-content: flex-end;
-    padding: 3.25rem 0.55rem 0.25rem;
+    padding: 3.25rem 0.55rem 0.625rem;
   }
 
   .avatar-call-launcher__button {
