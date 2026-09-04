@@ -4,7 +4,7 @@
 > 每天先掃、先排隊；當天資訊多就一次寫幾篇，資訊少就寫一篇或只更新舊文。
 > 產稿走 `SOP-NEW-APP.md`（產品＋教學）或既有 blog 結構；**不要直接 push**。
 
-最後掃描：2026-09-04（每日選題掃描，06:00 Taipei）
+最後掃描：2026-09-05（每日選題掃描，06:00 Taipei）
 
 ---
 
@@ -139,6 +139,8 @@
 | Muse Code／DeepSeek Harness | Ollama 已有 `ollama launch muse`／`ollama launch dsh`，是對手 harness，不是 OpenClaw 技能 | 折進 Ollama／Muse Glimmer 頁帶一句；不要另開 |
 | Product Hunt 9/3（Agent Builder by Airtop、Nex、Omi、MagiCrew、Atlas、Tabbit、Higgsfield、Tidy、Thaw、Blume.codes、Grove、Fillo） | SaaS／影片／Mac 工具／GTM coworker。Blume 只監 Claude Code／Codex／Cursor，沒有 OpenClaw skill。Grove 是對手 terminal | 下週 PH |
 | Omi（PH 9/3 #3） | 官方 [MCP setup](https://docs.omi.me/doc/developer/mcp/setup) 從 macOS app 連 OpenClaw（複製 MCP key），不是 `openclaw plugins install`。官方 plugin 還是 GitHub issue。跟已入列 screenpipe 互搶螢幕／語音記憶 | screenpipe 上線後再比；不要第三頁 |
+| Product Hunt 9/4（Snitch、Chalked for Mac、Remote OpenClaw） | Slack 組織圖／Mac 回覆草稿／MCP 目錄。沒有官方 OpenClaw 安裝步驟；Remote OpenClaw 跟已入列 ClawHub 互搶 | 下週 PH |
+| Lyria 3.5（Gemini 音樂，9/4） | Gemini app／API 音樂生成，沒有 OpenClaw 接法 | 不要另開；不必為此改 Gemini 舊頁 |
 
 ---
 
@@ -174,6 +176,7 @@
 | 2026-09-02 | 每日選題掃描 | 待寫 +0；更新舊頁 +OpenClaw v2026.8.2、Claude Fable 5.1（折進 Claude Code 稿）、Ollama per-token 價 | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI docs（仍 4.6；4.7 無 model card）、Perplexity OpenClaw 文件（已排更新）、OpenAI Healthcare／EHR（觀察）、Anthropic Fable 5.1／Mythos 5.1／EFS、Google Antigravity（更新舊頁即可）、PH 9/1（Kilo Code、TrustedRouter、Naseem、Keiki 等）、GitHub OpenClaw 2026.8.2／~388K、ClawHub（Google Meet 等官方 plugin 非新品）、Apple mini／Studio（已入列，9/22 出貨）、NVIDIA Orin Nano 2（H1 2027）、Arduino VENTUNO Q／UNO Q（已入列）。觀察：Grok 4.7、Healthcare、EFS／Mythos、PH 9/1、Naseem。沒寫文章。 |
 | 2026-09-03 | 每日選題掃描 | 待寫 +0；更新舊頁 +Gemini 3.8 Flash | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI docs（仍 4.6；Musk 說 4.7 約 9/12）、Perplexity PII-Tracer（未釋出）、OpenAI Astra（未上市）、Anthropic（Fable／EFS 已記）、Google 3.8 Flash（折進 Gemini 舊頁）、PH 9/2（Monid、Dial、Browzer 等）、GitHub OpenClaw 仍 2026.8.2／~388K、ClawHub（無新官方 skill 頁）、Ollama（無新 `ollama launch openclaw` 模型）、Apple mini／Studio（9/22）、NVIDIA Orin Nano 2（H1 2027）、Arduino VENTUNO Q／UNO Q（已入列）。觀察：Astra、PII-Tracer、Flash Cyber、PH 9/2、Dial／Monid、Muse Code／DSH。沒寫文章。 |
 | 2026-09-04 | 每日選題掃描 | 待寫 +1（GPT-6 Astra）；更新舊頁 +OpenClaw v2026.9.1、Astra 接法、Perplexity Hybrid Compute | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI docs（仍 4.6，無 4.7 model card）、Perplexity Hybrid Compute／HF `pplx-pii-masking`（無 OpenClaw 指令）、OpenAI GPT-6 Astra（`gpt-6-astra`＋`openclaw models set openai/gpt-6-astra`）、Anthropic（Fable 已記）、Google（3.8 Flash 已折進舊頁）、PH 9/3（Omi、Airtop、Blume、Grove 等）、GitHub OpenClaw [v2026.9.1](https://github.com/openclaw/openclaw/releases/tag/v2026.9.1) 2026-09-03 18:31 UTC／~388K、ClawHub（無新官方 skill 頁）、Ollama（無新 `ollama launch openclaw` 模型）、Apple mini／Studio（9/22）、NVIDIA Orin Nano 2（H1 2027）、Arduino VENTUNO Q／UNO Q（已入列）。觀察：PH 9/3、Omi／screenpipe 重疊、PII-Tracer 權重已上 HF。沒寫文章。 |
+| 2026-09-05 | 每日選題掃描 | 待寫 +0 | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI docs／model card（仍 `grok-4.6`，無 4.7 ID）、Perplexity blog（9/4 Fast Embeddings 是基礎設施文，無產品／OpenClaw 指令）、OpenAI（Astra 已入列／已上產品頁；OpenRouter 仍無 `gpt-6-astra`）、Anthropic（Fable／EFS 已記）、Google Lyria 3.5（音樂，無 OpenClaw）、PH 9/4（Snitch、Chalked、Remote OpenClaw）、GitHub OpenClaw 仍 [v2026.9.1](https://github.com/openclaw/openclaw/releases/tag/v2026.9.1)／~388K、ClawHub（無新官方 skill 頁）、Ollama blog（最新仍 8/31 計價）、Apple mini／Studio（9/22）、NVIDIA Orin Nano 2（H1 2027）、Arduino VENTUNO Q／UNO Q（已入列）。觀察：PH 9/4、Lyria 3.5。沒寫文章。 |
 
 ---
 
