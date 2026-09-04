@@ -1,0 +1,11 @@
+Hi, I'm JU CHUN KO.
+
+Until this week, long-running OpenClaw agents still had to pick a GPT-5.6 variant — or bounce between local models and a coding harness.
+
+GPT-6 Astra is OpenAI's new frontier model. Official docs give it a 1,050,000-token context window, text and image input, and tool calling on the Responses API. Async tools and mid-turn steering are built for multi-step work.
+
+On OpenClaw the switch is one command: openclaw models set openai/gpt-6-astra. Access is still rolling out through Trusted Access, then Plus, Pro, Business, Enterprise, and the API.
+
+Standard list price is ten dollars per million input tokens and fifty on output. It is not a local model, and it is not on OpenRouter yet.
+
+I made a tutorial on CanFly.ai — go try it.

@@ -776,15 +776,15 @@
       },
       "openclaw": {
         "tagline": "Your personal AI agent — your AI, your rules",
-        "description": "The open-source personal AI agent platform with 300K+ GitHub stars. Install with one command, then customize with skills, tools, and integrations. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
+        "description": "The open-source personal AI agent platform with ~388K GitHub stars. Install with one command, then customize with skills, tools, and integrations. The 2.0 line (v2026.8.1–v2026.9.1) adds guided setup, a rebuilt Control UI, and Shared Cloud Sessions. When your OpenAI account has GPT-6 Astra, switch with `openclaw models set openai/gpt-6-astra`. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
         "features": [
           "One-command install: ollama launch openclaw",
-          "300K+ GitHub stars — largest AI agent community",
+          "~388K GitHub stars — largest AI agent community",
           "Skill marketplace with 180K+ community skills",
-          "Works with any LLM: local (Ollama) or cloud (GPT, Claude)",
+          "Works with any LLM: local (Ollama) or cloud (GPT-6 Astra, Claude)",
+          "Switch to Astra: openclaw models set openai/gpt-6-astra",
           "Full privacy: runs 100% on your hardware",
-          "Python & Node.js SDK for custom tools",
-          "Active development with weekly releases"
+          "v2026.9.1: in-chat Mermaid, Android chat, update rollback"
         ],
         "ctaPrimary": "Install OpenClaw",
         "ctaSecondary": "Visit openclaw.ai"
@@ -848,6 +848,21 @@
         ],
         "ctaPrimary": "Try Free on OpenRouter",
         "ctaSecondary": "View Tutorial"
+      },
+      "gpt-6-astra": {
+        "tagline": "OpenAI frontier model for long-running OpenClaw agents",
+        "description": "OpenAI's GPT-6 Astra launched 2026-09-03. Official model ID `gpt-6-astra`: 1,050,000-token context, up to 128,000 output tokens, text and image input. Tool calling uses the Responses API. On CanFly.ai we wire it to OpenClaw with `openclaw models set openai/gpt-6-astra`. Access is rolling out from Trusted Access to Plus, Pro, Business, Enterprise, and the API. This is not a local model, not Grok Bot, and not a Codex page. OpenRouter does not list it yet.",
+        "features": [
+          "Official ID gpt-6-astra — 1,050K context, 128K max output",
+          "Text + image input; agent tool calls on the Responses API",
+          "OpenClaw: openclaw models set openai/gpt-6-astra",
+          "Reasoning: low / medium / high / xhigh / max (none is unsupported)",
+          "Standard price $10 input / $50 output per 1M tokens; higher above 272K",
+          "Async tool calling and mid-turn steering for multi-step work",
+          "Trusted Access first; Plus / API access still rolling out"
+        ],
+        "ctaPrimary": "Open the Tutorial",
+        "ctaSecondary": "OpenAI model guide"
       }
     },
     "comingSoon": "Coming Soon",
@@ -3719,6 +3734,13 @@
             "All data stays private with local models"
           ],
           "nextStepCards": [
+            {
+              "emoji": "✨",
+              "title": "GPT-6 Astra",
+              "desc": "Point OpenClaw at OpenAI's new frontier model: openclaw models set openai/gpt-6-astra.",
+              "cta": "Astra tutorial",
+              "link": "/learn/gpt-6-astra"
+            },
             {
               "emoji": "🖥️",
               "title": "Buy Hardware for Local AI",
@@ -7181,6 +7203,223 @@
         {
           "q": "Can it replace Alexa/Google Home?",
           "a": "It complements them. SwitchBot AI Hub handles local AI + SwitchBot devices. It also bridges to Apple Home/Google Home/Alexa via Matter."
+        }
+      ]
+    },
+    "gpt6Astra": {
+      "title": "GPT-6 Astra — Switch OpenClaw in 5 Minutes",
+      "subtitle": "Official gpt-6-astra on the Responses API — Trusted Access first, then Plus / API. Not a local model, not Codex, not Grok Bot.",
+      "duration": "5 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "What GPT-6 Astra is",
+          "titleEn": "What GPT-6 Astra is",
+          "estimatedTime": "1 min",
+          "content": "GPT-6 Astra is OpenAI's frontier model (launched 2026-09-03). OpenAI positions it for computer use, browsing, software engineering, science, and long multi-step work. On CanFly.ai this page is the model card. Keep Grok Bot and Codex on their own pages.\n\nOfficial facts to remember: model ID `gpt-6-astra`, 1,050,000-token context, 128,000 max output, text and image input. Agent tool calling uses the Responses API. Chat Completions exists, but tools need Responses.",
+          "commands": [
+            "# Official model ID",
+            "gpt-6-astra",
+            "",
+            "# Context / output (OpenAI + OpenClaw docs)",
+            "# 1,050,000 context tokens",
+            "# 128,000 max output tokens",
+            "",
+            "# Product page on CanFly.ai",
+            "# /apps/models/gpt-6-astra",
+            "",
+            "# OpenAI guide",
+            "https://developers.openai.com/api/docs/guides/latest-model"
+          ],
+          "expectedResult": "You know Astra is a cloud API model for agents — not a local Ollama pull, and not the same page as Codex.",
+          "tips": [
+            "OpenAI still calls this a Trusted Access rollout; Plus / API follow in the coming days.",
+            "Do not invent a local ollama pull — Astra is hosted.",
+            "OpenRouter does not list gpt-6-astra yet. Use the OpenAI provider."
+          ],
+          "troubleshooting": {
+            "title": "Scope",
+            "items": [
+              {
+                "q": "Is this the same as GPT-5.6 Sol / Terra / Luna?",
+                "a": "No. Those stay the cheaper OpenAI defaults. Astra is the GPT-6 frontier ID. CanFly.ai does not open a separate GPT-5.6 page."
+              },
+              {
+                "q": "Is this Codex?",
+                "a": "No. Codex is a coding harness. Astra is the model you can point OpenClaw at. A Claude Code / Codex tutorial is a different queued page."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Get access and an API key",
+          "titleEn": "Get access and an API key",
+          "estimatedTime": "2 min",
+          "content": "Astra access is gated. OpenAI is rolling it out to Trusted Access enterprises first, then ChatGPT Plus, Pro, Business, Enterprise, and the API. OpenClaw can only select the model after your account catalog includes it.\n\nCreate an OpenAI API key on a project that already sees `gpt-6-astra`. If the model is missing, wait for access — do not invent a workaround ID.",
+          "commands": [
+            "# 1. Check whether your org can see Astra",
+            "https://platform.openai.com/",
+            "",
+            "# 2. Create a project API key",
+            "https://platform.openai.com/api-keys",
+            "",
+            "# 3. Export it for this shell (do not commit the key)",
+            "export OPENAI_API_KEY=sk-...",
+            "",
+            "# OpenClaw also reads the same key from its OpenAI profile"
+          ],
+          "expectedResult": "You have an OpenAI API key on an account that lists gpt-6-astra — or you know you are still waiting on Trusted Access.",
+          "tips": [
+            "A successful OpenClaw account catalog is the source of truth. Adding model support in OpenClaw does not grant access.",
+            "If ChatGPT / Codex discovery is offline, OpenClaw's fallback list may omit Astra until discovery works.",
+            "Never paste the key into git, screenshots, or a CanFly.ai issue."
+          ],
+          "troubleshooting": {
+            "title": "Access",
+            "items": [
+              {
+                "q": "The model picker does not show gpt-6-astra",
+                "a": "Your account has not received access yet. Check OpenAI status for Trusted Access / Plus / API. Do not rename it to a GPT-5.6 ID."
+              },
+              {
+                "q": "I only have a ChatGPT Plus login, no API key",
+                "a": "OpenClaw can use a ChatGPT / Codex subscription that already includes Astra. If catalog discovery fails, create an API key once API access lands."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Call the Responses API",
+          "titleEn": "Call the Responses API",
+          "estimatedTime": "1 min",
+          "content": "To build with Astra, set `model` to `gpt-6-astra` on a Responses API request. Tool calling needs Responses. Drop `temperature`, `top_p`, and `none` reasoning — Astra cannot turn reasoning off. An old `minimal` effort maps to `low`.",
+          "commands": [
+            "curl https://api.openai.com/v1/responses \\",
+            "  -H \"Authorization: Bearer $OPENAI_API_KEY\" \\",
+            "  -H \"Content-Type: application/json\" \\",
+            "  -d '{\"model\":\"gpt-6-astra\",\"input\":\"Reply with one sentence: what is OpenClaw?\"}'",
+            "",
+            "# Reasoning efforts: low | medium | high | xhigh | max",
+            "# Do not send temperature / top_p / reasoning none"
+          ],
+          "expectedResult": "The Responses API returns a short Astra reply. A 404 / model_not_found means the key has no Astra access yet.",
+          "tips": [
+            "Standard list price: $10 / 1M input, $1 cache read, $12.50 cache write, $50 output. Rates rise above 272K input.",
+            "EU data residency: Fast / priority tiers are not available for Astra.",
+            "Long URLs stay in this command list so the English page does not overflow."
+          ],
+          "troubleshooting": {
+            "title": "API",
+            "items": [
+              {
+                "q": "401 or invalid_api_key",
+                "a": "Export OPENAI_API_KEY in the same terminal. Rotate the key if it leaked."
+              },
+              {
+                "q": "Tool calls fail on Chat Completions",
+                "a": "Use Responses. OpenAI documents that Astra tool calling requires the Responses API."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Point OpenClaw at Astra",
+          "titleEn": "Point OpenClaw at Astra",
+          "estimatedTime": "1 min",
+          "content": "OpenClaw's official OpenAI provider page uses one command. Astra then talks over the Responses API for agent tools. OpenClaw keeps a 272,000-token active input budget by default even though the model window is 1,050,000.\n\nNeed OpenClaw first? Install it from the CanFly.ai guide, then come back.",
+          "commands": [
+            "# Official OpenClaw switch (docs.openclaw.ai/providers/openai)",
+            "openclaw models set openai/gpt-6-astra",
+            "",
+            "# If OpenClaw is not installed yet",
+            "# See /learn/ollama-openclaw",
+            "ollama launch openclaw",
+            "",
+            "# After a breaking upgrade on the 2.0 line",
+            "openclaw doctor --fix"
+          ],
+          "expectedResult": "OpenClaw lists openai/gpt-6-astra as the active model, or tells you the account catalog does not include Astra yet.",
+          "tips": [
+            "Supported reasoning: low, medium, high, xhigh, max. OpenClaw maps leftover minimal → low and never sends none.",
+            "Temperature is not sent.",
+            "This is a cloud bill. For a free local path stay on /learn/ollama or /learn/nemotron-3-super."
+          ],
+          "troubleshooting": {
+            "title": "OpenClaw",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "Install OpenClaw first: /learn/ollama-openclaw or `ollama launch openclaw`. Then rerun `openclaw models set openai/gpt-6-astra`."
+              },
+              {
+                "q": "The command succeeds but chats still use GPT-5.6",
+                "a": "Restart the OpenClaw gateway after switching. Confirm the OpenAI profile key is the same account that has Astra."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Next steps on CanFly.ai",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 min",
+          "content": "Astra is the hosted brain. Pair it with an OpenClaw install, a cheaper local model for drafts, or OpenRouter for models that are already listed. Codex stays on its own future tutorial — do not fold Astra into that page.",
+          "tips": [
+            "Review video is pending (no HEYGEN_API_KEY on this run). English script: content/scripts/gpt-6-astra-review-en.txt",
+            "Watch the OpenAI bill — filling a million-token window is not a free local pull.",
+            "When OpenRouter adds gpt-6-astra we will update this page instead of opening a third URL."
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "Install OpenClaw",
+              "desc": "One-command OpenClaw setup with Ollama, then come back to set Astra.",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw tutorial"
+            },
+            {
+              "emoji": "📦",
+              "title": "OpenClaw product",
+              "desc": "What OpenClaw is, stars, and the Astra switch on the apps card.",
+              "link": "/apps/free/openclaw",
+              "cta": "OpenClaw card"
+            },
+            {
+              "emoji": "🌐",
+              "title": "OpenRouter",
+              "desc": "200+ models today. Astra is not listed yet — use this for Gemini and Nemotron.",
+              "link": "/learn/openrouter",
+              "cta": "OpenRouter guide"
+            },
+            {
+              "emoji": "🆓",
+              "title": "Nemotron 3 Super",
+              "desc": "Free open-source agent model while you wait on Astra access.",
+              "link": "/learn/nemotron-3-super",
+              "cta": "Nemotron tutorial"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Can I run GPT-6 Astra locally with Ollama?",
+          "a": "No. Astra is a hosted OpenAI model. For local OpenClaw stay on Ollama, oMLX, or Nemotron 3 Super."
+        },
+        {
+          "q": "Is Astra on OpenRouter?",
+          "a": "Not at the time this page shipped (2026-09-04). Use `openai/gpt-6-astra` on the OpenAI provider. We will update this tutorial when OpenRouter adds it."
+        },
+        {
+          "q": "How much does it cost?",
+          "a": "OpenAI's standard table: $10 input / $1 cached input / $12.50 cache write / $50 output per 1M tokens. Long-context rates ($20 / $75) apply above 272K input. Confirm https://developers.openai.com/api/docs/pricing before you ship traffic."
+        },
+        {
+          "q": "Why does OpenClaw not send temperature?",
+          "a": "Astra rejects temperature / top_p and cannot use reasoning effort `none`. OpenClaw maps leftover `minimal` to `low`."
+        },
+        {
+          "q": "Is this the same page as Grok Bot?",
+          "a": "No. Grok Bot is a hosted xAI teammate (separate P0). Astra is an OpenAI model ID you point OpenClaw at."
         }
       ]
     }

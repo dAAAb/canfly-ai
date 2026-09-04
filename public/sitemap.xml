@@ -584,6 +584,64 @@
     <priority>0.7</priority>
   </url>
 
+  <!-- GPT-6 Astra (2026-09-04) -->
+  <url>
+    <loc>https://canfly.ai/apps/models/gpt-6-astra</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/models/gpt-6-astra" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/models/gpt-6-astra" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/models/gpt-6-astra" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/apps/models/gpt-6-astra" />
+    <lastmod>2026-09-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/apps/models/gpt-6-astra</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/models/gpt-6-astra" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/models/gpt-6-astra" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/models/gpt-6-astra" />
+    <lastmod>2026-09-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/apps/models/gpt-6-astra</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/models/gpt-6-astra" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/models/gpt-6-astra" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/models/gpt-6-astra" />
+    <lastmod>2026-09-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/learn/gpt-6-astra</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/gpt-6-astra" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/gpt-6-astra" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/gpt-6-astra" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/learn/gpt-6-astra" />
+    <lastmod>2026-09-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/learn/gpt-6-astra</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/gpt-6-astra" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/gpt-6-astra" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/gpt-6-astra" />
+    <lastmod>2026-09-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/learn/gpt-6-astra</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/gpt-6-astra" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/gpt-6-astra" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/gpt-6-astra" />
+    <lastmod>2026-09-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <url>
     <loc>https://canfly.ai/about</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/about" />

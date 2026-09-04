@@ -14,7 +14,7 @@ const categoryFeatured: Record<string, string[]> = {
   hosting: ['zeabur', 'umbrel'],
   hardware: ['hdmi-dummy-plug', 'mac-mini-m4', 'macbook-neo'],
   vm: ['utm', 'virtual-buddy'],
-  models: ['nemotron-3-super'],
+  models: ['gpt-6-astra', 'nemotron-3-super'],
 }
 
 const featuredGradients: Record<string, string> = {
@@ -31,6 +31,7 @@ const featuredGradients: Record<string, string> = {
   'virtual-buddy': 'bg-gradient-to-br from-teal-950/60 to-emerald-950/40 border border-teal-800/30 hover:border-teal-700/50',
   'google-gemini': 'bg-gradient-to-br from-blue-950/60 to-sky-950/40 border border-blue-800/30 hover:border-blue-700/50',
   'nemotron-3-super': 'bg-gradient-to-br from-lime-950/60 to-green-950/40 border border-lime-800/30 hover:border-lime-700/50',
+  'gpt-6-astra': 'bg-gradient-to-br from-sky-950/60 to-indigo-950/40 border border-sky-800/30 hover:border-sky-700/50',
 }
 
 export default function AppsPage() {
@@ -40,7 +41,7 @@ export default function AppsPage() {
   const { localePath } = useLanguage()
 
   // Valid category IDs — if param is a product slug instead, redirect to new URL
-  const validCategories = ['all', 'free', 'vm', 'skills', 'hosting', 'hardware']
+  const validCategories = ['all', 'free', 'vm', 'skills', 'hosting', 'hardware', 'models']
   useEffect(() => {
     if (categoryParam && !validCategories.includes(categoryParam)) {
       // Old URL like /apps/ollama — find product and redirect

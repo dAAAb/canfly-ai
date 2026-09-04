@@ -79,7 +79,7 @@
 | P1 | Firecrawl（含 Developer Index） | 軟體／skills | 官方有 OpenClaw 接法：`firecrawl init --agent openclaw`，也可 `npx -y firecrawl-cli@latest setup developer-index`。70M+ repo README／issue／PR／OpenAPI，給 coding agent 用，不是一般網搜。跟現有 `brave-search`、`perplexity` 不是同一頁 | `/apps/skills/firecrawl` + `/learn/firecrawl` | queued |
 | P2 | screenpipe | 軟體／skills | 官方文件 `docs.screenpi.pe/openclaw`：`npx -y screenpipe@latest agent setup openclaw`。把螢幕／語音記錄接進 OpenClaw。站上沒有相近頁。要寫權限與 clipboard 風險 | `/apps/skills/screenpipe` + `/learn/screenpipe` | queued |
 | P1 | Muse Glimmer | 軟體／models | Meta Superintelligence Labs 開源 30B 本地 agent 模型。官方 Ollama：`ollama launch openclaw --model muse-glimmer`（MLX 用 `muse-glimmer:30b-mlx`）。站上沒有這頁；不要折進 Ollama，Qwen 3.8 才留在 Ollama 頁 | `/apps/models/muse-glimmer` + `/learn/muse-glimmer`；寫完在 Ollama／OpenClaw 卡加家族連結 | queued |
-| P1 | GPT-6 Astra | 軟體／models | 2026-09-03 官方上線。OpenAI [model guidance](https://developers.openai.com/api/docs/guides/latest-model)：`gpt-6-astra`，tool calling 走 Responses API。OpenClaw 官方 [OpenAI provider](https://docs.openclaw.ai/providers/openai)：`openclaw models set openai/gpt-6-astra`（1,050K context，$10/$50；存取還在 Trusted Access／陸續開 Plus／API）。OpenRouter 還沒有。站上沒有 OpenAI 模型頁；不要跟 Codex 寫成同一頁，也不要另開 GPT-5.6 | `/apps/models/gpt-6-astra` + `/learn/gpt-6-astra`；寫完在 OpenClaw／Codex 稿加連結 | queued |
+| P1 | GPT-6 Astra | 軟體／models | 2026-09-03 官方上線。OpenAI [model guidance](https://developers.openai.com/api/docs/guides/latest-model)：`gpt-6-astra`，tool calling 走 Responses API。OpenClaw 官方 [OpenAI provider](https://docs.openclaw.ai/providers/openai)：`openclaw models set openai/gpt-6-astra`（1,050K context，$10/$50；存取還在 Trusted Access／陸續開 Plus／API）。OpenRouter 還沒有。站上沒有 OpenAI 模型頁；不要跟 Codex 寫成同一頁，也不要另開 GPT-5.6 | `/apps/models/gpt-6-astra` + `/learn/gpt-6-astra`；寫完在 OpenClaw／Codex 稿加連結 | shipped 2026-09-04（影片待補） |
 
 ---
 
@@ -151,6 +151,7 @@
 | `google-gemini` | 更新 CLI → Antigravity，不要另開 Gemini 頁。Omni 1.1 Flash 也寫這頁 |
 | `nemotron-3-super` | 不要改寫成 Lightning；加家族連結 |
 | `openclaw` | 更新成 2.0（v2026.8.1）＋穩定補丁 v2026.8.2＋v2026.9.1＋星數＋custodian，不要重開 2.0／8.2／9.1 頁。Astra 另開模型頁 |
+| `gpt-6-astra` | 2026-09-04 產品＋教學已上。影片待補。不要跟 Codex／GPT-5.6／Grok Bot 寫成同一頁 |
 | `heygen` / `elevenlabs` / `ollama` / `omlx` / `zeabur` / `openrouter` | 教學已在，只在有大改版時回訪。Qwen 3.8、Gemma 4、Hy4、Muse Spark 折進 Ollama／OpenRouter，不要另開 |
 | `agentmail` | 更新 ClawHub 官方 plugin，不要重開 |
 | `brave-search` | 一般網搜頁已在。Firecrawl／Developer Index 另開 |

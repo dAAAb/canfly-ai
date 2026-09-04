@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#070B14"/>
+  <circle cx="900" cy="200" r="220" fill="#0EA5E9" opacity="0.12"/>
+  <circle cx="280" cy="460" r="180" fill="#38BDF8" opacity="0.08"/>
+  <ellipse cx="640" cy="320" rx="340" ry="120" stroke="#7DD3FC" stroke-width="4" opacity="0.45" transform="rotate(-18 640 320)"/>
+  <circle cx="640" cy="320" r="26" fill="#F8FAFC"/>
+  <text x="80" y="170" fill="#F8FAFC" font-family="ui-sans-serif, system-ui, sans-serif" font-size="56" font-weight="700">GPT-6 Astra</text>
+  <text x="80" y="230" fill="#7DD3FC" font-family="ui-sans-serif, system-ui, sans-serif" font-size="28">OpenAI frontier model for long-running agents</text>
+  <text x="80" y="300" fill="#94A3B8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="22">openclaw models set openai/gpt-6-astra</text>
+  <text x="80" y="540" fill="#64748B" font-family="ui-sans-serif, system-ui, sans-serif" font-size="20">CanFly.ai</text>
+</svg>

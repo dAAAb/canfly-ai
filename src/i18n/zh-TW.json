@@ -779,15 +779,15 @@
       },
       "openclaw": {
         "tagline": "你的個人 AI 代理人 — 你的 AI，你的規則",
-        "description": "擁有 300K+ GitHub 星星的開源個人 AI 代理人平台。一行指令安裝，自由搭配技能、工具和整合。在本地或雲端執行。你的資料永遠屬於你 — 無廠商綁定、無訂閱費、無限制。",
+        "description": "擁有約 388K GitHub 星星的開源個人 AI 代理人平台。一行指令安裝，自由搭配技能、工具和整合。2.0 線（v2026.8.1–v2026.9.1）加上引導式 setup、重建的 Control UI 與 Shared Cloud Sessions。OpenAI 帳號若已有 GPT-6 Astra，用 `openclaw models set openai/gpt-6-astra` 切過去。在本地或雲端執行。你的資料永遠屬於你 — 無廠商綁定、無訂閱費、無限制。",
         "features": [
           "一行指令安裝：ollama launch openclaw",
-          "300K+ GitHub 星星 — 最大 AI 代理人社群",
+          "約 388K GitHub 星星 — 最大 AI 代理人社群",
           "技能市集：180K+ 社群技能",
-          "支援任何 LLM：本地 (Ollama) 或雲端 (GPT, Claude)",
+          "支援任何 LLM：本地 (Ollama) 或雲端 (GPT-6 Astra, Claude)",
+          "切到 Astra：openclaw models set openai/gpt-6-astra",
           "完全隱私：100% 在你的硬體上執行",
-          "Python & Node.js SDK 打造自訂工具",
-          "活躍開發，每週更新"
+          "v2026.9.1：對話內 Mermaid、Android 聊天、更新可回退"
         ],
         "ctaPrimary": "安裝 OpenClaw",
         "ctaSecondary": "前往 openclaw.ai"
@@ -851,6 +851,21 @@
         ],
         "ctaPrimary": "免費試用 OpenRouter",
         "ctaSecondary": "查看教學"
+      },
+      "gpt-6-astra": {
+        "tagline": "給長跑 OpenClaw 代理人用的 OpenAI 前線模型",
+        "description": "OpenAI 的 GPT-6 Astra 於 2026-09-03 上線。官方模型 ID 是 `gpt-6-astra`：105 萬 token 上下文、最多 12.8 萬 output token，支援文字與圖片輸入。代理人工具呼叫走 Responses API。在 CanFly.ai 我們用 `openclaw models set openai/gpt-6-astra` 接到 OpenClaw。存取先從 Trusted Access 開始，Plus、Pro、Business、Enterprise 與 API 陸續開放。這不是本機模型、不是 Grok Bot，也不該跟 Codex 寫成同一頁。OpenRouter 目前還沒上架。",
+        "features": [
+          "官方 ID gpt-6-astra — 105 萬上下文、最多 12.8 萬 output",
+          "文字 + 圖片輸入；代理人工具呼叫走 Responses API",
+          "OpenClaw：openclaw models set openai/gpt-6-astra",
+          "推理力度：low / medium / high / xhigh / max（不支援 none）",
+          "標準價每百萬 token 輸入 $10、輸出 $50；超過 272K 更高",
+          "非同步工具呼叫與回合中轉向，適合多步驟工作",
+          "先走 Trusted Access；Plus / API 仍在陸續開放"
+        ],
+        "ctaPrimary": "打開教學",
+        "ctaSecondary": "OpenAI 模型指南"
       }
     },
     "comingSoon": "即將推出",
@@ -3722,6 +3737,13 @@
             "本地模型的所有資料都留在你的電腦上"
           ],
           "nextStepCards": [
+            {
+              "emoji": "✨",
+              "title": "GPT-6 Astra",
+              "desc": "把 OpenClaw 指到 OpenAI 新前線模型：openclaw models set openai/gpt-6-astra。",
+              "cta": "Astra 教學",
+              "link": "/learn/gpt-6-astra"
+            },
             {
               "emoji": "🖥️",
               "title": "購買硬體跑本地 AI",
@@ -7189,6 +7211,223 @@
         {
           "q": "可以取代 Alexa/Google Home 嗎？",
           "a": "它是互補的。SwitchBot AI Hub 處理本地 AI + SwitchBot 裝置。也透過 Matter 橋接到 Apple Home/Google Home/Alexa。"
+        }
+      ]
+    },
+    "gpt6Astra": {
+      "title": "GPT-6 Astra — 五分鐘把 OpenClaw 切過去",
+      "subtitle": "官方 gpt-6-astra，走 Responses API。先 Trusted Access，再 Plus / API。不是本機模型，不是 Codex，也不是 Grok Bot。",
+      "duration": "5 分鐘",
+      "difficulty": "入門",
+      "steps": [
+        {
+          "title": "Astra 是什麼",
+          "titleEn": "What GPT-6 Astra is",
+          "estimatedTime": "1 分鐘",
+          "content": "GPT-6 Astra 是 OpenAI 的前線模型（2026-09-03 上線）。官方把它放在電腦操作、瀏覽、軟體工程、科學與長多步驟工作。在 CanFly.ai 這頁只寫模型卡。Grok Bot 與 Codex 請走自己的頁面。\n\n先記官方數字：模型 ID `gpt-6-astra`、105 萬 token 上下文、最多 12.8 萬 output、文字與圖片輸入。代理人工具呼叫走 Responses API。Chat Completions 還在，但工具一定要走 Responses。",
+          "commands": [
+            "# Official model ID",
+            "gpt-6-astra",
+            "",
+            "# Context / output (OpenAI + OpenClaw docs)",
+            "# 1,050,000 context tokens",
+            "# 128,000 max output tokens",
+            "",
+            "# Product page on CanFly.ai",
+            "# /apps/models/gpt-6-astra",
+            "",
+            "# OpenAI guide",
+            "https://developers.openai.com/api/docs/guides/latest-model"
+          ],
+          "expectedResult": "你知道 Astra 是給代理人用的雲端 API 模型 — 不是本機 ollama pull，也不是 Codex 那一頁。",
+          "tips": [
+            "OpenAI 仍寫 Trusted Access 先開；Plus / API 會在接下來幾天跟進。",
+            "不要發明本機 ollama pull — Astra 是託管模型。",
+            "OpenRouter 還沒上 gpt-6-astra。請走 OpenAI provider。"
+          ],
+          "troubleshooting": {
+            "title": "範圍",
+            "items": [
+              {
+                "q": "這跟 GPT-5.6 Sol / Terra / Luna 是同一個嗎？",
+                "a": "不是。那幾個仍是較便宜的 OpenAI 預設。Astra 是 GPT-6 前線 ID。CanFly.ai 不另開 GPT-5.6 頁。"
+              },
+              {
+                "q": "這是 Codex 嗎？",
+                "a": "不是。Codex 是寫程式的 harness。Astra 是你可以指給 OpenClaw 的模型。Claude Code / Codex 教學是另一篇待寫稿。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "取得存取與 API 金鑰",
+          "titleEn": "Get access and an API key",
+          "estimatedTime": "2 分鐘",
+          "content": "Astra 目前有閘道。OpenAI 先給 Trusted Access 企業，再給 ChatGPT Plus、Pro、Business、Enterprise 與 API。你的帳號目錄出現這個模型之後，OpenClaw 才能選它。\n\n請在已經看得到 `gpt-6-astra` 的專案建立 API 金鑰。如果模型不在清單裡，就等存取 — 不要自己發明備用 ID。",
+          "commands": [
+            "# 1. Check whether your org can see Astra",
+            "https://platform.openai.com/",
+            "",
+            "# 2. Create a project API key",
+            "https://platform.openai.com/api-keys",
+            "",
+            "# 3. Export it for this shell (do not commit the key)",
+            "export OPENAI_API_KEY=sk-...",
+            "",
+            "# OpenClaw also reads the same key from its OpenAI profile"
+          ],
+          "expectedResult": "你手上有一把看得到 gpt-6-astra 的 OpenAI API 金鑰 — 或你已確定自己還在等 Trusted Access。",
+          "tips": [
+            "OpenClaw 的帳號目錄才是真相。OpenClaw 加上模型支援，並不會幫你開通存取。",
+            "若 ChatGPT / Codex 目錄探索失敗，離線備援清單可能暫時沒有 Astra。",
+            "金鑰不要寫進 git、截圖或 CanFly.ai 工單。"
+          ],
+          "troubleshooting": {
+            "title": "存取",
+            "items": [
+              {
+                "q": "選擇器裡沒有 gpt-6-astra",
+                "a": "你的帳號還沒拿到存取。去看 OpenAI 的 Trusted Access / Plus / API 狀態。不要改名叫 GPT-5.6。"
+              },
+              {
+                "q": "我只有 ChatGPT Plus，沒有 API 金鑰",
+                "a": "若訂閱目錄已含 Astra，OpenClaw 可以用 ChatGPT / Codex 登入。目錄探索失敗就等 API 開放再開金鑰。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "呼叫 Responses API",
+          "titleEn": "Call the Responses API",
+          "estimatedTime": "1 分鐘",
+          "content": "要用 Astra，就把 Responses 請求的 `model` 設成 `gpt-6-astra`。工具呼叫必須走 Responses。拿掉 `temperature`、`top_p` 與 `none` 推理 — Astra 不能關閉推理。舊的 `minimal` 會對應到 `low`。",
+          "commands": [
+            "curl https://api.openai.com/v1/responses \\",
+            "  -H \"Authorization: Bearer $OPENAI_API_KEY\" \\",
+            "  -H \"Content-Type: application/json\" \\",
+            "  -d '{\"model\":\"gpt-6-astra\",\"input\":\"Reply with one sentence: what is OpenClaw?\"}'",
+            "",
+            "# Reasoning efforts: low | medium | high | xhigh | max",
+            "# Do not send temperature / top_p / reasoning none"
+          ],
+          "expectedResult": "Responses API 回一句 Astra 的短答。若看到 404 / model_not_found，代表這把金鑰還沒有 Astra。",
+          "tips": [
+            "標準價：每百萬 token 輸入 $10、快取讀 $1、快取寫 $12.50、輸出 $50。輸入超過 272K 會再加價。",
+            "歐盟資料駐留：Astra 沒有 Fast / priority 層。",
+            "長網址放在 commands，避免英文版版面爆掉。"
+          ],
+          "troubleshooting": {
+            "title": "API",
+            "items": [
+              {
+                "q": "401 或 invalid_api_key",
+                "a": "在同一個終端機 export OPENAI_API_KEY。金鑰外洩就立刻輪替。"
+              },
+              {
+                "q": "Chat Completions 的工具呼叫失敗",
+                "a": "改走 Responses。OpenAI 文件寫明 Astra 的工具呼叫需要 Responses API。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "把 OpenClaw 指到 Astra",
+          "titleEn": "Point OpenClaw at Astra",
+          "estimatedTime": "1 分鐘",
+          "content": "OpenClaw 官方 OpenAI provider 頁只寫一行指令。之後代理人工具會走 Responses API。模型視窗雖是 105 萬，OpenClaw 預設仍保留 27.2 萬的作用中輸入預算。\n\n還沒裝 OpenClaw？先走 CanFly.ai 安裝教學，再回來切模型。",
+          "commands": [
+            "# Official OpenClaw switch (docs.openclaw.ai/providers/openai)",
+            "openclaw models set openai/gpt-6-astra",
+            "",
+            "# If OpenClaw is not installed yet",
+            "# See /learn/ollama-openclaw",
+            "ollama launch openclaw",
+            "",
+            "# After a breaking upgrade on the 2.0 line",
+            "openclaw doctor --fix"
+          ],
+          "expectedResult": "OpenClaw 把 openai/gpt-6-astra 列成作用中模型，或明白告訴你帳號目錄還沒有 Astra。",
+          "tips": [
+            "可用推理：low、medium、high、xhigh、max。OpenClaw 會把殘留的 minimal 對到 low，絕不送 none。",
+            "不會送 temperature。",
+            "這是雲端帳單。要免費本機路徑請走 /learn/ollama 或 /learn/nemotron-3-super。"
+          ],
+          "troubleshooting": {
+            "title": "OpenClaw",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "先安裝 OpenClaw：/learn/ollama-openclaw 或 `ollama launch openclaw`。再跑 `openclaw models set openai/gpt-6-astra`。"
+              },
+              {
+                "q": "指令成功，對話卻還在用 GPT-5.6",
+                "a": "切完模型後重啟 OpenClaw gateway。確認 OpenAI profile 的金鑰，就是那把看得到 Astra 的帳號。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CanFly.ai 下一步",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 分鐘",
+          "content": "Astra 是託管大腦。請搭配 OpenClaw 安裝、用較便宜的本機模型打草稿，或走 OpenRouter 上已經上架的模型。Codex 留給之後的獨立教學 — 不要把 Astra 折進那一頁。",
+          "tips": [
+            "評測影片待補（這次環境沒有 HEYGEN_API_KEY）。英文口白稿：content/scripts/gpt-6-astra-review-en.txt",
+            "盯緊 OpenAI 帳單 — 塞滿百萬 token 視窗不是免費本機 pull。",
+            "等 OpenRouter 上架 gpt-6-astra，我們會改這頁，不另開第三個網址。"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "安裝 OpenClaw",
+              "desc": "用 Ollama 一行裝好 OpenClaw，再回來切 Astra。",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw 教學"
+            },
+            {
+              "emoji": "📦",
+              "title": "OpenClaw 產品卡",
+              "desc": "OpenClaw 是什麼、星數，以及 apps 卡上的 Astra 切換。",
+              "link": "/apps/free/openclaw",
+              "cta": "OpenClaw 卡片"
+            },
+            {
+              "emoji": "🌐",
+              "title": "OpenRouter",
+              "desc": "現在就有 200+ 模型。Astra 還沒上架 — Gemini 與 Nemotron 走這裡。",
+              "link": "/learn/openrouter",
+              "cta": "OpenRouter 指南"
+            },
+            {
+              "emoji": "🆓",
+              "title": "Nemotron 3 Super",
+              "desc": "等 Astra 存取時，先用免費開源代理人模型。",
+              "link": "/learn/nemotron-3-super",
+              "cta": "Nemotron 教學"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "可以用 Ollama 在本機跑 GPT-6 Astra 嗎？",
+          "a": "不行。Astra 是 OpenAI 託管模型。本機 OpenClaw 請走 Ollama、oMLX 或 Nemotron 3 Super。"
+        },
+        {
+          "q": "Astra 在 OpenRouter 上了嗎？",
+          "a": "這頁上線時（2026-09-04）還沒有。請在 OpenAI provider 用 `openai/gpt-6-astra`。OpenRouter 上架後我們會更新這篇教學。"
+        },
+        {
+          "q": "要花多少錢？",
+          "a": "OpenAI 標準表：每百萬 token 輸入 $10、快取讀 $1、快取寫 $12.50、輸出 $50。輸入超過 272K 走長上下文價（$20 / $75）。出量前請再核對 https://developers.openai.com/api/docs/pricing。"
+        },
+        {
+          "q": "為什麼 OpenClaw 不送 temperature？",
+          "a": "Astra 拒絕 temperature / top_p，也不能用推理力度 `none`。OpenClaw 會把殘留的 `minimal` 對到 `low`。"
+        },
+        {
+          "q": "這跟 Grok Bot 是同一頁嗎？",
+          "a": "不是。Grok Bot 是 xAI 託管隊友（另一張 P0）。Astra 是你指給 OpenClaw 的 OpenAI 模型 ID。"
         }
       ]
     }

@@ -105,6 +105,9 @@ POST /api/agents/:name/milestones — Add achievements (Bearer auth)
 - ElevenLabs (/apps/skills/elevenlabs) - Voice synthesis (22% recurring commission)
 - HeyGen (/apps/skills/heygen) - AI video generation (20% recurring commission)
 
+### Models
+- GPT-6 Astra (/apps/models/gpt-6-astra) - OpenAI frontier model; OpenClaw: `openclaw models set openai/gpt-6-astra`. Tutorial: /learn/gpt-6-astra
+
 ### Hardware
 - Umbrel (/apps/hardware/umbrel) - Self-hosted home AI server
 - Mac Mini M4 (/apps/hardware/mac-mini-m4) - Apple Silicon for local AI
@@ -168,4 +171,4 @@ These connectors let a user go from "no agent" to "always-on cloud agent" withou
 Supported: English (en), Traditional Chinese (zh-TW), Simplified Chinese (zh-CN)
 URLs: /:lang/path (e.g., /zh-tw/apps, /zh-cn/community)
 
-Last updated: 2026-08-28
+Last updated: 2026-09-04
