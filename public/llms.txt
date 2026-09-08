@@ -107,6 +107,7 @@ POST /api/agents/:name/milestones — Add achievements (Bearer auth)
 
 ### Models
 - GPT-6 Astra (/apps/models/gpt-6-astra) - OpenAI frontier model; OpenClaw: `openclaw models set openai/gpt-6-astra`. Tutorial: /learn/gpt-6-astra
+- Grok 4.6 (/apps/models/grok-4-6) - xAI frontier model; OpenClaw: `openclaw models set xai/grok-4.6`. OpenRouter: `x-ai/grok-4.6`. Tutorial: /learn/grok-4-6. Not Grok Bot.
 
 ### Hardware
 - Umbrel (/apps/hardware/umbrel) - Self-hosted home AI server

@@ -70,7 +70,7 @@
 | P1 | Jetson Orin Nano 2 | 硬體 | 寶博點名。邊緣推論升級 | `/apps/hardware` + 對照舊 Jetson | queued |
 | P1 | 新款 Mac mini | 硬體 | 兩邊都同意。2026-08-25 發表 M6 / M5 Pro，9/22 出貨，起價約 $899。站上已有 `mac-mini-m4` | **更新舊頁** `mac-mini-m4`，確認要不要新 slug | queued |
 | P2 | Mac Studio 512GB（約 10 月） | 硬體／預告 | 寶博點名。未上市：先「即將推出」規格文 | blog `mac-studio-512gb` | queued |
-| P1 | Grok 4.6（xAI API） | 軟體／models | 2026-08-12 上線，官方寫明長跑 agent。OpenAI 相容，OpenRouter 有。站上有 Gemini、Nemotron，沒有 Grok 模型頁。不要跟 Grok Bot 寫成同一頁 | `/apps/models/grok-4-6` + `/learn/grok-4-6` | queued |
+| P1 | Grok 4.6（xAI API） | 軟體／models | 2026-08-12 上線，官方寫明長跑 agent。OpenAI 相容，OpenRouter 有。站上有 Gemini、Nemotron，沒有 Grok 模型頁。不要跟 Grok Bot 寫成同一頁 | `/apps/models/grok-4-6` + `/learn/grok-4-6` | shipped 2026-09-08（影片待補） |
 | P1 | Claude Code / Codex 接 OpenClaw | 軟體／skills | 官方 `openclaw mcp serve` 文件直接點名。一頁講兩個 coding agent，不要拆兩篇。不要寫已宣布下線的 AgentKit | `/learn/claude-code-codex` | queued |
 | P1 | ClawHub | 軟體／skills | OpenClaw 官方 skill + plugin registry。教學已有 `clawhub install`，沒有產品頁 | `/apps` + `/learn/clawhub`；寫完改 `/learn/agent-skills` nextStepCards | queued |
 | P1 | Nemotron 3.5 Lightning | 軟體／models | NVIDIA 點名 OpenClaw harness。30B MoE、3B active。跟現有 Super（120B / 12B）不是同一張卡 | `/apps/models/nemotron-3-5-lightning` + Super 頁加家族連結 | queued |
@@ -154,6 +154,7 @@
 | `nemotron-3-super` | 不要改寫成 Lightning；加家族連結 |
 | `openclaw` | 更新成 2.0（v2026.8.1）＋穩定補丁 v2026.8.2＋v2026.9.1＋星數＋custodian，不要重開 2.0／8.2／9.1 頁。Astra 另開模型頁 |
 | `gpt-6-astra` | 2026-09-04 產品＋教學已上。影片待補。不要跟 Codex／GPT-5.6／Grok Bot 寫成同一頁 |
+| `grok-4-6` | 2026-09-08 產品＋教學已上。影片待補。不要跟 Grok Bot 寫成同一頁。Grok 4.7 仍無 model card，先不要另開 |
 | `heygen` / `elevenlabs` / `ollama` / `omlx` / `zeabur` / `openrouter` | 教學已在，只在有大改版時回訪。Qwen 3.8、Gemma 4、Hy4、Muse Spark 折進 Ollama／OpenRouter，不要另開 |
 | `agentmail` | 更新 ClawHub 官方 plugin，不要重開 |
 | `brave-search` | 一般網搜頁已在。Firecrawl／Developer Index 另開 |
@@ -177,6 +178,7 @@
 | 2026-09-03 | 每日選題掃描 | 待寫 +0；更新舊頁 +Gemini 3.8 Flash | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI docs（仍 4.6；Musk 說 4.7 約 9/12）、Perplexity PII-Tracer（未釋出）、OpenAI Astra（未上市）、Anthropic（Fable／EFS 已記）、Google 3.8 Flash（折進 Gemini 舊頁）、PH 9/2（Monid、Dial、Browzer 等）、GitHub OpenClaw 仍 2026.8.2／~388K、ClawHub（無新官方 skill 頁）、Ollama（無新 `ollama launch openclaw` 模型）、Apple mini／Studio（9/22）、NVIDIA Orin Nano 2（H1 2027）、Arduino VENTUNO Q／UNO Q（已入列）。觀察：Astra、PII-Tracer、Flash Cyber、PH 9/2、Dial／Monid、Muse Code／DSH。沒寫文章。 |
 | 2026-09-04 | 每日選題掃描 | 待寫 +1（GPT-6 Astra）；更新舊頁 +OpenClaw v2026.9.1、Astra 接法、Perplexity Hybrid Compute | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI docs（仍 4.6，無 4.7 model card）、Perplexity Hybrid Compute／HF `pplx-pii-masking`（無 OpenClaw 指令）、OpenAI GPT-6 Astra（`gpt-6-astra`＋`openclaw models set openai/gpt-6-astra`）、Anthropic（Fable 已記）、Google（3.8 Flash 已折進舊頁）、PH 9/3（Omi、Airtop、Blume、Grove 等）、GitHub OpenClaw [v2026.9.1](https://github.com/openclaw/openclaw/releases/tag/v2026.9.1) 2026-09-03 18:31 UTC／~388K、ClawHub（無新官方 skill 頁）、Ollama（無新 `ollama launch openclaw` 模型）、Apple mini／Studio（9/22）、NVIDIA Orin Nano 2（H1 2027）、Arduino VENTUNO Q／UNO Q（已入列）。觀察：PH 9/3、Omi／screenpipe 重疊、PII-Tracer 權重已上 HF。沒寫文章。 |
 | 2026-09-05 | 每日選題掃描 | 待寫 +0 | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI docs／model card（仍 `grok-4.6`，無 4.7 ID）、Perplexity blog（9/4 Fast Embeddings 是基礎設施文，無產品／OpenClaw 指令）、OpenAI（Astra 已入列／已上產品頁；OpenRouter 仍無 `gpt-6-astra`）、Anthropic（Fable／EFS 已記）、Google Lyria 3.5（音樂，無 OpenClaw）、PH 9/4（Snitch、Chalked、Remote OpenClaw）、GitHub OpenClaw 仍 [v2026.9.1](https://github.com/openclaw/openclaw/releases/tag/v2026.9.1)／~388K、ClawHub（無新官方 skill 頁）、Ollama blog（最新仍 8/31 計價）、Apple mini／Studio（9/22）、NVIDIA Orin Nano 2（H1 2027）、Arduino VENTUNO Q／UNO Q（已入列）。觀察：PH 9/4、Lyria 3.5。沒寫文章。 |
+| 2026-09-08 | Content Writer 週二產稿 | 待寫 −1（Grok 4.6 shipped） | P0 Grok Bot 仍在 PR #34（draft，未合併），不重寫。Perplexity Computer／Portable 仍待決。產 `/apps/models/grok-4-6` + `/learn/grok-4-6`。影片待補。 |
 
 ---
 

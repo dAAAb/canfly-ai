@@ -1,0 +1,11 @@
+Hi, I'm JU CHUN KO.
+
+If you want a long-running OpenClaw agent on xAI, the model to pin is Grok 4.6 — not Grok Bot, and not a rumor of Grok 4.7.
+
+xAI shipped it on August 12, 2026. Official ID grok-4.6: 500,000-token context, text and image in, no text output cap. Reasoning stays on — low, medium, high, or xhigh.
+
+OpenClaw already catalogs it. Sign in with xAI OAuth or an API key, then run: openclaw models set xai/grok-4.6. API-key setup still defaults to Grok 4.3, so you have to pin 4.6 yourself. It is also on OpenRouter as x-ai/grok-4.6.
+
+List price is two dollars per million input tokens and six on output. Cross 200,000 prompt tokens and those rates double.
+
+I made a tutorial on CanFly.ai — go try it.
