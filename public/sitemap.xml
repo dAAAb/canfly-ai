@@ -584,6 +584,64 @@
     <priority>0.7</priority>
   </url>
 
+  <!-- Grok 4.6 (2026-09-08) -->
+  <url>
+    <loc>https://canfly.ai/apps/models/grok-4-6</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/models/grok-4-6" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/models/grok-4-6" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/models/grok-4-6" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/apps/models/grok-4-6" />
+    <lastmod>2026-09-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/apps/models/grok-4-6</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/models/grok-4-6" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/models/grok-4-6" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/models/grok-4-6" />
+    <lastmod>2026-09-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/apps/models/grok-4-6</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/models/grok-4-6" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/models/grok-4-6" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/models/grok-4-6" />
+    <lastmod>2026-09-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/learn/grok-4-6</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/grok-4-6" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/grok-4-6" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/grok-4-6" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/learn/grok-4-6" />
+    <lastmod>2026-09-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/learn/grok-4-6</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/grok-4-6" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/grok-4-6" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/grok-4-6" />
+    <lastmod>2026-09-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/learn/grok-4-6</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/grok-4-6" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/grok-4-6" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/grok-4-6" />
+    <lastmod>2026-09-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- GPT-6 Astra (2026-09-04) -->
   <url>
     <loc>https://canfly.ai/apps/models/gpt-6-astra</loc>

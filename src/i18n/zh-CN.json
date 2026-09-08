@@ -776,13 +776,14 @@
       },
       "openclaw": {
         "tagline": "你的个人 AI 代理 — 你的 AI，你的规则",
-        "description": "拥有约 388K GitHub 星标的开源个人 AI 代理平台。一行命令安装，自由搭配技能、工具和集成。2.0 线（v2026.8.1–v2026.9.1）加上引导式 setup、重建的 Control UI 与 Shared Cloud Sessions。OpenAI 账号若已有 GPT-6 Astra，用 `openclaw models set openai/gpt-6-astra` 切过去。在本地或云端运行。你的数据永远属于你 — 无厂商锁定、无订阅费、无限制。",
+        "description": "拥有约 388K GitHub 星标的开源个人 AI 代理平台。一行命令安装，自由搭配技能、工具和集成。2.0 线（v2026.8.1–v2026.9.1）加上引导式 setup、重建的 Control UI 与 Shared Cloud Sessions。OpenAI 账号若已有 GPT-6 Astra，用 `openclaw models set openai/gpt-6-astra` 切过去。xAI 则钉 Grok 4.6：`openclaw models set xai/grok-4.6`。在本地或云端运行。你的数据永远属于你 — 无厂商锁定、无订阅费、无限制。",
         "features": [
           "一行命令安装：ollama launch openclaw",
           "约 388K GitHub 星标 — 最大 AI 代理社区",
           "技能市场：180K+ 社区技能",
-          "支持任何 LLM：本地 (Ollama) 或云端 (GPT-6 Astra, Claude)",
+          "支持任何 LLM：本地 (Ollama) 或云端 (GPT-6 Astra, Grok 4.6, Claude)",
           "切到 Astra：openclaw models set openai/gpt-6-astra",
+          "切到 Grok 4.6：openclaw models set xai/grok-4.6",
           "完全隐私：100% 在你的硬件上运行",
           "v2026.9.1：对话内 Mermaid、Android 聊天、更新可回退"
         ],
@@ -863,6 +864,21 @@
         ],
         "ctaPrimary": "打开教程",
         "ctaSecondary": "OpenAI 模型指南"
+      },
+      "grok-4-6": {
+        "tagline": "给长跑 OpenClaw 代理用的 xAI 前线模型",
+        "description": "xAI 的 Grok 4.6 于 2026-08-12 上线。官方模型 ID 是 `grok-4.6`：50 万 token 上下文、文字与图片输入、文字输出、没有文字输出上限。定位在写程序、代理任务与知识工作。在 CanFly.ai 我们用 `openclaw models set xai/grok-4.6` 钉住它。标准价每百万 token 输入 $2、输出 $6（prompt 未满 200K）；达到或超过 200K 费率加倍。这页是 API 模型卡 — 不是 Grok Bot，也不是 Grok 4.7。OpenRouter 已上架 `x-ai/grok-4.6`。",
+        "features": [
+          "官方 ID grok-4.6 — 50 万上下文、没有文字输出上限",
+          "文字 + 图片输入；函数调用、网页搜索、X 搜索、程序执行",
+          "OpenClaw：openclaw models set xai/grok-4.6",
+          "推理力度：low / medium / high（默认）/ xhigh（不能关闭）",
+          "标准价每百万 token 输入 $2、输出 $6；200K 以上加倍",
+          "xAI API、Grok Build 默认、Cursor 全方案、OpenRouter x-ai/grok-4.6",
+          "API 密钥安装仍默认 Grok 4.3 — 要自己钉 4.6"
+        ],
+        "ctaPrimary": "打开教程",
+        "ctaSecondary": "xAI 模型文档"
       }
     },
     "comingSoon": "即将推出",
@@ -3740,6 +3756,13 @@
               "desc": "把 OpenClaw 指到 OpenAI 新前线模型：openclaw models set openai/gpt-6-astra。",
               "cta": "Astra 教程",
               "link": "/learn/gpt-6-astra"
+            },
+            {
+              "emoji": "⚡",
+              "title": "Grok 4.6",
+              "desc": "钉住 xAI 前线模型：openclaw models set xai/grok-4.6。不是 Grok Bot。",
+              "cta": "Grok 4.6 教程",
+              "link": "/learn/grok-4-6"
             },
             {
               "emoji": "🖥️",
@@ -7421,6 +7444,13 @@
               "desc": "等 Astra 访问时，先用免费开源代理模型。",
               "link": "/learn/nemotron-3-super",
               "cta": "Nemotron 教程"
+            },
+            {
+              "emoji": "⚡",
+              "title": "Grok 4.6",
+              "desc": "xAI 前线模型，OpenRouter 已上架：openclaw models set xai/grok-4.6。",
+              "link": "/learn/grok-4-6",
+              "cta": "Grok 4.6 教程"
             }
           ]
         }
@@ -7445,6 +7475,226 @@
         {
           "q": "这跟 Grok Bot 是同一页吗？",
           "a": "不是。Grok Bot 是 xAI 托管队友（另一张 P0）。Astra 是你指给 OpenClaw 的 OpenAI 模型 ID。"
+        }
+      ]
+    },
+    "grok46": {
+      "title": "Grok 4.6 — 五分钟把 OpenClaw 切过去",
+      "subtitle": "官方 grok-4.6，走 xAI API。50 万上下文，适合长跑代理。不是 Grok Bot，也不是 Grok 4.7。",
+      "duration": "5 分钟",
+      "difficulty": "入门",
+      "steps": [
+        {
+          "title": "Grok 4.6 是什么",
+          "titleEn": "What Grok 4.6 is",
+          "estimatedTime": "1 分钟",
+          "content": "Grok 4.6 是 xAI 的前线模型（2026-08-12 上线）。官方把它放在写程序、代理任务与知识工作 — 要能跨很多步骤还站得住。在 CanFly.ai 这页只写 API 模型卡。Grok Bot 是另一个托管队友产品。Grok 4.7 还没有官方 model card。\n\n先记官方数字：模型 ID `grok-4.6`、50 万 token 上下文、知识截止 2026-02-01、文字与图片输入、文字输出没有上限。工具包含函数调用、网页搜索、X 搜索与程序执行。推理不能关闭。",
+          "commands": [
+            "# Official model ID",
+            "grok-4.6",
+            "",
+            "# Context (xAI docs)",
+            "# 500,000 context tokens",
+            "# No text output limit",
+            "",
+            "# Product page on CanFly.ai",
+            "# /apps/models/grok-4-6",
+            "",
+            "# xAI guide",
+            "https://docs.x.ai/developers/grok-4-6"
+          ],
+          "expectedResult": "你知道 Grok 4.6 是给代理用的 xAI 托管 API 模型 — 不是本地 Ollama pull，也不是 Grok Bot 那一页。",
+          "tips": [
+            "xAI 也把它设成 Grok Build 默认，Cursor 全方案都能用。",
+            "不要自己发明本地 ollama pull — Grok 4.6 是托管的。",
+            "OpenRouter 上架名称是 x-ai/grok-4.6。那是网关，不是第二个模型。"
+          ],
+          "troubleshooting": {
+            "title": "范围",
+            "items": [
+              {
+                "q": "这跟 Grok Bot 是同一页吗？",
+                "a": "不是。Grok Bot 是托管、一直在线的队友（CanFly.ai 还在排队的 P0）。这页是你指给 OpenClaw 的 grok-4.6 API 模型。"
+              },
+              {
+                "q": "要不要等 Grok 4.7？",
+                "a": "先不要。xAI release notes 与 model card 仍停在 4.6。4.7 上线后我们会改这页或另开 slug — 不要自己发明 ID。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "取得访问与凭证",
+          "titleEn": "Get access and a credential",
+          "estimatedTime": "2 分钟",
+          "content": "两条官方路。SuperGrok 或合格的 X Premium：OpenClaw 建议走 Grok OAuth（不必拿 xAI Console 密钥）。团队与媒体界面：到 console.x.ai 建立 API 密钥并导出 XAI_API_KEY。\n\nOAuth 若还没有主要模型，会选 `xai/auto`，跟着 xAI 远端默认走。API 密钥安装仍把 Grok 4.3 当区域安全默认 — 要自己钉 4.6。",
+          "commands": [
+            "# A) Existing OpenClaw — OAuth (recommended)",
+            "openclaw models auth login --provider xai --method oauth",
+            "",
+            "# SSH / VPS / Docker: same command (device-code, no localhost callback)",
+            "",
+            "# B) API key from the xAI console",
+            "https://console.x.ai",
+            "openclaw models auth login --provider xai --method api-key",
+            "export XAI_API_KEY=xai-...",
+            "",
+            "# Never commit the key"
+          ],
+          "expectedResult": "openclaw models auth list --provider xai 看得到 OAuth 或 API 密钥配置。",
+          "tips": [
+            "新机器可跑：openclaw onboard --install-daemon，模型／验证步骤选 xAI/Grok OAuth。",
+            "VPS 上用：openclaw onboard --install-daemon --auth-choice xai-oauth",
+            "SuperGrok 额度只在 OAuth 时出现在 openclaw status --usage，API 密钥账单不会算进去。"
+          ],
+          "troubleshooting": {
+            "title": "访问",
+            "items": [
+              {
+                "q": "xAI 说这个账号不能走 OAuth",
+                "a": "改走 console.x.ai 的 API 密钥，或先在 xAI 那边把 SuperGrok / X Premium 订阅修好。"
+              },
+              {
+                "q": "登录成功，对话却还用别的模型",
+                "a": "OAuth 登录会保留既有主要模型。登录后再跑 openclaw models set xai/grok-4.6（或 xai/auto）。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "调用 xAI API",
+          "titleEn": "Call the xAI API",
+          "estimatedTime": "1 分钟",
+          "content": "要用 Grok 4.6，就把 `model` 设成 `grok-4.6`。xAI 文档同时写 Responses API 与 Chat Completions。OpenClaw 内建的 xAI 传输走 Responses。请设 `prompt_cache_key`（Chat Completions 则用 `x-grok-conv-id` 标头），长跑代理循环才会打到同一台缓存服务器。",
+          "commands": [
+            "curl https://api.x.ai/v1/responses \\",
+            "  -H \"Authorization: Bearer $XAI_API_KEY\" \\",
+            "  -H \"Content-Type: application/json\" \\",
+            "  -d '{\"model\":\"grok-4.6\",\"input\":\"Reply with one sentence: what is OpenClaw?\"}'",
+            "",
+            "# Reasoning: low | medium | high (default) | xhigh",
+            "# Long context: rates double at 200K+ prompt tokens"
+          ],
+          "expectedResult": "Responses API 回一句短的 Grok 4.6 回复。404 / model_not_found 代表这把密钥还看不到 grok-4.6。",
+          "tips": [
+            "标准价：每百万 token 输入 $2、缓存读 $0.50、输出 $6。prompt 达到或超过 200K：整笔请求改 $4 / $1 / $12。",
+            "xAI 另有较快变体，价格加倍。出量前请核对 https://docs.x.ai/developers/grok-4-6。",
+            "长网址放在命令清单，英文版才不会爆版。"
+          ],
+          "troubleshooting": {
+            "title": "API",
+            "items": [
+              {
+                "q": "401 或 invalid_api_key",
+                "a": "在同一个终端导出 XAI_API_KEY。密钥外泄就立刻轮替。"
+              },
+              {
+                "q": "我只有 OpenRouter 密钥",
+                "a": "在 OpenRouter 用模型 x-ai/grok-4.6（见 /learn/openrouter）。那是网关，不是 xAI Console 凭证。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "把 OpenClaw 指到 Grok 4.6",
+          "titleEn": "Point OpenClaw at Grok 4.6",
+          "estimatedTime": "1 分钟",
+          "content": "OpenClaw 官方 xAI provider 页已收录 `grok-4.6`。请钉住它，API 密钥安装才不会停在 Grok 4.3。同一组 xAI 凭证也会驱动 OpenClaw 的 `web_search`（provider id grok）、`x_search` 与 `code_execution`。\n\n还没装 OpenClaw？先走 CanFly.ai 教程，再回来。",
+          "commands": [
+            "# Official OpenClaw pin (docs.openclaw.ai/providers/xai)",
+            "openclaw models set xai/grok-4.6",
+            "",
+            "# Follow xAI's OAuth default instead of pinning",
+            "openclaw models set xai/auto",
+            "",
+            "# If OpenClaw is not installed yet",
+            "# See /learn/ollama-openclaw",
+            "ollama launch openclaw",
+            "",
+            "openclaw models status"
+          ],
+          "expectedResult": "OpenClaw 把 xai/grok-4.6 列成作用中模型，或 xai/auto 已解析成 grok-4.6。",
+          "tips": [
+            "Grok 4.6 推理：low、medium、high、xhigh。Grok 4.5 没有 xhigh。不要送 none。",
+            "长跑循环用 /compact — OpenClaw 会对到 xAI 的 /v1/responses/compact。",
+            "这是云端账单。要免费本地路径请走 /learn/ollama 或 /learn/nemotron-3-super。"
+          ],
+          "troubleshooting": {
+            "title": "OpenClaw",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "先安装 OpenClaw：/learn/ollama-openclaw 或 `ollama launch openclaw`。再跑 `openclaw models set xai/grok-4.6`。"
+              },
+              {
+                "q": "API 密钥登录后选择器仍显示 Grok 4.3",
+                "a": "这是预期行为。API 密钥安装把 4.3 当区域安全默认。请跑 openclaw models set xai/grok-4.6。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CanFly.ai 下一步",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 分钟",
+          "content": "Grok 4.6 是托管的 xAI 大脑。请搭配 OpenClaw 安装、若已有 OpenRouter 密钥就走网关，或在 OpenAI 账号有 Astra 时切 GPT-6 Astra。Grok Bot 留给之后的独立页。",
+          "tips": [
+            "评测视频待补（这次环境没有 HEYGEN_API_KEY）。英文口白稿：content/scripts/grok-4-6-review-en.txt",
+            "盯紧 xAI 账单 — 塞满 50 万窗口、又跨过 200K prompt，不是免费本地 pull。",
+            "等 Grok 4.7 有官方 model card，我们会改这页，不另开传闻网址。"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "安装 OpenClaw",
+              "desc": "用 Ollama 一行装好 OpenClaw，再回来钉 Grok 4.6。",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw 教程"
+            },
+            {
+              "emoji": "📦",
+              "title": "OpenClaw 产品卡",
+              "desc": "OpenClaw 是什么、星标，以及 apps 卡上的 xAI / Astra 切换。",
+              "link": "/apps/free/openclaw",
+              "cta": "OpenClaw 卡片"
+            },
+            {
+              "emoji": "✨",
+              "title": "GPT-6 Astra",
+              "desc": "同一套 OpenClaw 也可以指到 OpenAI 前线模型：openclaw models set openai/gpt-6-astra。",
+              "link": "/learn/gpt-6-astra",
+              "cta": "Astra 教程"
+            },
+            {
+              "emoji": "🌐",
+              "title": "OpenRouter",
+              "desc": "Grok 4.6 已上架为 x-ai/grok-4.6，若你比较想用一把网关密钥。",
+              "link": "/learn/openrouter",
+              "cta": "OpenRouter 指南"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "可以用 Ollama 在本地跑 Grok 4.6 吗？",
+          "a": "不行。Grok 4.6 是 xAI 托管模型。本地 OpenClaw 请走 Ollama、oMLX 或 Nemotron 3 Super。"
+        },
+        {
+          "q": "Grok 4.6 在 OpenRouter 上了吗？",
+          "a": "上了。请用 `x-ai/grok-4.6`。那是同一模型前面的网关，不是第二个 Grok。"
+        },
+        {
+          "q": "要花多少钱？",
+          "a": "xAI 标准表（prompt 未满 200K）：每百万 token 输入 $2、缓存读 $0.50、输出 $6。达到或超过 200K，整笔请求改 $4 / $1 / $12。出量前请核对 https://docs.x.ai/developers/models/grok-4.6。"
+        },
+        {
+          "q": "为什么 API 密钥安装会停在 Grok 4.3？",
+          "a": "OpenClaw 把 4.3 当区域安全的 API 密钥默认。OAuth 走 xai/auto。用 `openclaw models set xai/grok-4.6` 钉 4.6。"
+        },
+        {
+          "q": "这跟 Grok Bot 是同一页吗？",
+          "a": "不是。Grok Bot 是 xAI 托管队友（另一张 P0）。Grok 4.6 是你指给 OpenClaw 的 API 模型 ID。"
         }
       ]
     }
