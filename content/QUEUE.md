@@ -4,7 +4,7 @@
 > 每天先掃、先排隊；當天資訊多就一次寫幾篇，資訊少就寫一篇或只更新舊文。
 > 產稿走 `SOP-NEW-APP.md`（產品＋教學）或既有 blog 結構；**不要直接 push**。
 
-最後掃描：2026-09-10（每日選題掃描，06:00 Taipei）
+最後掃描：2026-09-11（每日選題掃描，06:00 Taipei）
 
 ---
 
@@ -76,7 +76,7 @@
 | P1 | Nemotron 3.5 Lightning | 軟體／models | NVIDIA 點名 OpenClaw harness。30B MoE、3B active。跟現有 Super（120B / 12B）不是同一張卡 | `/apps/models/nemotron-3-5-lightning` + Super 頁加家族連結 | queued |
 | P1 | Arduino UNO Q（4GB） | 硬體 | 已上市。官方部落格講本機 agent + OpenClaw。跟 VENTUNO Q 不是同一塊板 | `/apps/hardware`；SKU 用 4GB / 32GB eMMC | queued |
 | P2 | TaskMarket | 軟體／skills | Base 上 USDC 結算的 agent 打工市場。有 CLI 與 OpenClaw skill。掃描時市場還小（約 19 題） | `/learn/taskmarket` | queued |
-| P1 | Firecrawl（含 Developer Index） | 軟體／skills | 官方有 OpenClaw 接法：`firecrawl init --agent openclaw`，也可 `npx -y firecrawl-cli@latest setup developer-index`。70M+ repo README／issue／PR／OpenAPI，給 coding agent 用，不是一般網搜。跟現有 `brave-search`、`perplexity` 不是同一頁 | `/apps/skills/firecrawl` + `/learn/firecrawl` | queued |
+| P1 | Firecrawl（含 Developer Index） | 軟體／skills | 官方有 OpenClaw 接法：`firecrawl init --agent openclaw`，也可 `npx -y firecrawl-cli@latest setup developer-index`。ClawHub 另有官方 plugin：`openclaw plugins install clawhub:@openclaw/firecrawl-plugin`。70M+ repo README／issue／PR／OpenAPI，給 coding agent 用，不是一般網搜。跟現有 `brave-search`、`perplexity` 不是同一頁 | `/apps/skills/firecrawl` + `/learn/firecrawl` | queued |
 | P2 | screenpipe | 軟體／skills | 官方文件 `docs.screenpi.pe/openclaw`：`npx -y screenpipe@latest agent setup openclaw`。把螢幕／語音記錄接進 OpenClaw。站上沒有相近頁。要寫權限與 clipboard 風險 | `/apps/skills/screenpipe` + `/learn/screenpipe` | queued |
 | P1 | Muse Glimmer | 軟體／models | Meta Superintelligence Labs 開源 30B 本地 agent 模型。官方 Ollama：`ollama launch openclaw --model muse-glimmer`（MLX 用 `muse-glimmer:30b-mlx`）。站上沒有這頁；不要折進 Ollama，Qwen 3.8 才留在 Ollama 頁 | `/apps/models/muse-glimmer` + `/learn/muse-glimmer`；寫完在 Ollama／OpenClaw 卡加家族連結 | queued |
 | P1 | GPT-6 Astra | 軟體／models | 2026-09-03 官方上線。OpenAI [model guidance](https://developers.openai.com/api/docs/guides/latest-model)：`gpt-6-astra`，tool calling 走 Responses API。OpenClaw 官方 [OpenAI provider](https://docs.openclaw.ai/providers/openai)：`openclaw models set openai/gpt-6-astra`（1,050K context，$10/$50；存取還在 Trusted Access／陸續開 Plus／API）。OpenRouter 已有 `openai/gpt-6-astra` 與 `openai/gpt-6-astra-pro`（不要另開 Pro 頁）。產品頁已上；現有文案還寫「OpenRouter 還沒有」，見更新舊頁 | `/apps/models/gpt-6-astra` + `/learn/gpt-6-astra` | shipped 2026-09-04（影片待補；OpenRouter 行要改） |
@@ -90,13 +90,13 @@
 |---|---|
 | `/apps/skills/perplexity` + `/learn/perplexity` | 官方 [Perplexity with OpenClaw](https://docs.perplexity.ai/docs/getting-started/integrations/openclaw)：Search plugin、Agent API（`openai-responses` + `https://api.perplexity.ai/v1`）、遠端 MCP。Sonar Chat Completions 撐到 2026-09-27。現有頁還停在「AI 搜尋引擎」。2026-09-01 Hybrid Compute（Mac 本機＋雲端分流）寫進 Computer 待寫稿，搜尋頁帶一句即可。Computer 要不要另開頁見待決。 |
 | `/apps/models/google-gemini` + `/learn/google-gemini` | 一般用戶 Gemini CLI 2026-06-18 已停。Google 改推 Antigravity CLI（`agy`）與 Managed Agents。現有頁還在講 2M context / Gems / Veo。PH 8/28 上的 Gemini Omni 1.1 Flash（影片生成／剪輯）補進這頁，不要另開。2026-09-02 官方 [Gemini 3.8 Flash](https://blog.google/innovation-and-ai/models-and-research/gemini-models/3-8-flash-and-3-8-flash-cyber/)：agentic／coding workhorse，$0.75/$3.75 到 2026-12-31，OpenRouter 已有 `google/gemini-3.8-flash`。寫進這頁，不要另開。Flash Cyber 走 Fairwind trusted access，見觀察。2026-09-01 [Agentic Video](https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-agentic-video-in-gemini/) 帶一句即可，不要另開。 |
-| `/apps/hardware/mac-mini-m4` | 見上方「新款 Mac mini」。 |
+| `/apps/hardware/mac-mini-m4` | 見上方「新款 Mac mini」。macOS 27 Golden Gate 2026-09-14 上市，寫 mini 更新時帶一句即可。 |
 | OpenClaw 產品卡 + `/learn/ollama-openclaw` | **優先改。** 官方便 2026-08-31 出 v2026.8.1（AKA OpenClaw 2.0）；2026-09-01 再出穩定補丁 [v2026.8.2](https://docs.openclaw.ai/releases/2026.8.2)；2026-09-03 出 [v2026.9.1](https://docs.openclaw.ai/releases/2026.9.1)；2026-09-05 出 [v2026.9.2](https://docs.openclaw.ai/releases/2026.9.2)（Astra＋Muse Spark 1.3、更穩的升級／復原）；2026-09-08 14:15 UTC 出 [v2026.9.3](https://docs.openclaw.ai/releases/2026.9.3)（隔離 rehearsal 更新、live browser、可撤銷聊天連結、會議逐字稿搜尋、repo-backed cloud、Workshop skills、Mac tabs、Node 24.16+／26）。2.0 重點仍是：引導式 setup、重建 Control UI、Shared Cloud Sessions、SQLite session、breaking：OpenProse 拿掉、`codex/*` → `openai/*`，升級走 `openclaw doctor --fix`。寫時加一句 `openclaw models set openai/gpt-6-astra`。文案還寫 300K+ stars；GitHub 仍約 388K。Custodian 一併改。不要另開 2.0／8.2／9.1／9.2／9.3 產品頁。 |
 | `/learn/nemotron-3-super` | 加 Lightning 家族連結。Super 給重推理，Lightning 給長跑執行層。 |
 | `/learn/agent-skills` | ClawHub 產品頁上線後，nextStepCards 要指過去。 |
 | `/apps/skills/agentmail` + `/learn/agentmail` | 官方已上 ClawHub：`openclaw plugins install clawhub:@agentmail/agentmail`（skill + email channel）。現有頁還停在舊接法。 |
 | `/learn/ollama` + `/learn/ollama-openclaw` + OpenClaw 卡 | 跟上方 2.0／8.2／9.1 一起改。Muse Glimmer 寫完後加 `ollama launch openclaw --model muse-glimmer` 連結。Qwen 3.8／Gemma 4 不要另開。GPT-5.6 Sol/Terra/Luna 仍是預設；Astra 另開模型頁後加連結。Ollama 官方 8/31：Pro／Max／Team 改成含額度的 per-token 計價，寫 Ollama 頁時改價，不要另開。 |
-| `/learn/claude-code-codex`（待寫稿） | OpenAI 2026-08-28：Cursor 合約預計 2026-11-12 停供 OpenAI 模型。寫進 Codex 段備註，不要另開 Cursor 頁。Anthropic 2026-09-01：[Fable 5.1／Mythos 5.1](https://www.anthropic.com/claude-fable-and-mythos-5-1) 上線（`claude-fable-5-1`、cache read 降 75%）；OpenRouter 已有 `anthropic/claude-fable-5.1`。寫 Claude Code 段用 Fable 5.1，不要另開模型頁。Mythos 5.1 只走 trusted access；EFS 今秋才 GA。OpenAI 2026-09-03：[GPT-6 Astra](https://developers.openai.com/api/docs/guides/latest-model) 上線（`gpt-6-astra`）；OpenClaw 用 `openclaw models set openai/gpt-6-astra`。Codex 段帶一句並連到 Astra 模型頁，不要把 Astra 折進這篇當主文。Harden AIF 寫完後可在這頁加一句本機 tool-call 防火牆連結。 |
+| `/learn/claude-code-codex`（待寫稿） | OpenAI 2026-08-28：Cursor 合約預計 2026-11-12 停供 OpenAI 模型。寫進 Codex 段備註，不要另開 Cursor 頁。Anthropic 2026-09-01：[Fable 5.1／Mythos 5.1](https://www.anthropic.com/claude-fable-and-mythos-5-1) 上線（`claude-fable-5-1`、cache read 降 75%）；OpenRouter 已有 `anthropic/claude-fable-5.1`。寫 Claude Code 段用 Fable 5.1，不要另開模型頁。Mythos 5.1 只走 trusted access；EFS 今秋才 GA。OpenAI 2026-09-03：[GPT-6 Astra](https://developers.openai.com/api/docs/guides/latest-model) 上線（`gpt-6-astra`）；OpenClaw 用 `openclaw models set openai/gpt-6-astra`。Codex 段帶一句並連到 Astra 模型頁，不要把 Astra 折進這篇當主文。OpenAI 2026-09-10：[Agents API](https://developers.openai.com/api/docs/guides/agents-api/overview) public beta（託管 Codex harness，`gpt-6-astra`）；是對手不是技能，Codex 段帶一句即可，不要另開頁。Harden AIF 寫完後可在這頁加一句本機 tool-call 防火牆連結。 |
 | `/apps/models/gpt-6-astra` + `/learn/gpt-6-astra` | 現有文案寫「OpenRouter 還沒有」。OpenRouter 已上 `openai/gpt-6-astra` 與 `openai/gpt-6-astra-pro`。改這兩頁，不要另開 Pro 頁。 |
 
 ---
@@ -149,6 +149,10 @@
 | Muse Spark 1.3 | Meta 雲端 API，權重不開。OpenClaw v2026.9.2 已支援；本機路線仍是 Glimmer | 折進 OpenRouter／OpenClaw 9.2 更新；不要跟 Glimmer 寫成同一頁 |
 | Product Hunt 9/9（Muse、Type.com、AlphaGenome Atlas） | Muse／Type 是對手個人／團隊 agent，沒有官方 OpenClaw 安裝步驟。AlphaGenome 是基因組研究資料集（Antigravity 入口），跟 Agent 工作流無關 | 下週 PH |
 | AgentWard | 有 `agentward setup --gateway openclaw`，但是 2026-03 起的舊專案，跟剛入列 Harden AIF 互搶本機 tool-call 防火牆 | Harden 寫完再比；不要第三頁 |
+| OpenAI Agents API（9/10 public beta） | 官方 [Agents API](https://developers.openai.com/api/docs/guides/agents-api/overview)：託管 Codex harness，`POST /v1/agents/sessions`，hosted／自架 sandbox。沒有 OpenClaw 安裝步驟，是對手不是技能 | 不要寫產品頁；折進 Claude Code／Codex 稿一句 |
+| ChatGPT for Financial Services（9/10） | ChatGPT Work 金融資料＋Astra。企業方案，沒有 OpenClaw 安裝步驟 | 不要寫 |
+| Product Hunt 9/10（Mastra Factory、Noodle Seed、49agents IDE、GoModel、Frigade Assist、UI-Atlas、Diiverge 等） | SaaS／對手 harness／OpenRouter 替代。Mastra Factory 是 TypeScript SDLC 工廠，沒有官方 OpenClaw skill。GoModel 折進 OpenRouter | 下週 PH |
+| Perplexity Q2D-Web（9/9） | 檢索 benchmark／HF leaderboard，不是產品、沒有 OpenClaw 指令 | 不要寫 |
 
 ---
 
@@ -186,6 +190,7 @@
 | 2026-09-04 | 每日選題掃描 | 待寫 +1（GPT-6 Astra）；更新舊頁 +OpenClaw v2026.9.1、Astra 接法、Perplexity Hybrid Compute | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI docs（仍 4.6，無 4.7 model card）、Perplexity Hybrid Compute／HF `pplx-pii-masking`（無 OpenClaw 指令）、OpenAI GPT-6 Astra（`gpt-6-astra`＋`openclaw models set openai/gpt-6-astra`）、Anthropic（Fable 已記）、Google（3.8 Flash 已折進舊頁）、PH 9/3（Omi、Airtop、Blume、Grove 等）、GitHub OpenClaw [v2026.9.1](https://github.com/openclaw/openclaw/releases/tag/v2026.9.1) 2026-09-03 18:31 UTC／~388K、ClawHub（無新官方 skill 頁）、Ollama（無新 `ollama launch openclaw` 模型）、Apple mini／Studio（9/22）、NVIDIA Orin Nano 2（H1 2027）、Arduino VENTUNO Q／UNO Q（已入列）。觀察：PH 9/3、Omi／screenpipe 重疊、PII-Tracer 權重已上 HF。沒寫文章。 |
 | 2026-09-05 | 每日選題掃描 | 待寫 +0 | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI docs／model card（仍 `grok-4.6`，無 4.7 ID）、Perplexity blog（9/4 Fast Embeddings 是基礎設施文，無產品／OpenClaw 指令）、OpenAI（Astra 已入列／已上產品頁；OpenRouter 仍無 `gpt-6-astra`）、Anthropic（Fable／EFS 已記）、Google Lyria 3.5（音樂，無 OpenClaw）、PH 9/4（Snitch、Chalked、Remote OpenClaw）、GitHub OpenClaw 仍 [v2026.9.1](https://github.com/openclaw/openclaw/releases/tag/v2026.9.1)／~388K、ClawHub（無新官方 skill 頁）、Ollama blog（最新仍 8/31 計價）、Apple mini／Studio（9/22）、NVIDIA Orin Nano 2（H1 2027）、Arduino VENTUNO Q／UNO Q（已入列）。觀察：PH 9/4、Lyria 3.5。沒寫文章。 |
 | 2026-09-10 | 每日選題掃描 | 待寫 +1（Harden AIF）；更新舊頁 +OpenClaw v2026.9.2／v2026.9.3、Astra OpenRouter | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI docs／model list（仍 `grok-4.6`，9 月只記 Imagine quality 11/2 下線，無 4.7 card）、Perplexity（Sonar 仍 9/27；Hybrid 已折進 Computer）、OpenAI Images 2.5（無 OpenClaw）、Anthropic（Fable／FLT 研究文，無新品）、Google 9/9 行政雜務文＋Agentic Video（折進 Gemini 舊頁）、PH 9/5–9/9、GitHub／docs OpenClaw 最新 [v2026.9.3](https://docs.openclaw.ai/releases/2026.9.3)／~388K、ClawHub（NVIDIA Skill Cards 折進 ClawHub 稿）、Ollama（無新 `ollama launch openclaw`）、Apple mini／Studio（9/22）、NVIDIA Orin Nano 2（H1 2027）、Arduino VENTUNO Q 官方店仍 pre-order／約 4 週。佇列自 9/5 起未寫進檔的 9.2／9.3／OpenRouter 一併補上。沒寫文章。 |
+| 2026-09-11 | 每日選題掃描 | 待寫 +0；更新舊頁 +Agents API（折進 Codex 稿）、Firecrawl 官方 ClawHub plugin、macOS 27 9/14 | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI docs／model list（仍 `grok-4.6`，`grok-4.7` 404，無 card）、Perplexity Q2D-Web（benchmark，不寫）、OpenAI [Agents API](https://developers.openai.com/api/docs/guides/agents-api/overview)＋ChatGPT Financial Services（觀察）、Anthropic 9/10 威脅情報文（無新品）、Google（3.8 Flash／Agentic Video 已折進舊頁）、PH 9/10（Mastra Factory 等）、GitHub／docs OpenClaw 仍 [v2026.9.3](https://docs.openclaw.ai/releases/2026.9.3)／~388K、ClawHub（`@openclaw/firecrawl-plugin` 折進 Firecrawl 稿；tokenjuice 等官方 plugin 非新品）、Ollama（最新仍 8/31 計價）、Apple mini／Studio（9/22；Golden Gate 9/14）、NVIDIA Orin Nano 2（H1 2027）、Arduino VENTUNO Q 官方店仍 pre-order／約 4 週 €298.99。沒寫文章。 |
 
 ---
 
