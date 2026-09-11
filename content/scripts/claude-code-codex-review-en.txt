@@ -1,0 +1,9 @@
+Hi, I'm JU CHUN KO.
+
+Claude Code and Codex are great at writing software. OpenClaw is great at channels, memory, and long-running agents. The missing piece was a clean bridge.
+
+OpenClaw's official docs name both clients: run openclaw mcp serve, and your coding agent can list conversations, read transcripts, wait for events, and reply on the same route. For Claude Code, leave channel mode on — or run openclaw attach for a session-scoped grant. For Codex, turn Claude channel mode off.
+
+On CanFly.ai this is one tutorial, not two. Claude Fable 5.1 stays in the Claude Code section. GPT-6 Astra stays on its own model page. Do not install the retired AgentKit path.
+
+I made a tutorial on CanFly.ai — go try it.

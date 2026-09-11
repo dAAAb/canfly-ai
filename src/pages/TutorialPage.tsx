@@ -1977,6 +1977,72 @@ function createGpt6AstraTutorial(t: any): TutorialData {
   }
 }
 
+function createClaudeCodeCodexTutorial(t: any): TutorialData {
+  return {
+    id: 'claude-code-codex',
+    title: t('tutorial.claudeCodeCodex.title'),
+    subtitle: t('tutorial.claudeCodeCodex.subtitle'),
+    duration: t('tutorial.claudeCodeCodex.duration'),
+    difficulty: t('tutorial.claudeCodeCodex.difficulty'),
+    faq: t('tutorial.claudeCodeCodex.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Globe,
+        title: t('tutorial.claudeCodeCodex.steps.0.title'),
+        titleEn: t('tutorial.claudeCodeCodex.steps.0.titleEn'),
+        estimatedTime: t('tutorial.claudeCodeCodex.steps.0.estimatedTime'),
+        content: t('tutorial.claudeCodeCodex.steps.0.content'),
+        commands: t('tutorial.claudeCodeCodex.steps.0.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.claudeCodeCodex.steps.0.expectedResult'),
+        tips: t('tutorial.claudeCodeCodex.steps.0.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.claudeCodeCodex.steps.0.troubleshooting.title'), items: t('tutorial.claudeCodeCodex.steps.0.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Terminal,
+        title: t('tutorial.claudeCodeCodex.steps.1.title'),
+        titleEn: t('tutorial.claudeCodeCodex.steps.1.titleEn'),
+        estimatedTime: t('tutorial.claudeCodeCodex.steps.1.estimatedTime'),
+        content: t('tutorial.claudeCodeCodex.steps.1.content'),
+        commands: t('tutorial.claudeCodeCodex.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.claudeCodeCodex.steps.1.expectedResult'),
+        tips: t('tutorial.claudeCodeCodex.steps.1.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.claudeCodeCodex.steps.1.troubleshooting.title'), items: t('tutorial.claudeCodeCodex.steps.1.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Sparkles,
+        title: t('tutorial.claudeCodeCodex.steps.2.title'),
+        titleEn: t('tutorial.claudeCodeCodex.steps.2.titleEn'),
+        estimatedTime: t('tutorial.claudeCodeCodex.steps.2.estimatedTime'),
+        content: t('tutorial.claudeCodeCodex.steps.2.content'),
+        commands: t('tutorial.claudeCodeCodex.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.claudeCodeCodex.steps.2.expectedResult'),
+        tips: t('tutorial.claudeCodeCodex.steps.2.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.claudeCodeCodex.steps.2.troubleshooting.title'), items: t('tutorial.claudeCodeCodex.steps.2.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Cpu,
+        title: t('tutorial.claudeCodeCodex.steps.3.title'),
+        titleEn: t('tutorial.claudeCodeCodex.steps.3.titleEn'),
+        estimatedTime: t('tutorial.claudeCodeCodex.steps.3.estimatedTime'),
+        content: t('tutorial.claudeCodeCodex.steps.3.content'),
+        commands: t('tutorial.claudeCodeCodex.steps.3.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.claudeCodeCodex.steps.3.expectedResult'),
+        tips: t('tutorial.claudeCodeCodex.steps.3.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.claudeCodeCodex.steps.3.troubleshooting.title'), items: t('tutorial.claudeCodeCodex.steps.3.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.claudeCodeCodex.steps.4.title'),
+        titleEn: t('tutorial.claudeCodeCodex.steps.4.titleEn'),
+        estimatedTime: t('tutorial.claudeCodeCodex.steps.4.estimatedTime'),
+        content: t('tutorial.claudeCodeCodex.steps.4.content'),
+        tips: t('tutorial.claudeCodeCodex.steps.4.tips', { returnObjects: true }),
+        nextStepCards: t('tutorial.claudeCodeCodex.steps.4.nextStepCards', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
 function createWhisperTutorial(t: any): TutorialData {
   return {
     id: 'whisper',
@@ -2455,6 +2521,7 @@ function getTutorials(t: any): Record<string, TutorialData> {
     'google-gemini': createGoogleGeminiTutorial(t),
     'nemotron-3-super': createNemotronTutorial(t),
     'gpt-6-astra': createGpt6AstraTutorial(t),
+    'claude-code-codex': createClaudeCodeCodexTutorial(t),
     whisper: createWhisperTutorial(t),
     basemail: createBasemailTutorial(t),
     agentmail: createAgentmailTutorial(t),
