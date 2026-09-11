@@ -71,7 +71,7 @@
 | P1 | 新款 Mac mini | 硬體 | 兩邊都同意。2026-08-25 發表 M6 / M5 Pro，9/22 出貨，起價約 $899。站上已有 `mac-mini-m4` | **更新舊頁** `mac-mini-m4`，確認要不要新 slug | queued |
 | P2 | Mac Studio 512GB（約 10 月） | 硬體／預告 | 寶博點名。未上市：先「即將推出」規格文 | blog `mac-studio-512gb` | queued |
 | P1 | Grok 4.6（xAI API） | 軟體／models | 2026-08-12 上線，官方寫明長跑 agent。OpenAI 相容，OpenRouter 有。站上有 Gemini、Nemotron，沒有 Grok 模型頁。不要跟 Grok Bot 寫成同一頁 | `/apps/models/grok-4-6` + `/learn/grok-4-6` | queued |
-| P1 | Claude Code / Codex 接 OpenClaw | 軟體／skills | 官方 `openclaw mcp serve` 文件直接點名。一頁講兩個 coding agent，不要拆兩篇。不要寫已宣布下線的 AgentKit | `/learn/claude-code-codex` | queued |
+| P1 | Claude Code / Codex 接 OpenClaw | 軟體／skills | 官方 `openclaw mcp serve` 文件直接點名。一頁講兩個 coding agent，不要拆兩篇。不要寫已宣布下線的 AgentKit | `/apps/skills/claude-code-codex` + `/learn/claude-code-codex` | shipped 2026-09-11（影片待補） |
 | P1 | ClawHub | 軟體／skills | OpenClaw 官方 skill + plugin registry。教學已有 `clawhub install`，沒有產品頁。寫時帶一句 NVIDIA Skill Cards（`openclaw skills verify --card`），不要另開 Skill Cards 頁 | `/apps` + `/learn/clawhub`；寫完改 `/learn/agent-skills` nextStepCards | queued |
 | P1 | Nemotron 3.5 Lightning | 軟體／models | NVIDIA 點名 OpenClaw harness。30B MoE、3B active。跟現有 Super（120B / 12B）不是同一張卡 | `/apps/models/nemotron-3-5-lightning` + Super 頁加家族連結 | queued |
 | P1 | Arduino UNO Q（4GB） | 硬體 | 已上市。官方部落格講本機 agent + OpenClaw。跟 VENTUNO Q 不是同一塊板 | `/apps/hardware`；SKU 用 4GB / 32GB eMMC | queued |
@@ -96,8 +96,8 @@
 | `/learn/agent-skills` | ClawHub 產品頁上線後，nextStepCards 要指過去。 |
 | `/apps/skills/agentmail` + `/learn/agentmail` | 官方已上 ClawHub：`openclaw plugins install clawhub:@agentmail/agentmail`（skill + email channel）。現有頁還停在舊接法。 |
 | `/learn/ollama` + `/learn/ollama-openclaw` + OpenClaw 卡 | 跟上方 2.0／8.2／9.1 一起改。Muse Glimmer 寫完後加 `ollama launch openclaw --model muse-glimmer` 連結。Qwen 3.8／Gemma 4 不要另開。GPT-5.6 Sol/Terra/Luna 仍是預設；Astra 另開模型頁後加連結。Ollama 官方 8/31：Pro／Max／Team 改成含額度的 per-token 計價，寫 Ollama 頁時改價，不要另開。 |
-| `/learn/claude-code-codex`（待寫稿） | OpenAI 2026-08-28：Cursor 合約預計 2026-11-12 停供 OpenAI 模型。寫進 Codex 段備註，不要另開 Cursor 頁。Anthropic 2026-09-01：[Fable 5.1／Mythos 5.1](https://www.anthropic.com/claude-fable-and-mythos-5-1) 上線（`claude-fable-5-1`、cache read 降 75%）；OpenRouter 已有 `anthropic/claude-fable-5.1`。寫 Claude Code 段用 Fable 5.1，不要另開模型頁。Mythos 5.1 只走 trusted access；EFS 今秋才 GA。OpenAI 2026-09-03：[GPT-6 Astra](https://developers.openai.com/api/docs/guides/latest-model) 上線（`gpt-6-astra`）；OpenClaw 用 `openclaw models set openai/gpt-6-astra`。Codex 段帶一句並連到 Astra 模型頁，不要把 Astra 折進這篇當主文。OpenAI 2026-09-10：[Agents API](https://developers.openai.com/api/docs/guides/agents-api/overview) public beta（託管 Codex harness，`gpt-6-astra`）；是對手不是技能，Codex 段帶一句即可，不要另開頁。Harden AIF 寫完後可在這頁加一句本機 tool-call 防火牆連結。 |
-| `/apps/models/gpt-6-astra` + `/learn/gpt-6-astra` | 現有文案寫「OpenRouter 還沒有」。OpenRouter 已上 `openai/gpt-6-astra` 與 `openai/gpt-6-astra-pro`。改這兩頁，不要另開 Pro 頁。 |
+| `/learn/claude-code-codex` | 2026-09-11 已上。Cursor 11/12、Fable 5.1、Astra 內鏈、Agents API 一句已寫進教學。Harden AIF 寫完後再加本機 tool-call 防火牆連結。 |
+| `/apps/models/gpt-6-astra` + `/learn/gpt-6-astra` | OpenRouter 行已於 2026-09-11 改為已上架 `openai/gpt-6-astra`／`openai/gpt-6-astra-pro`。不要另開 Pro 頁。影片仍待補。 |
 
 ---
 
@@ -165,7 +165,8 @@
 | `google-gemini` | 更新 CLI → Antigravity，不要另開 Gemini 頁。Omni 1.1 Flash 也寫這頁 |
 | `nemotron-3-super` | 不要改寫成 Lightning；加家族連結 |
 | `openclaw` | 更新成 2.0（v2026.8.1）＋穩定補丁 v2026.8.2＋v2026.9.1＋v2026.9.2＋v2026.9.3＋星數＋custodian，不要重開 2.0／8.2／9.1／9.2／9.3 頁。Astra 另開模型頁 |
-| `gpt-6-astra` | 2026-09-04 產品＋教學已上。影片待補。補 OpenRouter `openai/gpt-6-astra`／`openai/gpt-6-astra-pro`。不要跟 Codex／GPT-5.6／Grok Bot 寫成同一頁，不要另開 Pro 頁 |
+| `gpt-6-astra` | 2026-09-04 產品＋教學已上。影片待補。2026-09-11 已改 OpenRouter `openai/gpt-6-astra`／`openai/gpt-6-astra-pro`。不要跟 Codex／GPT-5.6／Grok Bot 寫成同一頁，不要另開 Pro 頁 |
+| `claude-code-codex` | 2026-09-11 產品＋教學已上。影片待補。一頁講 Claude Code + Codex。Fable 5.1／Astra／Agents API／Cursor 11/12 備註已寫進教學。不要拆兩篇，不要寫 AgentKit |
 | `heygen` / `elevenlabs` / `ollama` / `omlx` / `zeabur` / `openrouter` | 教學已在，只在有大改版時回訪。Qwen 3.8、Gemma 4、Hy4、Muse Spark 折進 Ollama／OpenRouter，不要另開 |
 | `agentmail` | 更新 ClawHub 官方 plugin，不要重開 |
 | `brave-search` | 一般網搜頁已在。Firecrawl／Developer Index 另開 |

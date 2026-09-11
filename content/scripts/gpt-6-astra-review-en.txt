@@ -6,6 +6,6 @@ GPT-6 Astra is OpenAI's new frontier model. Official docs give it a 1,050,000-to
 
 On OpenClaw the switch is one command: openclaw models set openai/gpt-6-astra. Access is still rolling out through Trusted Access, then Plus, Pro, Business, Enterprise, and the API.
 
-Standard list price is ten dollars per million input tokens and fifty on output. It is not a local model, and it is not on OpenRouter yet.
+Standard list price is ten dollars per million input tokens and fifty on output. It is not a local model. OpenRouter now lists openai/gpt-6-astra and openai/gpt-6-astra-pro.
 
 I made a tutorial on CanFly.ai — go try it.

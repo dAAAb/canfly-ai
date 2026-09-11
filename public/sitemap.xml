@@ -642,6 +642,64 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- Claude Code + Codex (2026-09-11) -->
+  <url>
+    <loc>https://canfly.ai/apps/skills/claude-code-codex</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/skills/claude-code-codex" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/skills/claude-code-codex" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/skills/claude-code-codex" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/apps/skills/claude-code-codex" />
+    <lastmod>2026-09-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/apps/skills/claude-code-codex</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/skills/claude-code-codex" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/skills/claude-code-codex" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/skills/claude-code-codex" />
+    <lastmod>2026-09-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/apps/skills/claude-code-codex</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/skills/claude-code-codex" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/skills/claude-code-codex" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/skills/claude-code-codex" />
+    <lastmod>2026-09-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/learn/claude-code-codex</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/claude-code-codex" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/claude-code-codex" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/claude-code-codex" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/learn/claude-code-codex" />
+    <lastmod>2026-09-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/learn/claude-code-codex</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/claude-code-codex" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/claude-code-codex" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/claude-code-codex" />
+    <lastmod>2026-09-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/learn/claude-code-codex</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/claude-code-codex" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/claude-code-codex" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/claude-code-codex" />
+    <lastmod>2026-09-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <url>
     <loc>https://canfly.ai/about</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/about" />

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#0B0A08"/>
+  <circle cx="260" cy="180" r="220" fill="#D97706" opacity="0.14"/>
+  <circle cx="980" cy="460" r="200" fill="#0F766E" opacity="0.16"/>
+  <rect x="820" y="140" width="220" height="320" rx="36" fill="#D97706" opacity="0.22"/>
+  <rect x="900" y="180" width="220" height="320" rx="36" fill="#0F766E" opacity="0.28"/>
+  <text x="80" y="170" fill="#F8FAFC" font-family="ui-sans-serif, system-ui, sans-serif" font-size="52" font-weight="700">Claude Code + Codex</text>
+  <text x="80" y="230" fill="#FDBA74" font-family="ui-sans-serif, system-ui, sans-serif" font-size="26">Two coding agents. One OpenClaw MCP bridge.</text>
+  <text x="80" y="310" fill="#94A3B8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="22">openclaw mcp serve</text>
+  <text x="80" y="350" fill="#94A3B8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="22">openclaw attach</text>
+  <text x="80" y="540" fill="#64748B" font-family="ui-sans-serif, system-ui, sans-serif" font-size="20">CanFly.ai</text>
+</svg>

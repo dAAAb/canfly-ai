@@ -851,7 +851,7 @@
       },
       "gpt-6-astra": {
         "tagline": "给长跑 OpenClaw 代理用的 OpenAI 前线模型",
-        "description": "OpenAI 的 GPT-6 Astra 于 2026-09-03 上线。官方模型 ID 是 `gpt-6-astra`：105 万 token 上下文、最多 12.8 万 output token，支持文字与图片输入。代理工具调用走 Responses API。在 CanFly.ai 我们用 `openclaw models set openai/gpt-6-astra` 接到 OpenClaw。访问先从 Trusted Access 开始，Plus、Pro、Business、Enterprise 与 API 陆续开放。这不是本地模型、不是 Grok Bot，也不该跟 Codex 写成同一页。OpenRouter 目前还没上架。",
+        "description": "OpenAI 的 GPT-6 Astra 于 2026-09-03 上线。官方模型 ID 是 `gpt-6-astra`：105 万 token 上下文、最多 12.8 万 output token，支持文字与图片输入。代理工具调用走 Responses API。在 CanFly.ai 我们用 `openclaw models set openai/gpt-6-astra` 接到 OpenClaw。访问先从 Trusted Access 开始，Plus、Pro、Business、Enterprise 与 API 陆续开放。这不是本地模型、不是 Grok Bot，也不该跟 Codex 写成同一页。OpenRouter 已上 `openai/gpt-6-astra` 与 `openai/gpt-6-astra-pro` — 不要另开 Pro 页。",
         "features": [
           "官方 ID gpt-6-astra — 105 万上下文、最多 12.8 万 output",
           "文字 + 图片输入；代理工具调用走 Responses API",
@@ -863,6 +863,21 @@
         ],
         "ctaPrimary": "打开教程",
         "ctaSecondary": "OpenAI 模型指南"
+      },
+      "claude-code-codex": {
+        "tagline": "两个写程序代理，共用一座 OpenClaw MCP 桥",
+        "description": "Claude Code 与 Codex 都通过官方 `openclaw mcp serve` stdio 桥接 OpenClaw。CanFly.ai 把它们写在同一页：Claude Code 可用 channel-mode 通知，或用 `openclaw attach` 拿会话授权；Codex 请加 `--claude-channel-mode off`。Claude 模型切到 Fable 5.1：`openclaw models set anthropic/claude-fable-5-1`。GPT-6 Astra 留在独立模型页。这不是即将于 2026-11-30 下线的 AgentKit、不是 Grok Bot，也不是 OpenAI Agents API。",
+        "features": [
+          "官方桥：openclaw mcp serve（Claude Code + Codex）",
+          "Claude Code：channel mode on/auto，或 openclaw attach",
+          "Codex：openclaw mcp serve --claude-channel-mode off",
+          "Claude 模型切换：openclaw models set anthropic/claude-fable-5-1",
+          "Astra 留在 /apps/models/gpt-6-astra — 不要折进来",
+          "一篇教程讲两个代理 — 不写 AgentKit，不拆第二页",
+          "Cursor 预计 2026-11-12 停供 OpenAI 模型 — 只记备注"
+        ],
+        "ctaPrimary": "打开教程",
+        "ctaSecondary": "OpenClaw MCP 文档"
       }
     },
     "comingSoon": "即将推出",
@@ -3740,6 +3755,13 @@
               "desc": "把 OpenClaw 指到 OpenAI 新前线模型：openclaw models set openai/gpt-6-astra。",
               "cta": "Astra 教程",
               "link": "/learn/gpt-6-astra"
+            },
+            {
+              "emoji": "💻",
+              "title": "Claude Code + Codex",
+              "desc": "用 openclaw mcp serve 把两个写程序代理接到 OpenClaw。",
+              "cta": "写程序代理教程",
+              "link": "/learn/claude-code-codex"
             },
             {
               "emoji": "🖥️",
@@ -7387,11 +7409,11 @@
           "title": "CanFly.ai 下一步",
           "titleEn": "Next steps on CanFly.ai",
           "estimatedTime": "1 分钟",
-          "content": "Astra 是托管大脑。请搭配 OpenClaw 安装、用较便宜的本地模型打草稿，或走 OpenRouter 上已经上架的模型。Codex 留给之后的独立教程 — 不要把 Astra 折进那一页。",
+          "content": "Astra 是托管大脑。请搭配 OpenClaw 安装、用较便宜的本地模型打草稿，或走 OpenRouter（`openai/gpt-6-astra` / `openai/gpt-6-astra-pro`）。写程序代理教程在 /learn/claude-code-codex — 不要把 Astra 折进那一页。",
           "tips": [
             "评测视频待补（这次环境没有 HEYGEN_API_KEY）。英文口白稿：content/scripts/gpt-6-astra-review-en.txt",
             "盯紧 OpenAI 账单 — 塞满百万 token 窗口不是免费本地 pull。",
-            "等 OpenRouter 上架 gpt-6-astra，我们会改这页，不另开第三个网址。"
+            "OpenRouter 已上 gpt-6-astra 与 gpt-6-astra-pro。CanFly.ai 只留这一张模型页。"
           ],
           "nextStepCards": [
             {
@@ -7411,7 +7433,7 @@
             {
               "emoji": "🌐",
               "title": "OpenRouter",
-              "desc": "现在就有 200+ 模型。Astra 还没上架 — Gemini 与 Nemotron 走这里。",
+              "desc": "现在就有 200+ 模型，含 openai/gpt-6-astra。Gemini 与 Nemotron 仍走这里。",
               "link": "/learn/openrouter",
               "cta": "OpenRouter 指南"
             },
@@ -7421,6 +7443,13 @@
               "desc": "等 Astra 访问时，先用免费开源代理模型。",
               "link": "/learn/nemotron-3-super",
               "cta": "Nemotron 教程"
+            },
+            {
+              "emoji": "💻",
+              "title": "Claude Code + Codex",
+              "desc": "用 openclaw mcp serve 把两个写程序代理接到 OpenClaw。",
+              "link": "/learn/claude-code-codex",
+              "cta": "写程序代理教程"
             }
           ]
         }
@@ -7432,7 +7461,7 @@
         },
         {
           "q": "Astra 在 OpenRouter 上了吗？",
-          "a": "这页上线时（2026-09-04）还没有。请在 OpenAI provider 用 `openai/gpt-6-astra`。OpenRouter 上架后我们会更新这篇教程。"
+          "a": "有。OpenRouter 已上 `openai/gpt-6-astra` 与 `openai/gpt-6-astra-pro`。OpenClaw 仍可用 OpenAI provider：`openclaw models set openai/gpt-6-astra`。不另开 Pro 页。"
         },
         {
           "q": "要花多少钱？",
@@ -7447,7 +7476,238 @@
           "a": "不是。Grok Bot 是 xAI 托管队友（另一张 P0）。Astra 是你指给 OpenClaw 的 OpenAI 模型 ID。"
         }
       ]
+    },
+    "claudeCodeCodex": {
+      "title": "Claude Code + Codex — 8 分钟接上 OpenClaw MCP",
+      "subtitle": "一篇教程讲两个写程序代理。官方 openclaw mcp serve。不是 AgentKit、不是 Astra、不是 Grok Bot。",
+      "duration": "8 分钟",
+      "difficulty": "中级",
+      "steps": [
+        {
+          "title": "这页在讲什么",
+          "titleEn": "What this page covers",
+          "estimatedTime": "1 分钟",
+          "content": "Claude Code（Anthropic）与 Codex（OpenAI）是写程序 harness。OpenClaw 是管频道、记忆与长跑工作的个人代理。官方 OpenClaw 文档在 `openclaw mcp serve` 同时点名这两个客户端：写程序 app 会生成 stdio MCP 服务器，桥接到你的 Gateway，已路由的对话变成 MCP 工具。\n\nCanFly.ai 把两个代理留在这一页。GPT-6 Astra 留在自己的模型卡。不要安装即将下线的 AgentKit。OpenAI Agents API（2026-09-10 公开测试）是托管 Codex harness — 是对手，不是技能。",
+          "commands": [
+            "# Official OpenClaw MCP index",
+            "https://docs.openclaw.ai/cli/mcp",
+            "",
+            "# Product page on CanFly.ai",
+            "# /apps/skills/claude-code-codex",
+            "",
+            "# Astra is a different page",
+            "# /apps/models/gpt-6-astra",
+            "",
+            "# Do not install AgentKit (retires 2026-11-30)"
+          ],
+          "expectedResult": "你知道这页是写程序代理的桥 — 不是模型卡、不是 AgentKit、不是 Agents API。",
+          "tips": [
+            "OpenClaw 三条路：mcp serve（客户端连进 OpenClaw）、attach（Claude Code 授权）、acp（OpenClaw 自己托管 harness）。",
+            "本篇先走 mcp serve，因为官方 MCP 页在那里点名 Claude Code 与 Codex。",
+            "长网址放在命令列表，英文版才不会爆版。"
+          ],
+          "troubleshooting": {
+            "title": "范围",
+            "items": [
+              {
+                "q": "这是 GPT-6 Astra 那一页吗？",
+                "a": "不是。Astra 是模型，请走 /learn/gpt-6-astra。这页是 Claude Code 与 Codex 跟 OpenClaw 说话。"
+              },
+              {
+                "q": "该写 AgentKit 吗？",
+                "a": "不该。AgentKit 预计 2026-11-30 下线。请改用 openclaw mcp serve。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "先决条件：先有 Gateway",
+          "titleEn": "Prerequisites: Gateway first",
+          "estimatedTime": "2 分钟",
+          "content": "MCP 客户端拥有 `openclaw mcp serve`。stdio 连接还在时，桥会用 WebSocket 接上本地或远端 OpenClaw Gateway。Claude Code 或 Codex 要看得到对话，Gateway 必须已在跑、而且会话已有路由。\n\n还没装 OpenClaw？先走 CanFly.ai 安装教程再回来。诊断先跑 `openclaw mcp status --verbose` — 只列已存服务器，不会启动任何连接。",
+          "commands": [
+            "# If OpenClaw is not installed yet",
+            "# See /learn/ollama-openclaw",
+            "ollama launch openclaw",
+            "",
+            "# See saved MCP servers (does not connect)",
+            "openclaw mcp status --verbose",
+            "",
+            "# Local Gateway (client will spawn this later)",
+            "openclaw mcp serve",
+            "",
+            "# Remote Gateway — prefer token-file, not an inline secret",
+            "openclaw mcp serve --url wss://gateway-host:18789 --token-file ~/.openclaw/gateway.token"
+          ],
+          "expectedResult": "OpenClaw 已在 PATH、Gateway 已启动，而且 mcp status 不用开客户端就能打印出来。",
+          "tips": [
+            "优先用 --token-file 或 --password-file。不要把 Gateway token 贴进 git 或 CanFly.ai issue。",
+            "conversations_list 是空的，通常是 Gateway 会话缺路由元数据 — 不是 MCP 旗标写错。",
+            "2.0 线有破坏性升级后，请跑 openclaw doctor --fix。"
+          ],
+          "troubleshooting": {
+            "title": "Gateway",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "先安装 OpenClaw：/learn/ollama-openclaw 或 `ollama launch openclaw`。"
+              },
+              {
+                "q": "桥接启动了，但列不出对话",
+                "a": "确认 Gateway 会话已有 channel、收件人，以及可选的 account/thread 路由元数据。MCP 不会凭空造路由。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Claude Code：serve、add 或 attach",
+          "titleEn": "Claude Code: serve, add, or attach",
+          "estimatedTime": "3 分钟",
+          "content": "给 Claude Code 时，把 `--claude-channel-mode` 留在 `auto`（今天等于 `on`）。桥会在标准工具之外加上 Claude 专用频道通知：conversations_list、messages_read、events_wait、messages_send 与核准。\n\n官方有两条进法：用 Claude CLI 注册长期 MCP 服务器，或用 `openclaw attach` 启动严格的单次会话授权。OpenClaw 里的 Anthropic 模型请切到 Fable 5.1。Mythos 5.1 与 EFS 不另开页。",
+          "commands": [
+            "# Lasting MCP server (Claude Code CLI)",
+            "claude --version",
+            "claude auth login",
+            "claude mcp add openclaw -- openclaw mcp serve",
+            "",
+            "# Session-scoped grant — default binary is claude",
+            "openclaw attach",
+            "openclaw attach --print-config",
+            "",
+            "# Official OpenClaw Anthropic switch",
+            "openclaw models set anthropic/claude-fable-5-1",
+            "",
+            "# Claude Code docs / attach docs",
+            "https://docs.openclaw.ai/cli/attach",
+            "https://docs.openclaw.ai/providers/anthropic"
+          ],
+          "expectedResult": "Claude Code 看得到 openclaw MCP 服务器，或 attach 用临时授权启动 claude。",
+          "tips": [
+            "openclaw attach 用环境变量传 bearer token，不用 argv，并加上 --strict-mcp-config，避免把环境里其他 Claude MCP 带进来。",
+            "一般 attach 会在 Claude Code 结束时收回授权。--print-config 会让授权活到 TTL 到期。",
+            "Fable 5.1 缓存读是每百万 token $0.25（Fable 5 的四分之一）。裸别名 fable 现在会选 claude-fable-5-1。",
+            "OpenRouter 已有 anthropic/claude-fable-5.1。不要另开 Mythos 或 EFS 页。"
+          ],
+          "troubleshooting": {
+            "title": "Claude Code",
+            "items": [
+              {
+                "q": "Claude 通知一直没出现",
+                "a": "保持 stdio MCP 连接、把 --claude-channel-mode 留在 on/auto，并在桥接连上之后再送一条新的进来消息。"
+              },
+              {
+                "q": "attach 找不到 claude",
+                "a": "在同一台主机安装 Claude Code 并放进 PATH，或传 --bin。然后重试 openclaw attach。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Codex：关掉 channel mode",
+          "titleEn": "Codex: channel mode off",
+          "estimatedTime": "2 分钟",
+          "content": "Codex 是通用 MCP 客户端。请关掉 Claude 通知，改用 events_poll / events_wait，不要走 Claude 专用推送。把 stdio 服务器加进 `~/.codex/config.toml`。\n\n若要让 OpenClaw 自己托管 Codex app-server，那是另一个方向（OpenClaw Codex harness）。这一步是 Codex 连进你的 Gateway。Cursor 与 OpenAI 的合约预计 2026-11-12 停供 OpenAI 模型 — 只记备注，不另开 Cursor 页。OpenAI Agents API（2026-09-10 公开测试）在云端托管 Codex harness；是对手，不是 OpenClaw 技能。",
+          "commands": [
+            "# Codex / generic MCP clients",
+            "openclaw mcp serve --claude-channel-mode off",
+            "",
+            "# ~/.codex/config.toml (official Codex config keys)",
+            "[mcp_servers.openclaw]",
+            "command = \"openclaw\"",
+            "args = [\"mcp\", \"serve\", \"--claude-channel-mode\", \"off\"]",
+            "",
+            "# Optional: OpenClaw-hosted Astra (different page)",
+            "openclaw models set openai/gpt-6-astra",
+            "",
+            "# Codex config reference",
+            "https://developers.openai.com/codex/config-reference"
+          ],
+          "expectedResult": "Codex 列出 openclaw MCP 服务器，并能调用 conversations_list，不会被 Claude 推送方法卡住。",
+          "tips": [
+            "OpenClaw 可选的 mcp.servers.<name>.codex 区块只影响 Codex app-server 投影，交给原生 mcp_servers 前会被拿掉。",
+            "要把 Astra 当 OpenClaw 大脑？走 /learn/gpt-6-astra。不要把 Astra 折进这篇教程。",
+            "OpenRouter 已上 openai/gpt-6-astra 与 openai/gpt-6-astra-pro。仍然不要另开 Pro 页。"
+          ],
+          "troubleshooting": {
+            "title": "Codex",
+            "items": [
+              {
+                "q": "Codex 对 Claude 通知方法报错",
+                "a": "加上 --claude-channel-mode off。Codex 应该用 events_poll / events_wait 轮询。"
+              },
+              {
+                "q": "这是 OpenAI Agents API 吗？",
+                "a": "不是。Agents API 是托管 Codex harness（POST /v1/agents/sessions，常用 gpt-6-astra）。没有 OpenClaw 安装路径。请留在 mcp serve。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CanFly.ai 下一步",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 分钟",
+          "content": "你现在有一座桥，给两个写程序代理用。请搭配 OpenClaw 安装、Astra 模型卡，或在等云端访问时先用本地模型。这次评测视频待补。",
+          "tips": [
+            "评测视频待补（没有 HEYGEN_API_KEY）。英文口白稿：content/scripts/claude-code-codex-review-en.txt",
+            "ClawHub 与 Firecrawl 留在队列自己的页 — 不要折进来。",
+            "之后 Harden AIF 可以连到这里当本地 tool-call 防火墙。它不是这页。"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "安装 OpenClaw",
+              "desc": "用 Ollama 一行装好 OpenClaw，再回来跑 mcp serve。",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw 教程"
+            },
+            {
+              "emoji": "✨",
+              "title": "GPT-6 Astra",
+              "desc": "给 OpenClaw 用的前线模型。不要把 Astra 折进这篇写程序页。",
+              "link": "/learn/gpt-6-astra",
+              "cta": "Astra 教程"
+            },
+            {
+              "emoji": "📦",
+              "title": "OpenClaw 产品卡",
+              "desc": "OpenClaw 是什么、星数，以及 apps 卡片。",
+              "link": "/apps/free/openclaw",
+              "cta": "OpenClaw 卡片"
+            },
+            {
+              "emoji": "🧩",
+              "title": "代理技能",
+              "desc": "写程序桥接好了之后，再安装与撰写 OpenClaw 技能。",
+              "link": "/learn/agent-skills",
+              "cta": "技能教程"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "为什么 Claude Code 与 Codex 写在同一页？",
+          "a": "官方 OpenClaw MCP 文档用同一条 serve 命令点名两个客户端。拆成两篇教程会互抢同一组 how-to。"
+        },
+        {
+          "q": "mcp serve 跟 attach 差在哪？",
+          "a": "mcp serve 是客户端拥有的长期 stdio MCP 服务器。openclaw attach 会用临时、绑定单一会话的 Gateway 授权启动 Claude Code，进程结束就收回。"
+        },
+        {
+          "q": "OpenClaw 该用哪个 Claude 模型？",
+          "a": "Fable 5.1：`openclaw models set anthropic/claude-fable-5-1`。Mythos 5.1 只给 trusted access。EFS 还没正式上线。不要另开模型页。"
+        },
+        {
+          "q": "能从这页把 Codex 指到 GPT-6 Astra 吗？",
+          "a": "Astra 是模型，Codex 是 harness。请走 /learn/gpt-6-astra 跑 `openclaw models set openai/gpt-6-astra`。OpenRouter 已上 openai/gpt-6-astra 与 openai/gpt-6-astra-pro。"
+        },
+        {
+          "q": "这能取代 Cursor 吗？",
+          "a": "不能。OpenAI 与 Cursor 的合约预计 2026-11-12 停供 OpenAI 模型。那只是注脚，不是 Cursor 产品页。"
+        }
+      ]
     }
+
   },
   "hardwareCompare": {
     "pageTitle": "硬件对比 — CanFly",

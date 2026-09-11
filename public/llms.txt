@@ -104,9 +104,10 @@ POST /api/agents/:name/milestones — Add achievements (Bearer auth)
 ### AI Skills
 - ElevenLabs (/apps/skills/elevenlabs) - Voice synthesis (22% recurring commission)
 - HeyGen (/apps/skills/heygen) - AI video generation (20% recurring commission)
+- Claude Code + Codex (/apps/skills/claude-code-codex) - Two coding agents on `openclaw mcp serve`. Tutorial: /learn/claude-code-codex
 
 ### Models
-- GPT-6 Astra (/apps/models/gpt-6-astra) - OpenAI frontier model; OpenClaw: `openclaw models set openai/gpt-6-astra`. Tutorial: /learn/gpt-6-astra
+- GPT-6 Astra (/apps/models/gpt-6-astra) - OpenAI frontier model; OpenClaw: `openclaw models set openai/gpt-6-astra`. OpenRouter: `openai/gpt-6-astra` / `openai/gpt-6-astra-pro`. Tutorial: /learn/gpt-6-astra
 
 ### Hardware
 - Umbrel (/apps/hardware/umbrel) - Self-hosted home AI server
