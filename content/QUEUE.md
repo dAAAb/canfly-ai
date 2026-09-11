@@ -4,7 +4,7 @@
 > 每天先掃、先排隊；當天資訊多就一次寫幾篇，資訊少就寫一篇或只更新舊文。
 > 產稿走 `SOP-NEW-APP.md`（產品＋教學）或既有 blog 結構；**不要直接 push**。
 
-最後掃描：2026-09-11（每日選題掃描，06:00 Taipei）
+最後掃描：2026-09-12（每日選題掃描，06:00 Taipei）
 
 ---
 
@@ -91,7 +91,7 @@
 | `/apps/skills/perplexity` + `/learn/perplexity` | 官方 [Perplexity with OpenClaw](https://docs.perplexity.ai/docs/getting-started/integrations/openclaw)：Search plugin、Agent API（`openai-responses` + `https://api.perplexity.ai/v1`）、遠端 MCP。Sonar Chat Completions 撐到 2026-09-27。現有頁還停在「AI 搜尋引擎」。2026-09-01 Hybrid Compute（Mac 本機＋雲端分流）寫進 Computer 待寫稿，搜尋頁帶一句即可。Computer 要不要另開頁見待決。 |
 | `/apps/models/google-gemini` + `/learn/google-gemini` | 一般用戶 Gemini CLI 2026-06-18 已停。Google 改推 Antigravity CLI（`agy`）與 Managed Agents。現有頁還在講 2M context / Gems / Veo。PH 8/28 上的 Gemini Omni 1.1 Flash（影片生成／剪輯）補進這頁，不要另開。2026-09-02 官方 [Gemini 3.8 Flash](https://blog.google/innovation-and-ai/models-and-research/gemini-models/3-8-flash-and-3-8-flash-cyber/)：agentic／coding workhorse，$0.75/$3.75 到 2026-12-31，OpenRouter 已有 `google/gemini-3.8-flash`。寫進這頁，不要另開。Flash Cyber 走 Fairwind trusted access，見觀察。2026-09-01 [Agentic Video](https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-agentic-video-in-gemini/) 帶一句即可，不要另開。 |
 | `/apps/hardware/mac-mini-m4` | 見上方「新款 Mac mini」。macOS 27 Golden Gate 2026-09-14 上市，寫 mini 更新時帶一句即可。 |
-| OpenClaw 產品卡 + `/learn/ollama-openclaw` | **優先改。** 官方便 2026-08-31 出 v2026.8.1（AKA OpenClaw 2.0）；2026-09-01 再出穩定補丁 [v2026.8.2](https://docs.openclaw.ai/releases/2026.8.2)；2026-09-03 出 [v2026.9.1](https://docs.openclaw.ai/releases/2026.9.1)；2026-09-05 出 [v2026.9.2](https://docs.openclaw.ai/releases/2026.9.2)（Astra＋Muse Spark 1.3、更穩的升級／復原）；2026-09-08 14:15 UTC 出 [v2026.9.3](https://docs.openclaw.ai/releases/2026.9.3)（隔離 rehearsal 更新、live browser、可撤銷聊天連結、會議逐字稿搜尋、repo-backed cloud、Workshop skills、Mac tabs、Node 24.16+／26）。2.0 重點仍是：引導式 setup、重建 Control UI、Shared Cloud Sessions、SQLite session、breaking：OpenProse 拿掉、`codex/*` → `openai/*`，升級走 `openclaw doctor --fix`。寫時加一句 `openclaw models set openai/gpt-6-astra`。文案還寫 300K+ stars；GitHub 仍約 388K。Custodian 一併改。不要另開 2.0／8.2／9.1／9.2／9.3 產品頁。 |
+| OpenClaw 產品卡 + `/learn/ollama-openclaw` | **優先改。** 官方便 2026-08-31 出 v2026.8.1（AKA OpenClaw 2.0）；2026-09-01 再出穩定補丁 [v2026.8.2](https://docs.openclaw.ai/releases/2026.8.2)；2026-09-03 出 [v2026.9.1](https://docs.openclaw.ai/releases/2026.9.1)；2026-09-05 出 [v2026.9.2](https://docs.openclaw.ai/releases/2026.9.2)（Astra＋Muse Spark 1.3、更穩的升級／復原）；2026-09-08 14:15 UTC 出 [v2026.9.3](https://docs.openclaw.ai/releases/2026.9.3)（隔離 rehearsal 更新、live browser、可撤銷聊天連結、會議逐字稿搜尋、repo-backed cloud、Workshop skills、Mac tabs、Node 24.16+／26）；2026-09-11 03:46 UTC 出 [v2026.9.4](https://docs.openclaw.ai/releases/2026.9.4)（失敗更新可回滾、Plugins workspace 統一 ClawHub／bundled、prepared cloud sessions、終端機提問、從舊對話學 skill、GPT Image 2.5 Flare／Sunburst）。2.0 重點仍是：引導式 setup、重建 Control UI、Shared Cloud Sessions、SQLite session、breaking：OpenProse 拿掉、`codex/*` → `openai/*`，升級走 `openclaw doctor --fix`。寫時加一句 `openclaw models set openai/gpt-6-astra`。文案還寫 300K+／388K stars；GitHub 現約 389K。Custodian 一併改。不要另開 2.0／8.2／9.1／9.2／9.3／9.4 產品頁。 |
 | `/learn/nemotron-3-super` | 加 Lightning 家族連結。Super 給重推理，Lightning 給長跑執行層。 |
 | `/learn/agent-skills` | ClawHub 產品頁上線後，nextStepCards 要指過去。 |
 | `/apps/skills/agentmail` + `/learn/agentmail` | 官方已上 ClawHub：`openclaw plugins install clawhub:@agentmail/agentmail`（skill + email channel）。現有頁還停在舊接法。 |
@@ -129,7 +129,7 @@
 | Product Hunt 8/31–9/1（Video Agent、BrandJet、Interactive Sessions、Viktor、Topview、Murfy、Orato、FrameOS） | SaaS 影片／銷售／Slack coworker，沒有官方 OpenClaw 安裝步驟 | 下週 PH |
 | Agent 37 Cloud／AgentSky／Murmell | 託管 OpenClaw／多 harness 雲。跟 Zeabur／Pinata 互搶，沒有獨立 skill 安裝路徑 | 折進 Zeabur；不要另開 |
 | Gemma 4 獨立頁 | 2026-04 就有，`ollama launch openclaw --model gemma4:26b`。跟 Qwen 3.8 一樣留在 Ollama | 不要另開 |
-| Grok 4.7 | Musk 9/2 說約 10 天（約 9/12）。xAI [release notes](https://docs.x.ai/developers/release-notes) 與 [model card](https://docs.x.ai/developers/grok-4-6) 仍停在 4.6，沒有 `grok-4.7` ID、定價、benchmark | 官方 model card 上線再決定是更新 Grok 4.6 稿還是另開 |
+| Grok 4.7 | Musk 9/2 說約 10 天（約 9/12）。2026-09-12 傳聞窗口已過：xAI [release notes](https://docs.x.ai/developers/release-notes) 9 月只記 Imagine quality 11/2 下線；[model card](https://docs.x.ai/developers/grok-4-6) 仍停在 4.6；`/developers/models/grok-4.7` 導回 models 列表，沒有 ID、定價、benchmark | 官方 model card 上線再決定是更新 Grok 4.6 稿還是另開 |
 | ChatGPT Healthcare／EHR（9/1） | Epic 接病歷＋Healthcare Public Data plugin。企業醫療，沒有 OpenClaw 安裝步驟 | 不要寫 |
 | Anthropic EFS／Mythos 5.1 | EFS 今秋才 GA；Mythos 只給 trusted cyber／生命科學。Fable 5.1 折進 Claude Code 稿就夠 | 不要另開 |
 | Product Hunt 9/1（Kilo Code JetBrains、TrustedRouter、Keiki、Tovel、Cosmic Agent Plugins、Naseem、Happy Shrimp、ThunderPhone） | SaaS／IDE agent／OpenRouter 競品／Mac-native 對手。Naseem 是 Swift harness，沒有官方 OpenClaw skill。Murmell 已在上方觀察 | 下週 PH |
@@ -144,7 +144,7 @@
 | Product Hunt 9/4（Snitch、Chalked for Mac、Remote OpenClaw） | Slack 組織圖／Mac 回覆草稿／MCP 目錄。沒有官方 OpenClaw 安裝步驟；Remote OpenClaw 跟已入列 ClawHub 互搶 | 下週 PH |
 | Lyria 3.5（Gemini 音樂，9/4） | Gemini app／API 音樂生成，沒有 OpenClaw 接法 | 不要另開；不必為此改 Gemini 舊頁 |
 | Product Hunt 9/5–9/8（dif.sh、AI Toolbox 3.0、PR Lens、Nina、Widgo、US Global Mail MCP、Obol、Switch、MiniCPM5-2B、Catenary、Kopai、Kody） | SaaS／MCP／對手 harness／本機 2B 模型。沒有可重現的 `openclaw plugins install`／`ollama launch openclaw`。US Global Mail 是通用 MCP；Switch 是 Slack／Teams 通道，跟 OpenClaw 既有頻道互搶；MiniCPM5 折進 Ollama | 下週 PH |
-| ChatGPT Images 2.5（9/8） | ChatGPT／API 繪圖（Flare／Sunburst），沒有 OpenClaw 安裝步驟 | 不要寫 |
+| ChatGPT Images 2.5（9/8） | ChatGPT／API 繪圖（Flare／Sunburst）。OpenClaw [v2026.9.4](https://docs.openclaw.ai/releases/2026.9.4) 已能選 Flare／Sunburst，但仍不是獨立技能 | 不要寫產品頁；折進 OpenClaw 9.4 更新一句 |
 | NVIDIA PAIR | Ollama／LM Studio proxy，不是 OpenClaw skill | 觀察；不要另開頁 |
 | Muse Spark 1.3 | Meta 雲端 API，權重不開。OpenClaw v2026.9.2 已支援；本機路線仍是 Glimmer | 折進 OpenRouter／OpenClaw 9.2 更新；不要跟 Glimmer 寫成同一頁 |
 | Product Hunt 9/9（Muse、Type.com、AlphaGenome Atlas） | Muse／Type 是對手個人／團隊 agent，沒有官方 OpenClaw 安裝步驟。AlphaGenome 是基因組研究資料集（Antigravity 入口），跟 Agent 工作流無關 | 下週 PH |
@@ -153,6 +153,9 @@
 | ChatGPT for Financial Services（9/10） | ChatGPT Work 金融資料＋Astra。企業方案，沒有 OpenClaw 安裝步驟 | 不要寫 |
 | Product Hunt 9/10（Mastra Factory、Noodle Seed、49agents IDE、GoModel、Frigade Assist、UI-Atlas、Diiverge 等） | SaaS／對手 harness／OpenRouter 替代。Mastra Factory 是 TypeScript SDLC 工廠，沒有官方 OpenClaw skill。GoModel 折進 OpenRouter | 下週 PH |
 | Perplexity Q2D-Web（9/9） | 檢索 benchmark／HF leaderboard，不是產品、沒有 OpenClaw 指令 | 不要寫 |
+| Gemini app for Windows／Gemini Spark（9/10） | 官方 [Windows 桌面 app](https://blog.google/innovation-and-ai/products/gemini-app/gemini-app-now-on-windows/)（Alt+Space）。Spark 是 Gemini 內建 24/7 個人 agent，沒有 OpenClaw 安裝步驟，是對手不是技能 | 不要另開；不必為此改 Gemini 舊頁 |
+| OpenAI Data agent（9/10） | ChatGPT Work 企業資料 agent。跟 Workspace Agents／Financial Services 同一類，沒有 OpenClaw 安裝步驟 | 不要寫 |
+| Product Hunt 9/11（Loqua、Raycast 2.0、Wisry、Cline Desktop、easyspecs、Devin Voice、ChatHop、chat-recall、Cadenya、Accordio 等） | SaaS／Mac 啟動器／對手 harness／語音 agent。Cline Desktop 是開源權重的對手工作區，沒有官方 OpenClaw skill。PH 9/12 當日尚無上榜資料 | 下週 PH |
 
 ---
 
@@ -164,7 +167,7 @@
 | `mac-mini-m4` | 新款 mini 先更新這頁 |
 | `google-gemini` | 更新 CLI → Antigravity，不要另開 Gemini 頁。Omni 1.1 Flash 也寫這頁 |
 | `nemotron-3-super` | 不要改寫成 Lightning；加家族連結 |
-| `openclaw` | 更新成 2.0（v2026.8.1）＋穩定補丁 v2026.8.2＋v2026.9.1＋v2026.9.2＋v2026.9.3＋星數＋custodian，不要重開 2.0／8.2／9.1／9.2／9.3 頁。Astra 另開模型頁 |
+| `openclaw` | 更新成 2.0（v2026.8.1）＋穩定補丁 v2026.8.2＋v2026.9.1＋v2026.9.2＋v2026.9.3＋v2026.9.4＋星數（約 389K）＋custodian，不要重開 2.0／8.2／9.1／9.2／9.3／9.4 頁。Astra 另開模型頁 |
 | `gpt-6-astra` | 2026-09-04 產品＋教學已上。影片待補。補 OpenRouter `openai/gpt-6-astra`／`openai/gpt-6-astra-pro`。不要跟 Codex／GPT-5.6／Grok Bot 寫成同一頁，不要另開 Pro 頁 |
 | `heygen` / `elevenlabs` / `ollama` / `omlx` / `zeabur` / `openrouter` | 教學已在，只在有大改版時回訪。Qwen 3.8、Gemma 4、Hy4、Muse Spark 折進 Ollama／OpenRouter，不要另開 |
 | `agentmail` | 更新 ClawHub 官方 plugin，不要重開 |
@@ -191,6 +194,7 @@
 | 2026-09-05 | 每日選題掃描 | 待寫 +0 | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI docs／model card（仍 `grok-4.6`，無 4.7 ID）、Perplexity blog（9/4 Fast Embeddings 是基礎設施文，無產品／OpenClaw 指令）、OpenAI（Astra 已入列／已上產品頁；OpenRouter 仍無 `gpt-6-astra`）、Anthropic（Fable／EFS 已記）、Google Lyria 3.5（音樂，無 OpenClaw）、PH 9/4（Snitch、Chalked、Remote OpenClaw）、GitHub OpenClaw 仍 [v2026.9.1](https://github.com/openclaw/openclaw/releases/tag/v2026.9.1)／~388K、ClawHub（無新官方 skill 頁）、Ollama blog（最新仍 8/31 計價）、Apple mini／Studio（9/22）、NVIDIA Orin Nano 2（H1 2027）、Arduino VENTUNO Q／UNO Q（已入列）。觀察：PH 9/4、Lyria 3.5。沒寫文章。 |
 | 2026-09-10 | 每日選題掃描 | 待寫 +1（Harden AIF）；更新舊頁 +OpenClaw v2026.9.2／v2026.9.3、Astra OpenRouter | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI docs／model list（仍 `grok-4.6`，9 月只記 Imagine quality 11/2 下線，無 4.7 card）、Perplexity（Sonar 仍 9/27；Hybrid 已折進 Computer）、OpenAI Images 2.5（無 OpenClaw）、Anthropic（Fable／FLT 研究文，無新品）、Google 9/9 行政雜務文＋Agentic Video（折進 Gemini 舊頁）、PH 9/5–9/9、GitHub／docs OpenClaw 最新 [v2026.9.3](https://docs.openclaw.ai/releases/2026.9.3)／~388K、ClawHub（NVIDIA Skill Cards 折進 ClawHub 稿）、Ollama（無新 `ollama launch openclaw`）、Apple mini／Studio（9/22）、NVIDIA Orin Nano 2（H1 2027）、Arduino VENTUNO Q 官方店仍 pre-order／約 4 週。佇列自 9/5 起未寫進檔的 9.2／9.3／OpenRouter 一併補上。沒寫文章。 |
 | 2026-09-11 | 每日選題掃描 | 待寫 +0；更新舊頁 +Agents API（折進 Codex 稿）、Firecrawl 官方 ClawHub plugin、macOS 27 9/14 | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI docs／model list（仍 `grok-4.6`，`grok-4.7` 404，無 card）、Perplexity Q2D-Web（benchmark，不寫）、OpenAI [Agents API](https://developers.openai.com/api/docs/guides/agents-api/overview)＋ChatGPT Financial Services（觀察）、Anthropic 9/10 威脅情報文（無新品）、Google（3.8 Flash／Agentic Video 已折進舊頁）、PH 9/10（Mastra Factory 等）、GitHub／docs OpenClaw 仍 [v2026.9.3](https://docs.openclaw.ai/releases/2026.9.3)／~388K、ClawHub（`@openclaw/firecrawl-plugin` 折進 Firecrawl 稿；tokenjuice 等官方 plugin 非新品）、Ollama（最新仍 8/31 計價）、Apple mini／Studio（9/22；Golden Gate 9/14）、NVIDIA Orin Nano 2（H1 2027）、Arduino VENTUNO Q 官方店仍 pre-order／約 4 週 €298.99。沒寫文章。 |
+| 2026-09-12 | 每日選題掃描 | 待寫 +0；更新舊頁 +OpenClaw [v2026.9.4](https://docs.openclaw.ai/releases/2026.9.4) | 對過 `SOP-NEW-APP.md`、`src/data/products.ts`。來源：xAI docs／model list（仍 `grok-4.6`，`grok-4.7` 導回 models 列表、無 card）、Perplexity blog（Q2D-Web／Hybrid 已記，無新品）、OpenAI（Agents API／Financial Services／Data agent 已觀察）、Anthropic newsroom（仍 Fable 5.1，無新品）、Google [Gemini Windows](https://blog.google/innovation-and-ai/products/gemini-app/gemini-app-now-on-windows/)＋Spark（觀察）、PH 9/11（Cline Desktop、Raycast 2.0、Loqua 等；9/12 尚無上榜）、GitHub／docs OpenClaw [v2026.9.4](https://github.com/openclaw/openclaw/releases/tag/v2026.9.4) 2026-09-11 03:46 UTC／~389K、ClawHub（無新官方 skill 頁；9.4 Plugins workspace 折進 OpenClaw 更新）、Ollama（無新 `ollama launch openclaw`）、Apple mini／Studio（9/22；Golden Gate 9/14）、NVIDIA Orin Nano 2（H1 2027）、Arduino VENTUNO Q 官方店仍 pre-order／約 4 週 €298.99。沒寫文章。 |
 
 ---
 
