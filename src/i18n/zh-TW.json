@@ -866,6 +866,21 @@
         ],
         "ctaPrimary": "打開教學",
         "ctaSecondary": "OpenAI 模型指南"
+      },
+      "clawhub": {
+        "tagline": "OpenClaw 官方技能與外掛登錄庫",
+        "description": "ClawHub 是 OpenClaw 技能與外掛的公開登錄庫。用原生 openclaw 指令搜尋、安裝、更新；獨立的 clawhub CLI 只負責登入、發佈、刪除或還原。每則已發佈技能都有 NVIDIA Skill Card，可用 `openclaw skills verify @owner/slug --card` 閱讀。官方通道如 Google Meet、Google Chat、Nextcloud Talk 可從 ClawHub 或 npm 安裝。這不是 Skill Cards 頁、不是 Brave Search，也不是 Firecrawl。",
+        "features": [
+          "公開登錄庫 clawhub.ai — 技能、程式外掛、套件外掛",
+          "原生 OpenClaw：openclaw skills search / install @owner/slug",
+          "外掛：openclaw plugins install clawhub:<package>",
+          "NVIDIA Skill Cards：openclaw skills verify @owner/slug --card",
+          "官方外掛：Google Meet、Google Chat、Nextcloud Talk、Firecrawl",
+          "獨立 clawhub CLI 負責登入、發佈、刪除或還原",
+          "把安裝當成執行程式碼；正式環境請釘版本"
+        ],
+        "ctaPrimary": "打開教學",
+        "ctaSecondary": "打開 ClawHub"
       }
     },
     "comingSoon": "即將推出",
@@ -4341,8 +4356,15 @@
           "title": "探索 ClawHub 上的更多技能",
           "titleEn": "Explore More on ClawHub",
           "estimatedTime": "1 分鐘",
-          "content": "ClawHub 是 Agent Skills 的開放市集。除了這 15 個，社群每天都在打造更多技能。\n\n**下載量排行：**\n1. HeyGen 虛擬形象影片 — 2,100+ 次下載\n2. BaseMail — 1,800+ 次下載\n3. SwitchBot — 1,500+ 次下載\n4. Daily Voice Quote — 1,200+ 次下載\n\n在 ClawHub 上瀏覽、安裝，甚至發佈你自己的技能。",
+          "content": "ClawHub 是 Agent Skills 的開放市集。除了這 15 個，社群每天都在打造更多技能。\n\n**下載量排行：**\n1. HeyGen 虛擬形象影片 — 2,100+ 次下載\n2. BaseMail — 1,800+ 次下載\n3. SwitchBot — 1,500+ 次下載\n4. Daily Voice Quote — 1,200+ 次下載\n\n在 ClawHub 上瀏覽、安裝，甚至發佈你自己的技能。\n\n完整 ClawHub 安裝路徑（原生 `openclaw skills`／`openclaw plugins`、NVIDIA Skill Cards）見 [/learn/clawhub](/learn/clawhub) 與 [/apps/skills/clawhub](/apps/skills/clawhub)。",
           "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "ClawHub 登錄庫",
+              "desc": "OpenClaw 官方技能與外掛登錄庫 — 搜尋、安裝、閱讀 Skill Cards。",
+              "cta": "打開 ClawHub 教學",
+              "link": "/learn/clawhub"
+            },
             {
               "emoji": "🎤",
               "title": "ElevenLabs 語音教學",
@@ -7428,6 +7450,216 @@
         {
           "q": "這跟 Grok Bot 是同一頁嗎？",
           "a": "不是。Grok Bot 是 xAI 託管隊友（另一張 P0）。Astra 是你指給 OpenClaw 的 OpenAI 模型 ID。"
+        }
+      ]
+    },
+    "clawhub": {
+      "title": "ClawHub — 五分鐘安裝 OpenClaw 技能",
+      "subtitle": "官方技能與外掛登錄庫。搜尋、安裝、閱讀 NVIDIA Skill Cards。不是 Brave Search、不是 Firecrawl，也不另開 Skill Cards 頁。",
+      "duration": "5 分鐘",
+      "difficulty": "入門",
+      "steps": [
+        {
+          "title": "ClawHub 是什麼",
+          "titleEn": "What ClawHub is",
+          "estimatedTime": "1 分鐘",
+          "content": "ClawHub 是 OpenClaw 的公開**技能**與**外掛**登錄庫。網站是 [clawhub.ai](https://clawhub.ai)。在 CanFly.ai 這頁就是登錄庫頁。[Brave Search](/learn/brave-search) 留給網搜，[Agent Skills](/learn/agent-skills) 留給 15 技能包，**不要**另開 Skill Cards 或 Firecrawl 頁。\n\n兩個表面：\n- **技能** — 有版本的 `SKILL.md` 套件。用 `openclaw skills install @owner/slug` 安裝。\n- **外掛** — 帶相容中繼資料的程式套件。用 `openclaw plugins install clawhub:<package>` 安裝。\n\n兩套 CLI：\n- 原生 **`openclaw`** 指令會裝進**目前的 OpenClaw 工作區**，並記住 ClawHub 來源以便之後更新。\n- 獨立的 **`clawhub` CLI** 負責登入、發佈、刪除或還原。`clawhub install` 會寫到目前目錄的 `./skills` 與 `.clawhub/lock.json` — **不是** OpenClaw 工作區，除非你加 `--workdir`。",
+          "commands": [
+            "# 登錄庫網站",
+            "https://clawhub.ai",
+            "",
+            "# OpenClaw 官方文件",
+            "https://docs.openclaw.ai/tools/clawhub",
+            "",
+            "# CanFly.ai 產品頁",
+            "# /apps/skills/clawhub",
+            "",
+            "# 還沒裝 OpenClaw？",
+            "# 見 /learn/ollama-openclaw"
+          ],
+          "expectedResult": "你知道 ClawHub 是官方登錄庫——分得清技能與外掛，以及 openclaw 與 clawhub CLI。",
+          "tips": [
+            "目標是改正在跑的 OpenClaw 代理人時，優先用原生 openclaw 指令。",
+            "只有需要登錄庫登入、發佈或刪除／還原時，才用獨立 clawhub CLI。",
+            "還沒裝 OpenClaw？先走 /learn/ollama-openclaw，再回來。"
+          ],
+          "troubleshooting": {
+            "title": "範圍",
+            "items": [
+              {
+                "q": "這跟 Brave Search 一樣嗎？",
+                "a": "不一樣。Brave Search 是網搜 API。ClawHub 是 OpenClaw 技能與外掛登錄庫。網搜請留在 /learn/brave-search。"
+              },
+              {
+                "q": "這是 Firecrawl 嗎？",
+                "a": "不是。Firecrawl 還在佇列。本教學只把官方外掛定位符當例子——現在不要開 /learn/firecrawl。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "搜尋並安裝技能",
+          "titleEn": "Search and install skills",
+          "estimatedTime": "1 分鐘",
+          "content": "用原生 OpenClaw 指令。`search`、`install`、`update`、`verify` 都會打到 ClawHub。優先用**帶擁有者**的 slug（`@owner/slug`），避免裝到別人發佈的同名技能。\n\n預設裝進目前工作區的 `skills/`。加 `--global` 才會進共用管理目錄。若技能監看器關閉，請重開工作階段。\n\n只要 CanFly 的 15 技能包？請走 [/learn/agent-skills](/learn/agent-skills)。",
+          "commands": [
+            "openclaw skills search \"calendar\"",
+            "openclaw skills install @openclaw/demo",
+            "openclaw skills update --all",
+            "openclaw skills list",
+            "",
+            "# 需要可重現安裝時請釘版本",
+            "openclaw skills install @openclaw/demo --version 1.0.0"
+          ],
+          "expectedResult": "OpenClaw 在工作區列出已裝技能，或告訴你找不到／已被封鎖。",
+          "tips": [
+            "把社群技能安裝當成執行程式碼。下一步先讀 Skill Card，再信任新的發佈者。",
+            "裸 slug 只在技能已安裝或名稱不歧義時可用。",
+            "被判定惡意或封鎖的社群發行會被拒絕。官方 OpenClaw 發佈者會跳過社群發行信任檢查。"
+          ],
+          "troubleshooting": {
+            "title": "技能",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "先裝 OpenClaw：/learn/ollama-openclaw 或 `ollama launch openclaw`。再重跑 skills 指令。"
+              },
+              {
+                "q": "我用了 clawhub install，但 OpenClaw 看不到技能",
+                "a": "clawhub CLI 會裝到目前目錄的 ./skills。請改用 openclaw skills install，或把 clawhub --workdir 指到代理人工作區。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "安裝官方外掛",
+          "titleEn": "Install official plugins",
+          "estimatedTime": "2 分鐘",
+          "content": "外掛是程式碼，不是 `SKILL.md`。先在 ClawHub 搜尋再安裝。要用 ClawHub 專屬來源時加 `clawhub:` 前綴。裸的 `@openclaw/*` 會走官方目錄（內建副本或 npm）。Google Meet 官方文件也寫 `npm:@openclaw/google-meet`。\n\n以下例子都留在**本頁**——不要另開產品頁：\n- Google Meet — `openclaw plugins install clawhub:@openclaw/google-meet`（最低主機 2026.4.20；官方文件也列 `npm:@openclaw/google-meet`）\n- Google Chat — `openclaw plugins install @openclaw/googlechat`\n- Nextcloud Talk — `openclaw plugins install @openclaw/nextcloud-talk`\n- Firecrawl — `openclaw plugins install clawhub:@openclaw/firecrawl-plugin`（技能頁還在佇列；此處只當例子）\n\nOpenClaw **v2026.9.4** 把 Plugins 工作區統一成 ClawHub 與內建外掛。裝完請重啟 Gateway。",
+          "commands": [
+            "openclaw plugins search \"calendar\"",
+            "openclaw plugins install clawhub:@openclaw/google-meet",
+            "openclaw plugins install @openclaw/googlechat",
+            "openclaw plugins install @openclaw/nextcloud-talk",
+            "openclaw plugins install clawhub:@openclaw/firecrawl-plugin",
+            "openclaw plugins update --all",
+            "",
+            "# 外掛安裝後請重啟 Gateway"
+          ],
+          "expectedResult": "外掛出現在 `openclaw plugins list`。不相容或被封鎖的套件會在安裝前停下。",
+          "tips": [
+            "正式環境請釘版本：clawhub:<package>@1.2.3。",
+            "新的任意 npm／git 來源會警告並詢問。非互動安裝需在你審查來源後加 --force。--force 不會繞過 security.installPolicy。",
+            "AgentMail 官方外掛是 clawhub:@agentmail/agentmail — 見 /learn/agentmail。不要折進本頁。"
+          ],
+          "troubleshooting": {
+            "title": "外掛",
+            "items": [
+              {
+                "q": "該用 clawhub: 還是 npm: ？",
+                "a": "只要走 ClawHub 就用 clawhub:。刻意要 npm 套件才用 npm:。官方 @openclaw/* 會依目錄宣告的來源順序。"
+              },
+              {
+                "q": "外掛裝了但通道沒反應",
+                "a": "重啟 Gateway。再用 `openclaw plugins list` 檢查，若顯示 disabled 就啟用它。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "閱讀 NVIDIA Skill Card",
+          "titleEn": "Read the NVIDIA Skill Card",
+          "estimatedTime": "1 分鐘",
+          "content": "每個已發佈的 ClawHub 技能都帶一張 **Skill Card** — 由 ClawHub 寫的信任產物，不是發佈者自述。卡片寫出發佈者、技能實際能做什麼，以及 **ClawScan** 的發現（靜態分析、VirusTotal、NVIDIA SkillSpector）。判決是 Clean、Suspicious 或 Malicious。\n\n在終端機閱讀即可。**不要**在 CanFly.ai 另開 Skill Cards 產品頁。",
+          "commands": [
+            "openclaw skills verify @openclaw/demo",
+            "openclaw skills verify @openclaw/demo --card",
+            "",
+            "# --card 印出 Skill Card Markdown，而不是 JSON",
+            "# 當 ClawHub 回傳 ok:false 或 decision:fail 時結束碼非零"
+          ],
+          "expectedResult": "在信任技能前，你會看到 Skill Card（或 JSON 驗證信封）與 Clean／Suspicious／Malicious 判決。",
+          "tips": [
+            "SkillSpector 的發現是建議項。ClawScan 會連來源一併衡量再給判決。",
+            "skills-sh: 鏡像會標成 Not scanned by ClawHub。優先用 ClawHub 掃描過的 @owner/slug。",
+            "Suspicious 是停車標誌，不是減速丘。"
+          ],
+          "troubleshooting": {
+            "title": "驗證",
+            "items": [
+              {
+                "q": "verify --card 結束碼非零",
+                "a": "ClawHub 回傳 ok:false 或 decision:fail。不要安裝。打開輸出裡的稽核連結，換一個技能。"
+              },
+              {
+                "q": "裸 slug 有歧義",
+                "a": "改用帶擁有者的參照：openclaw skills verify @owner/slug --card。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CanFly.ai 下一步",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 分鐘",
+          "content": "你現在可以從 ClawHub 搜尋、安裝、驗證。接下來接 OpenClaw 安裝、15 技能包，或 AgentMail。若你是作者，發佈自己的技能用 `npm i -g clawhub`，再 `clawhub login` 與 `clawhub skill publish`。\n\n評測影片待補（本輪沒有 HEYGEN_API_KEY）。英文口白稿：`content/scripts/clawhub-review-en.txt`。",
+          "tips": [
+            "關閉 clawhub CLI 安裝遙測：CLAWHUB_DISABLE_TELEMETRY=1。",
+            "發佈需要夠舊、能通過上傳門檻的 GitHub 帳號。",
+            "Harden AIF 是佇列中的本機 tool-call 防火牆——不是本頁。"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "安裝 OpenClaw",
+              "desc": "用 Ollama 一鍵裝 OpenClaw，再回來用 ClawHub。",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw 教學"
+            },
+            {
+              "emoji": "📦",
+              "title": "OpenClaw 產品",
+              "desc": "OpenClaw 是什麼、星數，以及應用卡上的技能市集。",
+              "link": "/apps/free/openclaw",
+              "cta": "OpenClaw 卡片"
+            },
+            {
+              "emoji": "🧩",
+              "title": "Agent Skills 包",
+              "desc": "CanFly 的 15 技能集合 — 可用 ClawHub 或 npx skills 安裝。",
+              "link": "/learn/agent-skills",
+              "cta": "Agent Skills 教學"
+            },
+            {
+              "emoji": "✉️",
+              "title": "AgentMail",
+              "desc": "官方郵件外掛：openclaw plugins install clawhub:@agentmail/agentmail。",
+              "link": "/learn/agentmail",
+              "cta": "AgentMail 教學"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "安裝技能一定要 clawhub CLI 嗎？",
+          "a": "不用。用原生 `openclaw skills install @owner/slug` 才會進 OpenClaw 工作區。只有登入、發佈或刪除／還原才需要 `npm i -g clawhub`。"
+        },
+        {
+          "q": "技能和外掛差在哪？",
+          "a": "技能是有版本的 SKILL.md 套件。外掛是可執行程式，帶 OpenClaw 相容中繼資料。技能用 `openclaw skills install`，外掛用 `openclaw plugins install clawhub:<package>`。"
+        },
+        {
+          "q": "CanFly.ai 要另開 Skill Cards 頁嗎？",
+          "a": "不要。NVIDIA Skill Cards 在 ClawHub 詳情頁，也可用 `openclaw skills verify @owner/slug --card`。留在本教學即可。"
+        },
+        {
+          "q": "Google Meet、Google Chat、Nextcloud Talk 要各開一頁嗎？",
+          "a": "不要。它們是 ClawHub／npm 上的官方 OpenClaw 外掛。從本頁安裝，不要另開產品 slug。"
+        },
+        {
+          "q": "這裡有完整的 Firecrawl 教學嗎？",
+          "a": "只有官方定位符 `clawhub:@openclaw/firecrawl-plugin`。完整 Firecrawl 教學還在佇列。不要把本頁當成 Firecrawl 產品頁。"
         }
       ]
     }

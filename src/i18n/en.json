@@ -863,6 +863,21 @@
         ],
         "ctaPrimary": "Open the Tutorial",
         "ctaSecondary": "OpenAI model guide"
+      },
+      "clawhub": {
+        "tagline": "Official OpenClaw skill and plugin registry",
+        "description": "ClawHub is the public registry for OpenClaw skills and plugins. Search and install from the OpenClaw CLI; use the separate clawhub CLI only to log in, publish, or delete. Every published skill ships a NVIDIA Skill Card — read it with `openclaw skills verify @owner/slug --card`. Official channels such as Google Meet, Google Chat, and Nextcloud Talk install through ClawHub or npm. This is not a Skill Cards page, not Brave Search, and not Firecrawl.",
+        "features": [
+          "Public registry at clawhub.ai — skills, code plugins, bundle plugins",
+          "Native OpenClaw: openclaw skills search / install @owner/slug",
+          "Plugins: openclaw plugins install clawhub:<package>",
+          "NVIDIA Skill Cards: openclaw skills verify @owner/slug --card",
+          "Official plugins: Google Meet, Google Chat, Nextcloud Talk, Firecrawl",
+          "Separate clawhub CLI for login, publish, delete/undelete",
+          "Treat installs like running code; pin versions in production"
+        ],
+        "ctaPrimary": "Open the Tutorial",
+        "ctaSecondary": "Open ClawHub"
       }
     },
     "comingSoon": "Coming Soon",
@@ -4333,8 +4348,15 @@
           "title": "Explore More on ClawHub",
           "titleEn": "Explore More on ClawHub",
           "estimatedTime": "1 min",
-          "content": "ClawHub is the open marketplace for Agent Skills. Beyond these 15, the community is building more every day.\n\n**Top Skills by Downloads:**\n1. HeyGen Avatar Video — 2,100+ downloads\n2. BaseMail — 1,800+ downloads\n3. SwitchBot — 1,500+ downloads\n4. Daily Voice Quote — 1,200+ downloads\n\nBrowse, install, and even publish your own skills on ClawHub.",
+          "content": "ClawHub is the open marketplace for Agent Skills. Beyond these 15, the community is building more every day.\n\n**Top Skills by Downloads:**\n1. HeyGen Avatar Video — 2,100+ downloads\n2. BaseMail — 1,800+ downloads\n3. SwitchBot — 1,500+ downloads\n4. Daily Voice Quote — 1,200+ downloads\n\nBrowse, install, and even publish your own skills on ClawHub.\n\nFull ClawHub install path (native `openclaw skills` / `openclaw plugins`, NVIDIA Skill Cards) is now on [/learn/clawhub](/learn/clawhub) and [/apps/skills/clawhub](/apps/skills/clawhub).",
           "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "ClawHub registry",
+              "desc": "Official OpenClaw skill and plugin registry — search, install, and read Skill Cards.",
+              "cta": "Open ClawHub tutorial",
+              "link": "/learn/clawhub"
+            },
             {
               "emoji": "🎤",
               "title": "ElevenLabs Voice Tutorial",
@@ -7420,6 +7442,216 @@
         {
           "q": "Is this the same page as Grok Bot?",
           "a": "No. Grok Bot is a hosted xAI teammate (separate P0). Astra is an OpenAI model ID you point OpenClaw at."
+        }
+      ]
+    },
+    "clawhub": {
+      "title": "ClawHub — Install OpenClaw Skills in 5 Minutes",
+      "subtitle": "Official registry for skills and plugins. Search, install, read NVIDIA Skill Cards. Not Brave Search, not Firecrawl, not a Skill Cards page.",
+      "duration": "5 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "What ClawHub is",
+          "titleEn": "What ClawHub is",
+          "estimatedTime": "1 min",
+          "content": "ClawHub is OpenClaw's public registry for **skills** and **plugins**. The site is [clawhub.ai](https://clawhub.ai). On CanFly.ai this is the registry page. Keep [Brave Search](/learn/brave-search) for web search, keep [Agent Skills](/learn/agent-skills) for the 15-skill pack, and do **not** open a Skill Cards or Firecrawl page.\n\nTwo surfaces:\n- **Skills** — versioned `SKILL.md` bundles. Install with `openclaw skills install @owner/slug`.\n- **Plugins** — code packages with compatibility metadata. Install with `openclaw plugins install clawhub:<package>`.\n\nTwo CLIs:\n- Native **`openclaw`** commands install into the **active OpenClaw workspace** and remember the ClawHub source for later updates.\n- The separate **`clawhub` CLI** is for login, publish, and delete/undelete. `clawhub install` writes to `./skills` in the current directory plus `.clawhub/lock.json` — that is **not** the OpenClaw workspace unless you pass `--workdir`.",
+          "commands": [
+            "# Registry site",
+            "https://clawhub.ai",
+            "",
+            "# Official OpenClaw docs",
+            "https://docs.openclaw.ai/tools/clawhub",
+            "",
+            "# Product page on CanFly.ai",
+            "# /apps/skills/clawhub",
+            "",
+            "# Need OpenClaw first?",
+            "# See /learn/ollama-openclaw"
+          ],
+          "expectedResult": "You know ClawHub is the official OpenClaw registry — skills vs plugins, and openclaw vs clawhub CLI.",
+          "tips": [
+            "Prefer native openclaw commands when the goal is to change a running OpenClaw agent.",
+            "Use the clawhub CLI only when you need registry auth, publishing, or delete/undelete.",
+            "Need OpenClaw first? Start at /learn/ollama-openclaw, then come back."
+          ],
+          "troubleshooting": {
+            "title": "Scope",
+            "items": [
+              {
+                "q": "Is this the same as Brave Search?",
+                "a": "No. Brave Search is a web search API. ClawHub is the OpenClaw skill and plugin registry. Stay on /learn/brave-search for search."
+              },
+              {
+                "q": "Is this Firecrawl?",
+                "a": "No. Firecrawl is a queued skill page. This tutorial only lists the official plugin locator as an example — do not open /learn/firecrawl yet."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Search and install skills",
+          "titleEn": "Search and install skills",
+          "estimatedTime": "1 min",
+          "content": "Use native OpenClaw commands. `search`, `install`, `update`, and `verify` talk to ClawHub. Prefer **owner-qualified** slugs (`@owner/slug`) so you do not pick the wrong publisher.\n\nDefault install target is the active workspace `skills/` directory. Add `--global` for the shared managed skills directory. Restart or start a new session if the skills watcher is off.\n\nNeed the 15-skill CanFly pack instead? That stays on [/learn/agent-skills](/learn/agent-skills).",
+          "commands": [
+            "openclaw skills search \"calendar\"",
+            "openclaw skills install @openclaw/demo",
+            "openclaw skills update --all",
+            "openclaw skills list",
+            "",
+            "# Pin a version when you need a reproducible install",
+            "openclaw skills install @openclaw/demo --version 1.0.0"
+          ],
+          "expectedResult": "OpenClaw lists the installed skill in the workspace, or tells you the slug was not found / blocked.",
+          "tips": [
+            "Treat community skill installs like running code. Read the Skill Card in the next step before you trust a new publisher.",
+            "Bare slugs work only when the skill is already installed or unambiguous.",
+            "Malicious or blocked community releases are refused. Official OpenClaw publishers bypass the community release-trust check."
+          ],
+          "troubleshooting": {
+            "title": "Skills",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "Install OpenClaw first: /learn/ollama-openclaw or `ollama launch openclaw`. Then rerun the skills commands."
+              },
+              {
+                "q": "I used clawhub install and OpenClaw cannot see the skill",
+                "a": "The clawhub CLI installs into ./skills under the current directory. Re-run with openclaw skills install, or point clawhub --workdir at the agent workspace."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Install official plugins",
+          "titleEn": "Install official plugins",
+          "estimatedTime": "2 min",
+          "content": "Plugins are code, not `SKILL.md` files. Search ClawHub, then install. Use the `clawhub:` prefix when you want ClawHub-only resolution. Bare `@openclaw/*` follows the official catalog (bundled copy or npm). Official Google Meet docs also show `npm:@openclaw/google-meet`.\n\nExamples that stay on **this** page — do not open extra product pages:\n- Google Meet — `openclaw plugins install clawhub:@openclaw/google-meet` (min host 2026.4.20; official docs also list `npm:@openclaw/google-meet`)\n- Google Chat — `openclaw plugins install @openclaw/googlechat`\n- Nextcloud Talk — `openclaw plugins install @openclaw/nextcloud-talk`\n- Firecrawl — `openclaw plugins install clawhub:@openclaw/firecrawl-plugin` (queued skill; example only)\n\nOpenClaw **v2026.9.4** unifies the Plugins workspace for ClawHub and bundled plugins. Restart the Gateway after install.",
+          "commands": [
+            "openclaw plugins search \"calendar\"",
+            "openclaw plugins install clawhub:@openclaw/google-meet",
+            "openclaw plugins install @openclaw/googlechat",
+            "openclaw plugins install @openclaw/nextcloud-talk",
+            "openclaw plugins install clawhub:@openclaw/firecrawl-plugin",
+            "openclaw plugins update --all",
+            "",
+            "# Restart the Gateway after a plugin install"
+          ],
+          "expectedResult": "The plugin appears in `openclaw plugins list`. A blocked or incompatible package stops before install.",
+          "tips": [
+            "Pin versions in production: clawhub:<package>@1.2.3.",
+            "New arbitrary npm / git sources warn and ask. Noninteractive installs need --force after you review the source. --force does not bypass security.installPolicy.",
+            "AgentMail's official plugin is clawhub:@agentmail/agentmail — see /learn/agentmail. Do not fold it into this page."
+          ],
+          "troubleshooting": {
+            "title": "Plugins",
+            "items": [
+              {
+                "q": "Should I use clawhub: or npm: ?",
+                "a": "Use clawhub: when the package should resolve only through ClawHub. Use npm: when you deliberately want the npm package. Official @openclaw/* ids follow the catalog source order."
+              },
+              {
+                "q": "The plugin installed but the channel is dead",
+                "a": "Restart the Gateway. Then check `openclaw plugins list` and enable the plugin if it shows disabled."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Read the NVIDIA Skill Card",
+          "titleEn": "Read the NVIDIA Skill Card",
+          "estimatedTime": "1 min",
+          "content": "Every published ClawHub skill ships a **Skill Card** — a trust artifact written by ClawHub, not the publisher. The card records who published it, what it can actually do, and what **ClawScan** found (static analysis, VirusTotal, NVIDIA SkillSpector). The verdict is Clean, Suspicious, or Malicious.\n\nRead it in the terminal. Do **not** open a Skill Cards product page on CanFly.ai.",
+          "commands": [
+            "openclaw skills verify @openclaw/demo",
+            "openclaw skills verify @openclaw/demo --card",
+            "",
+            "# --card prints Skill Card Markdown instead of JSON",
+            "# Non-zero exit when ClawHub returns ok:false or decision:fail"
+          ],
+          "expectedResult": "You see a Skill Card (or JSON verify envelope) with a Clean / Suspicious / Malicious verdict before you trust the skill.",
+          "tips": [
+            "SkillSpector findings are advisories. ClawScan weighs them with provenance before the verdict.",
+            "skills-sh: mirrors are shown as Not scanned by ClawHub. Prefer @owner/slug skills that ClawHub scanned.",
+            "A Suspicious verdict is a stop sign, not a speed bump."
+          ],
+          "troubleshooting": {
+            "title": "Verify",
+            "items": [
+              {
+                "q": "verify --card exits non-zero",
+                "a": "ClawHub returned ok:false or decision:fail. Do not install. Open the audit link in the output and pick another skill."
+              },
+              {
+                "q": "Bare slug is ambiguous",
+                "a": "Use the owner-qualified ref: openclaw skills verify @owner/slug --card."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Next steps on CanFly.ai",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 min",
+          "content": "You can now search, install, and verify from ClawHub. Pair the registry with an OpenClaw install, the 15-skill pack, or AgentMail. Publishing your own skill uses `npm i -g clawhub` then `clawhub login` and `clawhub skill publish` — only if you are the author.\n\nReview video is pending (no HEYGEN_API_KEY on this run). English script: `content/scripts/clawhub-review-en.txt`.",
+          "tips": [
+            "Disable clawhub CLI install telemetry with CLAWHUB_DISABLE_TELEMETRY=1.",
+            "Publishing requires a GitHub account old enough to pass the upload gate.",
+            "Harden AIF is a queued local tool-call firewall — not this page."
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "Install OpenClaw",
+              "desc": "One-command OpenClaw setup with Ollama, then come back to ClawHub.",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw tutorial"
+            },
+            {
+              "emoji": "📦",
+              "title": "OpenClaw product",
+              "desc": "What OpenClaw is, stars, and the skills marketplace on the apps card.",
+              "link": "/apps/free/openclaw",
+              "cta": "OpenClaw card"
+            },
+            {
+              "emoji": "🧩",
+              "title": "Agent Skills pack",
+              "desc": "The 15-skill CanFly collection — install via ClawHub or npx skills.",
+              "link": "/learn/agent-skills",
+              "cta": "Agent Skills tutorial"
+            },
+            {
+              "emoji": "✉️",
+              "title": "AgentMail",
+              "desc": "Official email plugin: openclaw plugins install clawhub:@agentmail/agentmail.",
+              "link": "/learn/agentmail",
+              "cta": "AgentMail tutorial"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Do I need the clawhub CLI to install skills?",
+          "a": "No. Use native `openclaw skills install @owner/slug` so the skill lands in the OpenClaw workspace. Install `npm i -g clawhub` only for login, publish, or delete/undelete."
+        },
+        {
+          "q": "What is the difference between a skill and a plugin?",
+          "a": "A skill is a versioned SKILL.md bundle. A plugin is runnable code with OpenClaw compatibility metadata. Skills: `openclaw skills install`. Plugins: `openclaw plugins install clawhub:<package>`."
+        },
+        {
+          "q": "Should CanFly.ai open a Skill Cards page?",
+          "a": "No. NVIDIA Skill Cards live on the ClawHub detail page and in `openclaw skills verify @owner/slug --card`. Keep them on this tutorial."
+        },
+        {
+          "q": "Are Google Meet, Google Chat, and Nextcloud Talk separate apps?",
+          "a": "No. They are official OpenClaw plugins on ClawHub / npm. Install them from this page. Do not open extra product slugs."
+        },
+        {
+          "q": "Is Firecrawl documented here?",
+          "a": "Only the official locator `clawhub:@openclaw/firecrawl-plugin`. A full Firecrawl tutorial is still queued. Do not treat this page as the Firecrawl product page."
         }
       ]
     }

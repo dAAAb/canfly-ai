@@ -102,6 +102,7 @@ POST /api/agents/:name/milestones — Add achievements (Bearer auth)
 - Zeabur (/apps/hosting/zeabur) - One-click deploy (referral: OpenClaw, 10% off)
 
 ### AI Skills
+- ClawHub (/apps/skills/clawhub) - Official OpenClaw skill and plugin registry. Tutorial: /learn/clawhub
 - ElevenLabs (/apps/skills/elevenlabs) - Voice synthesis (22% recurring commission)
 - HeyGen (/apps/skills/heygen) - AI video generation (20% recurring commission)
 
@@ -171,4 +172,4 @@ These connectors let a user go from "no agent" to "always-on cloud agent" withou
 Supported: English (en), Traditional Chinese (zh-TW), Simplified Chinese (zh-CN)
 URLs: /:lang/path (e.g., /zh-tw/apps, /zh-cn/community)
 
-Last updated: 2026-09-04
+Last updated: 2026-09-15
