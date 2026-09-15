@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" fill="none">
+  <rect width="1280" height="720" fill="#0B0A07"/>
+  <rect width="1280" height="720" fill="url(#g)"/>
+  <defs>
+    <radialGradient id="g" cx="50%" cy="48%" r="55%">
+      <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#0B0A07" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="640" cy="350" r="168" stroke="#F59E0B" stroke-width="8" opacity="0.35"/>
+  <circle cx="640" cy="350" r="108" stroke="#FBBF24" stroke-width="7"/>
+  <circle cx="640" cy="350" r="28" fill="#F8FAFC"/>
+  <path d="M640 150 L658 236 L640 220 L622 236 Z" fill="#FBBF24"/>
+  <path d="M840 350 L754 368 L770 350 L754 332 Z" fill="#F59E0B"/>
+  <path d="M640 550 L622 464 L640 480 L658 464 Z" fill="#FBBF24"/>
+  <path d="M440 350 L526 332 L510 350 L526 368 Z" fill="#F59E0B"/>
+  <path d="M518 214 C554 250 572 292 572 328" stroke="#FDE68A" stroke-width="10" stroke-linecap="round" fill="none"/>
+  <path d="M762 214 C726 250 708 292 708 328" stroke="#FDE68A" stroke-width="10" stroke-linecap="round" fill="none"/>
+  <text x="640" y="640" text-anchor="middle" fill="#FDE68A" font-family="ui-sans-serif, system-ui, sans-serif" font-size="42" font-weight="700">ClawHub</text>
+</svg>

@@ -642,6 +642,64 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- ClawHub (2026-09-15) -->
+  <url>
+    <loc>https://canfly.ai/apps/skills/clawhub</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/skills/clawhub" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/skills/clawhub" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/skills/clawhub" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/apps/skills/clawhub" />
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/apps/skills/clawhub</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/skills/clawhub" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/skills/clawhub" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/skills/clawhub" />
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/apps/skills/clawhub</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/skills/clawhub" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/skills/clawhub" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/skills/clawhub" />
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/learn/clawhub</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/clawhub" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/clawhub" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/clawhub" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/learn/clawhub" />
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/learn/clawhub</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/clawhub" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/clawhub" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/clawhub" />
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/learn/clawhub</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/clawhub" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/clawhub" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/clawhub" />
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <url>
     <loc>https://canfly.ai/about</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/about" />

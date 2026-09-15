@@ -1,0 +1,9 @@
+Hi, I'm JU CHUN KO.
+
+If you run OpenClaw, you do not hunt random GitHub zips for skills. ClawHub is the official public registry for skills and plugins.
+
+Search and install from OpenClaw itself: openclaw skills search, then openclaw skills install at-owner slash slug. Plugins use openclaw plugins install clawhub colon package. The separate clawhub CLI is only for login, publish, and delete.
+
+Before you trust a community skill, read the NVIDIA Skill Card: openclaw skills verify at-owner slash slug --card. Official channels such as Google Meet, Google Chat, and Nextcloud Talk live on the same registry — do not open extra product pages for those.
+
+I made a tutorial on CanFly.ai — go try it.

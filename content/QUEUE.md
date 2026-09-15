@@ -72,7 +72,7 @@
 | P2 | Mac Studio 512GB（約 10 月） | 硬體／預告 | 寶博點名。未上市：先「即將推出」規格文 | blog `mac-studio-512gb` | queued |
 | P1 | Grok 4.6（xAI API） | 軟體／models | 2026-08-12 上線，官方寫明長跑 agent。OpenAI 相容，OpenRouter 有。站上有 Gemini、Nemotron，沒有 Grok 模型頁。不要跟 Grok Bot 寫成同一頁 | `/apps/models/grok-4-6` + `/learn/grok-4-6` | queued |
 | P1 | Claude Code / Codex 接 OpenClaw | 軟體／skills | 官方 `openclaw mcp serve` 文件直接點名。一頁講兩個 coding agent，不要拆兩篇。不要寫已宣布下線的 AgentKit | `/learn/claude-code-codex` | queued |
-| P1 | ClawHub | 軟體／skills | OpenClaw 官方 skill + plugin registry。教學已有 `clawhub install`，沒有產品頁。寫時帶一句 NVIDIA Skill Cards（`openclaw skills verify --card`），不要另開 Skill Cards 頁 | `/apps` + `/learn/clawhub`；寫完改 `/learn/agent-skills` nextStepCards | queued |
+| P1 | ClawHub | 軟體／skills | OpenClaw 官方 skill + plugin registry。教學已有 `clawhub install`，沒有產品頁。寫時帶一句 NVIDIA Skill Cards（`openclaw skills verify --card`），不要另開 Skill Cards 頁 | `/apps` + `/learn/clawhub`；寫完改 `/learn/agent-skills` nextStepCards | shipped 2026-09-15（影片待補） |
 | P1 | Nemotron 3.5 Lightning | 軟體／models | NVIDIA 點名 OpenClaw harness。30B MoE、3B active。跟現有 Super（120B / 12B）不是同一張卡 | `/apps/models/nemotron-3-5-lightning` + Super 頁加家族連結 | queued |
 | P1 | Arduino UNO Q（4GB） | 硬體 | 已上市。官方部落格講本機 agent + OpenClaw。跟 VENTUNO Q 不是同一塊板 | `/apps/hardware`；SKU 用 4GB / 32GB eMMC | queued |
 | P2 | TaskMarket | 軟體／skills | Base 上 USDC 結算的 agent 打工市場。有 CLI 與 OpenClaw skill。掃描時市場還小（約 19 題） | `/learn/taskmarket` | queued |
@@ -174,6 +174,7 @@
 | `gpt-6-astra` | 2026-09-04 產品＋教學已上。影片待補。補 OpenRouter `openai/gpt-6-astra`／`openai/gpt-6-astra-pro`。不要跟 Codex／GPT-5.6／Grok Bot 寫成同一頁，不要另開 Pro 頁 |
 | `heygen` / `elevenlabs` / `ollama` / `omlx` / `zeabur` / `openrouter` | 教學已在，只在有大改版時回訪。Qwen 3.8、Gemma 4、Hy4、Muse Spark 折進 Ollama／OpenRouter，不要另開 |
 | `agentmail` | 更新 ClawHub 官方 plugin，不要重開 |
+| `clawhub` | 2026-09-15 產品＋教學已上。影片待補。NVIDIA Skill Cards／Google Meet／Google Chat／Nextcloud Talk 折進這頁，不要另開。Firecrawl 完整教學仍 queued |
 | `brave-search` | 一般網搜頁已在。Firecrawl／Developer Index 另開 |
 | `whisper` / `umbrel` / `pinata` / `switchbot-ai-hub` | 同上 |
 | `basemail` / `agentmail` / `agentcard` / `worldid` / `agentbook` | 同上 |

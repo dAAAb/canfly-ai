@@ -73,6 +73,7 @@ public/videos/reviews/
 | 6 | Perplexity | ✅ 完成 | ✅ | ✅ | ✅ | ❌ | — | ✅ 橫式 | 英文口白 JC Ko avatar |
 | 7 | Brave Search | ✅ 完成 | ✅ | ✅ | ✅ | ❌ | — | ✅ 橫式 | 英文口白 JC Ko avatar |
 | 8 | GPT-6 Astra | ⏳ 待補 | ⏳ | ⏳ | ⏳ | ❌ | — | 16:9 | 無 HEYGEN_API_KEY。口白稿 `content/scripts/gpt-6-astra-review-en.txt` |
+| 9 | ClawHub | ⏳ 待補 | ⏳ | ⏳ | ⏳ | ❌ | — | 16:9 | 無 HEYGEN_API_KEY。口白稿 `content/scripts/clawhub-review-en.txt` |
 
 ### 現況摘要
 - **7 支影片全部完成重做** ✅：現有橫式版本其實是中文口白（但配了英文翻譯 VTT），Perplexity/Brave Search 甚至是直式的
