@@ -104,6 +104,7 @@ POST /api/agents/:name/milestones — Add achievements (Bearer auth)
 ### AI Skills
 - ElevenLabs (/apps/skills/elevenlabs) - Voice synthesis (22% recurring commission)
 - HeyGen (/apps/skills/heygen) - AI video generation (20% recurring commission)
+- Firecrawl (/apps/skills/firecrawl) - Scrape, search, Developer Index; OpenClaw: `firecrawl init --agent openclaw`. Tutorial: /learn/firecrawl
 
 ### Models
 - GPT-6 Astra (/apps/models/gpt-6-astra) - OpenAI frontier model; OpenClaw: `openclaw models set openai/gpt-6-astra`. Tutorial: /learn/gpt-6-astra

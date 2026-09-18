@@ -1,0 +1,9 @@
+Hi, I'm JU CHUN KO.
+
+General web search feeds your OpenClaw agent marketing pages. Coding agents need the issue that fixed the bug — and JavaScript-heavy sites block a plain HTTP fetch.
+
+Firecrawl is a hosted scrape, search, crawl, and browser toolkit. Official OpenClaw setup is one command: firecrawl init --agent openclaw. You can also install the official plugin with openclaw plugins install clawhub:@openclaw/firecrawl-plugin.
+
+Developer Index is the same product — seventy million READMEs, issues, pull requests, docs, and OpenAPI specs. Setup is npx -y firecrawl-cli@latest setup developer-index. It is not Brave Search and not Perplexity.
+
+I made a tutorial on CanFly.ai — go try it.

@@ -1911,6 +1911,72 @@ function createNemotronTutorial(t: any): TutorialData {
   }
 }
 
+function createFirecrawlTutorial(t: any): TutorialData {
+  return {
+    id: 'firecrawl',
+    title: t('tutorial.firecrawl.title'),
+    subtitle: t('tutorial.firecrawl.subtitle'),
+    duration: t('tutorial.firecrawl.duration'),
+    difficulty: t('tutorial.firecrawl.difficulty'),
+    faq: t('tutorial.firecrawl.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Globe,
+        title: t('tutorial.firecrawl.steps.0.title'),
+        titleEn: t('tutorial.firecrawl.steps.0.titleEn'),
+        estimatedTime: t('tutorial.firecrawl.steps.0.estimatedTime'),
+        content: t('tutorial.firecrawl.steps.0.content'),
+        commands: t('tutorial.firecrawl.steps.0.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.firecrawl.steps.0.expectedResult'),
+        tips: t('tutorial.firecrawl.steps.0.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.firecrawl.steps.0.troubleshooting.title'), items: t('tutorial.firecrawl.steps.0.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Terminal,
+        title: t('tutorial.firecrawl.steps.1.title'),
+        titleEn: t('tutorial.firecrawl.steps.1.titleEn'),
+        estimatedTime: t('tutorial.firecrawl.steps.1.estimatedTime'),
+        content: t('tutorial.firecrawl.steps.1.content'),
+        commands: t('tutorial.firecrawl.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.firecrawl.steps.1.expectedResult'),
+        tips: t('tutorial.firecrawl.steps.1.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.firecrawl.steps.1.troubleshooting.title'), items: t('tutorial.firecrawl.steps.1.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Key,
+        title: t('tutorial.firecrawl.steps.2.title'),
+        titleEn: t('tutorial.firecrawl.steps.2.titleEn'),
+        estimatedTime: t('tutorial.firecrawl.steps.2.estimatedTime'),
+        content: t('tutorial.firecrawl.steps.2.content'),
+        commands: t('tutorial.firecrawl.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.firecrawl.steps.2.expectedResult'),
+        tips: t('tutorial.firecrawl.steps.2.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.firecrawl.steps.2.troubleshooting.title'), items: t('tutorial.firecrawl.steps.2.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Search,
+        title: t('tutorial.firecrawl.steps.3.title'),
+        titleEn: t('tutorial.firecrawl.steps.3.titleEn'),
+        estimatedTime: t('tutorial.firecrawl.steps.3.estimatedTime'),
+        content: t('tutorial.firecrawl.steps.3.content'),
+        commands: t('tutorial.firecrawl.steps.3.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.firecrawl.steps.3.expectedResult'),
+        tips: t('tutorial.firecrawl.steps.3.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.firecrawl.steps.3.troubleshooting.title'), items: t('tutorial.firecrawl.steps.3.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.firecrawl.steps.4.title'),
+        titleEn: t('tutorial.firecrawl.steps.4.titleEn'),
+        estimatedTime: t('tutorial.firecrawl.steps.4.estimatedTime'),
+        content: t('tutorial.firecrawl.steps.4.content'),
+        tips: t('tutorial.firecrawl.steps.4.tips', { returnObjects: true }),
+        nextStepCards: t('tutorial.firecrawl.steps.4.nextStepCards', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
 function createGpt6AstraTutorial(t: any): TutorialData {
   return {
     id: 'gpt-6-astra',
@@ -2455,6 +2521,7 @@ function getTutorials(t: any): Record<string, TutorialData> {
     'google-gemini': createGoogleGeminiTutorial(t),
     'nemotron-3-super': createNemotronTutorial(t),
     'gpt-6-astra': createGpt6AstraTutorial(t),
+    firecrawl: createFirecrawlTutorial(t),
     whisper: createWhisperTutorial(t),
     basemail: createBasemailTutorial(t),
     agentmail: createAgentmailTutorial(t),

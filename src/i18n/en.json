@@ -863,6 +863,21 @@
         ],
         "ctaPrimary": "Open the Tutorial",
         "ctaSecondary": "OpenAI model guide"
+      },
+      "firecrawl": {
+        "tagline": "Scrape, search, and Developer Index for OpenClaw agents",
+        "description": "Firecrawl gives OpenClaw agents hosted scrape, search, crawl, and remote browser tools — plus a Developer Index of 70M+ READMEs, issues, PRs, docs, and OpenAPI specs. Official OpenClaw setup is `firecrawl init --agent openclaw`. Add the plugin with `openclaw plugins install clawhub:@openclaw/firecrawl-plugin`. On CanFly.ai this is not Brave Search and not Perplexity. Review video is pending (no HEYGEN_API_KEY).",
+        "features": [
+          "Official OpenClaw pin: firecrawl init --agent openclaw",
+          "Plugin: openclaw plugins install clawhub:@openclaw/firecrawl-plugin",
+          "Developer Index: npx -y firecrawl-cli@latest setup developer-index",
+          "70M+ READMEs, issues, PRs, docs, and OpenAPI specs",
+          "Hosted browser sandbox — no local Chromium",
+          "Keyless Firecrawl Search (Free) plus keyed firecrawl_search / firecrawl_scrape",
+          "Not Brave Search, not Perplexity — stay on this page"
+        ],
+        "ctaPrimary": "Open the Tutorial",
+        "ctaSecondary": "Firecrawl × OpenClaw docs"
       }
     },
     "comingSoon": "Coming Soon",
@@ -2284,11 +2299,11 @@
               "link": "/learn/ollama"
             },
             {
-              "emoji": "☁️",
-              "title": "Deploy to Cloud",
-              "desc": "Put your AI research assistant in the cloud with Zeabur for 24/7 access.",
-              "cta": "Deploy to Cloud",
-              "link": "/learn/zeabur"
+              "emoji": "🔥",
+              "title": "Firecrawl + Developer Index",
+              "desc": "Scrape JS-heavy pages and search 70M+ repos for OpenClaw — not a second Brave or Perplexity page.",
+              "cta": "Open Firecrawl",
+              "link": "/learn/firecrawl"
             }
           ]
         }
@@ -2485,11 +2500,11 @@
               "link": "/learn/zeabur"
             },
             {
-              "emoji": "🎙️",
-              "title": "Add Voice Output",
-              "desc": "Make your AI speak its research findings with ElevenLabs voice synthesis.",
-              "cta": "Explore ElevenLabs",
-              "link": "/learn/elevenlabs-integration"
+              "emoji": "🔥",
+              "title": "Firecrawl + Developer Index",
+              "desc": "Scrape JS-heavy pages and search 70M+ repos for OpenClaw — not a second Brave or Perplexity page.",
+              "cta": "Open Firecrawl",
+              "link": "/learn/firecrawl"
             }
           ]
         }
@@ -4355,6 +4370,13 @@
               "desc": "Learn to manage API keys securely for all your skills",
               "cta": "Start Tutorial",
               "link": "/learn/api-keys"
+            },
+            {
+              "emoji": "🔥",
+              "title": "Firecrawl + Developer Index",
+              "desc": "Scrape JS-heavy pages and search 70M+ repos for OpenClaw — not a second Brave or Perplexity page.",
+              "cta": "Open Firecrawl",
+              "link": "/learn/firecrawl"
             }
           ],
           "tips": [
@@ -7420,6 +7442,237 @@
         {
           "q": "Is this the same page as Grok Bot?",
           "a": "No. Grok Bot is a hosted xAI teammate (separate P0). Astra is an OpenAI model ID you point OpenClaw at."
+        }
+      ]
+    },
+    "firecrawl": {
+      "title": "Firecrawl — Wire OpenClaw to scrape and Developer Index",
+      "subtitle": "Official firecrawl init --agent openclaw, the ClawHub plugin, and 70M+ repo docs. Not Brave Search. Not Perplexity.",
+      "duration": "8 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "What Firecrawl is",
+          "titleEn": "What Firecrawl is",
+          "estimatedTime": "1 min",
+          "content": "Firecrawl is a hosted web toolkit for agents: scrape one page, search the web, crawl a docs site, and drive a remote browser. On CanFly.ai this page also covers Developer Index — 70M+ READMEs, issues, PRs, curated docs, and OpenAPI specs.\n\nKeep other search pages separate. Brave Search is a raw SERP API. Perplexity is an AI answer engine. Firecrawl is the scrape + coding-source layer. Do not open an Olostep or Context.dev page.",
+          "commands": [
+            "# Product page on CanFly.ai",
+            "# /apps/skills/firecrawl",
+            "",
+            "# Official OpenClaw quickstart",
+            "https://docs.firecrawl.dev/quickstarts/openclaw",
+            "",
+            "# Official OpenClaw plugin docs",
+            "https://docs.openclaw.ai/tools/firecrawl",
+            "",
+            "# Developer Index",
+            "https://www.firecrawl.dev/developer-index"
+          ],
+          "expectedResult": "You know Firecrawl is scrape + search + Developer Index for agents — not Brave Search and not Perplexity.",
+          "tips": [
+            "Browser sessions run in a remote sandbox. You do not install Chromium on the OpenClaw host.",
+            "CanFly.ai keeps Brave Search and Perplexity on their own tutorials.",
+            "Review video is pending (no HEYGEN_API_KEY). English script: content/scripts/firecrawl-review-en.txt"
+          ],
+          "troubleshooting": {
+            "title": "Scope",
+            "items": [
+              {
+                "q": "Is this the same as Brave Search?",
+                "a": "No. Brave Search returns ranked web results. Firecrawl extracts page content, can search, and adds a coding-source index."
+              },
+              {
+                "q": "Is this Perplexity?",
+                "a": "No. Perplexity writes cited answers. Firecrawl returns clean page artifacts and developer sources. Stay on /learn/perplexity for that product."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Install the CLI for OpenClaw",
+          "titleEn": "Install the CLI for OpenClaw",
+          "estimatedTime": "2 min",
+          "content": "Official Firecrawl docs and the CLI repo scope skills to one harness with `--agent openclaw`. Prefer that over `--all` so you do not spray skills into every editor on the machine.\n\nYou can authenticate in a browser or export `FIRECRAWL_API_KEY`. A keyless starter exists later for OpenClaw search; scrape tools and higher limits want a key.",
+          "commands": [
+            "# Official pin — only OpenClaw",
+            "npx -y firecrawl-cli@latest init --agent openclaw --browser",
+            "",
+            "# Same pin after a global install",
+            "npm install -g firecrawl-cli",
+            "firecrawl init --agent openclaw",
+            "",
+            "# One-shot installer (args after bash -s -- go to firecrawl init)",
+            "curl -fsSL https://firecrawl.dev/install.sh | bash -s -- --agent openclaw",
+            "",
+            "# Or skip the browser and set a key",
+            "export FIRECRAWL_API_KEY=fc-YOUR-API-KEY",
+            "",
+            "# Verify",
+            "firecrawl --status"
+          ],
+          "expectedResult": "firecrawl --status reports the CLI and OpenClaw skills. A missing key is OK if you only plan to try Firecrawl Search (Free).",
+          "tips": [
+            "Need OpenClaw first? Use /learn/ollama-openclaw then come back.",
+            "Do not commit FIRECRAWL_API_KEY. Put it in the gateway environment.",
+            "Long URLs stay in this command list so the English page does not overflow."
+          ],
+          "troubleshooting": {
+            "title": "CLI",
+            "items": [
+              {
+                "q": "firecrawl: command not found",
+                "a": "Use the npx one-liner, or `npm install -g firecrawl-cli`, then rerun `firecrawl init --agent openclaw`."
+              },
+              {
+                "q": "Init installed skills into Cursor and Claude Code too",
+                "a": "You used `--all` or accepted every harness. Rerun with `--agent openclaw` to scope OpenClaw only."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Install the official OpenClaw plugin",
+          "titleEn": "Install the official OpenClaw plugin",
+          "estimatedTime": "2 min",
+          "content": "The CLI skill is one path. OpenClaw also ships an official plugin for `web_search`, `web_fetch`, `firecrawl_search`, and `firecrawl_scrape`. Install it, then pick Firecrawl in onboarding or `openclaw configure --section web`.\n\nFirecrawl Search (Free) is keyless and opt-in (`provider: \"firecrawl-free\"`). The keyed provider and the explicit scrape/search tools need `FIRECRAWL_API_KEY`.",
+          "commands": [
+            "# Official npm package",
+            "openclaw plugins install @openclaw/firecrawl-plugin",
+            "",
+            "# Same plugin via ClawHub (QUEUE pin)",
+            "openclaw plugins install clawhub:@openclaw/firecrawl-plugin",
+            "",
+            "# Apply if the gateway is already running",
+            "openclaw gateway restart",
+            "",
+            "# Pick Firecrawl for web search / fetch",
+            "openclaw configure --section web",
+            "",
+            "# After a breaking OpenClaw upgrade",
+            "openclaw doctor --fix"
+          ],
+          "expectedResult": "The Firecrawl plugin is enabled. Onboarding or configure --section web lists Firecrawl Search and Firecrawl fetch.",
+          "tips": [
+            "firecrawl_search and firecrawl_scrape require an API key. web_fetch fallback can run keyless when you select Firecrawl.",
+            "Legacy tools.web.fetch.firecrawl.* config is migrated by `openclaw doctor --fix`.",
+            "Self-hosted baseUrl is only for private/internal endpoints. Public custom hosts are rejected."
+          ],
+          "troubleshooting": {
+            "title": "Plugin",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "Install OpenClaw first: /learn/ollama-openclaw. Then rerun the plugin install."
+              },
+              {
+                "q": "Search works but scrape fails",
+                "a": "You are on Firecrawl Search (Free) or a keyless fetch fallback. Export FIRECRAWL_API_KEY for firecrawl_scrape and higher limits."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Turn on Developer Index",
+          "titleEn": "Turn on Developer Index",
+          "estimatedTime": "2 min",
+          "content": "Developer Index is a coding-agent search surface on the same Firecrawl account — not a second CanFly.ai product. It ranks READMEs, issues, merged PRs, docs, and OpenAPI specs. It does not store source code and it is not a general web search endpoint.\n\nOfficial setup is one command. Then ask the agent for the issue or PR that fixed a bug instead of a marketing page.",
+          "commands": [
+            "# Official Developer Index skill",
+            "npx -y firecrawl-cli@latest setup developer-index",
+            "",
+            "# Or once the CLI is installed",
+            "firecrawl setup developer-index",
+            "",
+            "# Agent-facing CLI (query + count only)",
+            "firecrawl developer \"retry backoff not firing on 429\"",
+            "firecrawl developer \"axum middleware ordering\" --limit 10",
+            "",
+            "# Dedicated HTTP surface",
+            "# POST https://api.firecrawl.dev/v2/search/developer"
+          ],
+          "expectedResult": "The developer-index skill is installed. A firecrawl developer query returns issue / PR / docs hits instead of a generic SERP.",
+          "tips": [
+            "Rich filters (repo, license, min_stars) are API-only. The CLI keeps the agent surface lean.",
+            "No API key is required for the starter; send a key for higher rate limits.",
+            "Do not open a third CanFly.ai page for Olostep or Context.dev. Compare later if needed."
+          ],
+          "troubleshooting": {
+            "title": "Developer Index",
+            "items": [
+              {
+                "q": "Is Developer Index a separate app on CanFly.ai?",
+                "a": "No. Keep it on /apps/skills/firecrawl and this tutorial. Do not invent /learn/developer-index."
+              },
+              {
+                "q": "Results look like ordinary web search",
+                "a": "You called firecrawl search instead of firecrawl developer. Use the developer command or /search/developer."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Try it, then next steps on CanFly.ai",
+          "titleEn": "Try it, then next steps on CanFly.ai",
+          "estimatedTime": "1 min",
+          "content": "Once the skill or plugin is on, ask OpenClaw to scrape a docs URL, search the live web, or look up a GitHub issue. Pair Firecrawl with an OpenClaw install and a model. Leave Brave Search and Perplexity on their own pages.",
+          "tips": [
+            "Example prompts live in the Firecrawl OpenClaw quickstart — scrape, search, and remote browser.",
+            "Review video is pending (no HEYGEN_API_KEY). Script: content/scripts/firecrawl-review-en.txt",
+            "For a hosted brain after the toolkit is wired, switch OpenClaw to GPT-6 Astra."
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "Install OpenClaw",
+              "desc": "One-command OpenClaw setup, then come back to add Firecrawl.",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw tutorial"
+            },
+            {
+              "emoji": "🔍",
+              "title": "Brave Search API",
+              "desc": "Raw web results for agents. Different product from Firecrawl.",
+              "link": "/learn/brave-search",
+              "cta": "Brave tutorial"
+            },
+            {
+              "emoji": "🧠",
+              "title": "Perplexity",
+              "desc": "Cited AI answers. Keep it on its own CanFly.ai page.",
+              "link": "/learn/perplexity",
+              "cta": "Perplexity tutorial"
+            },
+            {
+              "emoji": "✨",
+              "title": "GPT-6 Astra",
+              "desc": "Hosted OpenClaw model after the web toolkit is installed.",
+              "link": "/learn/gpt-6-astra",
+              "cta": "Astra tutorial"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Do I need a Firecrawl API key?",
+          "a": "Not for every path. OpenClaw Firecrawl Search (Free) and the explicit web_fetch fallback can run keyless. firecrawl_search, firecrawl_scrape, and higher limits need FIRECRAWL_API_KEY."
+        },
+        {
+          "q": "Can I run Firecrawl fully locally?",
+          "a": "The default is hosted at https://api.firecrawl.dev. Self-hosted baseUrl is allowed only for private/internal endpoints. This page does not treat Firecrawl as a local Ollama model."
+        },
+        {
+          "q": "Which install command should I use?",
+          "a": "Pin `firecrawl init --agent openclaw` for the CLI skill. Add `openclaw plugins install clawhub:@openclaw/firecrawl-plugin` (or `@openclaw/firecrawl-plugin`) for gateway web_search / web_fetch. Developer Index is `npx -y firecrawl-cli@latest setup developer-index`."
+        },
+        {
+          "q": "Is this Brave Search or Perplexity?",
+          "a": "No. Use /learn/brave-search for a SERP API and /learn/perplexity for cited answers. Firecrawl is scrape + coding-source search."
+        },
+        {
+          "q": "Where is the review video?",
+          "a": "Pending. This run has no HEYGEN_API_KEY. The English voiceover script is content/scripts/firecrawl-review-en.txt (English speech + bilingual soft subs when the video ships)."
         }
       ]
     }

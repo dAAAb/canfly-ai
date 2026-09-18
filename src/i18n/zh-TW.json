@@ -866,6 +866,21 @@
         ],
         "ctaPrimary": "打開教學",
         "ctaSecondary": "OpenAI 模型指南"
+      },
+      "firecrawl": {
+        "tagline": "給 OpenClaw 代理人用的擷取、搜尋與 Developer Index",
+        "description": "Firecrawl 讓 OpenClaw 代理人使用託管的擷取、搜尋、爬站與遠端瀏覽器，再加上涵蓋 7,000 萬筆以上 README、issue、PR、文件與 OpenAPI 規格的 Developer Index。官方接到 OpenClaw 的指令是 `firecrawl init --agent openclaw`。外掛用 `openclaw plugins install clawhub:@openclaw/firecrawl-plugin`。在 CanFly.ai 這不是 Brave Search，也不是 Perplexity。評論影片待補（本輪沒有 HEYGEN_API_KEY）。",
+        "features": [
+          "官方 OpenClaw 指令：firecrawl init --agent openclaw",
+          "外掛：openclaw plugins install clawhub:@openclaw/firecrawl-plugin",
+          "Developer Index：npx -y firecrawl-cli@latest setup developer-index",
+          "7,000 萬筆以上 README、issue、PR、文件與 OpenAPI",
+          "託管瀏覽器沙盒，不必在本機裝 Chromium",
+          "免金鑰 Firecrawl Search (Free)，進階 firecrawl_search / firecrawl_scrape 需金鑰",
+          "不是 Brave Search，也不是 Perplexity — 留在這一頁"
+        ],
+        "ctaPrimary": "打開教學",
+        "ctaSecondary": "Firecrawl × OpenClaw 文件"
       }
     },
     "comingSoon": "即將推出",
@@ -2287,11 +2302,11 @@
               "link": "/learn/ollama"
             },
             {
-              "emoji": "☁️",
-              "title": "部署到雲端",
-              "desc": "用 Zeabur 把你的 AI 研究助手放到雲端，24/7 隨時存取。",
-              "cta": "部署到雲端",
-              "link": "/learn/zeabur"
+              "emoji": "🔥",
+              "title": "Firecrawl + Developer Index",
+              "desc": "幫 OpenClaw 擷取重 JS 頁面，並搜尋 7,000 萬筆以上 repo — 不是第二個 Brave 或 Perplexity 頁。",
+              "cta": "打開 Firecrawl",
+              "link": "/learn/firecrawl"
             }
           ]
         }
@@ -2488,11 +2503,11 @@
               "link": "/learn/zeabur"
             },
             {
-              "emoji": "🎙️",
-              "title": "加上語音輸出",
-              "desc": "用 ElevenLabs 語音合成讓你的 AI 說出研究結果。",
-              "cta": "探索 ElevenLabs",
-              "link": "/learn/elevenlabs-integration"
+              "emoji": "🔥",
+              "title": "Firecrawl + Developer Index",
+              "desc": "幫 OpenClaw 擷取重 JS 頁面，並搜尋 7,000 萬筆以上 repo — 不是第二個 Brave 或 Perplexity 頁。",
+              "cta": "打開 Firecrawl",
+              "link": "/learn/firecrawl"
             }
           ]
         }
@@ -4363,6 +4378,13 @@
               "desc": "學習如何安全管理所有技能的 API 金鑰",
               "cta": "開始教學",
               "link": "/learn/api-keys"
+            },
+            {
+              "emoji": "🔥",
+              "title": "Firecrawl + Developer Index",
+              "desc": "幫 OpenClaw 擷取重 JS 頁面，並搜尋 7,000 萬筆以上 repo — 不是第二個 Brave 或 Perplexity 頁。",
+              "cta": "打開 Firecrawl",
+              "link": "/learn/firecrawl"
             }
           ],
           "tips": [
@@ -7428,6 +7450,237 @@
         {
           "q": "這跟 Grok Bot 是同一頁嗎？",
           "a": "不是。Grok Bot 是 xAI 託管隊友（另一張 P0）。Astra 是你指給 OpenClaw 的 OpenAI 模型 ID。"
+        }
+      ]
+    },
+    "firecrawl": {
+      "title": "Firecrawl — 把擷取與 Developer Index 接到 OpenClaw",
+      "subtitle": "官方 firecrawl init --agent openclaw、ClawHub 外掛，以及 7,000 萬筆以上的 repo 文件。不是 Brave Search，也不是 Perplexity。",
+      "duration": "8 分鐘",
+      "difficulty": "入門",
+      "steps": [
+        {
+          "title": "Firecrawl 是什麼",
+          "titleEn": "What Firecrawl is",
+          "estimatedTime": "1 分鐘",
+          "content": "Firecrawl 是給代理人用的託管網頁工具組：擷取單頁、搜尋網頁、爬文件站，以及操作遠端瀏覽器。在 CanFly.ai 這一頁也包含 Developer Index — 7,000 萬筆以上的 README、issue、PR、精選文件與 OpenAPI 規格。\n\n其他搜尋頁請分開。Brave Search 是原始 SERP API。Perplexity 是帶引用的 AI 回答引擎。Firecrawl 是擷取 + 程式原始資料層。不要另開 Olostep 或 Context.dev 頁。",
+          "commands": [
+            "# CanFly.ai 產品頁",
+            "# /apps/skills/firecrawl",
+            "",
+            "# 官方 OpenClaw 快速開始",
+            "https://docs.firecrawl.dev/quickstarts/openclaw",
+            "",
+            "# 官方 OpenClaw 外掛文件",
+            "https://docs.openclaw.ai/tools/firecrawl",
+            "",
+            "# Developer Index",
+            "https://www.firecrawl.dev/developer-index"
+          ],
+          "expectedResult": "你知道 Firecrawl 是給代理人用的擷取 + 搜尋 + Developer Index — 不是 Brave Search，也不是 Perplexity。",
+          "tips": [
+            "瀏覽器工作階段跑在遠端沙盒，不必在 OpenClaw 主機安裝 Chromium。",
+            "CanFly.ai 把 Brave Search 與 Perplexity 留在各自的教學。",
+            "評論影片待補（沒有 HEYGEN_API_KEY）。英文口白稿：content/scripts/firecrawl-review-en.txt"
+          ],
+          "troubleshooting": {
+            "title": "範圍",
+            "items": [
+              {
+                "q": "這跟 Brave Search 一樣嗎？",
+                "a": "不一樣。Brave Search 回傳排序過的網頁結果。Firecrawl 抽出頁面內容，也能搜尋，並加上程式原始資料索引。"
+              },
+              {
+                "q": "這是 Perplexity 嗎？",
+                "a": "不是。Perplexity 寫帶引用的答案。Firecrawl 回傳乾淨的頁面成品與開發者來源。那個產品請看 /learn/perplexity。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "為 OpenClaw 安裝 CLI",
+          "titleEn": "Install the CLI for OpenClaw",
+          "estimatedTime": "2 分鐘",
+          "content": "官方 Firecrawl 文件與 CLI 專案用 `--agent openclaw` 把技能範圍限定在一個 harness。優先用這個，不要用 `--all`，以免把技能灑進機器上每個編輯器。\n\n你可以在瀏覽器登入，或匯出 `FIRECRAWL_API_KEY`。後續 OpenClaw 搜尋有免金鑰入門；擷取工具與較高額度需要金鑰。",
+          "commands": [
+            "# 官方指定 — 只裝 OpenClaw",
+            "npx -y firecrawl-cli@latest init --agent openclaw --browser",
+            "",
+            "# 全域安裝後用同一條指令",
+            "npm install -g firecrawl-cli",
+            "firecrawl init --agent openclaw",
+            "",
+            "# 一鍵安裝（bash -s -- 後面的參數會傳給 firecrawl init）",
+            "curl -fsSL https://firecrawl.dev/install.sh | bash -s -- --agent openclaw",
+            "",
+            "# 或跳過瀏覽器、直接設定金鑰",
+            "export FIRECRAWL_API_KEY=fc-YOUR-API-KEY",
+            "",
+            "# 檢查",
+            "firecrawl --status"
+          ],
+          "expectedResult": "firecrawl --status 顯示 CLI 與 OpenClaw 技能。若你只打算試 Firecrawl Search (Free)，暫時沒有金鑰也可以。",
+          "tips": [
+            "還沒裝 OpenClaw？先看 /learn/ollama-openclaw 再回來。",
+            "不要把 FIRECRAWL_API_KEY 提交進 git。放到 gateway 環境變數。",
+            "長網址放在 commands，英文版才不會爆版。"
+          ],
+          "troubleshooting": {
+            "title": "CLI",
+            "items": [
+              {
+                "q": "firecrawl: command not found",
+                "a": "改用 npx 一列指令，或先 `npm install -g firecrawl-cli`，再跑 `firecrawl init --agent openclaw`。"
+              },
+              {
+                "q": "Init 也把技能裝進 Cursor 與 Claude Code",
+                "a": "你用了 `--all` 或接受了所有 harness。改用 `--agent openclaw` 只範圍到 OpenClaw。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "安裝官方 OpenClaw 外掛",
+          "titleEn": "Install the official OpenClaw plugin",
+          "estimatedTime": "2 分鐘",
+          "content": "CLI 技能是一條路。OpenClaw 另外有官方外掛，提供 `web_search`、`web_fetch`、`firecrawl_search` 與 `firecrawl_scrape`。裝好後，在引導流程或 `openclaw configure --section web` 選 Firecrawl。\n\nFirecrawl Search (Free) 免金鑰，而且是選擇加入（`provider: \"firecrawl-free\"`）。付費供應商與明確的擷取／搜尋工具需要 `FIRECRAWL_API_KEY`。",
+          "commands": [
+            "# 官方 npm 套件",
+            "openclaw plugins install @openclaw/firecrawl-plugin",
+            "",
+            "# 同一外掛走 ClawHub（佇列指定）",
+            "openclaw plugins install clawhub:@openclaw/firecrawl-plugin",
+            "",
+            "# gateway 已在跑的話套用變更",
+            "openclaw gateway restart",
+            "",
+            "# 為網頁搜尋／擷取選 Firecrawl",
+            "openclaw configure --section web",
+            "",
+            "# OpenClaw 有 breaking 升級時",
+            "openclaw doctor --fix"
+          ],
+          "expectedResult": "Firecrawl 外掛已啟用。引導流程或 configure --section web 會列出 Firecrawl Search 與 Firecrawl fetch。",
+          "tips": [
+            "firecrawl_search 與 firecrawl_scrape 需要 API 金鑰。選 Firecrawl 時，web_fetch 後援可以免金鑰。",
+            "舊的 tools.web.fetch.firecrawl.* 設定可由 `openclaw doctor --fix` 遷移。",
+            "自架 baseUrl 只給私有／內網端點。公開自訂主機會被拒絕。"
+          ],
+          "troubleshooting": {
+            "title": "外掛",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "先安裝 OpenClaw：/learn/ollama-openclaw。再跑外掛安裝。"
+              },
+              {
+                "q": "搜尋可以，擷取失敗",
+                "a": "你正在用 Firecrawl Search (Free) 或免金鑰 fetch 後援。請匯出 FIRECRAWL_API_KEY，firecrawl_scrape 與較高額度才會通過。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "打開 Developer Index",
+          "titleEn": "Turn on Developer Index",
+          "estimatedTime": "2 分鐘",
+          "content": "Developer Index 是同一個 Firecrawl 帳號上的程式代理人搜尋面，不是 CanFly.ai 的第二個產品。它排序 README、issue、已合併 PR、文件與 OpenAPI 規格。它不存放原始碼，也不是一般網頁搜尋端點。\n\n官方設定只要一條指令。然後請代理人找「修這個 bug 的 issue 或 PR」，而不是行銷頁。",
+          "commands": [
+            "# 官方 Developer Index 技能",
+            "npx -y firecrawl-cli@latest setup developer-index",
+            "",
+            "# CLI 已安裝時",
+            "firecrawl setup developer-index",
+            "",
+            "# 給代理人的 CLI（只有查詢與筆數）",
+            "firecrawl developer \"retry backoff not firing on 429\"",
+            "firecrawl developer \"axum middleware ordering\" --limit 10",
+            "",
+            "# 專用 HTTP 端點",
+            "# POST https://api.firecrawl.dev/v2/search/developer"
+          ],
+          "expectedResult": "developer-index 技能已安裝。firecrawl developer 查詢會回 issue／PR／文件，而不是一般 SERP。",
+          "tips": [
+            "進階篩選（repo、授權、min_stars）只在 API。CLI 刻意保持精簡。",
+            "入門可以不用 API 金鑰；要較高速率再帶金鑰。",
+            "不要為 Olostep 或 Context.dev 另開 CanFly.ai 第三頁。之後若要比再比。"
+          ],
+          "troubleshooting": {
+            "title": "Developer Index",
+            "items": [
+              {
+                "q": "Developer Index 在 CanFly.ai 要另開一頁嗎？",
+                "a": "不要。留在 /apps/skills/firecrawl 與這篇教學。不要發明 /learn/developer-index。"
+              },
+              {
+                "q": "結果看起來像普通網搜",
+                "a": "你跑的是 firecrawl search，不是 firecrawl developer。請改用 developer 指令或 /search/developer。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "先試一次，再到 CanFly.ai 下一步",
+          "titleEn": "Try it, then next steps on CanFly.ai",
+          "estimatedTime": "1 分鐘",
+          "content": "技能或外掛就緒後，請 OpenClaw 擷取文件網址、搜尋即時網頁，或查找 GitHub issue。把 Firecrawl 搭配 OpenClaw 安裝與模型。Brave Search 與 Perplexity 留在各自的頁面。",
+          "tips": [
+            "Firecrawl OpenClaw 快速開始裡有擷取、搜尋與遠端瀏覽器的示例提示。",
+            "評論影片待補（沒有 HEYGEN_API_KEY）。口白稿：content/scripts/firecrawl-review-en.txt",
+            "工具接好後若要託管大腦，可把 OpenClaw 切到 GPT-6 Astra。"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "安裝 OpenClaw",
+              "desc": "一指令裝好 OpenClaw，再回來加 Firecrawl。",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw 教學"
+            },
+            {
+              "emoji": "🔍",
+              "title": "Brave Search API",
+              "desc": "給代理人的原始網頁結果。跟 Firecrawl 不是同一產品。",
+              "link": "/learn/brave-search",
+              "cta": "Brave 教學"
+            },
+            {
+              "emoji": "🧠",
+              "title": "Perplexity",
+              "desc": "帶引用的 AI 回答。留在 CanFly.ai 自己的頁面。",
+              "link": "/learn/perplexity",
+              "cta": "Perplexity 教學"
+            },
+            {
+              "emoji": "✨",
+              "title": "GPT-6 Astra",
+              "desc": "網頁工具接好後，給 OpenClaw 用的託管模型。",
+              "link": "/learn/gpt-6-astra",
+              "cta": "Astra 教學"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "一定要有 Firecrawl API 金鑰嗎？",
+          "a": "不是每條路都要。OpenClaw 的 Firecrawl Search (Free) 與明確的 web_fetch 後援可以免金鑰。firecrawl_search、firecrawl_scrape 與較高額度需要 FIRECRAWL_API_KEY。"
+        },
+        {
+          "q": "可以完全在本機跑 Firecrawl 嗎？",
+          "a": "預設走 https://api.firecrawl.dev。自架 baseUrl 只允許私有／內網端點。這一頁不把 Firecrawl 當成本機 Ollama 模型。"
+        },
+        {
+          "q": "該用哪一條安裝指令？",
+          "a": "CLI 技能用 `firecrawl init --agent openclaw`。gateway 的 web_search／web_fetch 再加 `openclaw plugins install clawhub:@openclaw/firecrawl-plugin`（或 `@openclaw/firecrawl-plugin`）。Developer Index 用 `npx -y firecrawl-cli@latest setup developer-index`。"
+        },
+        {
+          "q": "這是 Brave Search 或 Perplexity 嗎？",
+          "a": "不是。SERP API 看 /learn/brave-search，帶引用的回答看 /learn/perplexity。Firecrawl 是擷取 + 程式原始資料搜尋。"
+        },
+        {
+          "q": "評論影片在哪？",
+          "a": "待補。本輪沒有 HEYGEN_API_KEY。英文口白稿在 content/scripts/firecrawl-review-en.txt（上片時會配英文發音 + 繁中／英文雙語軟字幕）。"
         }
       ]
     }

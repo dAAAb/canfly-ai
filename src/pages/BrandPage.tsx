@@ -75,6 +75,7 @@ const BRAND_META: Record<string, { color: string; emoji: string; category: strin
   'agentmail': { color: 'from-sky-600 to-blue-700', emoji: '📧', category: 'Agent Email' },
   'basemail': { color: 'from-blue-700 to-indigo-800', emoji: '📬', category: 'Crypto Email' },
   'brave': { color: 'from-orange-500 to-red-600', emoji: '🦁', category: 'Search API' },
+  'firecrawl': { color: 'from-orange-600 to-amber-700', emoji: '🔥', category: 'Agent Web Toolkit' },
   'even-realities': { color: 'from-gray-600 to-blue-800', emoji: '👓', category: 'Smart Glasses' },
   'utm': { color: 'from-cyan-600 to-blue-700', emoji: '🖥️', category: 'Virtual Machine' },
   'openai': { color: 'from-green-700 to-emerald-800', emoji: '🤖', category: 'AI Research' },
