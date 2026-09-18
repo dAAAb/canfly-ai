@@ -642,6 +642,64 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- Firecrawl (2026-09-18) -->
+  <url>
+    <loc>https://canfly.ai/apps/skills/firecrawl</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/skills/firecrawl" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/skills/firecrawl" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/skills/firecrawl" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/apps/skills/firecrawl" />
+    <lastmod>2026-09-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/apps/skills/firecrawl</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/skills/firecrawl" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/skills/firecrawl" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/skills/firecrawl" />
+    <lastmod>2026-09-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/apps/skills/firecrawl</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/skills/firecrawl" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/skills/firecrawl" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/skills/firecrawl" />
+    <lastmod>2026-09-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/learn/firecrawl</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/firecrawl" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/firecrawl" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/firecrawl" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/learn/firecrawl" />
+    <lastmod>2026-09-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/learn/firecrawl</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/firecrawl" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/firecrawl" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/firecrawl" />
+    <lastmod>2026-09-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/learn/firecrawl</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/firecrawl" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/firecrawl" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/firecrawl" />
+    <lastmod>2026-09-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <url>
     <loc>https://canfly.ai/about</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/about" />
