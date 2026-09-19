@@ -187,7 +187,7 @@
 | `nemotron-3-super` | 不要改寫成 Lightning；加家族連結 |
 | `openclaw` | 更新成 2.0（v2026.8.1）＋穩定補丁 v2026.8.2＋v2026.9.1＋v2026.9.2＋v2026.9.3＋v2026.9.4＋v2026.9.5＋星數（約 390K）＋custodian，不要重開 2.0／8.2／9.1／9.2／9.3／9.4／9.5 頁。Astra 另開模型頁。GPT-Live 1 折進 Talk 一句，不要另開語音頁。Gemini 3.8 Live 折進 voice-call 一句 |
 | `gpt-6-astra` | 2026-09-04 產品＋教學已上。影片待補。補 OpenRouter `openai/gpt-6-astra`／`openai/gpt-6-astra-pro`。不要跟 Codex／GPT-5.6／Grok Bot 寫成同一頁，不要另開 Pro 頁 |
-| `heygen` / `elevenlabs` / `ollama` / `omlx` / `zeabur` / `openrouter` | 教學已在，只在有大改版時回訪。Qwen 3.8、Gemma 4、Hy4、Muse Spark 折進 Ollama／OpenRouter，不要另開 |
+| `heygen` / `elevenlabs` / `ollama` / `omlx` / `zeabur` / `openrouter` | 教學已在，只在有大改版時回訪。Qwen 3.8、Gemma 4、Hy4、Muse Spark、Union Alpha 折進 Ollama／OpenRouter，不要另開 |
 | `agentmail` | 更新 ClawHub 官方 plugin，不要重開 |
 | `brave-search` | 一般網搜頁已在。Firecrawl／Developer Index 另開 |
 | `whisper` / `umbrel` / `pinata` / `switchbot-ai-hub` | 同上 |
