@@ -80,7 +80,7 @@
 | P2 | screenpipe | 軟體／skills | 官方文件 `docs.screenpi.pe/openclaw`：`npx -y screenpipe@latest agent setup openclaw`。把螢幕／語音記錄接進 OpenClaw。站上沒有相近頁。要寫權限與 clipboard 風險 | `/apps/skills/screenpipe` + `/learn/screenpipe` | queued |
 | P1 | Muse Glimmer | 軟體／models | Meta Superintelligence Labs 開源 30B 本地 agent 模型。官方 Ollama：`ollama launch openclaw --model muse-glimmer`（MLX 用 `muse-glimmer:30b-mlx`）。站上沒有這頁；不要折進 Ollama，Qwen 3.8 才留在 Ollama 頁 | `/apps/models/muse-glimmer` + `/learn/muse-glimmer`；寫完在 Ollama／OpenClaw 卡加家族連結 | queued |
 | P1 | GPT-6 Astra | 軟體／models | 2026-09-03 官方上線。OpenAI [model guidance](https://developers.openai.com/api/docs/guides/latest-model)：`gpt-6-astra`，tool calling 走 Responses API。OpenClaw 官方 [OpenAI provider](https://docs.openclaw.ai/providers/openai)：`openclaw models set openai/gpt-6-astra`（1,050K context，$10/$50；存取還在 Trusted Access／陸續開 Plus／API）。OpenRouter 已有 `openai/gpt-6-astra` 與 `openai/gpt-6-astra-pro`（不要另開 Pro 頁）。產品頁已上；現有文案還寫「OpenRouter 還沒有」，見更新舊頁 | `/apps/models/gpt-6-astra` + `/learn/gpt-6-astra` | shipped 2026-09-04（影片待補；OpenRouter 行要改） |
-| P1 | Harden AIF | 軟體／skills | PH 9/9。官方 [AIF docs](https://docs.harden.run/)：`curl -fsSL https://aif.harden.run/install.sh \| sh`，再 `aif configure --agent openclaw --validate`。本機 tool-call 防火牆（bridge／block-and-steer）。文件寫支援 OpenClaw 2026.7.1-2；寫稿時核對對 v2026.9.5 是否仍過。站上沒有相近頁；不要跟 AgentWard 寫成同一頁 | `/apps/skills/harden-aif` + `/learn/harden-aif` | queued |
+| P1 | Harden AIF | 軟體／skills | PH 9/9。官方 [AIF docs](https://docs.harden.run/)：`curl -fsSL https://aif.harden.run/install.sh \| sh`，再 `aif configure --agent openclaw --validate`。本機 tool-call 防火牆（bridge／block-and-steer）。文件寫支援 OpenClaw 2026.7.1-2；寫稿時核對對 v2026.9.5 是否仍過。站上沒有相近頁；不要跟 AgentWard 寫成同一頁 | `/apps/skills/harden-aif` + `/learn/harden-aif` | shipped 2026-09-22（影片待補；官方基線仍是 2026.7.1-2，頁上要求對 v2026.9.5 再跑 validate） |
 | P1 | Supermemory | 軟體／skills | GitHub 9/18 熱。官方 [OpenClaw 文件](https://supermemory.ai/docs/integrations/openclaw)：`openclaw plugins install @supermemory/openclaw-supermemory`，再 `openclaw supermemory setup`／`gateway restart`。跨頻道長期記憶＋profile；本機可 `npx supermemory local`。站上沒有相近頁。不要跟 OzBrain（觀察、hosted MCP）或 OpenClaw 內建 session memory 寫成同一頁；不要跟 screenpipe 寫成同一頁 | `/apps/skills/supermemory` + `/learn/supermemory` | queued |
 
 ---
@@ -150,7 +150,7 @@
 | NVIDIA PAIR | Ollama／LM Studio proxy，不是 OpenClaw skill | 觀察；不要另開頁 |
 | Muse Spark 1.3 | Meta 雲端 API，權重不開。OpenClaw v2026.9.2 已支援；本機路線仍是 Glimmer | 折進 OpenRouter／OpenClaw 9.2 更新；不要跟 Glimmer 寫成同一頁 |
 | Product Hunt 9/9（Muse、Type.com、AlphaGenome Atlas） | Muse／Type 是對手個人／團隊 agent，沒有官方 OpenClaw 安裝步驟。AlphaGenome 是基因組研究資料集（Antigravity 入口），跟 Agent 工作流無關 | 下週 PH |
-| AgentWard | 有 `agentward setup --gateway openclaw`，但是 2026-03 起的舊專案，跟剛入列 Harden AIF 互搶本機 tool-call 防火牆 | Harden 寫完再比；不要第三頁 |
+| AgentWard | 有 `agentward setup --gateway openclaw`，但是 2026-03 起的舊專案，跟已上線 Harden AIF 互搶本機 tool-call 防火牆 | Harden 已上；不要第三頁 |
 | OpenAI Agents API（9/10 public beta） | 官方 [Agents API](https://developers.openai.com/api/docs/guides/agents-api/overview)：託管 Codex harness，`POST /v1/agents/sessions`，hosted／自架 sandbox。沒有 OpenClaw 安裝步驟，是對手不是技能 | 不要寫產品頁；折進 Claude Code／Codex 稿一句 |
 | ChatGPT for Financial Services（9/10） | ChatGPT Work 金融資料＋Astra。企業方案，沒有 OpenClaw 安裝步驟 | 不要寫 |
 | Product Hunt 9/10（Mastra Factory、Noodle Seed、49agents IDE、GoModel、Frigade Assist、UI-Atlas、Diiverge 等） | SaaS／對手 harness／OpenRouter 替代。Mastra Factory 是 TypeScript SDLC 工廠，沒有官方 OpenClaw skill。GoModel 折進 OpenRouter | 下週 PH |
@@ -191,6 +191,7 @@
 | `nemotron-3-super` | 不要改寫成 Lightning；加家族連結 |
 | `openclaw` | 更新成 2.0（v2026.8.1）＋穩定補丁 v2026.8.2＋v2026.9.1＋v2026.9.2＋v2026.9.3＋v2026.9.4＋v2026.9.5＋星數（約 390K／390,156）＋custodian，不要重開 2.0／8.2／9.1／9.2／9.3／9.4／9.5 頁。Astra 另開模型頁。GPT-Live 1 折進 Talk 一句，不要另開語音頁。Gemini 3.8 Live 折進 voice-call 一句 |
 | `gpt-6-astra` | 2026-09-04 產品＋教學已上。影片待補。補 OpenRouter `openai/gpt-6-astra`／`openai/gpt-6-astra-pro`。不要跟 Codex／GPT-5.6／Grok Bot 寫成同一頁，不要另開 Pro 頁 |
+| `harden-aif` | 2026-09-22 產品＋教學已上。影片待補。官方 pin：`aif configure --agent openclaw --validate`。基線仍寫 2026.7.1-2（2026-08-26），頁上要求對 v2026.9.5 再 validate。不要跟 AgentWard 寫成同一頁 |
 | `heygen` / `elevenlabs` / `ollama` / `omlx` / `zeabur` / `openrouter` | 教學已在，只在有大改版時回訪。Qwen 3.8、Gemma 4、Hy4、Muse Spark 折進 Ollama／OpenRouter，不要另開 |
 | `agentmail` | 更新 ClawHub 官方 plugin，不要重開 |
 | `brave-search` | 一般網搜頁已在。Firecrawl／Developer Index 另開。Tavily 官方 plugin 寫進這頁一句，不要另開 |

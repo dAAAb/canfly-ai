@@ -776,13 +776,14 @@
       },
       "openclaw": {
         "tagline": "Your personal AI agent — your AI, your rules",
-        "description": "The open-source personal AI agent platform with ~388K GitHub stars. Install with one command, then customize with skills, tools, and integrations. The 2.0 line (v2026.8.1–v2026.9.1) adds guided setup, a rebuilt Control UI, and Shared Cloud Sessions. When your OpenAI account has GPT-6 Astra, switch with `openclaw models set openai/gpt-6-astra`. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
+        "description": "The open-source personal AI agent platform with ~388K GitHub stars. Install with one command, then customize with skills, tools, and integrations. The 2.0 line (v2026.8.1–v2026.9.1) adds guided setup, a rebuilt Control UI, and Shared Cloud Sessions. When your OpenAI account has GPT-6 Astra, switch with `openclaw models set openai/gpt-6-astra`. Add a local tool-call firewall with Harden AIF: `aif configure --agent openclaw --validate`. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
         "features": [
           "One-command install: ollama launch openclaw",
           "~388K GitHub stars — largest AI agent community",
           "Skill marketplace with 180K+ community skills",
           "Works with any LLM: local (Ollama) or cloud (GPT-6 Astra, Claude)",
           "Switch to Astra: openclaw models set openai/gpt-6-astra",
+          "Local firewall: Harden AIF (`aif configure --agent openclaw --validate`)",
           "Full privacy: runs 100% on your hardware",
           "v2026.9.1: in-chat Mermaid, Android chat, update rollback"
         ],
@@ -863,6 +864,21 @@
         ],
         "ctaPrimary": "Open the Tutorial",
         "ctaSecondary": "OpenAI model guide"
+      },
+      "harden-aif": {
+        "tagline": "Local tool-call firewall for OpenClaw and coding agents",
+        "description": "Harden AIF (Agentic Integrity Foundation) is a local-first firewall for coding-agent tool calls. On CanFly.ai we pin OpenClaw with `aif configure --agent openclaw --validate`. OpenClaw and Hermes use a bridge process with block-and-steer: unsafe covered actions stop before they run, and AIF suggests a safer next step. Claude Code, Codex, Cursor, Antigravity CLI, and Kiro use native hooks. Official docs last checked OpenClaw 2026.7.1-2 on 2026-08-26 — re-validate on today's host (v2026.9.5). This is not AgentWard and not a ClawHub skill page.",
+        "features": [
+          "Official install: curl -fsSL https://aif.harden.run/install.sh | sh",
+          "OpenClaw pin: aif configure --agent openclaw --validate",
+          "Bridge + block-and-steer for OpenClaw and Hermes",
+          "Local dashboard at 127.0.0.1:47391 (`aif show`)",
+          "Decisions: Allow, Block, Ask, Redact, Log only, Model error",
+          "Full local model: Apple Silicon, 16 GB min / 24 GB recommended",
+          "Telemetry opt-out: AIF_NO_TELEMETRY=1"
+        ],
+        "ctaPrimary": "Open the Tutorial",
+        "ctaSecondary": "Official docs"
       }
     },
     "comingSoon": "Coming Soon",
@@ -3742,6 +3758,13 @@
               "link": "/learn/gpt-6-astra"
             },
             {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "Local tool-call firewall for OpenClaw: aif configure --agent openclaw --validate.",
+              "cta": "AIF tutorial",
+              "link": "/learn/harden-aif"
+            },
+            {
               "emoji": "🖥️",
               "title": "Buy Hardware for Local AI",
               "desc": "Want unlimited private AI? Get a Mac Mini or GEEKOM mini PC to run models locally 24/7.",
@@ -4355,6 +4378,13 @@
               "desc": "Learn to manage API keys securely for all your skills",
               "cta": "Start Tutorial",
               "link": "/learn/api-keys"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "Local tool-call firewall for OpenClaw — not a ClawHub skill, not AgentWard.",
+              "cta": "AIF tutorial",
+              "link": "/learn/harden-aif"
             }
           ],
           "tips": [
@@ -7420,6 +7450,233 @@
         {
           "q": "Is this the same page as Grok Bot?",
           "a": "No. Grok Bot is a hosted xAI teammate (separate P0). Astra is an OpenAI model ID you point OpenClaw at."
+        }
+      ]
+    },
+    "hardenAif": {
+      "title": "Harden AIF — Firewall OpenClaw Tool Calls",
+      "subtitle": "Local-first tool-call firewall. Official OpenClaw pin: aif configure --agent openclaw --validate. Not AgentWard.",
+      "duration": "8 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "What Harden AIF is",
+          "titleEn": "What Harden AIF is",
+          "estimatedTime": "2 min",
+          "content": "Harden AIF (Agentic Integrity Foundation) is a local-first firewall for coding-agent tool calls. It reviews a covered action before the agent runs it, then records Allow, Block, Ask, Redact, Log only, or Model error in a local viewer.\n\nOn CanFly.ai this page is the OpenClaw path. OpenClaw and Hermes use a bridge process with block-and-steer: unsafe covered actions stop, and AIF suggests a safer next step. Claude Code, Codex, Cursor, Antigravity CLI, and Kiro use native hooks. This is not AgentWard and not a ClawHub skill.",
+          "commands": [
+            "# Product page on CanFly.ai",
+            "# /apps/skills/harden-aif",
+            "",
+            "# Official docs",
+            "https://docs.harden.run/",
+            "",
+            "# Official OpenClaw pin",
+            "aif configure --agent openclaw --validate",
+            "",
+            "# GitHub",
+            "https://github.com/hardenrun/aif"
+          ],
+          "expectedResult": "You know AIF is a local firewall for tool calls — not a model, not a ClawHub skill, and not AgentWard.",
+          "tips": [
+            "Keep Claude Code / Codex on their own queued page. This tutorial only pins OpenClaw.",
+            "Do not invent a clawhub install for AIF. The official client is the aif CLI.",
+            "AgentWard is a different older project. Do not mix the two."
+          ],
+          "troubleshooting": {
+            "title": "Scope",
+            "items": [
+              {
+                "q": "Is this the same as AgentWard?",
+                "a": "No. AgentWard is a separate older project. Harden AIF is the Product Hunt 2026-09-09 firewall with official OpenClaw docs."
+              },
+              {
+                "q": "Is this a ClawHub skill?",
+                "a": "No. Install the AIF client, then configure an agent. Discovery stays on /learn/agent-skills."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Check requirements and install",
+          "titleEn": "Check requirements and install",
+          "estimatedTime": "2 min",
+          "content": "The public CLI quickstart supports macOS or Linux. The full local decision model is documented for Apple Silicon macOS: 16 GB unified memory minimum, 24 GB recommended, 32 GB for heavier local work. First install wants about 10 GB free disk; updates and rollback want about 15 GB. The Q4_K_M checkpoint is 5.17 GiB.\n\nOfficial docs last checked agent baselines on 2026-08-26. OpenClaw was listed as 2026.7.1-2. Today's host may be v2026.9.5 — install, then validate. Open a new shell after the installer so `aif` is on PATH.",
+          "commands": [
+            "curl -fsSL https://aif.harden.run/install.sh | sh",
+            "",
+            "# New shell, then health checks",
+            "aif status",
+            "aif doctor",
+            "",
+            "# Requirements (official, 2026-08-26)",
+            "# CLI: macOS or Linux",
+            "# Full local model: Apple Silicon, 16 GB min / 24 GB recommended"
+          ],
+          "expectedResult": "aif status runs in a new shell. If the installer failed, aif doctor explains the next repair.",
+          "tips": [
+            "The installer is the only step that installs the client. Configuration is the next page.",
+            "Windows is not in the public CLI quickstart. Stay on macOS or Linux.",
+            "Long URLs stay in this command list so the English page does not overflow."
+          ],
+          "troubleshooting": {
+            "title": "Install",
+            "items": [
+              {
+                "q": "aif: command not found",
+                "a": "Open a new shell after install.sh. If it still fails, rerun aif doctor from the docs troubleshooting page."
+              },
+              {
+                "q": "I am on an Intel Mac or a Linux box with 8 GB RAM",
+                "a": "The CLI may still install. The full local model is documented for Apple Silicon with 16 GB+. Do not invent a Windows or 8 GB path."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Pin OpenClaw and validate",
+          "titleEn": "Pin OpenClaw and validate",
+          "estimatedTime": "2 min",
+          "content": "Need OpenClaw first? Install it from the CanFly.ai guide, then come back. For a detected agent, `aif configure` is enough. To choose OpenClaw and validate the local protection service, use the official selector.\n\nA pass means the OpenClaw integration is configured and the local service is reachable. It does not certify every later OpenClaw release. Official baseline is 2026.7.1-2 (checked 2026-08-26). Re-run validate on v2026.9.5.",
+          "commands": [
+            "# Official OpenClaw selector (docs.harden.run/integrations/configure)",
+            "aif configure --agent openclaw --validate",
+            "",
+            "# Or let AIF pick a detected agent",
+            "aif configure",
+            "",
+            "# Confirm after configuration",
+            "aif status",
+            "",
+            "# If OpenClaw is missing",
+            "# See /learn/ollama-openclaw",
+            "ollama launch openclaw"
+          ],
+          "expectedResult": "AIF lists the OpenClaw integration and confirms the local protection service is reachable — or tells you to repair with aif doctor.",
+          "tips": [
+            "OpenClaw coverage is bridge + block-and-steer, not native hooks.",
+            "Claude Code / Codex / Cursor selectors exist, but this CanFly.ai page stays on OpenClaw.",
+            "If validate fails on v2026.9.5, treat that as a recheck — do not invent a workaround flag."
+          ],
+          "troubleshooting": {
+            "title": "OpenClaw",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "Install OpenClaw first: /learn/ollama-openclaw or `ollama launch openclaw`. Then rerun `aif configure --agent openclaw --validate`."
+              },
+              {
+                "q": "Validate fails on OpenClaw v2026.9.5",
+                "a": "Official docs last checked 2026.7.1-2 on 2026-08-26. Run aif status and aif doctor. Recheck after an AIF or OpenClaw release before a production workflow."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Run the demo and read decisions",
+          "titleEn": "Run the demo and read decisions",
+          "estimatedTime": "2 min",
+          "content": "The safe demo records allow and block decisions with demo data. It does not inspect your repository. Then open the local viewer on 127.0.0.1:47391.\n\nDecision labels: Allow (continue), Block (stop and use the safer alternative), Ask (aif review), Redact (inspect the rewritten value), Log only (record without stopping), Model error (aif status, then aif doctor — do not treat a model error as a policy decision).",
+          "commands": [
+            "aif demo",
+            "",
+            "aif show",
+            "",
+            "# Optional TUI",
+            "aif show --tui",
+            "",
+            "# Local viewer",
+            "# http://127.0.0.1:47391/",
+            "",
+            "# Opt out of anonymous counters",
+            "export AIF_NO_TELEMETRY=1",
+            "aif telemetry show",
+            "",
+            "# Support bundle (no secrets in the payload)",
+            "aif doctor --bundle > aif-diagnostics.txt"
+          ],
+          "expectedResult": "The demo writes allow/block history. aif show opens the local viewer on 127.0.0.1:47391.",
+          "tips": [
+            "AIF says it never collects code, commands, file paths, or prompts. Counters are version, OS/arch, adapters, and decision counts.",
+            "aif telemetry show prints the payload before it is sent.",
+            "If a command is blocked, read the rule and use the suggested safe alternative. Do not force the original path."
+          ],
+          "troubleshooting": {
+            "title": "Demo and history",
+            "items": [
+              {
+                "q": "The dashboard does not open",
+                "a": "Run aif status, then aif start or aif serve if the local service is down. Stay on 127.0.0.1:47391."
+              },
+              {
+                "q": "I see Model error",
+                "a": "That is not a Block. Check aif status, then aif doctor, before treating the action as resolved."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Next steps on CanFly.ai",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 min",
+          "content": "AIF is the local firewall. Pair it with an OpenClaw install, Agent Skills for extra tools, or GPT-6 Astra when you want a hosted brain. Do not fold this page into AgentWard, ClawHub, or the Claude Code / Codex tutorial.",
+          "tips": [
+            "Review video is pending (no HEYGEN_API_KEY on this run). English script: content/scripts/harden-aif-review-en.txt",
+            "Re-run aif configure --agent openclaw --validate after an OpenClaw upgrade.",
+            "For a broken OpenClaw install, use /learn/openclaw-troubleshooting first."
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "Install OpenClaw",
+              "desc": "One-command OpenClaw setup with Ollama, then come back to pin AIF.",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw tutorial"
+            },
+            {
+              "emoji": "📦",
+              "title": "OpenClaw product",
+              "desc": "What OpenClaw is, stars, and the Harden AIF firewall line on the apps card.",
+              "link": "/apps/free/openclaw",
+              "cta": "OpenClaw card"
+            },
+            {
+              "emoji": "🧩",
+              "title": "Agent Skills",
+              "desc": "Add wallet, email, and media skills. AIF is the firewall, not a skill.",
+              "link": "/learn/agent-skills",
+              "cta": "Skills tutorial"
+            },
+            {
+              "emoji": "✨",
+              "title": "GPT-6 Astra",
+              "desc": "Hosted OpenClaw brain after the firewall is on: openclaw models set openai/gpt-6-astra.",
+              "link": "/learn/gpt-6-astra",
+              "cta": "Astra tutorial"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Does Harden AIF work with OpenClaw v2026.9.5?",
+          "a": "Official docs last checked OpenClaw 2026.7.1-2 on 2026-08-26 and say to recheck after an AIF or agent release. Run `aif configure --agent openclaw --validate` on today's host. Do not treat an old baseline as a guarantee."
+        },
+        {
+          "q": "Is this the same page as AgentWard?",
+          "a": "No. AgentWard is a different older project. CanFly.ai does not open an AgentWard page."
+        },
+        {
+          "q": "Can I install this with clawhub install?",
+          "a": "No. Use `curl -fsSL https://aif.harden.run/install.sh | sh`, then `aif configure --agent openclaw --validate`. ClawHub stays on /learn/agent-skills."
+        },
+        {
+          "q": "Does the full local model run on Linux or Windows?",
+          "a": "The public CLI quickstart supports macOS or Linux. The full local model is documented for Apple Silicon macOS with 16 GB+ unified memory. Windows is not in that quickstart."
+        },
+        {
+          "q": "What does AIF send home?",
+          "a": "Official trust notes: no code, commands, file paths, or prompts. Anonymous counters only (version, OS/arch, adapters, decision/block counts). Inspect with `aif telemetry show`. Opt out with `AIF_NO_TELEMETRY=1`."
         }
       ]
     }

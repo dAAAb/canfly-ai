@@ -779,13 +779,14 @@
       },
       "openclaw": {
         "tagline": "你的個人 AI 代理人 — 你的 AI，你的規則",
-        "description": "擁有約 388K GitHub 星星的開源個人 AI 代理人平台。一行指令安裝，自由搭配技能、工具和整合。2.0 線（v2026.8.1–v2026.9.1）加上引導式 setup、重建的 Control UI 與 Shared Cloud Sessions。OpenAI 帳號若已有 GPT-6 Astra，用 `openclaw models set openai/gpt-6-astra` 切過去。在本地或雲端執行。你的資料永遠屬於你 — 無廠商綁定、無訂閱費、無限制。",
+        "description": "擁有約 388K GitHub 星星的開源個人 AI 代理人平台。一行指令安裝，自由搭配技能、工具和整合。2.0 線（v2026.8.1–v2026.9.1）加上引導式 setup、重建的 Control UI 與 Shared Cloud Sessions。OpenAI 帳號若已有 GPT-6 Astra，用 `openclaw models set openai/gpt-6-astra` 切過去。本機 tool-call 防火牆用 Harden AIF：`aif configure --agent openclaw --validate`。在本地或雲端執行。你的資料永遠屬於你 — 無廠商綁定、無訂閱費、無限制。",
         "features": [
           "一行指令安裝：ollama launch openclaw",
           "約 388K GitHub 星星 — 最大 AI 代理人社群",
           "技能市集：180K+ 社群技能",
           "支援任何 LLM：本地 (Ollama) 或雲端 (GPT-6 Astra, Claude)",
           "切到 Astra：openclaw models set openai/gpt-6-astra",
+          "本機防火牆：Harden AIF（`aif configure --agent openclaw --validate`）",
           "完全隱私：100% 在你的硬體上執行",
           "v2026.9.1：對話內 Mermaid、Android 聊天、更新可回退"
         ],
@@ -866,6 +867,21 @@
         ],
         "ctaPrimary": "打開教學",
         "ctaSecondary": "OpenAI 模型指南"
+      },
+      "harden-aif": {
+        "tagline": "給 OpenClaw 與程式 Agent 用的本機 tool-call 防火牆",
+        "description": "Harden AIF（Agentic Integrity Foundation）是本機優先的程式 Agent tool-call 防火牆。在 CanFly.ai 我們用 `aif configure --agent openclaw --validate` 把它接到 OpenClaw。OpenClaw 與 Hermes 走橋接行程（bridge）加上 block-and-steer：被涵蓋的不安全動作會先停住，再建議較安全的下一步。Claude Code、Codex、Cursor、Antigravity CLI 與 Kiro 走原生 hooks。官方文件在 2026-08-26 核過的 OpenClaw 基線是 2026.7.1-2；今天的主機若是 v2026.9.5，請再跑一次 validate。這不是 AgentWard，也不是 ClawHub 技能頁。",
+        "features": [
+          "官方安裝：curl -fsSL https://aif.harden.run/install.sh | sh",
+          "OpenClaw 接法：aif configure --agent openclaw --validate",
+          "OpenClaw / Hermes 走橋接 + block-and-steer",
+          "本機儀表板 127.0.0.1:47391（`aif show`）",
+          "決策標籤：Allow、Block、Ask、Redact、Log only、Model error",
+          "完整本機模型：Apple Silicon，最少 16 GB，建議 24 GB",
+          "退出遙測：AIF_NO_TELEMETRY=1"
+        ],
+        "ctaPrimary": "打開教學",
+        "ctaSecondary": "官方文件"
       }
     },
     "comingSoon": "即將推出",
@@ -3745,6 +3761,13 @@
               "link": "/learn/gpt-6-astra"
             },
             {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "給 OpenClaw 的本機 tool-call 防火牆：aif configure --agent openclaw --validate。",
+              "cta": "AIF 教學",
+              "link": "/learn/harden-aif"
+            },
+            {
               "emoji": "🖥️",
               "title": "購買硬體跑本地 AI",
               "desc": "想要無限量的私人 AI？買一台 Mac Mini 或 GEEKOM 迷你電腦，24/7 跑本地模型。",
@@ -4363,6 +4386,13 @@
               "desc": "學習如何安全管理所有技能的 API 金鑰",
               "cta": "開始教學",
               "link": "/learn/api-keys"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "給 OpenClaw 的本機 tool-call 防火牆 — 不是 ClawHub 技能，也不是 AgentWard。",
+              "cta": "AIF 教學",
+              "link": "/learn/harden-aif"
             }
           ],
           "tips": [
@@ -7428,6 +7458,233 @@
         {
           "q": "這跟 Grok Bot 是同一頁嗎？",
           "a": "不是。Grok Bot 是 xAI 託管隊友（另一張 P0）。Astra 是你指給 OpenClaw 的 OpenAI 模型 ID。"
+        }
+      ]
+    },
+    "hardenAif": {
+      "title": "Harden AIF — 幫 OpenClaw 的 tool-call 加防火牆",
+      "subtitle": "本機優先的 tool-call 防火牆。官方 OpenClaw 接法：aif configure --agent openclaw --validate。不是 AgentWard。",
+      "duration": "8 分鐘",
+      "difficulty": "入門",
+      "steps": [
+        {
+          "title": "Harden AIF 是什麼",
+          "titleEn": "What Harden AIF is",
+          "estimatedTime": "2 分鐘",
+          "content": "Harden AIF（Agentic Integrity Foundation）是本機優先的程式 Agent tool-call 防火牆。它會在 Agent 執行被涵蓋的動作前先審查，再把 Allow、Block、Ask、Redact、Log only 或 Model error 寫進本機檢視器。\n\n在 CanFly.ai 這頁只寫 OpenClaw 路徑。OpenClaw 與 Hermes 走橋接行程加上 block-and-steer：不安全且被涵蓋的動作會先停住，AIF 再建議較安全的下一步。Claude Code、Codex、Cursor、Antigravity CLI 與 Kiro 走原生 hooks。這不是 AgentWard，也不是 ClawHub 技能。",
+          "commands": [
+            "# CanFly.ai 產品頁",
+            "# /apps/skills/harden-aif",
+            "",
+            "# 官方文件",
+            "https://docs.harden.run/",
+            "",
+            "# 官方 OpenClaw 接法",
+            "aif configure --agent openclaw --validate",
+            "",
+            "# GitHub",
+            "https://github.com/hardenrun/aif"
+          ],
+          "expectedResult": "你知道 AIF 是本機 tool-call 防火牆 — 不是模型、不是 ClawHub 技能，也不是 AgentWard。",
+          "tips": [
+            "Claude Code / Codex 請走自己的待寫頁。這篇教學只接 OpenClaw。",
+            "不要發明 clawhub install。官方用戶端是 aif CLI。",
+            "AgentWard 是另一個較舊的專案。不要混成同一頁。"
+          ],
+          "troubleshooting": {
+            "title": "範圍",
+            "items": [
+              {
+                "q": "這跟 AgentWard 是同一套嗎？",
+                "a": "不是。AgentWard 是另一個較舊的專案。Harden AIF 才是 2026-09-09 Product Hunt 上、有官方 OpenClaw 文件的防火牆。"
+              },
+              {
+                "q": "這是 ClawHub 技能嗎？",
+                "a": "不是。先裝 AIF 用戶端，再設定 Agent。技能發現請走 /learn/agent-skills。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "核對需求並安裝",
+          "titleEn": "Check requirements and install",
+          "estimatedTime": "2 分鐘",
+          "content": "公開 CLI 快速開始支援 macOS 或 Linux。完整本機決策模型寫的是 Apple Silicon macOS：統一記憶體最少 16 GB，建議 24 GB，較重的本機工作建議 32 GB。第一次安裝大約要 10 GB 空磁碟；更新與回退大約要 15 GB。Q4_K_M 權重是 5.17 GiB。\n\n官方文件最近一次核對 Agent 基線是 2026-08-26。當時 OpenClaw 寫的是 2026.7.1-2。今天的主機可能是 v2026.9.5 — 先安裝，再 validate。安裝結束後請開新的 shell，讓 `aif` 進 PATH。",
+          "commands": [
+            "curl -fsSL https://aif.harden.run/install.sh | sh",
+            "",
+            "# 新 shell，再做健康檢查",
+            "aif status",
+            "aif doctor",
+            "",
+            "# 需求（官方，2026-08-26）",
+            "# CLI：macOS 或 Linux",
+            "# 完整本機模型：Apple Silicon，最少 16 GB / 建議 24 GB"
+          ],
+          "expectedResult": "新 shell 裡跑得動 aif status。若安裝失敗，aif doctor 會說明下一步。",
+          "tips": [
+            "安裝程式只負責裝用戶端。設定是下一步。",
+            "公開 CLI 快速開始沒有寫 Windows。請留在 macOS 或 Linux。",
+            "長網址放在 commands，避免英文版爆版。"
+          ],
+          "troubleshooting": {
+            "title": "安裝",
+            "items": [
+              {
+                "q": "aif: command not found",
+                "a": "跑完 install.sh 後開新的 shell。若還是不行，依官方疑難排解再跑 aif doctor。"
+              },
+              {
+                "q": "我是 Intel Mac，或 Linux 只有 8 GB RAM",
+                "a": "CLI 也許裝得起來。完整本機模型文件寫的是 Apple Silicon 加 16 GB 以上。不要發明 Windows 或 8 GB 路徑。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "接上 OpenClaw 並驗證",
+          "titleEn": "Pin OpenClaw and validate",
+          "estimatedTime": "2 分鐘",
+          "content": "還沒有 OpenClaw？先走 CanFly.ai 教學再回來。若 AIF 已偵測到 Agent，`aif configure` 就夠。要指定 OpenClaw 並驗證本機防護服務，用官方選擇器。\n\n通過代表 OpenClaw 整合已設定、本機服務可連。它不保證之後每個 OpenClaw 版本都過。官方基線是 2026.7.1-2（2026-08-26 核過）。在 v2026.9.5 上請再跑一次 validate。",
+          "commands": [
+            "# 官方 OpenClaw 選擇器（docs.harden.run/integrations/configure）",
+            "aif configure --agent openclaw --validate",
+            "",
+            "# 或讓 AIF 選已偵測到的 Agent",
+            "aif configure",
+            "",
+            "# 設定後再確認",
+            "aif status",
+            "",
+            "# 若還沒有 OpenClaw",
+            "# 見 /learn/ollama-openclaw",
+            "ollama launch openclaw"
+          ],
+          "expectedResult": "AIF 列出 OpenClaw 整合，並確認本機防護服務可連 — 或叫你用 aif doctor 修理。",
+          "tips": [
+            "OpenClaw 涵蓋範圍是橋接 + block-and-steer，不是原生 hooks。",
+            "Claude Code / Codex / Cursor 選擇器存在，但 CanFly.ai 這頁只接 OpenClaw。",
+            "若 v2026.9.5 驗證失敗，當成需要重核 — 不要發明變通旗標。"
+          ],
+          "troubleshooting": {
+            "title": "OpenClaw",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "先裝 OpenClaw：/learn/ollama-openclaw 或 `ollama launch openclaw`。再跑 `aif configure --agent openclaw --validate`。"
+              },
+              {
+                "q": "在 OpenClaw v2026.9.5 上 validate 失敗",
+                "a": "官方文件最近一次核過的是 2026.7.1-2（2026-08-26）。先跑 aif status 與 aif doctor。AIF 或 OpenClaw 升級後、上生產流程前請再核一次。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "跑 demo 並讀決策",
+          "titleEn": "Run the demo and read decisions",
+          "estimatedTime": "2 分鐘",
+          "content": "安全 demo 會用示範資料寫下 allow 與 block 決策。它不會檢查你的 repo。接著在 127.0.0.1:47391 打開本機檢視器。\n\n決策標籤：Allow（繼續）、Block（停下並用較安全的替代）、Ask（aif review）、Redact（先看改寫後的值）、Log only（只記錄、不停下）、Model error（先 aif status，再 aif doctor — 不要把模型錯誤當成政策決策）。",
+          "commands": [
+            "aif demo",
+            "",
+            "aif show",
+            "",
+            "# 可選 TUI",
+            "aif show --tui",
+            "",
+            "# 本機檢視器",
+            "# http://127.0.0.1:47391/",
+            "",
+            "# 退出匿名計數",
+            "export AIF_NO_TELEMETRY=1",
+            "aif telemetry show",
+            "",
+            "# 支援包（payload 不含秘密）",
+            "aif doctor --bundle > aif-diagnostics.txt"
+          ],
+          "expectedResult": "demo 寫下 allow/block 歷史。aif show 在 127.0.0.1:47391 打開本機檢視器。",
+          "tips": [
+            "AIF 寫明不收集程式碼、指令、檔案路徑或提示詞。計數只有版本、OS/arch、適配器與決策次數。",
+            "aif telemetry show 會在送出前印出 payload。",
+            "若指令被擋，先讀規則並用建議的安全替代。不要硬跑原本那條。"
+          ],
+          "troubleshooting": {
+            "title": "Demo 與歷史",
+            "items": [
+              {
+                "q": "儀表板打不開",
+                "a": "先跑 aif status。若本機服務停了，用 aif start 或 aif serve。請留在 127.0.0.1:47391。"
+              },
+              {
+                "q": "我看到 Model error",
+                "a": "那不是 Block。先跑 aif status，再跑 aif doctor，再決定這次動作算不算處理完。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CanFly.ai 上的下一步",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 分鐘",
+          "content": "AIF 是本機防火牆。請搭配 OpenClaw 安裝、用 Agent Skills 加工具，或在要託管大腦時接 GPT-6 Astra。不要把這頁折進 AgentWard、ClawHub，或 Claude Code / Codex 教學。",
+          "tips": [
+            "評論影片待補（這次沒有 HEYGEN_API_KEY）。英文口白稿：content/scripts/harden-aif-review-en.txt",
+            "OpenClaw 升級後請再跑 aif configure --agent openclaw --validate。",
+            "OpenClaw 裝壞了，先走 /learn/openclaw-troubleshooting。"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "安裝 OpenClaw",
+              "desc": "用 Ollama 一行指令裝 OpenClaw，再回來接 AIF。",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw 教學"
+            },
+            {
+              "emoji": "📦",
+              "title": "OpenClaw 產品",
+              "desc": "OpenClaw 是什麼、星數，以及產品卡上的 Harden AIF 防火牆一行。",
+              "link": "/apps/free/openclaw",
+              "cta": "OpenClaw 卡片"
+            },
+            {
+              "emoji": "🧩",
+              "title": "Agent Skills",
+              "desc": "加錢包、郵件與媒體技能。AIF 是防火牆，不是技能。",
+              "link": "/learn/agent-skills",
+              "cta": "技能教學"
+            },
+            {
+              "emoji": "✨",
+              "title": "GPT-6 Astra",
+              "desc": "防火牆開好後，用託管大腦：openclaw models set openai/gpt-6-astra。",
+              "link": "/learn/gpt-6-astra",
+              "cta": "Astra 教學"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Harden AIF 支援 OpenClaw v2026.9.5 嗎？",
+          "a": "官方文件最近一次核過的 OpenClaw 是 2026.7.1-2（2026-08-26），並寫升級後要再核。請在今天的主機跑 `aif configure --agent openclaw --validate`。不要把舊基線當成保證。"
+        },
+        {
+          "q": "這跟 AgentWard 是同一頁嗎？",
+          "a": "不是。AgentWard 是另一個較舊的專案。CanFly.ai 不另開 AgentWard 頁。"
+        },
+        {
+          "q": "可以用 clawhub install 裝嗎？",
+          "a": "不行。請用 `curl -fsSL https://aif.harden.run/install.sh | sh`，再跑 `aif configure --agent openclaw --validate`。ClawHub 請留在 /learn/agent-skills。"
+        },
+        {
+          "q": "完整本機模型能在 Linux 或 Windows 跑嗎？",
+          "a": "公開 CLI 快速開始支援 macOS 或 Linux。完整本機模型文件寫的是 Apple Silicon macOS，統一記憶體 16 GB 以上。Windows 不在那份快速開始裡。"
+        },
+        {
+          "q": "AIF 會把什麼送回家？",
+          "a": "官方信任說明：不收集程式碼、指令、檔案路徑或提示詞。只有匿名計數（版本、OS/arch、適配器、決策／攔截次數）。用 `aif telemetry show` 檢查。退出用 `AIF_NO_TELEMETRY=1`。"
         }
       ]
     }

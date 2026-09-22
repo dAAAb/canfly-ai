@@ -1,0 +1,11 @@
+Hi, I'm JU CHUN KO.
+
+OpenClaw agents can call the terminal, the browser, and your files. One bad tool call is enough to leak a secret or wipe the wrong folder.
+
+Harden AIF is a local-first firewall for those tool calls. Install it once with the official script from aif.harden.run. Then pin OpenClaw with aif configure --agent openclaw --validate.
+
+OpenClaw uses a bridge process with block-and-steer. Unsafe covered actions stop before they run, and AIF suggests a safer next step. You review Allow, Block, Ask, and Redact in the local dashboard on port 47391.
+
+Official docs last checked OpenClaw 2026.7.1-2. Re-validate on today's host. This is not AgentWard.
+
+I made a tutorial on CanFly.ai — go try it.
