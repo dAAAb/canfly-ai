@@ -1,0 +1,11 @@
+Hi, I'm JU CHUN KO.
+
+Until this week, a fresh xAI login on OpenClaw still pointed at an older Grok — or at the retired xai/auto alias.
+
+Grok 4.7 is xAI's current frontier model for coding, agents, and knowledge work. Official docs give it a 500,000-token context window, text and image input, and reasoning at low, medium, high, or xhigh. High is the default. Function calling and structured outputs are on.
+
+On OpenClaw the switch is one command: openclaw models set xai/grok-4.7. New OAuth or API-key setups already default here. Old xai/auto configs move over with openclaw doctor --fix. OpenRouter lists x-ai/grok-4.7.
+
+List price is two dollars per million input tokens and six on output — it doubles above 200,000 prompt tokens. It is not Grok Bot, and Fast stays in Cursor and Grok Build.
+
+I made a tutorial on CanFly.ai — go try it.

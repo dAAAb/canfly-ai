@@ -776,16 +776,17 @@
       },
       "openclaw": {
         "tagline": "你的个人 AI 代理 — 你的 AI，你的规则",
-        "description": "拥有约 388K GitHub 星标的开源个人 AI 代理平台。一行命令安装，自由搭配技能、工具和集成。2.0 线（v2026.8.1–v2026.9.1）加上引导式 setup、重建的 Control UI 与 Shared Cloud Sessions。OpenAI 账号若已有 GPT-6 Astra，用 `openclaw models set openai/gpt-6-astra` 切过去。本地 tool-call 防火墙用 Harden AIF：`aif configure --agent openclaw --validate`。在本地或云端运行。你的数据永远属于你 — 无厂商锁定、无订阅费、无限制。",
+        "description": "拥有约 390K GitHub 星标的开源个人 AI 代理平台。一行命令安装，自由搭配技能、工具和集成。2.0 线（v2026.8.1–v2026.9.6）加上引导式 setup、重建的 Control UI 与 Shared Cloud Sessions。全新 xAI / Grok 设置默认 Grok 4.7：`openclaw models set xai/grok-4.7`。OpenAI 账号若已有 GPT-6 Astra，用 `openclaw models set openai/gpt-6-astra` 切过去。本地 tool-call 防火墙用 Harden AIF：`aif configure --agent openclaw --validate`。在本地或云端运行。你的数据永远属于你 — 无厂商锁定、无订阅费、无限制。",
         "features": [
           "一行命令安装：ollama launch openclaw",
-          "约 388K GitHub 星标 — 最大 AI 代理社区",
+          "约 390K GitHub 星标 — 最大 AI 代理社区",
           "技能市场：180K+ 社区技能",
-          "支持任何 LLM：本地 (Ollama) 或云端 (GPT-6 Astra, Claude)",
+          "支持任何 LLM：本地 (Ollama) 或云端 (Grok 4.7, GPT-6 Astra, Claude)",
+          "切到 Grok 4.7：openclaw models set xai/grok-4.7",
           "切到 Astra：openclaw models set openai/gpt-6-astra",
           "本地防火墙：Harden AIF（`aif configure --agent openclaw --validate`）",
           "完全隐私：100% 在你的硬件上运行",
-          "v2026.9.1：对话内 Mermaid、Android 聊天、更新可回退"
+          "v2026.9.6：默认 Grok 4.7、Astra、托管更新"
         ],
         "ctaPrimary": "安装 OpenClaw",
         "ctaSecondary": "前往 openclaw.ai"
@@ -879,6 +880,21 @@
         ],
         "ctaPrimary": "打开教程",
         "ctaSecondary": "官方文档"
+      },
+      "grok-4-7": {
+        "tagline": "xAI 前线模型 — OpenClaw 默认的 Grok",
+        "description": "xAI 的 Grok 4.7 是现役前线 ID，面向写程序、Agent 工作与知识任务。官方模型 ID 是 `grok-4.7`：50 万 token 上下文，文字与图片输入、文字输出。推理力度为 `low` / `medium` / `high`（默认）/ `xhigh`。在 CanFly.ai 我们用 `openclaw models set xai/grok-4.7` 接到 OpenClaw。全新 xAI OAuth 或 API key 设置已经默认这颗。OpenRouter 上架 `x-ai/grok-4.7`。Grok 4.6 同价同窗，这一页才是现役卡。不是 Grok Bot，也不另开 Grok 4.7 Fast 页（Fast 只在 Cursor / Grok Build）。",
+        "features": [
+          "官方 ID grok-4.7 — 50 万上下文；别名 grok-4.7-latest",
+          "文字 + 图片输入；支持 function calling 与结构化输出",
+          "OpenClaw：openclaw models set xai/grok-4.7",
+          "推理力度：low / medium / high（默认）/ xhigh",
+          "xAI 标价每百万 $2 / 缓存 $0.50 / 输出 $6；prompt ≥200k 加倍",
+          "OpenRouter slug：x-ai/grok-4.7 — 不要另开 Fast 页",
+          "旧的 xai/auto：openclaw doctor --fix"
+        ],
+        "ctaPrimary": "打开教程",
+        "ctaSecondary": "xAI 模型卡"
       }
     },
     "comingSoon": "即将推出",
@@ -3750,6 +3766,13 @@
             "本地模型的所有数据都留在你的电脑上"
           ],
           "nextStepCards": [
+            {
+              "emoji": "⚡",
+              "title": "Grok 4.7",
+              "desc": "OpenClaw 默认的 Grok：openclaw models set xai/grok-4.7。",
+              "cta": "Grok 4.7 教程",
+              "link": "/learn/grok-4-7"
+            },
             {
               "emoji": "✨",
               "title": "GPT-6 Astra",
@@ -7446,11 +7469,11 @@
               "cta": "OpenRouter 指南"
             },
             {
-              "emoji": "🆓",
-              "title": "Nemotron 3 Super",
-              "desc": "等 Astra 访问时，先用免费开源代理模型。",
-              "link": "/learn/nemotron-3-super",
-              "cta": "Nemotron 教程"
+              "emoji": "⚡",
+              "title": "Grok 4.7",
+              "desc": "xAI 前线模型，也是 OpenClaw 默认 Grok：openclaw models set xai/grok-4.7。",
+              "link": "/learn/grok-4-7",
+              "cta": "Grok 4.7 教程"
             }
           ]
         }
@@ -7673,6 +7696,13 @@
               "cta": "技能教程"
             },
             {
+              "emoji": "⚡",
+              "title": "Grok 4.7",
+              "desc": "防火墙开好后，用 xAI 托管大脑：openclaw models set xai/grok-4.7。",
+              "link": "/learn/grok-4-7",
+              "cta": "Grok 4.7 教程"
+            },
+            {
               "emoji": "✨",
               "title": "GPT-6 Astra",
               "desc": "防火墙开好后，用托管大脑：openclaw models set openai/gpt-6-astra。",
@@ -7702,6 +7732,248 @@
         {
           "q": "AIF 会把什么送回家？",
           "a": "官方信任说明：不收集代码、命令、文件路径或提示词。只有匿名计数（版本、OS/arch、适配器、决策／拦截次数）。用 `aif telemetry show` 检查。退出用 `AIF_NO_TELEMETRY=1`。"
+        }
+      ]
+    },
+    "grok47": {
+      "title": "Grok 4.7 — 5 分钟把 OpenClaw 切过去",
+      "subtitle": "官方 grok-4.7，OpenClaw 默认的 Grok。不是 Grok Bot、不是 4.6、不是 Fast。",
+      "duration": "5 分钟",
+      "difficulty": "初级",
+      "steps": [
+        {
+          "title": "Grok 4.7 是什么",
+          "titleEn": "What Grok 4.7 is",
+          "estimatedTime": "1 分钟",
+          "content": "Grok 4.7 是 xAI 现役前线模型，面向写程序、Agent 任务与知识工作。在 CanFly.ai 这一页是模型卡。Grok Bot 留在自己的待写页。不要另开 Grok 4.6 页 — 4.6 同价、同样 50 万窗；把 4.7 当现役，4.6 一句带过即可。\n\n官方事实：模型 ID `grok-4.7`（别名 `grok-4.7-latest`）、50 万 token 上下文、文字与图片输入、文字输出。Function calling 与结构化输出都有。推理力度为 `low`、`medium`、`high`（默认）、`xhigh`。推理关不掉。知识截止 2026 年 5 月。不支持 Batch API。",
+          "commands": [
+            "# Official model ID",
+            "grok-4.7",
+            "",
+            "# Alias",
+            "grok-4.7-latest",
+            "",
+            "# Context (xAI model card)",
+            "# 500,000 tokens",
+            "",
+            "# Product page on CanFly.ai",
+            "# /apps/models/grok-4-7",
+            "",
+            "# xAI model card",
+            "https://docs.x.ai/developers/models/grok-4.7"
+          ],
+          "expectedResult": "你知道 Grok 4.7 是托管的 xAI 模型，给 Agent 用 — 不是本地 ollama pull、不是 Grok Bot、也不是 Fast。",
+          "tips": [
+            "Grok 4.6 在 OpenClaw 仍可选，标价同样 $2/$6。这一页才是现役卡。",
+            "Grok 4.7 Fast 只在 Cursor / Grok Build。不要在 CanFly.ai 发明 Fast slug。",
+            "不要发明本地 ollama pull — Grok 4.7 是托管的。"
+          ],
+          "troubleshooting": {
+            "title": "范围",
+            "items": [
+              {
+                "q": "这跟 Grok Bot 是同一页吗？",
+                "a": "不是。Grok Bot 是托管的 xAI 队友（另开 P0）。Grok 4.7 是你指给 OpenClaw 的模型 ID。"
+              },
+              {
+                "q": "还要读 Grok 4.6 页吗？",
+                "a": "不用。CanFly.ai 不另开 4.6 页。同价、同样 50 万窗 — 用这篇 4.7 教程。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "登录 xAI",
+          "titleEn": "Sign in to xAI",
+          "estimatedTime": "2 分钟",
+          "content": "OpenClaw 内置的 xAI 插件优先走 Grok OAuth，账号要有合格的 SuperGrok 或 X Premium。Gateway、设置、路由与工具留在本地；只有 Grok 请求打到 xAI。OAuth 不需要 xAI Console key。\n\nAPI key 路径仍适用 Console 密钥，以及需要密钥的媒体界面。两种全新设置都默认 `xai/grok-4.7`。",
+          "commands": [
+            "# New install — pick xAI / Grok OAuth at the model step",
+            "openclaw onboard --install-daemon",
+            "",
+            "# VPS / SSH — device-code OAuth, no localhost callback",
+            "openclaw onboard --install-daemon --auth-choice xai-oauth",
+            "",
+            "# Existing install — sign in only",
+            "openclaw models auth login --provider xai --method oauth",
+            "",
+            "# API-key path (Console key)",
+            "openclaw models auth login --provider xai --method api-key",
+            "export XAI_API_KEY=xai-...",
+            "",
+            "# xAI console",
+            "https://console.x.ai/"
+          ],
+          "expectedResult": "openclaw models auth list --provider xai 看得到 OAuth 或 API key 配置。全新安装会把 xai/grok-4.7 当精选默认。",
+          "tips": [
+            "OAuth 登录会保留现有主模型。想改用新默认就跑 `openclaw models set xai/grok-4.7`。",
+            "哪些账号拿得到 OAuth API token 由 xAI 决定。不合格就走 API key。",
+            "永远不要把 XAI_API_KEY 贴进 git、截图或 CanFly.ai issue。"
+          ],
+          "troubleshooting": {
+            "title": "访问",
+            "items": [
+              {
+                "q": "笔记本 OAuth 可以，VPS 不行",
+                "a": "用 `openclaw models auth login --provider xai --method oauth`。远程登录走设备码，不走 localhost callback。"
+              },
+              {
+                "q": "登录成功但默认不是 Grok",
+                "a": "OAuth 会保留你现在的主模型。再跑 `openclaw models set xai/grok-4.7`。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "把 OpenClaw 指到 Grok 4.7",
+          "titleEn": "Point OpenClaw at Grok 4.7",
+          "estimatedTime": "1 分钟",
+          "content": "OpenClaw 官方 xAI 文档只需一条命令。旧的 `xai/auto` 已退役 — `openclaw doctor --fix` 会改成 `xai/grok-4.7`，账号钉选与自定义 endpoint 会保留。\n\n还没装 OpenClaw？先走 CanFly.ai 安装教程，再回来。",
+          "commands": [
+            "# Official OpenClaw switch (docs.openclaw.ai/providers/xai)",
+            "openclaw models set xai/grok-4.7",
+            "",
+            "# Retired xai/auto → grok-4.7",
+            "openclaw doctor --fix",
+            "",
+            "# Confirm",
+            "openclaw models status",
+            "openclaw models auth list --provider xai",
+            "",
+            "# If OpenClaw is not installed yet",
+            "# See /learn/ollama-openclaw",
+            "ollama launch openclaw"
+          ],
+          "expectedResult": "OpenClaw 把 xai/grok-4.7 列成作用中模型，或 doctor 回报已把 xai/auto 换掉。",
+          "tips": [
+            "设置形状：agents.defaults.model.primary = \"xai/grok-4.7\"。",
+            "OpenClaw 用 Responses API 打 xAI。同一组凭证也驱动 web_search（provider grok）、x_search 与 code_execution。",
+            "这是云端账单。要免费本地路径请走 /learn/ollama 或 /learn/nemotron-3-super。"
+          ],
+          "troubleshooting": {
+            "title": "OpenClaw",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "先装 OpenClaw：/learn/ollama-openclaw 或 `ollama launch openclaw`。再跑 `openclaw models set xai/grok-4.7`。"
+              },
+              {
+                "q": "Gateway 说 OAuth profile 解析不到",
+                "a": "refresh token 过期或被撤。在 Gateway 主机重跑登录命令。既有 API key 仍可提供 API 目录。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "推理、价格与 OpenRouter",
+          "titleEn": "Reasoning, price, and OpenRouter",
+          "estimatedTime": "1 分钟",
+          "content": "思考层级跟 xAI 发行规则：Grok 4.6 起接受 `low`、`medium`、`high`、`xhigh`。默认 `high`。像 `-fast` 这种变体会关掉推理力度 — Fast 不是 CanFly.ai 的页。\n\nxAI 标价在 prompt 未满 20 万 token：$2 输入 / $0.50 缓存 / $6 输出（每百万）。达到或超过 20 万，整笔加倍成 $4 / $1 / $12。OpenRouter 上架 `x-ai/grok-4.7`，走自己的路由价 — 出量前先核对 OpenRouter 卡。",
+          "commands": [
+            "# xAI pricing (docs.x.ai/developers/models/grok-4.7)",
+            "# < 200k prompt: $2 / $0.50 cached / $6 per 1M",
+            "# ≥ 200k prompt: $4 / $1 / $12 per 1M",
+            "",
+            "# OpenRouter slug",
+            "x-ai/grok-4.7",
+            "",
+            "# OpenRouter card",
+            "https://openrouter.ai/x-ai/grok-4.7",
+            "",
+            "# OpenClaw OpenRouter path (already on CanFly.ai)",
+            "# /learn/openrouter",
+            "# /apps/free/openrouter"
+          ],
+          "expectedResult": "你可以选 xAI Console 计费或 OpenRouter `x-ai/grok-4.7`，也知道 Fast 不是第三页。",
+          "tips": [
+            "OpenClaw 目录里的成本字段记的是短上下文 xAI 价。长上下文流量仍按较高档计费。",
+            "Responses API 对 grok-4.7 一律返回加密推理内容，就算你没要求。",
+            "长网址放在 commands，英文页才不会撑版。"
+          ],
+          "troubleshooting": {
+            "title": "账单",
+            "items": [
+              {
+                "q": "为什么 OpenRouter 比 xAI 卡便宜？",
+                "a": "OpenRouter 公布的是自己的路由标价。Console 密钥钉官方 xAI 数字；走 `x-ai/grok-4.7` 就看 OpenRouter 卡。"
+              },
+              {
+                "q": "可以关掉推理吗？",
+                "a": "不行。Grok 4.7 的推理关不掉。Fast 变体会关力度，但 Fast 不是这一页。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CanFly.ai 下一步",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 分钟",
+          "content": "Grok 4.7 是托管的 xAI 大脑。配上 OpenClaw 安装、账号已有的 Astra，或本地模型打草稿。Harden AIF 可以挡在 tool-call 前面。Grok Bot 仍是另一张待写页。",
+          "tips": [
+            "评论视频待补（这次没有 HEYGEN_API_KEY）。英文口白稿：content/scripts/grok-4-7-review-en.txt",
+            "盯着 xAI 或 OpenRouter 账单 — 塞满 50 万窗不是免费本地 pull。",
+            "Grok 4.8 上市就更新这一页。不要开传闻 slug。"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "安装 OpenClaw",
+              "desc": "用 Ollama 一行装好 OpenClaw，再回来切 Grok 4.7。",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw 教程"
+            },
+            {
+              "emoji": "📦",
+              "title": "OpenClaw 产品",
+              "desc": "OpenClaw 是什么、星标，以及产品卡上的 Grok 4.7 切换。",
+              "link": "/apps/free/openclaw",
+              "cta": "OpenClaw 卡"
+            },
+            {
+              "emoji": "✨",
+              "title": "GPT-6 Astra",
+              "desc": "同一台 OpenClaw 上的 OpenAI 前线模型：openclaw models set openai/gpt-6-astra。",
+              "link": "/learn/gpt-6-astra",
+              "cta": "Astra 教程"
+            },
+            {
+              "emoji": "🌐",
+              "title": "OpenRouter",
+              "desc": "x-ai/grok-4.7 的路由路径，也有 Gemini 与 Nemotron。",
+              "link": "/learn/openrouter",
+              "cta": "OpenRouter 指南"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "可以用 Ollama 本地跑 Grok 4.7 吗？",
+          "a": "不行。Grok 4.7 是托管的 xAI 模型。本地 OpenClaw 请走 Ollama、oMLX 或 Nemotron 3 Super。"
+        },
+        {
+          "q": "这跟 Grok Bot 是同一页吗？",
+          "a": "不是。Grok Bot 是托管的 xAI 队友（另开 P0）。这一页是 `grok-4.7` 模型 ID。"
+        },
+        {
+          "q": "还需要 Grok 4.6 页吗？",
+          "a": "不用。4.6 同样 $2/$6 标价、同样 50 万窗。CanFly.ai 把 4.7 当现役卡。"
+        },
+        {
+          "q": "Grok 4.7 Fast 在哪？",
+          "a": "Fast 只在 Cursor / Grok Build。不要在 CanFly.ai 另开 Fast 页。"
+        },
+        {
+          "q": "Grok 4.7 上 OpenRouter 了吗？",
+          "a": "上了。slug 是 `x-ai/grok-4.7`。官方 OpenClaw 仍优先 xAI provider：`openclaw models set xai/grok-4.7`。"
+        },
+        {
+          "q": "多少钱？",
+          "a": "xAI 标价在 prompt 未满 20 万 token：每百万输入 $2 / 缓存 $0.50 / 输出 $6。达到或超过 20 万，整笔 $4 / $1 / $12。出量前核对 https://docs.x.ai/developers/models/grok-4.7。"
+        },
+        {
+          "q": "设置还写 xai/auto",
+          "a": "那个别名已退役。跑 `openclaw doctor --fix`，或 `openclaw models set xai/grok-4.7`。"
         }
       ]
     }

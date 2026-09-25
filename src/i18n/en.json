@@ -776,16 +776,17 @@
       },
       "openclaw": {
         "tagline": "Your personal AI agent — your AI, your rules",
-        "description": "The open-source personal AI agent platform with ~388K GitHub stars. Install with one command, then customize with skills, tools, and integrations. The 2.0 line (v2026.8.1–v2026.9.1) adds guided setup, a rebuilt Control UI, and Shared Cloud Sessions. When your OpenAI account has GPT-6 Astra, switch with `openclaw models set openai/gpt-6-astra`. Add a local tool-call firewall with Harden AIF: `aif configure --agent openclaw --validate`. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
+        "description": "The open-source personal AI agent platform with ~390K GitHub stars. Install with one command, then customize with skills, tools, and integrations. The 2.0 line (v2026.8.1–v2026.9.6) adds guided setup, a rebuilt Control UI, and Shared Cloud Sessions. Fresh xAI / Grok setup defaults to Grok 4.7: `openclaw models set xai/grok-4.7`. When your OpenAI account has GPT-6 Astra, switch with `openclaw models set openai/gpt-6-astra`. Add a local tool-call firewall with Harden AIF: `aif configure --agent openclaw --validate`. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
         "features": [
           "One-command install: ollama launch openclaw",
-          "~388K GitHub stars — largest AI agent community",
+          "~390K GitHub stars — largest AI agent community",
           "Skill marketplace with 180K+ community skills",
-          "Works with any LLM: local (Ollama) or cloud (GPT-6 Astra, Claude)",
+          "Works with any LLM: local (Ollama) or cloud (Grok 4.7, GPT-6 Astra, Claude)",
+          "Switch to Grok 4.7: openclaw models set xai/grok-4.7",
           "Switch to Astra: openclaw models set openai/gpt-6-astra",
           "Local firewall: Harden AIF (`aif configure --agent openclaw --validate`)",
           "Full privacy: runs 100% on your hardware",
-          "v2026.9.1: in-chat Mermaid, Android chat, update rollback"
+          "v2026.9.6: Grok 4.7 default, Astra, managed updates"
         ],
         "ctaPrimary": "Install OpenClaw",
         "ctaSecondary": "Visit openclaw.ai"
@@ -879,6 +880,21 @@
         ],
         "ctaPrimary": "Open the Tutorial",
         "ctaSecondary": "Official docs"
+      },
+      "grok-4-7": {
+        "tagline": "xAI frontier model — OpenClaw's default Grok",
+        "description": "xAI's Grok 4.7 is the current frontier ID for coding, agent work, and knowledge tasks. Official model ID `grok-4.7`: 500,000-token context, text and image in, text out. Reasoning efforts are `low` / `medium` / `high` (default) / `xhigh`. On CanFly.ai we wire it to OpenClaw with `openclaw models set xai/grok-4.7`. Fresh xAI OAuth or API-key setup already defaults here. OpenRouter lists `x-ai/grok-4.7`. Grok 4.6 is the same price and window; this page is the current card. Not Grok Bot, and not a Grok 4.7 Fast page (Fast stays in Cursor / Grok Build).",
+        "features": [
+          "Official ID grok-4.7 — 500K context; alias grok-4.7-latest",
+          "Text + image input; function calling and structured outputs",
+          "OpenClaw: openclaw models set xai/grok-4.7",
+          "Reasoning: low / medium / high (default) / xhigh",
+          "xAI list price $2 / $0.50 cached / $6 per 1M; doubles at ≥200k prompt",
+          "OpenRouter slug x-ai/grok-4.7 — do not open a Fast page",
+          "Old xai/auto configs: openclaw doctor --fix"
+        ],
+        "ctaPrimary": "Open the Tutorial",
+        "ctaSecondary": "xAI model card"
       }
     },
     "comingSoon": "Coming Soon",
@@ -3750,6 +3766,13 @@
             "All data stays private with local models"
           ],
           "nextStepCards": [
+            {
+              "emoji": "⚡",
+              "title": "Grok 4.7",
+              "desc": "OpenClaw's default Grok: openclaw models set xai/grok-4.7.",
+              "cta": "Grok 4.7 tutorial",
+              "link": "/learn/grok-4-7"
+            },
             {
               "emoji": "✨",
               "title": "GPT-6 Astra",
@@ -7421,11 +7444,11 @@
               "cta": "OpenRouter guide"
             },
             {
-              "emoji": "🆓",
-              "title": "Nemotron 3 Super",
-              "desc": "Free open-source agent model while you wait on Astra access.",
-              "link": "/learn/nemotron-3-super",
-              "cta": "Nemotron tutorial"
+              "emoji": "⚡",
+              "title": "Grok 4.7",
+              "desc": "xAI frontier model and OpenClaw's default Grok: openclaw models set xai/grok-4.7.",
+              "link": "/learn/grok-4-7",
+              "cta": "Grok 4.7 tutorial"
             }
           ]
         }
@@ -7648,6 +7671,13 @@
               "cta": "Skills tutorial"
             },
             {
+              "emoji": "⚡",
+              "title": "Grok 4.7",
+              "desc": "Hosted xAI brain after the firewall is on: openclaw models set xai/grok-4.7.",
+              "link": "/learn/grok-4-7",
+              "cta": "Grok 4.7 tutorial"
+            },
+            {
               "emoji": "✨",
               "title": "GPT-6 Astra",
               "desc": "Hosted OpenClaw brain after the firewall is on: openclaw models set openai/gpt-6-astra.",
@@ -7677,6 +7707,248 @@
         {
           "q": "What does AIF send home?",
           "a": "Official trust notes: no code, commands, file paths, or prompts. Anonymous counters only (version, OS/arch, adapters, decision/block counts). Inspect with `aif telemetry show`. Opt out with `AIF_NO_TELEMETRY=1`."
+        }
+      ]
+    },
+    "grok47": {
+      "title": "Grok 4.7 — Switch OpenClaw in 5 Minutes",
+      "subtitle": "Official grok-4.7 on xAI — OpenClaw's default Grok. Not Grok Bot, not Grok 4.6, not Fast.",
+      "duration": "5 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "What Grok 4.7 is",
+          "titleEn": "What Grok 4.7 is",
+          "estimatedTime": "1 min",
+          "content": "Grok 4.7 is xAI's current frontier model for coding, agentic tasks, and knowledge work. On CanFly.ai this page is the model card. Keep Grok Bot on its own queued page. Do not open a Grok 4.6 page — 4.6 is the same price and 500K window; treat 4.7 as current and mention 4.6 in one line.\n\nOfficial facts: model ID `grok-4.7` (alias `grok-4.7-latest`), 500,000-token context, text and image in, text out. Function calling and structured outputs are on. Reasoning efforts are `low`, `medium`, `high` (default), and `xhigh`. Reasoning cannot be turned off. Knowledge cutoff is May 2026. Batch API is not supported.",
+          "commands": [
+            "# Official model ID",
+            "grok-4.7",
+            "",
+            "# Alias",
+            "grok-4.7-latest",
+            "",
+            "# Context (xAI model card)",
+            "# 500,000 tokens",
+            "",
+            "# Product page on CanFly.ai",
+            "# /apps/models/grok-4-7",
+            "",
+            "# xAI model card",
+            "https://docs.x.ai/developers/models/grok-4.7"
+          ],
+          "expectedResult": "You know Grok 4.7 is a hosted xAI model for agents — not a local Ollama pull, not Grok Bot, and not Fast.",
+          "tips": [
+            "Grok 4.6 stays selectable in OpenClaw at the same $2/$6 list price. This page is the current card.",
+            "Grok 4.7 Fast is Cursor / Grok Build only. Do not invent a Fast slug on CanFly.ai.",
+            "Do not invent a local ollama pull — Grok 4.7 is hosted."
+          ],
+          "troubleshooting": {
+            "title": "Scope",
+            "items": [
+              {
+                "q": "Is this the same as Grok Bot?",
+                "a": "No. Grok Bot is a hosted xAI teammate (separate P0). Grok 4.7 is the model ID you point OpenClaw at."
+              },
+              {
+                "q": "Should I still read a Grok 4.6 page?",
+                "a": "No. CanFly.ai does not open a 4.6 page. Same price, same 500K window — use this 4.7 tutorial."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Sign in to xAI",
+          "titleEn": "Sign in to xAI",
+          "estimatedTime": "2 min",
+          "content": "OpenClaw's bundled xAI plugin prefers Grok OAuth with an eligible SuperGrok or X Premium subscription. Gateway, config, routing, and tools stay local; only Grok requests go to xAI. OAuth does not need an xAI Console key.\n\nThe API-key path still works for Console keys and for media surfaces that need key-backed config. Both fresh setup paths default to `xai/grok-4.7`.",
+          "commands": [
+            "# New install — pick xAI / Grok OAuth at the model step",
+            "openclaw onboard --install-daemon",
+            "",
+            "# VPS / SSH — device-code OAuth, no localhost callback",
+            "openclaw onboard --install-daemon --auth-choice xai-oauth",
+            "",
+            "# Existing install — sign in only",
+            "openclaw models auth login --provider xai --method oauth",
+            "",
+            "# API-key path (Console key)",
+            "openclaw models auth login --provider xai --method api-key",
+            "export XAI_API_KEY=xai-...",
+            "",
+            "# xAI console",
+            "https://console.x.ai/"
+          ],
+          "expectedResult": "openclaw models auth list --provider xai shows an OAuth or API-key profile. Fresh setups pick xai/grok-4.7 as the curated default.",
+          "tips": [
+            "OAuth login preserves an existing primary model. Opt in with `openclaw models set xai/grok-4.7` when you want the new default.",
+            "xAI decides which accounts can receive OAuth API tokens. If the account is not eligible, use the API-key path.",
+            "Never paste XAI_API_KEY into git, screenshots, or a CanFly.ai issue."
+          ],
+          "troubleshooting": {
+            "title": "Access",
+            "items": [
+              {
+                "q": "OAuth works on my laptop but not on a VPS",
+                "a": "Use `openclaw models auth login --provider xai --method oauth`. Remote login uses device-code verification, not a localhost callback."
+              },
+              {
+                "q": "Sign-in succeeds but Grok is not the default",
+                "a": "OAuth preserves your current primary. Run `openclaw models set xai/grok-4.7`."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Point OpenClaw at Grok 4.7",
+          "titleEn": "Point OpenClaw at Grok 4.7",
+          "estimatedTime": "1 min",
+          "content": "OpenClaw's official xAI provider page uses one command. Existing `xai/auto` selections are retired — `openclaw doctor --fix` rewrites them to `xai/grok-4.7` without dropping account pins or custom endpoints.\n\nNeed OpenClaw first? Install it from the CanFly.ai guide, then come back.",
+          "commands": [
+            "# Official OpenClaw switch (docs.openclaw.ai/providers/xai)",
+            "openclaw models set xai/grok-4.7",
+            "",
+            "# Retired xai/auto → grok-4.7",
+            "openclaw doctor --fix",
+            "",
+            "# Confirm",
+            "openclaw models status",
+            "openclaw models auth list --provider xai",
+            "",
+            "# If OpenClaw is not installed yet",
+            "# See /learn/ollama-openclaw",
+            "ollama launch openclaw"
+          ],
+          "expectedResult": "OpenClaw lists xai/grok-4.7 as the active model, or doctor reports it replaced xai/auto.",
+          "tips": [
+            "Config shape: agents.defaults.model.primary = \"xai/grok-4.7\".",
+            "OpenClaw talks to xAI over the Responses API. The same credential also powers web_search (provider grok), x_search, and code_execution.",
+            "This is a cloud bill. For a free local path stay on /learn/ollama or /learn/nemotron-3-super."
+          ],
+          "troubleshooting": {
+            "title": "OpenClaw",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "Install OpenClaw first: /learn/ollama-openclaw or `ollama launch openclaw`. Then rerun `openclaw models set xai/grok-4.7`."
+              },
+              {
+                "q": "Gateway log says the OAuth profile could not be resolved",
+                "a": "The refresh token expired or was revoked. Rerun the sign-in command on the Gateway host. An existing API key can still supply the API catalog."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Reasoning, price, and OpenRouter",
+          "titleEn": "Reasoning, price, and OpenRouter",
+          "estimatedTime": "1 min",
+          "content": "Thinking levels follow xAI's release rule: Grok 4.6 and later accept `low`, `medium`, `high`, and `xhigh`. Default is `high`. Variant IDs such as `-fast` keep reasoning effort off — and Fast is not a CanFly.ai page.\n\nxAI list price below 200k prompt tokens: $2 input / $0.50 cached / $6 output per 1M. At or above 200k, the whole request doubles to $4 / $1 / $12. OpenRouter lists `x-ai/grok-4.7` with its own routed price — confirm the OpenRouter card before you ship traffic there.",
+          "commands": [
+            "# xAI pricing (docs.x.ai/developers/models/grok-4.7)",
+            "# < 200k prompt: $2 / $0.50 cached / $6 per 1M",
+            "# ≥ 200k prompt: $4 / $1 / $12 per 1M",
+            "",
+            "# OpenRouter slug",
+            "x-ai/grok-4.7",
+            "",
+            "# OpenRouter card",
+            "https://openrouter.ai/x-ai/grok-4.7",
+            "",
+            "# OpenClaw OpenRouter path (already on CanFly.ai)",
+            "# /learn/openrouter",
+            "# /apps/free/openrouter"
+          ],
+          "expectedResult": "You can pick xAI Console billing or OpenRouter `x-ai/grok-4.7`, and you know Fast is not a third page.",
+          "tips": [
+            "OpenClaw's flat catalog cost fields record the short-context xAI rates. Long-context traffic still bills at the higher tier.",
+            "Responses API always returns encrypted reasoning content for grok-4.7, even when you did not ask for it.",
+            "Long URLs stay in this command list so the English page does not overflow."
+          ],
+          "troubleshooting": {
+            "title": "Billing",
+            "items": [
+              {
+                "q": "Why is OpenRouter cheaper than the xAI card?",
+                "a": "OpenRouter publishes its own routed list price. Pin official xAI numbers for Console keys; check the OpenRouter card for `x-ai/grok-4.7`."
+              },
+              {
+                "q": "Can I turn reasoning off?",
+                "a": "No. Grok 4.7 reasoning cannot be turned off. Fast variants keep effort off, but Fast is not this page."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Next steps on CanFly.ai",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 min",
+          "content": "Grok 4.7 is the hosted xAI brain. Pair it with an OpenClaw install, Astra if your OpenAI account already has it, or a local model for drafts. Harden AIF can sit in front of tool calls. Grok Bot stays a separate queued page.",
+          "tips": [
+            "Review video is pending (no HEYGEN_API_KEY on this run). English script: content/scripts/grok-4-7-review-en.txt",
+            "Watch the xAI or OpenRouter bill — filling a 500K window is not a free local pull.",
+            "When Grok 4.8 ships, update this page. Do not open a rumor slug."
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "Install OpenClaw",
+              "desc": "One-command OpenClaw setup with Ollama, then come back to set Grok 4.7.",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw tutorial"
+            },
+            {
+              "emoji": "📦",
+              "title": "OpenClaw product",
+              "desc": "What OpenClaw is, stars, and the Grok 4.7 switch on the apps card.",
+              "link": "/apps/free/openclaw",
+              "cta": "OpenClaw card"
+            },
+            {
+              "emoji": "✨",
+              "title": "GPT-6 Astra",
+              "desc": "OpenAI frontier model on the same OpenClaw host: openclaw models set openai/gpt-6-astra.",
+              "link": "/learn/gpt-6-astra",
+              "cta": "Astra tutorial"
+            },
+            {
+              "emoji": "🌐",
+              "title": "OpenRouter",
+              "desc": "Routed path for x-ai/grok-4.7 plus Gemini and Nemotron.",
+              "link": "/learn/openrouter",
+              "cta": "OpenRouter guide"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Can I run Grok 4.7 locally with Ollama?",
+          "a": "No. Grok 4.7 is a hosted xAI model. For local OpenClaw stay on Ollama, oMLX, or Nemotron 3 Super."
+        },
+        {
+          "q": "Is this the same page as Grok Bot?",
+          "a": "No. Grok Bot is a hosted xAI teammate (separate P0). This page is the `grok-4.7` model ID."
+        },
+        {
+          "q": "Do I need a Grok 4.6 page?",
+          "a": "No. 4.6 is the same $2/$6 list price and 500K window. CanFly.ai keeps 4.7 as the current card."
+        },
+        {
+          "q": "Where is Grok 4.7 Fast?",
+          "a": "Fast is Cursor / Grok Build only. Do not open a Fast page on CanFly.ai."
+        },
+        {
+          "q": "Is Grok 4.7 on OpenRouter?",
+          "a": "Yes. The slug is `x-ai/grok-4.7`. Official OpenClaw still prefers the xAI provider: `openclaw models set xai/grok-4.7`."
+        },
+        {
+          "q": "How much does it cost?",
+          "a": "xAI list price below 200k prompt tokens: $2 input / $0.50 cached / $6 output per 1M. At or above 200k, the whole request is $4 / $1 / $12. Confirm https://docs.x.ai/developers/models/grok-4.7 before you ship traffic."
+        },
+        {
+          "q": "My config still says xai/auto",
+          "a": "That alias is retired. Run `openclaw doctor --fix` or set `openclaw models set xai/grok-4.7`."
         }
       ]
     }

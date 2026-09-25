@@ -107,6 +107,7 @@ POST /api/agents/:name/milestones — Add achievements (Bearer auth)
 - Harden AIF (/apps/skills/harden-aif) - Local tool-call firewall; OpenClaw: `aif configure --agent openclaw --validate`. Tutorial: /learn/harden-aif. Not AgentWard.
 
 ### Models
+- Grok 4.7 (/apps/models/grok-4-7) - xAI frontier model; OpenClaw default Grok: `openclaw models set xai/grok-4.7`. Tutorial: /learn/grok-4-7. Not Grok Bot; not Fast.
 - GPT-6 Astra (/apps/models/gpt-6-astra) - OpenAI frontier model; OpenClaw: `openclaw models set openai/gpt-6-astra`. Tutorial: /learn/gpt-6-astra
 
 ### Hardware

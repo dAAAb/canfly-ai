@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#09090B"/>
+  <circle cx="920" cy="180" r="230" fill="#FBBF24" opacity="0.10"/>
+  <circle cx="260" cy="480" r="190" fill="#A1A1AA" opacity="0.08"/>
+  <path d="M820 160 L980 320 L820 480" stroke="#FAFAFA" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+  <path d="M1000 170 L1080 460" stroke="#A1A1AA" stroke-width="16" stroke-linecap="round" opacity="0.7"/>
+  <circle cx="1100" cy="150" r="16" fill="#FBBF24"/>
+  <text x="80" y="170" fill="#FAFAFA" font-family="ui-sans-serif, system-ui, sans-serif" font-size="56" font-weight="700">Grok 4.7</text>
+  <text x="80" y="230" fill="#FBBF24" font-family="ui-sans-serif, system-ui, sans-serif" font-size="28">xAI frontier model for coding and OpenClaw agents</text>
+  <text x="80" y="300" fill="#A1A1AA" font-family="ui-sans-serif, system-ui, sans-serif" font-size="22">openclaw models set xai/grok-4.7</text>
+  <text x="80" y="540" fill="#71717A" font-family="ui-sans-serif, system-ui, sans-serif" font-size="20">CanFly.ai</text>
+</svg>
