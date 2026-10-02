@@ -2043,6 +2043,73 @@ function createGrok47Tutorial(t: any): TutorialData {
   }
 }
 
+function createMuseGlimmerTutorial(t: any): TutorialData {
+  return {
+    id: 'muse-glimmer',
+    title: t('tutorial.museGlimmer.title'),
+    subtitle: t('tutorial.museGlimmer.subtitle'),
+    duration: t('tutorial.museGlimmer.duration'),
+    difficulty: t('tutorial.museGlimmer.difficulty'),
+    faq: t('tutorial.museGlimmer.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Globe,
+        title: t('tutorial.museGlimmer.steps.0.title'),
+        titleEn: t('tutorial.museGlimmer.steps.0.titleEn'),
+        estimatedTime: t('tutorial.museGlimmer.steps.0.estimatedTime'),
+        content: t('tutorial.museGlimmer.steps.0.content'),
+        commands: t('tutorial.museGlimmer.steps.0.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.museGlimmer.steps.0.expectedResult'),
+        tips: t('tutorial.museGlimmer.steps.0.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.museGlimmer.steps.0.troubleshooting.title'), items: t('tutorial.museGlimmer.steps.0.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Cpu,
+        title: t('tutorial.museGlimmer.steps.1.title'),
+        titleEn: t('tutorial.museGlimmer.steps.1.titleEn'),
+        estimatedTime: t('tutorial.museGlimmer.steps.1.estimatedTime'),
+        content: t('tutorial.museGlimmer.steps.1.content'),
+        commands: t('tutorial.museGlimmer.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.museGlimmer.steps.1.expectedResult'),
+        tips: t('tutorial.museGlimmer.steps.1.tips', { returnObjects: true }),
+        modelTable: t('tutorial.museGlimmer.steps.1.modelTable.models', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.museGlimmer.steps.1.troubleshooting.title'), items: t('tutorial.museGlimmer.steps.1.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Terminal,
+        title: t('tutorial.museGlimmer.steps.2.title'),
+        titleEn: t('tutorial.museGlimmer.steps.2.titleEn'),
+        estimatedTime: t('tutorial.museGlimmer.steps.2.estimatedTime'),
+        content: t('tutorial.museGlimmer.steps.2.content'),
+        commands: t('tutorial.museGlimmer.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.museGlimmer.steps.2.expectedResult'),
+        tips: t('tutorial.museGlimmer.steps.2.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.museGlimmer.steps.2.troubleshooting.title'), items: t('tutorial.museGlimmer.steps.2.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Sparkles,
+        title: t('tutorial.museGlimmer.steps.3.title'),
+        titleEn: t('tutorial.museGlimmer.steps.3.titleEn'),
+        estimatedTime: t('tutorial.museGlimmer.steps.3.estimatedTime'),
+        content: t('tutorial.museGlimmer.steps.3.content'),
+        commands: t('tutorial.museGlimmer.steps.3.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.museGlimmer.steps.3.expectedResult'),
+        tips: t('tutorial.museGlimmer.steps.3.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.museGlimmer.steps.3.troubleshooting.title'), items: t('tutorial.museGlimmer.steps.3.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.museGlimmer.steps.4.title'),
+        titleEn: t('tutorial.museGlimmer.steps.4.titleEn'),
+        estimatedTime: t('tutorial.museGlimmer.steps.4.estimatedTime'),
+        content: t('tutorial.museGlimmer.steps.4.content'),
+        tips: t('tutorial.museGlimmer.steps.4.tips', { returnObjects: true }),
+        nextStepCards: t('tutorial.museGlimmer.steps.4.nextStepCards', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
 function createHardenAifTutorial(t: any): TutorialData {
   return {
     id: 'harden-aif',
@@ -2588,6 +2655,7 @@ function getTutorials(t: any): Record<string, TutorialData> {
     'nemotron-3-super': createNemotronTutorial(t),
     'gpt-6-astra': createGpt6AstraTutorial(t),
     'grok-4-7': createGrok47Tutorial(t),
+    'muse-glimmer': createMuseGlimmerTutorial(t),
     'harden-aif': createHardenAifTutorial(t),
     whisper: createWhisperTutorial(t),
     basemail: createBasemailTutorial(t),

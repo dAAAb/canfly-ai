@@ -109,6 +109,7 @@ POST /api/agents/:name/milestones — Add achievements (Bearer auth)
 ### Models
 - Grok 4.7 (/apps/models/grok-4-7) - xAI frontier model; OpenClaw default Grok: `openclaw models set xai/grok-4.7`. Tutorial: /learn/grok-4-7. Not Grok Bot; not Fast.
 - GPT-6 Astra (/apps/models/gpt-6-astra) - OpenAI frontier model; OpenClaw: `openclaw models set openai/gpt-6-astra`. Tutorial: /learn/gpt-6-astra
+- Muse Glimmer (/apps/models/muse-glimmer) - Meta Superintelligence Labs open 30B local agent model; OpenClaw: `ollama launch openclaw --model muse-glimmer`. Tutorial: /learn/muse-glimmer. Not Spark; not Qwen 3.8; not Muse Code / DSH.
 
 ### Hardware
 - Umbrel (/apps/hardware/umbrel) - Self-hosted home AI server

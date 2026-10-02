@@ -1,0 +1,9 @@
+Hi, I'm JU CHUN KO.
+
+Cloud agent models are fast, but every tool call leaves your machine. If you want an always-on OpenClaw that stays local, you need a model built for agents — not a generic chat checkpoint.
+
+Muse Glimmer is Meta Superintelligence Labs' open 30B. Apache 2.0. Text and image in. Tool use, long tasks, and failure recovery. On CanFly.ai we pin the official Ollama path: ollama launch openclaw --model muse-glimmer.
+
+Apple Silicon can use muse-glimmer:30b-mlx for DFlash. OpenRouter lists meta/muse-glimmer-30b if you need a hosted fallback. This is not Muse Spark, not Qwen 3.8, and not a Muse Code page.
+
+I made a tutorial on CanFly.ai — go try it.
