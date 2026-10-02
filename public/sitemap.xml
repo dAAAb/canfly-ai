@@ -700,6 +700,64 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- Muse Glimmer (2026-10-02) -->
+  <url>
+    <loc>https://canfly.ai/apps/models/muse-glimmer</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/models/muse-glimmer" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/models/muse-glimmer" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/models/muse-glimmer" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/apps/models/muse-glimmer" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/apps/models/muse-glimmer</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/models/muse-glimmer" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/models/muse-glimmer" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/models/muse-glimmer" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/apps/models/muse-glimmer</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/models/muse-glimmer" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/models/muse-glimmer" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/models/muse-glimmer" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/learn/muse-glimmer</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/muse-glimmer" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/muse-glimmer" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/muse-glimmer" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/learn/muse-glimmer" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/learn/muse-glimmer</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/muse-glimmer" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/muse-glimmer" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/muse-glimmer" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/learn/muse-glimmer</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/muse-glimmer" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/muse-glimmer" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/muse-glimmer" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- Harden AIF (2026-09-22) -->
   <url>
     <loc>https://canfly.ai/apps/skills/harden-aif</loc>

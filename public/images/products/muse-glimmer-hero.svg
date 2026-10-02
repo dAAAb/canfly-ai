@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#042F2E"/>
+  <circle cx="920" cy="160" r="230" fill="#2DD4BF" opacity="0.18"/>
+  <circle cx="240" cy="500" r="200" fill="#5EEAD4" opacity="0.10"/>
+  <circle cx="980" cy="300" r="90" stroke="#99F6E4" stroke-width="6" opacity="0.55"/>
+  <circle cx="980" cy="300" r="48" stroke="#5EEAD4" stroke-width="4"/>
+  <circle cx="980" cy="300" r="14" fill="#F8FAFC"/>
+  <text x="72" y="168" fill="#F8FAFC" font-family="ui-sans-serif, system-ui, sans-serif" font-size="56" font-weight="700">Muse Glimmer</text>
+  <text x="72" y="228" fill="#5EEAD4" font-family="ui-sans-serif, system-ui, sans-serif" font-size="26">Open 30B local agent model × OpenClaw</text>
+  <text x="72" y="300" fill="#CCFBF1" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22">ollama launch openclaw --model muse-glimmer</text>
+  <text x="72" y="540" fill="#99F6E4" font-family="ui-sans-serif, system-ui, sans-serif" font-size="20">CanFly.ai</text>
+</svg>

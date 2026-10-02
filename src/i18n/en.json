@@ -449,13 +449,14 @@
     "products": {
       "ollama": {
         "tagline": "Free Local & Cloud AI Models × OpenClaw",
-        "description": "Run AI models locally or in the cloud. Install OpenClaw with one command: ollama launch openclaw. Free cloud models included — no GPU needed. Upgrade to Pro ($20/mo) for unlimited usage.",
+        "description": "Run AI models locally or in the cloud. Install OpenClaw with one command: ollama launch openclaw. For Meta's local 30B agent model use `ollama launch openclaw --model muse-glimmer` — see /apps/models/muse-glimmer. Qwen 3.8 stays on this Ollama page. Free cloud models included — no GPU needed. Upgrade to Pro ($20/mo) for unlimited usage.",
         "features": [
           "One-line OpenClaw install: ollama launch openclaw",
+          "Local agent model: ollama launch openclaw --model muse-glimmer",
           "Free cloud models — no GPU required",
           "Privacy-focused local processing",
           "Cloud models: kimi-k2.5, minimax-m2.5, glm-5",
-          "Local models: glm-4.7-flash, Llama, Mistral",
+          "Local models: Muse Glimmer, glm-4.7-flash, Llama, Mistral",
           "Pro $20/mo for daily work, Max for heavy usage",
           "Works with OpenClaw agents"
         ],
@@ -776,14 +777,15 @@
       },
       "openclaw": {
         "tagline": "Your personal AI agent — your AI, your rules",
-        "description": "The open-source personal AI agent platform with ~390K GitHub stars. Install with one command, then customize with skills, tools, and integrations. The 2.0 line (v2026.8.1–v2026.9.6) adds guided setup, a rebuilt Control UI, and Shared Cloud Sessions. Fresh xAI / Grok setup defaults to Grok 4.7: `openclaw models set xai/grok-4.7`. When your OpenAI account has GPT-6 Astra, switch with `openclaw models set openai/gpt-6-astra`. Add a local tool-call firewall with Harden AIF: `aif configure --agent openclaw --validate`. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
+        "description": "The open-source personal AI agent platform with ~390K GitHub stars. Install with one command, then customize with skills, tools, and integrations. The 2.0 line (v2026.8.1–v2026.9.6) adds guided setup, a rebuilt Control UI, and Shared Cloud Sessions. Fresh xAI / Grok setup defaults to Grok 4.7: `openclaw models set xai/grok-4.7`. When your OpenAI account has GPT-6 Astra, switch with `openclaw models set openai/gpt-6-astra`. Local Meta 30B: `ollama launch openclaw --model muse-glimmer` — /apps/models/muse-glimmer. Add a local tool-call firewall with Harden AIF: `aif configure --agent openclaw --validate`. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
         "features": [
           "One-command install: ollama launch openclaw",
           "~390K GitHub stars — largest AI agent community",
           "Skill marketplace with 180K+ community skills",
-          "Works with any LLM: local (Ollama) or cloud (Grok 4.7, GPT-6 Astra, Claude)",
+          "Works with any LLM: local (Ollama / Muse Glimmer) or cloud (Grok 4.7, GPT-6 Astra, Claude)",
           "Switch to Grok 4.7: openclaw models set xai/grok-4.7",
           "Switch to Astra: openclaw models set openai/gpt-6-astra",
+          "Local Muse Glimmer: ollama launch openclaw --model muse-glimmer",
           "Local firewall: Harden AIF (`aif configure --agent openclaw --validate`)",
           "Full privacy: runs 100% on your hardware",
           "v2026.9.6: Grok 4.7 default, Astra, managed updates"
@@ -895,6 +897,21 @@
         ],
         "ctaPrimary": "Open the Tutorial",
         "ctaSecondary": "xAI model card"
+      },
+      "muse-glimmer": {
+        "tagline": "Open 30B local agent model — official Ollama × OpenClaw pin",
+        "description": "Muse Glimmer is Meta Superintelligence Labs' first open model: a 30-billion-parameter multimodal agent checkpoint (Apache 2.0), distilled from Muse Spark. On CanFly.ai we pin the official Ollama path: `ollama launch openclaw --model muse-glimmer`. Apple Silicon MLX uses `muse-glimmer:30b-mlx`. OpenRouter lists `meta/muse-glimmer-30b` at $0.30 / $1.10 per 1M. This is not Muse Spark, not Qwen 3.8 (that stays on the Ollama page), and not a Muse Code / DSH page.",
+        "features": [
+          "Official pin: ollama launch openclaw --model muse-glimmer",
+          "30B open weights, Apache 2.0; ~18GB download; 128K+ context",
+          "Text + image in; dedicated 1.8B perception encoder",
+          "Apple Silicon: ollama run muse-glimmer:30b-mlx (DFlash)",
+          "Reasoning: low / medium / high / xhigh",
+          "OpenRouter slug meta/muse-glimmer-30b — $0.30 / $1.10 per 1M",
+          "Not Spark, not Qwen 3.8, not Muse Code / DSH"
+        ],
+        "ctaPrimary": "Open the Tutorial",
+        "ctaSecondary": "Ollama library"
       }
     },
     "comingSoon": "Coming Soon",
@@ -1196,6 +1213,13 @@
               "desc": "Use ollama launch openclaw to auto-install and start OpenClaw with free cloud models. The fastest way to experience AI agents.",
               "cta": "Quick Start Guide",
               "link": "/learn/ollama-openclaw"
+            },
+            {
+              "emoji": "✨",
+              "title": "Muse Glimmer",
+              "desc": "Local Meta 30B for OpenClaw: ollama launch openclaw --model muse-glimmer.",
+              "cta": "Glimmer tutorial",
+              "link": "/learn/muse-glimmer"
             },
             {
               "emoji": "☁️",
@@ -3766,6 +3790,13 @@
             "All data stays private with local models"
           ],
           "nextStepCards": [
+            {
+              "emoji": "✨",
+              "title": "Muse Glimmer",
+              "desc": "Local Meta 30B for OpenClaw: ollama launch openclaw --model muse-glimmer.",
+              "cta": "Glimmer tutorial",
+              "link": "/learn/muse-glimmer"
+            },
             {
               "emoji": "⚡",
               "title": "Grok 4.7",
@@ -7917,6 +7948,13 @@
               "desc": "Routed path for x-ai/grok-4.7 plus Gemini and Nemotron.",
               "link": "/learn/openrouter",
               "cta": "OpenRouter guide"
+            },
+            {
+              "emoji": "✨",
+              "title": "Muse Glimmer",
+              "desc": "Local Meta 30B for OpenClaw: ollama launch openclaw --model muse-glimmer.",
+              "cta": "Glimmer tutorial",
+              "link": "/learn/muse-glimmer"
             }
           ]
         }
@@ -7949,6 +7987,277 @@
         {
           "q": "My config still says xai/auto",
           "a": "That alias is retired. Run `openclaw doctor --fix` or set `openclaw models set xai/grok-4.7`."
+        }
+      ]
+    },
+    "museGlimmer": {
+      "title": "Muse Glimmer — Local OpenClaw in One Command",
+      "subtitle": "Official ollama launch openclaw --model muse-glimmer. Not Spark, not Qwen 3.8, not Muse Code.",
+      "duration": "8 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "What Muse Glimmer is",
+          "titleEn": "What Muse Glimmer is",
+          "estimatedTime": "2 min",
+          "content": "Muse Glimmer is Meta Superintelligence Labs' first open model (Ollama blog: 2026-08-10). It is a 30B multimodal checkpoint built for always-on local agents: tool use, long tasks, and failure recovery. Weights are Apache 2.0. On CanFly.ai this page is the model card.\n\nKeep these out of this URL: Muse Spark (cloud, closed weights), Qwen 3.8 (stays on /learn/ollama), and Muse Code / DSH (competitor harnesses, not OpenClaw skills).",
+          "commands": [
+            "# Official Ollama pin (CanFly.ai)",
+            "ollama launch openclaw --model muse-glimmer",
+            "",
+            "# Product page",
+            "# /apps/models/muse-glimmer",
+            "",
+            "# Ollama library",
+            "https://ollama.com/library/muse-glimmer",
+            "",
+            "# Ollama announcement",
+            "https://ollama.com/blog/muse-glimmer",
+            "",
+            "# Meta research post",
+            "https://research.meta.ai/blog/introducing-muse-glimmer-open-agentic-model"
+          ],
+          "expectedResult": "You know Glimmer is a local 30B OpenClaw engine — not Spark, not Qwen 3.8, and not a coding-harness page.",
+          "tips": [
+            "CanFly.ai pins `ollama launch openclaw --model muse-glimmer`. Do not invent a second slug.",
+            "Muse Spark stays on OpenRouter / OpenClaw cloud notes. This page is the local open-weight card.",
+            "Qwen 3.8 and Gemma 4 stay on the Ollama tutorial. Do not open extra model pages for them."
+          ],
+          "troubleshooting": {
+            "title": "Scope",
+            "items": [
+              {
+                "q": "Is this the same as Muse Spark?",
+                "a": "No. Spark is Meta's cloud API family (weights closed). Glimmer is the open 30B you run locally."
+              },
+              {
+                "q": "Should I use the Ollama page instead?",
+                "a": "Use /learn/ollama to install Ollama. Come here for the Glimmer × OpenClaw pin. Qwen 3.8 stays on the Ollama page."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Hardware and Ollama tags",
+          "titleEn": "Hardware and Ollama tags",
+          "estimatedTime": "2 min",
+          "content": "Ollama lists `muse-glimmer` / `muse-glimmer:30b` / `latest` at about 18GB, and `muse-glimmer:30b-mlx` at about 19GB. Context is 128K. Input is text and image.\n\nPlan for 24GB unified memory or VRAM as a practical floor (the weights alone are 18GB). 32GB is the comfortable OpenClaw + MLX setup. Install a current Ollama build before you pull.",
+          "commands": [
+            "# macOS / Linux — install Ollama if needed",
+            "curl -fsSL https://ollama.com/install.sh | sh",
+            "",
+            "# Default local tag (~18GB)",
+            "ollama run muse-glimmer",
+            "",
+            "# Apple Silicon MLX + DFlash (~19GB)",
+            "ollama run muse-glimmer:30b-mlx",
+            "",
+            "# Confirm the pull",
+            "ollama list"
+          ],
+          "expectedResult": "ollama list shows muse-glimmer or muse-glimmer:30b-mlx, and a chat prompt opens.",
+          "tips": [
+            "24GB machines can load the 18GB weights but will swap if OpenClaw and the browser are open. Prefer 32GB for always-on agents.",
+            "Need a machine? See /learn/hardware and /apps/hardware/mac-mini-m4.",
+            "Do not paste a markdown table here — the model table below is the source."
+          ],
+          "modelTable": {
+            "nameHeader": "Tag",
+            "sizeHeader": "Size",
+            "bestHeader": "Best for",
+            "speedHeader": "Notes",
+            "models": [
+              {
+                "name": "muse-glimmer",
+                "size": "18GB",
+                "best": "Local OpenClaw, text + image",
+                "speed": "Default llama.cpp tag"
+              },
+              {
+                "name": "muse-glimmer:30b",
+                "size": "18GB",
+                "best": "Same 30B weights, explicit tag",
+                "speed": "128K context"
+              },
+              {
+                "name": "muse-glimmer:30b-mlx",
+                "size": "19GB",
+                "best": "Apple Silicon + DFlash",
+                "speed": "About 1.5–1.8× faster"
+              }
+            ]
+          },
+          "troubleshooting": {
+            "title": "Hardware",
+            "items": [
+              {
+                "q": "ollama run dies with out of memory",
+                "a": "The 18GB weights need headroom. Close other models (`ollama stop`), then retry on 24GB+ RAM. 32GB is the safer OpenClaw host."
+              },
+              {
+                "q": "I only have 16GB",
+                "a": "Glimmer is the wrong card. Stay on /learn/ollama cloud models or a smaller local tag. Do not invent a 7B Glimmer slug."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Pin OpenClaw to Muse Glimmer",
+          "titleEn": "Pin OpenClaw to Muse Glimmer",
+          "estimatedTime": "2 min",
+          "content": "The official one-command path installs OpenClaw and selects Glimmer. Accept the security notice when Ollama asks.\n\nAlready have OpenClaw? Pull the model, then pick it under the Ollama provider in OpenClaw settings. CanFly.ai does not invent a second `openclaw models set` ID for Glimmer — the documented pin is `ollama launch openclaw --model muse-glimmer`.",
+          "commands": [
+            "# Official pin (ollama.com/blog/muse-glimmer)",
+            "ollama launch openclaw --model muse-glimmer",
+            "",
+            "# Already have OpenClaw? Pull, then choose the Ollama model in settings",
+            "ollama run muse-glimmer",
+            "",
+            "# Fresh OpenClaw without a model pin",
+            "ollama launch openclaw",
+            "",
+            "# OpenClaw tutorial on CanFly.ai",
+            "# /learn/ollama-openclaw"
+          ],
+          "expectedResult": "OpenClaw is running and the active local model is muse-glimmer (or you can select it in Ollama settings).",
+          "tips": [
+            "Need OpenClaw first? Follow /learn/ollama-openclaw, then come back to this pin.",
+            "Coding harnesses (`ollama launch claude --model muse-glimmer`) stay on this page as one line. Do not open a Claude Code page here.",
+            "Pair tool calls with Harden AIF when the agent can touch files or the shell: /learn/harden-aif."
+          ],
+          "troubleshooting": {
+            "title": "OpenClaw",
+            "items": [
+              {
+                "q": "ollama: command not found",
+                "a": "Install Ollama from /learn/ollama or `curl -fsSL https://ollama.com/install.sh | sh`. Then rerun `ollama launch openclaw --model muse-glimmer`."
+              },
+              {
+                "q": "OpenClaw is installed but still on a cloud model",
+                "a": "Pull `muse-glimmer`, open OpenClaw model settings, choose the Ollama provider, and select muse-glimmer."
+              }
+            ]
+          }
+        },
+        {
+          "title": "MLX, reasoning, and OpenRouter",
+          "titleEn": "MLX, reasoning, and OpenRouter",
+          "estimatedTime": "1 min",
+          "content": "On Apple Silicon, Ollama's MLX engine adds DFlash and image input. Use `muse-glimmer:30b-mlx` when you want the faster local path.\n\nReasoning strengths are `low`, `medium`, `high`, and `xhigh`. Use high / xhigh for long agent work; drop to low when you need speed.\n\nNeed a hosted fallback? OpenRouter slug `meta/muse-glimmer-30b` lists about $0.30 input / $1.10 output per 1M on the Phala card. Confirm the OpenRouter page before you ship traffic.",
+          "commands": [
+            "# Apple Silicon MLX",
+            "ollama run muse-glimmer:30b-mlx",
+            "",
+            "# Reasoning strengths (Ollama blog)",
+            "# low | medium | high | xhigh",
+            "",
+            "# OpenRouter slug",
+            "meta/muse-glimmer-30b",
+            "",
+            "# OpenRouter card",
+            "https://openrouter.ai/meta/muse-glimmer-30b",
+            "",
+            "# OpenRouter tutorial on CanFly.ai",
+            "# /learn/openrouter",
+            "# /apps/free/openrouter"
+          ],
+          "expectedResult": "You can pick local MLX, set a reasoning strength, or fall back to OpenRouter meta/muse-glimmer-30b.",
+          "tips": [
+            "Local Glimmer has no per-token bill. Filling 128K on OpenRouter is a cloud bill — watch the meter.",
+            "Hosted contrast: Grok 4.7 (`openclaw models set xai/grok-4.7`) and GPT-6 Astra stay on their own pages.",
+            "Long URLs stay in this command list so the English page does not overflow."
+          ],
+          "troubleshooting": {
+            "title": "Routes",
+            "items": [
+              {
+                "q": "Is OpenRouter the official OpenClaw pin?",
+                "a": "No. The CanFly.ai pin is `ollama launch openclaw --model muse-glimmer`. OpenRouter is the hosted fallback."
+              },
+              {
+                "q": "Why is Together more expensive than Phala?",
+                "a": "OpenRouter publishes per-provider list prices. Pin the OpenRouter card for `meta/muse-glimmer-30b` before you bill production traffic."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Next steps on CanFly.ai",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 min",
+          "content": "Glimmer is the local 30B brain. Pair it with an OpenClaw install, Ollama for other local tags, OpenRouter if you need a hosted copy, or Grok 4.7 when you want a cloud frontier model. Harden AIF can sit in front of tool calls.",
+          "tips": [
+            "Review video is pending (no HEYGEN_API_KEY on this run). English script: content/scripts/muse-glimmer-review-en.txt",
+            "32GB unified memory is the comfortable always-on setup. See /learn/hardware.",
+            "When Meta ships a new open Glimmer tag, update this page. Do not open a rumor slug."
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "Install OpenClaw",
+              "desc": "One-command OpenClaw setup, then come back to pin Muse Glimmer.",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw tutorial"
+            },
+            {
+              "emoji": "🦙",
+              "title": "Ollama",
+              "desc": "Install Ollama and keep Qwen 3.8 on that page. Glimmer lives here.",
+              "link": "/apps/free/ollama",
+              "cta": "Ollama card"
+            },
+            {
+              "emoji": "⚡",
+              "title": "Grok 4.7",
+              "desc": "Hosted xAI brain when local RAM is not enough: openclaw models set xai/grok-4.7.",
+              "link": "/learn/grok-4-7",
+              "cta": "Grok 4.7 tutorial"
+            },
+            {
+              "emoji": "🌐",
+              "title": "OpenRouter",
+              "desc": "Hosted fallback slug meta/muse-glimmer-30b plus other routed models.",
+              "link": "/learn/openrouter",
+              "cta": "OpenRouter guide"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "Local tool-call firewall: aif configure --agent openclaw --validate.",
+              "link": "/learn/harden-aif",
+              "cta": "AIF tutorial"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "What is the official OpenClaw command?",
+          "a": "`ollama launch openclaw --model muse-glimmer`. That is the CanFly.ai pin from the Ollama announcement."
+        },
+        {
+          "q": "Is this Muse Spark?",
+          "a": "No. Spark is Meta's cloud API (weights closed). Glimmer is the open 30B you run locally."
+        },
+        {
+          "q": "Should Qwen 3.8 be on this page?",
+          "a": "No. Qwen 3.8 stays on /learn/ollama. Do not fold it into Glimmer."
+        },
+        {
+          "q": "Is this Muse Code or DSH?",
+          "a": "No. Those are competitor harnesses (`ollama launch muse` / `ollama launch dsh`). This page is the Glimmer model × OpenClaw."
+        },
+        {
+          "q": "How much RAM do I need?",
+          "a": "Weights are about 18GB. Treat 24GB as a practical floor and 32GB as the comfortable OpenClaw + MLX host."
+        },
+        {
+          "q": "Is Muse Glimmer on OpenRouter?",
+          "a": "Yes. The slug is `meta/muse-glimmer-30b` (about $0.30 / $1.10 per 1M on the Phala list). Official OpenClaw still prefers the local Ollama pin."
+        },
+        {
+          "q": "I already installed OpenClaw. What now?",
+          "a": "Run `ollama run muse-glimmer`, then select that tag under the Ollama provider in OpenClaw settings."
         }
       ]
     }

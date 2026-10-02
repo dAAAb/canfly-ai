@@ -449,13 +449,14 @@
     "products": {
       "ollama": {
         "tagline": "免费本地 & 云端 AI 模型 × OpenClaw",
-        "description": "本地或云端跑 AI 模型。一行命令安装 OpenClaw：ollama launch openclaw。免费云端模型免 GPU，升级 Pro（$20/月）无限使用。",
+        "description": "本地或云端跑 AI 模型。一行命令安装 OpenClaw：ollama launch openclaw。本地 Meta 30B Agent 模型用 `ollama launch openclaw --model muse-glimmer` — 见 /apps/models/muse-glimmer。Qwen 3.8 留在这页。免费云端模型免 GPU，升级 Pro（$20/月）无限使用。",
         "features": [
           "一行安装 OpenClaw：ollama launch openclaw",
+          "本地 Agent 模型：ollama launch openclaw --model muse-glimmer",
           "免费云端模型 — 不需要 GPU",
           "隐私优先的本地运算",
           "云端模型：kimi-k2.5、minimax-m2.5、glm-5",
-          "本地模型：glm-4.7-flash、Llama、Mistral",
+          "本地模型：Muse Glimmer、glm-4.7-flash、Llama、Mistral",
           "Pro $20/月 日常工作、Max 重度使用",
           "支持 OpenClaw agents"
         ],
@@ -776,14 +777,15 @@
       },
       "openclaw": {
         "tagline": "你的个人 AI 代理 — 你的 AI，你的规则",
-        "description": "拥有约 390K GitHub 星标的开源个人 AI 代理平台。一行命令安装，自由搭配技能、工具和集成。2.0 线（v2026.8.1–v2026.9.6）加上引导式 setup、重建的 Control UI 与 Shared Cloud Sessions。全新 xAI / Grok 设置默认 Grok 4.7：`openclaw models set xai/grok-4.7`。OpenAI 账号若已有 GPT-6 Astra，用 `openclaw models set openai/gpt-6-astra` 切过去。本地 tool-call 防火墙用 Harden AIF：`aif configure --agent openclaw --validate`。在本地或云端运行。你的数据永远属于你 — 无厂商锁定、无订阅费、无限制。",
+        "description": "拥有约 390K GitHub 星标的开源个人 AI 代理平台。一行命令安装，自由搭配技能、工具和集成。2.0 线（v2026.8.1–v2026.9.6）加上引导式 setup、重建的 Control UI 与 Shared Cloud Sessions。全新 xAI / Grok 设置默认 Grok 4.7：`openclaw models set xai/grok-4.7`。OpenAI 账号若已有 GPT-6 Astra，用 `openclaw models set openai/gpt-6-astra` 切过去。本地 Meta 30B：`ollama launch openclaw --model muse-glimmer` — /apps/models/muse-glimmer。本地 tool-call 防火墙用 Harden AIF：`aif configure --agent openclaw --validate`。在本地或云端运行。你的数据永远属于你 — 无厂商锁定、无订阅费、无限制。",
         "features": [
           "一行命令安装：ollama launch openclaw",
           "约 390K GitHub 星标 — 最大 AI 代理社区",
           "技能市场：180K+ 社区技能",
-          "支持任何 LLM：本地 (Ollama) 或云端 (Grok 4.7, GPT-6 Astra, Claude)",
+          "支持任何 LLM：本地 (Ollama / Muse Glimmer) 或云端 (Grok 4.7, GPT-6 Astra, Claude)",
           "切到 Grok 4.7：openclaw models set xai/grok-4.7",
           "切到 Astra：openclaw models set openai/gpt-6-astra",
+          "本地 Muse Glimmer：ollama launch openclaw --model muse-glimmer",
           "本地防火墙：Harden AIF（`aif configure --agent openclaw --validate`）",
           "完全隐私：100% 在你的硬件上运行",
           "v2026.9.6：默认 Grok 4.7、Astra、托管更新"
@@ -895,6 +897,21 @@
         ],
         "ctaPrimary": "打开教程",
         "ctaSecondary": "xAI 模型卡"
+      },
+      "muse-glimmer": {
+        "tagline": "开源 30B 本地 Agent 模型 — 官方 Ollama × OpenClaw 接法",
+        "description": "Muse Glimmer 是 Meta Superintelligence Labs 第一颗开源模型：300 亿参数多模态 Agent 权重（Apache 2.0），从 Muse Spark 蒸馏而来。在 CanFly.ai 我们钉官方 Ollama 命令：`ollama launch openclaw --model muse-glimmer`。Apple Silicon 的 MLX 用 `muse-glimmer:30b-mlx`。OpenRouter 上架 `meta/muse-glimmer-30b`，标价每百万 $0.30 / $1.10。这不是 Muse Spark、不是 Qwen 3.8（那颗留在 Ollama 页），也不是 Muse Code / DSH 页。",
+        "features": [
+          "官方接法：ollama launch openclaw --model muse-glimmer",
+          "30B 开源权重，Apache 2.0；下载约 18GB；128K+ 上下文",
+          "文字 + 图片输入；独立 1.8B 感知编码器",
+          "Apple Silicon：ollama run muse-glimmer:30b-mlx（DFlash）",
+          "推理力度：low / medium / high / xhigh",
+          "OpenRouter slug：meta/muse-glimmer-30b — 每百万 $0.30 / $1.10",
+          "不是 Spark、不是 Qwen 3.8、不是 Muse Code / DSH"
+        ],
+        "ctaPrimary": "打开教程",
+        "ctaSecondary": "Ollama 模型库"
       }
     },
     "comingSoon": "即将推出",
@@ -1196,6 +1213,13 @@
               "desc": "用 ollama launch openclaw 自动安装启动 OpenClaw，免费云端模型马上用。最快体验 AI Agent 的方式。",
               "cta": "快速入门指南",
               "link": "/learn/ollama-openclaw"
+            },
+            {
+              "emoji": "✨",
+              "title": "Muse Glimmer",
+              "desc": "给 OpenClaw 的本地 Meta 30B：ollama launch openclaw --model muse-glimmer。",
+              "cta": "Glimmer 教程",
+              "link": "/learn/muse-glimmer"
             },
             {
               "emoji": "☁️",
@@ -3766,6 +3790,13 @@
             "本地模型的所有数据都留在你的电脑上"
           ],
           "nextStepCards": [
+            {
+              "emoji": "✨",
+              "title": "Muse Glimmer",
+              "desc": "给 OpenClaw 的本地 Meta 30B：ollama launch openclaw --model muse-glimmer。",
+              "cta": "Glimmer 教程",
+              "link": "/learn/muse-glimmer"
+            },
             {
               "emoji": "⚡",
               "title": "Grok 4.7",
@@ -7942,6 +7973,13 @@
               "desc": "x-ai/grok-4.7 的路由路径，也有 Gemini 与 Nemotron。",
               "link": "/learn/openrouter",
               "cta": "OpenRouter 指南"
+            },
+            {
+              "emoji": "✨",
+              "title": "Muse Glimmer",
+              "desc": "给 OpenClaw 的本地 Meta 30B：ollama launch openclaw --model muse-glimmer。",
+              "cta": "Glimmer 教程",
+              "link": "/learn/muse-glimmer"
             }
           ]
         }
@@ -7974,6 +8012,277 @@
         {
           "q": "设置还写 xai/auto",
           "a": "那个别名已退役。跑 `openclaw doctor --fix`，或 `openclaw models set xai/grok-4.7`。"
+        }
+      ]
+    },
+    "museGlimmer": {
+      "title": "Muse Glimmer — 一行命令跑本地 OpenClaw",
+      "subtitle": "官方 ollama launch openclaw --model muse-glimmer。不是 Spark、不是 Qwen 3.8、不是 Muse Code。",
+      "duration": "8 分钟",
+      "difficulty": "入门",
+      "steps": [
+        {
+          "title": "Muse Glimmer 是什么",
+          "titleEn": "What Muse Glimmer is",
+          "estimatedTime": "2 分钟",
+          "content": "Muse Glimmer 是 Meta Superintelligence Labs 第一颗开源模型（Ollama 公告：2026-08-10）。30B 多模态权重，面向长驻本地 Agent：工具调用、长任务、失败后重试。许可是 Apache 2.0。在 CanFly.ai 这一页就是模型卡。\n\n不要写进这个网址：Muse Spark（云端、权重不开放）、Qwen 3.8（留在 /learn/ollama）、以及 Muse Code / DSH（对手 harness，不是 OpenClaw 技能）。",
+          "commands": [
+            "# CanFly.ai 官方钉选",
+            "ollama launch openclaw --model muse-glimmer",
+            "",
+            "# 产品页",
+            "# /apps/models/muse-glimmer",
+            "",
+            "# Ollama 模型库",
+            "https://ollama.com/library/muse-glimmer",
+            "",
+            "# Ollama 公告",
+            "https://ollama.com/blog/muse-glimmer",
+            "",
+            "# Meta 研究文",
+            "https://research.meta.ai/blog/introducing-muse-glimmer-open-agentic-model"
+          ],
+          "expectedResult": "你知道 Glimmer 是本地 30B 的 OpenClaw 引擎 — 不是 Spark、不是 Qwen 3.8，也不是 coding harness 页。",
+          "tips": [
+            "CanFly.ai 钉 `ollama launch openclaw --model muse-glimmer`。不要自造第二个 slug。",
+            "Muse Spark 留在 OpenRouter／OpenClaw 云端备注。这一页是本地开源权重卡。",
+            "Qwen 3.8 与 Gemma 4 留在 Ollama 教程，不要另开模型页。"
+          ],
+          "troubleshooting": {
+            "title": "范围",
+            "items": [
+              {
+                "q": "这跟 Muse Spark 是同一页吗？",
+                "a": "不是。Spark 是 Meta 云端 API（权重不开放）。Glimmer 是你在本地跑的开源 30B。"
+              },
+              {
+                "q": "是不是该去 Ollama 页？",
+                "a": "装 Ollama 走 /learn/ollama。Glimmer × OpenClaw 接法看这一页。Qwen 3.8 仍留在 Ollama 页。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "硬件与 Ollama 标签",
+          "titleEn": "Hardware and Ollama tags",
+          "estimatedTime": "2 分钟",
+          "content": "Ollama 列出 `muse-glimmer`／`muse-glimmer:30b`／`latest` 约 18GB，`muse-glimmer:30b-mlx` 约 19GB。上下文 128K。输入是文字与图片。\n\n实务下限当成 24GB 统一内存或显存（权重本身就 18GB）。32GB 才是舒服的 OpenClaw + MLX 组合。拉模型前先装新版 Ollama。",
+          "commands": [
+            "# macOS / Linux — 还没装 Ollama 再跑",
+            "curl -fsSL https://ollama.com/install.sh | sh",
+            "",
+            "# 默认本地标签（约 18GB）",
+            "ollama run muse-glimmer",
+            "",
+            "# Apple Silicon MLX + DFlash（约 19GB）",
+            "ollama run muse-glimmer:30b-mlx",
+            "",
+            "# 确认已下载",
+            "ollama list"
+          ],
+          "expectedResult": "ollama list 看得到 muse-glimmer 或 muse-glimmer:30b-mlx，并且出现聊天提示。",
+          "tips": [
+            "24GB 机器载得进 18GB 权重，但 OpenClaw 与浏览器同时开可能会 swap。长驻建议 32GB。",
+            "需要机器？看 /learn/hardware 与 /apps/hardware/mac-mini-m4。",
+            "正文不要再放 markdown 表 — 下面的 modelTable 才是来源。"
+          ],
+          "modelTable": {
+            "nameHeader": "标签",
+            "sizeHeader": "大小",
+            "bestHeader": "适合",
+            "speedHeader": "备注",
+            "models": [
+              {
+                "name": "muse-glimmer",
+                "size": "18GB",
+                "best": "本地 OpenClaw，文字 + 图片",
+                "speed": "默认 llama.cpp 标签"
+              },
+              {
+                "name": "muse-glimmer:30b",
+                "size": "18GB",
+                "best": "同一颗 30B，明确标签",
+                "speed": "128K 上下文"
+              },
+              {
+                "name": "muse-glimmer:30b-mlx",
+                "size": "19GB",
+                "best": "Apple Silicon + DFlash",
+                "speed": "大约快 1.5–1.8 倍"
+              }
+            ]
+          },
+          "troubleshooting": {
+            "title": "硬件",
+            "items": [
+              {
+                "q": "ollama run 因为内存不足结束",
+                "a": "18GB 权重需要余量。先 `ollama stop` 关掉其他模型，再在 24GB 以上重试。OpenClaw 主机建议 32GB。"
+              },
+              {
+                "q": "我只有 16GB",
+                "a": "不要硬跑 Glimmer。回 /learn/ollama 用云端模型或较小的本地标签。不要自造 7B Glimmer slug。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "把 OpenClaw 钉到 Muse Glimmer",
+          "titleEn": "Pin OpenClaw to Muse Glimmer",
+          "estimatedTime": "2 分钟",
+          "content": "官方一行命令会安装 OpenClaw 并选好 Glimmer。Ollama 若弹出安全提示，请确认后继续。\n\n已经有 OpenClaw？先拉模型，再到 OpenClaw 设置的 Ollama 供应商选它。CanFly.ai 不另造 Glimmer 的 `openclaw models set` ID — 文档钉的是 `ollama launch openclaw --model muse-glimmer`。",
+          "commands": [
+            "# 官方接法（ollama.com/blog/muse-glimmer）",
+            "ollama launch openclaw --model muse-glimmer",
+            "",
+            "# 已经有 OpenClaw？先拉模型，再到设置选 Ollama 模型",
+            "ollama run muse-glimmer",
+            "",
+            "# 还没钉模型的全新 OpenClaw",
+            "ollama launch openclaw",
+            "",
+            "# CanFly.ai 的 OpenClaw 教程",
+            "# /learn/ollama-openclaw"
+          ],
+          "expectedResult": "OpenClaw 正在跑，而且当前本地模型是 muse-glimmer（或你已能在 Ollama 设置里选到它）。",
+          "tips": [
+            "还没装 OpenClaw？先走 /learn/ollama-openclaw，再回到这条接法。",
+            "写程序 harness（`ollama launch claude --model muse-glimmer`）只在这页带一句。不要在这里另开 Claude Code 页。",
+            "Agent 碰得到文件或终端时，搭配 Harden AIF：/learn/harden-aif。"
+          ],
+          "troubleshooting": {
+            "title": "OpenClaw",
+            "items": [
+              {
+                "q": "ollama: command not found",
+                "a": "先从 /learn/ollama 安装，或跑 `curl -fsSL https://ollama.com/install.sh | sh`。再执行 `ollama launch openclaw --model muse-glimmer`。"
+              },
+              {
+                "q": "OpenClaw 装好了，但仍停在云端模型",
+                "a": "先 `ollama run muse-glimmer`，打开 OpenClaw 模型设置，选 Ollama 供应商，再选 muse-glimmer。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "MLX、推理力度与 OpenRouter",
+          "titleEn": "MLX, reasoning, and OpenRouter",
+          "estimatedTime": "1 分钟",
+          "content": "在 Apple Silicon 上，Ollama 的 MLX 引擎加上 DFlash 与图片输入。要本地更快就用 `muse-glimmer:30b-mlx`。\n\n推理力度是 `low`、`medium`、`high`、`xhigh`。长跑 Agent 用 high／xhigh；要速度就降到 low。\n\n需要托管后备？OpenRouter slug `meta/muse-glimmer-30b` 在 Phala 卡约每百万输入 $0.30／输出 $1.10。出流量前先核对 OpenRouter 页。",
+          "commands": [
+            "# Apple Silicon MLX",
+            "ollama run muse-glimmer:30b-mlx",
+            "",
+            "# 推理力度（Ollama 公告）",
+            "# low | medium | high | xhigh",
+            "",
+            "# OpenRouter slug",
+            "meta/muse-glimmer-30b",
+            "",
+            "# OpenRouter 卡",
+            "https://openrouter.ai/meta/muse-glimmer-30b",
+            "",
+            "# CanFly.ai 的 OpenRouter 教程",
+            "# /learn/openrouter",
+            "# /apps/free/openrouter"
+          ],
+          "expectedResult": "你可以选本地 MLX、设置推理力度，或退回 OpenRouter 的 meta/muse-glimmer-30b。",
+          "tips": [
+            "本地 Glimmer 没有每 token 账单。在 OpenRouter 填满 128K 是云端账单 — 看着用量。",
+            "托管对照：Grok 4.7（`openclaw models set xai/grok-4.7`）与 GPT-6 Astra 各有自己的页。",
+            "长网址放在 commands，避免英文版撑破版面。"
+          ],
+          "troubleshooting": {
+            "title": "路径",
+            "items": [
+              {
+                "q": "OpenRouter 是官方 OpenClaw 接法吗？",
+                "a": "不是。CanFly.ai 钉的是 `ollama launch openclaw --model muse-glimmer`。OpenRouter 只是托管后备。"
+              },
+              {
+                "q": "为什么 Together 比 Phala 贵？",
+                "a": "OpenRouter 会公布各供应商标价。正式流量前请核对 `meta/muse-glimmer-30b` 那张卡。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CanFly.ai 下一步",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 分钟",
+          "content": "Glimmer 是本地 30B 大脑。搭配 OpenClaw 安装、Ollama 其他本地标签、需要托管副本时用 OpenRouter，或内存不够时改 Grok 4.7。工具调用前面可以加 Harden AIF。",
+          "tips": [
+            "评测视频待补（这次环境没有 HEYGEN_API_KEY）。英文口白稿：content/scripts/muse-glimmer-review-en.txt",
+            "长驻建议 32GB 统一内存。见 /learn/hardware。",
+            "Meta 若出新的开源 Glimmer 标签，更新这一页。不要另开传闻 slug。"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "安装 OpenClaw",
+              "desc": "一行命令装好 OpenClaw，再回来钉 Muse Glimmer。",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw 教程"
+            },
+            {
+              "emoji": "🦙",
+              "title": "Ollama",
+              "desc": "安装 Ollama，Qwen 3.8 留在那一页。Glimmer 在这里。",
+              "link": "/apps/free/ollama",
+              "cta": "Ollama 产品卡"
+            },
+            {
+              "emoji": "⚡",
+              "title": "Grok 4.7",
+              "desc": "本地内存不够时的 xAI 托管大脑：openclaw models set xai/grok-4.7。",
+              "link": "/learn/grok-4-7",
+              "cta": "Grok 4.7 教程"
+            },
+            {
+              "emoji": "🌐",
+              "title": "OpenRouter",
+              "desc": "托管后备 slug：meta/muse-glimmer-30b，也可路由其他模型。",
+              "link": "/learn/openrouter",
+              "cta": "OpenRouter 指南"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "本地 tool-call 防火墙：aif configure --agent openclaw --validate。",
+              "link": "/learn/harden-aif",
+              "cta": "AIF 教程"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "官方 OpenClaw 命令是哪一条？",
+          "a": "`ollama launch openclaw --model muse-glimmer`。这是 CanFly.ai 依 Ollama 公告钉的接法。"
+        },
+        {
+          "q": "这是 Muse Spark 吗？",
+          "a": "不是。Spark 是 Meta 云端 API（权重不开放）。Glimmer 是你在本地跑的开源 30B。"
+        },
+        {
+          "q": "Qwen 3.8 该写在这页吗？",
+          "a": "不该。Qwen 3.8 留在 /learn/ollama。不要折进 Glimmer。"
+        },
+        {
+          "q": "这是 Muse Code 或 DSH 吗？",
+          "a": "不是。那些是对手 harness（`ollama launch muse`／`ollama launch dsh`）。这一页是 Glimmer 模型 × OpenClaw。"
+        },
+        {
+          "q": "需要多少内存？",
+          "a": "权重约 18GB。实务下限当成 24GB，OpenClaw + MLX 舒服的组合是 32GB。"
+        },
+        {
+          "q": "OpenRouter 有 Muse Glimmer 吗？",
+          "a": "有。slug 是 `meta/muse-glimmer-30b`（Phala 标价约每百万 $0.30 / $1.10）。官方 OpenClaw 仍优先本地 Ollama 接法。"
+        },
+        {
+          "q": "我已经装好 OpenClaw 了，下一步？",
+          "a": "跑 `ollama run muse-glimmer`，再到 OpenClaw 设置的 Ollama 供应商选这个标签。"
         }
       ]
     }
