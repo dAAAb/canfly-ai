@@ -63,7 +63,7 @@
 
 | 優先 | 題目 | 類型 | 為什麼現在寫 | 建議頁面 | 狀態 |
 |---|---|---|---|---|---|
-| P0 | Grok Bot | 軟體／產品 + 短教學 | 寶博點名。新 agent 入口，搜尋熱度高 | `/apps` + `/learn/grok-bot` + blog | queued |
+| P0 | Grok Bot | 軟體／產品 + 短教學 | 寶博點名。新 agent 入口，搜尋熱度高 | `/apps` + `/learn/grok-bot` + blog | shipped 2026-10-06（影片待補；對照文 `/blog/grok-bot-vs-openclaw`） |
 | P0 | Perplexity Computer | 軟體／產品 | 寶博點名。新形態「AI 電腦」，跟現有 Perplexity 搜尋頁要分開。2026-09-01 官方 [Hybrid Compute](https://www.perplexity.ai/hub/blog/pii-trace-detecting-personal-data-before-it-leaves-the-device)：Mac 上雲端＋本機分流，Gemma 4 E4B／Qwen3.6 35B、需 Apple silicon＋24GB。2026-09-17 官方 [effort mode](https://www.perplexity.ai/hub/blog/computer-adds-effort-mode-for-model-selection)：web 上 Light／Standard／High／Ultra 滑桿選模型與推理量（Android／iOS 即將）。2026-09-21 changelog [Skills Marketplace](https://www.perplexity.ai/changelog/effort-mode-gpt-6-astra-and-skills-marketplace) 是 Computer 技能市集，不是 OpenClaw；HP ZBook Ultra G3a（約 10 月）預裝 Perplexity。官方 [Automations](https://www.perplexity.ai/hub/blog/computer-adds-automations-for-ongoing-work) 取代 Scheduled Tasks（排程或 Gmail／Outlook／Slack／Linear／GitHub 事件，記得上次跑到哪）。2026-10-01 官方 [Amex Business Skills](https://www.perplexity.ai/hub/blog/perplexity-and-american-express-make-ai-easier-for-growing-businesses)：美區 AmEx Business Card＋Enterprise 的 Computer 技能包（現金流／行銷／招聘），沒有 `openclaw plugins install`。寫 Computer 時帶 Hybrid＋effort＋Marketplace／HP／Automations／Amex Skills 一句，不要另開 Hybrid／effort／Marketplace／ZBook／Automations／Amex 頁 | `/apps` + blog 對照「Perplexity vs Perplexity Computer」 | queued |
 | P0 | Perplexity Portable Computer | 軟體／硬體交界 | 寶博點名。可攜版，長尾詞新。2026-09-14 官方 [Portable Computer for Windows](https://www.perplexity.ai/hub/blog/portable-computer-for-windows-is-here)：既有 Windows app、Pro／Max；本機推論要 GeForce RTX／RTX PRO、≥24GB VRAM。2026-09-24 官方 [AMD Ryzen AI Max](https://www.perplexity.ai/hub/blog/portable-computer-comes-to-amd-powered-agentic-pcs)：Halo／Ryzen AI Max、Windows、≥24GB GPU-accessible memory、本機 PPLX 27B／Qwen 27B。HP ZBook Ultra G3a（約 10 月）是預裝入口，不是新品頁。不要另開 Windows／ZBook／AMD／Halo 頁 | blog 先寫，規格穩了再產品頁 | queued |
 | P1 | Arduino VENTUNO Q | 硬體 | 寶博點名。新開發板，可接本地／邊緣 Agent。2026-09-11 官方 [AMR 應用文](https://blog.arduino.cc/2026/09/11/building-smarter-amrs-with-the-arduino-ventuno-q-board/) 只是使用故事；[官方店](https://store.arduino.cc/products/ventuno-q) 仍 pre-order／約 3–4 週／€298.99 | `/apps/hardware` + `/learn` | queued |
@@ -241,6 +241,7 @@
 | `google-gemini` | 更新 CLI → Antigravity，不要另開 Gemini 頁。Omni 1.1 Flash、3.8 Flash、3.8 Live、3.8 Flash TTS、3.8 Live Avatar、Gemini 4 Argon（Fairwind 一句）也寫這頁 |
 | `nemotron-3-super` | 不要改寫成 Lightning；加家族連結 |
 | `openclaw` | 更新成 2.0（v2026.8.1）＋穩定補丁 v2026.8.2＋v2026.9.1＋v2026.9.2＋v2026.9.3＋v2026.9.4＋v2026.9.5＋v2026.9.6＋v2026.9.7＋v2026.9.8＋星數（約 391K／391,315）＋custodian，不要重開 2.0／8.2／9.1／9.2／9.3／9.4／9.5／9.6／9.7／9.8／SIWC／Agents API／OCE 頁。Astra 另開模型頁。GPT-Live 1 折進 Talk 一句，不要另開語音頁。Gemini 3.8 Live 折進 voice-call 一句。Grok 4.7／GPT-6 Sol／Luna／GPT-6.1 Sol（`openclaw models set openai/gpt-6.1-sol`）／Opus 5.5／Sonnet 5.5（`openclaw models set anthropic/claude-sonnet-5-5`）／NemoClaw 各一句，不要另開 |
+| `grok-bot` | 2026-10-06 產品＋教學＋對照文已上。影片待補。官方下載 `https://x.ai/bot`。不是 OpenClaw 技能，不是 Grok 4.7。X 接頭寫進教學一句。不要另開 X／Ultra／effort 頁 |
 | `grok-4-7` | 2026-09-25 產品＋教學已上。影片待補。官方 pin：`openclaw models set xai/grok-4.7`。OpenRouter `x-ai/grok-4.7`。4.6 同價同窗，不要另開 4.6 頁。Fast 只在 Cursor／Grok Build。不要跟 Grok Bot 寫成同一頁 |
 | `gpt-6-astra` | 2026-09-04 產品＋教學已上。影片待補。補 OpenRouter `openai/gpt-6-astra`／`openai/gpt-6-astra-pro`。GPT-6 Sol／Luna／GPT-6.1 Sol（OpenClaw 9.8：`openclaw models set openai/gpt-6.1-sol`）加家族連結，不要另開 Sol／Luna／6.1／Pro／Ultrafast 頁。不要跟 Codex／GPT-5.6／Grok Bot 寫成同一頁 |
 | `harden-aif` | 2026-09-22 產品＋教學已上。影片待補。官方 pin：`aif configure --agent openclaw --validate`。基線仍寫 2026.7.1-2（2026-08-26），頁上要求對 v2026.9.8 再 validate。不要跟 AgentWard 寫成同一頁 |
@@ -291,7 +292,7 @@
 
 | 題 | 寶博點名列 | 每日掃描 | 卡在哪 |
 |---|---|---|---|
-| Grok Bot | P0 寫產品＋教學 | 放觀察。早 beta、Grok only、綁 SuperGrok Heavy / Cursor Ultra，是 OpenClaw 對手不是技能 | 要不要做競品對照頁，還是不做 |
+| Grok Bot | P0 寫產品＋教學 | 放觀察。早 beta、Grok only、綁 SuperGrok Heavy / Cursor Ultra，是 OpenClaw 對手不是技能 | 2026-10-06 已上 `/apps/free/grok-bot` + `/learn/grok-bot` + `/blog/grok-bot-vs-openclaw`（對手對照，不是技能） |
 | Perplexity Computer / Portable / Comet | P0 另開產品頁 | 放觀察。連動寫進現有 Perplexity 頁，不要再開三頁互搶 | 更新舊頁夠不夠，要不要獨立 Computer 頁 |
 | Jetson Orin Nano 2 | P1 硬體頁 | Jetson / DGX Spark 放觀察，還沒對上現有 Amazon 帶。NVIDIA 官方 8/25：模組與開發套件預計 2027 上半年才出，價格未公布 | 現在寫預告，還是等有導購／出貨日 |
 | Mac Studio 512GB / M5 Ultra | P2 預告文 | 價位 $2,499–$5,499，超出目前 Mini / 迷你 PC / Pi 帶 | 預告文要不要寫 |

@@ -811,4 +811,90 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- Grok Bot (2026-10-06) -->
+  <url>
+    <loc>https://canfly.ai/apps/free/grok-bot</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/free/grok-bot" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/free/grok-bot" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/free/grok-bot" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/apps/free/grok-bot" />
+    <lastmod>2026-10-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/apps/free/grok-bot</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/free/grok-bot" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/free/grok-bot" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/free/grok-bot" />
+    <lastmod>2026-10-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/apps/free/grok-bot</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/free/grok-bot" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/free/grok-bot" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/free/grok-bot" />
+    <lastmod>2026-10-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/learn/grok-bot</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/grok-bot" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/grok-bot" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/grok-bot" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/learn/grok-bot" />
+    <lastmod>2026-10-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/learn/grok-bot</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/grok-bot" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/grok-bot" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/grok-bot" />
+    <lastmod>2026-10-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/learn/grok-bot</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/grok-bot" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/grok-bot" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/grok-bot" />
+    <lastmod>2026-10-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/blog/grok-bot-vs-openclaw</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/blog/grok-bot-vs-openclaw" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/blog/grok-bot-vs-openclaw" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/blog/grok-bot-vs-openclaw" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/blog/grok-bot-vs-openclaw" />
+    <lastmod>2026-10-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/blog/grok-bot-vs-openclaw</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/blog/grok-bot-vs-openclaw" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/blog/grok-bot-vs-openclaw" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/blog/grok-bot-vs-openclaw" />
+    <lastmod>2026-10-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/blog/grok-bot-vs-openclaw</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/blog/grok-bot-vs-openclaw" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/blog/grok-bot-vs-openclaw" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/blog/grok-bot-vs-openclaw" />
+    <lastmod>2026-10-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
 </urlset>

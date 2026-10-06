@@ -13,6 +13,17 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'grok-bot-vs-openclaw',
+    titleKey: 'blog.posts.grokBotVsOpenclaw.title',
+    summaryKey: 'blog.posts.grokBotVsOpenclaw.summary',
+    contentKey: 'blog.posts.grokBotVsOpenclaw.content',
+    category: 'guide',
+    date: '2026-10-06',
+    readingTime: '6',
+    tags: ['grok-bot', 'openclaw', 'xai', 'comparison', 'agent'],
+    relatedProducts: ['grok-bot', 'openclaw', 'grok-4-7', 'ollama'],
+  },
+  {
     slug: 'why-canfly-exists',
     titleKey: 'blog.posts.whyCanflyExists.title',
     summaryKey: 'blog.posts.whyCanflyExists.summary',

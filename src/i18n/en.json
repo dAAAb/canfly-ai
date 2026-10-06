@@ -776,7 +776,7 @@
       },
       "openclaw": {
         "tagline": "Your personal AI agent — your AI, your rules",
-        "description": "The open-source personal AI agent platform with ~390K GitHub stars. Install with one command, then customize with skills, tools, and integrations. The 2.0 line (v2026.8.1–v2026.9.6) adds guided setup, a rebuilt Control UI, and Shared Cloud Sessions. Fresh xAI / Grok setup defaults to Grok 4.7: `openclaw models set xai/grok-4.7`. When your OpenAI account has GPT-6 Astra, switch with `openclaw models set openai/gpt-6-astra`. Add a local tool-call firewall with Harden AIF: `aif configure --agent openclaw --validate`. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
+        "description": "The open-source personal AI agent platform with ~390K GitHub stars. Install with one command, then customize with skills, tools, and integrations. The 2.0 line (v2026.8.1–v2026.9.6) adds guided setup, a rebuilt Control UI, and Shared Cloud Sessions. Fresh xAI / Grok setup defaults to Grok 4.7: `openclaw models set xai/grok-4.7`. When your OpenAI account has GPT-6 Astra, switch with `openclaw models set openai/gpt-6-astra`. Add a local tool-call firewall with Harden AIF: `aif configure --agent openclaw --validate`. Grok Bot is a hosted xAI teammate, not an OpenClaw skill — compare at /blog/grok-bot-vs-openclaw. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
         "features": [
           "One-command install: ollama launch openclaw",
           "~390K GitHub stars — largest AI agent community",
@@ -895,6 +895,21 @@
         ],
         "ctaPrimary": "Open the Tutorial",
         "ctaSecondary": "xAI model card"
+      },
+      "grok-bot": {
+        "tagline": "xAI always-on teammates on a shared cloud computer",
+        "description": "Grok Bot is xAI's hosted teammate app (launched 2026-08-11, still in beta). Named Bots share one persistent cloud computer with a browser, filesystem, and terminal, so work continues while your laptop is closed. Official docs include it with every paid individual Cursor plan and Cursor Teams, or by linking SuperGrok / SuperGrok Plus / SuperGrok Heavy. Usage is separate from Grok and Cursor and resets weekly. Connect X in Settings → Plugins, then attach it with @. This is not an OpenClaw skill, not a local install, and not the Grok 4.7 model page — see /apps/models/grok-4-7 for `openclaw models set xai/grok-4.7`.",
+        "features": [
+          "Shared cloud computer: browser, filesystem, terminal",
+          "Named Bots keep memory, files, and preferences",
+          "Bots run in parallel and hand off work",
+          "Approvals before sensitive sends and changes",
+          "X connector: Settings → Plugins, then @ in chat",
+          "Included with SuperGrok or paid Cursor; usage resets weekly",
+          "Desktop (macOS / Windows / Linux) and iOS / Android"
+        ],
+        "ctaPrimary": "Open the Tutorial",
+        "ctaSecondary": "Download Grok Bot"
       }
     },
     "comingSoon": "Coming Soon",
@@ -7883,13 +7898,20 @@
           "title": "Next steps on CanFly.ai",
           "titleEn": "Next steps on CanFly.ai",
           "estimatedTime": "1 min",
-          "content": "Grok 4.7 is the hosted xAI brain. Pair it with an OpenClaw install, Astra if your OpenAI account already has it, or a local model for drafts. Harden AIF can sit in front of tool calls. Grok Bot stays a separate queued page.",
+          "content": "Grok 4.7 is the hosted xAI brain. Pair it with an OpenClaw install, Astra if your OpenAI account already has it, or a local model for drafts. Harden AIF can sit in front of tool calls. Grok Bot is a separate app: /apps/free/grok-bot and /learn/grok-bot.",
           "tips": [
             "Review video is pending (no HEYGEN_API_KEY on this run). English script: content/scripts/grok-4-7-review-en.txt",
             "Watch the xAI or OpenRouter bill — filling a 500K window is not a free local pull.",
             "When Grok 4.8 ships, update this page. Do not open a rumor slug."
           ],
           "nextStepCards": [
+            {
+              "emoji": "🤖",
+              "title": "Grok Bot",
+              "desc": "Hosted xAI teammates on a shared cloud computer. Not this model page.",
+              "link": "/learn/grok-bot",
+              "cta": "Grok Bot tutorial"
+            },
             {
               "emoji": "🦞",
               "title": "Install OpenClaw",
@@ -7928,7 +7950,7 @@
         },
         {
           "q": "Is this the same page as Grok Bot?",
-          "a": "No. Grok Bot is a hosted xAI teammate (separate P0). This page is the `grok-4.7` model ID."
+          "a": "No. Grok Bot is the hosted xAI teammate app at /apps/free/grok-bot and /learn/grok-bot. This page is the `grok-4.7` model ID."
         },
         {
           "q": "Do I need a Grok 4.6 page?",
@@ -7949,6 +7971,242 @@
         {
           "q": "My config still says xai/auto",
           "a": "That alias is retired. Run `openclaw doctor --fix` or set `openclaw models set xai/grok-4.7`."
+        }
+      ]
+    },
+    "grokBot": {
+      "title": "Grok Bot — First teammate in 10 minutes",
+      "subtitle": "Hosted xAI Bots on a shared cloud computer. Not Grok 4.7. Not an OpenClaw skill.",
+      "duration": "10 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "What Grok Bot is",
+          "titleEn": "What Grok Bot is",
+          "estimatedTime": "2 min",
+          "content": "Grok Bot is xAI's hosted teammate app. You message a named Bot. It works on a persistent cloud computer with a browser, filesystem, and terminal, so tasks finish in real apps instead of chat drafts. Work keeps running when you close the laptop.\n\nThis CanFly.ai page is the product and short how-to. Keep Grok 4.7 on /apps/models/grok-4-7 — that is the model ID you point OpenClaw at with `openclaw models set xai/grok-4.7`. Do not invent `clawhub install grok-bot` or `ollama launch grok-bot`. Grok Bot is a competitor workflow, not an OpenClaw skill.",
+          "commands": [
+            "# Official overview",
+            "https://docs.x.ai/grok-bot/overview",
+            "",
+            "# Launch post (2026-08-11)",
+            "https://x.ai/news/introducing-grok-bot",
+            "",
+            "# Product page on CanFly.ai",
+            "# /apps/free/grok-bot",
+            "",
+            "# Model page (different product)",
+            "# /apps/models/grok-4-7",
+            "",
+            "# OpenClaw model switch (not this app)",
+            "openclaw models set xai/grok-4.7"
+          ],
+          "expectedResult": "You know Grok Bot is a hosted xAI teammate — not Grok 4.7, not OpenClaw, and not a local pull.",
+          "tips": [
+            "Official docs: a Bot = one persistent, named teammate.",
+            "All of your Bots share one account-level cloud computer. A login or file is available to every Bot.",
+            "Review video is pending (no HEYGEN_API_KEY). English script: content/scripts/grok-bot-review-en.txt"
+          ],
+          "troubleshooting": {
+            "title": "Scope",
+            "items": [
+              {
+                "q": "Is this the same as Grok 4.7?",
+                "a": "No. Grok 4.7 is the hosted model ID for OpenClaw. Grok Bot is the teammate app with its own computer."
+              },
+              {
+                "q": "Can I install this with clawhub or ollama launch?",
+                "a": "No. There is no official OpenClaw plugin. Download the Grok Bot app from https://x.ai/bot."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Check your plan",
+          "titleEn": "Check your plan",
+          "estimatedTime": "2 min",
+          "content": "Official get-started docs (checked 2026-10-06) say you need every paid individual Cursor plan or Cursor Teams, or an individual SuperGrok / SuperGrok Plus / SuperGrok Heavy subscription linked to your Cursor account. The August 26 expansion listed SuperGrok, Plus, Heavy, Cursor Pro, Pro+, Ultra, and Teams Standard / Premium.\n\nUsage is separate from Grok and Cursor and resets weekly. If you have both Cursor and SuperGrok, Grok Bot uses whichever has more usage. Enterprise is still a waitlist. Accounts on Legacy Privacy Mode must switch to a supported Cursor data setting first.",
+          "commands": [
+            "# Plans and billing",
+            "https://docs.x.ai/grok-bot/plans-and-billing",
+            "",
+            "# More plans (2026-08-26)",
+            "https://x.ai/news/grok-bot-more-plans",
+            "",
+            "# Cursor privacy (Legacy Privacy Mode blocks Grok Bot)",
+            "# Open Cursor → Settings → Privacy",
+            "",
+            "# SuperGrok pricing (plan pages change; confirm live)",
+            "https://x.ai/pricing"
+          ],
+          "expectedResult": "You know whether your Cursor or SuperGrok plan includes Grok Bot, and that usage resets weekly.",
+          "tips": [
+            "Grok Bot usage does not eat your normal Grok or Cursor quota.",
+            "Link SuperGrok in the app when it asks. Mobile: Link Grok Account, then Refresh My Status.",
+            "Do not invent a free forever tier. This is a paid-plan product."
+          ],
+          "troubleshooting": {
+            "title": "Access",
+            "items": [
+              {
+                "q": "I have SuperGrok but the app says no access",
+                "a": "Sign in with Cursor first, then link SuperGrok under Settings → Usage & Billing. On phones tap Finished Linking? Refresh My Status."
+              },
+              {
+                "q": "Legacy Privacy Mode",
+                "a": "Grok Bot needs cloud data storage. Move off Legacy Privacy Mode in Cursor privacy settings, then retry."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Install and sign in",
+          "titleEn": "Install and sign in",
+          "estimatedTime": "3 min",
+          "content": "Download the desktop app from x.ai/bot. macOS has Apple silicon and Intel builds. Windows and Linux have x64 and Arm64. Linux ships .deb, .rpm, and AppImage under More downloads. The same Bot is also on iOS and Android.\n\nSign in with Cursor in the browser window. If access comes from SuperGrok, link it when the app asks. First launch walks through Bots, the shared computer, and routines, then asks which tools you use — those answers only shape suggestions; they do not connect the tools yet.",
+          "commands": [
+            "# Downloads",
+            "https://x.ai/bot",
+            "",
+            "# Official get started",
+            "https://docs.x.ai/grok-bot/get-started",
+            "",
+            "# macOS: Apple menu → About This Mac (Chip = Apple silicon)",
+            "# Windows: Settings → System → About → System type",
+            "# Linux arch",
+            "uname -m"
+          ],
+          "expectedResult": "The Grok Bot app is installed and signed in. Computer setup can finish in the background.",
+          "tips": [
+            "The computers Bots work on run in Cursor's cloud, not on your laptop GPU.",
+            "SSO organizations complete the normal org sign-in flow.",
+            "The app checks for updates automatically (Settings → Updates)."
+          ],
+          "troubleshooting": {
+            "title": "Install",
+            "items": [
+              {
+                "q": "macOS blocked the app",
+                "a": "Open the disk image, drag Grok Bot to Applications, then choose Open if macOS asks for confirmation."
+              },
+              {
+                "q": "Linux — which package?",
+                "a": ".deb for Debian/Ubuntu, .rpm for Fedora/RHEL, AppImage for other distros. Confirm arch with `uname -m`."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Create a Bot, hand off, connect X",
+          "titleEn": "Create a Bot, hand off, connect X",
+          "estimatedTime": "3 min",
+          "content": "Choose a suggested teammate or Create your own. Give a short name, one primary job, and how it should work. Focused Bots beat one catch-all Bot.\n\nA strong first task names the outcome, sources, constraints, deliverable, and when to stop. For a five-minute test with no login, attach a document and ask for a cited summary. When the Bot hits a password, passkey, 2FA, or CAPTCHA, take over Agent Computer yourself — do not ask it to bypass those steps.\n\nX: official 2026-08-29 note. Open Settings → Plugins, add the X connector, then type @ in chat. Paid Grok Bot users get starter X API credits. Connectors are account-wide, not isolated per Bot. Treat any login on the shared computer as available to all of your Bots.",
+          "commands": [
+            "# Create and manage Bots",
+            "https://docs.x.ai/grok-bot/bots",
+            "",
+            "# Computer and apps / Plugins",
+            "https://docs.x.ai/grok-bot/computer-and-apps",
+            "",
+            "# Grok Bot + X",
+            "https://x.ai/news/grok-bot-and-x",
+            "",
+            "# Desktop shortcut: new Bot",
+            "# Cmd/Ctrl+N → Create new agent",
+            "",
+            "# Voice input",
+            "# Cmd/Ctrl+D"
+          ],
+          "expectedResult": "You have one named Bot, a finished first task, and you know how approvals, takeover, and the X plugin work.",
+          "tips": [
+            "Save a stable path as a skill, or turn it into a routine that runs on a schedule.",
+            "Several Bots can work in parallel. Each Bot gets its own screen on the shared computer.",
+            "Strip secrets before you share a Bot link. Recipients do not get your computer or logins."
+          ],
+          "troubleshooting": {
+            "title": "First job",
+            "items": [
+              {
+                "q": "The site blocked the Bot",
+                "a": "A site can block automation, expire a session, or require a human step. Take over Agent Computer. Do not ask the Bot to bypass CAPTCHA or 2FA."
+              },
+              {
+                "q": "I signed into one Bot. Can others see it?",
+                "a": "Yes. Browser sessions and files sit on the account computer, not inside one Bot. Assume every Bot can use that login."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Next steps on CanFly.ai",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 min",
+          "content": "Use Grok Bot when you want a hosted teammate that keeps working in the cloud. Use OpenClaw when you want an agent you install, pin to a model, and run locally or on your own host. Grok 4.7 is the model OpenClaw talks to — not this app. Perplexity stays the search skill page.",
+          "tips": [
+            "Review video is pending (no HEYGEN_API_KEY). English script: content/scripts/grok-bot-review-en.txt",
+            "Comparison guide: /blog/grok-bot-vs-openclaw",
+            "Do not open a second Grok Bot page for X, effort modes, or Cursor Ultra."
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "Install OpenClaw",
+              "desc": "Local or self-hosted agent you own. One command with Ollama.",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw tutorial"
+            },
+            {
+              "emoji": "🧠",
+              "title": "Grok 4.7 model",
+              "desc": "Point OpenClaw at xAI: openclaw models set xai/grok-4.7.",
+              "link": "/learn/grok-4-7",
+              "cta": "Grok 4.7 tutorial"
+            },
+            {
+              "emoji": "📦",
+              "title": "OpenClaw product",
+              "desc": "What OpenClaw is, stars, and the Grok 4.7 switch.",
+              "link": "/apps/free/openclaw",
+              "cta": "OpenClaw card"
+            },
+            {
+              "emoji": "🔎",
+              "title": "Perplexity search",
+              "desc": "Cited web search for agents — not Perplexity Computer.",
+              "link": "/learn/perplexity",
+              "cta": "Perplexity tutorial"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Is Grok Bot an OpenClaw skill?",
+          "a": "No. There is no `openclaw plugins install` or `clawhub install` for Grok Bot. It is a hosted xAI / Cursor teammate app."
+        },
+        {
+          "q": "Is this the same page as Grok 4.7?",
+          "a": "No. Grok 4.7 is the model ID. Open /apps/models/grok-4-7 or /learn/grok-4-7. This page is the Bot app."
+        },
+        {
+          "q": "Can I run Grok Bot locally with Ollama?",
+          "a": "No. Bots run on a cloud computer in Cursor's cloud. For a local agent use /learn/ollama-openclaw."
+        },
+        {
+          "q": "Which plans include it?",
+          "a": "Official docs: every paid individual Cursor plan and Cursor Teams, or linked SuperGrok / Plus / Heavy. Confirm https://docs.x.ai/grok-bot/overview — plan matrices change."
+        },
+        {
+          "q": "Does it keep working when my laptop is closed?",
+          "a": "Yes. Work runs on the cloud computer. Closing the app or laptop does not stop a background turn or a routine."
+        },
+        {
+          "q": "How do I connect X?",
+          "a": "Settings → Plugins → add X, then type @ in chat. Paid users get starter X API credits. First version; do not open a separate X page."
+        },
+        {
+          "q": "Are logins isolated per Bot?",
+          "a": "No. Files, browser sessions, and app logins sit on one account computer. Treat them as shared across all of your Bots."
         }
       ]
     }
@@ -8410,6 +8668,19 @@
           "Multi-platform connections are where OpenClaw truly shines. Out of the box, it supports Discord, Telegram, Slack, and LINE as communication channels. Connect your agent to all four simultaneously — the same agent brain, accessible from wherever you or your team prefers. Each platform connection is configured with a simple API token in your environment variables. Add DISCORD_TOKEN, TELEGRAM_BOT_TOKEN, or SLACK_BOT_TOKEN, and your agent is live on that platform.",
           "The power move is combining all three: skills + cron + multi-platform. Example: install a stock monitoring skill, schedule it to run every hour via cron, and have it send alerts to your Telegram and Slack simultaneously. Or: install a content generation skill, schedule daily posts via cron, and publish to Discord and LINE. Your agent becomes a fully autonomous digital worker.",
           "Deploy your advanced OpenClaw setup to Zeabur for 24/7 uptime — use referral code 'OpenClaw' for 10% off. With cloud deployment, your cron jobs run reliably, your multi-platform connections stay alive, and your skills are always available. At CanFly.ai, this is the complete journey: free local AI to cloud deployment to a fully-capable autonomous agent."
+        ]
+      },
+      "grokBotVsOpenclaw": {
+        "title": "Grok Bot vs OpenClaw: hosted teammate or agent you own",
+        "summary": "Grok Bot is xAI's always-on cloud teammate. OpenClaw is the agent you install. Same week, two different jobs — here is when CanFly.ai points you at each.",
+        "content": [
+          "Grok Bot shipped on 2026-08-11 as a beta teammate app: named Bots share one persistent cloud computer with a browser, filesystem, and terminal. You message a Bot the way you message a coworker. It keeps working when the laptop is closed, and it only comes back when something needs approval. That is a hosted product. Download it from https://x.ai/bot. There is no `clawhub install` and no `ollama launch grok-bot`.",
+          "OpenClaw is the other door on CanFly.ai. You install it, pin a model, and keep the gateway on hardware you control. The official Grok switch is still `openclaw models set xai/grok-4.7` on /learn/grok-4-7. Grok 4.7 is a model ID. Grok Bot is an app. Mixing those two pages would cannibalize search and confuse every install step.",
+          "Pick Grok Bot when you already pay SuperGrok or a paid Cursor plan and you want parallel teammates in Gmail, Slack, a CRM, or a site with no clean API. Official docs include every paid individual Cursor plan and Cursor Teams, or a linked SuperGrok / Plus / Heavy subscription. Usage is separate and resets weekly. Connect X under Settings → Plugins, then attach it with @. Do not open a second page for X or for Cursor Ultra.",
+          "Pick OpenClaw when the work has to stay local, on a VPS you rent, or on a skill you can publish. Start at /learn/ollama-openclaw. Add /apps/free/ollama if you want a free local brain first. Add Harden AIF at /learn/harden-aif if tool calls need a firewall. That path is yours even if xAI changes a Bot plan tomorrow.",
+          "Security is the quiet difference. Grok Bot's computer is isolated to your account, not to one Bot. A login or file you place there is available to every Bot you run. Approvals exist for a reason: take over Agent Computer for passwords, passkeys, 2FA, and CAPTCHA. OpenClaw puts the same class of risk on your disk and your skills — which is why we also teach local firewalls instead of pretending chat is harmless.",
+          "CanFly.ai will not pretend one stack wins. If you want a teammate that keeps going in Cursor's cloud, open /apps/free/grok-bot and /learn/grok-bot. If you want an agent you can move, start with OpenClaw and Grok 4.7. Perplexity search stays on /learn/perplexity — Computer and Portable are still a separate call, not this comparison.",
+          "The brand promise stays the same: Now You Can Fly. Use the hosted Bot when speed matters and the vendor computer is acceptable. Use OpenClaw when ownership matters. Both links are on CanFly.ai so you can choose with the facts, not a rumor slug."
         ]
       }
     }

@@ -9,7 +9,7 @@ import { useHead } from '../hooks/useHead'
 
 const categoryFeatured: Record<string, string[]> = {
   all: ['ollama', 'zeabur'],
-  free: ['ollama', 'openrouter', 'google-gemini'],
+  free: ['ollama', 'openrouter', 'grok-bot'],
   skills: ['heygen', 'elevenlabs'],
   hosting: ['zeabur', 'umbrel'],
   hardware: ['hdmi-dummy-plug', 'mac-mini-m4', 'macbook-neo'],
@@ -33,6 +33,7 @@ const featuredGradients: Record<string, string> = {
   'nemotron-3-super': 'bg-gradient-to-br from-lime-950/60 to-green-950/40 border border-lime-800/30 hover:border-lime-700/50',
   'gpt-6-astra': 'bg-gradient-to-br from-sky-950/60 to-indigo-950/40 border border-sky-800/30 hover:border-sky-700/50',
   'grok-4-7': 'bg-gradient-to-br from-zinc-900/70 to-neutral-950/40 border border-amber-800/30 hover:border-amber-600/50',
+  'grok-bot': 'bg-gradient-to-br from-zinc-900/70 to-neutral-950/40 border border-amber-800/30 hover:border-amber-600/50',
 }
 
 export default function AppsPage() {

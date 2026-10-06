@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#09090B"/>
+  <circle cx="920" cy="180" r="230" fill="#FBBF24" opacity="0.10"/>
+  <circle cx="260" cy="480" r="190" fill="#A1A1AA" opacity="0.08"/>
+  <rect x="780" y="160" width="280" height="180" rx="28" stroke="#FAFAFA" stroke-width="10" opacity="0.85"/>
+  <circle cx="860" cy="240" r="16" fill="#FBBF24"/>
+  <circle cx="980" cy="240" r="16" fill="#FBBF24"/>
+  <path d="M850 300 H990" stroke="#A1A1AA" stroke-width="10" stroke-linecap="round"/>
+  <path d="M820 380 H1020" stroke="#FBBF24" stroke-width="12" stroke-linecap="round"/>
+  <text x="80" y="170" fill="#FAFAFA" font-family="ui-sans-serif, system-ui, sans-serif" font-size="56" font-weight="700">Grok Bot</text>
+  <text x="80" y="230" fill="#FBBF24" font-family="ui-sans-serif, system-ui, sans-serif" font-size="28">xAI always-on teammates on a shared cloud computer</text>
+  <text x="80" y="300" fill="#A1A1AA" font-family="ui-sans-serif, system-ui, sans-serif" font-size="22">Not Grok 4.7. Not an OpenClaw skill.</text>
+  <text x="80" y="540" fill="#71717A" font-family="ui-sans-serif, system-ui, sans-serif" font-size="20">CanFly.ai</text>
+</svg>

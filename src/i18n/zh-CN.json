@@ -776,7 +776,7 @@
       },
       "openclaw": {
         "tagline": "你的个人 AI 代理 — 你的 AI，你的规则",
-        "description": "拥有约 390K GitHub 星标的开源个人 AI 代理平台。一行命令安装，自由搭配技能、工具和集成。2.0 线（v2026.8.1–v2026.9.6）加上引导式 setup、重建的 Control UI 与 Shared Cloud Sessions。全新 xAI / Grok 设置默认 Grok 4.7：`openclaw models set xai/grok-4.7`。OpenAI 账号若已有 GPT-6 Astra，用 `openclaw models set openai/gpt-6-astra` 切过去。本地 tool-call 防火墙用 Harden AIF：`aif configure --agent openclaw --validate`。在本地或云端运行。你的数据永远属于你 — 无厂商锁定、无订阅费、无限制。",
+        "description": "拥有约 390K GitHub 星标的开源个人 AI 代理人平台。一行指令安装，自由搭配技能、工具和集成。2.0 线（v2026.8.1–v2026.9.6）加上引导式 setup、重建的 Control UI 与 Shared Cloud Sessions。全新 xAI / Grok 设置默认 Grok 4.7：`openclaw models set xai/grok-4.7`。OpenAI 账号若已有 GPT-6 Astra，用 `openclaw models set openai/gpt-6-astra` 切过去。本地 tool-call 防火墙用 Harden AIF：`aif configure --agent openclaw --validate`。Grok Bot 是 xAI 托管队友，不是 OpenClaw 技能 — 对照见 /blog/grok-bot-vs-openclaw。在本地或云端执行。你的数据永远属于你 — 无厂商绑定、无订阅费、无限制。",
         "features": [
           "一行命令安装：ollama launch openclaw",
           "约 390K GitHub 星标 — 最大 AI 代理社区",
@@ -895,6 +895,21 @@
         ],
         "ctaPrimary": "打开教程",
         "ctaSecondary": "xAI 模型卡"
+      },
+      "grok-bot": {
+        "tagline": "xAI 全天候队友，共用一台云端电脑",
+        "description": "Grok Bot 是 xAI 托管的队友应用（2026-08-11 上线，仍在 beta）。具名 Bot 共用一台持久云端电脑，有浏览器、文件系统与终端，笔记本合上工作仍会继续。官方文档写：所有付费个人 Cursor 方案与 Cursor Teams 都内含，也可关联 SuperGrok／SuperGrok Plus／SuperGrok Heavy。用量与 Grok、Cursor 分开，每周重置。X 接法：设置 → Plugins，再在对话用 @。这不是 OpenClaw 技能、不是本地安装，也不是 Grok 4.7 模型页 — 模型请看 /apps/models/grok-4-7，指令是 `openclaw models set xai/grok-4.7`。",
+        "features": [
+          "共用云端电脑：浏览器、文件系统、终端",
+          "具名 Bot 会记住偏好、文件与上下文",
+          "多个 Bot 可并行并互相交接",
+          "敏感寄出与变更前要你批准",
+          "X 接头：设置 → Plugins，对话用 @",
+          "SuperGrok 或付费 Cursor 内含；用量每周重置",
+          "桌面（macOS／Windows／Linux）与 iOS／Android"
+        ],
+        "ctaPrimary": "打开教程",
+        "ctaSecondary": "下载 Grok Bot"
       }
     },
     "comingSoon": "即将推出",
@@ -7908,13 +7923,20 @@
           "title": "CanFly.ai 下一步",
           "titleEn": "Next steps on CanFly.ai",
           "estimatedTime": "1 分钟",
-          "content": "Grok 4.7 是托管的 xAI 大脑。配上 OpenClaw 安装、账号已有的 Astra，或本地模型打草稿。Harden AIF 可以挡在 tool-call 前面。Grok Bot 仍是另一张待写页。",
+          "content": "Grok 4.7 是托管的 xAI 大脑。配上 OpenClaw 安装、账号已有的 Astra，或本地模型打草稿。Harden AIF 可以挡在 tool-call 前面。Grok Bot 是另一个应用：/apps/free/grok-bot 与 /learn/grok-bot。",
           "tips": [
             "评论视频待补（这次没有 HEYGEN_API_KEY）。英文口白稿：content/scripts/grok-4-7-review-en.txt",
             "盯着 xAI 或 OpenRouter 账单 — 塞满 50 万窗不是免费本地 pull。",
             "Grok 4.8 上市就更新这一页。不要开传闻 slug。"
           ],
           "nextStepCards": [
+            {
+              "emoji": "🤖",
+              "title": "Grok Bot",
+              "desc": "xAI 托管队友，共用云端电脑。不是这一页模型卡。",
+              "link": "/learn/grok-bot",
+              "cta": "Grok Bot 教程"
+            },
             {
               "emoji": "🦞",
               "title": "安装 OpenClaw",
@@ -7953,7 +7975,7 @@
         },
         {
           "q": "这跟 Grok Bot 是同一页吗？",
-          "a": "不是。Grok Bot 是托管的 xAI 队友（另开 P0）。这一页是 `grok-4.7` 模型 ID。"
+          "a": "不是。Grok Bot 是托管队友应用，见 /apps/free/grok-bot 与 /learn/grok-bot。这一页是 `grok-4.7` 模型 ID。"
         },
         {
           "q": "还需要 Grok 4.6 页吗？",
@@ -7974,6 +7996,242 @@
         {
           "q": "设置还写 xai/auto",
           "a": "那个别名已退役。跑 `openclaw doctor --fix`，或 `openclaw models set xai/grok-4.7`。"
+        }
+      ]
+    },
+    "grokBot": {
+      "title": "Grok Bot — 10 分钟交出第一个队友",
+      "subtitle": "xAI 托管 Bot，共用一台云端电脑。不是 Grok 4.7，也不是 OpenClaw 技能。",
+      "duration": "10 分钟",
+      "difficulty": "入门",
+      "steps": [
+        {
+          "title": "Grok Bot 是什么",
+          "titleEn": "What Grok Bot is",
+          "estimatedTime": "2 分钟",
+          "content": "Grok Bot 是 xAI 托管的队友应用。你发消息给具名 Bot。它在持久云端电脑上工作，有浏览器、文件系统与终端，任务在真实应用里做完，而不是停在聊天草稿。笔记本合上工作仍会跑。\n\nCanFly.ai 这一页是产品卡加短教程。Grok 4.7 请走 /apps/models/grok-4-7 — 那是给 OpenClaw 的模型 ID，指令是 `openclaw models set xai/grok-4.7`。不要发明 `clawhub install grok-bot` 或 `ollama launch grok-bot`。Grok Bot 是对手工作流，不是 OpenClaw 技能。",
+          "commands": [
+            "# Official overview",
+            "https://docs.x.ai/grok-bot/overview",
+            "",
+            "# Launch post (2026-08-11)",
+            "https://x.ai/news/introducing-grok-bot",
+            "",
+            "# Product page on CanFly.ai",
+            "# /apps/free/grok-bot",
+            "",
+            "# Model page (different product)",
+            "# /apps/models/grok-4-7",
+            "",
+            "# OpenClaw model switch (not this app)",
+            "openclaw models set xai/grok-4.7"
+          ],
+          "expectedResult": "你知道 Grok Bot 是托管的 xAI 队友 — 不是 Grok 4.7、不是 OpenClaw、也不是本地 pull。",
+          "tips": [
+            "官方文档：一个 Bot = 一位持久、具名的队友。",
+            "你的所有 Bot 共用账号层级的一台云端电脑。登录或文件对每个 Bot 都看得到。",
+            "评论视频待补（没有 HEYGEN_API_KEY）。英文口播稿：content/scripts/grok-bot-review-en.txt"
+          ],
+          "troubleshooting": {
+            "title": "范围",
+            "items": [
+              {
+                "q": "这跟 Grok 4.7 一样吗？",
+                "a": "不一样。Grok 4.7 是给 OpenClaw 的托管模型 ID。Grok Bot 是自带电脑的队友应用。"
+              },
+              {
+                "q": "可以用 clawhub 或 ollama launch 装吗？",
+                "a": "不行。没有官方 OpenClaw plugin。请到 https://x.ai/bot 下载 Grok Bot 应用。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "先核对方案",
+          "titleEn": "Check your plan",
+          "estimatedTime": "2 分钟",
+          "content": "官方入门文档（2026-10-06 核对）写：需要所有付费个人 Cursor 方案或 Cursor Teams，或把个人 SuperGrok／SuperGrok Plus／SuperGrok Heavy 订阅连到 Cursor 账号。8 月 26 日扩大名单列出 SuperGrok、Plus、Heavy、Cursor Pro、Pro+、Ultra，以及 Teams Standard／Premium。\n\n用量与 Grok、Cursor 分开，每周重置。若同时有 Cursor 与 SuperGrok，Grok Bot 用额度较多的那边。企业仍是候补。使用 Legacy Privacy Mode 的账号必须先改成 Cursor 支持的数据设置。",
+          "commands": [
+            "# Plans and billing",
+            "https://docs.x.ai/grok-bot/plans-and-billing",
+            "",
+            "# More plans (2026-08-26)",
+            "https://x.ai/news/grok-bot-more-plans",
+            "",
+            "# Cursor privacy (Legacy Privacy Mode blocks Grok Bot)",
+            "# Open Cursor → Settings → Privacy",
+            "",
+            "# SuperGrok pricing (plan pages change; confirm live)",
+            "https://x.ai/pricing"
+          ],
+          "expectedResult": "你知道自己的 Cursor 或 SuperGrok 方案有没有 Grok Bot，以及用量每周重置。",
+          "tips": [
+            "Grok Bot 用量不会吃掉平常的 Grok 或 Cursor 配额。",
+            "应用问起时再关联 SuperGrok。手机：Link Grok Account，再 Refresh My Status。",
+            "不要发明永久免费方案。这是付费方案产品。"
+          ],
+          "troubleshooting": {
+            "title": "权限",
+            "items": [
+              {
+                "q": "我有 SuperGrok，应用却说没权限",
+                "a": "先用 Cursor 登录，再到 Settings → Usage & Billing 关联 SuperGrok。手机点 Finished Linking? Refresh My Status。"
+              },
+              {
+                "q": "Legacy Privacy Mode",
+                "a": "Grok Bot 需要云端数据存储。在 Cursor 隐私设置关掉 Legacy Privacy Mode，再试一次。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "安装并登录",
+          "titleEn": "Install and sign in",
+          "estimatedTime": "3 分钟",
+          "content": "到 x.ai/bot 下载桌面应用。macOS 有 Apple silicon 与 Intel。Windows 与 Linux 有 x64 与 Arm64。Linux 在 More downloads 提供 .deb、.rpm 与 AppImage。同一个 Bot 也在 iOS 与 Android。\n\n用浏览器窗口以 Cursor 登录。若权限来自 SuperGrok，应用问起时再关联。第一次启动会介绍 Bot、共用电脑与 routines，并问你常用哪些工具 — 那些答案只影响建议，还不会真的接上工具。",
+          "commands": [
+            "# Downloads",
+            "https://x.ai/bot",
+            "",
+            "# Official get started",
+            "https://docs.x.ai/grok-bot/get-started",
+            "",
+            "# macOS: Apple menu → About This Mac (Chip = Apple silicon)",
+            "# Windows: Settings → System → About → System type",
+            "# Linux arch",
+            "uname -m"
+          ],
+          "expectedResult": "Grok Bot 应用已安装并登录。电脑设置可以在后台完成。",
+          "tips": [
+            "Bot 工作的电脑跑在 Cursor 云端，不是你笔记本的 GPU。",
+            "需要 SSO 的组织走原本的组织登录流程。",
+            "应用会自动检查更新（Settings → Updates）。"
+          ],
+          "troubleshooting": {
+            "title": "安装",
+            "items": [
+              {
+                "q": "macOS 挡住应用",
+                "a": "打开磁盘映像，把 Grok Bot 拖进 Applications。若系统要确认，选 Open。"
+              },
+              {
+                "q": "Linux 该下哪一种包？",
+                "a": "Debian／Ubuntu 用 .deb，Fedora／RHEL 用 .rpm，其他发行版用 AppImage。用 `uname -m` 确认架构。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "建立 Bot、交办、接上 X",
+          "titleEn": "Create a Bot, hand off, connect X",
+          "estimatedTime": "3 分钟",
+          "content": "选建议队友或 Create your own。给短名字、一个主要工作、以及它该怎么做。专职 Bot 比一只包办一切的 Bot 有用。\n\n好的第一个任务要写清结果、来源、限制、交付物、以及何时停下来。五分钟测试、不必登录：附上文件，请它做有出处的摘要。遇到密码、通行密钥、两步验证或 CAPTCHA，自己接管 Agent Computer — 不要叫它绕过。\n\nX：官方 2026-08-29 说明。打开 Settings → Plugins，加上 X 接头，再在对话打 @。付费 Grok Bot 用户有起始 X API 点数。接头是账号层级，不是单一 Bot 隔离。共用电脑上的任何登录，都当成所有 Bot 都看得到。",
+          "commands": [
+            "# Create and manage Bots",
+            "https://docs.x.ai/grok-bot/bots",
+            "",
+            "# Computer and apps / Plugins",
+            "https://docs.x.ai/grok-bot/computer-and-apps",
+            "",
+            "# Grok Bot + X",
+            "https://x.ai/news/grok-bot-and-x",
+            "",
+            "# Desktop shortcut: new Bot",
+            "# Cmd/Ctrl+N → Create new agent",
+            "",
+            "# Voice input",
+            "# Cmd/Ctrl+D"
+          ],
+          "expectedResult": "你有一只具名 Bot、做完第一个任务，也知道批准、接管与 X 插件怎么用。",
+          "tips": [
+            "稳定流程存成 skill，或做成按排程跑的 routine。",
+            "多个 Bot 可并行。每只 Bot 在共用电脑上有自己的画面。",
+            "分享 Bot 链接前先拿掉机密。对方拿不到你的电脑或登录。"
+          ],
+          "troubleshooting": {
+            "title": "第一份工作",
+            "items": [
+              {
+                "q": "网站挡住 Bot",
+                "a": "网站可能挡自动化、让会话过期，或要人类步骤。接管 Agent Computer。不要叫 Bot 绕过 CAPTCHA 或两步验证。"
+              },
+              {
+                "q": "我只在一只 Bot 登录，其他只看得到吗？",
+                "a": "看得到。浏览器会话与文件在账号电脑上，不锁在单一 Bot。假设每只 Bot 都能用那个登录。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CanFly.ai 下一步",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 分钟",
+          "content": "要托管队友、在云端继续做事，用 Grok Bot。要自己安装、钉模型、本地或自托管跑，用 OpenClaw。Grok 4.7 是 OpenClaw 对接的模型 — 不是这个应用。Perplexity 仍是搜索技能页。",
+          "tips": [
+            "评论视频待补（没有 HEYGEN_API_KEY）。英文口播稿：content/scripts/grok-bot-review-en.txt",
+            "对照文：/blog/grok-bot-vs-openclaw",
+            "不要为 X、effort 或 Cursor Ultra 另开第二页 Grok Bot。"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "安装 OpenClaw",
+              "desc": "你拥有的本地或自托管代理人。用 Ollama 一行安装。",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw 教程"
+            },
+            {
+              "emoji": "🧠",
+              "title": "Grok 4.7 模型",
+              "desc": "把 OpenClaw 指向 xAI：openclaw models set xai/grok-4.7。",
+              "link": "/learn/grok-4-7",
+              "cta": "Grok 4.7 教程"
+            },
+            {
+              "emoji": "📦",
+              "title": "OpenClaw 产品",
+              "desc": "OpenClaw 是什么、星数，以及 Grok 4.7 切换。",
+              "link": "/apps/free/openclaw",
+              "cta": "OpenClaw 卡"
+            },
+            {
+              "emoji": "🔎",
+              "title": "Perplexity 搜索",
+              "desc": "给代理人的引用网搜 — 不是 Perplexity Computer。",
+              "link": "/learn/perplexity",
+              "cta": "Perplexity 教程"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Grok Bot 是 OpenClaw 技能吗？",
+          "a": "不是。没有 `openclaw plugins install` 或 `clawhub install`。它是 xAI／Cursor 托管的队友应用。"
+        },
+        {
+          "q": "这跟 Grok 4.7 是同一页吗？",
+          "a": "不是。Grok 4.7 是模型 ID。请看 /apps/models/grok-4-7 或 /learn/grok-4-7。这一页是 Bot 应用。"
+        },
+        {
+          "q": "可以用 Ollama 本地跑 Grok Bot 吗？",
+          "a": "不行。Bot 跑在 Cursor 云端的电脑上。本地代理人请走 /learn/ollama-openclaw。"
+        },
+        {
+          "q": "哪些方案内含？",
+          "a": "官方文档：所有付费个人 Cursor 方案与 Cursor Teams，或已关联的 SuperGrok／Plus／Heavy。方案表会改，请核对 https://docs.x.ai/grok-bot/overview。"
+        },
+        {
+          "q": "笔记本合上还会继续做吗？",
+          "a": "会。工作跑在云端电脑。关掉应用或笔记本，不会停后台回合或 routine。"
+        },
+        {
+          "q": "X 怎么接？",
+          "a": "Settings → Plugins → 加上 X，再在对话打 @。付费用户有起始 X API 点数。第一版，不要另开 X 页。"
+        },
+        {
+          "q": "登录是每只 Bot 隔离的吗？",
+          "a": "不是。文件、浏览器会话与应用登录都在账号那一台电脑。当成所有 Bot 共用。"
         }
       ]
     }
@@ -8435,6 +8693,19 @@
           "多平台连接是 OpenClaw 真正发光的地方。它原生支持 Discord、Telegram、Slack 和 LINE 作为通信渠道。同时连接全部四个平台 — 同一个代理大脑，从你或团队偏好的任何地方访问。每个平台连接只需在环境变量中设置简单的 API token。加入 DISCORD_TOKEN、TELEGRAM_BOT_TOKEN 或 SLACK_BOT_TOKEN，你的代理就在该平台上线了。",
           "终极组合是三者结合：技能 + 定时 + 多平台。示例：安装股票监控技能、通过 cron 每小时定时一次、同时发送警报到 Telegram 和 Slack。或者：安装内容生成技能、通过 cron 每日定时发文、发布到 Discord 和 LINE。你的代理成为一个完全自主的数字工作者。",
           "将你的进阶 OpenClaw 设置部署到 Zeabur 以获得 24/7 正常运行时间 — 使用推荐码「OpenClaw」享 9 折优惠。云端部署让你的定时任务稳定执行、多平台连接持续存活、技能随时可用。在 CanFly.ai，这就是完整旅程：免费本地 AI → 云端部署 → 全功能自主代理。"
+        ]
+      },
+      "grokBotVsOpenclaw": {
+        "title": "Grok Bot 对上 OpenClaw：托管队友，还是你拥有的代理人",
+        "summary": "Grok Bot 是 xAI 全天候云端队友。OpenClaw 是你自己安装的代理人。同一周、两份工作 — CanFly.ai 何时指向哪一边。",
+        "content": [
+          "Grok Bot 在 2026-08-11 以 beta 队友应用上线：具名 Bot 共用一台持久云端电脑，有浏览器、文件系统与终端。你发消息给 Bot，像发消息给同事。笔记本合上它仍会做，只在需要批准时回来。这是托管产品。到 https://x.ai/bot 下载。没有 `clawhub install`，也没有 `ollama launch grok-bot`。",
+          "OpenClaw 是 CanFly.ai 的另一扇门。你自己安装、钉模型，gateway 留在你能控制的硬件。官方 Grok 切换仍是 /learn/grok-4-7 的 `openclaw models set xai/grok-4.7`。Grok 4.7 是模型 ID。Grok Bot 是应用。两页写成一页会互抢搜索，也会把安装步骤弄混。",
+          "选 Grok Bot 的时机：你已经付 SuperGrok 或付费 Cursor，而且想在 Gmail、Slack、CRM，或没有干净 API 的网站上并行交办。官方文档写所有付费个人 Cursor 方案与 Cursor Teams 都内含，或关联 SuperGrok／Plus／Heavy。用量分开、每周重置。X 在 Settings → Plugins，对话用 @。不要为 X 或 Cursor Ultra 另开一页。",
+          "选 OpenClaw 的时机：工作必须留在本地、你租的 VPS，或你能发布的技能。从 /learn/ollama-openclaw 开始。要免费本地大脑先看 /apps/free/ollama。tool-call 需要防火墙就看 /learn/harden-aif。就算明天 xAI 改 Bot 方案，这条路仍是你的。",
+          "安全是安静的差别。Grok Bot 的电脑隔离到账号，不是隔离到单一 Bot。你放上去的登录或文件，你跑的每只 Bot 都看得到。批准机制存在是有原因的：密码、通行密钥、两步验证与 CAPTCHA 请自己接管 Agent Computer。OpenClaw 把同一类风险放在你的磁盘与技能上 — 所以我们也教本地防火墙，而不是假装聊天无害。",
+          "CanFly.ai 不会假装只有一边赢。要在 Cursor 云端持续做事的队友，打开 /apps/free/grok-bot 与 /learn/grok-bot。要搬得走的代理人，从 OpenClaw 与 Grok 4.7 开始。Perplexity 搜索仍在 /learn/perplexity — Computer 与 Portable 还在待决，不是这篇对照。",
+          "品牌承诺没变：Now You Can Fly。要速度、也能接受厂商电脑，就用托管 Bot。要所有权，就用 OpenClaw。两条链接都在 CanFly.ai，用事实选，不要开传闻 slug。"
         ]
       }
     }

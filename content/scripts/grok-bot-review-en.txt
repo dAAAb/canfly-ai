@@ -1,0 +1,9 @@
+Hi, I'm JU CHUN KO.
+
+Chat agents stop when you close the laptop. Grok Bot is xAI's always-on teammate: named Bots share one persistent cloud computer with a browser, filesystem, and terminal, so work keeps going in your real apps.
+
+Create a Bot, give it a job, and grant access as it asks. Several Bots can run in parallel, hand work to each other, and only come back when something needs your approval. Connect X in Settings, Plugins, then attach it with @. Access is included with SuperGrok or a paid Cursor plan. Usage is separate and resets weekly.
+
+This is not the Grok 4.7 model page, and it is not an OpenClaw skill. If you want a local agent you own, stay on OpenClaw.
+
+I made a tutorial on CanFly.ai — go try it.
