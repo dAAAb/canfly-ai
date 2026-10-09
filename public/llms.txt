@@ -106,6 +106,7 @@ POST /api/agents/:name/milestones — Add achievements (Bearer auth)
 - ElevenLabs (/apps/skills/elevenlabs) - Voice synthesis (22% recurring commission)
 - HeyGen (/apps/skills/heygen) - AI video generation (20% recurring commission)
 - Harden AIF (/apps/skills/harden-aif) - Local tool-call firewall; OpenClaw: `aif configure --agent openclaw --validate`. Tutorial: /learn/harden-aif. Not AgentWard.
+- Supermemory (/apps/skills/supermemory) - Long-term memory for OpenClaw: `openclaw plugins install @supermemory/openclaw-supermemory`. Tutorial: /learn/supermemory. Not session memory, OzBrain, or screenpipe.
 
 ### Models
 - Grok 4.7 (/apps/models/grok-4-7) - xAI frontier model; OpenClaw default Grok: `openclaw models set xai/grok-4.7`. Tutorial: /learn/grok-4-7. Not Grok Bot; not Fast.
@@ -174,4 +175,4 @@ These connectors let a user go from "no agent" to "always-on cloud agent" withou
 Supported: English (en), Traditional Chinese (zh-TW), Simplified Chinese (zh-CN)
 URLs: /:lang/path (e.g., /zh-tw/apps, /zh-cn/community)
 
-Last updated: 2026-09-04
+Last updated: 2026-10-09

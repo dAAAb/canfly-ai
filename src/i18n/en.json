@@ -776,7 +776,7 @@
       },
       "openclaw": {
         "tagline": "Your personal AI agent — your AI, your rules",
-        "description": "The open-source personal AI agent platform with ~390K GitHub stars. Install with one command, then customize with skills, tools, and integrations. The 2.0 line (v2026.8.1–v2026.9.6) adds guided setup, a rebuilt Control UI, and Shared Cloud Sessions. Fresh xAI / Grok setup defaults to Grok 4.7: `openclaw models set xai/grok-4.7`. When your OpenAI account has GPT-6 Astra, switch with `openclaw models set openai/gpt-6-astra`. Add a local tool-call firewall with Harden AIF: `aif configure --agent openclaw --validate`. Grok Bot is a hosted xAI teammate, not an OpenClaw skill — compare at /blog/grok-bot-vs-openclaw. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
+        "description": "The open-source personal AI agent platform with ~390K GitHub stars. Install with one command, then customize with skills, tools, and integrations. The 2.0 line (v2026.8.1–v2026.9.6) adds guided setup, a rebuilt Control UI, and Shared Cloud Sessions. Fresh xAI / Grok setup defaults to Grok 4.7: `openclaw models set xai/grok-4.7`. When your OpenAI account has GPT-6 Astra, switch with `openclaw models set openai/gpt-6-astra`. Add a local tool-call firewall with Harden AIF: `aif configure --agent openclaw --validate`. Add long-term memory with Supermemory: `openclaw plugins install @supermemory/openclaw-supermemory`. Grok Bot is a hosted xAI teammate, not an OpenClaw skill — compare at /blog/grok-bot-vs-openclaw. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
         "features": [
           "One-command install: ollama launch openclaw",
           "~390K GitHub stars — largest AI agent community",
@@ -785,6 +785,7 @@
           "Switch to Grok 4.7: openclaw models set xai/grok-4.7",
           "Switch to Astra: openclaw models set openai/gpt-6-astra",
           "Local firewall: Harden AIF (`aif configure --agent openclaw --validate`)",
+          "Long-term memory: Supermemory (`openclaw plugins install @supermemory/openclaw-supermemory`)",
           "Full privacy: runs 100% on your hardware",
           "v2026.9.6: Grok 4.7 default, Astra, managed updates"
         ],
@@ -880,6 +881,21 @@
         ],
         "ctaPrimary": "Open the Tutorial",
         "ctaSecondary": "Official docs"
+      },
+      "supermemory": {
+        "tagline": "Long-term memory for OpenClaw across every channel",
+        "description": "Supermemory gives OpenClaw long-term memory and a user profile that follow you across Telegram, WhatsApp, Discord, Slack, iMessage, and other channels. On CanFly.ai we pin the official plugin: `openclaw plugins install @supermemory/openclaw-supermemory`, then `openclaw supermemory setup` and `openclaw gateway restart`. Auto-recall injects relevant memories and the profile before each turn; auto-capture stores the exchange after. Cloud needs an `sm_` key from the console. Stay on your machine with `npx supermemory local` at http://localhost:6767. Coding-agent plugins are on the Free plan; usage still meters monthly credits ($5 on Free). This is not OpenClaw's built-in session memory, not OzBrain, and not screenpipe.",
+        "features": [
+          "Official: openclaw plugins install @supermemory/openclaw-supermemory",
+          "Setup: openclaw supermemory setup, then gateway restart",
+          "Auto-recall + auto-capture across chat channels",
+          "Tools: supermemory_store / search / forget / profile",
+          "Slash commands: /remember and /recall",
+          "Local: npx supermemory local → http://localhost:6767",
+          "Plugins free on all plans; usage meters credits"
+        ],
+        "ctaPrimary": "Open the Tutorial",
+        "ctaSecondary": "Official OpenClaw docs"
       },
       "grok-4-7": {
         "tagline": "xAI frontier model — OpenClaw's default Grok",
@@ -3803,6 +3819,13 @@
               "link": "/learn/harden-aif"
             },
             {
+              "emoji": "🧠",
+              "title": "Supermemory",
+              "desc": "Long-term memory for OpenClaw: openclaw plugins install @supermemory/openclaw-supermemory.",
+              "cta": "Memory tutorial",
+              "link": "/learn/supermemory"
+            },
+            {
               "emoji": "🖥️",
               "title": "Buy Hardware for Local AI",
               "desc": "Want unlimited private AI? Get a Mac Mini or GEEKOM mini PC to run models locally 24/7.",
@@ -4423,6 +4446,13 @@
               "desc": "Local tool-call firewall for OpenClaw — not a ClawHub skill, not AgentWard.",
               "cta": "AIF tutorial",
               "link": "/learn/harden-aif"
+            },
+            {
+              "emoji": "🧠",
+              "title": "Supermemory",
+              "desc": "Official OpenClaw long-term memory plugin — not session memory, not OzBrain, not screenpipe.",
+              "cta": "Memory tutorial",
+              "link": "/learn/supermemory"
             }
           ],
           "tips": [
@@ -7698,6 +7728,13 @@
               "desc": "Hosted OpenClaw brain after the firewall is on: openclaw models set openai/gpt-6-astra.",
               "link": "/learn/gpt-6-astra",
               "cta": "Astra tutorial"
+            },
+            {
+              "emoji": "🧠",
+              "title": "Supermemory",
+              "desc": "Long-term memory after the firewall: openclaw plugins install @supermemory/openclaw-supermemory.",
+              "cta": "Memory tutorial",
+              "link": "/learn/supermemory"
             }
           ]
         }
@@ -8207,6 +8244,249 @@
         {
           "q": "Are logins isolated per Bot?",
           "a": "No. Files, browser sessions, and app logins sit on one account computer. Treat them as shared across all of your Bots."
+        }
+      ]
+    },
+    "supermemory": {
+      "title": "Supermemory — Long-term Memory for OpenClaw",
+      "subtitle": "Official plugin: openclaw plugins install @supermemory/openclaw-supermemory. Not session memory, not OzBrain, not screenpipe.",
+      "duration": "8 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "What Supermemory is",
+          "titleEn": "What Supermemory is",
+          "estimatedTime": "2 min",
+          "content": "Supermemory is long-term memory infrastructure for agents. On CanFly.ai this page is the OpenClaw plugin path. After install, the plugin runs with almost no extra clicks: auto-recall queries relevant memories and the user profile before every AI turn; auto-capture stores the exchange after.\n\nThis is not OpenClaw's built-in session memory (that dies with the chat). It is not OzBrain (a hosted MCP — CanFly.ai does not open that page). It is not screenpipe (screen and voice capture). Keep those products off this card.",
+          "commands": [
+            "# Product page on CanFly.ai",
+            "# /apps/skills/supermemory",
+            "",
+            "# Official OpenClaw docs",
+            "https://supermemory.ai/docs/integrations/openclaw",
+            "",
+            "# Official pin",
+            "openclaw plugins install @supermemory/openclaw-supermemory",
+            "",
+            "# Plugin source",
+            "https://github.com/supermemoryai/openclaw-supermemory"
+          ],
+          "expectedResult": "You know Supermemory is long-term memory for OpenClaw — not session memory, not OzBrain, and not screenpipe.",
+          "tips": [
+            "Keep Firecrawl and Brave Search on their own pages. This tutorial only pins memory.",
+            "Do not invent clawhub install supermemory. The official client is the OpenClaw plugin.",
+            "OzBrain and Hindsight stay in the observation queue. Do not open a third memory page."
+          ],
+          "troubleshooting": {
+            "title": "Scope",
+            "items": [
+              {
+                "q": "Is this OpenClaw's built-in session memory?",
+                "a": "No. Built-in session memory stays inside one chat. Supermemory stores facts and a profile across Telegram, WhatsApp, Discord, Slack, and iMessage."
+              },
+              {
+                "q": "Is this the same as screenpipe?",
+                "a": "No. screenpipe captures the screen and microphone. Supermemory stores conversation memory. CanFly.ai does not fold them into one page."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Get an sm_ key — cloud or local",
+          "titleEn": "Get an sm_ key — cloud or local",
+          "estimatedTime": "2 min",
+          "content": "Cloud: open the Supermemory console, create an API key, and copy the `sm_` token. Coding-agent plugins (Claude Code, Cursor, Codex, OpenCode, OpenClaw, Hermes) are on every plan, including Free. Free includes $5 of credits each month; usage still meters search and writes.\n\nLocal: run `npx supermemory local` (or `bunx supermemory local`, or `curl -fsSL https://supermemory.ai/install | bash` then `supermemory-server`). First boot prints `http://localhost:6767` and an `sm_` key. Save that key. macOS (Apple Silicon and Intel) and Linux (x64 and arm64) are documented.",
+          "commands": [
+            "# Cloud console (paste the sm_ key later)",
+            "https://app.supermemory.ai",
+            "",
+            "# Local — official OpenClaw docs",
+            "npx supermemory local",
+            "",
+            "# Same installer, other clients",
+            "bunx supermemory local",
+            "curl -fsSL https://supermemory.ai/install | bash",
+            "supermemory-server",
+            "",
+            "# Local URL + key printed on first boot",
+            "# http://localhost:6767",
+            "# api key   sm_...",
+            "",
+            "# Point the plugin at local",
+            "export SUPERMEMORY_BASE_URL=\"http://localhost:6767\""
+          ],
+          "expectedResult": "You have an sm_ key from the console, or from the first-boot box on localhost:6767.",
+          "tips": [
+            "GitHub README may still say Pro is required. Official changelog 2026-08-15 and pricing say plugins are free on every plan.",
+            "Local default embeddings are Xenova/bge-base-en-v1.5. First boot may ask for an LLM key.",
+            "Long URLs stay in this command list so the English page does not overflow."
+          ],
+          "troubleshooting": {
+            "title": "Keys",
+            "items": [
+              {
+                "q": "The GitHub README says I need Pro",
+                "a": "Trust the official docs and the 2026-08-15 changelog: OpenClaw is on the Free plan. Usage still spends monthly credits."
+              },
+              {
+                "q": "npx supermemory local printed port 8000",
+                "a": "Official self-hosting quickstart and the OpenClaw page pin http://localhost:6767. Use 6767 unless your own binary printed a different URL."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Install the plugin and restart",
+          "titleEn": "Install the plugin and restart",
+          "estimatedTime": "2 min",
+          "content": "Need OpenClaw first? Use the CanFly.ai guide, then come back. Official pin is one plugin install, the setup wizard, then a gateway restart. Paste the `sm_` key when setup asks. For local, also set `SUPERMEMORY_BASE_URL` or `baseUrl` in `~/.openclaw/openclaw.json`.\n\nThe plugin entry in config is `openclaw-supermemory`. Default root container tag is `openclaw_{hostname}`. Auto-recall and auto-capture default to true.",
+          "commands": [
+            "openclaw plugins install @supermemory/openclaw-supermemory",
+            "",
+            "openclaw supermemory setup",
+            "openclaw gateway restart",
+            "",
+            "# Confirm",
+            "openclaw supermemory status",
+            "",
+            "# Optional env (cloud or local)",
+            "export SUPERMEMORY_OPENCLAW_API_KEY=\"sm_...\"",
+            "export SUPERMEMORY_BASE_URL=\"http://localhost:6767\"",
+            "",
+            "# If OpenClaw is missing",
+            "# See /learn/ollama-openclaw",
+            "ollama launch openclaw"
+          ],
+          "expectedResult": "openclaw supermemory status shows the plugin enabled and the key accepted.",
+          "tips": [
+            "Restart is required after install. Setup alone is not enough.",
+            "Do not invent a clawhub install. Discovery for other skills stays on /learn/agent-skills.",
+            "Pair a firewall later at /learn/harden-aif. Memory and tool-call policy are different pages."
+          ],
+          "troubleshooting": {
+            "title": "Install",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "Install OpenClaw first: /learn/ollama-openclaw or `ollama launch openclaw`. Then rerun the plugin install."
+              },
+              {
+                "q": "status says the API key is missing",
+                "a": "Rerun `openclaw supermemory setup` and paste the sm_ key, or export SUPERMEMORY_OPENCLAW_API_KEY. For local, also set SUPERMEMORY_BASE_URL."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Recall, remember, and containers",
+          "titleEn": "Recall, remember, and containers",
+          "estimatedTime": "2 min",
+          "content": "Once the gateway is up, the agent can call supermemory_store, supermemory_search, supermemory_forget, and supermemory_profile. In chat you can type /remember [text] and /recall [query]. CLI twins: `openclaw supermemory search`, `profile`, and `wipe` (wipe asks for confirmation).\n\nWork vs personal: run `openclaw supermemory setup-advanced` and enable custom container tags, for example work and personal. Automatic per-channel split is not supported yet — you write the routing instructions. You can also ask the OpenClaw agent in chat to apply those settings.",
+          "commands": [
+            "openclaw supermemory status",
+            "openclaw supermemory search \"what is my timezone\"",
+            "openclaw supermemory profile",
+            "",
+            "# In any OpenClaw chat",
+            "/remember I only review PRs after 10:00",
+            "/recall timezone",
+            "",
+            "# Advanced containers (work / personal / read-only bookmarks)",
+            "openclaw supermemory setup-advanced",
+            "openclaw gateway restart",
+            "",
+            "# Dangerous — confirmation required",
+            "openclaw supermemory wipe"
+          ],
+          "expectedResult": "A /remember line shows up in /recall or `openclaw supermemory search`. status still looks healthy.",
+          "tips": [
+            "captureMode default is all (filters noise). everything stores every message.",
+            "Custom container tags use tag:description. Mark Twitter bookmarks read-only in the instructions.",
+            "wipe deletes all memories after confirmation. Do not run it on a shared key."
+          ],
+          "troubleshooting": {
+            "title": "Runtime",
+            "items": [
+              {
+                "q": "Recall is empty after one chat",
+                "a": "Send one more turn so auto-capture can store, then /recall. Check status and that autoCapture is true."
+              },
+              {
+                "q": "I want Slack at work and Telegram at home",
+                "a": "Use setup-advanced custom containers plus instructions. Official FAQ: automatic per-channel split is not supported yet."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Next steps on CanFly.ai",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 min",
+          "content": "Supermemory is long-term memory. Pair it with an OpenClaw install, Harden AIF if tool calls need a firewall, or Agent Skills for extra tools. Do not fold this page into OzBrain, screenpipe, or OpenClaw session memory.",
+          "tips": [
+            "Review video is pending (no HEYGEN_API_KEY on this run). English script: content/scripts/supermemory-review-en.txt",
+            "After an OpenClaw upgrade, rerun openclaw supermemory status.",
+            "For a broken OpenClaw install, use /learn/openclaw-troubleshooting first."
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "Install OpenClaw",
+              "desc": "One-command OpenClaw setup with Ollama, then come back to add memory.",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw tutorial"
+            },
+            {
+              "emoji": "📦",
+              "title": "OpenClaw product",
+              "desc": "What OpenClaw is, and the Supermemory line on the apps card.",
+              "link": "/apps/free/openclaw",
+              "cta": "OpenClaw card"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "Local tool-call firewall. Memory stores facts; AIF reviews actions.",
+              "link": "/learn/harden-aif",
+              "cta": "AIF tutorial"
+            },
+            {
+              "emoji": "🧩",
+              "title": "Agent Skills",
+              "desc": "Add wallet, email, and media skills. Supermemory is memory, not ClawHub.",
+              "link": "/learn/agent-skills",
+              "cta": "Skills tutorial"
+            },
+            {
+              "emoji": "⚡",
+              "title": "Grok 4.7",
+              "desc": "Hosted xAI brain after memory is on: openclaw models set xai/grok-4.7.",
+              "link": "/learn/grok-4-7",
+              "cta": "Grok 4.7 tutorial"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Do I need a paid Supermemory plan for OpenClaw?",
+          "a": "No. Official changelog 2026-08-15: coding-agent plugins including OpenClaw are on every plan, including Free. Free includes $5 of credits each month. Usage still meters."
+        },
+        {
+          "q": "Can I keep memory on my machine?",
+          "a": "Yes. Run `npx supermemory local`, save the printed sm_ key, set SUPERMEMORY_BASE_URL to http://localhost:6767, then rerun setup."
+        },
+        {
+          "q": "Is this OzBrain or OpenClaw session memory?",
+          "a": "No. OzBrain is a hosted MCP and stays in the observation queue. OpenClaw session memory dies with the chat. This page is only the official Supermemory plugin."
+        },
+        {
+          "q": "Can I install this with clawhub install?",
+          "a": "No. Use `openclaw plugins install @supermemory/openclaw-supermemory`. ClawHub stays on /learn/agent-skills."
+        },
+        {
+          "q": "Does it split Slack and Telegram automatically?",
+          "a": "Not yet. Official FAQ: use setup-advanced custom container tags and write the routing instructions yourself."
         }
       ]
     }
