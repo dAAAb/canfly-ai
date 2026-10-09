@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#041014"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <defs>
+    <radialGradient id="glow" cx="28%" cy="42%" r="70%">
+      <stop offset="0%" stop-color="#2DD4BF" stop-opacity="0.20"/>
+      <stop offset="55%" stop-color="#0B2A32" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#041014" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  <circle cx="220" cy="315" r="150" fill="#0B2A32" stroke="#2DD4BF" stroke-width="8"/>
+  <path d="M145 335 C145 250 180 205 220 205 C260 205 295 250 295 335" stroke="#5EEAD4" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M165 350 H275" stroke="#2DD4BF" stroke-width="8" stroke-linecap="round"/>
+  <path d="M180 385 H260" stroke="#99F6E4" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="220" cy="285" r="16" fill="#FDE68A"/>
+  <text x="430" y="280" fill="#F8FAFC" font-family="ui-sans-serif, system-ui, sans-serif" font-size="64" font-weight="700">Supermemory</text>
+  <text x="430" y="350" fill="#5EEAD4" font-family="ui-sans-serif, system-ui, sans-serif" font-size="28">Long-term memory for OpenClaw</text>
+  <text x="430" y="410" fill="#9CA3AF" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22">openclaw plugins install @supermemory/openclaw-supermemory</text>
+</svg>

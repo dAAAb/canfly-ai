@@ -1,0 +1,11 @@
+Hi, I'm JU CHUN KO.
+
+OpenClaw can talk on Telegram, WhatsApp, Discord, and Slack. Without long-term memory, it forgets who you are the next morning.
+
+Supermemory is the official long-term memory plugin. Install it with openclaw plugins install at supermemory slash openclaw-supermemory. Then run openclaw supermemory setup, paste your sm underscore API key, and restart the gateway.
+
+After that, auto-recall injects relevant memories and your profile before each turn. Auto-capture stores the exchange after. Slash commands are slash remember and slash recall. Stay local with npx supermemory local on port 6767.
+
+This is not OpenClaw session memory, not OzBrain, and not screenpipe.
+
+I made a tutorial on CanFly.ai — go try it.

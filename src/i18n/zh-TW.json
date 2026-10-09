@@ -779,7 +779,7 @@
       },
       "openclaw": {
         "tagline": "你的個人 AI 代理人 — 你的 AI，你的規則",
-        "description": "擁有約 390K GitHub 星星的開源個人 AI 代理人平台。一行指令安裝，自由搭配技能、工具和整合。2.0 線（v2026.8.1–v2026.9.6）加上引導式 setup、重建的 Control UI 與 Shared Cloud Sessions。全新 xAI / Grok 設定預設 Grok 4.7：`openclaw models set xai/grok-4.7`。OpenAI 帳號若已有 GPT-6 Astra，用 `openclaw models set openai/gpt-6-astra` 切過去。本機 tool-call 防火牆用 Harden AIF：`aif configure --agent openclaw --validate`。Grok Bot 是 xAI 託管隊友，不是 OpenClaw 技能 — 對照見 /blog/grok-bot-vs-openclaw。在本地或雲端執行。你的資料永遠屬於你 — 無廠商綁定、無訂閱費、無限制。",
+        "description": "擁有約 390K GitHub 星星的開源個人 AI 代理人平台。一行指令安裝，自由搭配技能、工具和整合。2.0 線（v2026.8.1–v2026.9.6）加上引導式 setup、重建的 Control UI 與 Shared Cloud Sessions。全新 xAI / Grok 設定預設 Grok 4.7：`openclaw models set xai/grok-4.7`。OpenAI 帳號若已有 GPT-6 Astra，用 `openclaw models set openai/gpt-6-astra` 切過去。本機 tool-call 防火牆用 Harden AIF：`aif configure --agent openclaw --validate`。長期記憶用 Supermemory：`openclaw plugins install @supermemory/openclaw-supermemory`。Grok Bot 是 xAI 託管隊友，不是 OpenClaw 技能 — 對照見 /blog/grok-bot-vs-openclaw。在本地或雲端執行。你的資料永遠屬於你 — 無廠商綁定、無訂閱費、無限制。",
         "features": [
           "一行指令安裝：ollama launch openclaw",
           "約 390K GitHub 星星 — 最大 AI 代理人社群",
@@ -788,6 +788,7 @@
           "切到 Grok 4.7：openclaw models set xai/grok-4.7",
           "切到 Astra：openclaw models set openai/gpt-6-astra",
           "本機防火牆：Harden AIF（`aif configure --agent openclaw --validate`）",
+          "長期記憶：Supermemory（`openclaw plugins install @supermemory/openclaw-supermemory`）",
           "完全隱私：100% 在你的硬體上執行",
           "v2026.9.6：預設 Grok 4.7、Astra、託管更新"
         ],
@@ -883,6 +884,21 @@
         ],
         "ctaPrimary": "打開教學",
         "ctaSecondary": "官方文件"
+      },
+      "supermemory": {
+        "tagline": "給 OpenClaw 跨頻道用的長期記憶",
+        "description": "Supermemory 給 OpenClaw 長期記憶與使用者檔案，跟著你走 Telegram、WhatsApp、Discord、Slack、iMessage 與其他頻道。在 CanFly.ai 我們釘官方插件：`openclaw plugins install @supermemory/openclaw-supermemory`，再跑 `openclaw supermemory setup` 與 `openclaw gateway restart`。Auto-recall 會在每一輪前注入相關記憶與檔案；auto-capture 在回合後把對話存起來。雲端要從主控台拿 `sm_` 金鑰。要留在自己機器上，用 `npx supermemory local`，位址是 http://localhost:6767。程式 Agent 插件在免費方案就能裝；用量仍會扣每月額度（免費方案每月 5 美元）。這不是 OpenClaw 內建 session memory，不是 OzBrain，也不是 screenpipe。",
+        "features": [
+          "官方：openclaw plugins install @supermemory/openclaw-supermemory",
+          "設定：openclaw supermemory setup，再 gateway restart",
+          "Auto-recall + auto-capture，跨聊天頻道",
+          "工具：supermemory_store / search / forget / profile",
+          "斜線指令：/remember 與 /recall",
+          "本機：npx supermemory local → http://localhost:6767",
+          "插件各方案都能裝；用量仍計額度"
+        ],
+        "ctaPrimary": "打開教學",
+        "ctaSecondary": "官方 OpenClaw 文件"
       },
       "grok-4-7": {
         "tagline": "xAI 前線模型 — OpenClaw 預設的 Grok",
@@ -3806,6 +3822,13 @@
               "link": "/learn/harden-aif"
             },
             {
+              "emoji": "🧠",
+              "title": "Supermemory",
+              "desc": "給 OpenClaw 的長期記憶：openclaw plugins install @supermemory/openclaw-supermemory。",
+              "cta": "記憶教學",
+              "link": "/learn/supermemory"
+            },
+            {
               "emoji": "🖥️",
               "title": "購買硬體跑本地 AI",
               "desc": "想要無限量的私人 AI？買一台 Mac Mini 或 GEEKOM 迷你電腦，24/7 跑本地模型。",
@@ -4431,6 +4454,13 @@
               "desc": "給 OpenClaw 的本機 tool-call 防火牆 — 不是 ClawHub 技能，也不是 AgentWard。",
               "cta": "AIF 教學",
               "link": "/learn/harden-aif"
+            },
+            {
+              "emoji": "🧠",
+              "title": "Supermemory",
+              "desc": "官方 OpenClaw 長期記憶插件 — 不是 session memory，不是 OzBrain，不是 screenpipe。",
+              "cta": "記憶教學",
+              "link": "/learn/supermemory"
             }
           ],
           "tips": [
@@ -7706,6 +7736,13 @@
               "desc": "防火牆開好後，用託管大腦：openclaw models set openai/gpt-6-astra。",
               "link": "/learn/gpt-6-astra",
               "cta": "Astra 教學"
+            },
+            {
+              "emoji": "🧠",
+              "title": "Supermemory",
+              "desc": "防火牆之後的長期記憶：openclaw plugins install @supermemory/openclaw-supermemory。",
+              "cta": "記憶教學",
+              "link": "/learn/supermemory"
             }
           ]
         }
@@ -8215,6 +8252,249 @@
         {
           "q": "登入是每隻 Bot 隔離的嗎？",
           "a": "不是。檔案、瀏覽器工作階段與應用登入都在帳號那一台電腦。當成所有 Bot 共用。"
+        }
+      ]
+    },
+    "supermemory": {
+      "title": "Supermemory — 給 OpenClaw 的長期記憶",
+      "subtitle": "官方插件：openclaw plugins install @supermemory/openclaw-supermemory。不是 session memory，不是 OzBrain，不是 screenpipe。",
+      "duration": "8 分鐘",
+      "difficulty": "入門",
+      "steps": [
+        {
+          "title": "Supermemory 是什麼",
+          "titleEn": "What Supermemory is",
+          "estimatedTime": "2 分鐘",
+          "content": "Supermemory 是給 Agent 用的長期記憶基礎設施。在 CanFly.ai 這頁只寫 OpenClaw 插件路徑。裝好之後幾乎不用再點：auto-recall 會在每一輪 AI 前回查相關記憶與使用者檔案；auto-capture 在回合後把對話存起來。\n\n這不是 OpenClaw 內建 session memory（對話結束就沒了）。不是 OzBrain（託管 MCP，CanFly.ai 不另開那頁）。也不是 screenpipe（螢幕與語音擷取）。不要把它們折進這一張卡。",
+          "commands": [
+            "# CanFly.ai 產品頁",
+            "# /apps/skills/supermemory",
+            "",
+            "# 官方 OpenClaw 文件",
+            "https://supermemory.ai/docs/integrations/openclaw",
+            "",
+            "# 官方接法",
+            "openclaw plugins install @supermemory/openclaw-supermemory",
+            "",
+            "# 插件原始碼",
+            "https://github.com/supermemoryai/openclaw-supermemory"
+          ],
+          "expectedResult": "你知道 Supermemory 是給 OpenClaw 的長期記憶 — 不是 session memory，不是 OzBrain，也不是 screenpipe。",
+          "tips": [
+            "Firecrawl 與 Brave Search 留在自己的頁。這篇只釘記憶。",
+            "不要發明 clawhub install supermemory。官方用戶端是 OpenClaw 插件。",
+            "OzBrain 與 Hindsight 留在觀察列。不要開第三個記憶頁。"
+          ],
+          "troubleshooting": {
+            "title": "範圍",
+            "items": [
+              {
+                "q": "這是 OpenClaw 內建 session memory 嗎？",
+                "a": "不是。內建 session memory 只活在單一對話。Supermemory 把事實與檔案跨 Telegram、WhatsApp、Discord、Slack、iMessage 存下來。"
+              },
+              {
+                "q": "跟 screenpipe 是同一頁嗎？",
+                "a": "不是。screenpipe 擷取螢幕與麥克風。Supermemory 存對話記憶。CanFly.ai 不把它們寫成同一頁。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "拿 sm_ 金鑰 — 雲端或本機",
+          "titleEn": "Get an sm_ key — cloud or local",
+          "estimatedTime": "2 分鐘",
+          "content": "雲端：打開 Supermemory 主控台，建立 API 金鑰，複製 `sm_`。程式 Agent 插件（Claude Code、Cursor、Codex、OpenCode、OpenClaw、Hermes）各方案都能裝，含免費方案。免費方案每月有 5 美元額度；搜尋與寫入仍計用量。\n\n本機：跑 `npx supermemory local`（或 `bunx supermemory local`，或 `curl -fsSL https://supermemory.ai/install | bash` 再 `supermemory-server`）。第一次開機會印 `http://localhost:6767` 與 `sm_` 金鑰。請存下來。文件寫明支援 macOS（Apple Silicon 與 Intel）與 Linux（x64 與 arm64）。",
+          "commands": [
+            "# 雲端主控台（稍後貼上 sm_ 金鑰）",
+            "https://app.supermemory.ai",
+            "",
+            "# 本機 — 官方 OpenClaw 文件",
+            "npx supermemory local",
+            "",
+            "# 同一安裝器，其他客戶端",
+            "bunx supermemory local",
+            "curl -fsSL https://supermemory.ai/install | bash",
+            "supermemory-server",
+            "",
+            "# 第一次開機印出的本機網址與金鑰",
+            "# http://localhost:6767",
+            "# api key   sm_...",
+            "",
+            "# 把插件指到本機",
+            "export SUPERMEMORY_BASE_URL=\"http://localhost:6767\""
+          ],
+          "expectedResult": "你手上有主控台或 localhost:6767 第一次開機印出的 sm_ 金鑰。",
+          "tips": [
+            "GitHub README 可能還寫要 Pro。官方 2026-08-15 changelog 與價目說插件各方案都能裝。",
+            "本機預設嵌入是 Xenova/bge-base-en-v1.5。第一次開機可能問 LLM 金鑰。",
+            "長網址放在指令清單，英文頁才不會爆版。"
+          ],
+          "troubleshooting": {
+            "title": "金鑰",
+            "items": [
+              {
+                "q": "GitHub README 寫要 Pro",
+                "a": "以官方文件與 2026-08-15 changelog 為準：OpenClaw 在免費方案就能裝。用量仍扣每月額度。"
+              },
+              {
+                "q": "npx supermemory local 印出 port 8000",
+                "a": "官方自架快速入門與 OpenClaw 頁釘 http://localhost:6767。除非你自己的 binary 印了別的網址，否則用 6767。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "安裝插件並重啟",
+          "titleEn": "Install the plugin and restart",
+          "estimatedTime": "2 分鐘",
+          "content": "還沒有 OpenClaw？先走 CanFly.ai 教學再回來。官方接法是裝插件、跑 setup、再 gateway restart。setup 問到時貼上 `sm_`。本機還要設 `SUPERMEMORY_BASE_URL`，或在 `~/.openclaw/openclaw.json` 寫 `baseUrl`。\n\n設定裡的插件名稱是 `openclaw-supermemory`。預設根容器標籤是 `openclaw_{hostname}`。auto-recall 與 auto-capture 預設為 true。",
+          "commands": [
+            "openclaw plugins install @supermemory/openclaw-supermemory",
+            "",
+            "openclaw supermemory setup",
+            "openclaw gateway restart",
+            "",
+            "# 確認",
+            "openclaw supermemory status",
+            "",
+            "# 可選環境變數（雲端或本機）",
+            "export SUPERMEMORY_OPENCLAW_API_KEY=\"sm_...\"",
+            "export SUPERMEMORY_BASE_URL=\"http://localhost:6767\"",
+            "",
+            "# 若還沒有 OpenClaw",
+            "# 見 /learn/ollama-openclaw",
+            "ollama launch openclaw"
+          ],
+          "expectedResult": "openclaw supermemory status 顯示插件已啟用，金鑰也被接受。",
+          "tips": [
+            "裝完一定要重啟。只跑 setup 不夠。",
+            "不要發明 clawhub install。其他技能的發現頁仍是 /learn/agent-skills。",
+            "之後可再配 /learn/harden-aif。記憶與 tool-call 政策是不同頁。"
+          ],
+          "troubleshooting": {
+            "title": "安裝",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "先裝 OpenClaw：/learn/ollama-openclaw 或 `ollama launch openclaw`。再重跑插件安裝。"
+              },
+              {
+                "q": "status 說缺少 API 金鑰",
+                "a": "再跑 `openclaw supermemory setup` 貼上 sm_，或匯出 SUPERMEMORY_OPENCLAW_API_KEY。本機還要設 SUPERMEMORY_BASE_URL。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "回想、記住、容器",
+          "titleEn": "Recall, remember, and containers",
+          "estimatedTime": "2 分鐘",
+          "content": "Gateway 起來後，Agent 能呼叫 supermemory_store、supermemory_search、supermemory_forget、supermemory_profile。聊天可打 /remember [文字] 與 /recall [查詢]。CLI 對應：`openclaw supermemory search`、`profile`、`wipe`（wipe 會再確認）。\n\n工作與私人：跑 `openclaw supermemory setup-advanced`，打開自訂容器標籤，例如 work 與 personal。官方還沒有自動依頻道分流 — 路由說明要自己寫。也可以在聊天裡請 OpenClaw Agent 套用這些設定。",
+          "commands": [
+            "openclaw supermemory status",
+            "openclaw supermemory search \"what is my timezone\"",
+            "openclaw supermemory profile",
+            "",
+            "# 在任何 OpenClaw 聊天",
+            "/remember I only review PRs after 10:00",
+            "/recall timezone",
+            "",
+            "# 進階容器（工作 / 私人 / 唯讀書籤）",
+            "openclaw supermemory setup-advanced",
+            "openclaw gateway restart",
+            "",
+            "# 危險 — 需要確認",
+            "openclaw supermemory wipe"
+          ],
+          "expectedResult": "/remember 的內容能在 /recall 或 `openclaw supermemory search` 找到。status 仍正常。",
+          "tips": [
+            "captureMode 預設是 all（會濾雜訊）。everything 會存每一則訊息。",
+            "自訂容器標籤格式是 tag:description。Twitter 書籤請在說明裡標成唯讀。",
+            "wipe 確認後會刪掉全部記憶。不要在共用金鑰上跑。"
+          ],
+          "troubleshooting": {
+            "title": "執行時",
+            "items": [
+              {
+                "q": "聊完一輪 recall 是空的",
+                "a": "再送一輪讓 auto-capture 寫入，然後 /recall。檢查 status，並確認 autoCapture 是 true。"
+              },
+              {
+                "q": "我想 Slack 走工作、Telegram 走私人",
+                "a": "用 setup-advanced 自訂容器加上說明。官方 FAQ：還沒有自動依頻道分流。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CanFly.ai 下一步",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 分鐘",
+          "content": "Supermemory 是長期記憶。配上 OpenClaw 安裝、需要防火牆時走 Harden AIF，或用 Agent Skills 加工具。不要把這頁折進 OzBrain、screenpipe 或 OpenClaw session memory。",
+          "tips": [
+            "評論影片待補（這輪沒有 HEYGEN_API_KEY）。英文口白稿：content/scripts/supermemory-review-en.txt",
+            "OpenClaw 升級後再跑一次 openclaw supermemory status。",
+            "OpenClaw 裝壞了，先走 /learn/openclaw-troubleshooting。"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "安裝 OpenClaw",
+              "desc": "用 Ollama 一行裝好 OpenClaw，再回來加記憶。",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw 教學"
+            },
+            {
+              "emoji": "📦",
+              "title": "OpenClaw 產品",
+              "desc": "OpenClaw 是什麼，以及產品卡上的 Supermemory 一行。",
+              "link": "/apps/free/openclaw",
+              "cta": "OpenClaw 卡片"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "本機 tool-call 防火牆。記憶存事實；AIF 審動作。",
+              "link": "/learn/harden-aif",
+              "cta": "AIF 教學"
+            },
+            {
+              "emoji": "🧩",
+              "title": "Agent Skills",
+              "desc": "加錢包、郵件與媒體技能。Supermemory 是記憶，不是 ClawHub。",
+              "link": "/learn/agent-skills",
+              "cta": "技能教學"
+            },
+            {
+              "emoji": "⚡",
+              "title": "Grok 4.7",
+              "desc": "記憶開了再換托管大腦：openclaw models set xai/grok-4.7。",
+              "link": "/learn/grok-4-7",
+              "cta": "Grok 4.7 教學"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "OpenClaw 一定要付費方案嗎？",
+          "a": "不用。官方 2026-08-15 changelog：含 OpenClaw 在內的程式 Agent 插件各方案都能裝，含免費方案。免費方案每月 5 美元額度。用量仍計費。"
+        },
+        {
+          "q": "記憶可以留在自己機器上嗎？",
+          "a": "可以。跑 `npx supermemory local`，存下印出的 sm_，把 SUPERMEMORY_BASE_URL 設成 http://localhost:6767，再跑一次 setup。"
+        },
+        {
+          "q": "這是 OzBrain 或 OpenClaw session memory 嗎？",
+          "a": "不是。OzBrain 是托管 MCP，留在觀察列。OpenClaw session memory 對話結束就沒了。這頁只寫官方 Supermemory 插件。"
+        },
+        {
+          "q": "可以用 clawhub install 裝嗎？",
+          "a": "不行。用 `openclaw plugins install @supermemory/openclaw-supermemory`。ClawHub 留在 /learn/agent-skills。"
+        },
+        {
+          "q": "會自動把 Slack 與 Telegram 分開嗎？",
+          "a": "還沒有。官方 FAQ：用 setup-advanced 自訂容器標籤，路由說明自己寫。"
         }
       ]
     }
