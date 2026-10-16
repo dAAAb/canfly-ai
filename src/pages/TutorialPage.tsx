@@ -1911,6 +1911,73 @@ function createNemotronTutorial(t: any): TutorialData {
   }
 }
 
+function createNemotronLightningTutorial(t: any): TutorialData {
+  return {
+    id: 'nemotron-3-5-lightning',
+    title: t('tutorial.nemotronLightning.title'),
+    subtitle: t('tutorial.nemotronLightning.subtitle'),
+    duration: t('tutorial.nemotronLightning.duration'),
+    difficulty: t('tutorial.nemotronLightning.difficulty'),
+    faq: t('tutorial.nemotronLightning.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Zap,
+        title: t('tutorial.nemotronLightning.steps.0.title'),
+        titleEn: t('tutorial.nemotronLightning.steps.0.titleEn'),
+        estimatedTime: t('tutorial.nemotronLightning.steps.0.estimatedTime'),
+        content: t('tutorial.nemotronLightning.steps.0.content'),
+        commands: t('tutorial.nemotronLightning.steps.0.commands', { returnObjects: true }),
+        modelTable: t('tutorial.nemotronLightning.steps.0.modelTable.models', { returnObjects: true }),
+        expectedResult: t('tutorial.nemotronLightning.steps.0.expectedResult'),
+        tips: t('tutorial.nemotronLightning.steps.0.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.nemotronLightning.steps.0.troubleshooting.title'), items: t('tutorial.nemotronLightning.steps.0.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Download,
+        title: t('tutorial.nemotronLightning.steps.1.title'),
+        titleEn: t('tutorial.nemotronLightning.steps.1.titleEn'),
+        estimatedTime: t('tutorial.nemotronLightning.steps.1.estimatedTime'),
+        content: t('tutorial.nemotronLightning.steps.1.content'),
+        commands: t('tutorial.nemotronLightning.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.nemotronLightning.steps.1.expectedResult'),
+        tips: t('tutorial.nemotronLightning.steps.1.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.nemotronLightning.steps.1.troubleshooting.title'), items: t('tutorial.nemotronLightning.steps.1.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Key,
+        title: t('tutorial.nemotronLightning.steps.2.title'),
+        titleEn: t('tutorial.nemotronLightning.steps.2.titleEn'),
+        estimatedTime: t('tutorial.nemotronLightning.steps.2.estimatedTime'),
+        content: t('tutorial.nemotronLightning.steps.2.content'),
+        commands: t('tutorial.nemotronLightning.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.nemotronLightning.steps.2.expectedResult'),
+        tips: t('tutorial.nemotronLightning.steps.2.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.nemotronLightning.steps.2.troubleshooting.title'), items: t('tutorial.nemotronLightning.steps.2.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Globe,
+        title: t('tutorial.nemotronLightning.steps.3.title'),
+        titleEn: t('tutorial.nemotronLightning.steps.3.titleEn'),
+        estimatedTime: t('tutorial.nemotronLightning.steps.3.estimatedTime'),
+        content: t('tutorial.nemotronLightning.steps.3.content'),
+        commands: t('tutorial.nemotronLightning.steps.3.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.nemotronLightning.steps.3.expectedResult'),
+        tips: t('tutorial.nemotronLightning.steps.3.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.nemotronLightning.steps.3.troubleshooting.title'), items: t('tutorial.nemotronLightning.steps.3.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.nemotronLightning.steps.4.title'),
+        titleEn: t('tutorial.nemotronLightning.steps.4.titleEn'),
+        estimatedTime: t('tutorial.nemotronLightning.steps.4.estimatedTime'),
+        content: t('tutorial.nemotronLightning.steps.4.content'),
+        tips: t('tutorial.nemotronLightning.steps.4.tips', { returnObjects: true }),
+        nextStepCards: t('tutorial.nemotronLightning.steps.4.nextStepCards', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
 function createGpt6AstraTutorial(t: any): TutorialData {
   return {
     id: 'gpt-6-astra',
@@ -2652,6 +2719,7 @@ function getTutorials(t: any): Record<string, TutorialData> {
     openrouter: createOpenRouterTutorial(t),
     'google-gemini': createGoogleGeminiTutorial(t),
     'nemotron-3-super': createNemotronTutorial(t),
+    'nemotron-3-5-lightning': createNemotronLightningTutorial(t),
     'gpt-6-astra': createGpt6AstraTutorial(t),
     'grok-4-7': createGrok47Tutorial(t),
     'grok-bot': createGrokBotTutorial(t),

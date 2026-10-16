@@ -76,6 +76,9 @@ public/videos/reviews/
 | 9 | Harden AIF | ⏳ 待補 | ⏳ | ⏳ | ⏳ | ❌ | — | 16:9 | 無 HEYGEN_API_KEY。口白稿 `content/scripts/harden-aif-review-en.txt` |
 | 10 | Grok 4.7 | ⏳ 待補 | ⏳ | ⏳ | ⏳ | ❌ | — | 16:9 | 無 HEYGEN_API_KEY。口白稿 `content/scripts/grok-4-7-review-en.txt` |
 | 11 | Grok Bot | ⏳ 待補 | ⏳ | ⏳ | ⏳ | ❌ | — | 16:9 | 無 HEYGEN_API_KEY。口白稿 `content/scripts/grok-bot-review-en.txt` |
+| 12 | Muse Glimmer | ⏳ 待補 | ⏳ | ⏳ | ⏳ | ❌ | — | 16:9 | PR #57 仍 DRAFT，未進 main |
+| 13 | Supermemory | ⏳ 待補 | ⏳ | ⏳ | ⏳ | ❌ | — | 16:9 | PR #65 仍 DRAFT，未進 main |
+| 14 | Nemotron 3.5 Lightning | ⏳ 待補 | ⏳ | ⏳ | ⏳ | ❌ | — | 16:9 | 無 HEYGEN_API_KEY。口白稿 `content/scripts/nemotron-3-5-lightning-review-en.txt` |
 
 ### 現況摘要
 - **7 支影片全部完成重做** ✅：現有橫式版本其實是中文口白（但配了英文翻譯 VTT），Perplexity/Brave Search 甚至是直式的

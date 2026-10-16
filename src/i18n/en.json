@@ -838,7 +838,7 @@
       },
       "nemotron-3-super": {
         "tagline": "Free 120B open-source LLM — runs like a 12B model",
-        "description": "NVIDIA's open-source 120B parameter LLM that uses Mixture-of-Experts (MoE) architecture to run with just 12B active parameters per inference. Scores 85.6% on PinchBench — the highest among open-source models in its class. Supports 1M token context window. Free to use via OpenRouter, fully open under the NVIDIA Open License. Ideal for OpenClaw AI Agent deployment.",
+        "description": "NVIDIA's open-source 120B parameter LLM that uses Mixture-of-Experts (MoE) architecture to run with just 12B active parameters per inference. Scores 85.6% on PinchBench — the highest among open-source models in its class. Supports 1M token context window. Free to use via OpenRouter, fully open under the NVIDIA Open License. Ideal for OpenClaw AI Agent deployment. Need the 30B / 3B execution sibling? See /apps/models/nemotron-3-5-lightning — `ollama launch openclaw --model nemotron-3.5-lightning`.",
         "features": [
           "120B total parameters, only 12B active (MoE architecture)",
           "PinchBench 85.6% — best-in-class open-source accuracy",
@@ -910,6 +910,21 @@
         ],
         "ctaPrimary": "Open the Tutorial",
         "ctaSecondary": "Download Grok Bot"
+      },
+      "nemotron-3-5-lightning": {
+        "tagline": "30B MoE, 3B active — OpenClaw's local execution layer",
+        "description": "NVIDIA Nemotron 3.5 Lightning launched 2026-08-11. It is an open 30B mixture-of-experts model with 3B active parameters, built for the high-volume execution layer of always-on agents. Official Ollama pin: `ollama launch openclaw --model nemotron-3.5-lightning` (Apple Silicon MLX: `nemotron-3.5-lightning:30b-mlx`). Hosted NVIDIA API: `openclaw models set nvidia/nvidia/nemotron-3.5-lightning-30b-a3b` (1M context, 16,384 max output; NVIDIA's default stays Ultra). OpenRouter lists `nvidia/nemotron-3.5-lightning` (card shows 262K). This is not the existing Nemotron 3 Super (120B/12B) card, not Super VL, and not NemoClaw hosting.",
+        "features": [
+          "30B total / 3B active hybrid MoE (Mamba-2 + MoE + Attention)",
+          "Official local pin: ollama launch openclaw --model nemotron-3.5-lightning",
+          "Apple Silicon: nemotron-3.5-lightning:30b-mlx",
+          "NVIDIA API: openclaw models set nvidia/nvidia/nemotron-3.5-lightning-30b-a3b",
+          "1M context on NVIDIA/Ollama; OpenClaw max output 16,384",
+          "OpenRouter slug nvidia/nemotron-3.5-lightning — confirm the card",
+          "Family: Super for heavy reasoning, Lightning for long-running steps"
+        ],
+        "ctaPrimary": "Open the Tutorial",
+        "ctaSecondary": "Ollama model page"
       }
     },
     "comingSoon": "Coming Soon",
@@ -3783,6 +3798,13 @@
           "nextStepCards": [
             {
               "emoji": "⚡",
+              "title": "Nemotron 3.5 Lightning",
+              "desc": "30B / 3B execution sibling. Official pin: ollama launch openclaw --model nemotron-3.5-lightning.",
+              "link": "/learn/nemotron-3-5-lightning",
+              "cta": "Lightning tutorial"
+            },
+            {
+              "emoji": "⚡",
               "title": "Grok 4.7",
               "desc": "OpenClaw's default Grok: openclaw models set xai/grok-4.7.",
               "cta": "Grok 4.7 tutorial",
@@ -5591,7 +5613,8 @@
           "tips": [
             "MoE = runs 10x smaller than it 'is' — 120B quality at 12B speed",
             "Best open-source model in its class on benchmarks",
-            "1M context = process entire codebases or books"
+            "1M context = process entire codebases or books",
+            "Need the 30B / 3B execution sibling? /learn/nemotron-3-5-lightning — ollama launch openclaw --model nemotron-3.5-lightning."
           ],
           "troubleshooting": {
             "title": "FAQ",
@@ -5738,6 +5761,13 @@
             "Join the NVIDIA AI community for tips and updates"
           ],
           "nextStepCards": [
+            {
+              "emoji": "⚡",
+              "title": "Nemotron 3.5 Lightning",
+              "desc": "30B / 3B execution sibling. Official pin: ollama launch openclaw --model nemotron-3.5-lightning.",
+              "link": "/learn/nemotron-3-5-lightning",
+              "cta": "Lightning tutorial"
+            },
             {
               "emoji": "🌐",
               "title": "OpenRouter",
@@ -7438,6 +7468,13 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "⚡",
+              "title": "Nemotron 3.5 Lightning",
+              "desc": "30B / 3B execution sibling. Official pin: ollama launch openclaw --model nemotron-3.5-lightning.",
+              "link": "/learn/nemotron-3-5-lightning",
+              "cta": "Lightning tutorial"
+            },
+            {
               "emoji": "🦞",
               "title": "Install OpenClaw",
               "desc": "One-command OpenClaw setup with Ollama, then come back to set Astra.",
@@ -7471,7 +7508,7 @@
       "faq": [
         {
           "q": "Can I run GPT-6 Astra locally with Ollama?",
-          "a": "No. Astra is a hosted OpenAI model. For local OpenClaw stay on Ollama, oMLX, or Nemotron 3 Super."
+          "a": "No. Astra is a hosted OpenAI model. For local OpenClaw stay on Ollama, oMLX, Nemotron 3 Super, or Nemotron 3.5 Lightning."
         },
         {
           "q": "Is Astra on OpenRouter?",
@@ -7906,6 +7943,13 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "⚡",
+              "title": "Nemotron 3.5 Lightning",
+              "desc": "30B / 3B execution sibling. Official pin: ollama launch openclaw --model nemotron-3.5-lightning.",
+              "link": "/learn/nemotron-3-5-lightning",
+              "cta": "Lightning tutorial"
+            },
+            {
               "emoji": "🤖",
               "title": "Grok Bot",
               "desc": "Hosted xAI teammates on a shared cloud computer. Not this model page.",
@@ -7946,7 +7990,7 @@
       "faq": [
         {
           "q": "Can I run Grok 4.7 locally with Ollama?",
-          "a": "No. Grok 4.7 is a hosted xAI model. For local OpenClaw stay on Ollama, oMLX, or Nemotron 3 Super."
+          "a": "No. Grok 4.7 is a hosted xAI model. For local OpenClaw stay on Ollama, oMLX, Nemotron 3 Super, or Nemotron 3.5 Lightning."
         },
         {
           "q": "Is this the same page as Grok Bot?",
@@ -8207,6 +8251,284 @@
         {
           "q": "Are logins isolated per Bot?",
           "a": "No. Files, browser sessions, and app logins sit on one account computer. Treat them as shared across all of your Bots."
+        }
+      ]
+    },
+    "nemotronLightning": {
+      "title": "Nemotron 3.5 Lightning — OpenClaw in 5 Minutes",
+      "subtitle": "Official local pin: ollama launch openclaw --model nemotron-3.5-lightning. 30B / 3B execution layer. Not Super, not Super VL.",
+      "duration": "5 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "What Lightning is",
+          "titleEn": "What Lightning is",
+          "estimatedTime": "1 min",
+          "content": "Nemotron 3.5 Lightning is NVIDIA's open 30B mixture-of-experts model with 3B active parameters (launched 2026-08-11). NVIDIA built it for the execution layer of always-on agents: read a file, call a tool, sort a result, retry. On CanFly.ai this page is the Lightning card.\n\nKeep the existing Super page for 120B / 12B heavy reasoning. Do not open Super VL, Ultra, or NemoClaw pages. Lightning is text-only. Official NVIDIA sampling: temperature 1.0, top_p 0.95. License is OpenMDW 1.1.",
+          "commands": [
+            "# Official local pin (Ollama blog)",
+            "ollama launch openclaw --model nemotron-3.5-lightning",
+            "",
+            "# Hosted NVIDIA API (docs.openclaw.ai/providers/nvidia)",
+            "openclaw models set nvidia/nvidia/nemotron-3.5-lightning-30b-a3b",
+            "",
+            "# Product page on CanFly.ai",
+            "# /apps/models/nemotron-3-5-lightning",
+            "",
+            "# Super sibling (already on CanFly.ai)",
+            "# /apps/models/nemotron-3-super",
+            "",
+            "# NVIDIA launch blog",
+            "https://developer.nvidia.com/blog/nvidia-nemotron-3-5-lightning-delivers-fast-accurate-specialized-task-execution-for-long-running-agents/"
+          ],
+          "modelTable": {
+            "models": [
+              {
+                "name": "Lightning 30B-A3B",
+                "size": "30B / 3B",
+                "best": "Long-running OpenClaw steps",
+                "speed": "Fast local / cheap hosted"
+              },
+              {
+                "name": "Super 120B-A12B",
+                "size": "120B / 12B",
+                "best": "Heavy reasoning (existing CanFly card)",
+                "speed": "Bigger / slower"
+              },
+              {
+                "name": "Super VL",
+                "size": "120B / 12B VL",
+                "best": "Image / video — no extra CanFly page",
+                "speed": "Hosted NVIDIA"
+              },
+              {
+                "name": "Ultra 550B",
+                "size": "550B / 55B",
+                "best": "NVIDIA OpenClaw default — no extra page",
+                "speed": "Hosted NVIDIA"
+              }
+            ]
+          },
+          "expectedResult": "You know Lightning is the 30B / 3B execution sibling — not Super, not Super VL, and not NemoClaw hosting.",
+          "tips": [
+            "NVIDIA's launch blog reports 86% on PinchBench and up to 4x throughput versus similar open models. Treat those as vendor numbers.",
+            "NemoClaw (`curl -fsSL https://www.nvidia.com/nemoclaw.sh | bash`) is hosted OpenClaw, not a skill. Do not open a NemoClaw page.",
+            "Do not invent a second Lightning slug. Super stays at /learn/nemotron-3-super."
+          ],
+          "troubleshooting": {
+            "title": "Scope",
+            "items": [
+              {
+                "q": "Is this the same as Nemotron 3 Super?",
+                "a": "No. Super on CanFly.ai is the 120B / 12B reasoning card. Lightning is 30B / 3B for high-volume agent steps. Use the family links, do not merge the pages."
+              },
+              {
+                "q": "Should I open Super VL or Ultra?",
+                "a": "No. Super VL is `openclaw models set nvidia/nvidia/nemotron-3.5-super-vl-120b-a12b` for images. Ultra is NVIDIA's default hosted model. One sentence here is enough."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Run it locally with Ollama",
+          "titleEn": "Run it locally with Ollama",
+          "estimatedTime": "2 min",
+          "content": "The CanFly.ai pin is the official Ollama OpenClaw launch. Install Ollama first if you need it, then launch OpenClaw on Lightning. Apple Silicon can use the MLX tag. Chat-only testers can `ollama run` the same slug.\n\nThe Ollama library lists the latest build around 25GB. Plan disk and RAM before you pull. RTX PCs, RTX PRO, DGX Spark / Station, and Apple Silicon are the documented local targets.",
+          "commands": [
+            "# If Ollama is missing, see /learn/ollama",
+            "",
+            "# Official OpenClaw launch (ollama.com/blog/nemotron-3-5-lightning)",
+            "ollama launch openclaw --model nemotron-3.5-lightning",
+            "",
+            "# Apple Silicon MLX",
+            "ollama launch openclaw --model nemotron-3.5-lightning:30b-mlx",
+            "",
+            "# Chat only, no agent",
+            "ollama run nemotron-3.5-lightning",
+            "",
+            "# Confirm the local tag",
+            "ollama list | grep nemotron-3.5-lightning",
+            "",
+            "# Ollama library",
+            "https://ollama.com/library/nemotron-3.5-lightning"
+          ],
+          "expectedResult": "Ollama lists nemotron-3.5-lightning, and OpenClaw starts with that model — or you know you still need disk / RAM.",
+          "tips": [
+            "Need OpenClaw itself first? Use /learn/ollama-openclaw, then come back and add `--model nemotron-3.5-lightning`.",
+            "Claude Code / OpenCode / Hermes also have `ollama launch ... --model nemotron-3.5-lightning`. Those stay on their own queued pages.",
+            "Local is free. A 25GB pull is not a cloud bill."
+          ],
+          "troubleshooting": {
+            "title": "Local",
+            "items": [
+              {
+                "q": "ollama: command not found",
+                "a": "Install Ollama from /learn/ollama, then rerun `ollama launch openclaw --model nemotron-3.5-lightning`."
+              },
+              {
+                "q": "The pull fails or the machine swaps hard",
+                "a": "Latest is about 25GB. Use a machine with spare disk and 16GB+ RAM (24GB+ is more comfortable), or switch to the NVIDIA API step."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Point OpenClaw at the NVIDIA API",
+          "titleEn": "Point OpenClaw at the NVIDIA API",
+          "estimatedTime": "1 min",
+          "content": "If you want hosted NVIDIA instead of a local pull, OpenClaw's official NVIDIA provider page uses one command. Create a key at build.nvidia.com, onboard with the NVIDIA API-key path, then select Lightning. Fresh NVIDIA setup still defaults to Ultra — Lightning is opt-in.\n\nOpenClaw records 1,048,576 context tokens and 16,384 max output for this row. Lightning stays selectable when live inventory lists it, even if it is missing from the featured feed.",
+          "commands": [
+            "# 1. Create a key",
+            "https://build.nvidia.com/",
+            "",
+            "# 2. Onboard (prefer the env var — do not commit the key)",
+            "export NVIDIA_API_KEY=\"nvapi-...\"",
+            "openclaw onboard --auth-choice nvidia-api-key",
+            "",
+            "# 3. Official Lightning switch (docs.openclaw.ai/providers/nvidia)",
+            "openclaw models set nvidia/nvidia/nemotron-3.5-lightning-30b-a3b",
+            "",
+            "# Confirm the catalog can see it",
+            "openclaw models list --provider nvidia",
+            "",
+            "# NVIDIA default (do not open an Ultra page)",
+            "openclaw models set nvidia/nvidia/nemotron-3-ultra-550b-a55b"
+          ],
+          "expectedResult": "OpenClaw lists nvidia/nvidia/nemotron-3.5-lightning-30b-a3b as the active model, or tells you inventory does not list it yet.",
+          "tips": [
+            "OpenClaw currently records NVIDIA hosted models as free. Confirm build.nvidia.com for rate limits.",
+            "`--nvidia-api-key` lands in shell history. Prefer NVIDIA_API_KEY.",
+            "Need OpenClaw first? /learn/ollama-openclaw then come back."
+          ],
+          "troubleshooting": {
+            "title": "NVIDIA API",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "Install OpenClaw first: /learn/ollama-openclaw or `ollama launch openclaw`. Then rerun the NVIDIA commands."
+              },
+              {
+                "q": "The picker still shows Ultra",
+                "a": "Ultra is the NVIDIA default. Lightning is opt-in: `openclaw models set nvidia/nvidia/nemotron-3.5-lightning-30b-a3b`. Restart the gateway after switching."
+              }
+            ]
+          }
+        },
+        {
+          "title": "OpenRouter path and price",
+          "titleEn": "OpenRouter path and price",
+          "estimatedTime": "1 min",
+          "content": "OpenRouter lists `nvidia/nemotron-3.5-lightning`. OpenClaw talks to OpenRouter as `openrouter/nvidia/nemotron-3.5-lightning`. The OpenRouter card we checked shows 262K context and a routed list around $0.025 / $0.12 per 1M tokens — confirm the live card before you ship traffic. That 262K window is not the 1M NVIDIA / Ollama window.\n\nThis is a routed cloud bill. Local Ollama stays free.",
+          "commands": [
+            "# OpenRouter slug",
+            "nvidia/nemotron-3.5-lightning",
+            "",
+            "# OpenClaw OpenRouter path",
+            "openclaw models set openrouter/nvidia/nemotron-3.5-lightning",
+            "",
+            "# OpenRouter card (confirm price / context)",
+            "https://openrouter.ai/nvidia/nemotron-3.5-lightning",
+            "",
+            "# Already on CanFly.ai",
+            "# /learn/openrouter",
+            "# /apps/free/openrouter"
+          ],
+          "expectedResult": "You can pick local Ollama, NVIDIA's API, or OpenRouter — and you know OpenRouter currently advertises 262K, not 1M.",
+          "tips": [
+            "Do not invent a :free slug unless OpenRouter shows one.",
+            "Long URLs stay in this command list so the English page does not overflow.",
+            "Super stays on /learn/nemotron-3-super if you need the 120B / 12B card."
+          ],
+          "troubleshooting": {
+            "title": "OpenRouter",
+            "items": [
+              {
+                "q": "Why is the context 262K here and 1M on NVIDIA?",
+                "a": "OpenRouter publishes its own routed card. Pin 1M for Ollama / NVIDIA NIM. Confirm OpenRouter before you fill a long window there."
+              },
+              {
+                "q": "Is OpenRouter cheaper than NVIDIA?",
+                "a": "NVIDIA's hosted catalog is currently free in OpenClaw's source. OpenRouter is pay-per-token. Local Ollama is free after the download."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Next steps on CanFly.ai",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 min",
+          "content": "Lightning is the fast local execution brain. Pair it with an OpenClaw install, Super when a step needs the 120B / 12B card, or Grok 4.7 / Astra when you want a hosted frontier model. Harden AIF can sit in front of tool calls.",
+          "tips": [
+            "Review video is pending (no HEYGEN_API_KEY on this run). English script: content/scripts/nemotron-3-5-lightning-review-en.txt",
+            "Do not open Super VL, Ultra, NemoClaw, or OpenShell pages.",
+            "When NVIDIA ships a 3.5 Super text card that is not VL, update Super — do not invent a third Nemotron slug."
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🧠",
+              "title": "Nemotron 3 Super",
+              "desc": "120B / 12B sibling for heavy reasoning. Keep this Lightning page for the execution layer.",
+              "link": "/learn/nemotron-3-super",
+              "cta": "Super tutorial"
+            },
+            {
+              "emoji": "🦞",
+              "title": "Install OpenClaw",
+              "desc": "One-command OpenClaw setup with Ollama, then come back and add --model nemotron-3.5-lightning.",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw tutorial"
+            },
+            {
+              "emoji": "📦",
+              "title": "Ollama",
+              "desc": "Local model host. Lightning pulls like any other Ollama tag.",
+              "link": "/learn/ollama",
+              "cta": "Ollama tutorial"
+            },
+            {
+              "emoji": "🌐",
+              "title": "OpenRouter",
+              "desc": "Routed path for nvidia/nemotron-3.5-lightning plus Grok and Astra.",
+              "link": "/learn/openrouter",
+              "cta": "OpenRouter guide"
+            },
+            {
+              "emoji": "⚡",
+              "title": "Grok 4.7",
+              "desc": "Hosted xAI frontier model: openclaw models set xai/grok-4.7.",
+              "link": "/learn/grok-4-7",
+              "cta": "Grok 4.7 tutorial"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "Local tool-call firewall: aif configure --agent openclaw --validate.",
+              "link": "/learn/harden-aif",
+              "cta": "AIF tutorial"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Can I run Lightning locally?",
+          "a": "Yes. Official pin: `ollama launch openclaw --model nemotron-3.5-lightning`. Apple Silicon can use `nemotron-3.5-lightning:30b-mlx`."
+        },
+        {
+          "q": "Is this the same page as Nemotron 3 Super?",
+          "a": "No. Super is 120B / 12B at /apps/models/nemotron-3-super. Lightning is 30B / 3B for long-running steps."
+        },
+        {
+          "q": "What is the official OpenClaw hosted command?",
+          "a": "`openclaw models set nvidia/nvidia/nemotron-3.5-lightning-30b-a3b`. NVIDIA's default remains Ultra."
+        },
+        {
+          "q": "How much does it cost?",
+          "a": "Local Ollama is free after the ~25GB pull. NVIDIA hosted access is currently free in OpenClaw docs. OpenRouter is pay-per-token — confirm https://openrouter.ai/nvidia/nemotron-3.5-lightning."
+        },
+        {
+          "q": "Should I open Super VL, Ultra, or NemoClaw?",
+          "a": "No. Super VL is image/video. Ultra is the NVIDIA default. NemoClaw is hosted OpenClaw. One sentence on this page is enough."
         }
       ]
     }

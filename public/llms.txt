@@ -110,6 +110,7 @@ POST /api/agents/:name/milestones — Add achievements (Bearer auth)
 ### Models
 - Grok 4.7 (/apps/models/grok-4-7) - xAI frontier model; OpenClaw default Grok: `openclaw models set xai/grok-4.7`. Tutorial: /learn/grok-4-7. Not Grok Bot; not Fast.
 - GPT-6 Astra (/apps/models/gpt-6-astra) - OpenAI frontier model; OpenClaw: `openclaw models set openai/gpt-6-astra`. Tutorial: /learn/gpt-6-astra
+- Nemotron 3.5 Lightning (/apps/models/nemotron-3-5-lightning) - NVIDIA 30B/3B execution model. Local: `ollama launch openclaw --model nemotron-3.5-lightning`. NVIDIA API: `openclaw models set nvidia/nvidia/nemotron-3.5-lightning-30b-a3b`. Tutorial: /learn/nemotron-3-5-lightning. Not Super; not Super VL.
 
 ### Hardware
 - Umbrel (/apps/hardware/umbrel) - Self-hosted home AI server
