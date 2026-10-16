@@ -1,0 +1,11 @@
+Hi, I'm JU CHUN KO.
+
+Most OpenClaw steps are the same small loop: read a file, call a tool, sort a result, then retry. You do not need a 120-billion-parameter model for that.
+
+Nemotron 3.5 Lightning is NVIDIA's open 30B mixture-of-experts model with only 3B parameters active per token. It is the execution layer for agents that stay running.
+
+On your machine the official pin is one command: ollama launch openclaw --model nemotron-3.5-lightning. Apple Silicon can use the 30b-mlx tag. If you prefer NVIDIA's hosted API, OpenClaw uses openclaw models set nvidia/nvidia/nemotron-3.5-lightning-30b-a3b. OpenRouter lists nvidia/nemotron-3.5-lightning.
+
+Keep Nemotron 3 Super for heavy reasoning. This page is Lightning. It is not Super VL, and it is not NemoClaw hosting.
+
+I made a tutorial on CanFly.ai — go try it.

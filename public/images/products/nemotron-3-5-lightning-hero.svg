@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#022c16"/>
+  <circle cx="980" cy="140" r="250" fill="#A3E635" opacity="0.12"/>
+  <circle cx="220" cy="520" r="200" fill="#65A30D" opacity="0.10"/>
+  <path d="M980 80 L820 280 H940 L860 520 L1120 260 H980 L980 80 Z" fill="#A3E635" opacity="0.9"/>
+  <text x="72" y="170" fill="#F7FEE7" font-family="ui-sans-serif, system-ui, sans-serif" font-size="52" font-weight="700">Nemotron 3.5 Lightning</text>
+  <text x="72" y="230" fill="#A3E635" font-family="ui-sans-serif, system-ui, sans-serif" font-size="26">30B MoE · 3B active · OpenClaw execution layer</text>
+  <text x="72" y="300" fill="#BBF7D0" font-family="ui-sans-serif, system-ui, sans-serif" font-size="22">ollama launch openclaw --model nemotron-3.5-lightning</text>
+  <text x="72" y="540" fill="#86EFAC" font-family="ui-sans-serif, system-ui, sans-serif" font-size="20">CanFly.ai</text>
+</svg>

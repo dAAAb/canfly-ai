@@ -838,7 +838,7 @@
       },
       "nemotron-3-super": {
         "tagline": "免费 120B 开源 LLM — 运算效率如同 12B 模型",
-        "description": "NVIDIA 开源 120B 参数大型语言模型，采用混合专家（MoE）架构，每次推理只需激活 12B 参数。在 PinchBench 取得 85.6% 成绩——同级开源模型最高分。支持 100 万 tokens 上下文长度。可通过 OpenRouter 免费使用，完全开源于 NVIDIA Open License。非常适合部署 OpenClaw AI 代理。",
+        "description": "NVIDIA 开源 120B 参数大型语言模型，采用混合专家（MoE）架构，每次推理只需激活 12B 参数。在 PinchBench 取得 85.6% 成绩——同级开源模型最高分。支持 100 万 tokens 上下文长度。可通过 OpenRouter 免费使用，完全开源于 NVIDIA Open License。非常适合部署 OpenClaw AI 代理。 需要 30B／3B 执行层家族？请看 /apps/models/nemotron-3-5-lightning — `ollama launch openclaw --model nemotron-3.5-lightning`。",
         "features": [
           "120B 总参数，仅 12B 激活（MoE 混合专家架构）",
           "PinchBench 85.6% — 同级开源最高准确度",
@@ -910,6 +910,21 @@
         ],
         "ctaPrimary": "打开教程",
         "ctaSecondary": "下载 Grok Bot"
+      },
+      "nemotron-3-5-lightning": {
+        "tagline": "30B MoE、3B 激活 — OpenClaw 的本地执行层",
+        "description": "NVIDIA Nemotron 3.5 Lightning 于 2026-08-11 上线。这是开源 30B 混合专家模型，每次只激活 3B 参数，专为长跑 Agent 的高频执行层而设计。官方 Ollama 接法：`ollama launch openclaw --model nemotron-3.5-lightning`（Apple Silicon MLX：`nemotron-3.5-lightning:30b-mlx`）。托管 NVIDIA API：`openclaw models set nvidia/nvidia/nemotron-3.5-lightning-30b-a3b`（100 万上下文、最多 16,384 output；NVIDIA 默认仍是 Ultra）。OpenRouter 上架 `nvidia/nemotron-3.5-lightning`（卡片写 262K）。这不是站上既有的 Nemotron 3 Super（120B/12B）卡，不是 Super VL，也不是 NemoClaw 托管页。",
+        "features": [
+          "30B 总参数／3B 激活，混合 MoE（Mamba-2 + MoE + Attention）",
+          "官方本地接法：ollama launch openclaw --model nemotron-3.5-lightning",
+          "Apple Silicon：nemotron-3.5-lightning:30b-mlx",
+          "NVIDIA API：openclaw models set nvidia/nvidia/nemotron-3.5-lightning-30b-a3b",
+          "NVIDIA／Ollama 为 100 万上下文；OpenClaw 最多 16,384 output",
+          "OpenRouter slug：nvidia/nemotron-3.5-lightning — 出货前请核对卡片",
+          "家族：Super 给重推理，Lightning 给长跑执行层"
+        ],
+        "ctaPrimary": "打开教程",
+        "ctaSecondary": "Ollama 模型页"
       }
     },
     "comingSoon": "即将推出",
@@ -3783,6 +3798,13 @@
           "nextStepCards": [
             {
               "emoji": "⚡",
+              "title": "Nemotron 3.5 Lightning",
+              "desc": "30B／3B 执行层家族。官方接法：ollama launch openclaw --model nemotron-3.5-lightning。",
+              "link": "/learn/nemotron-3-5-lightning",
+              "cta": "Lightning 教程"
+            },
+            {
+              "emoji": "⚡",
               "title": "Grok 4.7",
               "desc": "OpenClaw 默认的 Grok：openclaw models set xai/grok-4.7。",
               "cta": "Grok 4.7 教程",
@@ -5616,7 +5638,8 @@
           "tips": [
             "MoE = 以 12B 的速度跑出 120B 的品质",
             "同级开源模型中基准测试最佳",
-            "100 万上下文 = 可处理整个代码库或书籍"
+            "100 万上下文 = 可处理整个代码库或书籍",
+            "需要 30B／3B 执行层？走 /learn/nemotron-3-5-lightning — ollama launch openclaw --model nemotron-3.5-lightning。"
           ],
           "troubleshooting": {
             "title": "常见问题",
@@ -5763,6 +5786,13 @@
             "加入 NVIDIA AI 社群获取技巧和更新"
           ],
           "nextStepCards": [
+            {
+              "emoji": "⚡",
+              "title": "Nemotron 3.5 Lightning",
+              "desc": "30B／3B 执行层家族。官方接法：ollama launch openclaw --model nemotron-3.5-lightning。",
+              "link": "/learn/nemotron-3-5-lightning",
+              "cta": "Lightning 教程"
+            },
             {
               "emoji": "🌐",
               "title": "OpenRouter",
@@ -7463,6 +7493,13 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "⚡",
+              "title": "Nemotron 3.5 Lightning",
+              "desc": "30B／3B 执行层家族。官方接法：ollama launch openclaw --model nemotron-3.5-lightning。",
+              "link": "/learn/nemotron-3-5-lightning",
+              "cta": "Lightning 教程"
+            },
+            {
               "emoji": "🦞",
               "title": "安装 OpenClaw",
               "desc": "用 Ollama 一行装好 OpenClaw，再回来切 Astra。",
@@ -7496,7 +7533,7 @@
       "faq": [
         {
           "q": "可以用 Ollama 在本地跑 GPT-6 Astra 吗？",
-          "a": "不行。Astra 是 OpenAI 托管模型。本地 OpenClaw 请走 Ollama、oMLX 或 Nemotron 3 Super。"
+          "a": "不行。Astra 是 OpenAI 托管模型。本地 OpenClaw 请走 Ollama、oMLX、Nemotron 3 Super 或 Nemotron 3.5 Lightning。"
         },
         {
           "q": "Astra 在 OpenRouter 上了吗？",
@@ -7931,6 +7968,13 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "⚡",
+              "title": "Nemotron 3.5 Lightning",
+              "desc": "30B／3B 执行层家族。官方接法：ollama launch openclaw --model nemotron-3.5-lightning。",
+              "link": "/learn/nemotron-3-5-lightning",
+              "cta": "Lightning 教程"
+            },
+            {
               "emoji": "🤖",
               "title": "Grok Bot",
               "desc": "xAI 托管队友，共用云端电脑。不是这一页模型卡。",
@@ -7971,7 +8015,7 @@
       "faq": [
         {
           "q": "可以用 Ollama 本地跑 Grok 4.7 吗？",
-          "a": "不行。Grok 4.7 是托管的 xAI 模型。本地 OpenClaw 请走 Ollama、oMLX 或 Nemotron 3 Super。"
+          "a": "不行。Grok 4.7 是托管的 xAI 模型。本地 OpenClaw 请走 Ollama、oMLX、Nemotron 3 Super 或 Nemotron 3.5 Lightning。"
         },
         {
           "q": "这跟 Grok Bot 是同一页吗？",
@@ -8232,6 +8276,284 @@
         {
           "q": "登录是每只 Bot 隔离的吗？",
           "a": "不是。文件、浏览器会话与应用登录都在账号那一台电脑。当成所有 Bot 共用。"
+        }
+      ]
+    },
+    "nemotronLightning": {
+      "title": "Nemotron 3.5 Lightning — 五分钟接到 OpenClaw",
+      "subtitle": "官方本地接法：ollama launch openclaw --model nemotron-3.5-lightning。30B／3B 执行层。不是 Super，也不是 Super VL。",
+      "duration": "5 分钟",
+      "difficulty": "入门",
+      "steps": [
+        {
+          "title": "Lightning 是什么",
+          "titleEn": "What Lightning is",
+          "estimatedTime": "1 分钟",
+          "content": "Nemotron 3.5 Lightning 是 NVIDIA 的开源 30B 混合专家模型，每次只激活 3B 参数（2026-08-11 上线）。NVIDIA 把它做成常驻 Agent 的执行层：读文件、调用工具、整理结果、再试一次。在 CanFly.ai 这一页就是 Lightning 卡。\n\n120B／12B 的重推理请留在既有 Super 页。不要另开 Super VL、Ultra 或 NemoClaw 页。Lightning 只走文字。官方采样：temperature 1.0、top_p 0.95。授权是 OpenMDW 1.1。",
+          "commands": [
+            "# 官方本地接法（Ollama blog）",
+            "ollama launch openclaw --model nemotron-3.5-lightning",
+            "",
+            "# 托管 NVIDIA API（docs.openclaw.ai/providers/nvidia）",
+            "openclaw models set nvidia/nvidia/nemotron-3.5-lightning-30b-a3b",
+            "",
+            "# CanFly.ai 产品页",
+            "# /apps/models/nemotron-3-5-lightning",
+            "",
+            "# Super 家族（站上已有）",
+            "# /apps/models/nemotron-3-super",
+            "",
+            "# NVIDIA 发布文",
+            "https://developer.nvidia.com/blog/nvidia-nemotron-3-5-lightning-delivers-fast-accurate-specialized-task-execution-for-long-running-agents/"
+          ],
+          "modelTable": {
+            "models": [
+              {
+                "name": "Lightning 30B-A3B",
+                "size": "30B / 3B",
+                "best": "长跑 OpenClaw 步骤",
+                "speed": "本地快／托管便宜"
+              },
+              {
+                "name": "Super 120B-A12B",
+                "size": "120B / 12B",
+                "best": "重推理（站上既有卡）",
+                "speed": "比较大、比较慢"
+              },
+              {
+                "name": "Super VL",
+                "size": "120B / 12B VL",
+                "best": "图片／视频 — 不另开页",
+                "speed": "NVIDIA 托管"
+              },
+              {
+                "name": "Ultra 550B",
+                "size": "550B / 55B",
+                "best": "NVIDIA OpenClaw 默认 — 不另开页",
+                "speed": "NVIDIA 托管"
+              }
+            ]
+          },
+          "expectedResult": "你知道 Lightning 是 30B／3B 执行层家族成员 — 不是 Super、不是 Super VL，也不是 NemoClaw 托管。",
+          "tips": [
+            "NVIDIA 发布文写 PinchBench 86%，吞吐量可达同级开源约 4 倍。请当成原厂数字。",
+            "NemoClaw（`curl -fsSL https://www.nvidia.com/nemoclaw.sh | bash`）是托管 OpenClaw，不是技能。不要另开 NemoClaw 页。",
+            "不要再发明第二个 Lightning slug。Super 留在 /learn/nemotron-3-super。"
+          ],
+          "troubleshooting": {
+            "title": "范围",
+            "items": [
+              {
+                "q": "这跟 Nemotron 3 Super 是同一页吗？",
+                "a": "不是。Super 是站上 120B／12B 推理卡。Lightning 是 30B／3B，给高频 Agent 步骤。用家族链接，不要把两页合成一页。"
+              },
+              {
+                "q": "要另开 Super VL 或 Ultra 吗？",
+                "a": "不要。Super VL 用 `openclaw models set nvidia/nvidia/nemotron-3.5-super-vl-120b-a12b` 看图。Ultra 是 NVIDIA 托管默认。这里一句就够。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "用 Ollama 在本地跑",
+          "titleEn": "Run it locally with Ollama",
+          "estimatedTime": "2 分钟",
+          "content": "CanFly.ai 的主接法就是官方 Ollama OpenClaw 启动。还没装 Ollama 就先去教程页，再把 OpenClaw 指到 Lightning。Apple Silicon 可用 MLX 标签。只想聊天可 `ollama run` 同一个 slug。\n\nOllama 馆列 latest 大约 25GB。拉模型前先看磁盘与内存。官方本地目标包含 RTX 电脑、RTX PRO、DGX Spark／Station 与 Apple Silicon。",
+          "commands": [
+            "# 还没 Ollama 请先看 /learn/ollama",
+            "",
+            "# 官方 OpenClaw 启动（ollama.com/blog/nemotron-3-5-lightning）",
+            "ollama launch openclaw --model nemotron-3.5-lightning",
+            "",
+            "# Apple Silicon MLX",
+            "ollama launch openclaw --model nemotron-3.5-lightning:30b-mlx",
+            "",
+            "# 只聊天、不当 Agent",
+            "ollama run nemotron-3.5-lightning",
+            "",
+            "# 确认本地标签",
+            "ollama list | grep nemotron-3.5-lightning",
+            "",
+            "# Ollama 馆",
+            "https://ollama.com/library/nemotron-3.5-lightning"
+          ],
+          "expectedResult": "Ollama 列出 nemotron-3.5-lightning，OpenClaw 也用这颗启动 — 或你已知道还缺磁盘／内存。",
+          "tips": [
+            "OpenClaw 本体还没装？走 /learn/ollama-openclaw，回来再加 `--model nemotron-3.5-lightning`。",
+            "Claude Code／OpenCode／Hermes 也有 `ollama launch ... --model nemotron-3.5-lightning`。那些留在各自队列页。",
+            "本地免费。25GB 下载不是云端账单。"
+          ],
+          "troubleshooting": {
+            "title": "本地",
+            "items": [
+              {
+                "q": "ollama: command not found",
+                "a": "先从 /learn/ollama 安装 Ollama，再跑 `ollama launch openclaw --model nemotron-3.5-lightning`。"
+              },
+              {
+                "q": "下载失败，或机器一直在换页",
+                "a": "latest 大约 25GB。请留足磁盘，内存建议 16GB 以上（24GB 更稳），或改走 NVIDIA API 那一步。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "把 OpenClaw 指到 NVIDIA API",
+          "titleEn": "Point OpenClaw at the NVIDIA API",
+          "estimatedTime": "1 分钟",
+          "content": "若要托管 NVIDIA、不要本地下载，OpenClaw 官方 NVIDIA provider 只要一条指令。到 build.nvidia.com 建密钥，用 NVIDIA API-key 路径 onboard，再选 Lightning。全新 NVIDIA 设置默认仍是 Ultra — Lightning 要自己切。\n\nOpenClaw 这列记录 1,048,576 上下文、最多 16,384 output。即使 featured 清单没有它，只要即时库存有，就能选。",
+          "commands": [
+            "# 1. 建立密钥",
+            "https://build.nvidia.com/",
+            "",
+            "# 2. Onboard（优先用环境变量 — 不要把密钥写进 git）",
+            "export NVIDIA_API_KEY=\"nvapi-...\"",
+            "openclaw onboard --auth-choice nvidia-api-key",
+            "",
+            "# 3. 官方 Lightning 切换（docs.openclaw.ai/providers/nvidia）",
+            "openclaw models set nvidia/nvidia/nemotron-3.5-lightning-30b-a3b",
+            "",
+            "# 确认目录看得到",
+            "openclaw models list --provider nvidia",
+            "",
+            "# NVIDIA 默认（不要另开 Ultra 页）",
+            "openclaw models set nvidia/nvidia/nemotron-3-ultra-550b-a55b"
+          ],
+          "expectedResult": "OpenClaw 把 nvidia/nvidia/nemotron-3.5-lightning-30b-a3b 列为现役模型，或告诉你库存还没有它。",
+          "tips": [
+            "OpenClaw 目前把 NVIDIA 托管模型记成免费。额度请到 build.nvidia.com 核对。",
+            "`--nvidia-api-key` 会进 shell 历史。请优先用 NVIDIA_API_KEY。",
+            "还没 OpenClaw？先走 /learn/ollama-openclaw。"
+          ],
+          "troubleshooting": {
+            "title": "NVIDIA API",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "先装 OpenClaw：/learn/ollama-openclaw 或 `ollama launch openclaw`。再重跑 NVIDIA 指令。"
+              },
+              {
+                "q": "选单还是 Ultra",
+                "a": "Ultra 是 NVIDIA 默认。Lightning 要自己切：`openclaw models set nvidia/nvidia/nemotron-3.5-lightning-30b-a3b`。切完重启 gateway。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "OpenRouter 路径与价格",
+          "titleEn": "OpenRouter path and price",
+          "estimatedTime": "1 分钟",
+          "content": "OpenRouter 上架 `nvidia/nemotron-3.5-lightning`。OpenClaw 写成 `openrouter/nvidia/nemotron-3.5-lightning`。我们核过的卡片写 262K 上下文，路由标价大约每百万 $0.025／$0.12 — 出货前请再看即时卡片。这 262K 不是 NVIDIA／Ollama 的 100 万窗。\n\n这是路由后的云端账单。本地 Ollama 下载完仍免费。",
+          "commands": [
+            "# OpenRouter slug",
+            "nvidia/nemotron-3.5-lightning",
+            "",
+            "# OpenClaw 的 OpenRouter 路径",
+            "openclaw models set openrouter/nvidia/nemotron-3.5-lightning",
+            "",
+            "# OpenRouter 卡片（核对价格／上下文）",
+            "https://openrouter.ai/nvidia/nemotron-3.5-lightning",
+            "",
+            "# 站上已有",
+            "# /learn/openrouter",
+            "# /apps/free/openrouter"
+          ],
+          "expectedResult": "你可以选本地 Ollama、NVIDIA API 或 OpenRouter — 也知道 OpenRouter 目前写 262K，不是 100 万。",
+          "tips": [
+            "OpenRouter 没写 :free 就不要自己发明。",
+            "长网址放在 commands，避免英文版爆版。",
+            "要 120B／12B 请走 /learn/nemotron-3-super。"
+          ],
+          "troubleshooting": {
+            "title": "OpenRouter",
+            "items": [
+              {
+                "q": "为什么这里是 262K，NVIDIA 却是 100 万？",
+                "a": "OpenRouter 发自己的路由卡片。Ollama／NVIDIA NIM 请钉 100 万。要在 OpenRouter 塞长窗，先看卡片。"
+              },
+              {
+                "q": "OpenRouter 比 NVIDIA 便宜吗？",
+                "a": "OpenClaw 文档目前把 NVIDIA 托管记成免费。OpenRouter 是按 token 计价。本地 Ollama 下载完免费。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CanFly.ai 下一步",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 分钟",
+          "content": "Lightning 是快的本地执行脑。配上 OpenClaw 安装、需要 120B／12B 时改走 Super，或要用托管前线模型时改走 Grok 4.7／Astra。Harden AIF 可以挡在 tool-call 前面。",
+          "tips": [
+            "评论视频待补（这轮没有 HEYGEN_API_KEY）。英文口白稿：content/scripts/nemotron-3-5-lightning-review-en.txt",
+            "不要另开 Super VL、Ultra、NemoClaw 或 OpenShell 页。",
+            "若 NVIDIA 之后出非 VL 的 3.5 Super 文字卡，请更新 Super 旧页，不要再发明第三个 Nemotron slug。"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🧠",
+              "title": "Nemotron 3 Super",
+              "desc": "120B／12B 重推理家族。执行层留在这一页 Lightning。",
+              "link": "/learn/nemotron-3-super",
+              "cta": "Super 教程"
+            },
+            {
+              "emoji": "🦞",
+              "title": "安装 OpenClaw",
+              "desc": "用 Ollama 一指令装 OpenClaw，回来再加 --model nemotron-3.5-lightning。",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw 教程"
+            },
+            {
+              "emoji": "📦",
+              "title": "Ollama",
+              "desc": "本地模型主机。Lightning 跟其他 Ollama 标签一样拉。",
+              "link": "/learn/ollama",
+              "cta": "Ollama 教程"
+            },
+            {
+              "emoji": "🌐",
+              "title": "OpenRouter",
+              "desc": "nvidia/nemotron-3.5-lightning 的路由路径，也可接 Grok 与 Astra。",
+              "link": "/learn/openrouter",
+              "cta": "OpenRouter 指南"
+            },
+            {
+              "emoji": "⚡",
+              "title": "Grok 4.7",
+              "desc": "托管 xAI 前线模型：openclaw models set xai/grok-4.7。",
+              "link": "/learn/grok-4-7",
+              "cta": "Grok 4.7 教程"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "本地 tool-call 防火墙：aif configure --agent openclaw --validate。",
+              "link": "/learn/harden-aif",
+              "cta": "AIF 教程"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Lightning 可以本地跑吗？",
+          "a": "可以。官方接法：`ollama launch openclaw --model nemotron-3.5-lightning`。Apple Silicon 可用 `nemotron-3.5-lightning:30b-mlx`。"
+        },
+        {
+          "q": "这跟 Nemotron 3 Super 是同一页吗？",
+          "a": "不是。Super 是 120B／12B，在 /apps/models/nemotron-3-super。Lightning 是 30B／3B，给长跑步骤。"
+        },
+        {
+          "q": "官方 OpenClaw 托管指令是哪一条？",
+          "a": "`openclaw models set nvidia/nvidia/nemotron-3.5-lightning-30b-a3b`。NVIDIA 默认仍是 Ultra。"
+        },
+        {
+          "q": "要花多少钱？",
+          "a": "本地 Ollama 拉完约 25GB 后免费。OpenClaw 文档目前把 NVIDIA 托管记成免费。OpenRouter 按 token 计价 — 请核对 https://openrouter.ai/nvidia/nemotron-3.5-lightning。"
+        },
+        {
+          "q": "要另开 Super VL、Ultra 或 NemoClaw 吗？",
+          "a": "不要。Super VL 看图看视频。Ultra 是 NVIDIA 默认。NemoClaw 是托管 OpenClaw。这一页一句就够。"
         }
       ]
     }
