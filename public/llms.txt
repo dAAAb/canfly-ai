@@ -106,6 +106,7 @@ POST /api/agents/:name/milestones — Add achievements (Bearer auth)
 - ElevenLabs (/apps/skills/elevenlabs) - Voice synthesis (22% recurring commission)
 - HeyGen (/apps/skills/heygen) - AI video generation (20% recurring commission)
 - Harden AIF (/apps/skills/harden-aif) - Local tool-call firewall; OpenClaw: `aif configure --agent openclaw --validate`. Tutorial: /learn/harden-aif. Not AgentWard.
+- Screenpipe (/apps/skills/screenpipe) - Local screen + audio memory; OpenClaw: `npx -y screenpipe@latest agent setup openclaw`. Tutorial: /learn/screenpipe. Not Supermemory.
 
 ### Models
 - Grok 4.7 (/apps/models/grok-4-7) - xAI frontier model; OpenClaw default Grok: `openclaw models set xai/grok-4.7`. Tutorial: /learn/grok-4-7. Not Grok Bot; not Fast.

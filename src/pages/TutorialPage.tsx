@@ -2242,6 +2242,72 @@ function createHardenAifTutorial(t: any): TutorialData {
   }
 }
 
+function createScreenpipeTutorial(t: any): TutorialData {
+  return {
+    id: 'screenpipe',
+    title: t('tutorial.screenpipe.title'),
+    subtitle: t('tutorial.screenpipe.subtitle'),
+    duration: t('tutorial.screenpipe.duration'),
+    difficulty: t('tutorial.screenpipe.difficulty'),
+    faq: t('tutorial.screenpipe.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Monitor,
+        title: t('tutorial.screenpipe.steps.0.title'),
+        titleEn: t('tutorial.screenpipe.steps.0.titleEn'),
+        estimatedTime: t('tutorial.screenpipe.steps.0.estimatedTime'),
+        content: t('tutorial.screenpipe.steps.0.content'),
+        commands: t('tutorial.screenpipe.steps.0.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.screenpipe.steps.0.expectedResult'),
+        tips: t('tutorial.screenpipe.steps.0.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.screenpipe.steps.0.troubleshooting.title'), items: t('tutorial.screenpipe.steps.0.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Download,
+        title: t('tutorial.screenpipe.steps.1.title'),
+        titleEn: t('tutorial.screenpipe.steps.1.titleEn'),
+        estimatedTime: t('tutorial.screenpipe.steps.1.estimatedTime'),
+        content: t('tutorial.screenpipe.steps.1.content'),
+        commands: t('tutorial.screenpipe.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.screenpipe.steps.1.expectedResult'),
+        tips: t('tutorial.screenpipe.steps.1.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.screenpipe.steps.1.troubleshooting.title'), items: t('tutorial.screenpipe.steps.1.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Terminal,
+        title: t('tutorial.screenpipe.steps.2.title'),
+        titleEn: t('tutorial.screenpipe.steps.2.titleEn'),
+        estimatedTime: t('tutorial.screenpipe.steps.2.estimatedTime'),
+        content: t('tutorial.screenpipe.steps.2.content'),
+        commands: t('tutorial.screenpipe.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.screenpipe.steps.2.expectedResult'),
+        tips: t('tutorial.screenpipe.steps.2.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.screenpipe.steps.2.troubleshooting.title'), items: t('tutorial.screenpipe.steps.2.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Sparkles,
+        title: t('tutorial.screenpipe.steps.3.title'),
+        titleEn: t('tutorial.screenpipe.steps.3.titleEn'),
+        estimatedTime: t('tutorial.screenpipe.steps.3.estimatedTime'),
+        content: t('tutorial.screenpipe.steps.3.content'),
+        commands: t('tutorial.screenpipe.steps.3.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.screenpipe.steps.3.expectedResult'),
+        tips: t('tutorial.screenpipe.steps.3.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.screenpipe.steps.3.troubleshooting.title'), items: t('tutorial.screenpipe.steps.3.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.screenpipe.steps.4.title'),
+        titleEn: t('tutorial.screenpipe.steps.4.titleEn'),
+        estimatedTime: t('tutorial.screenpipe.steps.4.estimatedTime'),
+        content: t('tutorial.screenpipe.steps.4.content'),
+        tips: t('tutorial.screenpipe.steps.4.tips', { returnObjects: true }),
+        nextStepCards: t('tutorial.screenpipe.steps.4.nextStepCards', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
 function createWhisperTutorial(t: any): TutorialData {
   return {
     id: 'whisper',
@@ -2724,6 +2790,7 @@ function getTutorials(t: any): Record<string, TutorialData> {
     'grok-4-7': createGrok47Tutorial(t),
     'grok-bot': createGrokBotTutorial(t),
     'harden-aif': createHardenAifTutorial(t),
+    screenpipe: createScreenpipeTutorial(t),
     whisper: createWhisperTutorial(t),
     basemail: createBasemailTutorial(t),
     agentmail: createAgentmailTutorial(t),

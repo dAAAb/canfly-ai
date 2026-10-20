@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#042F2E"/>
+  <circle cx="980" cy="120" r="220" fill="#0F766E" opacity="0.28"/>
+  <circle cx="180" cy="540" r="180" fill="#115E59" opacity="0.35"/>
+  <rect x="160" y="130" width="560" height="340" rx="28" fill="#134E4A" stroke="#5EEAD4" stroke-width="6"/>
+  <rect x="190" y="168" width="500" height="250" rx="16" fill="#042F2E"/>
+  <rect x="220" y="200" width="360" height="16" rx="8" fill="#99F6E4"/>
+  <rect x="220" y="240" width="280" height="16" rx="8" fill="#5EEAD4"/>
+  <rect x="220" y="280" width="200" height="16" rx="8" fill="#2DD4BF"/>
+  <rect x="220" y="340" width="140" height="40" rx="12" fill="#14B8A6"/>
+  <text x="780" y="250" fill="#CCFBF1" font-family="ui-sans-serif, system-ui, sans-serif" font-size="56" font-weight="700">Screenpipe</text>
+  <text x="780" y="310" fill="#99F6E4" font-family="ui-sans-serif, system-ui, sans-serif" font-size="28">Local screen memory for OpenClaw</text>
+  <text x="780" y="360" fill="#5EEAD4" font-family="ui-sans-serif, system-ui, sans-serif" font-size="20">npx -y screenpipe@latest agent setup openclaw</text>
+</svg>
