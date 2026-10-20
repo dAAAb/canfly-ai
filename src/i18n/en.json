@@ -776,7 +776,7 @@
       },
       "openclaw": {
         "tagline": "Your personal AI agent — your AI, your rules",
-        "description": "The open-source personal AI agent platform with ~390K GitHub stars. Install with one command, then customize with skills, tools, and integrations. The 2.0 line (v2026.8.1–v2026.9.6) adds guided setup, a rebuilt Control UI, and Shared Cloud Sessions. Fresh xAI / Grok setup defaults to Grok 4.7: `openclaw models set xai/grok-4.7`. When your OpenAI account has GPT-6 Astra, switch with `openclaw models set openai/gpt-6-astra`. Add a local tool-call firewall with Harden AIF: `aif configure --agent openclaw --validate`. Grok Bot is a hosted xAI teammate, not an OpenClaw skill — compare at /blog/grok-bot-vs-openclaw. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
+        "description": "The open-source personal AI agent platform with ~390K GitHub stars. Install with one command, then customize with skills, tools, and integrations. The 2.0 line (v2026.8.1–v2026.9.6) adds guided setup, a rebuilt Control UI, and Shared Cloud Sessions. Fresh xAI / Grok setup defaults to Grok 4.7: `openclaw models set xai/grok-4.7`. When your OpenAI account has GPT-6 Astra, switch with `openclaw models set openai/gpt-6-astra`. Add a local tool-call firewall with Harden AIF: `aif configure --agent openclaw --validate`. Give OpenClaw screen history with Screenpipe: `npx -y screenpipe@latest agent setup openclaw` — /apps/skills/screenpipe. Grok Bot is a hosted xAI teammate, not an OpenClaw skill — compare at /blog/grok-bot-vs-openclaw. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
         "features": [
           "One-command install: ollama launch openclaw",
           "~390K GitHub stars — largest AI agent community",
@@ -785,6 +785,7 @@
           "Switch to Grok 4.7: openclaw models set xai/grok-4.7",
           "Switch to Astra: openclaw models set openai/gpt-6-astra",
           "Local firewall: Harden AIF (`aif configure --agent openclaw --validate`)",
+          "Screen history: npx -y screenpipe@latest agent setup openclaw",
           "Full privacy: runs 100% on your hardware",
           "v2026.9.6: Grok 4.7 default, Astra, managed updates"
         ],
@@ -925,6 +926,21 @@
         ],
         "ctaPrimary": "Open the Tutorial",
         "ctaSecondary": "Ollama model page"
+      },
+      "screenpipe": {
+        "tagline": "Local screen + audio memory for OpenClaw",
+        "description": "Screenpipe records screen activity and audio on your computer so an agent can search what you saw or heard. Official OpenClaw pin: `npx -y screenpipe@latest agent setup openclaw` (or Screenpipe Settings → Connections → AI apps). Capture stays in `~/.screenpipe`; the local API is `http://localhost:3030`. This is not Supermemory, not OzBrain, and not OpenClaw session memory. Desktop checkout and the Screenpipe Commercial License are separate from your AI provider bill. Official docs: https://docs.screenpipe.com/openclaw",
+        "features": [
+          "Official pin: npx -y screenpipe@latest agent setup openclaw",
+          "Desktop: Settings → Connections → AI apps",
+          "Local store ~/.screenpipe · API localhost:3030",
+          "MCP: search-content, activity-summary, list-meetings, export-video",
+          "macOS, Windows, Linux (CLI: darwin-arm64/x64, linux-x64, win32-x64)",
+          "Remote sync: --no-media --disable-clipboard-capture",
+          "Not Supermemory / OzBrain / OpenClaw session memory"
+        ],
+        "ctaPrimary": "Open the Tutorial",
+        "ctaSecondary": "Official OpenClaw docs"
       }
     },
     "comingSoon": "Coming Soon",
@@ -3797,6 +3813,13 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "🖥️",
+              "title": "Screenpipe",
+              "desc": "Give OpenClaw screen history: npx -y screenpipe@latest agent setup openclaw.",
+              "link": "/learn/screenpipe",
+              "cta": "Screenpipe tutorial"
+            },
+            {
               "emoji": "⚡",
               "title": "Nemotron 3.5 Lightning",
               "desc": "30B / 3B execution sibling. Official pin: ollama launch openclaw --model nemotron-3.5-lightning.",
@@ -4418,6 +4441,13 @@
           "estimatedTime": "1 min",
           "content": "ClawHub is the open marketplace for Agent Skills. Beyond these 15, the community is building more every day.\n\n**Top Skills by Downloads:**\n1. HeyGen Avatar Video — 2,100+ downloads\n2. BaseMail — 1,800+ downloads\n3. SwitchBot — 1,500+ downloads\n4. Daily Voice Quote — 1,200+ downloads\n\nBrowse, install, and even publish your own skills on ClawHub.",
           "nextStepCards": [
+            {
+              "emoji": "🖥️",
+              "title": "Screenpipe",
+              "desc": "Give OpenClaw screen history: npx -y screenpipe@latest agent setup openclaw.",
+              "link": "/learn/screenpipe",
+              "cta": "Screenpipe tutorial"
+            },
             {
               "emoji": "🎤",
               "title": "ElevenLabs Voice Tutorial",
@@ -5953,6 +5983,13 @@
             "Generate subtitles for HeyGen videos"
           ],
           "nextStepCards": [
+            {
+              "emoji": "🖥️",
+              "title": "Screenpipe",
+              "desc": "Give OpenClaw screen history: npx -y screenpipe@latest agent setup openclaw.",
+              "link": "/learn/screenpipe",
+              "cta": "Screenpipe tutorial"
+            },
             {
               "emoji": "🎙️",
               "title": "ElevenLabs",
@@ -7702,6 +7739,13 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "🖥️",
+              "title": "Screenpipe",
+              "desc": "Give OpenClaw screen history: npx -y screenpipe@latest agent setup openclaw.",
+              "link": "/learn/screenpipe",
+              "cta": "Screenpipe tutorial"
+            },
+            {
               "emoji": "🦞",
               "title": "Install OpenClaw",
               "desc": "One-command OpenClaw setup with Ollama, then come back to pin AIF.",
@@ -8529,6 +8573,246 @@
         {
           "q": "Should I open Super VL, Ultra, or NemoClaw?",
           "a": "No. Super VL is image/video. Ultra is the NVIDIA default. NemoClaw is hosted OpenClaw. One sentence on this page is enough."
+        }
+      ]
+    },
+    "screenpipe": {
+      "title": "Screenpipe — Give OpenClaw Screen History",
+      "subtitle": "Official OpenClaw pin: npx -y screenpipe@latest agent setup openclaw. Local API on port 3030. Not Supermemory.",
+      "duration": "8 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "What Screenpipe is",
+          "titleEn": "What Screenpipe is",
+          "estimatedTime": "2 min",
+          "content": "Screenpipe records screen activity and audio on macOS, Windows, and Linux so an agent can search what you saw or heard. Official OpenClaw docs: https://docs.screenpipe.com/openclaw\n\nOn CanFly.ai this page is the OpenClaw path. The official pin is `npx -y screenpipe@latest agent setup openclaw`. The desktop app can do the same under Settings → Connections → AI apps. Capture stays in `~/.screenpipe`. The local API listens on `http://localhost:3030`.\n\nThis is not Supermemory (long-term chat memory), not OzBrain (hosted MCP memory), and not OpenClaw session memory. It is screen and audio history for your agent.",
+          "commands": [
+            "# Product page on CanFly.ai",
+            "# /apps/skills/screenpipe",
+            "",
+            "# Official OpenClaw docs",
+            "https://docs.screenpipe.com/openclaw",
+            "",
+            "# Official OpenClaw pin",
+            "npx -y screenpipe@latest agent setup openclaw",
+            "",
+            "# Homepage / desktop download",
+            "https://screenpi.pe",
+            "",
+            "# GitHub",
+            "https://github.com/screenpipe/screenpipe"
+          ],
+          "expectedResult": "You know Screenpipe is local screen + audio history for OpenClaw — not Supermemory, not OzBrain, and not a ClawHub skill.",
+          "tips": [
+            "Keep Supermemory and Firecrawl on their own queued pages. This tutorial only pins Screenpipe.",
+            "Do not invent a clawhub install. The official client is npx -y screenpipe@latest.",
+            "Desktop checkout and the Screenpipe Commercial License are not MIT and are not your AI provider bill."
+          ],
+          "troubleshooting": {
+            "title": "Scope",
+            "items": [
+              {
+                "q": "Is this the same as Supermemory?",
+                "a": "No. Supermemory stores long-term chat memory and profiles. Screenpipe records screen and audio. Do not mix the two pages."
+              },
+              {
+                "q": "Is this a ClawHub skill?",
+                "a": "No. Use `npx -y screenpipe@latest agent setup openclaw` or the desktop Connections panel. Discovery of other skills stays on /learn/agent-skills."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Install the desktop app or CLI",
+          "titleEn": "Install the desktop app or CLI",
+          "estimatedTime": "2 min",
+          "content": "The desktop app is the recommended path: download from screenpi.pe, then grant screen recording, microphone, and (on macOS) accessibility. Review the current checkout, trial, and Screenpipe Commercial License before you confirm a card.\n\nThe CLI records without the visual timeline. Supported platforms for the CLI binary: darwin-arm64, darwin-x64, linux-x64, win32-x64. Data lands in `~/.screenpipe/`. Desktop app releases through v2.7.104 were published 2026-10-09 — confirm your installed version with `--version`.",
+          "commands": [
+            "# Desktop (recommended)",
+            "https://screenpi.pe",
+            "",
+            "# CLI recorder",
+            "npx -y screenpipe@latest record",
+            "",
+            "# Quiet CLI (optional)",
+            "SCREENPIPE_NO_REMINDERS=1 npx -y screenpipe@latest record",
+            "",
+            "# Check version / platform",
+            "npx -y screenpipe@latest --version",
+            "node -p \"process.platform + '-' + process.arch\"",
+            "",
+            "# Linux packages (Ubuntu/Debian)",
+            "sudo apt install libasound2-dev ffmpeg"
+          ],
+          "expectedResult": "Screenpipe is running. The desktop timeline opens, or the CLI is recording into ~/.screenpipe.",
+          "tips": [
+            "macOS: System Settings → Privacy & Security → Screen Recording and Accessibility.",
+            "Windows 10/11: allow screen capture. Repair Edge WebView2 if the timeline is blank.",
+            "Linux desktop is best on X11. Wayland support varies. Headless CLI still serves the local API."
+          ],
+          "troubleshooting": {
+            "title": "Install",
+            "items": [
+              {
+                "q": "npx record fails on my machine",
+                "a": "Check `node -p \"process.platform + '-' + process.arch\"`. Only darwin-arm64, darwin-x64, linux-x64, and win32-x64 are supported. Re-run with `@latest` to pull the platform binary."
+              },
+              {
+                "q": "macOS says the binary is damaged",
+                "a": "Use the desktop app, or clear quarantine on the npx binary: xattr -d com.apple.quarantine ~/.npm/_npx/*/node_modules/screenpipe*/bin/screenpipe"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Verify the local API",
+          "titleEn": "Verify the local API",
+          "estimatedTime": "1 min",
+          "content": "A healthy process listens on `localhost:3030`. `/health` does not need a token. Search and other protected routes can require `npx -y screenpipe@latest auth token` as a Bearer header. A 200 on /health does not prove capture is working — check permissions if search is empty.\n\nCLI authentication is enabled by default in current versions. Keep the local token out of screenshots, chat, and shared URLs. An AI provider key is not the Screenpipe local API token.",
+          "commands": [
+            "curl --fail-with-body http://localhost:3030/health",
+            "",
+            "SCREENPIPE_API_KEY=$(npx -y screenpipe@latest auth token)",
+            "curl --fail-with-body \"http://localhost:3030/search?limit=1\" \\",
+            "  -H \"Authorization: Bearer $SCREENPIPE_API_KEY\"",
+            "",
+            "# Port already in use?",
+            "lsof -i :3030"
+          ],
+          "expectedResult": "/health succeeds. A search with the local token returns recent activity, or tells you capture is empty.",
+          "tips": [
+            "Keep Require API Authentication on before you expose 3030 to another machine.",
+            "401/403 means the token does not match this instance or data directory. Rotate, then refresh clients.",
+            "Port 3030 already bound: another Screenpipe is running. Stop it before a second record."
+          ],
+          "troubleshooting": {
+            "title": "Local API",
+            "items": [
+              {
+                "q": "curl /health fails",
+                "a": "Start the desktop app or `npx -y screenpipe@latest record`. Then retry. If the port is busy, inspect lsof -i :3030."
+              },
+              {
+                "q": "Search returns nothing",
+                "a": "The server can be healthy while capture is off. Re-check screen recording / accessibility / microphone, then wait for a few minutes of activity."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Pin OpenClaw",
+          "titleEn": "Pin OpenClaw",
+          "estimatedTime": "2 min",
+          "content": "Need OpenClaw first? Install it from the CanFly.ai guide, then come back. Current OpenClaw versions that support native `mcp.servers` take one command. It writes Screenpipe skills and registers the MCP server. The command is idempotent and keeps MCP servers you already had.\n\nRestart OpenClaw, then ask it to search the last 10 minutes of Screenpipe history with timestamps. A configured connection does not prove a query succeeded.\n\nOptional hooks (Screenpipe → OpenClaw wake events) use OpenClaw `hooks.token`. Do not paste `OPENCLAW_GATEWAY_TOKEN` into Screenpipe Remote agent settings.",
+          "commands": [
+            "# Official OpenClaw pin",
+            "npx -y screenpipe@latest agent setup openclaw",
+            "",
+            "# Same machine, after setup",
+            "# Restart OpenClaw, then ask from any chat channel",
+            "",
+            "# Independent MCP test",
+            "npx @modelcontextprotocol/inspector npx screenpipe-mcp",
+            "",
+            "# Manual mcp.servers fallback (~/.openclaw/openclaw.json)",
+            "# command: bun",
+            "# args: [\"x\", \"screenpipe-mcp@latest\"]",
+            "# transport: stdio",
+            "",
+            "# If OpenClaw is missing",
+            "# See /learn/ollama-openclaw",
+            "ollama launch openclaw"
+          ],
+          "expectedResult": "OpenClaw can call Screenpipe MCP tools (search-content, activity-summary, list-meetings). A test question about the last 10 minutes returns timestamps or a clear empty-capture answer.",
+          "tips": [
+            "MCP tools: search-content, activity-summary, search-elements, frame-context, list-meetings, export-video.",
+            "Manual setup may need SCREENPIPE_LOCAL_API_KEY from `npx -y screenpipe@latest auth token` on the recording computer.",
+            "Older configs used a top-level mcpServers map. Re-run setup to migrate to mcp.servers."
+          ],
+          "troubleshooting": {
+            "title": "OpenClaw",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "Install OpenClaw first: /learn/ollama-openclaw or `ollama launch openclaw`. Then rerun `npx -y screenpipe@latest agent setup openclaw`."
+              },
+              {
+                "q": "MCP is configured but queries fail",
+                "a": "Test `npx @modelcontextprotocol/inspector npx screenpipe-mcp` and `curl http://localhost:3030/health`. Restart OpenClaw after setup."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Next steps on CanFly.ai",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 min",
+          "content": "Same-machine setup is enough for a laptop that runs both apps. If OpenClaw is on a VPS, official docs recommend selective remote sync, then `npx -y screenpipe@latest agent setup openclaw --api-url http://localhost:3030`.\n\nRemote sync includes clipboard events by default. On a less-trusted host, pass `--no-media --disable-clipboard-capture` and exclude secrets. Pair this page with Harden AIF if the agent can also run tools. Do not fold Screenpipe into Supermemory, Whisper-only, or a ClawHub page.",
+          "tips": [
+            "Review video is pending (no HEYGEN_API_KEY on this run). English script: content/scripts/screenpipe-review-en.txt",
+            "Remote one-shot: npx -y screenpipe@latest sync remote now --host … --no-media --disable-clipboard-capture",
+            "For a broken OpenClaw install, use /learn/openclaw-troubleshooting first."
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "Install OpenClaw",
+              "desc": "One-command OpenClaw setup with Ollama, then come back to pin Screenpipe.",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw tutorial"
+            },
+            {
+              "emoji": "📦",
+              "title": "OpenClaw product",
+              "desc": "What OpenClaw is, and the Screenpipe pin on the apps card.",
+              "link": "/apps/free/openclaw",
+              "cta": "OpenClaw card"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "Local tool-call firewall after the agent can see your screen: aif configure --agent openclaw --validate.",
+              "link": "/learn/harden-aif",
+              "cta": "AIF tutorial"
+            },
+            {
+              "emoji": "🎙️",
+              "title": "Whisper",
+              "desc": "Local speech-to-text files. Screenpipe is live screen + audio history, not a Whisper page.",
+              "link": "/learn/whisper",
+              "cta": "Whisper tutorial"
+            },
+            {
+              "emoji": "🧩",
+              "title": "Agent Skills",
+              "desc": "ClawHub skills. Screenpipe is the official npx setup, not a ClawHub skill.",
+              "link": "/learn/agent-skills",
+              "cta": "Skills tutorial"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Is Screenpipe free / MIT?",
+          "a": "No. Current source uses the Screenpipe Commercial License (personal non-commercial, non-profit/education/research, and an evaluation period). The official desktop app has its own checkout. Confirm https://docs.screenpipe.com/getting-started before you pay. Your AI provider bill is separate."
+        },
+        {
+          "q": "Is this the same page as Supermemory?",
+          "a": "No. Supermemory is queued long-term chat memory. Screenpipe is screen and audio history. CanFly.ai does not fold them together."
+        },
+        {
+          "q": "Do I run clawhub install screenpipe?",
+          "a": "No. Official pin is `npx -y screenpipe@latest agent setup openclaw`, or Settings → Connections → AI apps."
+        },
+        {
+          "q": "Can I sync to a VPS safely?",
+          "a": "Use `npx -y screenpipe@latest sync remote now` with `--no-media` and `--disable-clipboard-capture`. Clipboard sync can include passwords and API keys."
+        },
+        {
+          "q": "Does it record iPhone or Android?",
+          "a": "Official install guides cover the computer recorder. Installing Screenpipe on a Mac, Windows, or Linux box does not capture another device's screen."
         }
       ]
     }

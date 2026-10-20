@@ -776,7 +776,7 @@
       },
       "openclaw": {
         "tagline": "你的个人 AI 代理 — 你的 AI，你的规则",
-        "description": "拥有约 390K GitHub 星标的开源个人 AI 代理人平台。一行指令安装，自由搭配技能、工具和集成。2.0 线（v2026.8.1–v2026.9.6）加上引导式 setup、重建的 Control UI 与 Shared Cloud Sessions。全新 xAI / Grok 设置默认 Grok 4.7：`openclaw models set xai/grok-4.7`。OpenAI 账号若已有 GPT-6 Astra，用 `openclaw models set openai/gpt-6-astra` 切过去。本地 tool-call 防火墙用 Harden AIF：`aif configure --agent openclaw --validate`。Grok Bot 是 xAI 托管队友，不是 OpenClaw 技能 — 对照见 /blog/grok-bot-vs-openclaw。在本地或云端执行。你的数据永远属于你 — 无厂商绑定、无订阅费、无限制。",
+        "description": "拥有约 390K GitHub 星标的开源个人 AI 代理人平台。一行指令安装，自由搭配技能、工具和集成。2.0 线（v2026.8.1–v2026.9.6）加上引导式 setup、重建的 Control UI 与 Shared Cloud Sessions。全新 xAI / Grok 设置默认 Grok 4.7：`openclaw models set xai/grok-4.7`。OpenAI 账号若已有 GPT-6 Astra，用 `openclaw models set openai/gpt-6-astra` 切过去。本地 tool-call 防火墙用 Harden AIF：`aif configure --agent openclaw --validate`。用 Screenpipe 把屏幕记录接进 OpenClaw：`npx -y screenpipe@latest agent setup openclaw` — /apps/skills/screenpipe。 Grok Bot 是 xAI 托管队友，不是 OpenClaw 技能 — 对照见 /blog/grok-bot-vs-openclaw。在本地或云端执行。你的数据永远属于你 — 无厂商绑定、无订阅费、无限制。",
         "features": [
           "一行命令安装：ollama launch openclaw",
           "约 390K GitHub 星标 — 最大 AI 代理社区",
@@ -785,6 +785,7 @@
           "切到 Grok 4.7：openclaw models set xai/grok-4.7",
           "切到 Astra：openclaw models set openai/gpt-6-astra",
           "本地防火墙：Harden AIF（`aif configure --agent openclaw --validate`）",
+          "屏幕记录：npx -y screenpipe@latest agent setup openclaw",
           "完全隐私：100% 在你的硬件上运行",
           "v2026.9.6：默认 Grok 4.7、Astra、托管更新"
         ],
@@ -925,6 +926,21 @@
         ],
         "ctaPrimary": "打开教程",
         "ctaSecondary": "Ollama 模型页"
+      },
+      "screenpipe": {
+        "tagline": "给 OpenClaw 的本地屏幕与语音记忆",
+        "description": "Screenpipe 在你的电脑上记录屏幕活动与语音，让代理人能搜你看过或听过的内容。官方 OpenClaw pin：`npx -y screenpipe@latest agent setup openclaw`（或桌面版 Settings → Connections → AI apps）。数据留在 `~/.screenpipe`，本地 API 是 `http://localhost:3030`。这不是 Supermemory、不是 OzBrain，也不是 OpenClaw 内建 session memory。桌面版结账与 Screenpipe Commercial License 和你的 AI 供应商账单分开。官方文档：https://docs.screenpipe.com/openclaw",
+        "features": [
+          "官方 pin：npx -y screenpipe@latest agent setup openclaw",
+          "桌面版：Settings → Connections → AI apps",
+          "本地目录 ~/.screenpipe · API localhost:3030",
+          "MCP：search-content、activity-summary、list-meetings、export-video",
+          "macOS、Windows、Linux（CLI：darwin-arm64/x64、linux-x64、win32-x64）",
+          "远程同步：--no-media --disable-clipboard-capture",
+          "不是 Supermemory／OzBrain／OpenClaw session memory"
+        ],
+        "ctaPrimary": "打开教程",
+        "ctaSecondary": "官方 OpenClaw 文档"
       }
     },
     "comingSoon": "即将推出",
@@ -3797,6 +3813,13 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "🖥️",
+              "title": "Screenpipe",
+              "desc": "把屏幕记录接进 OpenClaw：npx -y screenpipe@latest agent setup openclaw。",
+              "link": "/learn/screenpipe",
+              "cta": "Screenpipe 教程"
+            },
+            {
               "emoji": "⚡",
               "title": "Nemotron 3.5 Lightning",
               "desc": "30B／3B 执行层家族。官方接法：ollama launch openclaw --model nemotron-3.5-lightning。",
@@ -4443,6 +4466,13 @@
           "estimatedTime": "1 分钟",
           "content": "ClawHub 是 Agent Skills 的开放市场。除了这 15 个，社区每天都在打造更多技能。\n\n**下载量排行：**\n1. HeyGen 虚拟形象视频 — 2,100+ 次下载\n2. BaseMail — 1,800+ 次下载\n3. SwitchBot — 1,500+ 次下载\n4. Daily Voice Quote — 1,200+ 次下载\n\n在 ClawHub 上浏览、安装，甚至发布你自己的技能。",
           "nextStepCards": [
+            {
+              "emoji": "🖥️",
+              "title": "Screenpipe",
+              "desc": "把屏幕记录接进 OpenClaw：npx -y screenpipe@latest agent setup openclaw。",
+              "link": "/learn/screenpipe",
+              "cta": "Screenpipe 教程"
+            },
             {
               "emoji": "🎤",
               "title": "ElevenLabs 语音教程",
@@ -6376,6 +6406,13 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "🖥️",
+              "title": "Screenpipe",
+              "desc": "把屏幕记录接进 OpenClaw：npx -y screenpipe@latest agent setup openclaw。",
+              "link": "/learn/screenpipe",
+              "cta": "Screenpipe 教程"
+            },
+            {
               "emoji": "🎙️",
               "title": "ElevenLabs",
               "desc": "文本转语音和声音拷贝",
@@ -7727,6 +7764,13 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "🖥️",
+              "title": "Screenpipe",
+              "desc": "把屏幕记录接进 OpenClaw：npx -y screenpipe@latest agent setup openclaw。",
+              "link": "/learn/screenpipe",
+              "cta": "Screenpipe 教程"
+            },
+            {
               "emoji": "🦞",
               "title": "安装 OpenClaw",
               "desc": "用 Ollama 一行命令装 OpenClaw，再回来接 AIF。",
@@ -8554,6 +8598,246 @@
         {
           "q": "要另开 Super VL、Ultra 或 NemoClaw 吗？",
           "a": "不要。Super VL 看图看视频。Ultra 是 NVIDIA 默认。NemoClaw 是托管 OpenClaw。这一页一句就够。"
+        }
+      ]
+    },
+    "screenpipe": {
+      "title": "Screenpipe — 把屏幕记录接进 OpenClaw",
+      "subtitle": "官方 OpenClaw pin：npx -y screenpipe@latest agent setup openclaw。本地 API 在 3030 端口。不是 Supermemory。",
+      "duration": "8 分钟",
+      "difficulty": "入门",
+      "steps": [
+        {
+          "title": "Screenpipe 是什么",
+          "titleEn": "What Screenpipe is",
+          "estimatedTime": "2 分钟",
+          "content": "Screenpipe 在 macOS、Windows、Linux 上记录屏幕活动与语音，让代理人能搜你看过或听过的内容。官方 OpenClaw 文档：https://docs.screenpipe.com/openclaw\n\nCanFly.ai 这页只走 OpenClaw。官方 pin 是 `npx -y screenpipe@latest agent setup openclaw`。桌面版也可在 Settings → Connections → AI apps 完成。数据留在 `~/.screenpipe`。本地 API 听 `http://localhost:3030`。\n\n这不是 Supermemory（长期对话记忆）、不是 OzBrain（托管 MCP 记忆），也不是 OpenClaw 内建 session memory。它是给代理人用的屏幕与语音历史。",
+          "commands": [
+            "# CanFly.ai 产品页",
+            "# /apps/skills/screenpipe",
+            "",
+            "# 官方 OpenClaw 文档",
+            "https://docs.screenpipe.com/openclaw",
+            "",
+            "# 官方 OpenClaw pin",
+            "npx -y screenpipe@latest agent setup openclaw",
+            "",
+            "# 官网／桌面版下载",
+            "https://screenpi.pe",
+            "",
+            "# GitHub",
+            "https://github.com/screenpipe/screenpipe"
+          ],
+          "expectedResult": "你知道 Screenpipe 是给 OpenClaw 的本地屏幕与语音历史 — 不是 Supermemory、不是 OzBrain，也不是 ClawHub 技能。",
+          "tips": [
+            "Supermemory 与 Firecrawl 留在各自队列页。这篇只 pin Screenpipe。",
+            "不要自造 clawhub install。官方客户端是 npx -y screenpipe@latest。",
+            "桌面版结账与 Screenpipe Commercial License 不是 MIT，也不是你的 AI 供应商账单。"
+          ],
+          "troubleshooting": {
+            "title": "范围",
+            "items": [
+              {
+                "q": "这和 Supermemory 同一页吗？",
+                "a": "不是。Supermemory 存长期对话记忆与 profile。Screenpipe 记录屏幕与语音。不要混写。"
+              },
+              {
+                "q": "这是 ClawHub 技能吗？",
+                "a": "不是。用 `npx -y screenpipe@latest agent setup openclaw` 或桌面版 Connections。其他技能仍看 /learn/agent-skills。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "安装桌面版或 CLI",
+          "titleEn": "Install the desktop app or CLI",
+          "estimatedTime": "2 分钟",
+          "content": "建议走桌面版：从 screenpi.pe 下载，再允许屏幕录制、麦克风，macOS 还要辅助使用。确认前先看结账、试用与 Screenpipe Commercial License。\n\nCLI 没有视觉时间轴也能录。CLI 二进制支持：darwin-arm64、darwin-x64、linux-x64、win32-x64。数据写入 `~/.screenpipe/`。桌面版到 v2.7.104（2026-10-09）— 用 `--version` 核对你装到的版本。",
+          "commands": [
+            "# 桌面版（建议）",
+            "https://screenpi.pe",
+            "",
+            "# CLI 录制",
+            "npx -y screenpipe@latest record",
+            "",
+            "# 安静 CLI（可选）",
+            "SCREENPIPE_NO_REMINDERS=1 npx -y screenpipe@latest record",
+            "",
+            "# 查版本／平台",
+            "npx -y screenpipe@latest --version",
+            "node -p \"process.platform + '-' + process.arch\"",
+            "",
+            "# Linux 套件（Ubuntu/Debian）",
+            "sudo apt install libasound2-dev ffmpeg"
+          ],
+          "expectedResult": "Screenpipe 正在运行。桌面版时间轴已开，或 CLI 正在写入 ~/.screenpipe。",
+          "tips": [
+            "macOS：系统设置 → 隐私与安全性 → 屏幕录制与辅助使用。",
+            "Windows 10/11：允许画面采集。时间轴空白就修复 Edge WebView2。",
+            "Linux 桌面版在 X11 较稳，Wayland 看合成器。无头 CLI 仍可提供本地 API。"
+          ],
+          "troubleshooting": {
+            "title": "安装",
+            "items": [
+              {
+                "q": "npx record 失败",
+                "a": "先看 `node -p \"process.platform + '-' + process.arch\"`。只支持 darwin-arm64、darwin-x64、linux-x64、win32-x64。再跑一次 `@latest` 拉平台二进制。"
+              },
+              {
+                "q": "macOS 说二进制已损坏",
+                "a": "改用桌面版，或清隔离：xattr -d com.apple.quarantine ~/.npm/_npx/*/node_modules/screenpipe*/bin/screenpipe"
+              }
+            ]
+          }
+        },
+        {
+          "title": "检查本地 API",
+          "titleEn": "Verify the local API",
+          "estimatedTime": "1 分钟",
+          "content": "健康的进程听 `localhost:3030`。`/health` 不用 token。搜索等受保护路由可能要 `npx -y screenpipe@latest auth token` 当 Bearer。`/health` 200 不代表正在录 — 搜索空白就回头查权限。\n\n现行 CLI 默认开本地验证。token 不要出现在截图、聊天或公开网址。AI 供应商密钥不是 Screenpipe 本地 API token。",
+          "commands": [
+            "curl --fail-with-body http://localhost:3030/health",
+            "",
+            "SCREENPIPE_API_KEY=$(npx -y screenpipe@latest auth token)",
+            "curl --fail-with-body \"http://localhost:3030/search?limit=1\" \\",
+            "  -H \"Authorization: Bearer $SCREENPIPE_API_KEY\"",
+            "",
+            "# 3030 已被占用？",
+            "lsof -i :3030"
+          ],
+          "expectedResult": "/health 成功。带本地 token 的搜索会回最近活动，或清楚告诉你还没录到东西。",
+          "tips": [
+            "把 3030 暴露给另一台机器前，先开 Require API Authentication。",
+            "401/403 代表 token 对不上这个进程或数据目录。轮换后重设客户端。",
+            "3030 已被占用：另一个 Screenpipe 还在跑。先停再录第二次。"
+          ],
+          "troubleshooting": {
+            "title": "本地 API",
+            "items": [
+              {
+                "q": "curl /health 失败",
+                "a": "先开桌面版或跑 `npx -y screenpipe@latest record`，再试。端口被占用就看 lsof -i :3030。"
+              },
+              {
+                "q": "搜索是空的",
+                "a": "服务器健康不代表正在采集。再查屏幕录制／辅助使用／麦克风，等几分钟活动后再搜。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Pin OpenClaw",
+          "titleEn": "Pin OpenClaw",
+          "estimatedTime": "2 分钟",
+          "content": "还没有 OpenClaw？先走 CanFly.ai 安装教程再回来。支持原生 `mcp.servers` 的现行 OpenClaw 只要一条命令。它会写入 Screenpipe skills 并注册 MCP。命令可重跑，会保留你已有的 MCP。\n\n重启 OpenClaw，再请它搜最近 10 分钟的 Screenpipe 历史（含时间戳）。设置完成不代表查询一定成功。\n\n可选的 hooks（Screenpipe → OpenClaw 唤醒）用 OpenClaw `hooks.token`。不要把 `OPENCLAW_GATEWAY_TOKEN` 贴进 Screenpipe Remote agent 设置。",
+          "commands": [
+            "# 官方 OpenClaw pin",
+            "npx -y screenpipe@latest agent setup openclaw",
+            "",
+            "# 同一台机器，设置后",
+            "# 重启 OpenClaw，再从任一聊天频道提问",
+            "",
+            "# 独立测 MCP",
+            "npx @modelcontextprotocol/inspector npx screenpipe-mcp",
+            "",
+            "# 手动 mcp.servers 后备（~/.openclaw/openclaw.json）",
+            "# command: bun",
+            "# args: [\"x\", \"screenpipe-mcp@latest\"]",
+            "# transport: stdio",
+            "",
+            "# 还没装 OpenClaw",
+            "# 见 /learn/ollama-openclaw",
+            "ollama launch openclaw"
+          ],
+          "expectedResult": "OpenClaw 能调用 Screenpipe MCP（search-content、activity-summary、list-meetings）。问最近 10 分钟会回时间戳，或清楚说还没录到。",
+          "tips": [
+            "MCP 工具：search-content、activity-summary、search-elements、frame-context、list-meetings、export-video。",
+            "手动设置可能要在录制电脑用 `npx -y screenpipe@latest auth token` 填 SCREENPIPE_LOCAL_API_KEY。",
+            "旧设置用顶层 mcpServers。再跑一次 setup 会迁到 mcp.servers。"
+          ],
+          "troubleshooting": {
+            "title": "OpenClaw",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "先装 OpenClaw：/learn/ollama-openclaw 或 `ollama launch openclaw`。再跑 `npx -y screenpipe@latest agent setup openclaw`。"
+              },
+              {
+                "q": "MCP 已设置但查询失败",
+                "a": "测 `npx @modelcontextprotocol/inspector npx screenpipe-mcp` 与 `curl http://localhost:3030/health`。设置后重启 OpenClaw。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CanFly.ai 下一步",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 分钟",
+          "content": "笔记本同时跑两个 app 时，同一台设置就够。OpenClaw 若在 VPS，官方建议先做选择性远程同步，再跑 `npx -y screenpipe@latest agent setup openclaw --api-url http://localhost:3030`。\n\n远程同步默认含剪贴板。较不信任的主机请加 `--no-media --disable-clipboard-capture`，并排除机密。代理人还能跑工具时，搭配 Harden AIF。不要把 Screenpipe 折进 Supermemory、只讲 Whisper，或当成 ClawHub 页。",
+          "tips": [
+            "Review 视频待补（这次没有 HEYGEN_API_KEY）。英文口白稿：content/scripts/screenpipe-review-en.txt",
+            "远程一次推：npx -y screenpipe@latest sync remote now --host … --no-media --disable-clipboard-capture",
+            "OpenClaw 坏掉先看 /learn/openclaw-troubleshooting。"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "安装 OpenClaw",
+              "desc": "用 Ollama 一行装好 OpenClaw，再回来 pin Screenpipe。",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw 教程"
+            },
+            {
+              "emoji": "📦",
+              "title": "OpenClaw 产品",
+              "desc": "OpenClaw 是什么，以及产品卡上的 Screenpipe pin。",
+              "link": "/apps/free/openclaw",
+              "cta": "OpenClaw 卡片"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "代理人看得到屏幕后，再加本地 tool-call 防火墙：aif configure --agent openclaw --validate。",
+              "link": "/learn/harden-aif",
+              "cta": "AIF 教程"
+            },
+            {
+              "emoji": "🎙️",
+              "title": "Whisper",
+              "desc": "本地语音文件转文字。Screenpipe 是实时屏幕与语音历史，不是 Whisper 页。",
+              "link": "/learn/whisper",
+              "cta": "Whisper 教程"
+            },
+            {
+              "emoji": "🧩",
+              "title": "Agent Skills",
+              "desc": "ClawHub 技能。Screenpipe 走官方 npx，不是 ClawHub 技能。",
+              "link": "/learn/agent-skills",
+              "cta": "技能教程"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Screenpipe 是免费／MIT 吗？",
+          "a": "不是。现行源码用 Screenpipe Commercial License（个人非商业、非营利／教育／研究，以及评估期）。官方桌面版另有结账。付钱前看 https://docs.screenpipe.com/getting-started。AI 供应商账单是另一笔。"
+        },
+        {
+          "q": "这和 Supermemory 同一页吗？",
+          "a": "不是。Supermemory 是队列里的长期对话记忆。Screenpipe 是屏幕与语音历史。CanFly.ai 不把它们写成同一页。"
+        },
+        {
+          "q": "要跑 clawhub install screenpipe 吗？",
+          "a": "不要。官方 pin 是 `npx -y screenpipe@latest agent setup openclaw`，或 Settings → Connections → AI apps。"
+        },
+        {
+          "q": "同步到 VPS 安全吗？",
+          "a": "用 `npx -y screenpipe@latest sync remote now`，加上 `--no-media` 与 `--disable-clipboard-capture`。剪贴板同步可能含密码与 API 密钥。"
+        },
+        {
+          "q": "会录 iPhone 或 Android 吗？",
+          "a": "官方安装指南讲的是电脑录制器。在 Mac、Windows 或 Linux 安装 Screenpipe，不会录另一台设备的屏幕。"
         }
       ]
     }

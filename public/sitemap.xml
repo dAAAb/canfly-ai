@@ -955,4 +955,62 @@
     <priority>0.7</priority>
   </url>
 
+  <!-- Screenpipe (2026-10-20) -->
+  <url>
+    <loc>https://canfly.ai/apps/skills/screenpipe</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/skills/screenpipe" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/skills/screenpipe" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/skills/screenpipe" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/apps/skills/screenpipe" />
+    <lastmod>2026-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/apps/skills/screenpipe</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/skills/screenpipe" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/skills/screenpipe" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/skills/screenpipe" />
+    <lastmod>2026-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/apps/skills/screenpipe</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/skills/screenpipe" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/skills/screenpipe" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/skills/screenpipe" />
+    <lastmod>2026-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/learn/screenpipe</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/screenpipe" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/screenpipe" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/screenpipe" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/learn/screenpipe" />
+    <lastmod>2026-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/learn/screenpipe</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/screenpipe" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/screenpipe" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/screenpipe" />
+    <lastmod>2026-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/learn/screenpipe</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/screenpipe" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/screenpipe" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/screenpipe" />
+    <lastmod>2026-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
 </urlset>

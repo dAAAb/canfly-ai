@@ -1,0 +1,11 @@
+Hi, I'm JU CHUN KO.
+
+OpenClaw can chat and run tools, but it does not see your screen. Yesterday's Slack thread, the tab you had open, the meeting you just left — that context is gone unless you paste it by hand.
+
+Screenpipe records screen activity and audio on your machine. History stays in ~/.screenpipe. The local API listens on port 3030. Official OpenClaw pin: npx -y screenpipe@latest agent setup openclaw. Or use Settings, Connections, AI apps in the desktop app.
+
+Restart OpenClaw, then ask what you were reading this morning. For a VPS, sync with --no-media and --disable-clipboard-capture so passwords do not leave the laptop.
+
+This is not Supermemory and not OpenClaw session memory. It is screen history for your agent.
+
+I made a tutorial on CanFly.ai — go try it.
