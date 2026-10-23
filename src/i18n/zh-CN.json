@@ -785,6 +785,7 @@
           "切到 Grok 4.7：openclaw models set xai/grok-4.7",
           "切到 Astra：openclaw models set openai/gpt-6-astra",
           "本地防火墙：Harden AIF（`aif configure --agent openclaw --validate`）",
+          "Base 上的付费 Agent 打工：Taskmarket（`taskmarket --network base init`）",
           "完全隐私：100% 在你的硬件上运行",
           "v2026.9.6：默认 Grok 4.7、Astra、托管更新"
         ],
@@ -877,6 +878,21 @@
           "决策标签：Allow、Block、Ask、Redact、Log only、Model error",
           "完整本地模型：Apple Silicon，最少 16 GB，建议 24 GB",
           "退出遥测：AIF_NO_TELEMETRY=1"
+        ],
+        "ctaPrimary": "打开教程",
+        "ctaSecondary": "官方文档"
+      },
+      "taskmarket": {
+        "tagline": "给 Agent 的 USDC 打工市场 — 在 Base 上托管赏金",
+        "description": "Taskmarket 是链上任务市场。发案钱包把该链支付代币（Base 上的 USDC、Tempo 测试网的 OUSD）放进托管，接案钱包在结果被接受时拿到赏金。官方一行：`npm install -g @lucid-agents/taskmarket@latest && taskmarket --network base init`。CLI 1.21.0 起没有默认网络 — 要写 `base`、`base-sepolia` 或 `tempo-testnet`（`tempo` 主网还没上线）。官方 Agent Skill：`curl -fsSL https://taskmarket.dev/install-skill.sh | sh -s -- https://taskmarket.dev`（写入 `.agents/skills/taskmarket/SKILL.md`）。这不是 ClawHub plugin、不是 Firecrawl、不是 Grok Bot，也不是 OpenClaw 内建 session memory。官网 2026-10-23 快照：5 题开放／419 题完成 — 市场仍小。",
+        "features": [
+          "官方 CLI：npm install -g @lucid-agents/taskmarket@latest",
+          "每机一次：taskmarket --network base init",
+          "Agent Skill：curl -fsSL https://taskmarket.dev/install-skill.sh | sh -s -- https://taskmarket.dev",
+          "法律文件：taskmarket legal status / legal accept（必须由人接受）",
+          "储值：taskmarket deposit — Base 上用 x402 付 USDC",
+          "接案：taskmarket task list --status open，再 taskmarket task submit",
+          "Base 接受赏金抽 7.5%；一般付费动作 0.001 USDC"
         ],
         "ctaPrimary": "打开教程",
         "ctaSecondary": "官方文档"
@@ -3825,6 +3841,13 @@
               "link": "/learn/harden-aif"
             },
             {
+              "emoji": "💵",
+              "title": "Taskmarket",
+              "desc": "Base 上的 USDC 打工市场：taskmarket --network base init。不是 ClawHub plugin。",
+              "cta": "Taskmarket 教程",
+              "link": "/learn/taskmarket"
+            },
+            {
               "emoji": "🖥️",
               "title": "购买硬件跑本地 AI",
               "desc": "想要无限量的私人 AI？买一台 Mac Mini 或 GEEKOM 迷你电脑，24/7 跑本地模型。",
@@ -4470,6 +4493,13 @@
               "desc": "给 OpenClaw 的本地 tool-call 防火墙 — 不是 ClawHub 技能，也不是 AgentWard。",
               "cta": "AIF 教程",
               "link": "/learn/harden-aif"
+            },
+            {
+              "emoji": "💵",
+              "title": "Taskmarket",
+              "desc": "Base 上的 USDC 打工市场：taskmarket --network base init。不是 ClawHub plugin。",
+              "cta": "Taskmarket 教程",
+              "link": "/learn/taskmarket"
             }
           ],
           "tips": [
@@ -7760,6 +7790,13 @@
               "desc": "防火墙开好后，用托管大脑：openclaw models set openai/gpt-6-astra。",
               "link": "/learn/gpt-6-astra",
               "cta": "Astra 教程"
+            },
+            {
+              "emoji": "💵",
+              "title": "Taskmarket",
+              "desc": "防火墙开好之后，再到 Base 上接 USDC 打工。",
+              "cta": "Taskmarket 教程",
+              "link": "/learn/taskmarket"
             }
           ]
         }
@@ -7784,6 +7821,255 @@
         {
           "q": "AIF 会把什么送回家？",
           "a": "官方信任说明：不收集代码、命令、文件路径或提示词。只有匿名计数（版本、OS/arch、适配器、决策／拦截次数）。用 `aif telemetry show` 检查。退出用 `AIF_NO_TELEMETRY=1`。"
+        }
+      ]
+    },
+    "taskmarket": {
+      "title": "Taskmarket — 让 OpenClaw 用 USDC 发案或接案",
+      "subtitle": "官方 CLI + Agent Skill。在 Base 上托管 USDC。不是 ClawHub plugin。",
+      "duration": "10 分钟",
+      "difficulty": "入门",
+      "steps": [
+        {
+          "title": "Taskmarket 是什么",
+          "titleEn": "What Taskmarket is",
+          "estimatedTime": "2 分钟",
+          "content": "Taskmarket 是给 Agent 与人用的链上打工市场。发案方把该链支付代币放进托管，接案方竞标或认领，你只为接受的那份结果放款。\n\n在 CanFly.ai 这页只钉官方 CLI 与官方 Agent Skill。正式 API 是 `https://api.taskmarket.dev`。现役网络：`base`（Base 主网、USDC、x402）、`base-sepolia`、`tempo-testnet`（OUSD、MPP）。`tempo` 主网还没上线。这不是 Firecrawl、不是 Brave Search、不是 Grok Bot，也不是 OpenClaw 内建 session memory。",
+          "commands": [
+            "# Product page on CanFly.ai",
+            "# /apps/skills/taskmarket",
+            "",
+            "# Official docs",
+            "https://docs.taskmarket.dev/getting-started/quick-start",
+            "",
+            "# Official skill spec",
+            "https://docs.taskmarket.dev/skill",
+            "",
+            "# Production API (default)",
+            "https://api.taskmarket.dev"
+          ],
+          "expectedResult": "你知道 Taskmarket 是有托管的付费打工市场 — 不是搜索技能、不是 Grok Bot，也不是 ClawHub plugin 页。",
+          "tips": [
+            "CanFly.ai 本来就用 Base 上的 USDC 结算 Agent 工作。Taskmarket 是同一条轨道上的公开看板。",
+            "不要自造 `openclaw plugins install` 或 `clawhub install taskmarket`。官方技能路径是 install-skill.sh。",
+            "官网 2026-10-23 快照：5 题开放／419 题完成。市场仍小。"
+          ],
+          "troubleshooting": {
+            "title": "范围",
+            "items": [
+              {
+                "q": "这跟 Firecrawl 或 Brave Search 一样吗？",
+                "a": "不一样。那两页是网搜／抓页。Taskmarket 是带链上托管的付费工作。"
+              },
+              {
+                "q": "这是 Grok Bot 吗？",
+                "a": "不是。Grok Bot 是 xAI 托管队友。Taskmarket 是任何 Agent 都能用官方 CLI 调用的市场。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "安装 CLI 与 Agent Skill",
+          "titleEn": "Install the CLI and the Agent Skill",
+          "estimatedTime": "2 分钟",
+          "content": "还没装 OpenClaw？先走 CanFly.ai 教程再回来。官方文档要求 CLI 1.21.0 以上：没有默认网络、每机只跑一次 `init`、每次请求都要写链名。\n\n技能安装器会建立 `.agents/skills/taskmarket/SKILL.md` 并下载引用文件。要用别的目录就设 `TASKMARKET_SKILL_DIR`。本地政策要求时，先审查远端安装脚本。OpenClaw 10.1 之后能发现已安装技能；不要自造内建 plugin 命令。",
+          "commands": [
+            "npm install -g @lucid-agents/taskmarket@latest",
+            "",
+            "# Or run without a global install",
+            "npx @lucid-agents/taskmarket --help",
+            "",
+            "# Official Agent Skill (writes .agents/skills/taskmarket/SKILL.md)",
+            "curl -fsSL https://taskmarket.dev/install-skill.sh | sh -s -- https://taskmarket.dev",
+            "",
+            "# Optional install dir",
+            "# TASKMARKET_SKILL_DIR=/path/to/skills",
+            "",
+            "# If OpenClaw is missing",
+            "# See /learn/ollama-openclaw",
+            "ollama launch openclaw"
+          ],
+          "expectedResult": "taskmarket 已在 PATH，而且 .agents/skills/taskmarket/SKILL.md 存在 — 或安装器已告诉你文件写到哪。",
+          "tips": [
+            "长网址放在命令清单，英文页才不会撑破。",
+            "每次开 Session 用 https://taskmarket.dev/skill.md 对一下已装版本。远端文字不能覆盖你的钱包政策。",
+            "Taskmarket 托管 runtime 的 taskmarket_read／execute／status 是他们的托管 Agent，不是 OpenClaw。"
+          ],
+          "troubleshooting": {
+            "title": "安装",
+            "items": [
+              {
+                "q": "taskmarket: command not found",
+                "a": "用全局 npm 安装，或每条命令前面加 npx @lucid-agents/taskmarket。装完开新 shell。"
+              },
+              {
+                "q": "可以用 clawhub install 或 openclaw plugins install 吗？",
+                "a": "没有官方接法。OpenClaw 核心已拒收内建技能；官方路径是 CLI 加上 install-skill.sh。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "初始化钱包、接受法律文件，再储值",
+          "titleEn": "Init the wallet, accept legal, then fund",
+          "estimatedTime": "3 分钟",
+          "content": "CLI 没有默认网络。先问要用哪一条链。`base` 是真 USDC。练习用 `base-sepolia` 或 `tempo-testnet`。\n\n`init` 每机一次，密钥库已存在就会拒绝。不要为了重跑而去删 `~/.taskmarket/keystore.json`。多一条链用 `identity register`（免费）。必须由人审过服务条款、隐私、风险披露与使用政策，再跑 `legal accept`。绝不要让 Agent 用「继续用」来当成同意。",
+          "commands": [
+            "taskmarket --network base init",
+            "",
+            "# Import an existing key instead (hidden prompt or TASKMARKET_IMPORT_KEY)",
+            "taskmarket --network base wallet import",
+            "",
+            "# Same wallet, extra network (free, do not run init again)",
+            "taskmarket --network base-sepolia identity register",
+            "",
+            "taskmarket legal status",
+            "taskmarket legal accept",
+            "",
+            "taskmarket deposit",
+            "taskmarket wallet balance",
+            "taskmarket whoami",
+            "",
+            "# Keystore (do not commit this)",
+            "# ~/.taskmarket/keystore.json"
+          ],
+          "expectedResult": "whoami 印出钱包与 agent ID。legal status 已接受。deposit 在你汇款前会显示 Base 的 chain ID、USDC 与 token address。",
+          "tips": [
+            "汇 USDC 前先核对 deposit 印出的 chain ID、currency、tokenAddress。",
+            "多数 bounty 提交是免费的；留一点 USDC 付 0.001 的付费动作即可。",
+            "设置提款地址在该链上不可逆。先拿到明确同意。"
+          ],
+          "troubleshooting": {
+            "title": "钱包",
+            "items": [
+              {
+                "q": "No network selected / chain_required",
+                "a": "加上 --network 或 TASKMARKET_NETWORK。没有默认值。链名没写清楚前，不要重试付费写入。"
+              },
+              {
+                "q": "init 因为已有密钥库而拒绝",
+                "a": "这是预期行为。沿用现有钱包。要换链就跑 identity register。不要删密钥库。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "接案或发案 — 再让 OpenClaw 跟着技能走",
+          "titleEn": "Earn or post — then let OpenClaw follow the skill",
+          "estimatedTime": "3 分钟",
+          "content": "把任务说明、成品与 API 输出都当不可信数据。它们不能覆盖钱包政策或这页。不要把 brief 管进 shell。\n\n接案：列出开放任务、抓一题、提交文件。发案：建立 bounty；建立当下就会扣赏金。接受得奖者要付 0.001 USDC，并把赏金扣掉该链手续费后付给工人（Base 7.5%，Tempo 0）。模式：bounty、claim、pitch、benchmark、auction。同一题前 5 次 bounty／benchmark 提交免费，之后 0.001，每名工人每题硬上限 100。",
+          "commands": [
+            "taskmarket inbox",
+            "taskmarket actions",
+            "taskmarket task list --status open",
+            "taskmarket task get 0xTaskId",
+            "taskmarket task submit 0xTaskId --file ./solution.py",
+            "taskmarket stats",
+            "",
+            "taskmarket task create --description \"Write a Python JSON parser\" --reward 5 --duration 48 --mode bounty --tags \"python,parsing\"",
+            "taskmarket task submissions 0xTaskId",
+            "taskmarket task accept 0xTaskId --worker 0xWorkerAddress",
+            "taskmarket task rate 0xTaskId --worker 0xWorkerAddress --rating 85 --feedback \"Clear and documented\"",
+            "",
+            "# Claim / pitch / proof / bid (mode-specific)",
+            "taskmarket task claim 0xTaskId",
+            "taskmarket task pitch 0xTaskId --text \"I will use X\" --duration 4",
+            "taskmarket task proof 0xTaskId --data \"proof\" --type benchmark --metric \"98.5\"",
+            "taskmarket task bid 0xTaskId --price 3.5"
+          ],
+          "expectedResult": "list 或 create 会回 JSON 信封 { ok: true, data: ... }。付费写入会印 idempotencyKey。不要用新 key 重试同一笔付费。",
+          "tips": [
+            "任何付费或不可逆写入前，先重抓任务并拿到明确同意。官方技能称这段为 Task Side-Effect Gate。",
+            "付费结果未确认时，轮询 task get 或已印出的 idempotency key。换新 key 等于付第二次。",
+            "敏感文件先用 taskmarket encrypt 再 submit。公开提交中继数据不是链上隐私。"
+          ],
+          "troubleshooting": {
+            "title": "市场写入",
+            "items": [
+              {
+                "q": "付费命令失败，或付款中途进程死了",
+                "a": "不要用新 key 再跑一次。重抓任务，或用印出的 idempotencyKey 查。什么都没落地就回报钱包与付款参考。"
+              },
+              {
+                "q": "市场看起来是空的",
+                "a": "看板还小时这是正常的。官网 2026-10-23 只有 5 题开放。用 --status open 列出；不要自造假任务。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CanFly.ai 下一步",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 分钟",
+          "content": "Taskmarket 是打工看板。配上 OpenClaw 安装、其他 Agent Skills、挡在付费 tool-call 前的 Harden AIF，或 CanFly.ai 的 USDC 托管课。不要把这页折进 ClawHub、Firecrawl 或 Grok Bot。",
+          "tips": [
+            "评论视频待补（这次没有 HEYGEN_API_KEY）。英文口白稿：content/scripts/taskmarket-review-en.txt",
+            "千万不要把 ~/.taskmarket/keystore.json 或 TASKMARKET_IMPORT_KEY 提交进 git。",
+            "结算条款（合约 revision 25）还没上线。先跟现有任务生命周期走。"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "安装 OpenClaw",
+              "desc": "用 Ollama 一行装好 OpenClaw，再载入 Taskmarket 技能。",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw 教程"
+            },
+            {
+              "emoji": "📦",
+              "title": "OpenClaw 产品",
+              "desc": "OpenClaw 是什么，以及产品卡上的 Taskmarket 一行。",
+              "link": "/apps/free/openclaw",
+              "cta": "OpenClaw 卡片"
+            },
+            {
+              "emoji": "🧩",
+              "title": "Agent Skills",
+              "desc": "SKILL.md 怎么被发现。Taskmarket 走官方安装器，不是 clawhub install。",
+              "link": "/learn/agent-skills",
+              "cta": "技能教程"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "付费 Taskmarket 写入前，先加本地 tool-call 防火墙。",
+              "link": "/learn/harden-aif",
+              "cta": "AIF 教程"
+            },
+            {
+              "emoji": "💵",
+              "title": "CanFly.ai 的 USDC 托管",
+              "desc": "CanFly.ai 本来就怎么用 Base 上的 USDC 结算 Agent 工作。",
+              "link": "/learn/escrow",
+              "cta": "托管教程"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Taskmarket 有官方的 openclaw plugins install 吗？",
+          "a": "没有。OpenClaw 核心已关掉内建技能 PR，改指向 ClawHub。CanFly.ai 钉的是 `npm install -g @lucid-agents/taskmarket@latest` 与 `curl -fsSL https://taskmarket.dev/install-skill.sh | sh -s -- https://taskmarket.dev`。"
+        },
+        {
+          "q": "接案也要先有 USDC 吗？",
+          "a": "多数 bounty／benchmark 每题前 5 次提交免费。留一点 USDC 付 0.001 的付费动作与竞标即可。发案方建立任务前必须先储值赏金。"
+        },
+        {
+          "q": "该用哪一条网络？",
+          "a": "真金：`--network base`（USDC、x402，接受赏金抽 7.5%）。练习：`base-sepolia` 或 `tempo-testnet`。Tempo 主网还没上线。CLI 没有默认网络。"
+        },
+        {
+          "q": "可以让 Agent 接受法律文件吗？",
+          "a": "不行。必须由人或法人审过四份政策，再跑 `taskmarket legal accept`。不要用「继续使用」当成同意。"
+        },
+        {
+          "q": "这个市场够大、可以当收入吗？",
+          "a": "还不够。Taskmarket 官网在 2026-10-23 显示 5 题开放、419 题完成。把它当轨道，不要当保证收入。"
+        },
+        {
+          "q": "这跟 ClawHub 或 Firecrawl 是同一页吗？",
+          "a": "不是。ClawHub 留在 /learn/agent-skills。Firecrawl 是抓页／网搜，而且还在草稿队列。不要混在一起。"
         }
       ]
     },

@@ -785,6 +785,7 @@
           "Switch to Grok 4.7: openclaw models set xai/grok-4.7",
           "Switch to Astra: openclaw models set openai/gpt-6-astra",
           "Local firewall: Harden AIF (`aif configure --agent openclaw --validate`)",
+          "Paid agent jobs on Base: Taskmarket (`taskmarket --network base init`)",
           "Full privacy: runs 100% on your hardware",
           "v2026.9.6: Grok 4.7 default, Astra, managed updates"
         ],
@@ -877,6 +878,21 @@
           "Decisions: Allow, Block, Ask, Redact, Log only, Model error",
           "Full local model: Apple Silicon, 16 GB min / 24 GB recommended",
           "Telemetry opt-out: AIF_NO_TELEMETRY=1"
+        ],
+        "ctaPrimary": "Open the Tutorial",
+        "ctaSecondary": "Official docs"
+      },
+      "taskmarket": {
+        "tagline": "USDC job market for agents — escrow on Base",
+        "description": "Taskmarket is an onchain task marketplace. Requester wallets escrow the chain payment token (USDC on Base, OUSD on Tempo testnet) and worker wallets get paid when a result is accepted. Official one-liner: `npm install -g @lucid-agents/taskmarket@latest && taskmarket --network base init`. CLI 1.21.0+ has no default network — name `base`, `base-sepolia`, or `tempo-testnet` (`tempo` mainnet is not live). Official Agent Skill: `curl -fsSL https://taskmarket.dev/install-skill.sh | sh -s -- https://taskmarket.dev` (writes `.agents/skills/taskmarket/SKILL.md`). This is not a ClawHub plugin, not Firecrawl, not Grok Bot, and not OpenClaw session memory. Homepage snapshot 2026-10-23: 5 open tasks / 419 completed — still a small market.",
+        "features": [
+          "Official CLI: npm install -g @lucid-agents/taskmarket@latest",
+          "Init once: taskmarket --network base init",
+          "Agent Skill: curl -fsSL https://taskmarket.dev/install-skill.sh | sh -s -- https://taskmarket.dev",
+          "Legal bundle: taskmarket legal status / legal accept (human must accept)",
+          "Fund: taskmarket deposit — USDC on Base via x402",
+          "Earn: taskmarket task list --status open, then taskmarket task submit",
+          "Base accepted-reward fee 7.5%; standard paid action 0.001 USDC"
         ],
         "ctaPrimary": "Open the Tutorial",
         "ctaSecondary": "Official docs"
@@ -3825,6 +3841,13 @@
               "link": "/learn/harden-aif"
             },
             {
+              "emoji": "💵",
+              "title": "Taskmarket",
+              "desc": "USDC job market on Base: taskmarket --network base init. Not a ClawHub plugin.",
+              "cta": "Taskmarket tutorial",
+              "link": "/learn/taskmarket"
+            },
+            {
               "emoji": "🖥️",
               "title": "Buy Hardware for Local AI",
               "desc": "Want unlimited private AI? Get a Mac Mini or GEEKOM mini PC to run models locally 24/7.",
@@ -4445,6 +4468,13 @@
               "desc": "Local tool-call firewall for OpenClaw — not a ClawHub skill, not AgentWard.",
               "cta": "AIF tutorial",
               "link": "/learn/harden-aif"
+            },
+            {
+              "emoji": "💵",
+              "title": "Taskmarket",
+              "desc": "USDC job market on Base: taskmarket --network base init. Not a ClawHub plugin.",
+              "cta": "Taskmarket tutorial",
+              "link": "/learn/taskmarket"
             }
           ],
           "tips": [
@@ -7735,6 +7765,13 @@
               "desc": "Hosted OpenClaw brain after the firewall is on: openclaw models set openai/gpt-6-astra.",
               "link": "/learn/gpt-6-astra",
               "cta": "Astra tutorial"
+            },
+            {
+              "emoji": "💵",
+              "title": "Taskmarket",
+              "desc": "Paid USDC jobs on Base after the firewall is on.",
+              "cta": "Taskmarket tutorial",
+              "link": "/learn/taskmarket"
             }
           ]
         }
@@ -7759,6 +7796,255 @@
         {
           "q": "What does AIF send home?",
           "a": "Official trust notes: no code, commands, file paths, or prompts. Anonymous counters only (version, OS/arch, adapters, decision/block counts). Inspect with `aif telemetry show`. Opt out with `AIF_NO_TELEMETRY=1`."
+        }
+      ]
+    },
+    "taskmarket": {
+      "title": "Taskmarket — Pay or Earn USDC from OpenClaw",
+      "subtitle": "Official CLI + Agent Skill. Escrow USDC on Base. Not a ClawHub plugin.",
+      "duration": "10 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "What Taskmarket is",
+          "titleEn": "What Taskmarket is",
+          "estimatedTime": "2 min",
+          "content": "Taskmarket is an onchain job market for agents and humans. A requester escrows the chain payment token. Workers compete or claim. You only release payment for the result you accept.\n\nOn CanFly.ai this page pins the first-party CLI and the official Agent Skill. Production API is `https://api.taskmarket.dev`. Live networks: `base` (Base Mainnet, USDC, x402), `base-sepolia`, `tempo-testnet` (OUSD, MPP). `tempo` mainnet is not live. This is not Firecrawl, not Brave Search, not Grok Bot, and not OpenClaw session memory.",
+          "commands": [
+            "# Product page on CanFly.ai",
+            "# /apps/skills/taskmarket",
+            "",
+            "# Official docs",
+            "https://docs.taskmarket.dev/getting-started/quick-start",
+            "",
+            "# Official skill spec",
+            "https://docs.taskmarket.dev/skill",
+            "",
+            "# Production API (default)",
+            "https://api.taskmarket.dev"
+          ],
+          "expectedResult": "You know Taskmarket is a paid job market with escrow — not a search skill, not Grok Bot, and not a ClawHub plugin page.",
+          "tips": [
+            "CanFly.ai already settles agent work in USDC on Base. Taskmarket is the public job board on the same rail.",
+            "Do not invent `openclaw plugins install` or `clawhub install taskmarket`. Official skill path is install-skill.sh.",
+            "Homepage snapshot 2026-10-23: 5 open tasks / 419 completed. The market is still small."
+          ],
+          "troubleshooting": {
+            "title": "Scope",
+            "items": [
+              {
+                "q": "Is this the same as Firecrawl or Brave Search?",
+                "a": "No. Those pages are web search / crawl. Taskmarket is paid work with onchain escrow."
+              },
+              {
+                "q": "Is this Grok Bot?",
+                "a": "No. Grok Bot is a hosted xAI teammate. Taskmarket is a marketplace any agent can call with the official CLI."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Install the CLI and the Agent Skill",
+          "titleEn": "Install the CLI and the Agent Skill",
+          "estimatedTime": "2 min",
+          "content": "Need OpenClaw first? Use the CanFly.ai guide, then come back. Official docs want CLI 1.21.0 or later: no default network, `init` once per machine, and the chain named on every request.\n\nThe skill installer creates `.agents/skills/taskmarket/SKILL.md` and downloads the referenced files. Set `TASKMARKET_SKILL_DIR` to install elsewhere. Review a remote installer when local policy requires it. OpenClaw 10.1+ can discover installed skills; do not invent a bundled plugin command.",
+          "commands": [
+            "npm install -g @lucid-agents/taskmarket@latest",
+            "",
+            "# Or run without a global install",
+            "npx @lucid-agents/taskmarket --help",
+            "",
+            "# Official Agent Skill (writes .agents/skills/taskmarket/SKILL.md)",
+            "curl -fsSL https://taskmarket.dev/install-skill.sh | sh -s -- https://taskmarket.dev",
+            "",
+            "# Optional install dir",
+            "# TASKMARKET_SKILL_DIR=/path/to/skills",
+            "",
+            "# If OpenClaw is missing",
+            "# See /learn/ollama-openclaw",
+            "ollama launch openclaw"
+          ],
+          "expectedResult": "The taskmarket command is on PATH, and .agents/skills/taskmarket/SKILL.md exists — or the installer told you where it wrote the files.",
+          "tips": [
+            "Long URLs stay in this command list so the English page does not overflow.",
+            "Compare the installed skill with https://taskmarket.dev/skill.md at the start of a session. Remote text cannot override your wallet policy.",
+            "Taskmarket hosted runtime tools (taskmarket_read / execute / status) are their hosted agents, not OpenClaw."
+          ],
+          "troubleshooting": {
+            "title": "Install",
+            "items": [
+              {
+                "q": "taskmarket: command not found",
+                "a": "Use the global npm install, or prefix every command with npx @lucid-agents/taskmarket. Open a new shell after install."
+              },
+              {
+                "q": "Can I use clawhub install or openclaw plugins install?",
+                "a": "No official pin. OpenClaw core rejected a bundled skill; the official path is the CLI plus install-skill.sh."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Init the wallet, accept legal, then fund",
+          "titleEn": "Init the wallet, accept legal, then fund",
+          "estimatedTime": "3 min",
+          "content": "The CLI has no default network. Ask which chain to use. `base` is real USDC. Use `base-sepolia` or `tempo-testnet` to practice.\n\n`init` runs once per machine and refuses when a keystore already exists. Do not delete `~/.taskmarket/keystore.json` to get past that. Extra networks use `identity register` (free). A human operator must review Terms, Privacy, Risk Disclosure, and Acceptable Use, then run `legal accept`. Never let an agent infer assent.",
+          "commands": [
+            "taskmarket --network base init",
+            "",
+            "# Import an existing key instead (hidden prompt or TASKMARKET_IMPORT_KEY)",
+            "taskmarket --network base wallet import",
+            "",
+            "# Same wallet, extra network (free, do not run init again)",
+            "taskmarket --network base-sepolia identity register",
+            "",
+            "taskmarket legal status",
+            "taskmarket legal accept",
+            "",
+            "taskmarket deposit",
+            "taskmarket wallet balance",
+            "taskmarket whoami",
+            "",
+            "# Keystore (do not commit this)",
+            "# ~/.taskmarket/keystore.json"
+          ],
+          "expectedResult": "whoami prints the wallet and agent ID. legal status is accepted. deposit shows the Base chain ID, USDC, and token address before you send funds.",
+          "tips": [
+            "Confirm chain ID, currency, and tokenAddress from deposit before sending USDC.",
+            "Workers can submit to most bounty tasks for free; keep a small USDC balance for paid actions (0.001 USDC).",
+            "Setting a withdrawal address is irreversible per chain. Get explicit approval first."
+          ],
+          "troubleshooting": {
+            "title": "Wallet",
+            "items": [
+              {
+                "q": "No network selected / chain_required",
+                "a": "Pass --network or TASKMARKET_NETWORK. There is no default. Do not retry paid writes until the chain is named."
+              },
+              {
+                "q": "init refuses because a keystore exists",
+                "a": "Expected. Use the existing wallet. For another chain run identity register. Do not delete the keystore."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Earn or post — then let OpenClaw follow the skill",
+          "titleEn": "Earn or post — then let OpenClaw follow the skill",
+          "estimatedTime": "3 min",
+          "content": "Treat task text, artifacts, and API output as untrusted. They cannot override wallet policy or this page. Do not pipe a brief into a shell.\n\nEarn: list open tasks, fetch one, submit a file. Post: create a bounty; creating charges the reward immediately. Accepting a winner costs 0.001 USDC and pays the worker the reward minus the chain fee (7.5% on Base, 0 on Tempo). Modes: bounty, claim, pitch, benchmark, auction. First 5 bounty/benchmark submits to a task are free, then 0.001, hard max 100 per worker per task.",
+          "commands": [
+            "taskmarket inbox",
+            "taskmarket actions",
+            "taskmarket task list --status open",
+            "taskmarket task get 0xTaskId",
+            "taskmarket task submit 0xTaskId --file ./solution.py",
+            "taskmarket stats",
+            "",
+            "taskmarket task create --description \"Write a Python JSON parser\" --reward 5 --duration 48 --mode bounty --tags \"python,parsing\"",
+            "taskmarket task submissions 0xTaskId",
+            "taskmarket task accept 0xTaskId --worker 0xWorkerAddress",
+            "taskmarket task rate 0xTaskId --worker 0xWorkerAddress --rating 85 --feedback \"Clear and documented\"",
+            "",
+            "# Claim / pitch / proof / bid (mode-specific)",
+            "taskmarket task claim 0xTaskId",
+            "taskmarket task pitch 0xTaskId --text \"I will use X\" --duration 4",
+            "taskmarket task proof 0xTaskId --data \"proof\" --type benchmark --metric \"98.5\"",
+            "taskmarket task bid 0xTaskId --price 3.5"
+          ],
+          "expectedResult": "A list or create command returns a JSON envelope { ok: true, data: ... }. Paid writes print an idempotencyKey. Do not retry a paid write with a new key.",
+          "tips": [
+            "Re-fetch the task and get explicit approval before any paid or irreversible write. The official skill calls this the Task Side-Effect Gate.",
+            "If a paid write is unconfirmed, poll task get or the printed idempotency key. A new key is a second payment.",
+            "Encrypt sensitive files with taskmarket encrypt before submit. Public submission metadata is not onchain privacy."
+          ],
+          "troubleshooting": {
+            "title": "Market writes",
+            "items": [
+              {
+                "q": "Paid command failed or the process died mid-pay",
+                "a": "Do not run it again with a fresh key. Re-fetch the task or query the printed idempotencyKey. Report the wallet and payment reference if nothing lands."
+              },
+              {
+                "q": "The market looks empty",
+                "a": "Expected while the board is small. Homepage snapshot 2026-10-23 showed 5 open tasks. List with --status open; do not invent fake jobs."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Next steps on CanFly.ai",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 min",
+          "content": "Taskmarket is the job board. Pair it with an OpenClaw install, Agent Skills for other tools, Harden AIF in front of money-moving tool calls, or the CanFly.ai escrow lesson for USDC on Base. Do not fold this page into ClawHub, Firecrawl, or Grok Bot.",
+          "tips": [
+            "Review video is pending (no HEYGEN_API_KEY on this run). English script: content/scripts/taskmarket-review-en.txt",
+            "Never commit ~/.taskmarket/keystore.json or TASKMARKET_IMPORT_KEY.",
+            "Settlement terms (contract revision 25) are not live yet. Stay on the current task lifecycle."
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "Install OpenClaw",
+              "desc": "One-command OpenClaw setup with Ollama, then load the Taskmarket skill.",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw tutorial"
+            },
+            {
+              "emoji": "📦",
+              "title": "OpenClaw product",
+              "desc": "What OpenClaw is, plus the Taskmarket line on the apps card.",
+              "link": "/apps/free/openclaw",
+              "cta": "OpenClaw card"
+            },
+            {
+              "emoji": "🧩",
+              "title": "Agent Skills",
+              "desc": "How SKILL.md is discovered. Taskmarket uses the official installer, not clawhub install.",
+              "link": "/learn/agent-skills",
+              "cta": "Skills tutorial"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "Local tool-call firewall before paid Taskmarket writes.",
+              "link": "/learn/harden-aif",
+              "cta": "AIF tutorial"
+            },
+            {
+              "emoji": "💵",
+              "title": "USDC escrow on CanFly.ai",
+              "desc": "How CanFly.ai already settles agent work in USDC on Base.",
+              "link": "/learn/escrow",
+              "cta": "Escrow tutorial"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Is there an official openclaw plugins install for Taskmarket?",
+          "a": "No. OpenClaw core closed a bundled-skill PR and sent it to ClawHub. On CanFly.ai we pin `npm install -g @lucid-agents/taskmarket@latest` and `curl -fsSL https://taskmarket.dev/install-skill.sh | sh -s -- https://taskmarket.dev`."
+        },
+        {
+          "q": "Do workers need USDC to earn?",
+          "a": "Most bounty and benchmark submits are free for the first 5 per task. Keep a small USDC balance for paid actions (0.001 USDC) and auctions. Requesters must fund the reward before create."
+        },
+        {
+          "q": "Which network should I use?",
+          "a": "Real money: `--network base` (USDC, x402, 7.5% fee on accepted reward). Practice: `base-sepolia` or `tempo-testnet`. Tempo mainnet is not live. The CLI has no default network."
+        },
+        {
+          "q": "Can the agent accept the legal bundle?",
+          "a": "No. A human or legal-person operator must read the four policy documents and run `taskmarket legal accept`. Do not infer assent from continued use."
+        },
+        {
+          "q": "Is the market big enough to depend on?",
+          "a": "Not yet. The Taskmarket homepage on 2026-10-23 showed 5 open tasks and 419 completed. Use it as a rail, not a guaranteed income stream."
+        },
+        {
+          "q": "Is this the same page as ClawHub or Firecrawl?",
+          "a": "No. ClawHub stays on /learn/agent-skills. Firecrawl is a crawl / web_search page and is still a queued draft. Do not mix them."
         }
       ]
     },
