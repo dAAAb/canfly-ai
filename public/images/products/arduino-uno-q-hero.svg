@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#062A2C"/>
+  <rect x="0" y="0" width="1200" height="630" fill="url(#glow)"/>
+  <defs>
+    <radialGradient id="glow" cx="28%" cy="42%" r="70%">
+      <stop offset="0%" stop-color="#00B3B8" stop-opacity="0.28"/>
+      <stop offset="55%" stop-color="#0B3D40" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#04191B" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  <rect x="70" y="120" width="420" height="390" rx="28" fill="#0B3D40" stroke="#7CFFFB" stroke-width="8"/>
+  <circle cx="120" cy="180" r="16" fill="#F4C542"/>
+  <circle cx="440" cy="180" r="16" fill="#F4C542"/>
+  <circle cx="120" cy="450" r="16" fill="#F4C542"/>
+  <circle cx="440" cy="450" r="16" fill="#F4C542"/>
+  <rect x="160" y="220" width="240" height="90" rx="14" fill="#08383B" stroke="#7CFFFB" stroke-width="5"/>
+  <rect x="190" y="340" width="180" height="70" rx="12" fill="#08383B" stroke="#00B3B8" stroke-width="5"/>
+  <text x="560" y="250" fill="#F8FAFC" font-family="ui-sans-serif, system-ui, sans-serif" font-size="64" font-weight="700">UNO Q 4GB</text>
+  <text x="560" y="320" fill="#7CFFFB" font-family="ui-sans-serif, system-ui, sans-serif" font-size="28">QRB2210 Linux + STM32 MCU</text>
+  <text x="560" y="390" fill="#D7F6F7" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22">curl -fsSL https://openclaw.ai/install.sh | bash</text>
+  <text x="560" y="450" fill="#9BE7EA" font-family="ui-sans-serif, system-ui, sans-serif" font-size="22">CanFly.ai - 4GB LPDDR4 / 32GB eMMC</text>
+</svg>

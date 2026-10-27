@@ -816,6 +816,64 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- Arduino UNO Q 4GB (2026-10-27) -->
+  <url>
+    <loc>https://canfly.ai/apps/hardware/arduino-uno-q</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/hardware/arduino-uno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/hardware/arduino-uno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/hardware/arduino-uno-q" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/apps/hardware/arduino-uno-q" />
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/apps/hardware/arduino-uno-q</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/hardware/arduino-uno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/hardware/arduino-uno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/hardware/arduino-uno-q" />
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/apps/hardware/arduino-uno-q</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/hardware/arduino-uno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/hardware/arduino-uno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/hardware/arduino-uno-q" />
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/learn/arduino-uno-q</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/arduino-uno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/arduino-uno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/arduino-uno-q" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/learn/arduino-uno-q" />
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/learn/arduino-uno-q</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/arduino-uno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/arduino-uno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/arduino-uno-q" />
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/learn/arduino-uno-q</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/arduino-uno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/arduino-uno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/arduino-uno-q" />
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <url>
     <loc>https://canfly.ai/about</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/about" />
