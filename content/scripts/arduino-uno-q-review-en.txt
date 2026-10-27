@@ -1,0 +1,17 @@
+Hi, I'm JU CHUN KO.
+
+If you want OpenClaw near the pins — not on your laptop — the board to buy is Arduino UNO Q 4GB. That SKU is 4GB of LPDDR4 and 32GB of eMMC. It is not VENTUNO Q, and it is not the 2GB board.
+
+One side is a Qualcomm Dragonwing QRB2210 running Debian Linux. The other is an STM32 microcontroller for real-time I/O. Arduino's own blog walks OpenClaw onto the 4GB board in standalone mode.
+
+Power it with USB-C Power Delivery — at least 15 watts. A non-PD charger will not boot. For a desktop, use a USB-C dongle that also carries video.
+
+Then the official OpenClaw pin:
+
+curl -fsSL https://openclaw.ai/install.sh | bash
+
+After that, check openclaw --version, openclaw doctor, and openclaw gateway status.
+
+Talk to the LEDs and the 8 by 13 matrix in plain English. Use a cloud model if you want a strong brain. Keep local models tiny on 4GB. Treat the board as a hardware sandbox, not your main laptop.
+
+I made a tutorial on CanFly.ai — go try it.

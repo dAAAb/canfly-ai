@@ -2176,6 +2176,72 @@ function createGrokBotTutorial(t: any): TutorialData {
   }
 }
 
+function createArduinoUnoQTutorial(t: any): TutorialData {
+  return {
+    id: 'arduino-uno-q',
+    title: t('tutorial.arduinoUnoQ.title'),
+    subtitle: t('tutorial.arduinoUnoQ.subtitle'),
+    duration: t('tutorial.arduinoUnoQ.duration'),
+    difficulty: t('tutorial.arduinoUnoQ.difficulty'),
+    faq: t('tutorial.arduinoUnoQ.faq', { returnObjects: true }) || [],
+    steps: [
+      {
+        icon: Cpu,
+        title: t('tutorial.arduinoUnoQ.steps.0.title'),
+        titleEn: t('tutorial.arduinoUnoQ.steps.0.titleEn'),
+        estimatedTime: t('tutorial.arduinoUnoQ.steps.0.estimatedTime'),
+        content: t('tutorial.arduinoUnoQ.steps.0.content'),
+        commands: t('tutorial.arduinoUnoQ.steps.0.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.arduinoUnoQ.steps.0.expectedResult'),
+        tips: t('tutorial.arduinoUnoQ.steps.0.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.arduinoUnoQ.steps.0.troubleshooting.title'), items: t('tutorial.arduinoUnoQ.steps.0.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Zap,
+        title: t('tutorial.arduinoUnoQ.steps.1.title'),
+        titleEn: t('tutorial.arduinoUnoQ.steps.1.titleEn'),
+        estimatedTime: t('tutorial.arduinoUnoQ.steps.1.estimatedTime'),
+        content: t('tutorial.arduinoUnoQ.steps.1.content'),
+        commands: t('tutorial.arduinoUnoQ.steps.1.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.arduinoUnoQ.steps.1.expectedResult'),
+        tips: t('tutorial.arduinoUnoQ.steps.1.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.arduinoUnoQ.steps.1.troubleshooting.title'), items: t('tutorial.arduinoUnoQ.steps.1.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Download,
+        title: t('tutorial.arduinoUnoQ.steps.2.title'),
+        titleEn: t('tutorial.arduinoUnoQ.steps.2.titleEn'),
+        estimatedTime: t('tutorial.arduinoUnoQ.steps.2.estimatedTime'),
+        content: t('tutorial.arduinoUnoQ.steps.2.content'),
+        commands: t('tutorial.arduinoUnoQ.steps.2.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.arduinoUnoQ.steps.2.expectedResult'),
+        tips: t('tutorial.arduinoUnoQ.steps.2.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.arduinoUnoQ.steps.2.troubleshooting.title'), items: t('tutorial.arduinoUnoQ.steps.2.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Terminal,
+        title: t('tutorial.arduinoUnoQ.steps.3.title'),
+        titleEn: t('tutorial.arduinoUnoQ.steps.3.titleEn'),
+        estimatedTime: t('tutorial.arduinoUnoQ.steps.3.estimatedTime'),
+        content: t('tutorial.arduinoUnoQ.steps.3.content'),
+        commands: t('tutorial.arduinoUnoQ.steps.3.commands', { returnObjects: true }),
+        expectedResult: t('tutorial.arduinoUnoQ.steps.3.expectedResult'),
+        tips: t('tutorial.arduinoUnoQ.steps.3.tips', { returnObjects: true }),
+        troubleshooting: { title: t('tutorial.arduinoUnoQ.steps.3.troubleshooting.title'), items: t('tutorial.arduinoUnoQ.steps.3.troubleshooting.items', { returnObjects: true }) }
+      },
+      {
+        icon: Rocket,
+        title: t('tutorial.arduinoUnoQ.steps.4.title'),
+        titleEn: t('tutorial.arduinoUnoQ.steps.4.titleEn'),
+        estimatedTime: t('tutorial.arduinoUnoQ.steps.4.estimatedTime'),
+        content: t('tutorial.arduinoUnoQ.steps.4.content'),
+        tips: t('tutorial.arduinoUnoQ.steps.4.tips', { returnObjects: true }),
+        nextStepCards: t('tutorial.arduinoUnoQ.steps.4.nextStepCards', { returnObjects: true }),
+      },
+    ],
+  }
+}
+
 function createHardenAifTutorial(t: any): TutorialData {
   return {
     id: 'harden-aif',
@@ -2724,6 +2790,7 @@ function getTutorials(t: any): Record<string, TutorialData> {
     'grok-4-7': createGrok47Tutorial(t),
     'grok-bot': createGrokBotTutorial(t),
     'harden-aif': createHardenAifTutorial(t),
+    'arduino-uno-q': createArduinoUnoQTutorial(t),
     whisper: createWhisperTutorial(t),
     basemail: createBasemailTutorial(t),
     agentmail: createAgentmailTutorial(t),

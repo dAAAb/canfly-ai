@@ -776,7 +776,7 @@
       },
       "openclaw": {
         "tagline": "Your personal AI agent — your AI, your rules",
-        "description": "The open-source personal AI agent platform with ~390K GitHub stars. Install with one command, then customize with skills, tools, and integrations. The 2.0 line (v2026.8.1–v2026.9.6) adds guided setup, a rebuilt Control UI, and Shared Cloud Sessions. Fresh xAI / Grok setup defaults to Grok 4.7: `openclaw models set xai/grok-4.7`. When your OpenAI account has GPT-6 Astra, switch with `openclaw models set openai/gpt-6-astra`. Add a local tool-call firewall with Harden AIF: `aif configure --agent openclaw --validate`. Grok Bot is a hosted xAI teammate, not an OpenClaw skill — compare at /blog/grok-bot-vs-openclaw. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
+        "description": "The open-source personal AI agent platform with ~390K GitHub stars. Install with one command, then customize with skills, tools, and integrations. The 2.0 line (v2026.8.1–v2026.9.6) adds guided setup, a rebuilt Control UI, and Shared Cloud Sessions. Fresh xAI / Grok setup defaults to Grok 4.7: `openclaw models set xai/grok-4.7`. When your OpenAI account has GPT-6 Astra, switch with `openclaw models set openai/gpt-6-astra`. Add a local tool-call firewall with Harden AIF: `aif configure --agent openclaw --validate`. For an edge hardware sandbox, the official Arduino UNO Q 4GB path is `curl -fsSL https://openclaw.ai/install.sh | bash` — see /apps/hardware/arduino-uno-q. Grok Bot is a hosted xAI teammate, not an OpenClaw skill — compare at /blog/grok-bot-vs-openclaw. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
         "features": [
           "One-command install: ollama launch openclaw",
           "~390K GitHub stars — largest AI agent community",
@@ -785,6 +785,7 @@
           "Switch to Grok 4.7: openclaw models set xai/grok-4.7",
           "Switch to Astra: openclaw models set openai/gpt-6-astra",
           "Local firewall: Harden AIF (`aif configure --agent openclaw --validate`)",
+          "Edge board: Arduino UNO Q 4GB + openclaw.ai/install.sh",
           "Full privacy: runs 100% on your hardware",
           "v2026.9.6: Grok 4.7 default, Astra, managed updates"
         ],
@@ -925,6 +926,21 @@
         ],
         "ctaPrimary": "Open the Tutorial",
         "ctaSecondary": "Ollama model page"
+      },
+      "arduino-uno-q": {
+        "tagline": "Dual-brain edge board for local OpenClaw agents",
+        "description": "Arduino UNO Q 4GB (SKU ABX00173) is the in-stock dual-brain board for edge OpenClaw: 4GB LPDDR4 and 32GB eMMC. Qualcomm Dragonwing QRB2210 runs Debian Linux; STM32U585 handles real-time pins. Official Arduino OpenClaw pin: `curl -fsSL https://openclaw.ai/install.sh | bash`. Needs USB-C Power Delivery (15W / 5V 3A). Not VENTUNO Q, not the 2GB / 16GB SKU, and not a Raspberry Pi page.",
+        "features": [
+          "SKU ABX00173: 4GB LPDDR4 + 32GB eMMC — not the 2GB board",
+          "MPU: Qualcomm Dragonwing QRB2210, 4× Cortex-A53 @ 2.0 GHz",
+          "MCU: STM32U585 Cortex-M33 for real-time I/O and shields",
+          "Official OpenClaw: curl -fsSL https://openclaw.ai/install.sh | bash",
+          "USB-C Power Delivery required — 15W minimum; non-PD will not boot",
+          "Standalone desktop: USB-C dongle with PD + DisplayPort / video",
+          "Wi-Fi 5 + Bluetooth 5.1, UNO form factor, App Lab preinstalled"
+        ],
+        "ctaPrimary": "Open the Tutorial",
+        "ctaSecondary": "Arduino store (4GB)"
       }
     },
     "comingSoon": "Coming Soon",
@@ -3115,7 +3131,7 @@
           "title": "Compare Hardware Options",
           "titleEn": "Compare Hardware Options",
           "estimatedTime": "3 min",
-          "content": "We've tested the best hardware for running local AI. Here's our recommendation at every price point:\n\n**Under $100 — Raspberry Pi 5 (8GB) — $80**\nPerfect for learning and lightweight models. Runs Llama 3.2 (3B) and small inference tasks. Ultra low power consumption (~15W).\n\n**$400-450 — Beelink SER5 MAX — $439**\nBest value mini PC for AI. AMD Ryzen 7 5800H, 24GB RAM, 1TB SSD. Runs 7B models smoothly. Great first dedicated AI machine.\n\n**$500+ — GEEKOM A8 Mini PC — $529+**\nOur top pick. AMD Ryzen 7 8745HS, 32GB DDR5, Radeon 780M GPU. Handles 13B models and runs multiple agents simultaneously. Upgradeable to 64GB RAM.\n\n**Essential Accessories:**\n- HDMI Dummy Plug ($8-16) — Required for headless server setups\n- Elgato Stream Deck ($150) — Optional but amazing for AI workflow shortcuts\n- Fifine AM8 Microphone ($50) — Great for voice-to-AI input",
+          "content": "We've tested the best hardware for running local AI. Here's our recommendation at every price point:\n\n**Under $100 — Raspberry Pi 5 (8GB) — $80**\nPerfect for learning and lightweight models. Runs Llama 3.2 (3B) and small inference tasks. Ultra low power consumption (~15W).\n\n**$400-450 — Beelink SER5 MAX — $439**\nBest value mini PC for AI. AMD Ryzen 7 5800H, 24GB RAM, 1TB SSD. Runs 7B models smoothly. Great first dedicated AI machine.\n\n**$500+ — GEEKOM A8 Mini PC — $529+**\nOur top pick. AMD Ryzen 7 8745HS, 32GB DDR5, Radeon 780M GPU. Handles 13B models and runs multiple agents simultaneously. Upgradeable to 64GB RAM.\n\n**Essential Accessories:**\n- HDMI Dummy Plug ($8-16) — Required for headless server setups\n- Elgato Stream Deck ($150) — Optional but amazing for AI workflow shortcuts\n- Fifine AM8 Microphone ($50) — Great for voice-to-AI input\n\n**~$79 — Arduino UNO Q 4GB — edge OpenClaw board**\nIn-stock dual-brain UNO (4GB LPDDR4 / 32GB eMMC). Official OpenClaw pin: `curl -fsSL https://openclaw.ai/install.sh | bash`. Needs USB-C PD. Not VENTUNO Q. Tutorial: /learn/arduino-uno-q.",
           "tips": [
             "The GEEKOM A8 is our #1 recommendation for most users — best balance of power, price, and size",
             "Beelink SER5 MAX is the best value if you're on a tighter budget",
@@ -3231,6 +3247,13 @@
           "content": "You've got the hardware and Ollama running. Now take your setup to the next level with cloud deployment, voice AI, and video generation.",
           "nextStepCards": [
             {
+              "emoji": "🔌",
+              "title": "Arduino UNO Q 4GB",
+              "desc": "Edge OpenClaw board. Official pin: curl -fsSL https://openclaw.ai/install.sh | bash.",
+              "link": "/learn/arduino-uno-q",
+              "cta": "UNO Q tutorial"
+            },
+            {
               "emoji": "🖥",
               "title": "GEEKOM A8 Mini PC",
               "desc": "Our #1 pick — AMD Ryzen 7, 32GB DDR5, Radeon 780M. The ultimate local AI workstation.",
@@ -3296,6 +3319,10 @@
         {
           "q": "What's an HDMI dummy plug and do I need one?",
           "a": "An HDMI dummy plug tricks your computer into thinking a monitor is connected. You need one if running your AI server headless (no monitor) to enable GPU acceleration and remote desktop. They cost $8-16 on Amazon."
+        },
+        {
+          "q": "Where does Arduino UNO Q 4GB fit?",
+          "a": "It is the edge OpenClaw board (~$79, 4GB / 32GB eMMC), not a Mac mini replacement and not VENTUNO Q. Official pin: `curl -fsSL https://openclaw.ai/install.sh | bash`. See /apps/hardware/arduino-uno-q."
         }
       ]
     },
@@ -3424,6 +3451,13 @@
           "estimatedTime": "1 min",
           "content": "Your Mac is now configured for 24/7 always-on operation. Here is how to verify everything is working:\n\n1. Leave your Mac running for 30+ minutes — it should not sleep\n2. Check agents are connected: your OpenClaw gateway should maintain its TCP connection\n3. For Mac Mini: verify the dummy display is still detected\n\nYou are now ready to run AI agents around the clock!",
           "nextStepCards": [
+            {
+              "emoji": "🔌",
+              "title": "Arduino UNO Q 4GB",
+              "desc": "Edge OpenClaw board. Official pin: curl -fsSL https://openclaw.ai/install.sh | bash.",
+              "link": "/learn/arduino-uno-q",
+              "cta": "UNO Q tutorial"
+            },
             {
               "emoji": "llama",
               "title": "Run Local AI",
@@ -3796,6 +3830,13 @@
             "All data stays private with local models"
           ],
           "nextStepCards": [
+            {
+              "emoji": "🔌",
+              "title": "Arduino UNO Q 4GB",
+              "desc": "Edge OpenClaw board. Official pin: curl -fsSL https://openclaw.ai/install.sh | bash.",
+              "link": "/learn/arduino-uno-q",
+              "cta": "UNO Q tutorial"
+            },
             {
               "emoji": "⚡",
               "title": "Nemotron 3.5 Lightning",
@@ -7702,6 +7743,13 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "🔌",
+              "title": "Arduino UNO Q 4GB",
+              "desc": "Edge OpenClaw board. Official pin: curl -fsSL https://openclaw.ai/install.sh | bash.",
+              "link": "/learn/arduino-uno-q",
+              "cta": "UNO Q tutorial"
+            },
+            {
               "emoji": "🦞",
               "title": "Install OpenClaw",
               "desc": "One-command OpenClaw setup with Ollama, then come back to pin AIF.",
@@ -8529,6 +8577,253 @@
         {
           "q": "Should I open Super VL, Ultra, or NemoClaw?",
           "a": "No. Super VL is image/video. Ultra is the NVIDIA default. NemoClaw is hosted OpenClaw. One sentence on this page is enough."
+        }
+      ]
+    },
+    "arduinoUnoQ": {
+      "title": "Arduino UNO Q 4GB — Run OpenClaw on the Edge",
+      "subtitle": "Official SKU: 4GB LPDDR4 / 32GB eMMC. Official OpenClaw pin: curl -fsSL https://openclaw.ai/install.sh | bash. Not VENTUNO Q.",
+      "duration": "12 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "Pick the 4GB SKU — not VENTUNO Q",
+          "titleEn": "Pick the 4GB SKU — not VENTUNO Q",
+          "estimatedTime": "2 min",
+          "content": "This CanFly.ai page is Arduino UNO Q 4GB (ABX00173): 4GB LPDDR4 and 32GB eMMC. Arduino's own store and datasheet also list a 2GB / 16GB board (ABX00162). Buy 4GB if you want a standalone Debian desktop or OpenClaw on the board.\n\nIt is a dual-brain UNO: Qualcomm Dragonwing QRB2210 (4× Cortex-A53 @ 2.0 GHz, Debian Linux) plus STM32U585 (Cortex-M33) for real-time pins, shields, and the 8×13 LED matrix. App Lab ships on the board.\n\nThis is not Arduino VENTUNO Q (a different, still pre-order board). It is not Raspberry Pi 5. Keep those pages separate.",
+          "commands": [
+            "# Product page on CanFly.ai",
+            "# /apps/hardware/arduino-uno-q",
+            "",
+            "# Official 4GB store",
+            "https://store.arduino.cc/products/uno-q-4gb",
+            "",
+            "# US list price (checked 2026-10-27): $79; sale can be $71.10",
+            "# EU list (same day): €82.90; sale can be €74.61",
+            "",
+            "# Datasheet (ABX00162 / ABX00173)",
+            "https://docs.arduino.cc/resources/datasheets/ABX00162-datasheet.pdf",
+            "",
+            "# Official OpenClaw story (2026-03-05)",
+            "https://blog.arduino.cc/2026/03/05/radical-accessibility-on-the-arduino-uno-q-board-with-openclaw/",
+            "",
+            "# Local-agent story (2026-06-09)",
+            "https://blog.arduino.cc/2026/06/09/local-ai-agents-on-arduino-uno-q/"
+          ],
+          "expectedResult": "You know this page is the 4GB / 32GB UNO Q, not VENTUNO Q and not the 2GB SKU.",
+          "tips": [
+            "Arduino recommends 4GB for a monitor + keyboard standalone desktop.",
+            "2GB is for one lightweight process. Do not write a second CanFly.ai page for it.",
+            "VENTUNO Q stays on its own queued hardware card. Do not merge the two boards."
+          ],
+          "troubleshooting": {
+            "title": "SKU",
+            "items": [
+              {
+                "q": "Is this the same board as VENTUNO Q?",
+                "a": "No. VENTUNO Q is a different Arduino board, still pre-order on the official store. This tutorial is UNO Q 4GB only."
+              },
+              {
+                "q": "Can I follow this on the 2GB UNO Q?",
+                "a": "The OpenClaw installer is the same, but Arduino recommends 4GB for standalone Linux and heavier AI. This page pins ABX00173."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Power with USB-C PD, then open Debian",
+          "titleEn": "Power with USB-C PD, then open Debian",
+          "estimatedTime": "3 min",
+          "content": "UNO Q boots from USB-C Power Delivery. Arduino's store says a non-PD charger will not negotiate power and the board will not boot. Use at least 15W (5V / 3A). VIN 7–24V is also on the datasheet if you power from a barrel-style supply later.\n\nStandalone desktop (the path in Arduino's OpenClaw blog): a USB-C dongle that carries PD and video, plus keyboard and monitor. USB-C has DisplayPort Alt Mode. Arduino recommends the 4GB SKU for this setup.\n\nYou can also attach the board to a PC and use App Lab over USB or the same Wi-Fi network. GPIO on the MCU side is typically 20 mA per pin — use a driver for motors and bright LEDs.",
+          "commands": [
+            "# Power (official store FAQ)",
+            "# USB-C Power Delivery, 15W minimum (5V / 3A)",
+            "# Non-PD chargers will not boot the board",
+            "",
+            "# Standalone desktop",
+            "# USB-C dongle with PD + video",
+            "# Keyboard + monitor (DisplayPort Alt Mode on USB-C)",
+            "",
+            "# Optional: App Lab on a host PC",
+            "# Windows 10+ / macOS 11+ / Ubuntu 22.04+ / Debian Trixie",
+            "",
+            "# Hardware docs",
+            "https://docs.arduino.cc/hardware/uno-q/"
+          ],
+          "expectedResult": "Debian is on screen (standalone) or App Lab sees the board. The matrix shows the Arduino logo, then a heartbeat.",
+          "tips": [
+            "The dongle must pass PD. A video-only adapter will starve the board.",
+            "Wi-Fi 5 and Bluetooth 5.1 are on-board. Use them after first boot, not instead of PD.",
+            "Treat the board as a hardware sandbox. Do not give the agent your laptop first."
+          ],
+          "troubleshooting": {
+            "title": "Power and display",
+            "items": [
+              {
+                "q": "The board stays dark",
+                "a": "Swap to a USB-C PD supply rated 15W or more. Phone chargers without PD often fail the handshake."
+              },
+              {
+                "q": "I have video but no boot",
+                "a": "The dongle must carry Power Delivery as well as DisplayPort. Arduino says the dongle powers the board."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Install OpenClaw on the Linux side",
+          "titleEn": "Install OpenClaw on the Linux side",
+          "estimatedTime": "4 min",
+          "content": "OpenClaw runs on the Qualcomm Linux MPU, not on the STM32. Arduino's March 2026 blog used the official installer on a fresh 4GB board in standalone mode.\n\nThat installer detects Linux, installs Node if needed (Node 24 LTS on Linux; OpenClaw wants Node 24.16+ or 26.1+), installs OpenClaw, and starts onboarding. Review the script before you pipe it — Arduino said the same.\n\nDo not invent a `clawhub install` or `ollama launch openclaw` pin for this board. The official Arduino + OpenClaw command is install.sh. After install, verify with the commands OpenClaw documents.",
+          "commands": [
+            "# Official pin (Arduino blog + docs.openclaw.ai/install)",
+            "curl -fsSL https://openclaw.ai/install.sh | bash",
+            "",
+            "# Install only, skip onboarding",
+            "curl -fsSL https://openclaw.ai/install.sh | bash -s -- --no-onboard",
+            "",
+            "# Verify (docs.openclaw.ai/install)",
+            "openclaw --version",
+            "openclaw doctor",
+            "openclaw gateway status",
+            "",
+            "# If you already manage Node on the board",
+            "npm install -g openclaw@latest --allow-scripts=openclaw",
+            "openclaw onboard --install-daemon"
+          ],
+          "expectedResult": "openclaw --version prints a build. doctor is clean or tells you the next repair. gateway status shows the service.",
+          "tips": [
+            "The installer launches onboarding. Most prompts have a safe default or a skip.",
+            "Linux gets a systemd user service from `openclaw onboard --install-daemon`.",
+            "If `openclaw` is missing, it is almost always PATH. Open a new shell, then check `npm prefix -g`."
+          ],
+          "troubleshooting": {
+            "title": "Install",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "Open a new terminal after install.sh. Confirm Node, then `npm prefix -g` is on PATH. See OpenClaw's Node troubleshooting page."
+              },
+              {
+                "q": "Can I use ollama launch openclaw on this board?",
+                "a": "That pin is for a Mac / PC Ollama host. Arduino's documented UNO Q path is install.sh on Debian. Keep /learn/ollama-openclaw for the other machine."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Talk to the hardware — pick a model you can afford",
+          "titleEn": "Talk to the hardware — pick a model you can afford",
+          "estimatedTime": "3 min",
+          "content": "Arduino's OpenClaw walkthrough named the agent, explained the hardware goal, then asked it to blink the Linux user LED, the STM32 LED (the agent wrote and flashed a sketch), and to draw on the 8×13 matrix — all in plain English.\n\nTheir first run used a cloud Anthropic model with a manual API token. Claude CLI web tokens returned HTTP 401. On CanFly.ai, a hosted OpenClaw brain can be Grok 4.7 or GPT-6 Astra if your account has them.\n\n4GB is small. Arduino's June 2026 local-agent post says OpenClaw plus Ollama plus a lightweight open-source LLM can stay offline. Do not pin Grok 4.7, Astra, or Nemotron Lightning as on-device weights. Keep large models on a Mac mini or a cloud API. QClaw is a community local-agent demo, not a CanFly.ai product page.",
+          "commands": [
+            "# Hosted brains (run on the board, infer in the cloud)",
+            "openclaw models set xai/grok-4.7",
+            "openclaw models set openai/gpt-6-astra",
+            "",
+            "# Confirm the account actually has the model",
+            "openclaw models list --provider xai",
+            "openclaw models list --provider openai",
+            "",
+            "# After an install or model change",
+            "openclaw doctor --fix",
+            "",
+            "# Local path (Arduino, 2026-06-09): lightweight Ollama + OpenClaw",
+            "# Do not invent a 30B local pin on 4GB RAM",
+            "",
+            "# Firewall the tool calls from another machine or later on this one",
+            "# /learn/harden-aif",
+            "aif configure --agent openclaw --validate"
+          ],
+          "expectedResult": "A chat channel or the Control UI answers. A hardware prompt changes an LED or the matrix without you opening the IDE.",
+          "tips": [
+            "Use a real API token, not a Claude CLI web session token.",
+            "Give the agent a hardware goal: blink, matrix glyph, App Lab example. Then iterate.",
+            "Harden AIF is optional on 4GB. Validate it after OpenClaw is healthy."
+          ],
+          "troubleshooting": {
+            "title": "Models and hardware",
+            "items": [
+              {
+                "q": "HTTP 401 when I pick Claude",
+                "a": "Arduino hit this with Claude CLI web tokens. Create a provider API key and paste that into OpenClaw."
+              },
+              {
+                "q": "Can I run Grok 4.7 or Lightning on the board?",
+                "a": "Not as local weights on 4GB. Use `openclaw models set` for cloud IDs, or a tiny local model. Lightning stays on /learn/nemotron-3-5-lightning."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Next steps on CanFly.ai",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 min",
+          "content": "UNO Q is the edge sandbox. Pair it with the main OpenClaw install if you still need a Mac or PC host, Harden AIF if tool calls should be filtered, or a hosted model page when the brain stays in the cloud. Do not fold this into VENTUNO Q, Raspberry Pi, or QClaw.",
+          "tips": [
+            "Review video is pending (no HEYGEN_API_KEY on this run). English script: content/scripts/arduino-uno-q-review-en.txt",
+            "Re-run openclaw doctor after an OpenClaw upgrade on the board.",
+            "Keep VENTUNO Q on its own queued page when that board ships."
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "Install OpenClaw",
+              "desc": "Mac / PC host path with Ollama. Different pin from UNO Q install.sh.",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw tutorial"
+            },
+            {
+              "emoji": "📦",
+              "title": "OpenClaw product",
+              "desc": "What OpenClaw is, and the UNO Q hardware-sandbox line on the apps card.",
+              "link": "/apps/free/openclaw",
+              "cta": "OpenClaw card"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "Local tool-call firewall: aif configure --agent openclaw --validate.",
+              "link": "/learn/harden-aif",
+              "cta": "AIF tutorial"
+            },
+            {
+              "emoji": "⚡",
+              "title": "Grok 4.7",
+              "desc": "Hosted xAI brain: openclaw models set xai/grok-4.7.",
+              "link": "/learn/grok-4-7",
+              "cta": "Grok 4.7 tutorial"
+            },
+            {
+              "emoji": "🖥️",
+              "title": "Hardware guide",
+              "desc": "Mac mini, mini PCs, and Pi. UNO Q is the edge OpenClaw board on that list.",
+              "link": "/learn/hardware",
+              "cta": "Hardware guide"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "What is the official OpenClaw command on UNO Q?",
+          "a": "`curl -fsSL https://openclaw.ai/install.sh | bash`. Arduino's March 2026 blog and OpenClaw's install docs use that pin. Then run `openclaw --version`, `openclaw doctor`, and `openclaw gateway status`."
+        },
+        {
+          "q": "Which SKU should I buy?",
+          "a": "This page pins UNO Q 4GB / 32GB eMMC (ABX00173). Arduino recommends 4GB for standalone Debian and heavier AI. The 2GB board is a different SKU. VENTUNO Q is a different product."
+        },
+        {
+          "q": "Why will my board not boot?",
+          "a": "USB-C must be Power Delivery, 15W minimum. A non-PD charger fails the handshake. A video-only dongle also fails if it cannot power the board."
+        },
+        {
+          "q": "Can I run large local models on 4GB?",
+          "a": "No. Keep Grok 4.7, GPT-6 Astra, and Nemotron Lightning as cloud or bigger-host pins. Arduino only claims a lightweight local LLM plus Ollama."
+        },
+        {
+          "q": "Is this QClaw or VENTUNO Q?",
+          "a": "No. QClaw is a community local-agent demo mentioned on Arduino's blog — not a CanFly.ai page. VENTUNO Q is a different board still on pre-order."
         }
       ]
     }

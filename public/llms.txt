@@ -115,6 +115,7 @@ POST /api/agents/:name/milestones — Add achievements (Bearer auth)
 ### Hardware
 - Umbrel (/apps/hardware/umbrel) - Self-hosted home AI server
 - Mac Mini M4 (/apps/hardware/mac-mini-m4) - Apple Silicon for local AI
+- Arduino UNO Q 4GB (/apps/hardware/arduino-uno-q) - Dual-brain edge board (4GB LPDDR4 / 32GB eMMC). OpenClaw: `curl -fsSL https://openclaw.ai/install.sh | bash`. Tutorial: /learn/arduino-uno-q. Not VENTUNO Q.
 
 ## Community & Profiles
 

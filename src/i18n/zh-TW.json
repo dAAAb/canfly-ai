@@ -779,7 +779,7 @@
       },
       "openclaw": {
         "tagline": "你的個人 AI 代理人 — 你的 AI，你的規則",
-        "description": "擁有約 390K GitHub 星星的開源個人 AI 代理人平台。一行指令安裝，自由搭配技能、工具和整合。2.0 線（v2026.8.1–v2026.9.6）加上引導式 setup、重建的 Control UI 與 Shared Cloud Sessions。全新 xAI / Grok 設定預設 Grok 4.7：`openclaw models set xai/grok-4.7`。OpenAI 帳號若已有 GPT-6 Astra，用 `openclaw models set openai/gpt-6-astra` 切過去。本機 tool-call 防火牆用 Harden AIF：`aif configure --agent openclaw --validate`。Grok Bot 是 xAI 託管隊友，不是 OpenClaw 技能 — 對照見 /blog/grok-bot-vs-openclaw。在本地或雲端執行。你的資料永遠屬於你 — 無廠商綁定、無訂閱費、無限制。",
+        "description": "擁有約 390K GitHub 星星的開源個人 AI 代理人平台。一行指令安裝，自由搭配技能、工具和整合。2.0 線（v2026.8.1–v2026.9.6）加上引導式 setup、重建的 Control UI 與 Shared Cloud Sessions。全新 xAI / Grok 設定預設 Grok 4.7：`openclaw models set xai/grok-4.7`。OpenAI 帳號若已有 GPT-6 Astra，用 `openclaw models set openai/gpt-6-astra` 切過去。本機 tool-call 防火牆用 Harden AIF：`aif configure --agent openclaw --validate`。邊緣硬體沙盒請看 Arduino UNO Q 4GB：官方指令 `curl -fsSL https://openclaw.ai/install.sh | bash`——/apps/hardware/arduino-uno-q。 Grok Bot 是 xAI 託管隊友，不是 OpenClaw 技能 — 對照見 /blog/grok-bot-vs-openclaw。在本地或雲端執行。你的資料永遠屬於你 — 無廠商綁定、無訂閱費、無限制。",
         "features": [
           "一行指令安裝：ollama launch openclaw",
           "約 390K GitHub 星星 — 最大 AI 代理人社群",
@@ -788,6 +788,7 @@
           "切到 Grok 4.7：openclaw models set xai/grok-4.7",
           "切到 Astra：openclaw models set openai/gpt-6-astra",
           "本機防火牆：Harden AIF（`aif configure --agent openclaw --validate`）",
+          "邊緣板：Arduino UNO Q 4GB + openclaw.ai/install.sh",
           "完全隱私：100% 在你的硬體上執行",
           "v2026.9.6：預設 Grok 4.7、Astra、託管更新"
         ],
@@ -928,6 +929,21 @@
         ],
         "ctaPrimary": "打開教學",
         "ctaSecondary": "Ollama 模型頁"
+      },
+      "arduino-uno-q": {
+        "tagline": "雙腦邊緣板，在本機跑 OpenClaw agent",
+        "description": "Arduino UNO Q 4GB（SKU ABX00173）是已上市的雙腦板：4GB LPDDR4、32GB eMMC，專門給邊緣 OpenClaw 用。Qualcomm Dragonwing QRB2210 跑 Debian Linux；STM32U585 管即時腳位。官方 OpenClaw 指令：`curl -fsSL https://openclaw.ai/install.sh | bash`。電源必須是 USB-C Power Delivery（15W / 5V 3A）。不是 VENTUNO Q，不是 2GB／16GB 款，也不是 Raspberry Pi 頁。",
+        "features": [
+          "SKU ABX00173：4GB LPDDR4 + 32GB eMMC——不是 2GB 款",
+          "MPU：Qualcomm Dragonwing QRB2210，4× Cortex-A53 @ 2.0 GHz",
+          "MCU：STM32U585 Cortex-M33，即時 I/O 與 shield",
+          "官方 OpenClaw：curl -fsSL https://openclaw.ai/install.sh | bash",
+          "必須 USB-C Power Delivery——最少 15W；非 PD 充電器不會開機",
+          "單機桌面：帶 PD + DisplayPort／視訊的 USB-C 轉接器",
+          "Wi-Fi 5 + Bluetooth 5.1、UNO 腳位、預裝 App Lab"
+        ],
+        "ctaPrimary": "打開教學",
+        "ctaSecondary": "Arduino 商店（4GB）"
       }
     },
     "comingSoon": "即將推出",
@@ -3118,7 +3134,7 @@
           "title": "比較硬體選項",
           "titleEn": "Compare Hardware Options",
           "estimatedTime": "3 分鐘",
-          "content": "我們測試了最適合跑本地 AI 的硬體。以下是各價位的推薦：\n\n**$100 以下 — Raspberry Pi 5 (8GB) — $80**\n最適合學習和輕量級模型。可跑 Llama 3.2 (3B) 和小型推理任務。超低功耗（約 15W）。\n\n**$400-450 — Beelink SER5 MAX — $439**\nCP 值最高的 AI 迷你電腦。AMD Ryzen 7 5800H、24GB RAM、1TB SSD。流暢跑 7B 模型。極佳的第一台專用 AI 機器。\n\n**$500+ — GEEKOM A8 迷你電腦 — $529+**\n我們的首選推薦。AMD Ryzen 7 8745HS、32GB DDR5、Radeon 780M GPU。能跑 13B 模型，同時運行多個代理。可升級至 64GB RAM。\n\n**必備配件：**\n- HDMI 假負載（$8-16）— 無螢幕伺服器必備\n- Elgato Stream Deck（$150）— AI 工作流程快捷鍵控制台\n- Fifine AM8 麥克風（$50）— 適合語音 AI 輸入",
+          "content": "我們測試了最適合跑本地 AI 的硬體。以下是各價位的推薦：\n\n**$100 以下 — Raspberry Pi 5 (8GB) — $80**\n最適合學習和輕量級模型。可跑 Llama 3.2 (3B) 和小型推理任務。超低功耗（約 15W）。\n\n**$400-450 — Beelink SER5 MAX — $439**\nCP 值最高的 AI 迷你電腦。AMD Ryzen 7 5800H、24GB RAM、1TB SSD。流暢跑 7B 模型。極佳的第一台專用 AI 機器。\n\n**$500+ — GEEKOM A8 迷你電腦 — $529+**\n我們的首選推薦。AMD Ryzen 7 8745HS、32GB DDR5、Radeon 780M GPU。能跑 13B 模型，同時運行多個代理。可升級至 64GB RAM。\n\n**必備配件：**\n- HDMI 假負載（$8-16）— 無螢幕伺服器必備\n- Elgato Stream Deck（$150）— AI 工作流程快捷鍵控制台\n- Fifine AM8 麥克風（$50）— 適合語音 AI 輸入\n\n**約 $79 — Arduino UNO Q 4GB — 邊緣 OpenClaw 板**\n已上市的雙腦 UNO（4GB LPDDR4／32GB eMMC）。官方 OpenClaw：`curl -fsSL https://openclaw.ai/install.sh | bash`。要 USB-C PD。不是 VENTUNO Q。教學：/learn/arduino-uno-q。",
           "tips": [
             "GEEKOM A8 是我們對大多數使用者的 #1 推薦 — 效能、價格、體積的最佳平衡",
             "Beelink SER5 MAX 預算較緊時 CP 值最高",
@@ -3234,6 +3250,13 @@
           "content": "你已經有硬體和 Ollama 在運行了。現在用雲端部署、語音 AI 和影片生成，讓你的設定更上一層樓。",
           "nextStepCards": [
             {
+              "emoji": "🔌",
+              "title": "Arduino UNO Q 4GB",
+              "desc": "邊緣 OpenClaw 開發板。官方指令：curl -fsSL https://openclaw.ai/install.sh | bash。",
+              "link": "/learn/arduino-uno-q",
+              "cta": "UNO Q 教學"
+            },
+            {
               "emoji": "🖥",
               "title": "GEEKOM A8 迷你電腦",
               "desc": "我們的 #1 推薦 — AMD Ryzen 7、32GB DDR5、Radeon 780M。終極本地 AI 工作站。",
@@ -3299,6 +3322,10 @@
         {
           "q": "什麼是 HDMI 假負載？我需要嗎？",
           "a": "HDMI 假負載讓你的電腦以為有接螢幕。如果無螢幕運行 AI 伺服器（headless），需要它來啟用 GPU 加速和遠端桌面。Amazon 上 $8-16 就能買到。"
+        },
+        {
+          "q": "Arduino UNO Q 4GB 適合放在哪？",
+          "a": "它是邊緣 OpenClaw 板（約 $79，4GB／32GB eMMC），不是 Mac mini 替代品，也不是 VENTUNO Q。官方指令：`curl -fsSL https://openclaw.ai/install.sh | bash`。見 /apps/hardware/arduino-uno-q。"
         }
       ]
     },
@@ -3427,6 +3454,13 @@
           "estimatedTime": "1 分鐘",
           "content": "你的 Mac 現在已設定為 24/7 全天候運行。以下是驗證方法：\n\n1. 讓 Mac 運行 30 分鐘以上 — 不應進入休眠\n2. 檢查代理是否連線：OpenClaw 閘道器應維持 TCP 連線\n3. Mac Mini 用戶：確認假負載螢幕仍被偵測到\n\n你現在可以全天候運行 AI 代理了！",
           "nextStepCards": [
+            {
+              "emoji": "🔌",
+              "title": "Arduino UNO Q 4GB",
+              "desc": "邊緣 OpenClaw 開發板。官方指令：curl -fsSL https://openclaw.ai/install.sh | bash。",
+              "link": "/learn/arduino-uno-q",
+              "cta": "UNO Q 教學"
+            },
             {
               "emoji": "llama",
               "title": "執行本地 AI",
@@ -3799,6 +3833,13 @@
             "本地模型的所有資料都留在你的電腦上"
           ],
           "nextStepCards": [
+            {
+              "emoji": "🔌",
+              "title": "Arduino UNO Q 4GB",
+              "desc": "邊緣 OpenClaw 開發板。官方指令：curl -fsSL https://openclaw.ai/install.sh | bash。",
+              "link": "/learn/arduino-uno-q",
+              "cta": "UNO Q 教學"
+            },
             {
               "emoji": "⚡",
               "title": "Nemotron 3.5 Lightning",
@@ -7710,6 +7751,13 @@
           ],
           "nextStepCards": [
             {
+              "emoji": "🔌",
+              "title": "Arduino UNO Q 4GB",
+              "desc": "邊緣 OpenClaw 開發板。官方指令：curl -fsSL https://openclaw.ai/install.sh | bash。",
+              "link": "/learn/arduino-uno-q",
+              "cta": "UNO Q 教學"
+            },
+            {
               "emoji": "🦞",
               "title": "安裝 OpenClaw",
               "desc": "用 Ollama 一行指令裝 OpenClaw，再回來接 AIF。",
@@ -8537,6 +8585,253 @@
         {
           "q": "要另開 Super VL、Ultra 或 NemoClaw 嗎？",
           "a": "不要。Super VL 看圖看影片。Ultra 是 NVIDIA 預設。NemoClaw 是託管 OpenClaw。這一頁一句就夠。"
+        }
+      ]
+    },
+    "arduinoUnoQ": {
+      "title": "Arduino UNO Q 4GB — 在邊緣跑 OpenClaw",
+      "subtitle": "官方 SKU：4GB LPDDR4／32GB eMMC。官方 OpenClaw 指令：curl -fsSL https://openclaw.ai/install.sh | bash。不是 VENTUNO Q。",
+      "duration": "12 分鐘",
+      "difficulty": "入門",
+      "steps": [
+        {
+          "title": "買 4GB 款——不是 VENTUNO Q",
+          "titleEn": "Pick the 4GB SKU — not VENTUNO Q",
+          "estimatedTime": "2 分鐘",
+          "content": "這頁只寫 Arduino UNO Q 4GB（ABX00173）：4GB LPDDR4、32GB eMMC。官方店與規格書另外有 2GB／16GB（ABX00162）。要單機 Debian 桌面或在板上跑 OpenClaw，買 4GB。\n\n這是雙腦 UNO：Qualcomm Dragonwing QRB2210（4× Cortex-A53 @ 2.0 GHz，Debian Linux）加上 STM32U585（Cortex-M33）管即時腳位、shield 與 8×13 LED 矩陣。板上預裝 App Lab。\n\n這不是 Arduino VENTUNO Q（另一塊、官方店仍預購的板）。也不是 Raspberry Pi 5。各寫各頁。",
+          "commands": [
+            "# CanFly.ai 產品頁",
+            "# /apps/hardware/arduino-uno-q",
+            "",
+            "# 官方 4GB 商店",
+            "https://store.arduino.cc/products/uno-q-4gb",
+            "",
+            "# 美區牌價（2026-10-27）：$79；特價可能 $71.10",
+            "# 歐區牌價（同日）：€82.90；特價可能 €74.61",
+            "",
+            "# 規格書（ABX00162 / ABX00173）",
+            "https://docs.arduino.cc/resources/datasheets/ABX00162-datasheet.pdf",
+            "",
+            "# 官方 OpenClaw 故事（2026-03-05）",
+            "https://blog.arduino.cc/2026/03/05/radical-accessibility-on-the-arduino-uno-q-board-with-openclaw/",
+            "",
+            "# 本機 agent 故事（2026-06-09）",
+            "https://blog.arduino.cc/2026/06/09/local-ai-agents-on-arduino-uno-q/"
+          ],
+          "expectedResult": "你知道這頁是 4GB／32GB 的 UNO Q，不是 VENTUNO Q，也不是 2GB 款。",
+          "tips": [
+            "Arduino 建議用 4GB 接螢幕與鍵盤當單機桌面。",
+            "2GB 適合單一輕量行程。不要另開 CanFly.ai 頁。",
+            "VENTUNO Q 留在自己的待寫硬體卡。不要兩塊板寫成同一頁。"
+          ],
+          "troubleshooting": {
+            "title": "SKU",
+            "items": [
+              {
+                "q": "這跟 VENTUNO Q 是同一塊板嗎？",
+                "a": "不是。VENTUNO Q 是另一塊 Arduino 板，官方店仍預購。本教學只寫 UNO Q 4GB。"
+              },
+              {
+                "q": "2GB UNO Q 能照做嗎？",
+                "a": "OpenClaw 安裝指令相同，但 Arduino 建議單機 Linux 與較重 AI 用 4GB。這頁釘 ABX00173。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "用 USB-C PD 供電，再進 Debian",
+          "titleEn": "Power with USB-C PD, then open Debian",
+          "estimatedTime": "3 分鐘",
+          "content": "UNO Q 靠 USB-C Power Delivery 開機。官方店寫：非 PD 充電器談不成電，板子不會開。至少 15W（5V／3A）。規格書也有 VIN 7–24V，之後若改用其他電源再看。\n\n單機桌面（Arduino OpenClaw 文的路線）：USB-C 轉接器要同時帶 PD 與視訊，再加鍵盤與螢幕。USB-C 支援 DisplayPort Alt Mode。Arduino 建議這條路用 4GB。\n\n也可以把板接到電腦，用 App Lab（USB 或同一 Wi-Fi）。MCU 腳位通常每腳 20 mA——馬達與高亮 LED 請加驅動。",
+          "commands": [
+            "# 電源（官方店 FAQ）",
+            "# USB-C Power Delivery，最少 15W（5V / 3A）",
+            "# 非 PD 充電器不會開機",
+            "",
+            "# 單機桌面",
+            "# 帶 PD + 視訊的 USB-C 轉接器",
+            "# 鍵盤 + 螢幕（USB-C DisplayPort Alt Mode）",
+            "",
+            "# 可選：在主機跑 App Lab",
+            "# Windows 10+ / macOS 11+ / Ubuntu 22.04+ / Debian Trixie",
+            "",
+            "# 硬體文件",
+            "https://docs.arduino.cc/hardware/uno-q/"
+          ],
+          "expectedResult": "單機看得到 Debian，或 App Lab 看得到板。矩陣先顯示 Arduino 標，再跳心跳。",
+          "tips": [
+            "轉接器一定要能過 PD。只有視訊的轉接器會讓板沒電。",
+            "Wi-Fi 5 與 Bluetooth 5.1 在板上。先搞定 PD，再連無線。",
+            "把這塊板當硬體沙盒。不要先把 agent 權限開在筆電上。"
+          ],
+          "troubleshooting": {
+            "title": "電源與畫面",
+            "items": [
+              {
+                "q": "板子完全沒反應",
+                "a": "換成 15W 以上的 USB-C PD 電源。沒有 PD 的手機充常常握手失敗。"
+              },
+              {
+                "q": "有畫面但不開機",
+                "a": "轉接器要同時帶 Power Delivery 與 DisplayPort。Arduino 寫轉接器就是在幫板子供電。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "在 Linux 那邊安裝 OpenClaw",
+          "titleEn": "Install OpenClaw on the Linux side",
+          "estimatedTime": "4 分鐘",
+          "content": "OpenClaw 跑在 Qualcomm Linux MPU，不是 STM32。Arduino 2026 年 3 月的文章，是在全新 4GB 單機板上用官方安裝程式。\n\n安裝程式會偵測 Linux、必要時裝 Node（Linux 裝 Node 24 LTS；OpenClaw 要 Node 24.16+ 或 26.1+）、裝 OpenClaw，並啟動引導。把腳本管線送進 bash 之前先看過——Arduino 自己也這樣講。\n\n不要替這塊板發明 `clawhub install` 或 `ollama launch openclaw`。官方 Arduino + OpenClaw 指令就是 install.sh。裝完用 OpenClaw 文件裡的指令確認。",
+          "commands": [
+            "# 官方指令（Arduino 文 + docs.openclaw.ai/install）",
+            "curl -fsSL https://openclaw.ai/install.sh | bash",
+            "",
+            "# 只安裝、跳過引導",
+            "curl -fsSL https://openclaw.ai/install.sh | bash -s -- --no-onboard",
+            "",
+            "# 確認（docs.openclaw.ai/install）",
+            "openclaw --version",
+            "openclaw doctor",
+            "openclaw gateway status",
+            "",
+            "# 若板上已自行管理 Node",
+            "npm install -g openclaw@latest --allow-scripts=openclaw",
+            "openclaw onboard --install-daemon"
+          ],
+          "expectedResult": "openclaw --version 印出版本。doctor 通過或告訴你下一步。gateway status 看得到服務。",
+          "tips": [
+            "安裝程式會開引導。多數選項有安全預設或可略過。",
+            "Linux 可用 `openclaw onboard --install-daemon` 裝 systemd 使用者服務。",
+            "若找不到 `openclaw`，多半是 PATH。開新 shell，再查 `npm prefix -g`。"
+          ],
+          "troubleshooting": {
+            "title": "安裝",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "跑完 install.sh 後開新終端。確認 Node，以及 `npm prefix -g` 在 PATH。見 OpenClaw 的 Node 疑難排解。"
+              },
+              {
+                "q": "這塊板能用 ollama launch openclaw 嗎？",
+                "a": "那條指令是給 Mac／PC 上的 Ollama 主機。Arduino 寫的 UNO Q 路線是 Debian 上的 install.sh。另一台機器走 /learn/ollama-openclaw。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "用自然語言控硬體——選你負擔得起的模型",
+          "titleEn": "Talk to the hardware — pick a model you can afford",
+          "estimatedTime": "3 分鐘",
+          "content": "Arduino 的 OpenClaw 實測：先幫 agent 取名、說明硬體目標，再用白話請它閃 Linux 使用者 LED、閃 STM32 LED（agent 自己寫 sketch 並燒錄），以及在 8×13 矩陣畫畫。\n\n他們第一次用雲端 Anthropic 模型，而且是手動 API token。Claude CLI 的網頁 token 會 HTTP 401。在 CanFly.ai，若帳號有權，託管腦可以是 Grok 4.7 或 GPT-6 Astra。\n\n4GB 很小。Arduino 2026 年 6 月的本機 agent 文說：OpenClaw + Ollama + 輕量開源 LLM 可以離線。不要把 Grok 4.7、Astra 或 Nemotron Lightning 寫成本機權重。大模型留在 Mac mini 或雲端 API。QClaw 是社群本機 demo，不是 CanFly.ai 產品頁。",
+          "commands": [
+            "# 託管腦（板子跑 agent，推論在雲端）",
+            "openclaw models set xai/grok-4.7",
+            "openclaw models set openai/gpt-6-astra",
+            "",
+            "# 先確認帳號真的有這個模型",
+            "openclaw models list --provider xai",
+            "openclaw models list --provider openai",
+            "",
+            "# 安裝或換模型之後",
+            "openclaw doctor --fix",
+            "",
+            "# 本機路線（Arduino，2026-06-09）：輕量 Ollama + OpenClaw",
+            "# 不要在 4GB 上發明 30B 本機指令",
+            "",
+            "# 之後可在另一台或這塊板上加 tool-call 防火牆",
+            "# /learn/harden-aif",
+            "aif configure --agent openclaw --validate"
+          ],
+          "expectedResult": "聊天頻道或 Control UI 有回應。硬體提示能改 LED 或矩陣，不必自己開 IDE。",
+          "tips": [
+            "用真正的 API token，不要用 Claude CLI 網頁 session token。",
+            "先給硬體目標：閃燈、矩陣圖、App Lab 範例，再迭代。",
+            "4GB 上 Harden AIF 是選配。等 OpenClaw 健康再 validate。"
+          ],
+          "troubleshooting": {
+            "title": "模型與硬體",
+            "items": [
+              {
+                "q": "選 Claude 出現 HTTP 401",
+                "a": "Arduino 用 Claude CLI 網頁 token 也踩過。請建立 provider API key，再貼進 OpenClaw。"
+              },
+              {
+                "q": "能在板上跑 Grok 4.7 或 Lightning 嗎？",
+                "a": "4GB 不能當本機權重。雲端 ID 用 `openclaw models set`，或改用很小的本機模型。Lightning 留在 /learn/nemotron-3-5-lightning。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CanFly.ai 下一步",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 分鐘",
+          "content": "UNO Q 是邊緣沙盒。若還要 Mac／PC 主機，走 OpenClaw 安裝教學；若要過濾 tool call，走 Harden AIF；腦在雲端就連模型頁。不要把這頁折進 VENTUNO Q、Raspberry Pi 或 QClaw。",
+          "tips": [
+            "Review 影片待補（這次沒有 HEYGEN_API_KEY）。英文口白稿：content/scripts/arduino-uno-q-review-en.txt",
+            "板上升級 OpenClaw 後再跑一次 openclaw doctor。",
+            "VENTUNO Q 等上市再寫自己的頁。"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "安裝 OpenClaw",
+              "desc": "Mac／PC 主機 + Ollama。跟 UNO Q 的 install.sh 不是同一條指令。",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw 教學"
+            },
+            {
+              "emoji": "📦",
+              "title": "OpenClaw 產品",
+              "desc": "OpenClaw 是什麼，以及產品卡上的 UNO Q 硬體沙盒那一行。",
+              "link": "/apps/free/openclaw",
+              "cta": "OpenClaw 卡片"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "本機 tool-call 防火牆：aif configure --agent openclaw --validate。",
+              "link": "/learn/harden-aif",
+              "cta": "AIF 教學"
+            },
+            {
+              "emoji": "⚡",
+              "title": "Grok 4.7",
+              "desc": "託管 xAI 腦：openclaw models set xai/grok-4.7。",
+              "link": "/learn/grok-4-7",
+              "cta": "Grok 4.7 教學"
+            },
+            {
+              "emoji": "🖥️",
+              "title": "硬體指南",
+              "desc": "Mac mini、迷你 PC 與 Pi。UNO Q 是那份清單上的邊緣 OpenClaw 板。",
+              "link": "/learn/hardware",
+              "cta": "硬體指南"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "UNO Q 上官方 OpenClaw 指令是什麼？",
+          "a": "`curl -fsSL https://openclaw.ai/install.sh | bash`。Arduino 2026 年 3 月的文章與 OpenClaw 安裝文件都用這條。接著跑 `openclaw --version`、`openclaw doctor`、`openclaw gateway status`。"
+        },
+        {
+          "q": "該買哪一個 SKU？",
+          "a": "這頁釘 UNO Q 4GB／32GB eMMC（ABX00173）。Arduino 建議單機 Debian 與較重 AI 用 4GB。2GB 是另一個 SKU。VENTUNO Q 是另一個產品。"
+        },
+        {
+          "q": "為什麼板子不開機？",
+          "a": "USB-C 必須是 Power Delivery，最少 15W。非 PD 充電器會握手失敗。只有視訊、不能供電的轉接器也會失敗。"
+        },
+        {
+          "q": "4GB 能跑大型本機模型嗎？",
+          "a": "不能。Grok 4.7、GPT-6 Astra、Nemotron Lightning 當雲端或更大主機的指令。Arduino 只說輕量本機 LLM + Ollama。"
+        },
+        {
+          "q": "這是 QClaw 或 VENTUNO Q 嗎？",
+          "a": "不是。QClaw 是 Arduino 文提到的社群本機 demo，不是 CanFly.ai 頁。VENTUNO Q 是另一塊仍在預購的板。"
         }
       ]
     }
