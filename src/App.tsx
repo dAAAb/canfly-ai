@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useEffect, lazy, Suspense } from 'react'
 import Footer from './sections/Footer'
 import ErrorBoundary from './components/ErrorBoundary'
+import ScrollToTop from './components/ScrollToTop'
 import { langFromPrefix, loadLanguage, detectLanguageAuto } from './i18n'
 import { detectSubdomain } from './utils/subdomain'
 
@@ -112,6 +113,7 @@ function AutoLangSync({ children }: { children: React.ReactNode }) {
 function SubdomainRouter({ subdomain }: { subdomain: string }) {
   return (
     <Router>
+      <ScrollToTop />
       <ErrorBoundary>
         <div className="site-shell min-h-screen">
           <Suspense fallback={<div className="min-h-screen" />}>
@@ -140,6 +142,7 @@ function App() {
 
   return (
     <Router>
+      <ScrollToTop />
       <ErrorBoundary>
         <div className="site-shell min-h-screen">
           <Suspense fallback={<div className="min-h-screen" />}>
