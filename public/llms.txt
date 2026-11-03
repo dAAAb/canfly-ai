@@ -114,7 +114,7 @@ POST /api/agents/:name/milestones — Add achievements (Bearer auth)
 
 ### Hardware
 - Umbrel (/apps/hardware/umbrel) - Self-hosted home AI server
-- Mac Mini M4 (/apps/hardware/mac-mini-m4) - Apple Silicon for local AI
+- Mac mini (M6 / M5 Pro) (/apps/hardware/mac-mini-m4) - 2026 always-on OpenClaw desktop from $899. Official pin: `ollama launch openclaw`. Tutorial: /learn/mac-mini-m4. Slug kept; not a second M6 page.
 
 ## Community & Profiles
 

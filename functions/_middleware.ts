@@ -63,7 +63,7 @@ const ROUTE_META: Record<string, OgMeta> = {
   '/apps/hardware': {
     title: 'AI Hardware Recommendations — CanFly',
     description:
-      'From $80 Raspberry Pi to Mac Mini M4 — find the perfect hardware for running local AI.',
+      'From $80 Raspberry Pi to Mac mini (M6 / M5 Pro) — find the perfect hardware for running local AI.',
   },
   '/pricing': {
     title: 'Pricing — CanFly',
@@ -136,6 +136,12 @@ const ROUTE_META: Record<string, OgMeta> = {
     title: 'AI Hardware Buying Guide — CanFly',
     description:
       'Compare hardware options for running local AI. Find the right setup for your budget.',
+    ogType: 'article',
+  },
+  '/learn/mac-mini-m4': {
+    title: 'Mac mini (M6 / M5 Pro) — OpenClaw Tutorial | CanFly.ai',
+    description:
+      'Current 2026 Mac mini. Official pin: ollama launch openclaw. Same /learn/mac-mini-m4 slug — not a second SKU.',
     ogType: 'article',
   },
 }
@@ -215,9 +221,9 @@ const PRODUCT_META: Record<string, OgMeta> = {
     ogImage: `${SITE}/images/icons/virtual-buddy.webp`,
   },
   'mac-mini-m4': {
-    title: 'Apple Mac Mini M4 — Compact AI Powerhouse | CanFly',
+    title: 'Mac mini (M6 / M5 Pro) — Always-on OpenClaw | CanFly.ai',
     description:
-      'M4 chip, 16GB unified memory, Thunderbolt 5 — your palm-sized AI workstation.',
+      '2026 Mac mini from $899. Official pin: ollama launch openclaw. Same /apps/hardware/mac-mini-m4 URL — current M6 / M5 Pro, not a second SKU.',
     ogImage: `${SITE}/images/products/mac-mini-m4.webp`,
   },
   'macbook-neo': {

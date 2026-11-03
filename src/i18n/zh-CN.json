@@ -732,17 +732,19 @@
         "ctaSecondary": "前往 SwitchBot"
       },
       "mac-mini-m4": {
-        "tagline": "迷你 AI 强力工作站",
-        "description": "全新 Mac Mini M4 是终极迷你 AI 工作站。原生 Apple Silicon 运行 Ollama 和 OpenClaw。安静、省电、永不关机。",
+        "tagline": "给 OpenClaw 的常驻 Apple Silicon",
+        "description": "2026 年 Mac mini（2026-08-25 发布，2026-09-22 起发货）是 Apple 的迷你常驻 Agent 机。M6 起价 $899，12 核 CPU、12 核 GPU、每个 GPU 核心都有 Neural Accelerator、双 16 核 Neural Engine，标准 16GB 统一内存（最高 32GB）。M5 Pro 起价 $1,699，最高 18 核 CPU／20 核 GPU、最高 64GB。官方 OpenClaw 接法：`ollama launch openclaw`。CanFly.ai 保留 /apps/hardware/mac-mini-m4 网址，避免旧链接失效——这是现行 Mac mini，不是第二个 SKU。不是 Mac Studio，不是 Googlebook。",
         "features": [
-          "Apple M4 芯片（10 核心 CPU、10 核心 GPU）",
-          "16GB 统一内存",
-          "256GB SSD（可升级至 8TB）",
-          "3 个 Thunderbolt 5 接口",
-          "Wi-Fi 6E + 蓝牙 5.3",
-          "超迷你设计",
-          "内置 Apple Intelligence"
-        ]
+          "M6：12 核 CPU、12 核 GPU、双 16 核 Neural Engine",
+          "起价 $899（教育价 $799）；M5 Pro 起价 $1,699",
+          "标准 16GB 统一内存；M6 最高 32GB、M5 Pro 最高 64GB",
+          "M6：三个 Thunderbolt 4；M5 Pro：三个 Thunderbolt 5",
+          "Wi-Fi 7、蓝牙 6、2.5Gb 以太网（可选 10Gb）",
+          "官方接法：ollama launch openclaw",
+          "同样 5 英寸立方；macOS 27 Golden Gate"
+        ],
+        "ctaPrimary": "开始免费教程",
+        "ctaSecondary": "到 Amazon 购买"
       },
       "macbook-neo": {
         "tagline": "史上最便宜的 MacBook",
@@ -767,7 +769,7 @@
           "⚡ 多 Agent 并发支持，工作效率飞跃",
           "🔄 无缝替换 LM Studio，零学习成本",
           "💾 SSD 冷存储技术，内存占用极低",
-          "基于 Apple MLX 框架（仅限 M1-M4）"
+          "基于 Apple MLX 框架（仅限 M1-M6）"
         ],
         "cta": {
           "primary": "开始免费教程",
@@ -1755,7 +1757,7 @@
           "tips": [
             "虚拟机是完全隔离的 — 里面做什么都不会影响你的 Mac",
             "如果 RAM 够多，你可以同时跑多个虚拟机",
-            "Apple Silicon Mac（M1/M2/M3/M4）跑 Linux 虚拟机非常快"
+            "Apple Silicon Mac（M1/M2/M3/M4/M5/M6）跑 Linux 虚拟机非常快"
           ],
           "troubleshooting": {
             "title": "卡住了？概念问题解答",
@@ -3231,6 +3233,13 @@
           "content": "你已经有硬件和 Ollama 在运行了。现在用云端部署、语音 AI 和视频生成，让你的设置更上一层楼。",
           "nextStepCards": [
             {
+              "emoji": "🍏",
+              "title": "Mac mini（M6／M5 Pro）",
+              "desc": "Apple 常驻 OpenClaw 台式机，起价 $899。教程在 CanFly.ai。",
+              "link": "/learn/mac-mini-m4",
+              "cta": "Mac mini 教程"
+            },
+            {
               "emoji": "🖥",
               "title": "GEEKOM A8 迷你电脑",
               "desc": "我们的 #1 推荐 — AMD Ryzen 7、32GB DDR5、Radeon 780M。终极本地 AI 工作站。",
@@ -3435,15 +3444,22 @@
               "emoji": "plug",
               "title": "HDMI 假负载",
               "desc": "为 Mac Mini 获取 EVanlak 8K 假负载",
-              "link": "/apps/hdmi-dummy-plug",
+              "link": "/apps/hardware/hdmi-dummy-plug",
               "cta": "查看产品"
             },
             {
               "emoji": "desktop",
-              "title": "Mac Mini M4",
-              "desc": "终极迷你 AI 工作站",
-              "link": "/apps/mac-mini-m4",
-              "cta": "查看产品"
+              "title": "Mac mini（M6／M5 Pro）",
+              "desc": "2026 年现行常驻 OpenClaw 机。网址仍是 /apps/hardware/mac-mini-m4。",
+              "link": "/apps/hardware/mac-mini-m4",
+              "cta": "看产品"
+            },
+            {
+              "emoji": "mini",
+              "title": "Mac mini 教程",
+              "desc": "2026 年 mini 的选购＋ollama launch openclaw。",
+              "link": "/learn/mac-mini-m4",
+              "cta": "打开教程"
             }
           ],
           "tips": [
@@ -3478,7 +3494,7 @@
           "title": "下载并安装 Virtual Buddy",
           "titleEn": "Download & Install Virtual Buddy",
           "estimatedTime": "2 分钟",
-          "content": "Virtual Buddy 是一款免费、开源的 macOS 应用程序，让你一键创建 Linux 虚拟机。它是在 Mac 上获得独立 Linux 环境最简单的方式 — 非常适合用来跑 Ollama，而且不会影响你的主系统。\n\n**系统要求：**\n- macOS 13（Ventura）或更新版本\n- Apple Silicon Mac（M1/M2/M3/M4）\n- 至少 8 GB 内存（建议 16 GB）\n- 约 10 GB 可用磁盘空间\n\n**从 GitHub 安装：**\n1. 前往 Virtual Buddy 的 GitHub 发布页面\n2. 下载最新的 `.dmg` 文件\n3. 打开 DMG，将 Virtual Buddy 拖到「应用程序」文件夹\n4. 启动 Virtual Buddy — macOS 可能会要求你在「系统设置 > 隐私与安全性」中允许运行",
+          "content": "Virtual Buddy 是一款免费、开源的 macOS 应用程序，让你一键创建 Linux 虚拟机。它是在 Mac 上获得独立 Linux 环境最简单的方式 — 非常适合用来跑 Ollama，而且不会影响你的主系统。\n\n**系统要求：**\n- macOS 13（Ventura）或更新版本\n- Apple Silicon Mac（M1/M2/M3/M4/M5/M6）\n- 至少 8 GB 内存（建议 16 GB）\n- 约 10 GB 可用磁盘空间\n\n**从 GitHub 安装：**\n1. 前往 Virtual Buddy 的 GitHub 发布页面\n2. 下载最新的 `.dmg` 文件\n3. 打开 DMG，将 Virtual Buddy 拖到「应用程序」文件夹\n4. 启动 Virtual Buddy — macOS 可能会要求你在「系统设置 > 隐私与安全性」中允许运行",
           "expectedResult": "Virtual Buddy 成功安装并启动。你可以看到主界面，有创建新虚拟机的选项。",
           "tips": [
             "Virtual Buddy 完全免费且开源（MIT 许可证）",
@@ -3923,7 +3939,7 @@
             "items": [
               {
                 "q": "我的 Mac 是 Intel 处理器 — 可以用 oMLX 吗？",
-                "a": "不行。oMLX 需要 Apple Silicon（M1/M2/M3/M4），无法在 Intel Mac 上运行。Intel Mac 建议改用 Ollama。"
+                "a": "不行。oMLX 需要 Apple Silicon（M1/M2/M3/M4/M5/M6），无法在 Intel Mac 上运行。Intel Mac 建议改用 Ollama。"
               },
               {
                 "q": "我的 Mac 只有 8GB 内存 — 能用吗？",
@@ -3934,7 +3950,7 @@
           "requirements": {
             "title": "⚠️ 系统要求（必读）",
             "items": [
-              "🖥️ **处理器**：Apple Silicon（M1/M2/M3/M4 系列）",
+              "🖥️ **处理器**：Apple Silicon（M1/M2/M3/M4/M5/M6 系列）",
               "🍎 **操作系统**：macOS 15.0 或更高版本",
               "💾 **内存**：建议 16GB 以上（最少 8GB）",
               "💽 **存储**：至少 10GB 可用空间"
@@ -4191,7 +4207,7 @@
         },
         {
           "q": "Intel Mac 可以使用 oMLX 吗？",
-          "a": "不行。oMLX 需要 Apple Silicon（M1、M2、M3 或 M4 芯片）和 macOS 15.0+（Sequoia）。它基于 Apple 的 MLX 框架，仅支持 Apple Silicon。Intel Mac 用户建议使用 Ollama 或云端模型。"
+          "a": "不行。oMLX 需要 Apple Silicon（M1 到 M6 芯片）和 macOS 15.0+（Sequoia）。它基于 Apple 的 MLX 框架，仅支持 Apple Silicon。Intel Mac 用户建议使用 Ollama 或云端模型。"
         },
         {
           "q": "oMLX 需要多少内存？",
@@ -8556,6 +8572,283 @@
           "a": "不要。Super VL 看图看视频。Ultra 是 NVIDIA 默认。NemoClaw 是托管 OpenClaw。这一页一句就够。"
         }
       ]
+    },
+    "macMini": {
+      "title": "Mac mini（M6／M5 Pro）— 15 分钟接上 OpenClaw",
+      "subtitle": "2026 年现行 Mac mini。官方接法：ollama launch openclaw。网址仍是 /learn/mac-mini-m4，不是第二个 SKU。",
+      "duration": "15 分钟",
+      "difficulty": "入门",
+      "steps": [
+        {
+          "title": "这台 Mac mini 是什么",
+          "titleEn": "What this Mac mini is",
+          "estimatedTime": "3 分钟",
+          "content": "Apple 在 2026-08-25 发布 2026 年 Mac mini，2026-09-22 开始发货。CanFly.ai 仍用 `/apps/hardware/mac-mini-m4` 与 `/learn/mac-mini-m4`，让旧链接继续可用。这一页卖的是现行 M6／M5 Pro，不是第二个 slug、不是上一代 M4、不是 Mac Studio、也不是 Googlebook。\n\nM6 是默认的常驻 Agent 机：12 核 CPU（2 超能／4 性能／6 能效）、12 核 GPU（每个 GPU 核心都有 Neural Accelerator）、双 16 核 Neural Engine、16GB 统一内存（可选 24GB 或 32GB）。标准内存带宽 153GB/s；24GB／32GB 升到 170GB/s。M6 背面是三个 Thunderbolt 4。\n\nM5 Pro 是大内存版本：标准 15 核 CPU／16 核 GPU，可选 18 核 CPU／20 核 GPU，标准 24GB（48GB 或 64GB），带宽 307GB/s，三个 Thunderbolt 5。Apple 标价：M6 起 $899（教育价 $799），M5 Pro 起 $1,699（教育价 $1,599）。\n\n两款都是同一个 5 × 5 × 2 英寸立方，预装 macOS 27 Golden Gate。这台硬件的官方 OpenClaw 接法：`ollama launch openclaw`。",
+          "commands": [
+            "# 产品页（保留旧 slug）",
+            "# /apps/hardware/mac-mini-m4",
+            "",
+            "# 本教程",
+            "# /learn/mac-mini-m4",
+            "",
+            "# Apple Newsroom — 2026-08-25",
+            "https://www.apple.com/newsroom/2026/08/apple-unveils-a-more-powerful-mac-mini-featuring-the-all-new-m6-and-m5-pro/",
+            "",
+            "# 2026-09-22 发货",
+            "https://www.apple.com/newsroom/2026/09/the-new-mac-mini-and-mac-studio-are-available-today/",
+            "",
+            "# 规格",
+            "https://www.apple.com/mac-mini/specs/",
+            "",
+            "# 官方 OpenClaw 接法",
+            "ollama launch openclaw"
+          ],
+          "modelTable": {
+            "models": [
+              {
+                "name": "M6 16GB／256GB",
+                "size": "$899",
+                "best": "云端 OpenClaw＋小型本地模型",
+                "speed": "入门常驻机"
+              },
+              {
+                "name": "M6 24–32GB",
+                "size": "加购",
+                "best": "常驻本地 OpenClaw",
+                "speed": "建议规格"
+              },
+              {
+                "name": "M5 Pro 24–64GB",
+                "size": "$1,699+",
+                "best": "较大本地模型",
+                "speed": "专业／更多统一内存"
+              },
+              {
+                "name": "上一代 M4",
+                "size": "不要当新品买",
+                "best": "已经有的话仍能用",
+                "speed": "上一代"
+              }
+            ]
+          },
+          "expectedResult": "你知道这一页是 2026 年 M6／M5 Pro Mac mini，网址刻意保留，M4／Mac Studio／Googlebook 都不另开。",
+          "tips": [
+            "Apple 宣称相对 M4 Mac mini 本地 AI 最高约 4 倍。那是厂商标称。",
+            "不要另开 mac-mini-m6 slug。下一代 mini 仍改这一页。",
+            "Mac Studio 512GB 是另一台贵很多的机器，留在队列的 blog，不是这张产品卡。"
+          ],
+          "troubleshooting": {
+            "title": "范围",
+            "items": [
+              {
+                "q": "网址为什么还写 mac-mini-m4？",
+                "a": "队列规定：更新旧页，不要用第二个 slug 互抢 SEO。画面上的名称是 Mac mini（M6／M5 Pro）。"
+              },
+              {
+                "q": "这是 Arduino VENTUNO Q 或 UNO Q 吗？",
+                "a": "不是。那些是边缘开发板。这一页是 Apple 的 Mac mini 台式机。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "该买哪一档规格",
+          "titleEn": "Which config to buy",
+          "estimatedTime": "3 分钟",
+          "content": "统一内存才是本地 OpenClaw 的关键。16GB 够用，前提是多数步骤走托管模型（Grok 4.7、GPT-6 Astra），本地只拉小型标签。24GB 比较从容。CanFly.ai 建议常驻本地 Agent 用 M6 32GB。64GB 只有 M5 Pro。\n\n除非你确定需要 48–64GB 或 Thunderbolt 5，否则买 M6。不要当新品去买 M4。教育价：M6 $799、M5 Pro $1,599。\n\n我们核对过的 M6 16GB／256GB Amazon 编号：ASIN B0HGGJZ92H。街价会变，文案钉 Apple 的 $899。CanFly.ai 使用 Amazon Associates 代码 juchunko-20。付款前请再看一次现货。\n\n存储：M6 从 256GB 起（512GB／1TB／2TB）。M5 Pro 从 512GB 起（最高 8TB）。30B 本地模型大约 25GB——256GB 很快就满。",
+          "commands": [
+            "# Apple Store",
+            "https://www.apple.com/shop/buy-mac/mac-mini",
+            "",
+            "# Amazon — M6 16GB／256GB 入门款（请核对现货）",
+            "https://www.amazon.com/dp/B0HGGJZ92H?tag=juchunko-20",
+            "",
+            "# CanFly.ai 产品卡",
+            "# /apps/hardware/mac-mini-m4",
+            "",
+            "# 无显示器 Mac mini 用的 HDMI dummy plug",
+            "# /apps/hardware/hdmi-dummy-plug"
+          ],
+          "expectedResult": "你用统一内存决定 M6 还是 M5 Pro，而不是营销名称——也不会把库存 M4 当新品买。",
+          "tips": [
+            "M6 背面是 Thunderbolt 4。只有 M5 Pro 才有 Thunderbolt 5。旧 CanFly.ai 卡片写 M4 有 Thunderbolt 5 是错的。",
+            "标准是 2.5Gb 以太网；10Gb 是加购。",
+            "若你已经有 M4 mini，跳过购买，直接做 OpenClaw 安装。"
+          ],
+          "troubleshooting": {
+            "title": "选购",
+            "items": [
+              {
+                "q": "Amazon 比 $899 便宜，哪个才算？",
+                "a": "Apple 对 M6 的标价是 $899。Amazon 街价会变。文案用 Apple 价；结账前确认是 M6 12 核 CPU／12 核 GPU。"
+              },
+              {
+                "q": "做 OpenClaw 一定要 M5 Pro 吗？",
+                "a": "只有需要 48–64GB 统一内存或 Thunderbolt 5 才要。多数常驻 OpenClaw 用 M6 24–32GB 就够。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "安装 OpenClaw",
+          "titleEn": "Install OpenClaw",
+          "estimatedTime": "5 分钟",
+          "content": "第一次开机完成 macOS 27 设置，并接上电源——这台机器应该一直插电。接着用官方 Ollama OpenClaw 启动指令。这就是 CanFly.ai 为这台硬件钉的接法。这里不需要 `clawhub install`，也不要在这里装 Grok Bot。\n\nOpenClaw 起来之后，若要加快 Apple Silicon 本地推理，再加 oMLX。oMLX 只支持 Mac（Apple Silicon M1 到 M6）。Intel Mac 不行。\n\n若不想拉大型本地模型、改走托管前线模型：Grok 4.7 用 `openclaw models set xai/grok-4.7`。GPT-6 Astra 用 `openclaw models set openai/gpt-6-astra`。本地执行层 Lightning：`ollama launch openclaw --model nemotron-3.5-lightning`。",
+          "commands": [
+            "# 这台 Mac mini 的官方 OpenClaw 接法",
+            "ollama launch openclaw",
+            "",
+            "# 若还没装 Ollama",
+            "# /learn/ollama",
+            "",
+            "# 完整 OpenClaw 教程",
+            "# /learn/ollama-openclaw",
+            "",
+            "# Apple Silicon 更快的本地推理",
+            "# /learn/omlx",
+            "",
+            "# 托管 Grok 4.7",
+            "openclaw models set xai/grok-4.7",
+            "",
+            "# 托管 GPT-6 Astra",
+            "openclaw models set openai/gpt-6-astra"
+          ],
+          "expectedResult": "Mac mini 上的 OpenClaw 已在跑，或你知道还要先装 Ollama。",
+          "tips": [
+            "Grok Bot 是 xAI 托管队友，不是 OpenClaw 技能。不要跟这次安装混在一起。",
+            "Harden AIF 可挡在 tool-call 前面：`aif configure --agent openclaw --validate`。",
+            "长网址放在指令清单，避免英文版撑破版面。"
+          ],
+          "troubleshooting": {
+            "title": "安装",
+            "items": [
+              {
+                "q": "ollama: command not found",
+                "a": "先到 /learn/ollama 安装 Ollama，再跑 `ollama launch openclaw`。"
+              },
+              {
+                "q": "我的是上一代 M4，还能用吗？",
+                "a": "可以。安装接法相同。这一页的购买表是给 2026 年新机；M4 持有者跳过购买、做软件步骤即可。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "保持清醒（无显示器）",
+          "titleEn": "Stay awake (headless)",
+          "estimatedTime": "3 分钟",
+          "content": "macOS 一睡眠，或无显示器的 Mac mini 以为没有显示器，常驻 Agent 就会断线。机器要一直插电。接着关掉睡眠；若没接显示器，加一颗 HDMI dummy plug，让 GPU 画面捕获与远程桌面仍有显示器。\n\n完整的 always-on 教程在 /learn/always-on-mac。不要复制那一页。这一步只是 Mac mini 子集：电源、dummy plug，然后回到 OpenClaw。",
+          "commands": [
+            "sudo pmset -c sleep 0 disksleep 0 networkoversleep 1",
+            "nohup caffeinate -s > /dev/null 2>&1 &",
+            "pmset -g | grep tcpkeepalive",
+            "",
+            "# 完整 always-on 教程",
+            "# /learn/always-on-mac",
+            "",
+            "# HDMI dummy plug",
+            "# /apps/hardware/hdmi-dummy-plug",
+            "",
+            "system_profiler SPDisplaysDataType | head -20"
+          ],
+          "expectedResult": "接上电源时 sleep 为 0、tcpkeepalive 为 1。无显示器机台会列出 dummy 显示器。",
+          "tips": [
+            "Mac mini 闲置只吃几瓦。一直开着就是这台 SKU 的用途。",
+            "Dummy plug 插 HDMI 口，不是 Thunderbolt，除非转接器真的会回报显示器。",
+            "远程常见组合是屏幕共享＋远程登录（SSH）。"
+          ],
+          "troubleshooting": {
+            "title": "常驻",
+            "items": [
+              {
+                "q": "mini 还是会睡",
+                "a": "确认有插电，用 sudo 重跑 pmset，再 `pgrep caffeinate`。合上 MacBook 上盖是另一件事——这一页是 mini。"
+              },
+              {
+                "q": "远程桌面很小或全黑",
+                "a": "没接显示器。用 /apps/hardware/hdmi-dummy-plug，再到「系统设置 > 显示器」设分辨率。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CanFly.ai 下一步",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 分钟",
+          "content": "Mac mini 是箱子。OpenClaw 是 Agent。oMLX 加快本地调用。Always-on 设置让 TCP 连接活着。若不想拉大型本地模型，就接托管模型或 Lightning。",
+          "tips": [
+            "评论视频待补（本轮没有 HEYGEN_API_KEY）。英文口白稿：content/scripts/mac-mini-m4-review-en.txt",
+            "不要另开 Mac mini M6 slug、Mac Studio 产品页或 Googlebook 页。",
+            "Arduino UNO Q／VENTUNO Q 是另一种板——不是这台台式机。"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "安装 OpenClaw",
+              "desc": "用 Ollama 一指令装 OpenClaw，再回到这台 Mac mini。",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw 教程"
+            },
+            {
+              "emoji": "⚡",
+              "title": "oMLX",
+              "desc": "Apple Silicon（M1 到 M6）更快的本地推理。",
+              "link": "/learn/omlx",
+              "cta": "oMLX 教程"
+            },
+            {
+              "emoji": "🔌",
+              "title": "Always-on Mac",
+              "desc": "完整 pmset、dummy plug 与远程访问。",
+              "link": "/learn/always-on-mac",
+              "cta": "常驻指南"
+            },
+            {
+              "emoji": "🧠",
+              "title": "Nemotron 3.5 Lightning",
+              "desc": "本地执行模型：ollama launch openclaw --model nemotron-3.5-lightning。",
+              "link": "/learn/nemotron-3-5-lightning",
+              "cta": "Lightning 教程"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "本地 tool-call 防火墙：aif configure --agent openclaw --validate。",
+              "link": "/learn/harden-aif",
+              "cta": "AIF 教程"
+            },
+            {
+              "emoji": "🛒",
+              "title": "HDMI dummy plug",
+              "desc": "无显示器 Mac mini 需要显示器 EDID。产品页在 CanFly.ai。",
+              "link": "/apps/hardware/hdmi-dummy-plug",
+              "cta": "看产品"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "这还是 M4 Mac mini 吗？",
+          "a": "不是。2026 年这台是 M6／M5 Pro。我们保留 `/apps/hardware/mac-mini-m4` 与 `/learn/mac-mini-m4`，避免旧链接失效。不要另开第二个 slug。"
+        },
+        {
+          "q": "官方 OpenClaw 指令是哪一条？",
+          "a": "`ollama launch openclaw`。然后可选 `openclaw models set xai/grok-4.7` 或 `openclaw models set openai/gpt-6-astra`。"
+        },
+        {
+          "q": "统一内存要多少？",
+          "a": "16GB 是 M6 入门，适合托管模型加小型本地标签。常驻本地建议 24–32GB。64GB 只有 M5 Pro。"
+        },
+        {
+          "q": "M6 有 Thunderbolt 5 吗？",
+          "a": "没有。M6 是三个 Thunderbolt 4。Thunderbolt 5 在 M5 Pro。旧 CanFly.ai M4 卡片写 Thunderbolt 5 是错的。"
+        },
+        {
+          "q": "该改买 Mac Studio 吗？",
+          "a": "只有需要 M5 Max／M5 Ultra 等级内存才要。Mac Studio 512GB 是另一台贵很多的 SKU，不是这一页。"
+        }
+      ]
     }
   },
   "hardwareCompare": {
@@ -8568,8 +8861,8 @@
       "umbrelPrice": "$299 美元",
       "umbrel-homeDesc": "专为家庭服务器打造，内置一键式应用商店。插上电源，10 分钟完成设置，全天候运行 AI 及自建应用，零维护。",
       "macMini": "Mac mini",
-      "macMiniPrice": "$599+ 美元",
-      "mac-miniDesc": "Apple 的小型高性能主机。M 系列芯片提供出色的 AI 推理性能，最适合同时需要桌面工作站的开发者。",
+      "macMiniPrice": "$899+",
+      "mac-miniDesc": "2026 年 Mac mini（M6／M5 Pro）。起价 $899。Apple Silicon 上最好的常驻 OpenClaw 台式机。",
       "raspberryPi": "Raspberry Pi 5",
       "raspberryPiPrice": "$60–$80 美元",
       "raspberry-piDesc": "经典 DIY 单板电脑。超低价格入门，适合动手玩家、学习者及轻量 AI 实验。"

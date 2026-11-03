@@ -1,0 +1,11 @@
+Hi, I'm JU CHUN KO.
+
+If you want an always-on OpenClaw box that stays quiet on your desk, the 2026 Mac mini is the one to buy.
+
+Apple shipped M6 and M5 Pro on September 22. M6 starts at 899 dollars with a 12-core CPU, 12-core GPU, and 16 gigabytes of unified memory. Step up the memory if you run local models. M5 Pro is the 64-gigabyte option. The old M4 page on CanFly.ai is this same URL on purpose — do not look for a second slug.
+
+The pin is one command: ollama launch openclaw. Add oMLX if you want faster local calls on Apple Silicon. Plug in an HDMI dummy if the mini has no monitor, so it never sleeps on you.
+
+This is not Mac Studio, and it is not Grok Bot.
+
+I made a tutorial on CanFly.ai — go try it.

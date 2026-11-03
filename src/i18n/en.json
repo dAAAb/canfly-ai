@@ -732,17 +732,19 @@
         "ctaSecondary": "Visit SwitchBot"
       },
       "mac-mini-m4": {
-        "tagline": "Compact AI powerhouse",
-        "description": "The new Mac Mini M4 is the ultimate compact AI workstation. Runs Ollama and OpenClaw natively on Apple Silicon. Silent, efficient, always-on.",
+        "tagline": "Always-on Apple Silicon for OpenClaw",
+        "description": "The 2026 Mac mini (announced 2026-08-25, shipping since 2026-09-22) is Apple's compact always-on agent box. M6 starts at $899 with a 12-core CPU, 12-core GPU, Neural Accelerators in every GPU core, Dual 16-core Neural Engine, and 16GB unified memory (up to 32GB). M5 Pro starts at $1,699 with up to an 18-core CPU / 20-core GPU and up to 64GB. Official OpenClaw pin: `ollama launch openclaw`. This CanFly.ai page keeps the /apps/hardware/mac-mini-m4 URL so existing links do not break — it is the current Mac mini, not a second SKU. Not Mac Studio, not Googlebook.",
         "features": [
-          "Apple M4 chip (10-core CPU, 10-core GPU)",
-          "16GB unified memory",
-          "256GB SSD (configurable to 8TB)",
-          "3x Thunderbolt 5 ports",
-          "Wi-Fi 6E + Bluetooth 5.3",
-          "Ultra compact design",
-          "Apple Intelligence built-in"
-        ]
+          "M6: 12-core CPU, 12-core GPU, Dual 16-core Neural Engine",
+          "From $899 (education $799); M5 Pro from $1,699",
+          "16GB unified memory standard; up to 32GB on M6 / 64GB on M5 Pro",
+          "M6: three Thunderbolt 4; M5 Pro: three Thunderbolt 5",
+          "Wi-Fi 7, Bluetooth 6, 2.5Gb Ethernet (10Gb optional)",
+          "Official pin: ollama launch openclaw",
+          "Same 5-inch cube; macOS 27 Golden Gate"
+        ],
+        "ctaPrimary": "Start Free Tutorial",
+        "ctaSecondary": "Buy on Amazon"
       },
       "macbook-neo": {
         "tagline": "Most affordable MacBook ever",
@@ -767,7 +769,7 @@
           "Concurrent agent support on single Mac",
           "OpenAI-compatible API (localhost:8000/v1)",
           "Native macOS menu bar app with admin panel",
-          "Built on Apple's MLX framework (M1-M4 only)"
+          "Built on Apple's MLX framework (M1-M6 only)"
         ],
         "cta": {
           "primary": "Start Free Tutorial",
@@ -1755,7 +1757,7 @@
           "tips": [
             "VMs are completely isolated — nothing you do inside affects your Mac",
             "You can run multiple VMs at once if you have enough RAM",
-            "Apple Silicon Macs (M1/M2/M3/M4) run Linux VMs extremely fast"
+            "Apple Silicon Macs (M1/M2/M3/M4/M5/M6) run Linux VMs extremely fast"
           ],
           "troubleshooting": {
             "title": "Stuck? Concept Questions",
@@ -3231,6 +3233,13 @@
           "content": "You've got the hardware and Ollama running. Now take your setup to the next level with cloud deployment, voice AI, and video generation.",
           "nextStepCards": [
             {
+              "emoji": "🍏",
+              "title": "Mac mini (M6 / M5 Pro)",
+              "desc": "Apple's always-on OpenClaw desktop from $899. Tutorial on CanFly.ai.",
+              "link": "/learn/mac-mini-m4",
+              "cta": "Mac mini tutorial"
+            },
+            {
               "emoji": "🖥",
               "title": "GEEKOM A8 Mini PC",
               "desc": "Our #1 pick — AMD Ryzen 7, 32GB DDR5, Radeon 780M. The ultimate local AI workstation.",
@@ -3435,15 +3444,22 @@
               "emoji": "plug",
               "title": "HDMI Dummy Plug",
               "desc": "Get the EVanlak 8K plug for Mac Mini",
-              "link": "/apps/hdmi-dummy-plug",
+              "link": "/apps/hardware/hdmi-dummy-plug",
               "cta": "View Product"
             },
             {
               "emoji": "desktop",
-              "title": "Mac Mini M4",
-              "desc": "The ultimate compact AI workstation",
-              "link": "/apps/mac-mini-m4",
-              "cta": "View Product"
+              "title": "Mac mini (M6 / M5 Pro)",
+              "desc": "Current 2026 always-on OpenClaw box. Same /apps/hardware/mac-mini-m4 URL.",
+              "link": "/apps/hardware/mac-mini-m4",
+              "cta": "View product"
+            },
+            {
+              "emoji": "mini",
+              "title": "Mac mini tutorial",
+              "desc": "Buy-guide plus ollama launch openclaw on the 2026 mini.",
+              "link": "/learn/mac-mini-m4",
+              "cta": "Open tutorial"
             }
           ],
           "tips": [
@@ -3478,7 +3494,7 @@
           "title": "Download & Install Virtual Buddy",
           "titleEn": "Download & Install Virtual Buddy",
           "estimatedTime": "2 min",
-          "content": "Virtual Buddy is a free, open-source macOS app that lets you create Linux virtual machines with one click. It is the easiest way to get a sandboxed Linux environment on your Mac — perfect for running Ollama without modifying your main system.\n\n**Requirements:**\n- macOS 13 (Ventura) or later\n- Apple Silicon Mac (M1/M2/M3/M4)\n- At least 8 GB RAM (16 GB recommended)\n- ~10 GB free disk space\n\n**Install from GitHub:**\n1. Go to the Virtual Buddy GitHub releases page\n2. Download the latest `.dmg` file\n3. Open the DMG and drag Virtual Buddy to your Applications folder\n4. Launch Virtual Buddy — macOS may ask you to allow it in System Settings > Privacy & Security",
+          "content": "Virtual Buddy is a free, open-source macOS app that lets you create Linux virtual machines with one click. It is the easiest way to get a sandboxed Linux environment on your Mac — perfect for running Ollama without modifying your main system.\n\n**Requirements:**\n- macOS 13 (Ventura) or later\n- Apple Silicon Mac (M1/M2/M3/M4/M5/M6)\n- At least 8 GB RAM (16 GB recommended)\n- ~10 GB free disk space\n\n**Install from GitHub:**\n1. Go to the Virtual Buddy GitHub releases page\n2. Download the latest `.dmg` file\n3. Open the DMG and drag Virtual Buddy to your Applications folder\n4. Launch Virtual Buddy — macOS may ask you to allow it in System Settings > Privacy & Security",
           "expectedResult": "Virtual Buddy is installed and launches successfully. You see the main window with options to create a new virtual machine.",
           "tips": [
             "Virtual Buddy is completely free and open-source (MIT license)",
@@ -3911,7 +3927,7 @@
           "title": "What is MLX? (Mac Only 🍎)",
           "titleEn": "What is MLX? (Mac Only 🍎)",
           "estimatedTime": "2 min",
-          "content": "## Understanding MLX and Apple Silicon\n\nMLX is Apple's open-source machine learning framework designed specifically for Apple Silicon chips. Unlike PyTorch or JAX, MLX leverages Apple's **unified memory architecture** where CPU and GPU share the same memory pool.\n\n### Why This Matters for OpenClaw\n\nOpenClaw agents make **dozens of tool calls per task**. Each call requires re-processing the system prompt (often 2000+ tokens). Without prefix caching:\n- **LM Studio**: 20-30 seconds wait EVERY tool call\n- **oMLX**: Nearly instant responses (shared prefix cache)\n\nA YouTube creator found: *\"Base Mac Mini 16GB went from 5 minutes to answer 3 questions → nearly instant with oMLX\"*\n\n### System Requirements\n\n⚠️ **Mac with Apple Silicon ONLY** (M1/M2/M3/M4)\n- macOS 15.0+ (Sequoia)\n- Python 3.10+\n- **16GB RAM minimum** (32GB+ recommended)\n- **Intel Macs are NOT supported**\n\n### How MLX Works\n\nApple Silicon's unified memory means:\n- CPU and GPU share same RAM\n- No memory copying between processors\n- Efficient model loading and inference\n- Perfect for LLM workloads",
+          "content": "## Understanding MLX and Apple Silicon\n\nMLX is Apple's open-source machine learning framework designed specifically for Apple Silicon chips. Unlike PyTorch or JAX, MLX leverages Apple's **unified memory architecture** where CPU and GPU share the same memory pool.\n\n### Why This Matters for OpenClaw\n\nOpenClaw agents make **dozens of tool calls per task**. Each call requires re-processing the system prompt (often 2000+ tokens). Without prefix caching:\n- **LM Studio**: 20-30 seconds wait EVERY tool call\n- **oMLX**: Nearly instant responses (shared prefix cache)\n\nA YouTube creator found: *\"Base Mac Mini 16GB went from 5 minutes to answer 3 questions → nearly instant with oMLX\"*\n\n### System Requirements\n\n⚠️ **Mac with Apple Silicon ONLY** (M1/M2/M3/M4/M5/M6)\n- macOS 15.0+ (Sequoia)\n- Python 3.10+\n- **16GB RAM minimum** (32GB+ recommended)\n- **Intel Macs are NOT supported**\n\n### How MLX Works\n\nApple Silicon's unified memory means:\n- CPU and GPU share same RAM\n- No memory copying between processors\n- Efficient model loading and inference\n- Perfect for LLM workloads",
           "tips": [
             "Check your chip: Apple menu > About This Mac → look for 'M1', 'M2', 'M3', or 'M4'",
             "16GB RAM handles most models; 32GB+ for large models and multiple agents",
@@ -3922,7 +3938,7 @@
             "items": [
               {
                 "q": "I have an Intel Mac — can I use oMLX?",
-                "a": "No. oMLX requires Apple Silicon (M1/M2/M3/M4) and won't run on Intel Macs. Consider using Ollama instead for Intel Macs."
+                "a": "No. oMLX requires Apple Silicon (M1/M2/M3/M4/M5/M6) and won't run on Intel Macs. Consider using Ollama instead for Intel Macs."
               },
               {
                 "q": "My Mac has 8GB RAM — will it work?",
@@ -4166,7 +4182,7 @@
         },
         {
           "q": "Can I use oMLX on an Intel Mac?",
-          "a": "No. oMLX requires Apple Silicon (M1, M2, M3, or M4 chips) and macOS 15.0+ (Sequoia). It's built on Apple's MLX framework which only works on Apple Silicon. Intel Mac users should stick with Ollama or cloud-based models."
+          "a": "No. oMLX requires Apple Silicon (M1 through M6 chips) and macOS 15.0+ (Sequoia). It's built on Apple's MLX framework which only works on Apple Silicon. Intel Mac users should stick with Ollama or cloud-based models."
         },
         {
           "q": "How much RAM do I need for oMLX?",
@@ -8531,6 +8547,283 @@
           "a": "No. Super VL is image/video. Ultra is the NVIDIA default. NemoClaw is hosted OpenClaw. One sentence on this page is enough."
         }
       ]
+    },
+    "macMini": {
+      "title": "Mac mini (M6 / M5 Pro) — OpenClaw in 15 Minutes",
+      "subtitle": "Current 2026 Mac mini. Official pin: ollama launch openclaw. Same /learn/mac-mini-m4 slug — not a second SKU.",
+      "duration": "15 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "What this Mac mini is",
+          "titleEn": "What this Mac mini is",
+          "estimatedTime": "3 min",
+          "content": "Apple announced the 2026 Mac mini on 2026-08-25 and started shipping it on 2026-09-22. On CanFly.ai this is still `/apps/hardware/mac-mini-m4` and `/learn/mac-mini-m4` so old links keep working. The product on this page is the current M6 / M5 Pro Mac mini — not a second slug, not the previous M4 SKU, not Mac Studio, and not Googlebook.\n\nM6 is the default always-on agent box: 12-core CPU (2 super / 4 performance / 6 efficiency), 12-core GPU with Neural Accelerators in every GPU core, Dual 16-core Neural Engine, 16GB unified memory (24GB or 32GB optional). Base memory bandwidth is 153GB/s; 24GB and 32GB configs step up to 170GB/s. M6 has three Thunderbolt 4 ports on the back.\n\nM5 Pro is the larger-memory sibling: 15-core CPU / 16-core GPU standard, configurable to 18-core CPU / 20-core GPU, 24GB unified memory standard (48GB or 64GB), 307GB/s bandwidth, three Thunderbolt 5 ports. Apple list price: M6 from $899 (education $799), M5 Pro from $1,699 (education $1,599).\n\nBoth sit in the same 5 × 5 × 2 inch cube and ship with macOS 27 Golden Gate. Official OpenClaw pin on this hardware: `ollama launch openclaw`.",
+          "commands": [
+            "# Product page (slug kept for existing links)",
+            "# /apps/hardware/mac-mini-m4",
+            "",
+            "# This tutorial",
+            "# /learn/mac-mini-m4",
+            "",
+            "# Apple Newsroom — 2026-08-25",
+            "https://www.apple.com/newsroom/2026/08/apple-unveils-a-more-powerful-mac-mini-featuring-the-all-new-m6-and-m5-pro/",
+            "",
+            "# Ships 2026-09-22",
+            "https://www.apple.com/newsroom/2026/09/the-new-mac-mini-and-mac-studio-are-available-today/",
+            "",
+            "# Tech specs",
+            "https://www.apple.com/mac-mini/specs/",
+            "",
+            "# Official OpenClaw pin",
+            "ollama launch openclaw"
+          ],
+          "modelTable": {
+            "models": [
+              {
+                "name": "M6 16GB / 256GB",
+                "size": "$899",
+                "best": "Cloud OpenClaw + small local models",
+                "speed": "Entry always-on box"
+              },
+              {
+                "name": "M6 24–32GB",
+                "size": "Configure",
+                "best": "Always-on local OpenClaw",
+                "speed": "Recommended"
+              },
+              {
+                "name": "M5 Pro 24–64GB",
+                "size": "$1,699+",
+                "best": "Larger local models",
+                "speed": "Pro / more unified memory"
+              },
+              {
+                "name": "Previous M4",
+                "size": "Do not buy new",
+                "best": "Still works if you already own one",
+                "speed": "Previous generation"
+              }
+            ]
+          },
+          "expectedResult": "You know this page is the 2026 M6 / M5 Pro Mac mini, the URL slug is kept on purpose, and M4 / Mac Studio / Googlebook stay off this card.",
+          "tips": [
+            "Apple quotes up to 4x faster on-device AI versus Mac mini with M4. Treat that as a vendor number.",
+            "Do not open a mac-mini-m6 slug. Update this page when Apple ships the next mini.",
+            "Mac Studio 512GB is a different, much more expensive machine. It stays on its own queued blog — not this product card."
+          ],
+          "troubleshooting": {
+            "title": "Scope",
+            "items": [
+              {
+                "q": "Why does the URL still say mac-mini-m4?",
+                "a": "QUEUE rule: update the old page, do not cannibalize SEO with a second slug. The display name is Mac mini (M6 / M5 Pro)."
+              },
+              {
+                "q": "Is this Arduino VENTUNO Q or UNO Q?",
+                "a": "No. Those are edge boards. This page is Apple's Mac mini desktop."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Which config to buy",
+          "titleEn": "Which config to buy",
+          "estimatedTime": "3 min",
+          "content": "Unified memory is the lever that matters for local OpenClaw. 16GB is enough if most steps go to a hosted model (Grok 4.7, GPT-6 Astra) and you only pull small local tags. 24GB is more comfortable. 32GB on M6 is the CanFly.ai recommendation for an always-on local agent. 64GB is M5 Pro only.\n\nBuy M6 unless you already know you need 48–64GB or Thunderbolt 5. Do not buy a new M4. Education pricing is $799 for M6 and $1,599 for M5 Pro.\n\nAmazon listing for the base M6 16GB / 256GB we checked: ASIN B0HGGJZ92H. Street price moves; pin Apple's $899 list. CanFly.ai uses Amazon Associates tag juchunko-20. Confirm the live listing before you pay.\n\nStorage: M6 starts at 256GB (512GB / 1TB / 2TB). M5 Pro starts at 512GB (up to 8TB). A 30B local pull is about 25GB — 256GB fills up fast if you also keep macOS and a few models.",
+          "commands": [
+            "# Apple Store",
+            "https://www.apple.com/shop/buy-mac/mac-mini",
+            "",
+            "# Amazon — base M6 16GB / 256GB (confirm live SKU)",
+            "https://www.amazon.com/dp/B0HGGJZ92H?tag=juchunko-20",
+            "",
+            "# CanFly.ai product card",
+            "# /apps/hardware/mac-mini-m4",
+            "",
+            "# HDMI dummy plug for headless Mac mini",
+            "# /apps/hardware/hdmi-dummy-plug"
+          ],
+          "expectedResult": "You picked M6 vs M5 Pro from unified memory, not from marketing names — and you did not buy a leftover M4 as new.",
+          "tips": [
+            "M6 back ports are Thunderbolt 4. Only M5 Pro has Thunderbolt 5. The old CanFly.ai card that said Thunderbolt 5 on M4 was wrong.",
+            "2.5Gb Ethernet is standard; 10Gb is a configure-to-order option.",
+            "If you already own an M4 mini, skip the purchase and jump to the OpenClaw install step."
+          ],
+          "troubleshooting": {
+            "title": "Buying",
+            "items": [
+              {
+                "q": "Amazon is cheaper than $899. Which price is real?",
+                "a": "Apple's list for M6 is $899. Amazon street price moves. Quote Apple in copy; click through and confirm the M6 12-core CPU / 12-core GPU SKU before checkout."
+              },
+              {
+                "q": "Should I buy M5 Pro for OpenClaw?",
+                "a": "Only if you need 48–64GB unified memory or Thunderbolt 5. Most always-on OpenClaw boxes are happier on M6 with 24–32GB."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Install OpenClaw",
+          "titleEn": "Install OpenClaw",
+          "estimatedTime": "5 min",
+          "content": "First-boot the Mac mini, finish macOS 27 setup, and plug in power — this box should live on AC. Then use the official Ollama OpenClaw launch. That is the CanFly.ai pin for this hardware. You do not need `clawhub install` and you do not install Grok Bot here.\n\nIf you want faster local inference on Apple Silicon after OpenClaw is up, add oMLX. oMLX is Mac-only (Apple Silicon M1 through M6). Intel Macs are not supported.\n\nNeed a hosted frontier model instead of a local pull? Grok 4.7: `openclaw models set xai/grok-4.7`. GPT-6 Astra: `openclaw models set openai/gpt-6-astra`. Lightning as a local execution layer: `ollama launch openclaw --model nemotron-3.5-lightning`.",
+          "commands": [
+            "# Official OpenClaw pin on this Mac mini",
+            "ollama launch openclaw",
+            "",
+            "# If Ollama is missing first",
+            "# /learn/ollama",
+            "",
+            "# Full OpenClaw walkthrough",
+            "# /learn/ollama-openclaw",
+            "",
+            "# Faster local inference on Apple Silicon",
+            "# /learn/omlx",
+            "",
+            "# Hosted Grok 4.7",
+            "openclaw models set xai/grok-4.7",
+            "",
+            "# Hosted GPT-6 Astra",
+            "openclaw models set openai/gpt-6-astra"
+          ],
+          "expectedResult": "OpenClaw is running on the Mac mini, or you know you still need the Ollama install first.",
+          "tips": [
+            "Grok Bot is a hosted xAI teammate, not an OpenClaw skill. Do not mix it into this install.",
+            "Harden AIF can sit in front of tool calls: `aif configure --agent openclaw --validate`.",
+            "Long URLs stay in this command list so the English page does not overflow."
+          ],
+          "troubleshooting": {
+            "title": "Install",
+            "items": [
+              {
+                "q": "ollama: command not found",
+                "a": "Install Ollama from /learn/ollama, then rerun `ollama launch openclaw`."
+              },
+              {
+                "q": "The Mac is a previous M4. Does this still work?",
+                "a": "Yes. The install pin is the same. This page's buy table is for new 2026 units; M4 owners skip the purchase and keep the software steps."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Stay awake (headless)",
+          "titleEn": "Stay awake (headless)",
+          "estimatedTime": "3 min",
+          "content": "An always-on agent dies when macOS sleeps or when a headless Mac mini thinks there is no display. Keep the machine on AC power. Then prevent sleep and, if no monitor is attached, add an HDMI dummy plug so GPU-backed screen capture and remote desktop keep a display.\n\nThe full always-on walkthrough already lives at /learn/always-on-mac. Do not duplicate that page. This step is the Mac mini subset: power, dummy plug, then come back to OpenClaw.",
+          "commands": [
+            "sudo pmset -c sleep 0 disksleep 0 networkoversleep 1",
+            "nohup caffeinate -s > /dev/null 2>&1 &",
+            "pmset -g | grep tcpkeepalive",
+            "",
+            "# Full always-on guide",
+            "# /learn/always-on-mac",
+            "",
+            "# HDMI dummy plug",
+            "# /apps/hardware/hdmi-dummy-plug",
+            "",
+            "system_profiler SPDisplaysDataType | head -20"
+          ],
+          "expectedResult": "On AC power, sleep is 0 and tcpkeepalive is 1. Headless units list a dummy display.",
+          "tips": [
+            "Mac mini idle power is a few watts. Leaving it on is the point of this SKU.",
+            "The dummy plug goes in the HDMI port, not Thunderbolt, unless you use an adapter that actually presents a display.",
+            "Screen Sharing + Remote Login (SSH) are the usual remote pair."
+          ],
+          "troubleshooting": {
+            "title": "Always-on",
+            "items": [
+              {
+                "q": "The mini still sleeps",
+                "a": "Confirm AC power, rerun the pmset line with sudo, then `pgrep caffeinate`. Closing a MacBook lid is a different problem — this page is the mini."
+              },
+              {
+                "q": "Remote desktop is tiny or black",
+                "a": "No display is connected. Use /apps/hardware/hdmi-dummy-plug, then set a resolution in System Settings > Displays."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Next steps on CanFly.ai",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 min",
+          "content": "The Mac mini is the box. OpenClaw is the agent. oMLX speeds local calls. Always-on settings keep the TCP session alive. Pair a hosted model or Lightning when you do not want a huge local pull.",
+          "tips": [
+            "Review video is pending (no HEYGEN_API_KEY on this run). English script: content/scripts/mac-mini-m4-review-en.txt",
+            "Do not open a Mac mini M6 slug, a Mac Studio product page, or a Googlebook page.",
+            "Arduino UNO Q / VENTUNO Q are different boards — not this desktop."
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "Install OpenClaw",
+              "desc": "One-command OpenClaw setup with Ollama, then come back to this Mac mini.",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw tutorial"
+            },
+            {
+              "emoji": "⚡",
+              "title": "oMLX",
+              "desc": "Faster local inference on Apple Silicon (M1 through M6).",
+              "link": "/learn/omlx",
+              "cta": "oMLX tutorial"
+            },
+            {
+              "emoji": "🔌",
+              "title": "Always-on Mac",
+              "desc": "Full pmset, dummy plug, and remote access guide.",
+              "link": "/learn/always-on-mac",
+              "cta": "Always-on guide"
+            },
+            {
+              "emoji": "🧠",
+              "title": "Nemotron 3.5 Lightning",
+              "desc": "Local execution model: ollama launch openclaw --model nemotron-3.5-lightning.",
+              "link": "/learn/nemotron-3-5-lightning",
+              "cta": "Lightning tutorial"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "Local tool-call firewall: aif configure --agent openclaw --validate.",
+              "link": "/learn/harden-aif",
+              "cta": "AIF tutorial"
+            },
+            {
+              "emoji": "🛒",
+              "title": "HDMI dummy plug",
+              "desc": "Headless Mac mini needs a display EDID. Product page on CanFly.ai.",
+              "link": "/apps/hardware/hdmi-dummy-plug",
+              "cta": "View product"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Is this still the M4 Mac mini?",
+          "a": "No. The 2026 machine is M6 / M5 Pro. We kept `/apps/hardware/mac-mini-m4` and `/learn/mac-mini-m4` so existing links do not break. Do not open a second slug."
+        },
+        {
+          "q": "What is the official OpenClaw command?",
+          "a": "`ollama launch openclaw`. Then optionally `openclaw models set xai/grok-4.7` or `openclaw models set openai/gpt-6-astra`."
+        },
+        {
+          "q": "How much unified memory do I need?",
+          "a": "16GB is the M6 base and is fine for hosted models plus small local tags. 24–32GB is the always-on local recommendation. 64GB is M5 Pro only."
+        },
+        {
+          "q": "Does M6 have Thunderbolt 5?",
+          "a": "No. M6 has three Thunderbolt 4 ports. Thunderbolt 5 is M5 Pro. The previous CanFly.ai M4 card that listed Thunderbolt 5 was incorrect."
+        },
+        {
+          "q": "Should I buy Mac Studio instead?",
+          "a": "Only if you need M5 Max / M5 Ultra class memory. Mac Studio 512GB is a different, much more expensive SKU and is not this page."
+        }
+      ]
     }
   },
   "hardwareCompare": {
@@ -8543,8 +8836,8 @@
       "umbrelPrice": "$299",
       "umbrel-homeDesc": "Purpose-built home server with one-click app store. Plug in, set up in 10 minutes, and run AI + self-hosted apps 24/7 with zero maintenance.",
       "macMini": "Mac mini",
-      "macMiniPrice": "$599+",
-      "mac-miniDesc": "Apple's compact powerhouse. M-series chips deliver excellent AI inference performance. Best for developers who also need a desktop workstation.",
+      "macMiniPrice": "$899+",
+      "mac-miniDesc": "2026 Mac mini with M6 / M5 Pro. From $899. Best always-on OpenClaw desktop on Apple Silicon.",
       "raspberryPi": "Raspberry Pi 5",
       "raspberryPiPrice": "$60–$80",
       "raspberry-piDesc": "The classic DIY single-board computer. Ultra-affordable entry point for tinkerers, learners, and lightweight AI experiments."

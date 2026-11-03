@@ -732,17 +732,19 @@
         "ctaSecondary": "前往 SwitchBot"
       },
       "mac-mini-m4": {
-        "tagline": "迷你 AI 強力工作站",
-        "description": "全新 Mac Mini M4 是終極迷你 AI 工作站。原生 Apple Silicon 運行 Ollama 和 OpenClaw。安靜、省電、永不關機。",
+        "tagline": "給 OpenClaw 的常駐 Apple Silicon",
+        "description": "2026 年 Mac mini（2026-08-25 發表，2026-09-22 起出貨）是 Apple 的迷你常駐 Agent 機。M6 起價 $899，12 核心 CPU、12 核心 GPU、每個 GPU 核心都有 Neural Accelerator、雙 16 核心 Neural Engine，標準 16GB 統一記憶體（最高 32GB）。M5 Pro 起價 $1,699，最高 18 核心 CPU／20 核心 GPU、最高 64GB。官方 OpenClaw 接法：`ollama launch openclaw`。CanFly.ai 保留 /apps/hardware/mac-mini-m4 網址，避免舊連結失效——這是現行 Mac mini，不是第二個 SKU。不是 Mac Studio，不是 Googlebook。",
         "features": [
-          "Apple M4 晶片（10 核心 CPU、10 核心 GPU）",
-          "16GB 統一記憶體",
-          "256GB SSD（可升級至 8TB）",
-          "3 個 Thunderbolt 5 連接埠",
-          "Wi-Fi 6E + 藍牙 5.3",
-          "超迷你設計",
-          "內建 Apple Intelligence"
-        ]
+          "M6：12 核心 CPU、12 核心 GPU、雙 16 核心 Neural Engine",
+          "起價 $899（教育價 $799）；M5 Pro 起價 $1,699",
+          "標準 16GB 統一記憶體；M6 最高 32GB、M5 Pro 最高 64GB",
+          "M6：三個 Thunderbolt 4；M5 Pro：三個 Thunderbolt 5",
+          "Wi-Fi 7、藍牙 6、2.5Gb 乙太網路（可選 10Gb）",
+          "官方接法：ollama launch openclaw",
+          "同樣 5 吋立方；macOS 27 Golden Gate"
+        ],
+        "ctaPrimary": "開始免費教學",
+        "ctaSecondary": "到 Amazon 購買"
       },
       "macbook-neo": {
         "tagline": "史上最便宜的 MacBook",
@@ -761,7 +763,7 @@
         "tagline": "Mac 本地 AI 加速十倍 — OpenClaw 渦輪模式",
         "description": "專為 Apple Silicon 最佳化的 LLM 推理引擎，搭載連續批次處理與分層 KV 快取。取代 LM Studio，讓你的 OpenClaw agent 效能提升 10 倍以上 — 即使是入門款 16GB Mac Mini 也行。從 macOS 選單列輕鬆管理。",
         "features": [
-          "🍎 僅限 Mac（Apple Silicon M1–M4）",
+          "🍎 僅限 Mac（Apple Silicon M1–M6）",
           "OpenClaw agent 速度比 LM Studio 快 10 倍以上",
           "分層 KV 快取：熱存（記憶體）+ 冷存（SSD）— 重開不遺失",
           "分頁注意力機制：跨多個 agent 共享前綴快取",
@@ -1758,7 +1760,7 @@
           "tips": [
             "虛擬機是完全隔離的 — 裡面做什麼都不會影響你的 Mac",
             "如果 RAM 夠多，你可以同時跑多個虛擬機",
-            "Apple Silicon Mac（M1/M2/M3/M4）跑 Linux 虛擬機非常快"
+            "Apple Silicon Mac（M1/M2/M3/M4/M5/M6）跑 Linux 虛擬機非常快"
           ],
           "troubleshooting": {
             "title": "卡關了？概念問題解答",
@@ -3234,6 +3236,13 @@
           "content": "你已經有硬體和 Ollama 在運行了。現在用雲端部署、語音 AI 和影片生成，讓你的設定更上一層樓。",
           "nextStepCards": [
             {
+              "emoji": "🍏",
+              "title": "Mac mini（M6／M5 Pro）",
+              "desc": "Apple 常駐 OpenClaw 桌機，起價 $899。教學在 CanFly.ai。",
+              "link": "/learn/mac-mini-m4",
+              "cta": "Mac mini 教學"
+            },
+            {
               "emoji": "🖥",
               "title": "GEEKOM A8 迷你電腦",
               "desc": "我們的 #1 推薦 — AMD Ryzen 7、32GB DDR5、Radeon 780M。終極本地 AI 工作站。",
@@ -3438,15 +3447,22 @@
               "emoji": "plug",
               "title": "HDMI 假負載",
               "desc": "為 Mac Mini 取得 EVanlak 8K 假負載",
-              "link": "/apps/hdmi-dummy-plug",
+              "link": "/apps/hardware/hdmi-dummy-plug",
               "cta": "查看產品"
             },
             {
               "emoji": "desktop",
-              "title": "Mac Mini M4",
-              "desc": "終極迷你 AI 工作站",
-              "link": "/apps/mac-mini-m4",
-              "cta": "查看產品"
+              "title": "Mac mini（M6／M5 Pro）",
+              "desc": "2026 年現行常駐 OpenClaw 機。網址仍是 /apps/hardware/mac-mini-m4。",
+              "link": "/apps/hardware/mac-mini-m4",
+              "cta": "看產品"
+            },
+            {
+              "emoji": "mini",
+              "title": "Mac mini 教學",
+              "desc": "2026 年 mini 的選購＋ollama launch openclaw。",
+              "link": "/learn/mac-mini-m4",
+              "cta": "打開教學"
             }
           ],
           "tips": [
@@ -3481,7 +3497,7 @@
           "title": "下載並安裝 Virtual Buddy",
           "titleEn": "Download & Install Virtual Buddy",
           "estimatedTime": "2 分鐘",
-          "content": "Virtual Buddy 是一款免費、開源的 macOS 應用程式，讓你一鍵建立 Linux 虛擬機。它是在 Mac 上取得獨立 Linux 環境最簡單的方式 — 非常適合用來跑 Ollama，而且不會影響你的主系統。\n\n**系統需求：**\n- macOS 13（Ventura）或更新版本\n- Apple Silicon Mac（M1/M2/M3/M4）\n- 至少 8 GB 記憶體（建議 16 GB）\n- 約 10 GB 可用磁碟空間\n\n**從 GitHub 安裝：**\n1. 前往 Virtual Buddy 的 GitHub 發布頁面\n2. 下載最新的 `.dmg` 檔案\n3. 打開 DMG，將 Virtual Buddy 拖到「應用程式」資料夾\n4. 啟動 Virtual Buddy — macOS 可能會要求你在「系統設定 > 隱私權與安全性」中允許執行",
+          "content": "Virtual Buddy 是一款免費、開源的 macOS 應用程式，讓你一鍵建立 Linux 虛擬機。它是在 Mac 上取得獨立 Linux 環境最簡單的方式 — 非常適合用來跑 Ollama，而且不會影響你的主系統。\n\n**系統需求：**\n- macOS 13（Ventura）或更新版本\n- Apple Silicon Mac（M1/M2/M3/M4/M5/M6）\n- 至少 8 GB 記憶體（建議 16 GB）\n- 約 10 GB 可用磁碟空間\n\n**從 GitHub 安裝：**\n1. 前往 Virtual Buddy 的 GitHub 發布頁面\n2. 下載最新的 `.dmg` 檔案\n3. 打開 DMG，將 Virtual Buddy 拖到「應用程式」資料夾\n4. 啟動 Virtual Buddy — macOS 可能會要求你在「系統設定 > 隱私權與安全性」中允許執行",
           "expectedResult": "Virtual Buddy 成功安裝並啟動。你可以看到主畫面，有建立新虛擬機的選項。",
           "tips": [
             "Virtual Buddy 完全免費且開源（MIT 授權）",
@@ -3915,7 +3931,7 @@
           "title": "什麼是 MLX？（僅限 Mac 🍎）",
           "titleEn": "What is MLX? (Mac Only 🍎)",
           "estimatedTime": "2 分鐘",
-          "content": "MLX 是 Apple 開發的開源機器學習框架，專為 Apple Silicon 的統一記憶體架構量身打造。與傳統 NVIDIA GPU 不同，Apple 的 M 系列晶片讓 CPU 和 GPU 共享同一塊記憶體，這意味著模型推理時不需要在不同記憶體空間之間搬移資料，大幅提升效率。\n\n這就像是把所有工具放在同一張工作桌上，而不是需要在不同房間來回跑。oMLX 基於這個架構，讓你的 OpenClaw agent 推理速度飛快。\n\n⚠️ **重要限制**：oMLX 僅支援 Apple Silicon Mac（M1/M2/M3/M4），需要 macOS 15.0 以上版本，建議至少 16GB 記憶體。",
+          "content": "MLX 是 Apple 開發的開源機器學習框架，專為 Apple Silicon 的統一記憶體架構量身打造。與傳統 NVIDIA GPU 不同，Apple 的 M 系列晶片讓 CPU 和 GPU 共享同一塊記憶體，這意味著模型推理時不需要在不同記憶體空間之間搬移資料，大幅提升效率。\n\n這就像是把所有工具放在同一張工作桌上，而不是需要在不同房間來回跑。oMLX 基於這個架構，讓你的 OpenClaw agent 推理速度飛快。\n\n⚠️ **重要限制**：oMLX 僅支援 Apple Silicon Mac（M1/M2/M3/M4/M5/M6），需要 macOS 15.0 以上版本，建議至少 16GB 記憶體。",
           "tips": [
             "檢查你的晶片：點選蘋果選單 > 關於這台 Mac",
             "建議至少 16GB RAM 才能發揮最佳效能",
@@ -3926,7 +3942,7 @@
             "items": [
               {
                 "q": "我的 Mac 是 Intel 處理器 — 可以用 oMLX 嗎？",
-                "a": "不行。oMLX 需要 Apple Silicon（M1/M2/M3/M4），無法在 Intel Mac 上執行。Intel Mac 建議改用 Ollama。"
+                "a": "不行。oMLX 需要 Apple Silicon（M1/M2/M3/M4/M5/M6），無法在 Intel Mac 上執行。Intel Mac 建議改用 Ollama。"
               },
               {
                 "q": "我的 Mac 只有 8GB RAM — 能用嗎？",
@@ -4174,7 +4190,7 @@
         },
         {
           "q": "Intel Mac 可以用 oMLX 嗎？",
-          "a": "不行。oMLX 基於 Apple 的 MLX 框架，僅支援 Apple Silicon（M1/M2/M3/M4）。Intel Mac 建議使用 Ollama 搭配雲端模型。"
+          "a": "不行。oMLX 基於 Apple 的 MLX 框架，僅支援 Apple Silicon（M1/M2/M3/M4/M5/M6）。Intel Mac 建議使用 Ollama 搭配雲端模型。"
         },
         {
           "q": "需要多少記憶體？",
@@ -8539,6 +8555,283 @@
           "a": "不要。Super VL 看圖看影片。Ultra 是 NVIDIA 預設。NemoClaw 是託管 OpenClaw。這一頁一句就夠。"
         }
       ]
+    },
+    "macMini": {
+      "title": "Mac mini（M6／M5 Pro）— 15 分鐘接上 OpenClaw",
+      "subtitle": "2026 年現行 Mac mini。官方接法：ollama launch openclaw。網址仍是 /learn/mac-mini-m4，不是第二個 SKU。",
+      "duration": "15 分鐘",
+      "difficulty": "入門",
+      "steps": [
+        {
+          "title": "這台 Mac mini 是什麼",
+          "titleEn": "What this Mac mini is",
+          "estimatedTime": "3 分鐘",
+          "content": "Apple 在 2026-08-25 發表 2026 年 Mac mini，2026-09-22 開始出貨。CanFly.ai 仍用 `/apps/hardware/mac-mini-m4` 與 `/learn/mac-mini-m4`，讓舊連結繼續可用。這一頁賣的是現行 M6／M5 Pro，不是第二個 slug、不是上一代 M4、不是 Mac Studio、也不是 Googlebook。\n\nM6 是預設的常駐 Agent 機：12 核心 CPU（2 超能／4 效能／6 節能）、12 核心 GPU（每個 GPU 核心都有 Neural Accelerator）、雙 16 核心 Neural Engine、16GB 統一記憶體（可選 24GB 或 32GB）。標準記憶體頻寬 153GB/s；24GB／32GB 升到 170GB/s。M6 背面是三個 Thunderbolt 4。\n\nM5 Pro 是大記憶體版本：標準 15 核心 CPU／16 核心 GPU，可選 18 核心 CPU／20 核心 GPU，標準 24GB（48GB 或 64GB），頻寬 307GB/s，三個 Thunderbolt 5。Apple 標價：M6 起 $899（教育價 $799），M5 Pro 起 $1,699（教育價 $1,599）。\n\n兩款都是同一個 5 × 5 × 2 吋立方，預載 macOS 27 Golden Gate。這台硬體的官方 OpenClaw 接法：`ollama launch openclaw`。",
+          "commands": [
+            "# 產品頁（保留舊 slug）",
+            "# /apps/hardware/mac-mini-m4",
+            "",
+            "# 本教學",
+            "# /learn/mac-mini-m4",
+            "",
+            "# Apple Newsroom — 2026-08-25",
+            "https://www.apple.com/newsroom/2026/08/apple-unveils-a-more-powerful-mac-mini-featuring-the-all-new-m6-and-m5-pro/",
+            "",
+            "# 2026-09-22 出貨",
+            "https://www.apple.com/newsroom/2026/09/the-new-mac-mini-and-mac-studio-are-available-today/",
+            "",
+            "# 規格",
+            "https://www.apple.com/mac-mini/specs/",
+            "",
+            "# 官方 OpenClaw 接法",
+            "ollama launch openclaw"
+          ],
+          "modelTable": {
+            "models": [
+              {
+                "name": "M6 16GB／256GB",
+                "size": "$899",
+                "best": "雲端 OpenClaw＋小型本機模型",
+                "speed": "入門常駐機"
+              },
+              {
+                "name": "M6 24–32GB",
+                "size": "加購",
+                "best": "常駐本機 OpenClaw",
+                "speed": "建議規格"
+              },
+              {
+                "name": "M5 Pro 24–64GB",
+                "size": "$1,699+",
+                "best": "較大本機模型",
+                "speed": "專業／更多統一記憶體"
+              },
+              {
+                "name": "上一代 M4",
+                "size": "不要當新品買",
+                "best": "已經有的話仍能用",
+                "speed": "上一代"
+              }
+            ]
+          },
+          "expectedResult": "你知道這一頁是 2026 年 M6／M5 Pro Mac mini，網址刻意保留，M4／Mac Studio／Googlebook 都不另開。",
+          "tips": [
+            "Apple 宣稱相對 M4 Mac mini 本機 AI 最高約 4 倍。那是原廠數字。",
+            "不要另開 mac-mini-m6 slug。下一代 mini 仍改這一頁。",
+            "Mac Studio 512GB 是另一台貴很多的機器，留在佇列的 blog，不是這張產品卡。"
+          ],
+          "troubleshooting": {
+            "title": "範圍",
+            "items": [
+              {
+                "q": "網址為什麼還寫 mac-mini-m4？",
+                "a": "佇列規定：更新舊頁，不要用第二個 slug 互搶 SEO。畫面上的名稱是 Mac mini（M6／M5 Pro）。"
+              },
+              {
+                "q": "這是 Arduino VENTUNO Q 或 UNO Q 嗎？",
+                "a": "不是。那些是邊緣開發板。這一頁是 Apple 的 Mac mini 桌機。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "該買哪一檔規格",
+          "titleEn": "Which config to buy",
+          "estimatedTime": "3 分鐘",
+          "content": "統一記憶體才是本機 OpenClaw 的關鍵。16GB 夠用，前提是多數步驟走託管模型（Grok 4.7、GPT-6 Astra），本機只拉小型標籤。24GB 比較從容。CanFly.ai 建議常駐本機 Agent 用 M6 32GB。64GB 只有 M5 Pro。\n\n除非你確定需要 48–64GB 或 Thunderbolt 5，否則買 M6。不要當新品去買 M4。教育價：M6 $799、M5 Pro $1,599。\n\n我們核對過的 M6 16GB／256GB Amazon 編號：ASIN B0HGGJZ92H。街價會變，文案釘 Apple 的 $899。CanFly.ai 使用 Amazon Associates 代碼 juchunko-20。付款前請再看一次現貨。\n\n儲存：M6 從 256GB 起（512GB／1TB／2TB）。M5 Pro 從 512GB 起（最高 8TB）。30B 本機模型大約 25GB——256GB 很快就滿。",
+          "commands": [
+            "# Apple Store",
+            "https://www.apple.com/shop/buy-mac/mac-mini",
+            "",
+            "# Amazon — M6 16GB／256GB 入門款（請核對現貨）",
+            "https://www.amazon.com/dp/B0HGGJZ92H?tag=juchunko-20",
+            "",
+            "# CanFly.ai 產品卡",
+            "# /apps/hardware/mac-mini-m4",
+            "",
+            "# 無螢幕 Mac mini 用的 HDMI dummy plug",
+            "# /apps/hardware/hdmi-dummy-plug"
+          ],
+          "expectedResult": "你用統一記憶體決定 M6 還是 M5 Pro，而不是行銷名稱——也不會把庫存 M4 當新品買。",
+          "tips": [
+            "M6 背面是 Thunderbolt 4。只有 M5 Pro 才有 Thunderbolt 5。舊 CanFly.ai 卡片寫 M4 有 Thunderbolt 5 是錯的。",
+            "標準是 2.5Gb 乙太網路；10Gb 是加購。",
+            "若你已經有 M4 mini，跳過購買，直接做 OpenClaw 安裝。"
+          ],
+          "troubleshooting": {
+            "title": "選購",
+            "items": [
+              {
+                "q": "Amazon 比 $899 便宜，哪個才算？",
+                "a": "Apple 對 M6 的標價是 $899。Amazon 街價會變。文案用 Apple 價；結帳前確認是 M6 12 核心 CPU／12 核心 GPU。"
+              },
+              {
+                "q": "做 OpenClaw 一定要 M5 Pro 嗎？",
+                "a": "只有需要 48–64GB 統一記憶體或 Thunderbolt 5 才要。多數常駐 OpenClaw 用 M6 24–32GB 就夠。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "安裝 OpenClaw",
+          "titleEn": "Install OpenClaw",
+          "estimatedTime": "5 分鐘",
+          "content": "第一次開機完成 macOS 27 設定，並接上電源——這台機器應該一直插電。接著用官方 Ollama OpenClaw 啟動指令。這就是 CanFly.ai 為這台硬體釘的接法。這裡不需要 `clawhub install`，也不要在這裡裝 Grok Bot。\n\nOpenClaw 起來之後，若要加快 Apple Silicon 本機推論，再加 oMLX。oMLX 只支援 Mac（Apple Silicon M1 到 M6）。Intel Mac 不行。\n\n若不想拉大型本機模型、改走託管前線模型：Grok 4.7 用 `openclaw models set xai/grok-4.7`。GPT-6 Astra 用 `openclaw models set openai/gpt-6-astra`。本機執行層 Lightning：`ollama launch openclaw --model nemotron-3.5-lightning`。",
+          "commands": [
+            "# 這台 Mac mini 的官方 OpenClaw 接法",
+            "ollama launch openclaw",
+            "",
+            "# 若還沒裝 Ollama",
+            "# /learn/ollama",
+            "",
+            "# 完整 OpenClaw 教學",
+            "# /learn/ollama-openclaw",
+            "",
+            "# Apple Silicon 更快的本機推論",
+            "# /learn/omlx",
+            "",
+            "# 託管 Grok 4.7",
+            "openclaw models set xai/grok-4.7",
+            "",
+            "# 託管 GPT-6 Astra",
+            "openclaw models set openai/gpt-6-astra"
+          ],
+          "expectedResult": "Mac mini 上的 OpenClaw 已在跑，或你知道還要先裝 Ollama。",
+          "tips": [
+            "Grok Bot 是 xAI 託管隊友，不是 OpenClaw 技能。不要跟這次安裝混在一起。",
+            "Harden AIF 可擋在 tool-call 前面：`aif configure --agent openclaw --validate`。",
+            "長網址放在指令清單，避免英文版爆版。"
+          ],
+          "troubleshooting": {
+            "title": "安裝",
+            "items": [
+              {
+                "q": "ollama: command not found",
+                "a": "先到 /learn/ollama 安裝 Ollama，再跑 `ollama launch openclaw`。"
+              },
+              {
+                "q": "我的是上一代 M4，還能用嗎？",
+                "a": "可以。安裝接法相同。這一頁的購買表是給 2026 年新機；M4 持有者跳過購買、做軟體步驟即可。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "保持清醒（無螢幕）",
+          "titleEn": "Stay awake (headless)",
+          "estimatedTime": "3 分鐘",
+          "content": "macOS 一睡眠，或無螢幕的 Mac mini 以為沒有顯示器，常駐 Agent 就會斷線。機器要一直插電。接著關掉睡眠；若沒接螢幕，加一顆 HDMI dummy plug，讓 GPU 畫面擷取與遠端桌面仍有顯示器。\n\n完整的 always-on 教學在 /learn/always-on-mac。不要複製那一頁。這一步只是 Mac mini 子集：電源、dummy plug，然後回到 OpenClaw。",
+          "commands": [
+            "sudo pmset -c sleep 0 disksleep 0 networkoversleep 1",
+            "nohup caffeinate -s > /dev/null 2>&1 &",
+            "pmset -g | grep tcpkeepalive",
+            "",
+            "# 完整 always-on 教學",
+            "# /learn/always-on-mac",
+            "",
+            "# HDMI dummy plug",
+            "# /apps/hardware/hdmi-dummy-plug",
+            "",
+            "system_profiler SPDisplaysDataType | head -20"
+          ],
+          "expectedResult": "接上電源時 sleep 為 0、tcpkeepalive 為 1。無螢幕機台會列出 dummy 顯示器。",
+          "tips": [
+            "Mac mini 閒置只吃幾瓦。一直開著就是這台 SKU 的用途。",
+            "Dummy plug 插 HDMI 埠，不是 Thunderbolt，除非轉接器真的會回報顯示器。",
+            "遠端常見組合是螢幕共享＋遠端登入（SSH）。"
+          ],
+          "troubleshooting": {
+            "title": "常駐",
+            "items": [
+              {
+                "q": "mini 還是會睡",
+                "a": "確認有插電，用 sudo 重跑 pmset，再 `pgrep caffeinate`。合上 MacBook 上蓋是另一件事——這一頁是 mini。"
+              },
+              {
+                "q": "遠端桌面很小或全黑",
+                "a": "沒接顯示器。用 /apps/hardware/hdmi-dummy-plug，再到「系統設定 > 顯示器」設解析度。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CanFly.ai 下一步",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 分鐘",
+          "content": "Mac mini 是箱子。OpenClaw 是 Agent。oMLX 加快本機呼叫。Always-on 設定讓 TCP 連線活著。若不想拉大型本機模型，就接託管模型或 Lightning。",
+          "tips": [
+            "評論影片待補（本輪沒有 HEYGEN_API_KEY）。英文口白稿：content/scripts/mac-mini-m4-review-en.txt",
+            "不要另開 Mac mini M6 slug、Mac Studio 產品頁或 Googlebook 頁。",
+            "Arduino UNO Q／VENTUNO Q 是另一種板——不是這台桌機。"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "安裝 OpenClaw",
+              "desc": "用 Ollama 一指令裝 OpenClaw，再回到這台 Mac mini。",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw 教學"
+            },
+            {
+              "emoji": "⚡",
+              "title": "oMLX",
+              "desc": "Apple Silicon（M1 到 M6）更快的本機推論。",
+              "link": "/learn/omlx",
+              "cta": "oMLX 教學"
+            },
+            {
+              "emoji": "🔌",
+              "title": "Always-on Mac",
+              "desc": "完整 pmset、dummy plug 與遠端存取。",
+              "link": "/learn/always-on-mac",
+              "cta": "常駐指南"
+            },
+            {
+              "emoji": "🧠",
+              "title": "Nemotron 3.5 Lightning",
+              "desc": "本機執行模型：ollama launch openclaw --model nemotron-3.5-lightning。",
+              "link": "/learn/nemotron-3-5-lightning",
+              "cta": "Lightning 教學"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "本機 tool-call 防火牆：aif configure --agent openclaw --validate。",
+              "link": "/learn/harden-aif",
+              "cta": "AIF 教學"
+            },
+            {
+              "emoji": "🛒",
+              "title": "HDMI dummy plug",
+              "desc": "無螢幕 Mac mini 需要顯示器 EDID。產品頁在 CanFly.ai。",
+              "link": "/apps/hardware/hdmi-dummy-plug",
+              "cta": "看產品"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "這還是 M4 Mac mini 嗎？",
+          "a": "不是。2026 年這台是 M6／M5 Pro。我們保留 `/apps/hardware/mac-mini-m4` 與 `/learn/mac-mini-m4`，避免舊連結失效。不要另開第二個 slug。"
+        },
+        {
+          "q": "官方 OpenClaw 指令是哪一條？",
+          "a": "`ollama launch openclaw`。然後可選 `openclaw models set xai/grok-4.7` 或 `openclaw models set openai/gpt-6-astra`。"
+        },
+        {
+          "q": "統一記憶體要多少？",
+          "a": "16GB 是 M6 入門，適合託管模型加小型本機標籤。常駐本機建議 24–32GB。64GB 只有 M5 Pro。"
+        },
+        {
+          "q": "M6 有 Thunderbolt 5 嗎？",
+          "a": "沒有。M6 是三個 Thunderbolt 4。Thunderbolt 5 在 M5 Pro。舊 CanFly.ai M4 卡片寫 Thunderbolt 5 是錯的。"
+        },
+        {
+          "q": "該改買 Mac Studio 嗎？",
+          "a": "只有需要 M5 Max／M5 Ultra 等級記憶體才要。Mac Studio 512GB 是另一台貴很多的 SKU，不是這一頁。"
+        }
+      ]
     }
   },
   "hardwareCompare": {
@@ -8551,8 +8844,8 @@
       "umbrelPrice": "$299 美元",
       "umbrel-homeDesc": "專為居家伺服器打造，內建一鍵式應用商店。插上電源，10 分鐘完成設定，全天候運行 AI 及自建應用，零維護。",
       "macMini": "Mac mini",
-      "macMiniPrice": "$599+ 美元",
-      "mac-miniDesc": "Apple 的小型高效能主機。M 系列晶片提供出色的 AI 推理效能，最適合同時需要桌面工作站的開發者。",
+      "macMiniPrice": "$899+",
+      "mac-miniDesc": "2026 年 Mac mini（M6／M5 Pro）。起價 $899。Apple Silicon 上最好的常駐 OpenClaw 桌機。",
       "raspberryPi": "Raspberry Pi 5",
       "raspberryPiPrice": "$60–$80 美元",
       "raspberry-piDesc": "經典 DIY 單板電腦。極低價格入門，適合動手玩家、學習者及輕量 AI 實驗。"
