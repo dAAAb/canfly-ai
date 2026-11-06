@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" rx="24" fill="#0E4A4E"/>
+  <rect x="80" y="70" width="1040" height="490" rx="32" fill="#14686D" stroke="#7CFFFB" stroke-width="8"/>
+  <rect x="160" y="140" width="360" height="230" rx="20" fill="#0B3D40" stroke="#B8FFF9" stroke-width="6"/>
+  <rect x="680" y="140" width="360" height="230" rx="20" fill="#0B3D40" stroke="#F4C542" stroke-width="6"/>
+  <text x="340" y="275" text-anchor="middle" fill="#B8FFF9" font-family="ui-sans-serif, system-ui, sans-serif" font-size="48" font-weight="700">MPU</text>
+  <text x="860" y="275" text-anchor="middle" fill="#F4C542" font-family="ui-sans-serif, system-ui, sans-serif" font-size="48" font-weight="700">MCU</text>
+  <path d="M520 255 H680" stroke="#7CFFFB" stroke-width="10" stroke-linecap="round"/>
+  <text x="600" y="450" text-anchor="middle" fill="#F4FFFF" font-family="ui-sans-serif, system-ui, sans-serif" font-size="40" font-weight="700">Arduino VENTUNO Q</text>
+  <text x="600" y="500" text-anchor="middle" fill="#B8FFF9" font-family="ui-sans-serif, system-ui, sans-serif" font-size="24">16GB · 40 TOPS · OpenClaw on Ubuntu</text>
+</svg>

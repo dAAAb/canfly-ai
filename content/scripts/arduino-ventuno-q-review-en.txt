@@ -1,0 +1,17 @@
+Hi, I'm JU CHUN KO.
+
+If you want OpenClaw to sense, decide, and move motors on one board, buy Arduino VENTUNO Q. It is not UNO Q, and it is not a Raspberry Pi.
+
+One side is a Qualcomm Dragonwing IQ8 with sixteen gigabytes of LPDDR5 and a forty TOPS Hexagon NPU. The other side is an STM32 microcontroller for real-time pins. They talk over an RPC bridge. Ubuntu is already on the board.
+
+Official price is three hundred ninety-nine dollars. The two hundred ninety-nine intro ended on October nineteenth. Existing pre-orders keep the old price. The store still says about three to four weeks.
+
+Power it with the Arduino sixty-five watt supply on the barrel jack. A laptop USB-C five volt port will not boot.
+
+Then the official OpenClaw pin:
+
+curl -fsSL https://openclaw.ai/install.sh | bash
+
+After that, check openclaw --version, openclaw doctor, and openclaw gateway status.
+
+I made a tutorial on CanFly.ai — go try it.
