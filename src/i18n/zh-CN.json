@@ -746,6 +746,21 @@
         "ctaPrimary": "开始免费教程",
         "ctaSecondary": "到 Amazon 购买"
       },
+      "arduino-ventuno-q": {
+        "tagline": "双脑边缘板，把 OpenClaw 接到真实硬件",
+        "description": "Arduino VENTUNO Q 是 Arduino 的双脑边缘 AI 开发板：Qualcomm Dragonwing IQ8（QCS8275）跑 Ubuntu Linux，再加上 STM32H5F5 实时 MCU。官价 399 美元（欧区店 419.55 欧元）；2026-10-19 结束 299 美元导入价，已下单的维持 299。美区店仍写预购、约 3–4 周。16GB LPDDR5、64GB eMMC、M.2 NVMe Gen.4、Hexagon NPU 最高 40 dense TOPS。官方 OpenClaw 指令：`curl -fsSL https://openclaw.ai/install.sh | bash`。不是 UNO Q、不是 Raspberry Pi、不是 Mac mini、不是 Jetson Orin Nano 2。",
+        "features": [
+          "官价 399 美元／419.55 欧元；已下单的 299 美元导入价维持不变",
+          "MPU：Qualcomm Dragonwing IQ8（QCS8275），八核 Kryo、Adreno 623、Hexagon 40 dense TOPS",
+          "MCU：STM32H5F5 Cortex-M33 @ 250 MHz — Arduino Core 跑在 Zephyr",
+          "16GB LPDDR5 + 64GB eMMC + M.2 NVMe Gen.4",
+          "Wi-Fi 6（2.4/5/6 GHz）、Bluetooth 5.3、2.5Gb 以太网",
+          "官方 OpenClaw：curl -fsSL https://openclaw.ai/install.sh | bash",
+          "首次设置：Arduino 65W 接圆孔电源 — 笔记本 USB-C 5V 无法开机"
+        ],
+        "ctaPrimary": "开始免费教程",
+        "ctaSecondary": "Arduino 商店"
+      },
       "macbook-neo": {
         "tagline": "史上最便宜的 MacBook",
         "description": "全新 MacBook Neo 是 Apple 史上最便宜的笔记本。A18 Pro 芯片、13 英寸屏幕、1.23 公斤。开箱即可设置 OpenClaw — 不需外接显示器。",
@@ -3238,6 +3253,13 @@
               "desc": "Apple 常驻 OpenClaw 台式机，起价 $899。教程在 CanFly.ai。",
               "link": "/learn/mac-mini-m4",
               "cta": "Mac mini 教程"
+            },
+            {
+              "emoji": "🟩",
+              "title": "Arduino VENTUNO Q",
+              "desc": "16GB 双脑边缘板。官方 OpenClaw 指令：install.sh。399 美元。",
+              "link": "/learn/arduino-ventuno-q",
+              "cta": "VENTUNO Q 教程"
             },
             {
               "emoji": "🖥",
@@ -8646,7 +8668,7 @@
               },
               {
                 "q": "这是 Arduino VENTUNO Q 或 UNO Q 吗？",
-                "a": "不是。那些是边缘开发板。这一页是 Apple 的 Mac mini 台式机。"
+                "a": "不是。那些是边缘开发板。VENTUNO Q 在 /apps/hardware/arduino-ventuno-q。UNO Q 是另一块更便宜的板。这一页是 Apple 的 Mac mini 台式机。"
               }
             ]
           }
@@ -8779,7 +8801,7 @@
           "tips": [
             "评论视频待补（本轮没有 HEYGEN_API_KEY）。英文口白稿：content/scripts/mac-mini-m4-review-en.txt",
             "不要另开 Mac mini M6 slug、Mac Studio 产品页或 Googlebook 页。",
-            "Arduino UNO Q／VENTUNO Q 是另一种板——不是这台台式机。"
+            "Arduino UNO Q 是另一种板。VENTUNO Q 教程：/learn/arduino-ventuno-q——不是这台台式机。"
           ],
           "nextStepCards": [
             {
@@ -8847,6 +8869,294 @@
         {
           "q": "该改买 Mac Studio 吗？",
           "a": "只有需要 M5 Max／M5 Ultra 等级内存才要。Mac Studio 512GB 是另一台贵很多的 SKU，不是这一页。"
+        }
+      ]
+    },
+    "ventunoQ": {
+      "title": "Arduino VENTUNO Q — 把 OpenClaw 放到边缘",
+      "subtitle": "官方指令：curl -fsSL https://openclaw.ai/install.sh | bash。不是 UNO Q、不是 Raspberry Pi、不是 Mac mini。",
+      "duration": "20 分钟",
+      "difficulty": "入门",
+      "steps": [
+        {
+          "title": "VENTUNO Q 是什么",
+          "titleEn": "What VENTUNO Q is",
+          "estimatedTime": "4 分钟",
+          "content": "VENTUNO Q 是 Arduino 的双脑边缘电脑。MPU 是 Qualcomm Dragonwing IQ8（文档也写 QCS8275／IQ-8275）：八核 Kryo、Adreno 623 GPU、Hexagon NPU 最高 40 dense TOPS、Spectra ISP。MCU 是 STM32H5F5（Cortex-M33 @ 250 MHz、4MB flash、1.5MB RAM），Arduino Core 跑在 Zephyr。两边用 RPC 桥接，同一块板就能感知、决策、动作。\n\n内存是 16GB LPDDR5（2×8GB）。存储是 64GB eMMC，外加 M.2 NVMe Gen.4。无线：Wi-Fi 6（2.4/5/6 GHz）、Bluetooth 5.3、2.5Gb 以太网。MPU 镜像是 Ubuntu（Debian 即将提供）。尺寸 160×100×25.8 mm，比 UNO 大很多。\n\nCanFly.ai 这一页只写 VENTUNO Q。UNO Q 是更便宜的双脑板（QRB2210、4GB）。Raspberry Pi 5 是另一种单板。Mac mini 是台式机。Jetson Orin Nano 2 仍是 2027 模块，不要当成这颗 SKU。",
+          "commands": [
+            "# 产品页",
+            "# /apps/hardware/arduino-ventuno-q",
+            "",
+            "# 本教程",
+            "# /learn/arduino-ventuno-q",
+            "",
+            "# 官方产品页",
+            "https://www.arduino.cc/product-ventuno-q",
+            "",
+            "# 官方商店（美区 399 美元／欧区 419.55 欧元）",
+            "https://store.arduino.cc/products/ventuno-q",
+            "",
+            "# 用户手册",
+            "https://docs.arduino.cc/tutorials/ventuno-q/user-manual/",
+            "",
+            "# 官方 OpenClaw 指令",
+            "curl -fsSL https://openclaw.ai/install.sh | bash"
+          ],
+          "modelTable": {
+            "models": [
+              {
+                "name": "VENTUNO Q",
+                "size": "399 美元",
+                "best": "离线 LLM + 实时 MCU",
+                "speed": "本页"
+              },
+              {
+                "name": "UNO Q 4GB",
+                "size": "另一块板",
+                "best": "较小的双脑沙盒",
+                "speed": "不是这个 slug"
+              },
+              {
+                "name": "Raspberry Pi 5 8GB",
+                "size": "约 80 美元",
+                "best": "入门学习套件",
+                "speed": "没有 Hexagon NPU"
+              },
+              {
+                "name": "Mac mini M6",
+                "size": "899 美元",
+                "best": "常开台式机 OpenClaw",
+                "speed": "/learn/mac-mini-m4"
+              }
+            ]
+          },
+          "expectedResult": "你知道 VENTUNO Q 是 16GB／40 TOPS 的 Arduino 板，不会和 UNO Q、Pi、Mac mini、Jetson 搞混。",
+          "tips": [
+            "Arduino 架构页提到本地 Qwen／Gemma 4 级别模型跑在 NPU。那是原厂说明，不是 Ollama 指令。",
+            "不要另开 IQ8、QCS8275 或 STM32H5 产品页。",
+            "2026-09-11 的 AMR 文章只是使用故事，不是另一个产品。"
+          ],
+          "troubleshooting": {
+            "title": "范围",
+            "items": [
+              {
+                "q": "这是 Arduino UNO Q 吗？",
+                "a": "不是。UNO Q 是较小的双脑板（QRB2210、4GB／32GB）。这一页只写 VENTUNO Q。"
+              },
+              {
+                "q": "这是 Jetson Orin Nano 2 吗？",
+                "a": "不是。NVIDIA 的 Orin Nano 2 仍排在 2027。不要以为买这块板就等于那颗模块。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "价格、下单与电源",
+          "titleEn": "Price, order, and power",
+          "estimatedTime": "4 分钟",
+          "content": "Arduino 2026-10-19 的公开信把官价定在 399 美元。欧区店是 419.55 欧元。299 美元导入价已结束；若你已经预购，Arduino 说价格维持。美区店文案仍写预购、约 3–4 周。请走 Arduino 商店。CanFly.ai 不为这块板锁定 Amazon ASIN。\n\n官方首次设置要用 Arduino 65W 电源接圆孔（7–24 V）。用户手册写得很清楚：电脑 USB-C 5V 不够，USB 旁会红灯闪烁。9–20 V 的 USB-C 是给网络／SBC 模式、而且你已经有正式电源之后。7–24 V 螺丝端子是工业接法。\n\n另外准备一条 USB-C 数据线给 App Lab；若走 SBC 模式，再加 HDMI、键盘、鼠标。",
+          "commands": [
+            "# Arduino 商店",
+            "https://store.arduino.cc/products/ventuno-q",
+            "",
+            "# 美区店（同一产品线）",
+            "https://store-usa.arduino.cc/products/ventuno-q",
+            "",
+            "# 价格公开信 — 2026-10-19",
+            "https://blog.arduino.cc/2026/10/19/a-letter-to-our-community-ventuno-q-reaches-its-official-price/",
+            "",
+            "# 用户手册 — 电源与首次设置",
+            "https://docs.arduino.cc/tutorials/ventuno-q/user-manual/",
+            "",
+            "# CanFly.ai 产品卡",
+            "# /apps/hardware/arduino-ventuno-q"
+          ],
+          "expectedResult": "你已按 399 美元／419.55 欧元下单（或保住 299 美元预购），并且准备了 65W 圆孔电源，不是笔记本充电器。",
+          "tips": [
+            "这一页不要自造 Amazon 导购。CTA 用 Arduino 商店。",
+            "早期导入价可能附 65W 适配器，新的 399 美元订单不一定包含 — 以下单页为准。",
+            "SBC 比较表写的 15–25 W 是典型功耗，不能代替首次开机的 65W 适配器。"
+          ],
+          "troubleshooting": {
+            "title": "购买与电源",
+            "items": [
+              {
+                "q": "我已经付了 299 美元，还要补 100 吗？",
+                "a": "不用。Arduino 2026-10-19 公开信说既有预购维持导入价。"
+              },
+              {
+                "q": "USB 旁红灯一直闪",
+                "a": "这是官方说的 USB 故障灯，代表你在用电脑的 5V。把 65W 接到圆孔，USB-C 只当数据线。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "首次设置（App Lab、SBC、SSH）",
+          "titleEn": "First setup (App Lab, SBC, SSH)",
+          "estimatedTime": "6 分钟",
+          "content": "官方首次设置有三种模式。PC 模式：圆孔供电、USB-C 接电脑、安装 Arduino App Lab，设置板名／键盘／Wi-Fi，再跑更新。网络模式是第一次加入 Wi-Fi 之后，用局域网开 App Lab。SBC 模式：HDMI + 键盘 + 鼠标，Ubuntu 镜像已内置 App Lab。\n\nSSH 与 ADB 是额外入口。Arduino 要你先跑完 App Lab，板子才有密码与 Wi-Fi。SSH 走局域网。ADB 走 USB-C。之后用可交互的终端 — OpenClaw 安装程序可能会要 sudo。\n\n镜像已有 Docker 与 apt。Arduino 示例可留在 App Lab，OpenClaw 再进 shell。",
+          "commands": [
+            "# 用户手册",
+            "https://docs.arduino.cc/tutorials/ventuno-q/user-manual/",
+            "",
+            "# 首次设置（PC 模式）",
+            "https://docs.arduino.cc/tutorials/ventuno-q/first-setup/",
+            "",
+            "# SBC 模式",
+            "https://docs.arduino.cc/tutorials/ventuno-q/sbc-mode-setup",
+            "",
+            "# 连上 Wi-Fi 后，从笔记本 SSH",
+            "ssh <board-user>@<board-ip>",
+            "",
+            "# USB-C 终端替代",
+            "adb shell"
+          ],
+          "expectedResult": "App Lab 看得到板子、Wi-Fi 可用，并且能用 SSH 或 ADB 打开 Linux shell。",
+          "tips": [
+            "先跑完 App Lab 更新，再装 Node 或 OpenClaw。",
+            "若你已有 HDMI 与键盘，SBC 模式最快。",
+            "不要跳过板子密码。接上网、还用默认镜像，不算安全的 agent 盒。"
+          ],
+          "troubleshooting": {
+            "title": "首次设置",
+            "items": [
+              {
+                "q": "App Lab 看不到板子",
+                "a": "先确认 65W 已接圆孔，再用 USB-C 当数据线。笔记本 5V 口会让首次设置失败。"
+              },
+              {
+                "q": "SSH 显示 connection refused",
+                "a": "先完成 App Lab 的 Wi-Fi 与密码。SSH 是给局域网，不是给尚未设置的第一次开机。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "安装 OpenClaw",
+          "titleEn": "Install OpenClaw",
+          "estimatedTime": "5 分钟",
+          "content": "在板子的 Ubuntu shell 用官方 Linux 安装程序。这是 CanFly.ai 给 VENTUNO Q 的 pin。不是 `ollama launch openclaw`（那是 Mac mini／台式机 Ollama 路线），也不是 `clawhub install`。\n\nOpenClaw 需要 Node 24.16+ 或 26.1+。Linux 上若没有 Node，安装程序可以代装。请在可交互的 SSH 或 SBC 终端执行，因为它可能要 sudo 与引导设置。\n\n装完后跑：`openclaw --version`、`openclaw doctor`、`openclaw gateway status`。若引导没有装成服务，再用 `openclaw gateway install` 与 `openclaw gateway start`。\n\n16GB 上较稳的是云端模型：`openclaw models set xai/grok-4.7` 或 `openclaw models set openai/gpt-6-astra`。本地 NPU 模型先留在 Arduino App Lab，除非你有这个 SoC 的文档化 Ollama 标签。本地 tool-call 防火墙用 Harden AIF：`aif configure --agent openclaw --validate`（请对 OpenClaw v2026.11.1 再验证）。",
+          "commands": [
+            "# VENTUNO Q 上的官方 OpenClaw 指令",
+            "curl -fsSL https://openclaw.ai/install.sh | bash",
+            "",
+            "openclaw --version",
+            "openclaw doctor",
+            "openclaw gateway status",
+            "",
+            "# 若 Gateway 还不是服务",
+            "openclaw gateway install",
+            "openclaw gateway start",
+            "",
+            "# 云端 Grok 4.7",
+            "openclaw models set xai/grok-4.7",
+            "",
+            "# 云端 GPT-6 Astra",
+            "openclaw models set openai/gpt-6-astra",
+            "",
+            "# 本地 tool-call 防火墙",
+            "aif configure --agent openclaw --validate",
+            "",
+            "# 完整 OpenClaw 教程",
+            "# /learn/ollama-openclaw"
+          ],
+          "expectedResult": "openclaw --version 有输出、doctor 通过，而且 Gateway 在板子上运行。",
+          "tips": [
+            "Grok Bot 是 xAI 托管队友，不是 OpenClaw 技能。不要装进这一步。",
+            "不要替 VENTUNO Q 自造 `openclaw plugins install`。没有官方 VENTUNO plugin slug。",
+            "16GB 够跑 Gateway 加云端模型。超大本地权重仍要走 NPU 或改用台式机。"
+          ],
+          "troubleshooting": {
+            "title": "安装",
+            "items": [
+              {
+                "q": "安装程序卡住、没有提示",
+                "a": "用可交互的终端（SBC 或带 pty 的 SSH）。非交互管道会把 sudo 藏起来。"
+              },
+              {
+                "q": "我该跑 ollama launch openclaw 吗？",
+                "a": "不要把它当这块板的官方 pin。那是 Mac mini／台式机 Ollama 路线。这里的 pin 是 install.sh。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CanFly.ai 下一步",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 分钟",
+          "content": "VENTUNO Q 是边缘盒。OpenClaw 是 agent。Harden AIF 挡在 tool-call 前面。Mac mini 是安静的台式机替代。硬件指南仍涵盖 Pi 与迷你 PC。",
+          "tips": [
+            "评测视频待补（这次没有 HEYGEN_API_KEY）。英文口播稿：content/scripts/arduino-ventuno-q-review-en.txt",
+            "不要从这篇另开 UNO Q、Jetson 或 IQ-8275 EVK 页。",
+            "QClaw 是社区的 UNO Q 项目 — 不是这块板，也不是官方 OpenClaw pin。"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "安装 OpenClaw",
+              "desc": "台式机 OpenClaw 教程。在 VENTUNO Q 上 pin 仍是 install.sh。",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw 教程"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "本地 tool-call 防火墙：aif configure --agent openclaw --validate。",
+              "link": "/learn/harden-aif",
+              "cta": "AIF 教程"
+            },
+            {
+              "emoji": "🍏",
+              "title": "Mac mini（M6／M5 Pro）",
+              "desc": "899 美元起的常开台式机 OpenClaw。是另一台机器。",
+              "link": "/learn/mac-mini-m4",
+              "cta": "Mac mini 教程"
+            },
+            {
+              "emoji": "🧠",
+              "title": "Grok 4.7",
+              "desc": "云端模型：openclaw models set xai/grok-4.7。",
+              "link": "/learn/grok-4-7",
+              "cta": "Grok 4.7 教程"
+            },
+            {
+              "emoji": "✨",
+              "title": "GPT-6 Astra",
+              "desc": "云端模型：openclaw models set openai/gpt-6-astra。",
+              "link": "/learn/gpt-6-astra",
+              "cta": "Astra 教程"
+            },
+            {
+              "emoji": "🛒",
+              "title": "硬件指南",
+              "desc": "Pi、迷你 PC 与选购规则在 CanFly.ai。",
+              "link": "/learn/hardware",
+              "cta": "硬件指南"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "VENTUNO Q 上官方 OpenClaw 指令是什么？",
+          "a": "`curl -fsSL https://openclaw.ai/install.sh | bash`，再跑 `openclaw doctor` 与 `openclaw gateway status`。不是 `ollama launch openclaw`。"
+        },
+        {
+          "q": "多少钱？",
+          "a": "2026-10-19 起官价 399 美元（欧区店 419.55 欧元）。既有 299 美元预购维持。店面仍写约 3–4 周。"
+        },
+        {
+          "q": "笔记本 USB-C 线供电可以吗？",
+          "a": "不行。官方首次设置用 Arduino 65W 接圆孔。电脑 5V 口会亮 USB 故障灯。"
+        },
+        {
+          "q": "这是 UNO Q 吗？",
+          "a": "不是。UNO Q 是另一块更便宜的双脑板。不要共用这个 slug。"
+        },
+        {
+          "q": "能跑本地模型吗？",
+          "a": "Arduino 自己的页面说离线 LLM／Qwen／Gemma 4 级别可跑在 40 TOPS NPU 与 16GB。那是 App Lab／原厂说明，不是本页的 Ollama launch pin。"
         }
       ]
     }
