@@ -983,6 +983,34 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://canfly.ai/blog/mac-studio-512gb</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/blog/mac-studio-512gb" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/blog/mac-studio-512gb" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/blog/mac-studio-512gb" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/blog/mac-studio-512gb" />
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/blog/mac-studio-512gb</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/blog/mac-studio-512gb" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/blog/mac-studio-512gb" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/blog/mac-studio-512gb" />
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/blog/mac-studio-512gb</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/blog/mac-studio-512gb" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/blog/mac-studio-512gb" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/blog/mac-studio-512gb" />
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://canfly.ai/blog/grok-bot-vs-openclaw</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/blog/grok-bot-vs-openclaw" />
     <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/blog/grok-bot-vs-openclaw" />
