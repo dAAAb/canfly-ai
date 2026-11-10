@@ -873,6 +873,63 @@
   </url>
 
   <url>
+    <loc>https://canfly.ai/apps/hardware/arduino-ventuno-q</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/hardware/arduino-ventuno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/hardware/arduino-ventuno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/hardware/arduino-ventuno-q" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/apps/hardware/arduino-ventuno-q" />
+    <lastmod>2026-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/apps/hardware/arduino-ventuno-q</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/hardware/arduino-ventuno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/hardware/arduino-ventuno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/hardware/arduino-ventuno-q" />
+    <lastmod>2026-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/apps/hardware/arduino-ventuno-q</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/apps/hardware/arduino-ventuno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/apps/hardware/arduino-ventuno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/apps/hardware/arduino-ventuno-q" />
+    <lastmod>2026-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/learn/arduino-ventuno-q</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/arduino-ventuno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/arduino-ventuno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/arduino-ventuno-q" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://canfly.ai/learn/arduino-ventuno-q" />
+    <lastmod>2026-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-tw/learn/arduino-ventuno-q</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/arduino-ventuno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/arduino-ventuno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/arduino-ventuno-q" />
+    <lastmod>2026-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://canfly.ai/zh-cn/learn/arduino-ventuno-q</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/learn/arduino-ventuno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/learn/arduino-ventuno-q" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://canfly.ai/zh-cn/learn/arduino-ventuno-q" />
+    <lastmod>2026-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
     <loc>https://canfly.ai/about</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://canfly.ai/about" />
     <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://canfly.ai/zh-tw/about" />

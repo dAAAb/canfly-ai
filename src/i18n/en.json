@@ -746,6 +746,21 @@
         "ctaPrimary": "Start Free Tutorial",
         "ctaSecondary": "Buy on Amazon"
       },
+      "arduino-ventuno-q": {
+        "tagline": "Dual-brain edge board that puts OpenClaw on real hardware",
+        "description": "Arduino VENTUNO Q is Arduino's dual-brain edge AI board: Qualcomm Dragonwing IQ8 (QCS8275) for Ubuntu Linux plus an STM32H5F5 real-time MCU. Official list is $399 (EU store €419.55) after the 2026-10-19 end of the $299 intro; existing pre-orders keep $299. US listings still say pre-order, about 3–4 weeks. 16GB LPDDR5, 64GB eMMC, M.2 NVMe Gen.4, Hexagon NPU up to 40 dense TOPS. Official OpenClaw pin on the board's Linux shell: `curl -fsSL https://openclaw.ai/install.sh | bash`. Not UNO Q, not Raspberry Pi, not Mac mini, not Jetson Orin Nano 2.",
+        "features": [
+          "Official price $399 / €419.55; intro $299 honored if already ordered",
+          "MPU: Qualcomm Dragonwing IQ8 (QCS8275), octa-core Kryo, Adreno 623, Hexagon 40 dense TOPS",
+          "MCU: STM32H5F5 Cortex-M33 @ 250 MHz — Arduino Core on Zephyr",
+          "16GB LPDDR5 + 64GB eMMC + M.2 NVMe Gen.4",
+          "Wi-Fi 6 (2.4/5/6 GHz), Bluetooth 5.3, 2.5Gb Ethernet",
+          "Official OpenClaw: curl -fsSL https://openclaw.ai/install.sh | bash",
+          "First setup: Arduino 65W on the barrel jack — laptop USB-C 5V will not boot"
+        ],
+        "ctaPrimary": "Start Free Tutorial",
+        "ctaSecondary": "Arduino store"
+      },
       "macbook-neo": {
         "tagline": "Most affordable MacBook ever",
         "description": "The brand new MacBook Neo is Apple's most affordable laptop ever. A18 Pro chip, 13\" display, 2.7 pounds. Set up OpenClaw out of the box — no external monitor needed.",
@@ -3238,6 +3253,13 @@
               "desc": "Apple's always-on OpenClaw desktop from $899. Tutorial on CanFly.ai.",
               "link": "/learn/mac-mini-m4",
               "cta": "Mac mini tutorial"
+            },
+            {
+              "emoji": "🟩",
+              "title": "Arduino VENTUNO Q",
+              "desc": "16GB dual-brain edge board. Official OpenClaw pin: install.sh. $399.",
+              "link": "/learn/arduino-ventuno-q",
+              "cta": "VENTUNO Q tutorial"
             },
             {
               "emoji": "🖥",
@@ -8621,7 +8643,7 @@
               },
               {
                 "q": "Is this Arduino VENTUNO Q or UNO Q?",
-                "a": "No. Those are edge boards. This page is Apple's Mac mini desktop."
+                "a": "No. Those are edge boards. VENTUNO Q is /apps/hardware/arduino-ventuno-q. UNO Q is a different cheaper board. This page is Apple's Mac mini desktop."
               }
             ]
           }
@@ -8754,7 +8776,7 @@
           "tips": [
             "Review video is pending (no HEYGEN_API_KEY on this run). English script: content/scripts/mac-mini-m4-review-en.txt",
             "Do not open a Mac mini M6 slug, a Mac Studio product page, or a Googlebook page.",
-            "Arduino UNO Q / VENTUNO Q are different boards — not this desktop."
+            "Arduino UNO Q is a different board. VENTUNO Q tutorial: /learn/arduino-ventuno-q — not this desktop."
           ],
           "nextStepCards": [
             {
@@ -8822,6 +8844,294 @@
         {
           "q": "Should I buy Mac Studio instead?",
           "a": "Only if you need M5 Max / M5 Ultra class memory. Mac Studio 512GB is a different, much more expensive SKU and is not this page."
+        }
+      ]
+    },
+    "ventunoQ": {
+      "title": "Arduino VENTUNO Q — OpenClaw on the edge",
+      "subtitle": "Official pin: curl -fsSL https://openclaw.ai/install.sh | bash. Not UNO Q, not Raspberry Pi, not Mac mini.",
+      "duration": "20 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "What VENTUNO Q is",
+          "titleEn": "What VENTUNO Q is",
+          "estimatedTime": "4 min",
+          "content": "VENTUNO Q is Arduino's dual-brain edge computer. The MPU is Qualcomm Dragonwing IQ8 (also listed as QCS8275 / IQ-8275): octa-core Kryo, Adreno 623 GPU, Hexagon NPU up to 40 dense TOPS, Spectra ISP. The MCU is STM32H5F5 (Cortex-M33 @ 250 MHz, 4MB flash, 1.5MB RAM) running Arduino Core on Zephyr. The two sides talk over an RPC bridge so one board can sense, decide, and act.\n\nRAM is 16GB LPDDR5 (2×8GB). Storage is 64GB eMMC plus an M.2 NVMe Gen.4 slot. Radios: Wi-Fi 6 (2.4/5/6 GHz), Bluetooth 5.3, 2.5Gb Ethernet. The MPU image is Ubuntu (Debian coming). Size is 160×100×25.8 mm — much larger than an UNO.\n\nThis CanFly.ai page is only VENTUNO Q. UNO Q is a cheaper dual-brain board (QRB2210, 4GB). Raspberry Pi 5 is a different SBC. Mac mini is a desktop. Jetson Orin Nano 2 is still a 2027 module — do not treat it as this SKU.",
+          "commands": [
+            "# Product page",
+            "# /apps/hardware/arduino-ventuno-q",
+            "",
+            "# This tutorial",
+            "# /learn/arduino-ventuno-q",
+            "",
+            "# Official product",
+            "https://www.arduino.cc/product-ventuno-q",
+            "",
+            "# Official store (US $399 / EU €419.55)",
+            "https://store.arduino.cc/products/ventuno-q",
+            "",
+            "# User manual",
+            "https://docs.arduino.cc/tutorials/ventuno-q/user-manual/",
+            "",
+            "# Official OpenClaw pin",
+            "curl -fsSL https://openclaw.ai/install.sh | bash"
+          ],
+          "modelTable": {
+            "models": [
+              {
+                "name": "VENTUNO Q",
+                "size": "$399",
+                "best": "Offline LLM + real-time MCU",
+                "speed": "This page"
+              },
+              {
+                "name": "UNO Q 4GB",
+                "size": "Different board",
+                "best": "Smaller dual-brain sandbox",
+                "speed": "Not this slug"
+              },
+              {
+                "name": "Raspberry Pi 5 8GB",
+                "size": "~$80",
+                "best": "Budget learning kit",
+                "speed": "No Hexagon NPU"
+              },
+              {
+                "name": "Mac mini M6",
+                "size": "$899",
+                "best": "Always-on desktop OpenClaw",
+                "speed": "/learn/mac-mini-m4"
+              }
+            ]
+          },
+          "expectedResult": "You know VENTUNO Q is the 16GB / 40 TOPS Arduino board, and you will not mix it with UNO Q, Pi, Mac mini, or Jetson.",
+          "tips": [
+            "Arduino's architecture page names local Qwen / Gemma 4 class models on the NPU. Treat that as vendor guidance, not an Ollama pin.",
+            "Do not open a second slug for IQ8, QCS8275, or STM32H5.",
+            "The 2026-09-11 AMR blog is a use story, not a different product."
+          ],
+          "troubleshooting": {
+            "title": "Scope",
+            "items": [
+              {
+                "q": "Is this Arduino UNO Q?",
+                "a": "No. UNO Q is the smaller dual-brain board (QRB2210, 4GB/32GB). This page is only VENTUNO Q."
+              },
+              {
+                "q": "Is this Jetson Orin Nano 2?",
+                "a": "No. NVIDIA's Orin Nano 2 is still queued for 2027. Do not buy this board expecting that module."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Price, order, and power",
+          "titleEn": "Price, order, and power",
+          "estimatedTime": "4 min",
+          "content": "Arduino's 2026-10-19 letter set the official retail price at $399. The EU store lists €419.55. The $299 intro is closed; if you already pre-ordered, Arduino says that price is honored. US store copy still says pre-order, about 3–4 weeks. Buy from the Arduino store. CanFly.ai does not pin an Amazon ASIN for this board.\n\nOfficial first setup wants the Arduino 65W supply on the barrel jack (7–24 V). The user manual is explicit: a computer USB-C 5 V port is not enough and shows a blinking red LED next to USB. USB-C at 9–20 V is for Network / SBC mode after you have a real PSU. Screw-terminal 7–24 V is the industrial option.\n\nYou also want a USB-C data cable for App Lab, plus HDMI + keyboard + mouse if you use SBC mode.",
+          "commands": [
+            "# Arduino store",
+            "https://store.arduino.cc/products/ventuno-q",
+            "",
+            "# US store (same SKU family)",
+            "https://store-usa.arduino.cc/products/ventuno-q",
+            "",
+            "# Price letter — 2026-10-19",
+            "https://blog.arduino.cc/2026/10/19/a-letter-to-our-community-ventuno-q-reaches-its-official-price/",
+            "",
+            "# User manual — power + first setup",
+            "https://docs.arduino.cc/tutorials/ventuno-q/user-manual/",
+            "",
+            "# CanFly.ai product card",
+            "# /apps/hardware/arduino-ventuno-q"
+          ],
+          "expectedResult": "You ordered the $399 / €419.55 board (or kept a $299 pre-order) and you have a 65W barrel-jack supply, not a laptop charger.",
+          "tips": [
+            "Do not invent an Amazon tag for this page. Use the Arduino store CTA.",
+            "Intro bundles that included a 65W adapter may not apply to new $399 orders — check the live listing.",
+            "15–25 W typical draw is Arduino's SBC comparison figure, not a substitute for the 65W brick at first boot."
+          ],
+          "troubleshooting": {
+            "title": "Buying and power",
+            "items": [
+              {
+                "q": "I already paid $299. Do I owe $100?",
+                "a": "No. Arduino's 2026-10-19 letter says existing pre-orders keep the introductory price."
+              },
+              {
+                "q": "The board blinks a red LED next to USB",
+                "a": "That is the official USB-fault sign for 5 V from a computer port. Move the 65W brick to the barrel jack, then use USB-C only as data."
+              }
+            ]
+          }
+        },
+        {
+          "title": "First setup (App Lab, SBC, SSH)",
+          "titleEn": "First setup (App Lab, SBC, SSH)",
+          "estimatedTime": "6 min",
+          "content": "Official first setup has three modes. PC mode: power on the barrel jack, USB-C to your computer, install Arduino App Lab, set board name / keyboard / Wi-Fi, then run updates. Network mode is App Lab over LAN after that first Wi-Fi join. SBC mode: HDMI + keyboard + mouse, App Lab is already on the Ubuntu image.\n\nSSH and ADB are extra doors. Arduino wants App Lab first so the board has a password and Wi-Fi. SSH is on the LAN. ADB is over USB-C. Use an interactive terminal later — the OpenClaw installer may ask for sudo.\n\nDocker and apt are already on the image. You can stay in App Lab for Arduino examples, then drop to a shell for OpenClaw.",
+          "commands": [
+            "# User manual",
+            "https://docs.arduino.cc/tutorials/ventuno-q/user-manual/",
+            "",
+            "# First setup (PC mode)",
+            "https://docs.arduino.cc/tutorials/ventuno-q/first-setup/",
+            "",
+            "# SBC mode",
+            "https://docs.arduino.cc/tutorials/ventuno-q/sbc-mode-setup",
+            "",
+            "# After Wi-Fi: SSH from your laptop",
+            "ssh <board-user>@<board-ip>",
+            "",
+            "# USB-C terminal alternative",
+            "adb shell"
+          ],
+          "expectedResult": "App Lab sees the board, Wi-Fi works, and you can open a Linux shell over SSH or ADB.",
+          "tips": [
+            "Finish App Lab updates before you install Node or OpenClaw.",
+            "SBC mode is the fastest path if you already have HDMI and a keyboard.",
+            "Do not skip the board password. A default image on Ethernet is not a hardened agent box."
+          ],
+          "troubleshooting": {
+            "title": "First setup",
+            "items": [
+              {
+                "q": "App Lab does not see the board",
+                "a": "Confirm the 65W brick is on the barrel jack, then plug USB-C as data. A 5 V laptop port fails first setup."
+              },
+              {
+                "q": "SSH says connection refused",
+                "a": "Finish App Lab Wi-Fi + password first. SSH is for the LAN, not the first unconfigured boot."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Install OpenClaw",
+          "titleEn": "Install OpenClaw",
+          "estimatedTime": "5 min",
+          "content": "On the board's Ubuntu shell, use the official Linux installer. That is the CanFly.ai pin for VENTUNO Q. It is not `ollama launch openclaw` (that pin is for Mac mini / desktop Ollama) and it is not `clawhub install`.\n\nOpenClaw wants Node 24.16+ or 26.1+. The installer can provision Node on Linux if it is missing. Run it in an interactive SSH or SBC terminal because it may ask for sudo and onboarding.\n\nAfter install: `openclaw --version`, `openclaw doctor`, `openclaw gateway status`. Keep the Gateway up with `openclaw gateway install` then `openclaw gateway start` if onboarding did not already do that.\n\nHosted brains on 16GB are the comfortable path: `openclaw models set xai/grok-4.7` or `openclaw models set openai/gpt-6-astra`. Local NPU models stay in Arduino App Lab unless you have a documented Ollama tag for this SoC. Add a local tool-call firewall with Harden AIF: `aif configure --agent openclaw --validate` (re-check on OpenClaw v2026.11.1).",
+          "commands": [
+            "# Official OpenClaw pin on VENTUNO Q",
+            "curl -fsSL https://openclaw.ai/install.sh | bash",
+            "",
+            "openclaw --version",
+            "openclaw doctor",
+            "openclaw gateway status",
+            "",
+            "# If the Gateway is not a service yet",
+            "openclaw gateway install",
+            "openclaw gateway start",
+            "",
+            "# Hosted Grok 4.7",
+            "openclaw models set xai/grok-4.7",
+            "",
+            "# Hosted GPT-6 Astra",
+            "openclaw models set openai/gpt-6-astra",
+            "",
+            "# Local tool-call firewall",
+            "aif configure --agent openclaw --validate",
+            "",
+            "# Full OpenClaw walkthrough",
+            "# /learn/ollama-openclaw"
+          ],
+          "expectedResult": "openclaw --version prints, doctor is clean, and the Gateway is running on the board.",
+          "tips": [
+            "Grok Bot is a hosted xAI teammate, not an OpenClaw skill. Do not mix it into this install.",
+            "Do not invent `openclaw plugins install` for VENTUNO Q. There is no official VENTUNO plugin slug.",
+            "16GB is enough for a Gateway plus a hosted model. Huge local pulls still need the NPU path or a desktop."
+          ],
+          "troubleshooting": {
+            "title": "Install",
+            "items": [
+              {
+                "q": "The installer hung without a prompt",
+                "a": "Use an interactive TTY (SBC terminal or SSH with a real pty). Piped non-interactive shells hide sudo."
+              },
+              {
+                "q": "Should I run ollama launch openclaw?",
+                "a": "Not as the official pin on this board. That command is the Mac mini / desktop Ollama path. Here the pin is install.sh."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Next steps on CanFly.ai",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 min",
+          "content": "VENTUNO Q is the edge box. OpenClaw is the agent. Harden AIF sits in front of tool calls. Mac mini is the quiet desktop alternative. The hardware guide still covers Pi and mini PCs.",
+          "tips": [
+            "Review video is pending (no HEYGEN_API_KEY on this run). English script: content/scripts/arduino-ventuno-q-review-en.txt",
+            "Do not open an UNO Q, Jetson, or IQ-8275 EVK page from this tutorial.",
+            "QClaw is a community UNO Q project — not this board and not an official OpenClaw pin."
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "Install OpenClaw",
+              "desc": "Desktop OpenClaw walkthrough. On VENTUNO Q the pin is still install.sh.",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw tutorial"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "Local tool-call firewall: aif configure --agent openclaw --validate.",
+              "link": "/learn/harden-aif",
+              "cta": "AIF tutorial"
+            },
+            {
+              "emoji": "🍏",
+              "title": "Mac mini (M6 / M5 Pro)",
+              "desc": "Always-on desktop OpenClaw from $899. Different machine.",
+              "link": "/learn/mac-mini-m4",
+              "cta": "Mac mini tutorial"
+            },
+            {
+              "emoji": "🧠",
+              "title": "Grok 4.7",
+              "desc": "Hosted brain: openclaw models set xai/grok-4.7.",
+              "link": "/learn/grok-4-7",
+              "cta": "Grok 4.7 tutorial"
+            },
+            {
+              "emoji": "✨",
+              "title": "GPT-6 Astra",
+              "desc": "Hosted brain: openclaw models set openai/gpt-6-astra.",
+              "link": "/learn/gpt-6-astra",
+              "cta": "Astra tutorial"
+            },
+            {
+              "emoji": "🛒",
+              "title": "Hardware guide",
+              "desc": "Pi, mini PCs, and buying rules on CanFly.ai.",
+              "link": "/learn/hardware",
+              "cta": "Hardware guide"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "What is the official OpenClaw command on VENTUNO Q?",
+          "a": "`curl -fsSL https://openclaw.ai/install.sh | bash`, then `openclaw doctor` and `openclaw gateway status`. Not `ollama launch openclaw`."
+        },
+        {
+          "q": "How much does it cost?",
+          "a": "Official retail is $399 (EU store €419.55) from 2026-10-19. Existing $299 pre-orders stay honored. Listings still say about 3–4 weeks."
+        },
+        {
+          "q": "Can a laptop USB-C cable power it?",
+          "a": "No. Official first setup uses the Arduino 65W supply on the barrel jack. A 5 V computer port raises a USB fault LED."
+        },
+        {
+          "q": "Is this UNO Q?",
+          "a": "No. UNO Q is a different, cheaper dual-brain board. Do not share this slug."
+        },
+        {
+          "q": "Can it run local models?",
+          "a": "Arduino's own pages say offline LLMs / Qwen / Gemma 4 class work on the 40 TOPS NPU and 16GB. That is App Lab / vendor guidance, not an Ollama launch pin on this page."
         }
       ]
     }
