@@ -115,6 +115,7 @@ POST /api/agents/:name/milestones — Add achievements (Bearer auth)
 ### Hardware
 - Umbrel (/apps/hardware/umbrel) - Self-hosted home AI server
 - Mac mini (M6 / M5 Pro) (/apps/hardware/mac-mini-m4) - 2026 always-on OpenClaw desktop from $899. Official pin: `ollama launch openclaw`. Tutorial: /learn/mac-mini-m4. Slug kept; not a second M6 page.
+- Mac Studio 512GB (/blog/mac-studio-512gb) - Spec blog only, not a product page. M5 Ultra 36-core/80-core + 512GB US floor $22,299 (2026-10-28 CTO). M5 Max still max 128GB. Same OpenClaw pin: `ollama launch openclaw`. Buy Mac mini unless you need Max/Ultra memory.
 
 ## Community & Profiles
 
@@ -175,4 +176,4 @@ These connectors let a user go from "no agent" to "always-on cloud agent" withou
 Supported: English (en), Traditional Chinese (zh-TW), Simplified Chinese (zh-CN)
 URLs: /:lang/path (e.g., /zh-tw/apps, /zh-cn/community)
 
-Last updated: 2026-09-04
+Last updated: 2026-11-10

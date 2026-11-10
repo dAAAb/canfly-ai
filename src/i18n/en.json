@@ -8610,7 +8610,7 @@
           "tips": [
             "Apple quotes up to 4x faster on-device AI versus Mac mini with M4. Treat that as a vendor number.",
             "Do not open a mac-mini-m6 slug. Update this page when Apple ships the next mini.",
-            "Mac Studio 512GB is a different, much more expensive machine. It stays on its own queued blog — not this product card."
+            "Mac Studio 512GB is a different, much more expensive machine. Spec blog: /blog/mac-studio-512gb — not this product card."
           ],
           "troubleshooting": {
             "title": "Scope",
@@ -8821,7 +8821,7 @@
         },
         {
           "q": "Should I buy Mac Studio instead?",
-          "a": "Only if you need M5 Max / M5 Ultra class memory. Mac Studio 512GB is a different, much more expensive SKU and is not this page."
+          "a": "Only if you need M5 Max / M5 Ultra class memory. Specs and the $22,299 512GB floor are on /blog/mac-studio-512gb — not a product page."
         }
       ]
     }
@@ -9296,6 +9296,19 @@
           "Security is the quiet difference. Grok Bot's computer is isolated to your account, not to one Bot. A login or file you place there is available to every Bot you run. Approvals exist for a reason: take over Agent Computer for passwords, passkeys, 2FA, and CAPTCHA. OpenClaw puts the same class of risk on your disk and your skills — which is why we also teach local firewalls instead of pretending chat is harmless.",
           "CanFly.ai will not pretend one stack wins. If you want a teammate that keeps going in Cursor's cloud, open /apps/free/grok-bot and /learn/grok-bot. If you want an agent you can move, start with OpenClaw and Grok 4.7. Perplexity search stays on /learn/perplexity — Computer and Portable are still a separate call, not this comparison.",
           "The brand promise stays the same: Now You Can Fly. Use the hosted Bot when speed matters and the vendor computer is acceptable. Use OpenClaw when ownership matters. Both links are on CanFly.ai so you can choose with the facts, not a rumor slug."
+        ]
+      },
+      "macStudio512gb": {
+        "title": "Mac Studio 512GB is on the Apple Store — spec sheet, not a product page",
+        "summary": "Apple opened the M5 Ultra 512GB configure-to-order on 2026-10-28. US floor is $22,299. M5 Max still tops out at 128GB. CanFly.ai keeps this as a spec blog: OpenClaw still pins `ollama launch openclaw`. Buy the Mac mini unless you already know you need Max / Ultra memory.",
+        "content": [
+          "Apple announced Mac Studio with M5 Max and M5 Ultra on 2026-08-25 and started shipping the regular configs on 2026-09-22. The 512GB option stayed a footnote until 2026-10-28, when the US Apple Store actually let you configure it. This CanFly.ai post is that spec sheet. It is not a product card, not a second Mac mini slug, and not a buy page for Arduino, Jetson, or Googlebook.",
+          "To get 512GB you first pick Mac Studio with M5 Ultra, 36-core CPU and 80-core GPU, which starts at $6,799 in the US. Then you add 512GB unified memory for +$15,500. Floor with the Ultra's 1TB SSD: $22,299. Put 16TB on the same machine and the list is $29,799. A 2TB SSD on that 512GB config lists at $22,799. M5 Max still tops out at 128GB — and Apple only offers 128GB on the 18-core CPU / 40-core GPU Max.",
+          "Keep the ladder straight so the SKUs do not mix. M5 Max starts at $2,499 (education $2,299): 18-core CPU, 32-core GPU, 36GB unified memory, 512GB SSD, 460GB/s. The 40-core GPU Max steps bandwidth to 614GB/s and unlocks 48 / 64 / 128GB. M5 Ultra starts at $5,499 (education $5,099): 30-core CPU, 64-core GPU, 96GB, 1TB SSD, 1.2TB/s. 256GB and 512GB need the 36-core CPU / 80-core GPU Ultra. Both chips put Neural Accelerators in every GPU core. Ultra has a 32-core Neural Engine; Max has 16-core. Front ports differ: Ultra gets two Thunderbolt 5 plus SDXC; Max gets two USB-C plus SDXC. Both have four Thunderbolt 5 on the back, 10Gb Ethernet, Wi-Fi 7, Bluetooth 6, and HDMI 2.1. The box is 7.7 × 7.7 × 3.7 inches. Ultra weighs 8.0 lb versus Max 6.0 lb. Maximum continuous power is 480W.",
+          "CanFly.ai will not open `/apps/hardware/mac-studio`. The 512GB machine sits far above the Mini / mini-PC / Pi band we actually affiliate. The always-on OpenClaw box we recommend is still `/apps/hardware/mac-mini-m4` and `/learn/mac-mini-m4` — M6 from $899, M5 Pro from $1,699, same `ollama launch openclaw` pin. If you already own a Studio, use that pin. If you are shopping, start there unless you already know you need Max / Ultra memory.",
+          "Apple's Newsroom line is that 512GB lets you run enormous LLMs entirely on device, and Thunderbolt 5 can cluster Studios for distributed inference. For OpenClaw that only matters if the weights stay resident. Hosted Grok 4.7 (`openclaw models set xai/grok-4.7` on /learn/grok-4-7) and GPT-6 Astra (`openclaw models set openai/gpt-6-astra` on /learn/gpt-6-astra) do not need 512GB on the desk. Local execution models like Nemotron 3.5 Lightning (`ollama launch openclaw --model nemotron-3.5-lightning` on /learn/nemotron-3-5-lightning) fit in far less. Super at /apps/models/nemotron-3-super is the heavier local sibling — still not a reason to open a Studio product page. Pair Apple Silicon with /learn/omlx if you want faster local calls, and /learn/always-on-mac if the box has to stay awake.",
+          "Shipping: coverage on 2026-10-28 quoted late November–early December, with first 512GB units around December 3. Lead times on https://www.apple.com/shop/buy-mac/mac-studio move. Confirm the live configure-to-order and delivery estimate before you pay. US dollars above are Apple list, not a street ASIN. There is no CanFly.ai Amazon tag on this SKU. Tech specs: https://www.apple.com/mac-studio/specs/ — Newsroom: https://www.apple.com/newsroom/2026/08/apple-introduces-new-mac-studio-with-m5-max-and-m5-ultra/",
+          "Now You Can Fly does not require a $22k desk. Install OpenClaw from /learn/ollama-openclaw. Buy the Mac mini we actually teach. Read this blog only when you are comparing Studio memory, not when you need a second hardware card."
         ]
       }
     }

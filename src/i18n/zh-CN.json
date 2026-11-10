@@ -8635,7 +8635,7 @@
           "tips": [
             "Apple 宣称相对 M4 Mac mini 本地 AI 最高约 4 倍。那是厂商标称。",
             "不要另开 mac-mini-m6 slug。下一代 mini 仍改这一页。",
-            "Mac Studio 512GB 是另一台贵很多的机器，留在队列的 blog，不是这张产品卡。"
+            "Mac Studio 512GB 是另一台贵很多的机器。规格文：/blog/mac-studio-512gb — 不是这张产品卡。"
           ],
           "troubleshooting": {
             "title": "范围",
@@ -8846,7 +8846,7 @@
         },
         {
           "q": "该改买 Mac Studio 吗？",
-          "a": "只有需要 M5 Max／M5 Ultra 等级内存才要。Mac Studio 512GB 是另一台贵很多的 SKU，不是这一页。"
+          "a": "只有需要 M5 Max／M5 Ultra 等级内存才要。规格与 $22,299 地板价在 /blog/mac-studio-512gb — 不是产品页。"
         }
       ]
     }
@@ -9321,6 +9321,19 @@
           "安全是安静的差别。Grok Bot 的电脑隔离到账号，不是隔离到单一 Bot。你放上去的登录或文件，你跑的每只 Bot 都看得到。批准机制存在是有原因的：密码、通行密钥、两步验证与 CAPTCHA 请自己接管 Agent Computer。OpenClaw 把同一类风险放在你的磁盘与技能上 — 所以我们也教本地防火墙，而不是假装聊天无害。",
           "CanFly.ai 不会假装只有一边赢。要在 Cursor 云端持续做事的队友，打开 /apps/free/grok-bot 与 /learn/grok-bot。要搬得走的代理人，从 OpenClaw 与 Grok 4.7 开始。Perplexity 搜索仍在 /learn/perplexity — Computer 与 Portable 还在待决，不是这篇对照。",
           "品牌承诺没变：Now You Can Fly。要速度、也能接受厂商电脑，就用托管 Bot。要所有权，就用 OpenClaw。两条链接都在 CanFly.ai，用事实选，不要开传闻 slug。"
+        ]
+      },
+      "macStudio512gb": {
+        "title": "Mac Studio 512GB 已可订 — 这是规格文，不是产品页",
+        "summary": "Apple 在 2026-10-28 开放 M5 Ultra 512GB 定制。美区地板价 $22,299。M5 Max 仍最高 128GB。CanFly.ai 只写规格 blog：OpenClaw 仍钉 `ollama launch openclaw`。除非你已确定要 Max／Ultra 内存，否则买 Mac mini。",
+        "content": [
+          "Apple 在 2026-08-25 发布搭 M5 Max 与 M5 Ultra 的 Mac Studio，一般规格 2026-09-22 开始出货。512GB 选项在 2026-10-28 以前只是注脚，直到美区 Apple Store 真的让你选。这篇 CanFly.ai 文章就是那张规格表。它不是产品卡，不是第二个 Mac mini slug，也不是 Arduino、Jetson 或 Googlebook 的导购页。",
+          "要拿到 512GB，先选 M5 Ultra、36 核心 CPU、80 核心 GPU 的 Mac Studio，美区起价 $6,799。再加 512GB 统一内存 +$15,500。配 Ultra 标准 1TB SSD 的地板价：$22,299。同一台再加 16TB，标价 $29,799。512GB 配 2TB SSD 标 $22,799。M5 Max 仍最高 128GB — 而且 Apple 只在 18 核心 CPU／40 核心 GPU 的 Max 提供 128GB。",
+          "阶梯要分清楚，SKU 才不会混。M5 Max 起价 $2,499（教育价 $2,299）：18 核心 CPU、32 核心 GPU、36GB 统一内存、512GB SSD、460GB/s。40 核心 GPU 的 Max 把带宽升到 614GB/s，并解锁 48／64／128GB。M5 Ultra 起价 $5,499（教育价 $5,099）：30 核心 CPU、64 核心 GPU、96GB、1TB SSD、1.2TB/s。256GB 与 512GB 都要 36 核心 CPU／80 核心 GPU 的 Ultra。两颗芯片都在每个 GPU 核心内建 Neural Accelerators。Ultra 是 32 核心 Neural Engine；Max 是 16 核心。前面板不同：Ultra 两口 Thunderbolt 5 加 SDXC；Max 两口 USB-C 加 SDXC。背面都是四口 Thunderbolt 5、10Gb Ethernet、Wi-Fi 7、Bluetooth 6、HDMI 2.1。机身 7.7 × 7.7 × 3.7 英寸。Ultra 重 8.0 lb，Max 重 6.0 lb。最大持续功率 480W。",
+          "CanFly.ai 不会开 `/apps/hardware/mac-studio`。512GB 这台远高于我们实际导购的 Mini／迷你 PC／Pi 带。我们建议的全天候 OpenClaw 箱子仍是 `/apps/hardware/mac-mini-m4` 与 `/learn/mac-mini-m4` — M6 从 $899、M5 Pro 从 $1,699，同一条 `ollama launch openclaw`。你已经有 Studio，就用这条指令。你还在买，除非已确定要 Max／Ultra 内存，否则从那两页开始。",
+          "Apple Newsroom 的说法是 512GB 让你把巨大 LLM 整段留在装置上跑，Thunderbolt 5 还能把多台 Studio 集群做分散推理。对 OpenClaw 来说，只有权重真的常驻本地才有意义。托管 Grok 4.7（/learn/grok-4-7 的 `openclaw models set xai/grok-4.7`）与 GPT-6 Astra（/learn/gpt-6-astra 的 `openclaw models set openai/gpt-6-astra`）不需要桌上 512GB。本地执行层如 Nemotron 3.5 Lightning（/learn/nemotron-3-5-lightning 的 `ollama launch openclaw --model nemotron-3.5-lightning`）更小就装得下。Super 在 /apps/models/nemotron-3-super，是较重的本地兄妹 — 仍不是另开 Studio 产品页的理由。Apple Silicon 要更快本地推理看 /learn/omlx；箱子必须醒着看 /learn/always-on-mac。",
+          "出货：2026-10-28 当时的报道写 late November–early December，首批 512GB 约 December 3。https://www.apple.com/shop/buy-mac/mac-studio 的交期会变。付钱前核对现场定制与预估送达。以上美元是 Apple 标价，不是市售 ASIN。这颗 SKU 没有 CanFly.ai 的 Amazon tag。规格：https://www.apple.com/mac-studio/specs/ — Newsroom：https://www.apple.com/newsroom/2026/08/apple-introduces-new-mac-studio-with-m5-max-and-m5-ultra/",
+          "Now You Can Fly 不需要一张 $22k 的桌子。OpenClaw 从 /learn/ollama-openclaw 装。买我们真正在教的 Mac mini。只有在比较 Studio 内存时读这篇 blog，不是在找第二张硬件卡。"
         ]
       }
     }

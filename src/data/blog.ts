@@ -13,6 +13,17 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'mac-studio-512gb',
+    titleKey: 'blog.posts.macStudio512gb.title',
+    summaryKey: 'blog.posts.macStudio512gb.summary',
+    contentKey: 'blog.posts.macStudio512gb.content',
+    category: 'guide',
+    date: '2026-11-10',
+    readingTime: '6',
+    tags: ['mac-studio', 'm5-ultra', 'apple-silicon', 'openclaw', 'hardware'],
+    relatedProducts: ['mac-mini-m4', 'openclaw', 'ollama', 'nemotron-3-5-lightning'],
+  },
+  {
     slug: 'grok-bot-vs-openclaw',
     titleKey: 'blog.posts.grokBotVsOpenclaw.title',
     summaryKey: 'blog.posts.grokBotVsOpenclaw.summary',
