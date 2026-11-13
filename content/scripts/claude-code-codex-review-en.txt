@@ -1,0 +1,9 @@
+Hi, I'm JU CHUN KO.
+
+Claude Code and Codex already write your code. OpenClaw already owns your Telegram, Discord, and other channels. The missing piece is a bridge.
+
+Official OpenClaw docs pin one command: openclaw mcp serve. Claude Code keeps the default Claude channel mode. Codex turns it off with --claude-channel-mode off. For a single Gateway session, openclaw attach launches Claude Code with a temporary grant that revokes when you quit.
+
+This is not AgentKit. It is not Claude Duet. Hard coding work on Claude can use Fable 5.2: first openclaw models list --provider anthropic, then openclaw models set anthropic/claude-fable-5-2.
+
+I made a tutorial on CanFly.ai — go try it.

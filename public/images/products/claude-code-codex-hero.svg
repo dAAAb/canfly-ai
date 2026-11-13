@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#070B14"/>
+  <rect x="0" y="0" width="1200" height="630" fill="url(#glow)"/>
+  <defs>
+    <radialGradient id="glow" cx="28%" cy="42%" r="72%">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.20"/>
+      <stop offset="50%" stop-color="#F97316" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#070B14" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  <rect x="80" y="160" width="320" height="230" rx="28" fill="#111827" stroke="#38BDF8" stroke-width="8"/>
+  <path d="M140 240 L190 275 L140 310" stroke="#F97316" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M250 232 H360" stroke="#38BDF8" stroke-width="10" stroke-linecap="round"/>
+  <path d="M230 292 H360" stroke="#7DD3FC" stroke-width="10" stroke-linecap="round"/>
+  <text x="460" y="270" fill="#F8FAFC" font-family="ui-sans-serif, system-ui, sans-serif" font-size="56" font-weight="700">Claude Code + Codex</text>
+  <text x="460" y="340" fill="#38BDF8" font-family="ui-sans-serif, system-ui, sans-serif" font-size="28">Talk to OpenClaw channels over MCP</text>
+  <text x="460" y="400" fill="#9CA3AF" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22">openclaw mcp serve</text>
+</svg>

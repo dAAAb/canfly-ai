@@ -778,14 +778,15 @@
       },
       "openclaw": {
         "tagline": "Your personal AI agent — your AI, your rules",
-        "description": "The open-source personal AI agent platform with ~390K GitHub stars. Install with one command, then customize with skills, tools, and integrations. The 2.0 line (v2026.8.1–v2026.9.6) adds guided setup, a rebuilt Control UI, and Shared Cloud Sessions. Fresh xAI / Grok setup defaults to Grok 4.7: `openclaw models set xai/grok-4.7`. When your OpenAI account has GPT-6 Astra, switch with `openclaw models set openai/gpt-6-astra`. Add a local tool-call firewall with Harden AIF: `aif configure --agent openclaw --validate`. Grok Bot is a hosted xAI teammate, not an OpenClaw skill — compare at /blog/grok-bot-vs-openclaw. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
+        "description": "The open-source personal AI agent platform with ~394K GitHub stars. Install with one command, then customize with skills, tools, and integrations. The 2.0 line (v2026.8.1–v2026.11.3) adds guided setup, a rebuilt Control UI, and Shared Cloud Sessions. Fresh xAI / Grok setup defaults to Grok 4.7: `openclaw models set xai/grok-4.7`. When your OpenAI account has GPT-6 Astra, switch with `openclaw models set openai/gpt-6-astra`. Let Claude Code or Codex talk to OpenClaw channels with `openclaw mcp serve`. Add a local tool-call firewall with Harden AIF: `aif configure --agent openclaw --validate`. Grok Bot is a hosted xAI teammate, not an OpenClaw skill — compare at /blog/grok-bot-vs-openclaw. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
         "features": [
           "One-command install: ollama launch openclaw",
-          "~390K GitHub stars — largest AI agent community",
+          "~394K GitHub stars — largest AI agent community",
           "Skill marketplace with 180K+ community skills",
           "Works with any LLM: local (Ollama) or cloud (Grok 4.7, GPT-6 Astra, Claude)",
           "Switch to Grok 4.7: openclaw models set xai/grok-4.7",
           "Switch to Astra: openclaw models set openai/gpt-6-astra",
+          "Claude Code / Codex bridge: openclaw mcp serve",
           "Local firewall: Harden AIF (`aif configure --agent openclaw --validate`)",
           "Full privacy: runs 100% on your hardware",
           "v2026.9.6: Grok 4.7 default, Astra, managed updates"
@@ -855,7 +856,7 @@
       },
       "gpt-6-astra": {
         "tagline": "OpenAI frontier model for long-running OpenClaw agents",
-        "description": "OpenAI's GPT-6 Astra launched 2026-09-03. Official model ID `gpt-6-astra`: 1,050,000-token context, up to 128,000 output tokens, text and image input. Tool calling uses the Responses API. On CanFly.ai we wire it to OpenClaw with `openclaw models set openai/gpt-6-astra`. Access is rolling out from Trusted Access to Plus, Pro, Business, Enterprise, and the API. This is not a local model, not Grok Bot, and not a Codex page. OpenRouter does not list it yet.",
+        "description": "OpenAI's GPT-6 Astra launched 2026-09-03. Official model ID `gpt-6-astra`: 1,050,000-token context, up to 128,000 output tokens, text and image input. Tool calling uses the Responses API. On CanFly.ai we wire it to OpenClaw with `openclaw models set openai/gpt-6-astra`. Access is rolling out from Trusted Access to Plus, Pro, Business, Enterprise, and the API. This is not a local model, not Grok Bot, and not the Claude Code / Codex page. OpenRouter lists `openai/gpt-6-astra` and `openai/gpt-6-astra-pro` — do not open a Pro page.",
         "features": [
           "Official ID gpt-6-astra — 1,050K context, 128K max output",
           "Text + image input; agent tool calls on the Responses API",
@@ -927,6 +928,21 @@
         ],
         "ctaPrimary": "Open the Tutorial",
         "ctaSecondary": "Ollama model page"
+      },
+      "claude-code-codex": {
+        "tagline": "Connect coding agents to OpenClaw channels over MCP",
+        "description": "One CanFly.ai page for two coding agents talking to OpenClaw. Official pin: `openclaw mcp serve` — Claude Code keeps the default Claude channel mode; Codex uses `--claude-channel-mode off`. For one Gateway session, `openclaw attach` launches Claude Code with a temporary grant that revokes on exit. Hard Claude work: `openclaw models list --provider anthropic` then `openclaw models set anthropic/claude-fable-5-2` (OpenClaw v2026.11.3 static docs still show Fable 5.1; live discovery picks up 5.2). OpenRouter lists `anthropic/claude-fable-5.2`. Fresh Claude setups still default to Opus 5.5. Not AgentKit, not Claude Duet, not Mythos, not a Cursor product page.",
+        "features": [
+          "Official pin: openclaw mcp serve",
+          "Claude Code: default --claude-channel-mode auto (same as on)",
+          "Codex: openclaw mcp serve --claude-channel-mode off",
+          "One session: openclaw attach (temporary Claude Code grant)",
+          "Fable 5.2: openclaw models set anthropic/claude-fable-5-2 after models list --provider anthropic",
+          "Opus 5.5 / Sonnet 5.5 / Haiku 5.5 / GPT-6 Astra stay on this family note",
+          "Not AgentKit, not Duet, not Mythos, not a Cursor page"
+        ],
+        "ctaPrimary": "Open the Tutorial",
+        "ctaSecondary": "OpenClaw mcp serve docs"
       }
     },
     "comingSoon": "Coming Soon",
@@ -4461,6 +4477,13 @@
               "desc": "Local tool-call firewall for OpenClaw — not a ClawHub skill, not AgentWard.",
               "cta": "AIF tutorial",
               "link": "/learn/harden-aif"
+            },
+            {
+              "emoji": "⌨️",
+              "title": "Claude Code + Codex",
+              "desc": "Talk to OpenClaw channels: openclaw mcp serve. Not AgentKit.",
+              "link": "/learn/claude-code-codex",
+              "cta": "MCP tutorial"
             }
           ],
           "tips": [
@@ -7349,7 +7372,7 @@
           "tips": [
             "OpenAI still calls this a Trusted Access rollout; Plus / API follow in the coming days.",
             "Do not invent a local ollama pull — Astra is hosted.",
-            "OpenRouter does not list gpt-6-astra yet. Use the OpenAI provider."
+            "OpenRouter lists openai/gpt-6-astra and openai/gpt-6-astra-pro. Direct OpenAI still uses openclaw models set openai/gpt-6-astra. Do not open a Pro page."
           ],
           "troubleshooting": {
             "title": "Scope",
@@ -7360,7 +7383,7 @@
               },
               {
                 "q": "Is this Codex?",
-                "a": "No. Codex is a coding harness. Astra is the model you can point OpenClaw at. A Claude Code / Codex tutorial is a different queued page."
+                "a": "No. Codex is a coding harness. Astra is the model you can point OpenClaw at. Claude Code / Codex live at /learn/claude-code-codex."
               }
             ]
           }
@@ -7476,11 +7499,11 @@
           "title": "Next steps on CanFly.ai",
           "titleEn": "Next steps on CanFly.ai",
           "estimatedTime": "1 min",
-          "content": "Astra is the hosted brain. Pair it with an OpenClaw install, a cheaper local model for drafts, or OpenRouter for models that are already listed. Codex stays on its own future tutorial — do not fold Astra into that page.",
+          "content": "Astra is the hosted brain. Pair it with an OpenClaw install, a cheaper local model for drafts, or OpenRouter for models that are already listed. Claude Code / Codex live at /learn/claude-code-codex — do not fold Astra into that page.",
           "tips": [
             "Review video is pending (no HEYGEN_API_KEY on this run). English script: content/scripts/gpt-6-astra-review-en.txt",
             "Watch the OpenAI bill — filling a million-token window is not a free local pull.",
-            "When OpenRouter adds gpt-6-astra we will update this page instead of opening a third URL."
+            "OpenRouter already lists openai/gpt-6-astra and openai/gpt-6-astra-pro. Do not open a Pro page."
           ],
           "nextStepCards": [
             {
@@ -7507,7 +7530,7 @@
             {
               "emoji": "🌐",
               "title": "OpenRouter",
-              "desc": "200+ models today. Astra is not listed yet — use this for Gemini and Nemotron.",
+              "desc": "200+ models including openai/gpt-6-astra and openai/gpt-6-astra-pro. No Pro page.",
               "link": "/learn/openrouter",
               "cta": "OpenRouter guide"
             },
@@ -7517,6 +7540,13 @@
               "desc": "xAI frontier model and OpenClaw's default Grok: openclaw models set xai/grok-4.7.",
               "link": "/learn/grok-4-7",
               "cta": "Grok 4.7 tutorial"
+            },
+            {
+              "emoji": "⌨️",
+              "title": "Claude Code + Codex",
+              "desc": "Talk to OpenClaw channels: openclaw mcp serve. Not AgentKit.",
+              "link": "/learn/claude-code-codex",
+              "cta": "MCP tutorial"
             }
           ]
         }
@@ -7528,7 +7558,7 @@
         },
         {
           "q": "Is Astra on OpenRouter?",
-          "a": "Not at the time this page shipped (2026-09-04). Use `openai/gpt-6-astra` on the OpenAI provider. We will update this tutorial when OpenRouter adds it."
+          "a": "Yes. OpenRouter lists `openai/gpt-6-astra` and `openai/gpt-6-astra-pro`. Direct OpenAI still uses `openclaw models set openai/gpt-6-astra`. Do not open a Pro page."
         },
         {
           "q": "How much does it cost?",
@@ -7570,7 +7600,7 @@
           ],
           "expectedResult": "You know AIF is a local firewall for tool calls — not a model, not a ClawHub skill, and not AgentWard.",
           "tips": [
-            "Keep Claude Code / Codex on their own queued page. This tutorial only pins OpenClaw.",
+            "Keep Claude Code / Codex on their own page at /learn/claude-code-codex. This tutorial only pins OpenClaw.",
             "Do not invent a clawhub install for AIF. The official client is the aif CLI.",
             "AgentWard is a different older project. Do not mix the two."
           ],
@@ -7751,6 +7781,13 @@
               "desc": "Hosted OpenClaw brain after the firewall is on: openclaw models set openai/gpt-6-astra.",
               "link": "/learn/gpt-6-astra",
               "cta": "Astra tutorial"
+            },
+            {
+              "emoji": "⌨️",
+              "title": "Claude Code + Codex",
+              "desc": "Talk to OpenClaw channels: openclaw mcp serve. Not AgentKit.",
+              "link": "/learn/claude-code-codex",
+              "cta": "MCP tutorial"
             }
           ]
         }
@@ -7999,6 +8036,13 @@
               "desc": "Routed path for x-ai/grok-4.7 plus Gemini and Nemotron.",
               "link": "/learn/openrouter",
               "cta": "OpenRouter guide"
+            },
+            {
+              "emoji": "⌨️",
+              "title": "Claude Code + Codex",
+              "desc": "Talk to OpenClaw channels: openclaw mcp serve. Not AgentKit.",
+              "link": "/learn/claude-code-codex",
+              "cta": "MCP tutorial"
             }
           ]
         }
@@ -8822,6 +8866,273 @@
         {
           "q": "Should I buy Mac Studio instead?",
           "a": "Only if you need M5 Max / M5 Ultra class memory. Mac Studio 512GB is a different, much more expensive SKU and is not this page."
+        }
+      ]
+    },
+    "claudeCodeCodex": {
+      "title": "Claude Code + Codex — Talk to OpenClaw over MCP",
+      "subtitle": "Official pin: openclaw mcp serve. One page for two coding agents. Not AgentKit, not Duet.",
+      "duration": "10 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "What this page is",
+          "titleEn": "What this page is",
+          "estimatedTime": "2 min",
+          "content": "Claude Code and Codex write code in their own apps. OpenClaw already owns Telegram, Discord, and other channel conversations. Official OpenClaw docs name both coding agents on `openclaw mcp serve`: the MCP client spawns the bridge, the bridge talks to your Gateway, and routed sessions become MCP conversations.\n\nCanFly.ai keeps both agents on this one skill page. Do not open AgentKit (sunset), Claude Duet (hosted waitlist), Mythos 5.2 (Life Sciences / Cyber Verification), Fable, Haiku, Opus Fast, or Cursor product pages. Cursor's proposed OpenAI wind-down was 2026-11-12; OpenAI then temporarily extended access — the official end date is unconfirmed. Use this MCP bridge when you want OpenClaw channels, not Cursor's model catalog.",
+          "commands": [
+            "# Product page on CanFly.ai",
+            "# /apps/skills/claude-code-codex",
+            "",
+            "# Official OpenClaw pin",
+            "openclaw mcp serve",
+            "",
+            "# Official docs",
+            "https://docs.openclaw.ai/cli/mcp/serve",
+            "https://docs.openclaw.ai/cli/attach"
+          ],
+          "expectedResult": "You know this is an MCP bridge to OpenClaw channels — not a ClawHub skill, not AgentKit, and not Claude Duet.",
+          "tips": [
+            "Use openclaw acp only when OpenClaw should host the coding runtime itself.",
+            "Native /codex in OpenClaw chat is the other direction (OpenClaw running Codex). This page is coding agents connecting to OpenClaw.",
+            "Do not invent clawhub install or ollama launch for this bridge."
+          ],
+          "troubleshooting": {
+            "title": "Scope",
+            "items": [
+              {
+                "q": "Is this a ClawHub skill?",
+                "a": "No. There is no clawhub install. The official path is openclaw mcp serve. Skills discovery stays on /learn/agent-skills."
+              },
+              {
+                "q": "Should I write AgentKit?",
+                "a": "No. AgentKit is scheduled to shut down. This tutorial only uses OpenClaw MCP serve, attach, and model switches."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Start the Gateway, then serve MCP",
+          "titleEn": "Start the Gateway, then serve MCP",
+          "estimatedTime": "2 min",
+          "content": "Need OpenClaw first? Install it from the CanFly.ai guide, then come back. `openclaw mcp serve` is a stdio MCP server. The coding-agent client owns that process. While the stdio session stays open, the bridge connects to a local or remote OpenClaw Gateway over WebSocket and exposes conversations that already have route metadata (channel, recipient, optional accountId / threadId).\n\nLive events start when the bridge connects. Older history is `messages_read`. If a conversation is missing from the list, the usual cause is incomplete Gateway route metadata — not a bad MCP JSON file.",
+          "commands": [
+            "# Local Gateway (default)",
+            "openclaw mcp serve",
+            "",
+            "# Remote Gateway (prefer token file, not an inline secret)",
+            "openclaw mcp serve --url wss://gateway-host:18789 --token-file ~/.openclaw/gateway.token",
+            "",
+            "# Generic MCP / Codex: turn Claude notifications off",
+            "openclaw mcp serve --claude-channel-mode off",
+            "",
+            "# Confirm OpenClaw is on PATH",
+            "openclaw --version"
+          ],
+          "expectedResult": "openclaw mcp serve starts and waits on stdio. A client must spawn it; running it alone in a terminal is only a smoke check.",
+          "tips": [
+            "Prefer --token-file or --password-file over inline --token / --password.",
+            "Default Claude channel mode is auto, which behaves like on.",
+            "Host version on this run: OpenClaw v2026.11.3 (npm latest)."
+          ],
+          "troubleshooting": {
+            "title": "Gateway",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "Install OpenClaw first: /learn/ollama-openclaw or `ollama launch openclaw`. Then rerun `openclaw mcp serve`."
+              },
+              {
+                "q": "conversations_list is empty",
+                "a": "The session needs stored channel/provider and recipient metadata. Chat on a real OpenClaw channel first, then reconnect the MCP client."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Wire Claude Code",
+          "titleEn": "Wire Claude Code",
+          "estimatedTime": "3 min",
+          "content": "Claude Code is the MCP client that understands Claude channel notifications. Leave `--claude-channel-mode` at `auto` (default) or set `on`. Official OpenClaw example config uses stdio `command: openclaw` with `args: [\"mcp\", \"serve\"]`.\n\nFor one Gateway session instead of every routed conversation, use `openclaw attach`. It mints a temporary MCP grant, launches Claude Code (`claude` by default) with `--strict-mcp-config`, and revokes the grant when Claude Code exits. Pass a Control UI session URL or a short session ref.",
+          "commands": [
+            "# Persistent MCP client config (Claude Code understands Claude mode)",
+            "# command: openclaw",
+            "# args: mcp serve",
+            "",
+            "# One Gateway session — temporary grant, revoked on exit",
+            "openclaw attach",
+            "openclaw attach --print-config",
+            "",
+            "# Target a session URL or short ref",
+            "openclaw attach movies-a1166b81"
+          ],
+          "expectedResult": "Claude Code lists OpenClaw conversations, can read transcripts, and can receive live channel notifications while the stdio session stays open.",
+          "tips": [
+            "openclaw attach --print-config writes the temp MCP file without launching Claude Code. The grant lives until TTL unless you revoke it.",
+            "Do not put Gateway tokens in argv. attach passes the bearer in the child environment.",
+            "If Claude notifications never appear, the client must keep stdio open and understand notifications/claude/channel."
+          ],
+          "troubleshooting": {
+            "title": "Claude Code",
+            "items": [
+              {
+                "q": "attach says the session is missing",
+                "a": "Pass a Control UI URL or an existing session key. attach never creates a session implicitly."
+              },
+              {
+                "q": "Claude notifications do not show up",
+                "a": "Keep stdio open, leave --claude-channel-mode auto or on, and send a new inbound message after the bridge connected."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Wire Codex and pick models",
+          "titleEn": "Wire Codex and pick models",
+          "estimatedTime": "2 min",
+          "content": "Codex is a generic MCP client on this page. Turn Claude channel mode off so you only get standard tools (`conversations_list`, `messages_read`, `events_poll` / `events_wait`, `messages_send`, approvals). Point Codex at the same stdio command.\n\nThe other direction — OpenClaw hosting Codex — is native `/codex` when the bundled Codex plugin is on. Use ACP (`openclaw acp`) only when you explicitly want OpenClaw to host the harness. Do not open a Cursor page: OpenAI proposed a 2026-11-12 wind-down, then temporarily extended Cursor access; the official end date is unconfirmed. Codex on OpenClaw and `openclaw mcp serve` do not depend on Cursor's catalog.\n\nClaude models on OpenClaw (after `openclaw models list --provider anthropic` or `--refresh`): Fable 5.2 for the hardest coding, Opus 5.5 as the fresh-setup default, Sonnet 5.5 / Haiku 5.5 cheaper. OpenAI brain: `openclaw models set openai/gpt-6-astra`.",
+          "commands": [
+            "openclaw mcp serve --claude-channel-mode off",
+            "",
+            "# Hard Claude work (live catalog; 11.3 static docs still show 5.1)",
+            "openclaw models list --provider anthropic",
+            "openclaw models set anthropic/claude-fable-5-2",
+            "",
+            "# Daily Claude default on a fresh setup",
+            "openclaw models set anthropic/claude-opus-5-5",
+            "",
+            "openclaw models set anthropic/claude-sonnet-5-5",
+            "openclaw models set anthropic/claude-haiku-5-5",
+            "",
+            "# OpenAI hosted brain (Codex family)",
+            "openclaw models set openai/gpt-6-astra",
+            "",
+            "# Native fast mode (API-key to api.anthropic.com only)",
+            "# /fast on"
+          ],
+          "modelTable": {
+            "models": [
+              {
+                "name": "Fable 5.2",
+                "size": "$8 / $40",
+                "best": "Hardest coding / agents",
+                "speed": "Fast $16 / $80"
+              },
+              {
+                "name": "Opus 5.5",
+                "size": "$4 / $20",
+                "best": "Fresh Claude default",
+                "speed": "Fast $8 / $40"
+              },
+              {
+                "name": "Sonnet 5.5",
+                "size": "$2 / $10",
+                "best": "Faster cheaper coding",
+                "speed": "No native Fast page"
+              },
+              {
+                "name": "Haiku 5.5",
+                "size": "$0.10 / $0.50",
+                "best": "Small / cheap turns",
+                "speed": "haiku alias → 5.5"
+              },
+              {
+                "name": "GPT-6 Astra",
+                "size": "$10 / $50",
+                "best": "OpenAI hosted brain",
+                "speed": "See /learn/gpt-6-astra"
+              }
+            ]
+          },
+          "expectedResult": "Codex uses standard MCP tools with Claude mode off. OpenClaw lists Fable 5.2 or tells you to refresh the Anthropic catalog.",
+          "tips": [
+            "Fable 5.2 Fast is $16/$80 and only on direct api.anthropic.com API-key (or Claude CLI --fast-mode). OAuth, Bedrock, Vertex, Foundry never get speed: fast.",
+            "Mythos 5.2 is the same underlying model with Life Sciences / Cyber Verification access. Do not open a Mythos page.",
+            "OpenRouter slugs: anthropic/claude-fable-5.2 and openai/gpt-6-astra. No Pro / Fast / Duet pages."
+          ],
+          "troubleshooting": {
+            "title": "Codex and models",
+            "items": [
+              {
+                "q": "models set anthropic/claude-fable-5-2 warns it is not in the local catalog",
+                "a": "Run openclaw models list --provider anthropic or openclaw models list --refresh. v2026.11.3 static docs still document Fable 5.1. Live Anthropic discovery adds 5.2."
+              },
+              {
+                "q": "Did Cursor lose OpenAI models on 2026-11-12?",
+                "a": "OpenAI proposed that date, then temporarily extended access. The official termination date is unconfirmed. This page does not depend on Cursor's catalog."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Next steps on CanFly.ai",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 min",
+          "content": "The bridge is up. Pair it with an OpenClaw install, Harden AIF in front of tool calls, Astra or Grok 4.7 as a hosted brain, or Agent Skills for extra tools. Keep ClawHub on its own queued page.",
+          "tips": [
+            "Review video is pending (no HEYGEN_API_KEY on this run). English script: content/scripts/claude-code-codex-review-en.txt",
+            "Re-run openclaw models list --provider anthropic after an OpenClaw upgrade.",
+            "For a broken OpenClaw install, use /learn/openclaw-troubleshooting first."
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "Install OpenClaw",
+              "desc": "One-command OpenClaw setup with Ollama, then come back to mcp serve.",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw tutorial"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "Local tool-call firewall: aif configure --agent openclaw --validate.",
+              "link": "/learn/harden-aif",
+              "cta": "AIF tutorial"
+            },
+            {
+              "emoji": "✨",
+              "title": "GPT-6 Astra",
+              "desc": "OpenAI hosted brain for Codex-family work: openclaw models set openai/gpt-6-astra.",
+              "link": "/learn/gpt-6-astra",
+              "cta": "Astra tutorial"
+            },
+            {
+              "emoji": "⚡",
+              "title": "Grok 4.7",
+              "desc": "xAI frontier model: openclaw models set xai/grok-4.7.",
+              "link": "/learn/grok-4-7",
+              "cta": "Grok 4.7 tutorial"
+            },
+            {
+              "emoji": "🧩",
+              "title": "Agent Skills",
+              "desc": "Add wallet, email, and media skills. This MCP bridge is not a ClawHub install.",
+              "link": "/learn/agent-skills",
+              "cta": "Skills tutorial"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "Is this a ClawHub skill?",
+          "a": "No. There is no clawhub install or openclaw plugins install for this page. The official pin is openclaw mcp serve."
+        },
+        {
+          "q": "Why are Claude Code and Codex on the same page?",
+          "a": "Official OpenClaw mcp serve docs name both as MCP clients. CanFly.ai keeps them on one URL so they do not compete in search."
+        },
+        {
+          "q": "What about Claude Duet or Mythos 5.2?",
+          "a": "Duet is a hosted Anthropic waitlist product — one-line contrast only. Mythos 5.2 is Life Sciences / Cyber Verification. Do not open extra pages."
+        },
+        {
+          "q": "How do I switch to Fable 5.2?",
+          "a": "Run openclaw models list --provider anthropic (or --refresh), then openclaw models set anthropic/claude-fable-5-2. OpenRouter: anthropic/claude-fable-5.2. List price $8/$40; Fast $16/$80."
+        },
+        {
+          "q": "mcp serve vs attach vs /codex vs ACP?",
+          "a": "mcp serve exposes OpenClaw channels to an external MCP client. attach launches Claude Code on one session with a temporary grant. Native /codex is OpenClaw hosting Codex. ACP is OpenClaw hosting an external harness. This tutorial pins serve + attach."
         }
       ]
     }
