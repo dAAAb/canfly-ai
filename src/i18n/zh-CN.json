@@ -778,18 +778,18 @@
       },
       "openclaw": {
         "tagline": "你的个人 AI 代理 — 你的 AI，你的规则",
-        "description": "拥有约 394K GitHub 星标的开源个人 AI 代理人平台。一行指令安装，自由搭配技能、工具和集成。2.0 线（v2026.8.1–v2026.11.3）加上引导式 setup、重建的 Control UI 与 Shared Cloud Sessions。全新 xAI / Grok 设置默认 Grok 4.7：`openclaw models set xai/grok-4.7`。OpenAI 账号若已有 GPT-6 Astra，用 `openclaw models set openai/gpt-6-astra` 切过去。让 Claude Code 或 Codex 用 `openclaw mcp serve` 跟 OpenClaw 频道对话。本地 tool-call 防火墙用 Harden AIF：`aif configure --agent openclaw --validate`。Grok Bot 是 xAI 托管队友，不是 OpenClaw 技能 — 对照见 /blog/grok-bot-vs-openclaw。在本地或云端执行。你的数据永远属于你 — 无厂商绑定、无订阅费、无限制。",
+        "description": "拥有约 394K GitHub 星标的开源个人 AI 代理人平台。一行指令安装，自由搭配技能、工具和集成。2.0 线（v2026.8.1–v2026.11.4）加上引导式 setup、重建的 Control UI 与 Shared Cloud Sessions。全新 xAI / Grok 设置默认 Grok 4.7：`openclaw models set xai/grok-4.7`。OpenAI 账号若已有 GPT-6 Astra，用 `openclaw models set openai/gpt-6-astra` 切过去。让 Claude Code 或 Codex 用 `openclaw mcp serve` 跟 OpenClaw 频道对话。技能与插件走 ClawHub：`openclaw skills install @owner/slug` 与 `openclaw plugins install clawhub:<package>`。本地 tool-call 防火墙用 Harden AIF：`aif configure --agent openclaw --validate`。Grok Bot 是 xAI 托管队友，不是 OpenClaw 技能 — 对照见 /blog/grok-bot-vs-openclaw。在本地或云端执行。你的数据永远属于你 — 无厂商绑定、无订阅费、无限制。",
         "features": [
           "一行命令安装：ollama launch openclaw",
           "约 394K GitHub 星标 — 最大 AI 代理社区",
-          "技能市场：180K+ 社区技能",
+          "ClawHub 注册库：openclaw skills install／openclaw plugins install clawhub:",
           "支持任何 LLM：本地 (Ollama) 或云端 (Grok 4.7, GPT-6 Astra, Claude)",
           "切到 Grok 4.7：openclaw models set xai/grok-4.7",
           "切到 Astra：openclaw models set openai/gpt-6-astra",
           "Claude Code／Codex 桥接：openclaw mcp serve",
           "本地防火墙：Harden AIF（`aif configure --agent openclaw --validate`）",
           "完全隐私：100% 在你的硬件上运行",
-          "v2026.9.6：默认 Grok 4.7、Astra、托管更新"
+          "v2026.11.4 npm latest（2.0 线的 patch）"
         ],
         "ctaPrimary": "安装 OpenClaw",
         "ctaSecondary": "前往 openclaw.ai"
@@ -943,6 +943,21 @@
         ],
         "ctaPrimary": "打开教程",
         "ctaSecondary": "OpenClaw mcp serve 文档"
+      },
+      "clawhub": {
+        "tagline": "OpenClaw 官方技能与插件注册库",
+        "description": "ClawHub 是 OpenClaw 技能与插件的公开注册库。CanFly.ai 锁定原生命令：`openclaw skills install @owner/slug` 与 `openclaw plugins install clawhub:<package>`（`clawhub:` 前缀在现行主机都可用，含 v2026.11.4）。用 `openclaw skills verify @owner/slug --card` 读 NVIDIA Skill Card。独立的 `clawhub` CLI（`npm i -g clawhub`）负责登录、发布与卸载 — `clawhub install` 写入当前目录的 `./skills`，不是 OpenClaw 工作区。不是 Firecrawl、不是 Tavily、不是 NVIDIA 技能目录，也不是那 15 个 Agent Skills 教程。",
+        "features": [
+          "技能接法：openclaw skills search / openclaw skills install @openclaw/demo",
+          "插件接法：openclaw plugins install clawhub:<package>",
+          "Skill Cards：openclaw skills verify @owner/slug --card",
+          "发布 CLI：npm i -g clawhub，再 clawhub skill publish",
+          "内置 1Password：openclaw plugins enable onepassword",
+          "到 clawhub.ai 或 Control UI 浏览 — 不要另开产品页",
+          "官方文档：https://docs.openclaw.ai/tools/clawhub"
+        ],
+        "ctaPrimary": "打开教程",
+        "ctaSecondary": "打开 ClawHub"
       }
     },
     "comingSoon": "即将推出",
@@ -4476,6 +4491,13 @@
           "content": "ClawHub 是 Agent Skills 的开放市场。除了这 15 个，社区每天都在打造更多技能。\n\n**下载量排行：**\n1. HeyGen 虚拟形象视频 — 2,100+ 次下载\n2. BaseMail — 1,800+ 次下载\n3. SwitchBot — 1,500+ 次下载\n4. Daily Voice Quote — 1,200+ 次下载\n\n在 ClawHub 上浏览、安装，甚至发布你自己的技能。",
           "nextStepCards": [
             {
+              "emoji": "🦞",
+              "title": "ClawHub",
+              "desc": "OpenClaw 注册库：openclaw skills install／openclaw plugins install clawhub:。",
+              "link": "/learn/clawhub",
+              "cta": "ClawHub 教程"
+            },
+            {
               "emoji": "🎤",
               "title": "ElevenLabs 语音教程",
               "desc": "为你的项目添加专业语音合成",
@@ -4513,7 +4535,7 @@
           ],
           "tips": [
             "想打造自己的技能？只要写一个 SKILL.md 文件，遵循 Agent Skills 格式",
-            "发布到 ClawHub：`clawhub publish`"
+            "发布到 ClawHub：`clawhub skill publish ./my-skill`（需要 npm i -g clawhub）。"
           ]
         }
       ],
@@ -9093,7 +9115,7 @@
           "title": "CanFly.ai 上的下一步",
           "titleEn": "Next steps on CanFly.ai",
           "estimatedTime": "1 分钟",
-          "content": "桥接已通。接着可装 OpenClaw、在 tool-call 前面加 Harden AIF、用 Astra 或 Grok 4.7 当托管大脑，或用 Agent Skills 加工具。ClawHub 仍走自己的待写页。",
+          "content": "桥接已通。接着可装 OpenClaw、在 tool-call 前面加 Harden AIF、用 Astra 或 Grok 4.7 当托管大脑，或用 Agent Skills 加工具。ClawHub 教程在 /learn/clawhub。",
           "tips": [
             "Review 视频待补（本轮没有 HEYGEN_API_KEY）。英文口白稿：content/scripts/claude-code-codex-review-en.txt",
             "升级 OpenClaw 后再跑一次 openclaw models list --provider anthropic。",
@@ -9134,6 +9156,13 @@
               "desc": "加钱包、邮件与媒体技能。这座 MCP 桥不是 ClawHub install。",
               "link": "/learn/agent-skills",
               "cta": "Skills 教程"
+            },
+            {
+              "emoji": "🦞",
+              "title": "ClawHub",
+              "desc": "OpenClaw 注册库：openclaw skills install／openclaw plugins install clawhub:。",
+              "link": "/learn/clawhub",
+              "cta": "ClawHub 教程"
             }
           ]
         }
@@ -9158,6 +9187,250 @@
         {
           "q": "mcp serve、attach、/codex、ACP 差在哪？",
           "a": "mcp serve 把 OpenClaw 频道暴露给外部 MCP 客户端。attach 用临时授权在单会话启动 Claude Code。原生 /codex 是 OpenClaw 去托管 Codex。ACP 是 OpenClaw 去托管外部 harness。本教程主打 serve + attach。"
+        }
+      ]
+    },
+    "clawHub": {
+      "title": "ClawHub — 安装 OpenClaw 技能与插件",
+      "subtitle": "官方接法：openclaw skills install 与 openclaw plugins install clawhub:。不是 Firecrawl，不是 Tavily。",
+      "duration": "10 分钟",
+      "difficulty": "入门",
+      "steps": [
+        {
+          "title": "ClawHub 是什么",
+          "titleEn": "What ClawHub is",
+          "estimatedTime": "2 分钟",
+          "content": "ClawHub 是 OpenClaw 技能（`SKILL.md` 套件）与插件（代码包）的公开注册库。到 clawhub.ai 浏览。原生 OpenClaw 命令会搜索、安装、更新到当前工作区。独立的 `clawhub` CLI 负责 GitHub 登录、发布与卸载。\n\nCanFly.ai 把这件事放在同一页技能页。不要另开 Firecrawl、Tavily、Parallel、SearXNG、Exa、SerpApi、NVIDIA Skill Cards、1Password、Shopify、llama.cpp、Venice、Make、OpenMail、Zoom、Teams 或 Slack huddles 产品页 — 一行命令留在这里。那 15 个 Agent Skills 教程是另一条安装路径（`npx skills add dAAAb/agent-skills`）。",
+          "commands": [
+            "# CanFly.ai 产品页",
+            "# /apps/skills/clawhub",
+            "",
+            "# 网站与官方文档",
+            "https://clawhub.ai",
+            "https://docs.openclaw.ai/tools/clawhub",
+            "https://docs.openclaw.ai/cli/skills"
+          ],
+          "expectedResult": "你知道 ClawHub 是 OpenClaw 注册库 — 先用原生 openclaw skills / plugins，发布才用 clawhub CLI。",
+          "tips": [
+            "本回合主机：OpenClaw v2026.11.4（npm latest）。技能与插件命令在现行 latest 可用。",
+            "Control UI 也能浏览官方与 ClawHub 来源。那不是第二个产品页。",
+            "不要发明 ollama launch clawhub。"
+          ],
+          "troubleshooting": {
+            "title": "范围",
+            "items": [
+              {
+                "q": "这跟那 15 个 Agent Skills 是同一页吗？",
+                "a": "不是。/learn/agent-skills 是用 npx skills add 装 dAAAb/agent-skills。本页是 OpenClaw 注册库。"
+              },
+              {
+                "q": "要不要在这里写 Firecrawl 或 Tavily？",
+                "a": "只留一行。Firecrawl 仍走自己的待写页。其他 web_search 插件留在 /learn/brave-search 或这份清单 — 不要另开页。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "搜索、安装、验证技能",
+          "titleEn": "Search, install, and verify skills",
+          "estimatedTime": "3 分钟",
+          "content": "还没装 OpenClaw？先走 CanFly.ai 的 OpenClaw 教程再回来。原生技能命令会连 ClawHub，装进工作区 `skills/`（或 `--global` 共享目录），并留下来源数据，之后 `update` 仍走 ClawHub。\n\n已发布的技能会带 NVIDIA Skill Card。卡片写出发布者、能力、ClawScan 结果与来源 — 由 ClawHub 验证，不是复制上传者自述。在终端用 `--card` 打印。这不是 NVIDIA 的 `npx skills add nvidia/skills` 目录。",
+          "commands": [
+            "openclaw skills search \"calendar\"",
+            "openclaw skills install @openclaw/demo",
+            "openclaw skills update --all",
+            "",
+            "# NVIDIA Skill Card（ClawHub 写的信任产物）",
+            "openclaw skills verify @openclaw/demo --card",
+            "",
+            "openclaw skills list",
+            "openclaw --version"
+          ],
+          "expectedResult": "搜索会返回 ClawHub 技能。@openclaw/demo 装进工作区。verify --card 打印 Markdown，失败则非零退出。",
+          "tips": [
+            "搜索不加关键字会打开 ClawHub 热门列表。",
+            "verify 用短名只在已安装或名称不重复时才稳。请用 @owner/slug。",
+            "社区安装下载前会查 release trust。官方发布者会跳过这项检查。"
+          ],
+          "troubleshooting": {
+            "title": "技能",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "先装 OpenClaw：/learn/ollama-openclaw 或 `ollama launch openclaw`。"
+              },
+              {
+                "q": "verify --card 非零退出",
+                "a": "ClawHub 返回 ok: false 或 decision: fail。读卡片、跳过该版本，不要对封锁的发行使用 --force-install。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "从 ClawHub 安装插件",
+          "titleEn": "Install plugins from ClawHub",
+          "estimatedTime": "3 分钟",
+          "content": "插件是代码包，不是 SKILL.md。用 `openclaw plugins search` 搜索。现行主机默认从 ClawHub 安装包名。请保留明确的 `clawhub:` 前缀 — 新旧版本都可用，包含到 2026.10.4 仍强制前缀的主机。\n\n下面官方一行命令都不是额外的 CanFly.ai 页。Firecrawl 也可经 `openclaw configure --section web` 当作 `web_search`；那页仍在队列。1Password 是内置：启用即可，不要从 ClawHub 再装。会议插件（Zoom／Teams／Google Meet／Slack huddles）也留在这份清单。",
+          "commands": [
+            "openclaw plugins search \"calendar\"",
+            "openclaw plugins install clawhub:@openclaw/tavily-plugin",
+            "",
+            "# 保留 clawhub: 前缀 — 新旧主机都可用",
+            "openclaw plugins install clawhub:@openclaw/parallel-plugin",
+            "openclaw plugins install clawhub:@openclaw/searxng-plugin",
+            "openclaw plugins install clawhub:@openclaw/exa-plugin",
+            "openclaw plugins install clawhub:@serpapi/openclaw-plugin",
+            "openclaw plugins install clawhub:@openclaw/duckduckgo-plugin",
+            "",
+            "# 内置 — 启用，不要从 ClawHub 再装",
+            "openclaw plugins enable onepassword",
+            "",
+            "# 官方频道／提供者（各一行，不另开页）",
+            "openclaw plugins install clawhub:@agentmail/agentmail",
+            "openclaw plugins install clawhub:@openmail/openclaw",
+            "openclaw plugins install clawhub:@make/openclaw-make",
+            "openclaw plugins install clawhub:@shopify/ai-toolkit",
+            "openclaw plugins install clawhub:@openclaw/venice-provider",
+            "openclaw plugins install clawhub:@openclaw/llama-cpp-provider",
+            "openclaw plugins install clawhub:@openclaw/deepinfra-provider",
+            "openclaw plugins install clawhub:@openclaw/comfy-provider",
+            "openclaw plugins install clawhub:@openclaw/diagnostics-otel",
+            "openclaw plugins install clawhub:@openclaw/diagnostics-prometheus",
+            "",
+            "# 会议 — Zoom／Teams 安装后启用；Slack huddles 要再 enable",
+            "openclaw plugins install clawhub:@openclaw/zoom-meetings",
+            "openclaw plugins install clawhub:@openclaw/teams-meetings",
+            "openclaw plugins install clawhub:@openclaw/google-meet",
+            "openclaw plugins install clawhub:@openclaw/slack-huddles",
+            "openclaw plugins enable slack-huddles"
+          ],
+          "expectedResult": "plugins search 会返回 ClawHub 包。clawhub: 安装会记下来源，之后 plugins update --all 仍走 ClawHub。",
+          "tips": [
+            "只有在你明确要 npm 而不是 ClawHub 时才用 npm:。",
+            "Tavily／Parallel／Exa／SearXNG／DuckDuckGo／SerpApi 是 web_search 提供者。Brave Search 仍是一般网搜页。",
+            "OpenMail 是 /learn/agentmail 上的频道对照 — 不要第三个邮箱页。"
+          ],
+          "troubleshooting": {
+            "title": "插件",
+            "items": [
+              {
+                "q": "v2026.11.4 还要 clawhub: 吗？",
+                "a": "现行版本默认包名走 ClawHub。明确的 clawhub: 前缀仍可用，也是 CanFly.ai 的锁定写法，避免旧主机误走 npm。"
+              },
+              {
+                "q": "1Password 是 ClawHub 包吗？",
+                "a": "不是。它是内置。装好 `op` CLI 与 service account token 后，用 `openclaw plugins enable onepassword`。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "用 ClawHub CLI 发布与卸载",
+          "titleEn": "Publish and uninstall with the ClawHub CLI",
+          "estimatedTime": "2 分钟",
+          "content": "只有需要注册库身份时才装 ClawHub CLI：登录、发布、删除／还原，或卸载已跟踪技能。`clawhub install` 是另一条路 — 写入当前工作目录的 `./skills` 与 `.clawhub/lock.json`。OpenClaw Agent 真正加载的是原生 `openclaw skills install`。\n\n发布需要够旧的 GitHub 账号才过上传门槛。ClawHub 会扫描发行；被扣住或封锁的版本会从公开安装面消失。已登录的 `clawhub install` 可能送出尽力而为的安装事件；用 `CLAWHUB_DISABLE_TELEMETRY=1` 关闭。",
+          "commands": [
+            "npm i -g clawhub",
+            "clawhub login",
+            "clawhub whoami",
+            "",
+            "# 发布一个含 SKILL.md 的文件夹",
+            "clawhub skill publish ./my-skill --slug my-skill --name \"My Skill\" --version 1.0.0",
+            "",
+            "# 从工作区移除已跟踪技能",
+            "clawhub --workdir /path/to/agent-workspace uninstall @owner/my-skill",
+            "",
+            "export CLAWHUB_DISABLE_TELEMETRY=1"
+          ],
+          "expectedResult": "clawhub whoami 显示你的 GitHub 身份。dry-run 发布会打印计划。卸载删目录前会再问一次。",
+          "tips": [
+            "上传代码插件前先 clawhub package publish --dry-run。",
+            "代码插件的 package.json 需要 openclaw.compat.pluginApi 与 openclaw.build.openclawVersion。",
+            "旧提示 `clawhub publish` 不完整 — 技能请用 clawhub skill publish。"
+          ],
+          "troubleshooting": {
+            "title": "CLI",
+            "items": [
+              {
+                "q": "我跑了 clawhub install，但 OpenClaw 看不到技能",
+                "a": "clawhub install 写的是当前目录的 ./skills。OpenClaw 加载的工作区请用 openclaw skills install @owner/slug。"
+              },
+              {
+                "q": "没有 CLI 怎么移除技能？",
+                "a": "openclaw skills 没有移除命令。先 npm i -g clawhub，再到当初安装的根目录跑 clawhub uninstall @owner/slug。"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CanFly.ai 下一步",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 分钟",
+          "content": "注册库接好了。接着装 OpenClaw、走那 15 个 Agent Skills 教程、用 Harden AIF 挡住 tool-call，或只要一般网搜就去 Brave Search。AgentMail 仍是邮箱页；OpenMail 只在那页带一句。",
+          "tips": [
+            "评测视频待补（本回合没有 HEYGEN_API_KEY）。英文口白稿：content/scripts/clawhub-review-en.txt",
+            "正式环境请钉住插件版本。",
+            "OpenClaw 装坏了先走 /learn/openclaw-troubleshooting。"
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "安装 OpenClaw",
+              "desc": "用 Ollama 一行命令装 OpenClaw，再回来 skills install。",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw 教程"
+            },
+            {
+              "emoji": "🧩",
+              "title": "Agent Skills",
+              "desc": "那 15 个技能用 npx skills add dAAAb/agent-skills — 另一条安装路径。",
+              "link": "/learn/agent-skills",
+              "cta": "技能教程"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "本地 tool-call 防火墙：aif configure --agent openclaw --validate。",
+              "link": "/learn/harden-aif",
+              "cta": "AIF 教程"
+            },
+            {
+              "emoji": "🔎",
+              "title": "Brave Search",
+              "desc": "一般网搜页。Tavily／Parallel／Exa 一行命令在 ClawHub。",
+              "link": "/learn/brave-search",
+              "cta": "搜索教程"
+            },
+            {
+              "emoji": "✉️",
+              "title": "AgentMail",
+              "desc": "官方 ClawHub 邮箱插件。OpenMail 只做一句对照，不另开第三页。",
+              "link": "/learn/agentmail",
+              "cta": "AgentMail 教程"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "官方安装接法是什么？",
+          "a": "技能：openclaw skills install @owner/slug。插件：openclaw plugins install clawhub:<package>。保留 clawhub:，避免旧主机错过 ClawHub。"
+        },
+        {
+          "q": "什么时候用 clawhub CLI？",
+          "a": "登录、发布（clawhub skill publish／clawhub package publish）、删除／还原，以及卸载。日常给 OpenClaw Agent 装技能不要走这条。"
+        },
+        {
+          "q": "NVIDIA Skill Card 是什么？",
+          "a": "ClawHub 写的信任产物。用 openclaw skills verify @owner/slug --card 打印。不是 NVIDIA 的 npx skills add nvidia/skills 目录，也不另开 CanFly.ai 页。"
+        },
+        {
+          "q": "Firecrawl 算在这页吗？",
+          "a": "只留一行：openclaw plugins install clawhub:@openclaw/firecrawl-plugin，或 firecrawl init --agent openclaw。完整 Developer Index 教程仍在队列、走自己的网址。"
+        },
+        {
+          "q": "Control UI 能浏览 ClawHub 吗？",
+          "a": "可以。Control UI 提供官方与 ClawHub 来源。那个浏览面不是独立产品页。"
         }
       ]
     }

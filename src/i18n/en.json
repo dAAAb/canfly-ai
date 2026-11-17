@@ -778,18 +778,18 @@
       },
       "openclaw": {
         "tagline": "Your personal AI agent — your AI, your rules",
-        "description": "The open-source personal AI agent platform with ~394K GitHub stars. Install with one command, then customize with skills, tools, and integrations. The 2.0 line (v2026.8.1–v2026.11.3) adds guided setup, a rebuilt Control UI, and Shared Cloud Sessions. Fresh xAI / Grok setup defaults to Grok 4.7: `openclaw models set xai/grok-4.7`. When your OpenAI account has GPT-6 Astra, switch with `openclaw models set openai/gpt-6-astra`. Let Claude Code or Codex talk to OpenClaw channels with `openclaw mcp serve`. Add a local tool-call firewall with Harden AIF: `aif configure --agent openclaw --validate`. Grok Bot is a hosted xAI teammate, not an OpenClaw skill — compare at /blog/grok-bot-vs-openclaw. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
+        "description": "The open-source personal AI agent platform with ~394K GitHub stars. Install with one command, then customize with skills, tools, and integrations. The 2.0 line (v2026.8.1–v2026.11.4) adds guided setup, a rebuilt Control UI, and Shared Cloud Sessions. Fresh xAI / Grok setup defaults to Grok 4.7: `openclaw models set xai/grok-4.7`. When your OpenAI account has GPT-6 Astra, switch with `openclaw models set openai/gpt-6-astra`. Let Claude Code or Codex talk to OpenClaw channels with `openclaw mcp serve`. Add skills and plugins from ClawHub: `openclaw skills install @owner/slug` and `openclaw plugins install clawhub:<package>`. Add a local tool-call firewall with Harden AIF: `aif configure --agent openclaw --validate`. Grok Bot is a hosted xAI teammate, not an OpenClaw skill — compare at /blog/grok-bot-vs-openclaw. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
         "features": [
           "One-command install: ollama launch openclaw",
           "~394K GitHub stars — largest AI agent community",
-          "Skill marketplace with 180K+ community skills",
+          "ClawHub registry: openclaw skills install / openclaw plugins install clawhub:",
           "Works with any LLM: local (Ollama) or cloud (Grok 4.7, GPT-6 Astra, Claude)",
           "Switch to Grok 4.7: openclaw models set xai/grok-4.7",
           "Switch to Astra: openclaw models set openai/gpt-6-astra",
           "Claude Code / Codex bridge: openclaw mcp serve",
           "Local firewall: Harden AIF (`aif configure --agent openclaw --validate`)",
           "Full privacy: runs 100% on your hardware",
-          "v2026.9.6: Grok 4.7 default, Astra, managed updates"
+          "v2026.11.4 npm latest (patch on the 2.0 line)"
         ],
         "ctaPrimary": "Install OpenClaw",
         "ctaSecondary": "Visit openclaw.ai"
@@ -943,6 +943,21 @@
         ],
         "ctaPrimary": "Open the Tutorial",
         "ctaSecondary": "OpenClaw mcp serve docs"
+      },
+      "clawhub": {
+        "tagline": "Official OpenClaw skill and plugin registry",
+        "description": "ClawHub is the public registry for OpenClaw skills and plugins. On CanFly.ai we pin native OpenClaw commands: `openclaw skills install @owner/slug` and `openclaw plugins install clawhub:<package>` (the `clawhub:` prefix works on every current host, including v2026.11.4). Read a NVIDIA Skill Card with `openclaw skills verify @owner/slug --card`. The separate `clawhub` CLI (`npm i -g clawhub`) is for login, publish, and uninstall — `clawhub install` writes `./skills` under the current directory, not the OpenClaw workspace. Not Firecrawl, not Tavily, not the NVIDIA skills catalog, and not the 15-pack Agent Skills tutorial.",
+        "features": [
+          "Skills pin: openclaw skills search / openclaw skills install @openclaw/demo",
+          "Plugins pin: openclaw plugins install clawhub:<package>",
+          "Skill Cards: openclaw skills verify @owner/slug --card",
+          "Publish CLI: npm i -g clawhub then clawhub skill publish",
+          "Bundled 1Password: openclaw plugins enable onepassword",
+          "Browse at clawhub.ai or in Control UI — do not invent extra product pages",
+          "Official docs: https://docs.openclaw.ai/tools/clawhub"
+        ],
+        "ctaPrimary": "Open the Tutorial",
+        "ctaSecondary": "Open ClawHub"
       }
     },
     "comingSoon": "Coming Soon",
@@ -4451,6 +4466,13 @@
           "content": "ClawHub is the open marketplace for Agent Skills. Beyond these 15, the community is building more every day.\n\n**Top Skills by Downloads:**\n1. HeyGen Avatar Video — 2,100+ downloads\n2. BaseMail — 1,800+ downloads\n3. SwitchBot — 1,500+ downloads\n4. Daily Voice Quote — 1,200+ downloads\n\nBrowse, install, and even publish your own skills on ClawHub.",
           "nextStepCards": [
             {
+              "emoji": "🦞",
+              "title": "ClawHub",
+              "desc": "OpenClaw registry: openclaw skills install / openclaw plugins install clawhub:.",
+              "link": "/learn/clawhub",
+              "cta": "ClawHub tutorial"
+            },
+            {
               "emoji": "🎤",
               "title": "ElevenLabs Voice Tutorial",
               "desc": "Add professional voice synthesis to your projects",
@@ -4488,7 +4510,7 @@
           ],
           "tips": [
             "Want to create your own skill? Just write a SKILL.md file following the Agent Skills format",
-            "Publish to ClawHub with: `clawhub publish`"
+            "Publish to ClawHub with: `clawhub skill publish ./my-skill` (needs npm i -g clawhub)."
           ]
         }
       ],
@@ -9068,7 +9090,7 @@
           "title": "Next steps on CanFly.ai",
           "titleEn": "Next steps on CanFly.ai",
           "estimatedTime": "1 min",
-          "content": "The bridge is up. Pair it with an OpenClaw install, Harden AIF in front of tool calls, Astra or Grok 4.7 as a hosted brain, or Agent Skills for extra tools. Keep ClawHub on its own queued page.",
+          "content": "The bridge is up. Pair it with an OpenClaw install, Harden AIF in front of tool calls, Astra or Grok 4.7 as a hosted brain, or Agent Skills for extra tools. See the ClawHub tutorial at /learn/clawhub.",
           "tips": [
             "Review video is pending (no HEYGEN_API_KEY on this run). English script: content/scripts/claude-code-codex-review-en.txt",
             "Re-run openclaw models list --provider anthropic after an OpenClaw upgrade.",
@@ -9109,6 +9131,13 @@
               "desc": "Add wallet, email, and media skills. This MCP bridge is not a ClawHub install.",
               "link": "/learn/agent-skills",
               "cta": "Skills tutorial"
+            },
+            {
+              "emoji": "🦞",
+              "title": "ClawHub",
+              "desc": "OpenClaw registry: openclaw skills install / openclaw plugins install clawhub:.",
+              "link": "/learn/clawhub",
+              "cta": "ClawHub tutorial"
             }
           ]
         }
@@ -9133,6 +9162,250 @@
         {
           "q": "mcp serve vs attach vs /codex vs ACP?",
           "a": "mcp serve exposes OpenClaw channels to an external MCP client. attach launches Claude Code on one session with a temporary grant. Native /codex is OpenClaw hosting Codex. ACP is OpenClaw hosting an external harness. This tutorial pins serve + attach."
+        }
+      ]
+    },
+    "clawHub": {
+      "title": "ClawHub — Install OpenClaw skills and plugins",
+      "subtitle": "Official pin: openclaw skills install and openclaw plugins install clawhub:. Not Firecrawl, not Tavily.",
+      "duration": "10 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "What ClawHub is",
+          "titleEn": "What ClawHub is",
+          "estimatedTime": "2 min",
+          "content": "ClawHub is the public registry for OpenClaw skills (`SKILL.md` bundles) and plugins (code packages). Browse it at clawhub.ai. Native OpenClaw commands search, install, and update into the active workspace. The separate `clawhub` CLI is for GitHub login, publish, and uninstall.\n\nCanFly.ai keeps this on one skills page. Do not open Firecrawl, Tavily, Parallel, SearXNG, Exa, SerpApi, NVIDIA Skill Cards, 1Password, Shopify, llama.cpp, Venice, Make, OpenMail, Zoom, Teams, or Slack huddles as extra product pages — one-liners stay here. The 15-pack Agent Skills tutorial is a different install path (`npx skills add dAAAb/agent-skills`).",
+          "commands": [
+            "# Product page on CanFly.ai",
+            "# /apps/skills/clawhub",
+            "",
+            "# Site and official docs",
+            "https://clawhub.ai",
+            "https://docs.openclaw.ai/tools/clawhub",
+            "https://docs.openclaw.ai/cli/skills"
+          ],
+          "expectedResult": "You know ClawHub is the OpenClaw registry — native openclaw skills / plugins commands first, clawhub CLI for publish.",
+          "tips": [
+            "Host on this run: OpenClaw v2026.11.4 (npm latest). Skills and plugins commands work on current latest.",
+            "Control UI also browses official and ClawHub sources. That is not a second product page.",
+            "Do not invent ollama launch clawhub."
+          ],
+          "troubleshooting": {
+            "title": "Scope",
+            "items": [
+              {
+                "q": "Is this the Agent Skills 15-pack?",
+                "a": "No. /learn/agent-skills is dAAAb/agent-skills via npx skills add. This page is the OpenClaw registry."
+              },
+              {
+                "q": "Should I write Firecrawl or Tavily here?",
+                "a": "One-liners only. Firecrawl stays on its own queued page. Other web_search plugins stay on /learn/brave-search or this list — no extra pages."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Search, install, and verify skills",
+          "titleEn": "Search, install, and verify skills",
+          "estimatedTime": "3 min",
+          "content": "Need OpenClaw first? Use the CanFly.ai OpenClaw guide, then come back. Native skill commands talk to ClawHub, install into the workspace `skills/` folder (or `--global` for the shared managed directory), and keep origin metadata so `update` stays on ClawHub.\n\nNVIDIA Skill Cards ship with published skills. They tell you the publisher, capabilities, ClawScan findings, and source — verified by ClawHub, not copied from the uploader. Print the card in the terminal with `--card`. That is not the NVIDIA `npx skills add nvidia/skills` catalog.",
+          "commands": [
+            "openclaw skills search \"calendar\"",
+            "openclaw skills install @openclaw/demo",
+            "openclaw skills update --all",
+            "",
+            "# NVIDIA Skill Card (ClawHub-authored trust artifact)",
+            "openclaw skills verify @openclaw/demo --card",
+            "",
+            "openclaw skills list",
+            "openclaw --version"
+          ],
+          "expectedResult": "Search returns ClawHub skills. @openclaw/demo installs into the workspace. verify --card prints Markdown or exits non-zero on fail.",
+          "tips": [
+            "Omit the search query to browse the ClawHub Trending feed.",
+            "Bare slugs on verify work only when the skill is already installed or unambiguous. Prefer @owner/slug.",
+            "Community installs check release trust before download. Official publishers bypass that check."
+          ],
+          "troubleshooting": {
+            "title": "Skills",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "Install OpenClaw first: /learn/ollama-openclaw or `ollama launch openclaw`."
+              },
+              {
+                "q": "verify --card exits non-zero",
+                "a": "ClawHub returned ok: false or decision: fail. Read the card, skip that version, and do not --force-install a blocked release."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Install plugins from ClawHub",
+          "titleEn": "Install plugins from ClawHub",
+          "estimatedTime": "3 min",
+          "content": "Plugins are code packages, not SKILL.md files. Search with `openclaw plugins search`. Current hosts install package names from ClawHub by default. Keep the explicit `clawhub:` prefix — it works on every build, including hosts through 2026.10.4 that required it.\n\nOfficial one-liners below are not extra CanFly.ai pages. Firecrawl can also be `web_search` via `openclaw configure --section web`; that page is still queued. 1Password is bundled: enable it, do not ClawHub-install it. Meeting plugins (Zoom / Teams / Google Meet / Slack huddles) stay on this list.",
+          "commands": [
+            "openclaw plugins search \"calendar\"",
+            "openclaw plugins install clawhub:@openclaw/tavily-plugin",
+            "",
+            "# Keep the clawhub: prefix — works on old and new hosts",
+            "openclaw plugins install clawhub:@openclaw/parallel-plugin",
+            "openclaw plugins install clawhub:@openclaw/searxng-plugin",
+            "openclaw plugins install clawhub:@openclaw/exa-plugin",
+            "openclaw plugins install clawhub:@serpapi/openclaw-plugin",
+            "openclaw plugins install clawhub:@openclaw/duckduckgo-plugin",
+            "",
+            "# Bundled — enable, do not ClawHub-install",
+            "openclaw plugins enable onepassword",
+            "",
+            "# Official channels / providers (one line each, no extra pages)",
+            "openclaw plugins install clawhub:@agentmail/agentmail",
+            "openclaw plugins install clawhub:@openmail/openclaw",
+            "openclaw plugins install clawhub:@make/openclaw-make",
+            "openclaw plugins install clawhub:@shopify/ai-toolkit",
+            "openclaw plugins install clawhub:@openclaw/venice-provider",
+            "openclaw plugins install clawhub:@openclaw/llama-cpp-provider",
+            "openclaw plugins install clawhub:@openclaw/deepinfra-provider",
+            "openclaw plugins install clawhub:@openclaw/comfy-provider",
+            "openclaw plugins install clawhub:@openclaw/diagnostics-otel",
+            "openclaw plugins install clawhub:@openclaw/diagnostics-prometheus",
+            "",
+            "# Meetings — Zoom / Teams enable on install; Slack huddles need enable",
+            "openclaw plugins install clawhub:@openclaw/zoom-meetings",
+            "openclaw plugins install clawhub:@openclaw/teams-meetings",
+            "openclaw plugins install clawhub:@openclaw/google-meet",
+            "openclaw plugins install clawhub:@openclaw/slack-huddles",
+            "openclaw plugins enable slack-huddles"
+          ],
+          "expectedResult": "plugins search returns ClawHub packages. A clawhub: install records origin metadata so plugins update --all can stay on ClawHub.",
+          "tips": [
+            "Use npm: only when you deliberately want npm instead of ClawHub.",
+            "Tavily / Parallel / Exa / SearXNG / DuckDuckGo / SerpApi are web_search providers. Brave Search stays the generic web-search page.",
+            "OpenMail is a channel contrast on /learn/agentmail — not a third mailbox page."
+          ],
+          "troubleshooting": {
+            "title": "Plugins",
+            "items": [
+              {
+                "q": "Do I need clawhub: on v2026.11.4?",
+                "a": "Current builds default package names to ClawHub. The explicit clawhub: prefix still works and is the CanFly.ai pin so older hosts do not hit npm by mistake."
+              },
+              {
+                "q": "Is 1Password a ClawHub package?",
+                "a": "No. It is bundled. Enable with `openclaw plugins enable onepassword` after the `op` CLI and a service account token."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Publish and uninstall with the ClawHub CLI",
+          "titleEn": "Publish and uninstall with the ClawHub CLI",
+          "estimatedTime": "2 min",
+          "content": "Install the ClawHub CLI only when you need registry auth: login, publish, delete/undelete, or uninstall a tracked skill. `clawhub install` is a different path — it writes `./skills` under the current working directory and `.clawhub/lock.json`. Native `openclaw skills install` is what OpenClaw agents actually load.\n\nPublishing needs a GitHub account old enough to pass the upload gate. ClawHub scans releases; held or blocked versions drop off public install surfaces. Logged-in `clawhub install` may send a best-effort telemetry event; disable it with `CLAWHUB_DISABLE_TELEMETRY=1`.",
+          "commands": [
+            "npm i -g clawhub",
+            "clawhub login",
+            "clawhub whoami",
+            "",
+            "# Publish a SKILL.md folder",
+            "clawhub skill publish ./my-skill --slug my-skill --name \"My Skill\" --version 1.0.0",
+            "",
+            "# Remove a ClawHub-tracked skill from a workspace",
+            "clawhub --workdir /path/to/agent-workspace uninstall @owner/my-skill",
+            "",
+            "export CLAWHUB_DISABLE_TELEMETRY=1"
+          ],
+          "expectedResult": "clawhub whoami shows your GitHub identity. A dry-run publish prints a plan. Uninstall asks before deleting the skill directory.",
+          "tips": [
+            "Use clawhub package publish --dry-run before uploading a code plugin.",
+            "Code plugins need openclaw.compat.pluginApi and openclaw.build.openclawVersion in package.json.",
+            "The old tip `clawhub publish` is incomplete — skills use clawhub skill publish."
+          ],
+          "troubleshooting": {
+            "title": "CLI",
+            "items": [
+              {
+                "q": "I ran clawhub install but OpenClaw does not see the skill",
+                "a": "clawhub install writes ./skills in the current directory. Use openclaw skills install @owner/slug for the workspace OpenClaw loads."
+              },
+              {
+                "q": "How do I remove a skill without the CLI?",
+                "a": "You cannot from openclaw skills. Install the CLI first: npm i -g clawhub, then clawhub uninstall @owner/slug in the same root you installed into."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Next steps on CanFly.ai",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 min",
+          "content": "The registry is wired. Pair it with an OpenClaw install, the 15-pack Agent Skills tutorial, Harden AIF in front of tool calls, or Brave Search if you only need generic web_search. AgentMail stays the mailbox page; OpenMail is one line on that page.",
+          "tips": [
+            "Review video is pending (no HEYGEN_API_KEY on this run). English script: content/scripts/clawhub-review-en.txt",
+            "Prefer pinned plugin versions in production.",
+            "For a broken OpenClaw install, use /learn/openclaw-troubleshooting first."
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "Install OpenClaw",
+              "desc": "One-command OpenClaw setup with Ollama, then come back to skills install.",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw tutorial"
+            },
+            {
+              "emoji": "🧩",
+              "title": "Agent Skills",
+              "desc": "The 15-pack via npx skills add dAAAb/agent-skills — a different install path.",
+              "link": "/learn/agent-skills",
+              "cta": "Skills tutorial"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "Local tool-call firewall: aif configure --agent openclaw --validate.",
+              "link": "/learn/harden-aif",
+              "cta": "AIF tutorial"
+            },
+            {
+              "emoji": "🔎",
+              "title": "Brave Search",
+              "desc": "Generic web_search page. Tavily / Parallel / Exa one-liners live on ClawHub.",
+              "link": "/learn/brave-search",
+              "cta": "Search tutorial"
+            },
+            {
+              "emoji": "✉️",
+              "title": "AgentMail",
+              "desc": "Official ClawHub mailbox plugin. OpenMail is a one-line contrast, not a third page.",
+              "link": "/learn/agentmail",
+              "cta": "AgentMail tutorial"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "What is the official install pin?",
+          "a": "Skills: openclaw skills install @owner/slug. Plugins: openclaw plugins install clawhub:<package>. Keep clawhub: so older hosts do not miss ClawHub."
+        },
+        {
+          "q": "When do I use the clawhub CLI?",
+          "a": "Login, publish (clawhub skill publish / clawhub package publish), delete/undelete, and uninstall. Not for day-to-day OpenClaw agent installs."
+        },
+        {
+          "q": "What is a NVIDIA Skill Card?",
+          "a": "A ClawHub-authored trust artifact. Print it with openclaw skills verify @owner/slug --card. It is not the NVIDIA npx skills add nvidia/skills catalog, and not a second CanFly.ai page."
+        },
+        {
+          "q": "Is Firecrawl part of this page?",
+          "a": "One line only: openclaw plugins install clawhub:@openclaw/firecrawl-plugin, or firecrawl init --agent openclaw. The full Developer Index tutorial stays queued on its own URL."
+        },
+        {
+          "q": "Does Control UI browse ClawHub?",
+          "a": "Yes. The Control UI offers official and ClawHub sources. That browse surface is not a separate product page."
         }
       ]
     }
