@@ -82,6 +82,7 @@ public/videos/reviews/
 | 15 | Mac mini (M6 / M5 Pro) | ⏳ 待補 | ⏳ | ⏳ | ⏳ | ❌ | — | 16:9 | 無 HEYGEN_API_KEY。口白稿 `content/scripts/mac-mini-m4-review-en.txt`。slug 仍是 `mac-mini-m4` |
 | 16 | Claude Code + Codex | ⏳ 待補 | ⏳ | ⏳ | ⏳ | ❌ | — | 16:9 | 無 HEYGEN_API_KEY。口白稿 `content/scripts/claude-code-codex-review-en.txt` |
 | 17 | ClawHub | ⏳ 待補 | ⏳ | ⏳ | ⏳ | ❌ | — | 16:9 | 無 HEYGEN_API_KEY。口白稿 `content/scripts/clawhub-review-en.txt` |
+| 18 | Firecrawl | ⏳ 待補 | ⏳ | ⏳ | ⏳ | ❌ | — | 16:9 | 無 HEYGEN_API_KEY。口白稿 `content/scripts/firecrawl-review-en.txt` |
 
 ### 現況摘要
 - **7 支影片全部完成重做** ✅：現有橫式版本其實是中文口白（但配了英文翻譯 VTT），Perplexity/Brave Search 甚至是直式的
