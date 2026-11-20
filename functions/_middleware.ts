@@ -144,6 +144,12 @@ const ROUTE_META: Record<string, OgMeta> = {
       'Current 2026 Mac mini. Official pin: ollama launch openclaw. Same /learn/mac-mini-m4 slug — not a second SKU.',
     ogType: 'article',
   },
+  '/learn/firecrawl': {
+    title: 'Firecrawl — OpenClaw web_search Tutorial | CanFly.ai',
+    description:
+      'Official pin: openclaw plugins install @openclaw/firecrawl-plugin then openclaw configure --section web. Developer Index: npx -y firecrawl-cli@latest setup developer-index.',
+    ogType: 'article',
+  },
 }
 
 // ── Dynamic product metadata (keyed by product slug / id) ──────────────
@@ -285,6 +291,12 @@ const PRODUCT_META: Record<string, OgMeta> = {
     description:
       'Prepaid virtual Visa cards with MCP-native integration. Let your agents make purchases autonomously.',
     ogImage: `${SITE}/images/icons/agentcard.webp`,
+  },
+  firecrawl: {
+    title: 'Firecrawl — OpenClaw web_search + Developer Index | CanFly.ai',
+    description:
+      'Official pin: openclaw plugins install @openclaw/firecrawl-plugin then openclaw configure --section web. Not Brave Search, not Perplexity, not ClawHub.',
+    ogImage: `${SITE}/images/products/firecrawl-hero.svg`,
   },
 }
 

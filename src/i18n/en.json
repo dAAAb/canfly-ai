@@ -778,7 +778,7 @@
       },
       "openclaw": {
         "tagline": "Your personal AI agent — your AI, your rules",
-        "description": "The open-source personal AI agent platform with ~394K GitHub stars. Install with one command, then customize with skills, tools, and integrations. The 2.0 line (v2026.8.1–v2026.11.4) adds guided setup, a rebuilt Control UI, and Shared Cloud Sessions. Fresh xAI / Grok setup defaults to Grok 4.7: `openclaw models set xai/grok-4.7`. When your OpenAI account has GPT-6 Astra, switch with `openclaw models set openai/gpt-6-astra`. Let Claude Code or Codex talk to OpenClaw channels with `openclaw mcp serve`. Add skills and plugins from ClawHub: `openclaw skills install @owner/slug` and `openclaw plugins install clawhub:<package>`. Add a local tool-call firewall with Harden AIF: `aif configure --agent openclaw --validate`. Grok Bot is a hosted xAI teammate, not an OpenClaw skill — compare at /blog/grok-bot-vs-openclaw. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
+        "description": "The open-source personal AI agent platform with ~394K GitHub stars. Install with one command, then customize with skills, tools, and integrations. The 2.0 line (v2026.8.1–v2026.11.4) adds guided setup, a rebuilt Control UI, and Shared Cloud Sessions. Fresh xAI / Grok setup defaults to Grok 4.7: `openclaw models set xai/grok-4.7`. When your OpenAI account has GPT-6 Astra, switch with `openclaw models set openai/gpt-6-astra`. Let Claude Code or Codex talk to OpenClaw channels with `openclaw mcp serve`. Add skills and plugins from ClawHub: `openclaw skills install @owner/slug` and `openclaw plugins install clawhub:<package>`. Give OpenClaw Firecrawl web_search with `openclaw plugins install @openclaw/firecrawl-plugin` then `openclaw configure --section web`. Add a local tool-call firewall with Harden AIF: `aif configure --agent openclaw --validate`. Grok Bot is a hosted xAI teammate, not an OpenClaw skill — compare at /blog/grok-bot-vs-openclaw. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
         "features": [
           "One-command install: ollama launch openclaw",
           "~394K GitHub stars — largest AI agent community",
@@ -787,6 +787,7 @@
           "Switch to Grok 4.7: openclaw models set xai/grok-4.7",
           "Switch to Astra: openclaw models set openai/gpt-6-astra",
           "Claude Code / Codex bridge: openclaw mcp serve",
+          "Firecrawl web_search: openclaw plugins install @openclaw/firecrawl-plugin",
           "Local firewall: Harden AIF (`aif configure --agent openclaw --validate`)",
           "Full privacy: runs 100% on your hardware",
           "v2026.11.4 npm latest (patch on the 2.0 line)"
@@ -958,6 +959,21 @@
         ],
         "ctaPrimary": "Open the Tutorial",
         "ctaSecondary": "Open ClawHub"
+      },
+      "firecrawl": {
+        "tagline": "OpenClaw web_search, scrape, and Developer Index",
+        "description": "Firecrawl is the context API for AI agents: search, scrape JavaScript-heavy pages, and (via CLI) interact in a remote browser sandbox. On CanFly.ai the OpenClaw pin is first-class web_search: `openclaw plugins install @openclaw/firecrawl-plugin` then `openclaw configure --section web` and pick Firecrawl. Keep `openclaw plugins install clawhub:@openclaw/firecrawl-plugin` if you want ClawHub origin metadata. CLI skills: `firecrawl init --agent openclaw`. Developer Index: `npx -y firecrawl-cli@latest setup developer-index`. Keyless starter exists as `firecrawl-free` (opt-in only). `FIRECRAWL_API_KEY` raises limits; explicit `firecrawl_search` / `firecrawl_scrape` need a key. Not Brave Search, not Perplexity, not ClawHub, not Tavily.",
+        "features": [
+          "OpenClaw pin: openclaw plugins install @openclaw/firecrawl-plugin",
+          "Then openclaw configure --section web and pick Firecrawl",
+          "ClawHub origin: openclaw plugins install clawhub:@openclaw/firecrawl-plugin",
+          "Keyless opt-in: firecrawl-free — never auto-selected",
+          "CLI skills: firecrawl init --agent openclaw",
+          "Developer Index: npx -y firecrawl-cli@latest setup developer-index",
+          "Official docs: https://docs.openclaw.ai/tools/firecrawl"
+        ],
+        "ctaPrimary": "Open the Tutorial",
+        "ctaSecondary": "OpenClaw Firecrawl docs"
       }
     },
     "comingSoon": "Coming Soon",
@@ -2558,6 +2574,13 @@
             "Combine with Perplexity for both raw search data and AI-synthesized answers"
           ],
           "nextStepCards": [
+            {
+              "emoji": "🔥",
+              "title": "Firecrawl",
+              "desc": "JS scrape + OpenClaw web_search + Developer Index. Not this generic Brave page.",
+              "cta": "Firecrawl tutorial",
+              "link": "/learn/firecrawl"
+            },
             {
               "emoji": "🔍",
               "title": "Try Perplexity AI",
@@ -4506,6 +4529,13 @@
               "desc": "Talk to OpenClaw channels: openclaw mcp serve. Not AgentKit.",
               "link": "/learn/claude-code-codex",
               "cta": "MCP tutorial"
+            },
+            {
+              "emoji": "🔥",
+              "title": "Firecrawl",
+              "desc": "OpenClaw web_search + Developer Index: openclaw plugins install @openclaw/firecrawl-plugin.",
+              "link": "/learn/firecrawl",
+              "cta": "Firecrawl tutorial"
             }
           ],
           "tips": [
@@ -9175,7 +9205,7 @@
           "title": "What ClawHub is",
           "titleEn": "What ClawHub is",
           "estimatedTime": "2 min",
-          "content": "ClawHub is the public registry for OpenClaw skills (`SKILL.md` bundles) and plugins (code packages). Browse it at clawhub.ai. Native OpenClaw commands search, install, and update into the active workspace. The separate `clawhub` CLI is for GitHub login, publish, and uninstall.\n\nCanFly.ai keeps this on one skills page. Do not open Firecrawl, Tavily, Parallel, SearXNG, Exa, SerpApi, NVIDIA Skill Cards, 1Password, Shopify, llama.cpp, Venice, Make, OpenMail, Zoom, Teams, or Slack huddles as extra product pages — one-liners stay here. The 15-pack Agent Skills tutorial is a different install path (`npx skills add dAAAb/agent-skills`).",
+          "content": "ClawHub is the public registry for OpenClaw skills (`SKILL.md` bundles) and plugins (code packages). Browse it at clawhub.ai. Native OpenClaw commands search, install, and update into the active workspace. The separate `clawhub` CLI is for GitHub login, publish, and uninstall.\n\nCanFly.ai keeps this on one skills page. Firecrawl has its own tutorial at /learn/firecrawl. Do not open Tavily, Parallel, SearXNG, Exa, SerpApi, NVIDIA Skill Cards, 1Password, Shopify, llama.cpp, Venice, Make, OpenMail, Zoom, Teams, or Slack huddles as extra product pages — one-liners stay here. The 15-pack Agent Skills tutorial is a different install path (`npx skills add dAAAb/agent-skills`).",
           "commands": [
             "# Product page on CanFly.ai",
             "# /apps/skills/clawhub",
@@ -9200,7 +9230,7 @@
               },
               {
                 "q": "Should I write Firecrawl or Tavily here?",
-                "a": "One-liners only. Firecrawl stays on its own queued page. Other web_search plugins stay on /learn/brave-search or this list — no extra pages."
+                "a": "One-liners only. Firecrawl's full tutorial is /learn/firecrawl. Other web_search plugins stay on /learn/brave-search or this list — no extra pages."
               }
             ]
           }
@@ -9245,7 +9275,7 @@
           "title": "Install plugins from ClawHub",
           "titleEn": "Install plugins from ClawHub",
           "estimatedTime": "3 min",
-          "content": "Plugins are code packages, not SKILL.md files. Search with `openclaw plugins search`. Current hosts install package names from ClawHub by default. Keep the explicit `clawhub:` prefix — it works on every build, including hosts through 2026.10.4 that required it.\n\nOfficial one-liners below are not extra CanFly.ai pages. Firecrawl can also be `web_search` via `openclaw configure --section web`; that page is still queued. 1Password is bundled: enable it, do not ClawHub-install it. Meeting plugins (Zoom / Teams / Google Meet / Slack huddles) stay on this list.",
+          "content": "Plugins are code packages, not SKILL.md files. Search with `openclaw plugins search`. Current hosts install package names from ClawHub by default. Keep the explicit `clawhub:` prefix — it works on every build, including hosts through 2026.10.4 that required it.\n\nOfficial one-liners below are not extra CanFly.ai pages. Firecrawl web_search now has its own tutorial at /learn/firecrawl. 1Password is bundled: enable it, do not ClawHub-install it. Meeting plugins (Zoom / Teams / Google Meet / Slack huddles) stay on this list.",
           "commands": [
             "openclaw plugins search \"calendar\"",
             "openclaw plugins install clawhub:@openclaw/tavily-plugin",
@@ -9370,6 +9400,13 @@
               "cta": "AIF tutorial"
             },
             {
+              "emoji": "🔥",
+              "title": "Firecrawl",
+              "desc": "OpenClaw web_search + scrape + Developer Index. Pin: openclaw plugins install @openclaw/firecrawl-plugin.",
+              "link": "/learn/firecrawl",
+              "cta": "Firecrawl tutorial"
+            },
+            {
               "emoji": "🔎",
               "title": "Brave Search",
               "desc": "Generic web_search page. Tavily / Parallel / Exa one-liners live on ClawHub.",
@@ -9401,11 +9438,240 @@
         },
         {
           "q": "Is Firecrawl part of this page?",
-          "a": "One line only: openclaw plugins install clawhub:@openclaw/firecrawl-plugin, or firecrawl init --agent openclaw. The full Developer Index tutorial stays queued on its own URL."
+          "a": "One line here: openclaw plugins install clawhub:@openclaw/firecrawl-plugin, or firecrawl init --agent openclaw. Full tutorial: /learn/firecrawl."
         },
         {
           "q": "Does Control UI browse ClawHub?",
           "a": "Yes. The Control UI offers official and ClawHub sources. That browse surface is not a separate product page."
+        }
+      ]
+    },
+    "firecrawl": {
+      "title": "Firecrawl — OpenClaw web_search and Developer Index",
+      "subtitle": "Official pin: openclaw plugins install @openclaw/firecrawl-plugin, then openclaw configure --section web. Not Brave Search, not Perplexity.",
+      "duration": "12 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "What Firecrawl is",
+          "titleEn": "What Firecrawl is",
+          "estimatedTime": "2 min",
+          "content": "Firecrawl is the context API for AI agents. It searches the web, scrapes JavaScript-heavy pages into clean Markdown, and (through the CLI) can keep working in a remote browser sandbox — no local Chromium.\n\nCanFly.ai keeps this on one skills page. Two official OpenClaw paths live here: first-class `web_search` via the plugin, and CLI skills via `firecrawl init --agent openclaw`. Developer Index is the coding-agent half of the same product (issues, merged PRs, READMEs, curated docs) — not a second page.\n\nDo not invent extra CanFly.ai pages for Tavily, Parallel, SearXNG, Exa, SerpApi, Context.dev, Olostep, or Perplexity Context API. Brave Search stays the generic web_search page. Perplexity stays the AI-answer page. ClawHub stays the registry.",
+          "commands": [
+            "# Product page on CanFly.ai",
+            "# /apps/skills/firecrawl",
+            "",
+            "# Official docs",
+            "https://docs.openclaw.ai/tools/firecrawl",
+            "https://docs.firecrawl.dev/quickstarts/openclaw",
+            "https://docs.firecrawl.dev/features/developer"
+          ],
+          "expectedResult": "You know Firecrawl is OpenClaw web_search + scrape + Developer Index — not Brave, not Perplexity, not ClawHub.",
+          "tips": [
+            "Host on this run: OpenClaw v2026.11.6 (npm latest). The Firecrawl plugin is first-class web_search on current latest.",
+            "Do not invent ollama launch firecrawl or clawhub install firecrawl.",
+            "Perplexity Computer / Portable stay queued (待決). Do not fold them into this page."
+          ],
+          "troubleshooting": {
+            "title": "Scope",
+            "items": [
+              {
+                "q": "Is this the same as Brave Search?",
+                "a": "No. /learn/brave-search is generic web_search. Firecrawl is scrape + JS pages + optional Developer Index. Tavily / Parallel / Exa stay one-liners on /learn/clawhub."
+              },
+              {
+                "q": "Is this Perplexity Context API?",
+                "a": "No. Perplexity Context API is a competitor extract-to-Markdown API with no openclaw plugins install. Keep /learn/perplexity as the search page."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Install the OpenClaw plugin and pick Firecrawl",
+          "titleEn": "Install the OpenClaw plugin and pick Firecrawl",
+          "estimatedTime": "4 min",
+          "content": "Need OpenClaw first? Use the CanFly.ai OpenClaw guide, then come back. This is the CanFly.ai pin: install the official plugin, then choose Firecrawl under web tools.\n\n`openclaw configure --section web` can pick keyed Firecrawl Search (`firecrawl`) or Firecrawl Search (Free) (`firecrawl-free`). The free provider is opt-in only and never auto-selected, because queries go to Firecrawl's hosted starter tier. Put `FIRECRAWL_API_KEY` in the Gateway environment for higher limits. Explicit `firecrawl_search` and `firecrawl_scrape` tools require a key. The `web_fetch` fallback can stay keyless when you explicitly select Firecrawl.\n\nKeep the `clawhub:` prefix if you want ClawHub origin metadata on older hosts. `openclaw doctor --fix` migrates legacy `tools.web.fetch.firecrawl.*` config.",
+          "commands": [
+            "openclaw plugins install @openclaw/firecrawl-plugin",
+            "",
+            "# ClawHub origin metadata — works on current and older hosts",
+            "openclaw plugins install clawhub:@openclaw/firecrawl-plugin",
+            "",
+            "openclaw configure --section web",
+            "",
+            "# Gateway env for higher limits (dashboard key)",
+            "export FIRECRAWL_API_KEY=fc-YOUR-API-KEY",
+            "",
+            "# Optional: keyless opt-in web_search (never auto-selected)",
+            "# provider: \"firecrawl-free\"",
+            "",
+            "openclaw doctor --fix",
+            "openclaw --version"
+          ],
+          "expectedResult": "The Firecrawl plugin is enabled. configure --section web lists Firecrawl / Firecrawl Search (Free). Gateway sees FIRECRAWL_API_KEY when you set one.",
+          "tips": [
+            "Choosing Firecrawl in onboarding or configure --section web enables the plugin automatically.",
+            "firecrawl_search adds sources, categories, geo, and scrapeResults. Generic web_search only has query + count.",
+            "Self-hosted baseUrl is only for private/internal endpoints. Public custom hosts are rejected."
+          ],
+          "troubleshooting": {
+            "title": "Plugin",
+            "items": [
+              {
+                "q": "openclaw: command not found",
+                "a": "Install OpenClaw first: /learn/ollama-openclaw or `ollama launch openclaw`."
+              },
+              {
+                "q": "web_search still uses Brave / another provider",
+                "a": "Run openclaw configure --section web and pick Firecrawl. firecrawl-free is never auto-selected."
+              },
+              {
+                "q": "firecrawl_scrape says it needs a key",
+                "a": "That tool requires FIRECRAWL_API_KEY. Keyless only covers the selected web_fetch fallback and the opt-in firecrawl-free search provider."
+              }
+            ]
+          }
+        },
+        {
+          "title": "CLI skills: firecrawl init --agent openclaw",
+          "titleEn": "CLI skills: firecrawl init --agent openclaw",
+          "estimatedTime": "3 min",
+          "content": "Firecrawl's own OpenClaw quickstart installs CLI skills so the agent can scrape, search, crawl, and interact without a local browser. CanFly.ai pins `--agent openclaw` so you do not spray skills onto every editor.\n\n`--all --browser` is the Firecrawl docs default for mixed machines. Skip it here unless you really want every detected harness. After install, `firecrawl --status` should report CLI + skill routing. Restart the OpenClaw Gateway / agent so it rediscovers skills.\n\nThe older `firecrawl browser` command is deprecated. Use `scrape` then `interact`.",
+          "commands": [
+            "curl -fsSL https://firecrawl.dev/install.sh | bash -s -- --agent openclaw",
+            "",
+            "# Same pin once the CLI is installed",
+            "firecrawl init --agent openclaw",
+            "",
+            "# npx equivalent",
+            "npx -y firecrawl-cli@latest init --agent openclaw",
+            "",
+            "firecrawl --status",
+            "firecrawl search \"OpenClaw documentation\" --scrape --scrape-formats markdown",
+            "firecrawl https://docs.openclaw.ai/tools/firecrawl --only-main-content"
+          ],
+          "expectedResult": "firecrawl --status shows the CLI. OpenClaw-only skills are installed. A test search or scrape returns Markdown.",
+          "tips": [
+            "Add --skip-auth for a skills-only, no-login setup. Export FIRECRAWL_API_KEY for higher limits.",
+            "Interact sessions run in a remote sandbox. Stop them with firecrawl interact stop.",
+            "This CLI path is not a second CanFly.ai product page."
+          ],
+          "troubleshooting": {
+            "title": "CLI",
+            "items": [
+              {
+                "q": "Should I use npx -y firecrawl-cli init --all --browser?",
+                "a": "That is Firecrawl's mixed-machine default. On CanFly.ai pin --agent openclaw so you only route to OpenClaw."
+              },
+              {
+                "q": "OpenClaw does not see the skill",
+                "a": "Restart Gateway after init. Confirm firecrawl --status. Do not use clawhub install firecrawl."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Developer Index for coding agents",
+          "titleEn": "Developer Index for coding agents",
+          "estimatedTime": "2 min",
+          "content": "Developer Index is Firecrawl's coding-agent search: public repo issues, merged pull requests, READMEs, and curated documentation — not a general web SERP. Install the dedicated skill, then search.\n\nAPI path is `/v2/search/developer`. You can also pass `categories: [\"developer\"]` on `/search` (developer cannot mix with other categories). Keyless requests work at starter limits; add `FIRECRAWL_API_KEY` for more. The old GitHub research search (`/search/research/github`) returned 410 Gone on 2026-11-03 — do not document it.\n\nThis is still the Firecrawl page. Do not open a second Developer Index product.",
+          "commands": [
+            "npx -y firecrawl-cli@latest setup developer-index",
+            "",
+            "firecrawl developer \"how do I configure retries\" --limit 10",
+            "",
+            "# Optional: search only indexed agent-skill files",
+            "firecrawl developer \"openclaw web_search\" --skills-only --limit 10"
+          ],
+          "expectedResult": "setup developer-index finishes. firecrawl developer returns ranked passages from issues, PRs, READMEs, or docs.",
+          "tips": [
+            "Use Developer Index when the question is about library behavior, an API contract, or a known bug — not news.",
+            "Generic Firecrawl web_search stays on the plugin from step 2.",
+            "Context.dev / Olostep stay off this site until you need a contrast page."
+          ],
+          "troubleshooting": {
+            "title": "Developer Index",
+            "items": [
+              {
+                "q": "Is this 70 million repos?",
+                "a": "Treat it as Firecrawl's coding-agent index of public issues, merged PRs, READMEs, and curated docs. Do not invent a second OpenAPI catalog page."
+              },
+              {
+                "q": "GET /search/research/github?",
+                "a": "Removed 2026-11-03 (410 Gone). Use /search/developer or firecrawl developer."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Next steps on CanFly.ai",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 min",
+          "content": "Firecrawl is wired. Pair it with an OpenClaw install, ClawHub for other plugins, Brave Search if you only need generic web_search, Harden AIF in front of tool calls, or Perplexity when you want cited AI answers instead of scraped pages.",
+          "tips": [
+            "Review video is pending (no HEYGEN_API_KEY on this run). English script: content/scripts/firecrawl-review-en.txt",
+            "Prefer keyed Firecrawl in production. firecrawl-free is a starter opt-in.",
+            "For a broken OpenClaw install, use /learn/openclaw-troubleshooting first."
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "Install OpenClaw",
+              "desc": "One-command OpenClaw setup with Ollama, then come back to the Firecrawl plugin.",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw tutorial"
+            },
+            {
+              "emoji": "📦",
+              "title": "ClawHub",
+              "desc": "Registry for other plugins. Firecrawl can also install as clawhub:@openclaw/firecrawl-plugin.",
+              "link": "/learn/clawhub",
+              "cta": "ClawHub tutorial"
+            },
+            {
+              "emoji": "🔎",
+              "title": "Brave Search",
+              "desc": "Generic web_search page. Tavily / Parallel / Exa stay one-liners on ClawHub.",
+              "link": "/learn/brave-search",
+              "cta": "Search tutorial"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "Local tool-call firewall: aif configure --agent openclaw --validate.",
+              "link": "/learn/harden-aif",
+              "cta": "AIF tutorial"
+            },
+            {
+              "emoji": "🔍",
+              "title": "Perplexity",
+              "desc": "AI answers with citations — not scrape, not Developer Index, not Computer.",
+              "link": "/learn/perplexity",
+              "cta": "Perplexity tutorial"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "What is the official OpenClaw pin?",
+          "a": "openclaw plugins install @openclaw/firecrawl-plugin, then openclaw configure --section web and pick Firecrawl. Optional ClawHub origin: openclaw plugins install clawhub:@openclaw/firecrawl-plugin. CLI skills: firecrawl init --agent openclaw."
+        },
+        {
+          "q": "Do I need FIRECRAWL_API_KEY?",
+          "a": "For higher limits, yes. firecrawl-free is a keyless opt-in web_search provider and is never auto-selected. Explicit firecrawl_search and firecrawl_scrape require a key. Selected web_fetch fallback can be keyless."
+        },
+        {
+          "q": "Can I install this with clawhub install or ollama launch?",
+          "a": "No. Do not invent clawhub install firecrawl or ollama launch firecrawl. Use the OpenClaw plugin or firecrawl init --agent openclaw."
+        },
+        {
+          "q": "Is this Brave Search, Tavily, or Perplexity?",
+          "a": "No. Brave Search stays /learn/brave-search. Tavily / Parallel / Exa / SearXNG / SerpApi stay one-liners on /learn/clawhub. Perplexity stays /learn/perplexity. Perplexity Computer is still 待決."
+        },
+        {
+          "q": "What is Developer Index?",
+          "a": "Firecrawl's coding-agent search over public repo issues, merged PRs, READMEs, and curated docs. Install with npx -y firecrawl-cli@latest setup developer-index. It is not a second CanFly.ai page."
         }
       ]
     }

@@ -1,0 +1,11 @@
+Hi, I'm JU CHUN KO.
+
+Plain HTTP fetch fails on JavaScript pages. Generic web search dumps noisy snippets. Coding agents need clean markdown, and they need GitHub issues, not another blog post.
+
+Firecrawl is the context API. On CanFly.ai we pin OpenClaw first-class web_search: openclaw plugins install at openclaw slash firecrawl-plugin, then openclaw configure dash dash section web. Pick Firecrawl. Add FIRECRAWL_API_KEY for higher limits. firecrawl-free is keyless and opt-in.
+
+Need CLI skills instead? firecrawl init dash dash agent openclaw. Need repo issues and READMEs? npx firecrawl-cli setup developer-index.
+
+This is not Brave Search, not Perplexity, and not ClawHub.
+
+I made a tutorial on CanFly.ai — go try it.
