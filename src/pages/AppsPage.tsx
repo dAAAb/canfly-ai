@@ -10,7 +10,7 @@ import { useHead } from '../hooks/useHead'
 const categoryFeatured: Record<string, string[]> = {
   all: ['ollama', 'zeabur'],
   free: ['ollama', 'openrouter', 'grok-bot'],
-  skills: ['clawhub', 'claude-code-codex'],
+  skills: ['firecrawl', 'clawhub'],
   hosting: ['zeabur', 'umbrel'],
   hardware: ['hdmi-dummy-plug', 'mac-mini-m4', 'macbook-neo'],
   vm: ['utm', 'virtual-buddy'],
@@ -38,6 +38,7 @@ const featuredGradients: Record<string, string> = {
   'claude-code-codex': 'bg-gradient-to-br from-sky-950/70 to-orange-950/40 border border-sky-500/40 hover:border-orange-400/60',
   'harden-aif': 'bg-gradient-to-br from-amber-950/60 to-emerald-950/40 border border-amber-700/30 hover:border-amber-500/50',
   clawhub: 'bg-gradient-to-br from-orange-950/70 to-amber-950/40 border border-orange-500/40 hover:border-orange-400/60',
+  firecrawl: 'bg-gradient-to-br from-orange-950/70 to-red-950/40 border border-orange-500/40 hover:border-orange-400/60',
 }
 
 export default function AppsPage() {
