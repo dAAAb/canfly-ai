@@ -1,0 +1,9 @@
+Hi, I'm JU CHUN KO.
+
+Most local agents still call the cloud for every tool loop. That is slow, and it is not private.
+
+Muse Glimmer is Meta Superintelligence Labs' open 30B agent model. Apache 2.0. Text and images. About 18 gigabytes on Ollama. Built for tool use, long tasks, and retrying when a call fails.
+
+On CanFly.ai the official pin is one command: ollama launch openclaw --model muse-glimmer. Apple Silicon can use muse-glimmer:30b-mlx. Keep this on its own page. Wonder, Ember, and Spark Open stay one-liners here.
+
+I made a tutorial on CanFly.ai — go try it.

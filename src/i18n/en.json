@@ -449,13 +449,14 @@
     "products": {
       "ollama": {
         "tagline": "Free Local & Cloud AI Models × OpenClaw",
-        "description": "Run AI models locally or in the cloud. Install OpenClaw with one command: ollama launch openclaw. Free cloud models included — no GPU needed. Upgrade to Pro ($20/mo) for unlimited usage.",
+        "description": "Run AI models locally or in the cloud. Install OpenClaw with one command: ollama launch openclaw. Free cloud models included — no GPU needed. Upgrade to Pro ($20/mo) for unlimited usage. Local Muse Glimmer (Meta 30B agent model): `ollama launch openclaw --model muse-glimmer` — see /apps/models/muse-glimmer. Qwen 3.8 stays on this Ollama page.",
         "features": [
           "One-line OpenClaw install: ollama launch openclaw",
           "Free cloud models — no GPU required",
           "Privacy-focused local processing",
           "Cloud models: kimi-k2.5, minimax-m2.5, glm-5",
           "Local models: glm-4.7-flash, Llama, Mistral",
+          "Local Muse Glimmer: ollama launch openclaw --model muse-glimmer",
           "Pro $20/mo for daily work, Max for heavy usage",
           "Works with OpenClaw agents"
         ],
@@ -778,12 +779,13 @@
       },
       "openclaw": {
         "tagline": "Your personal AI agent — your AI, your rules",
-        "description": "The open-source personal AI agent platform with ~394K GitHub stars. Install with one command, then customize with skills, tools, and integrations. The 2.0 line (v2026.8.1–v2026.11.4) adds guided setup, a rebuilt Control UI, and Shared Cloud Sessions. Fresh xAI / Grok setup defaults to Grok 4.7: `openclaw models set xai/grok-4.7`. When your OpenAI account has GPT-6 Astra, switch with `openclaw models set openai/gpt-6-astra`. Let Claude Code or Codex talk to OpenClaw channels with `openclaw mcp serve`. Add skills and plugins from ClawHub: `openclaw skills install @owner/slug` and `openclaw plugins install clawhub:<package>`. Add a local tool-call firewall with Harden AIF: `aif configure --agent openclaw --validate`. Grok Bot is a hosted xAI teammate, not an OpenClaw skill — compare at /blog/grok-bot-vs-openclaw. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
+        "description": "The open-source personal AI agent platform with ~394K GitHub stars. Install with one command, then customize with skills, tools, and integrations. The 2.0 line (v2026.8.1–v2026.11.4) adds guided setup, a rebuilt Control UI, and Shared Cloud Sessions. Fresh xAI / Grok setup defaults to Grok 4.7: `openclaw models set xai/grok-4.7`. When your OpenAI account has GPT-6 Astra, switch with `openclaw models set openai/gpt-6-astra`. Let Claude Code or Codex talk to OpenClaw channels with `openclaw mcp serve`. Add skills and plugins from ClawHub: `openclaw skills install @owner/slug` and `openclaw plugins install clawhub:<package>`. Add a local tool-call firewall with Harden AIF: `aif configure --agent openclaw --validate`. Local Muse Glimmer: `ollama launch openclaw --model muse-glimmer` — see /apps/models/muse-glimmer. Grok Bot is a hosted xAI teammate, not an OpenClaw skill — compare at /blog/grok-bot-vs-openclaw. Runs locally or in the cloud. Your data stays yours — no vendor lock-in, no subscriptions, no limits.",
         "features": [
           "One-command install: ollama launch openclaw",
           "~394K GitHub stars — largest AI agent community",
           "ClawHub registry: openclaw skills install / openclaw plugins install clawhub:",
           "Works with any LLM: local (Ollama) or cloud (Grok 4.7, GPT-6 Astra, Claude)",
+          "Local Muse Glimmer: ollama launch openclaw --model muse-glimmer",
           "Switch to Grok 4.7: openclaw models set xai/grok-4.7",
           "Switch to Astra: openclaw models set openai/gpt-6-astra",
           "Claude Code / Codex bridge: openclaw mcp serve",
@@ -958,6 +960,21 @@
         ],
         "ctaPrimary": "Open the Tutorial",
         "ctaSecondary": "Open ClawHub"
+      },
+      "muse-glimmer": {
+        "tagline": "Meta 30B open agent model — local OpenClaw on one GPU",
+        "description": "Muse Glimmer is Meta Superintelligence Labs' first open agent model (2026-08-10). Dense 30B, Apache 2.0, text + image, ~18GB on Ollama, 128K context. Official CanFly.ai pin: `ollama launch openclaw --model muse-glimmer` (Apple Silicon MLX: `muse-glimmer:30b-mlx`). Needs Ollama 0.32.7+. This is not the Ollama product page — Qwen 3.8 stays there. Muse Wonder, Muse Ember, and Spark Open stay one-liners on this card. Wonder Full stays in Muse Code.",
+        "features": [
+          "Official pin: ollama launch openclaw --model muse-glimmer",
+          "Apple Silicon MLX: muse-glimmer:30b-mlx (DFlash + image input)",
+          "30B dense, Apache 2.0, ~18GB Ollama tag, 128K context",
+          "Tool use, long tasks, and retry when a call fails",
+          "Ollama 0.32.7+; 32GB unified memory recommended",
+          "Wonder / Ember / Spark Open: one-liners only — no extra pages",
+          "Not Qwen 3.8, not Muse Code, not a second Ollama card"
+        ],
+        "ctaPrimary": "Open the Tutorial",
+        "ctaSecondary": "Ollama model page"
       }
     },
     "comingSoon": "Coming Soon",
@@ -1259,6 +1276,13 @@
               "desc": "Use ollama launch openclaw to auto-install and start OpenClaw with free cloud models. The fastest way to experience AI agents.",
               "cta": "Quick Start Guide",
               "link": "/learn/ollama-openclaw"
+            },
+            {
+              "emoji": "✨",
+              "title": "Muse Glimmer",
+              "desc": "Meta 30B local agent model. Official pin: ollama launch openclaw --model muse-glimmer.",
+              "cta": "Glimmer tutorial",
+              "link": "/learn/muse-glimmer"
             },
             {
               "emoji": "☁️",
@@ -3843,6 +3867,13 @@
             "All data stays private with local models"
           ],
           "nextStepCards": [
+            {
+              "emoji": "✨",
+              "title": "Muse Glimmer",
+              "desc": "Meta 30B local agent model. Official pin: ollama launch openclaw --model muse-glimmer.",
+              "cta": "Glimmer tutorial",
+              "link": "/learn/muse-glimmer"
+            },
             {
               "emoji": "⚡",
               "title": "Nemotron 3.5 Lightning",
@@ -9406,6 +9437,274 @@
         {
           "q": "Does Control UI browse ClawHub?",
           "a": "Yes. The Control UI offers official and ClawHub sources. That browse surface is not a separate product page."
+        }
+      ]
+    },
+    "museGlimmer": {
+      "title": "Muse Glimmer — OpenClaw in 5 Minutes",
+      "subtitle": "Official local pin: ollama launch openclaw --model muse-glimmer. Meta 30B open agent model. Not the Ollama page. Not Wonder, Ember, or Spark Open.",
+      "duration": "5 min",
+      "difficulty": "Beginner",
+      "steps": [
+        {
+          "title": "What Glimmer is",
+          "titleEn": "What Glimmer is",
+          "estimatedTime": "1 min",
+          "content": "Muse Glimmer is Meta Superintelligence Labs' first open agent model (launched 2026-08-10). It is a dense 30B model with a dedicated perception encoder, distilled from Muse Spark, and released under Apache 2.0. On CanFly.ai this page is the local Glimmer card.\n\nOllama's library lists about 18GB, 128K context, text + image. Meta's deploy notes: quantized builds 17–20GB; bf16 weights around 60GB. Keep Qwen 3.8 on the Ollama tutorial. Do not open Wonder, Ember, Spark Open, or Muse Code pages.",
+          "commands": [
+            "# Official local pin (Ollama blog)",
+            "ollama launch openclaw --model muse-glimmer",
+            "",
+            "# Product page on CanFly.ai",
+            "# /apps/models/muse-glimmer",
+            "",
+            "# Ollama library",
+            "https://ollama.com/library/muse-glimmer",
+            "",
+            "# Meta launch + deploy",
+            "https://research.meta.ai/blog/introducing-muse-glimmer-open-agentic-model",
+            "https://dev.meta.ai/docs/muse-glimmer/deploy"
+          ],
+          "modelTable": {
+            "models": [
+              {
+                "name": "Muse Glimmer",
+                "size": "30B · ~18GB",
+                "best": "Local OpenClaw on one GPU / Mac",
+                "speed": "Local, Apache 2.0"
+              },
+              {
+                "name": "Muse Wonder",
+                "size": "Cloud API",
+                "best": "Long-running hosted agents — one line only",
+                "speed": "$4 / $20 per 1M"
+              },
+              {
+                "name": "Muse Ember",
+                "size": "Cloud API · 1M ctx",
+                "best": "Cheap hosted steps — one line only",
+                "speed": "$0.10 / $0.50 per 1M"
+              },
+              {
+                "name": "Spark Open",
+                "size": "816B / 42B · cloud tag",
+                "best": "Ollama cloud passthrough — one line only",
+                "speed": "Hosted, not a local pull"
+              }
+            ]
+          },
+          "expectedResult": "You know Glimmer is the local 30B Apache 2.0 card — not Qwen 3.8, not Wonder, not Ember, and not Spark Open.",
+          "tips": [
+            "Meta built Glimmer for tool use, long tasks, and retrying a failed call. Treat vendor benchmarks as vendor numbers.",
+            "Wonder Full (`muse-wonder-full-1.0`) is Muse Code only. Setting Wonder reasoning to max does not select Full.",
+            "Do not invent a second Glimmer slug. Qwen 3.8 stays at /learn/ollama."
+          ],
+          "troubleshooting": {
+            "title": "Scope",
+            "items": [
+              {
+                "q": "Is this the same as the Ollama page?",
+                "a": "No. /learn/ollama is the host. This page is Meta's 30B local agent model. Qwen 3.8 stays on Ollama."
+              },
+              {
+                "q": "Should I open Wonder, Ember, or Spark Open?",
+                "a": "No. One-liners live in the cloud-family step. Wonder Full stays in Muse Code."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Run it locally with Ollama",
+          "titleEn": "Run it locally with Ollama",
+          "estimatedTime": "2 min",
+          "content": "The CanFly.ai pin is the official Ollama OpenClaw launch. Install Ollama 0.32.7 or later first, then launch OpenClaw on Glimmer. Chat-only testers can `ollama run` the same slug.\n\nPlan disk and RAM before you pull. The latest Ollama tag is about 18GB. Meta says a single consumer GPU or a Mac is the local target. 32GB unified memory is the comfortable OpenClaw size; 24GB can work if little else is loaded.",
+          "commands": [
+            "# Confirm Ollama is new enough",
+            "ollama --version",
+            "",
+            "# If Ollama is missing, see /learn/ollama",
+            "",
+            "# Official OpenClaw launch (ollama.com/blog/muse-glimmer)",
+            "ollama launch openclaw --model muse-glimmer",
+            "",
+            "# Chat only, no agent",
+            "ollama run muse-glimmer",
+            "",
+            "# Confirm the local tag",
+            "ollama list | grep muse-glimmer"
+          ],
+          "expectedResult": "Ollama lists muse-glimmer, and OpenClaw starts with that model — or you know you still need disk / RAM / 0.32.7+.",
+          "tips": [
+            "Need OpenClaw itself first? Use /learn/ollama-openclaw, then come back and add `--model muse-glimmer`.",
+            "Claude Code / OpenCode / Hermes also have `ollama launch ... --model muse-glimmer`. Those stay on their own pages.",
+            "Local is free after the download. An 18GB pull is not a cloud bill."
+          ],
+          "troubleshooting": {
+            "title": "Local",
+            "items": [
+              {
+                "q": "ollama: command not found",
+                "a": "Install Ollama from /learn/ollama (0.32.7+), then rerun `ollama launch openclaw --model muse-glimmer`."
+              },
+              {
+                "q": "The pull fails or the machine swaps hard",
+                "a": "Latest is about 18GB. Use spare disk and 32GB unified memory when you can. 24GB is the tight path. Or use the cloud-family step."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Apple Silicon MLX and images",
+          "titleEn": "Apple Silicon MLX and images",
+          "estimatedTime": "1 min",
+          "content": "On Apple Silicon, Ollama's MLX engine is the fast path. The tag is `muse-glimmer:30b-mlx` (~19GB). Ollama 0.32.7 added DFlash (about 1.5×–1.8× on Apple Silicon) and image input, so agents can read screenshots, mockups, and charts in the tool loop.\n\nReasoning strength on Glimmer is `low`, `medium`, `high`, and `xhigh`. Use `high` or `xhigh` for hard coding and agent work.",
+          "commands": [
+            "# Apple Silicon MLX (DFlash + image input)",
+            "ollama launch openclaw --model muse-glimmer:30b-mlx",
+            "",
+            "# Chat only on MLX",
+            "ollama run muse-glimmer:30b-mlx",
+            "",
+            "# Ollama MLX notes",
+            "https://ollama.com/library/muse-glimmer"
+          ],
+          "expectedResult": "On Apple Silicon, OpenClaw is running muse-glimmer:30b-mlx, or you know you are on the default 18GB tag instead.",
+          "tips": [
+            "MLX is Apple Silicon only. NVIDIA / AMD stay on `muse-glimmer`.",
+            "Image input is for screenshots and mockups in the agent loop — not a second product page.",
+            "Need a Mac mini always-on box? /learn/mac-mini-m4 still uses `ollama launch openclaw`, then add this model."
+          ],
+          "troubleshooting": {
+            "title": "MLX",
+            "items": [
+              {
+                "q": "30b-mlx is missing",
+                "a": "Update Ollama to 0.32.7 or later, then `ollama pull muse-glimmer:30b-mlx`. The default `muse-glimmer` tag still works."
+              },
+              {
+                "q": "Do I need MLX on a Windows NVIDIA box?",
+                "a": "No. Use `ollama launch openclaw --model muse-glimmer`."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Cloud family one-liners",
+          "titleEn": "Cloud family one-liners",
+          "estimatedTime": "1 min",
+          "content": "Hosted Muse models are not extra CanFly.ai pages. Wonder is Meta's cloud agent model via the official plugin. Ember is the cheap 1M-context API (static OpenClaw Meta catalog may omit it — refresh first). Spark Open on Ollama is a cloud tag, not a local 816B pull.\n\nWonder Full stays in Muse Code. Do not invent `ollama launch` for Ember or Wonder.",
+          "commands": [
+            "# Muse Wonder (Meta API, $4 / $20 per 1M, 1M context)",
+            "openclaw plugins install @openclaw/meta-provider",
+            "export MODEL_API_KEY=\"...\"",
+            "openclaw onboard --auth-choice meta-api-key",
+            "openclaw models list --provider meta",
+            "openclaw models set meta/muse-wonder-1.0",
+            "",
+            "# Muse Ember (API muse-ember-1.0, $0.10 / $0.50, 1M context)",
+            "openclaw plugins install @openclaw/meta-provider",
+            "openclaw models list --provider meta",
+            "openclaw models list --refresh",
+            "openclaw models set meta/muse-ember-1.0",
+            "",
+            "# Ember fallback if Meta catalog still omits it",
+            "openclaw models set openrouter/meta/muse-ember",
+            "",
+            "# Spark Open — Ollama cloud tag, not a local download",
+            "ollama launch openclaw --model muse-spark-open:cloud",
+            "",
+            "# OpenRouter Spark Open slug",
+            "openclaw models set openrouter/meta/muse-spark-open"
+          ],
+          "expectedResult": "You can pick local Glimmer, hosted Wonder, hosted Ember, or Spark Open cloud — without opening extra CanFly.ai pages.",
+          "tips": [
+            "Never paste MODEL_API_KEY into git, screenshots, or a CanFly.ai issue.",
+            "OpenClaw's static Meta catalog may still default Spark 1.3 and omit Ember. `models list --refresh` first.",
+            "Spark Open's local 816B weights are not this Ollama cloud tag. Do not open a Spark Open page."
+          ],
+          "troubleshooting": {
+            "title": "Cloud family",
+            "items": [
+              {
+                "q": "models set meta/muse-ember-1.0 fails",
+                "a": "Run `openclaw models list --provider meta` and `openclaw models list --refresh`. If Ember is still missing, use `openclaw models set openrouter/meta/muse-ember`."
+              },
+              {
+                "q": "Is Spark Open a local 816B download?",
+                "a": "Not on this Ollama tag. `muse-spark-open:cloud` is hosted. Keep Glimmer as the local 30B card."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Next steps on CanFly.ai",
+          "titleEn": "Next steps on CanFly.ai",
+          "estimatedTime": "1 min",
+          "content": "Glimmer is the local Meta brain. Pair it with an OpenClaw install, Lightning when you want NVIDIA's 30B / 3B execution sibling, or Harden AIF in front of tool calls.",
+          "tips": [
+            "Review video is pending (no HEYGEN_API_KEY on this run). English script: content/scripts/muse-glimmer-review-en.txt",
+            "Do not open Wonder, Ember, Spark Open, or Muse Code pages.",
+            "When Meta ships a new local Glimmer tag, update this page — do not invent a second slug."
+          ],
+          "nextStepCards": [
+            {
+              "emoji": "🦞",
+              "title": "Install OpenClaw",
+              "desc": "One-command OpenClaw setup with Ollama, then come back and add --model muse-glimmer.",
+              "link": "/learn/ollama-openclaw",
+              "cta": "OpenClaw tutorial"
+            },
+            {
+              "emoji": "📦",
+              "title": "Ollama",
+              "desc": "Local model host. Qwen 3.8 stays here. Glimmer pulls like any other Ollama tag.",
+              "link": "/learn/ollama",
+              "cta": "Ollama tutorial"
+            },
+            {
+              "emoji": "⚡",
+              "title": "Nemotron 3.5 Lightning",
+              "desc": "NVIDIA 30B / 3B execution sibling. Different family, same local OpenClaw launch pattern.",
+              "link": "/learn/nemotron-3-5-lightning",
+              "cta": "Lightning tutorial"
+            },
+            {
+              "emoji": "🛡️",
+              "title": "Harden AIF",
+              "desc": "Local tool-call firewall: aif configure --agent openclaw --validate.",
+              "link": "/learn/harden-aif",
+              "cta": "AIF tutorial"
+            },
+            {
+              "emoji": "🌐",
+              "title": "OpenRouter",
+              "desc": "Routed path for meta/muse-ember and meta/muse-spark-open if you skip the Meta plugin.",
+              "link": "/learn/openrouter",
+              "cta": "OpenRouter guide"
+            }
+          ]
+        }
+      ],
+      "faq": [
+        {
+          "q": "What is the official install pin?",
+          "a": "ollama launch openclaw --model muse-glimmer. Apple Silicon can use muse-glimmer:30b-mlx. Needs Ollama 0.32.7+."
+        },
+        {
+          "q": "How much RAM do I need?",
+          "a": "The Ollama tag is about 18GB (MLX about 19GB). 32GB unified memory is comfortable for OpenClaw. 24GB is the tight path. bf16 weights are a different, much larger download."
+        },
+        {
+          "q": "Is this the same as the Ollama tutorial?",
+          "a": "No. /learn/ollama is the host. Qwen 3.8 stays there. This page is Meta's 30B local agent model."
+        },
+        {
+          "q": "Where are Wonder, Ember, and Spark Open?",
+          "a": "One-liners on this page. Wonder: openclaw plugins install @openclaw/meta-provider then openclaw models set meta/muse-wonder-1.0. Ember: models list --refresh then openclaw models set meta/muse-ember-1.0 or openrouter/meta/muse-ember. Spark Open: ollama launch openclaw --model muse-spark-open:cloud. Wonder Full stays in Muse Code."
+        },
+        {
+          "q": "Where is the review video?",
+          "a": "Pending. This run has no HEYGEN_API_KEY. English script: content/scripts/muse-glimmer-review-en.txt"
         }
       ]
     }

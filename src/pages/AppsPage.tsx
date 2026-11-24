@@ -14,7 +14,7 @@ const categoryFeatured: Record<string, string[]> = {
   hosting: ['zeabur', 'umbrel'],
   hardware: ['hdmi-dummy-plug', 'mac-mini-m4', 'macbook-neo'],
   vm: ['utm', 'virtual-buddy'],
-  models: ['nemotron-3-5-lightning', 'grok-4-7', 'gpt-6-astra'],
+  models: ['muse-glimmer', 'nemotron-3-5-lightning', 'grok-4-7', 'gpt-6-astra'],
 }
 
 const featuredGradients: Record<string, string> = {
@@ -38,6 +38,7 @@ const featuredGradients: Record<string, string> = {
   'claude-code-codex': 'bg-gradient-to-br from-sky-950/70 to-orange-950/40 border border-sky-500/40 hover:border-orange-400/60',
   'harden-aif': 'bg-gradient-to-br from-amber-950/60 to-emerald-950/40 border border-amber-700/30 hover:border-amber-500/50',
   clawhub: 'bg-gradient-to-br from-orange-950/70 to-amber-950/40 border border-orange-500/40 hover:border-orange-400/60',
+  'muse-glimmer': 'bg-gradient-to-br from-sky-950/70 to-indigo-950/40 border border-sky-500/40 hover:border-cyan-400/60',
 }
 
 export default function AppsPage() {
