@@ -1,0 +1,11 @@
+Hi, I'm JU CHUN KO.
+
+OpenClaw can talk on Telegram, Discord, Slack, and WhatsApp. Without shared memory, every channel starts from zero.
+
+Supermemory is long-term memory for that agent. Official pin: openclaw plugins install @supermemory/openclaw-supermemory. Then openclaw supermemory setup, paste an sm_ key, and restart the gateway.
+
+Auto-recall injects profile and similar chats before a turn. Auto-capture stores the exchange after. Slash commands are /remember, /recall, and /memory-usage. Prefer to stay local? npx supermemory local on port 6767.
+
+This is not OpenClaw session logs, not the 11.10 Knowledge slot, and not screenpipe.
+
+I made a tutorial on CanFly.ai — go try it.

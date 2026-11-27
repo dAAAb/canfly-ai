@@ -108,6 +108,7 @@ POST /api/agents/:name/milestones — Add achievements (Bearer auth)
 - Harden AIF (/apps/skills/harden-aif) - Local tool-call firewall; OpenClaw: `aif configure --agent openclaw --validate`. Tutorial: /learn/harden-aif. Not AgentWard.
 - Claude Code + Codex (/apps/skills/claude-code-codex) - Coding agents talk to OpenClaw channels. Official pin: `openclaw mcp serve` (Codex: `--claude-channel-mode off`). One session: `openclaw attach`. Tutorial: /learn/claude-code-codex. Not AgentKit, not Duet, not a Cursor page.
 - ClawHub (/apps/skills/clawhub) - Official OpenClaw skill and plugin registry. Pins: `openclaw skills install @owner/slug` and `openclaw plugins install clawhub:<package>`. Skill Cards: `openclaw skills verify @owner/slug --card`. Tutorial: /learn/clawhub. Not Firecrawl, not Tavily, not the 15-pack Agent Skills page.
+- Supermemory (/apps/skills/supermemory) - Long-term memory across OpenClaw channels. Official pin: `openclaw plugins install @supermemory/openclaw-supermemory` then `openclaw supermemory setup`. Local: `npx supermemory local`. Tutorial: /learn/supermemory. Not Knowledge, not OzBrain, not screenpipe.
 
 ### Models
 - Grok 4.7 (/apps/models/grok-4-7) - xAI frontier model; OpenClaw default Grok: `openclaw models set xai/grok-4.7`. Tutorial: /learn/grok-4-7. Not Grok Bot; not Fast.
